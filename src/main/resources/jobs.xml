@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data>
+
+  <schedule>
+
+    <!-- This file used to ignore the following WARNING -->
+    <!-- WARN (main)[org.quartz.plugins.xml.XMLSchedulingDataProcessor.processFile.234] 
+      File named 'jobs.xml' does not exist. This is OK if you don't want to use 
+      an XML job config file. -->
+
+  </schedule>
+
+</job-scheduling-data>

@@ -1,0 +1,110 @@
+<!--
+
+    Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="page-header">
+  <h3><b><i class="fa fa-heartbeat"></i> System Status</b></h3>
+</div>
+
+
+<div class="continer left">
+  
+  <div class="page-header">
+    <h4><i class="icon-shell" style="font-size:1.5em"></i> Operating System:</h4>
+  </div>
+  <table class="table table-hover table-bordered table-striped">
+		<tbody>
+      <tr><td class="col-md-2">Operating System</td><td>{{osStatus.name}}</td></tr>
+      <tr><td class="col-md-2">Architecture</td><td>{{osStatus.arch}}</td></tr>
+      <tr><td class="col-md-2">Version/Kernel</td><td>{{osStatus.version}}</td></tr>
+      <tr><td class="col-md-2">Available Process</td><td>{{osStatus.availableProcess}}</td></tr>
+      <tr><td class="col-md-2">System Load Average</td><td>{{osStatus.systemLoadAverage}}</td></tr>
+      <tr><td class="col-md-2">System Cpu Load</td><td>{{osStatus.systemCpuLoad}}</td></tr>
+      <tr><td class="col-md-2">Process Cpu</td><td>Load: {{osStatus.processCpuLoad}}, Time: {{osStatus.processCpuTime}}</td></tr>
+      <tr><td class="col-md-2">Physical Memory (RAM)</td>
+          <td>
+            Free: {{osStatus.freePhysicalMemorySize | byteToMBsizeConvertor}}, 
+            Total: {{osStatus.totalPhysicalMemorySize | byteToMBsizeConvertor}}
+          </td>
+      </tr>
+      <tr><td class="col-md-2">Swap Space</td>
+          <td>
+            Free: {{osStatus.freeSwapSpaceSize | byteToMBsizeConvertor}}, 
+            Total: {{osStatus.totalSwapSpaceSize | byteToMBsizeConvertor}}
+          </td>
+      </tr>
+      <tr><td class="col-md-2">Committed Virtual Memory Size</td><td>{{osStatus.committedVirtualMemorySize | byteToMBsizeConvertor}}</td></tr>
+      <tr><td class="col-md-2">User working directory</td><td>{{osStatus.userWorkingDir}}</td></tr>
+		</tbody>
+	</table>    
+  
+  <div class="page-header">
+    <h4><i class="icon-java" style="font-size:2em"></i> Java Virtual Machine Specification:</h4>
+  </div>
+  <table class="table table-hover table-bordered table-striped">
+		<tbody>
+      <tr><td class="col-md-2">Java Home</td><td>{{osStatus.javaHome}}</td></tr>
+      <tr><td class="col-md-2">Java Vendor Url</td><td>{{osStatus.javaVendorUrl}}</td></tr>
+      <tr><td class="col-md-2">VM Name</td><td>{{jvmStatus.jvmInfo.vmName}}</td></tr>
+      <tr><td class="col-md-2">VM Vendor</td><td>{{jvmStatus.jvmInfo.vmVendor}}</td></tr>
+      <tr><td class="col-md-2">VM Version</td><td>{{jvmStatus.jvmInfo.vmVersion}}</td></tr>
+      <tr><td class="col-md-2">Specification Vendor</td><td>{{jvmStatus.jvmInfo.specVendor}}</td></tr>
+      <tr><td class="col-md-2">Specification Version</td><td>{{jvmStatus.jvmInfo.specVersion}}</td></tr>
+      <tr><td class="col-md-2">Management Specification Version</td><td>{{jvmStatus.jvmInfo.managementSpecVersion}}</td></tr>
+      <tr><td class="col-md-2">Up Time</td><td>{{jvmStatus.jvmInfo.uptime | millSecondsToTimeString}}</td></tr>
+      <tr><td class="col-md-2">Heap Memory</td>
+          <td>
+            Used: {{jvmStatus.memory.heapMemoryUsage.used | byteToMBsizeConvertor}}, 
+            Committed: {{jvmStatus.memory.heapMemoryUsage.committed | byteToMBsizeConvertor}}, 
+            Init: {{jvmStatus.memory.heapMemoryUsage.init | byteToMBsizeConvertor}}, 
+            Max: {{jvmStatus.memory.heapMemoryUsage.max | byteToMBsizeConvertor}}
+          </td>
+      </tr>
+      <tr><td class="col-md-2">Non Heap Memory</td>
+          <td>
+            Used: {{jvmStatus.memory.nonHeapMemoryUsage.used | byteToMBsizeConvertor}}, 
+            Committed: {{jvmStatus.memory.nonHeapMemoryUsage.committed | byteToMBsizeConvertor}}, 
+            Init: {{jvmStatus.memory.nonHeapMemoryUsage.init | byteToMBsizeConvertor}}, 
+            Max: {{jvmStatus.memory.nonHeapMemoryUsage.max | byteToMBsizeConvertor}}
+          </td>
+      </tr>
+      <tr><td class="col-md-2">Threads Count</td>
+          <td>
+            Current: {{jvmStatus.thread.threadCount}}, 
+            Peak: {{jvmStatus.thread.peakThreadCount}}, 
+            Total started: {{jvmStatus.thread.totalStartedThreadCount}}, 
+            Daemon: {{jvmStatus.thread.daemonThreadCount}}
+          </td>
+      </tr>
+      <tr><td class="col-md-2">Class Loading Details</td>
+          <td>
+            Loaded: {{jvmStatus.classLoadingDetail.loadedClassCount}}, 
+            Unloaded: {{jvmStatus.classLoadingDetail.unloadedClassCount}}, 
+            Total loaded: {{jvmStatus.classLoadingDetail.totalLoadedClassCount}}
+          </td>
+      </tr>
+      <tr ng-repeat="garbageCollector in jvmStatus.garbageCollectors"><td class="col-md-2">Garbage Collector - {{garbageCollector.name}}</td>
+          <td>
+            Collection time: {{garbageCollector.collectionTime}}, 
+            Collection count: {{garbageCollector.collectionCount}}, 
+            Last GC duration: {{garbageCollector.lastGcDuration}}
+          </td>
+      </tr>
+		</tbody>
+	</table>    
+
+</div>
+    

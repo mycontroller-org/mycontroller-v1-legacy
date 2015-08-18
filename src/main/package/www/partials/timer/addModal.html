@@ -1,0 +1,158 @@
+<!--
+
+    Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div>
+  <div class="modal-header">
+    <h4>{{header}}</h4>
+  </div>
+  <div class="modal-body">
+   
+  <form class="form-horizontal" role="form" name="form">
+    <div class="form-group">
+      <label class="control-label col-sm-3" for="timer.name">Name:</label>
+      <div class="col-sm-7">          
+        <input type="text" class="form-control" id="timer.name" placeholder="Timer Name" ng-model="timer.name" required>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="control-label col-sm-3" for="timer.type">Type:</label>
+      <div class="col-sm-7">
+        <select class="form-control" ng-options="timerType.id as timerType.displayName for timerType in timerTypes" ng-model="timer.type" required></select>
+      </div>
+    </div>
+    
+    <div class="form-group" ng-show="timer.type != 1">
+      <label class="control-label col-sm-3" for="timer.frequency">Frequency:</label>
+      <div class="col-sm-7">
+        <select class="form-control" ng-change="onFrequencyChange()" ng-options="timerFrequency.id as timerFrequency.displayName for timerFrequency in timerFrequencies" ng-model="timer.frequency"></select>
+      </div>
+    </div>
+    
+    <div class="form-group" ng-show="(timer.type != 1) && (timer.frequency == 0)">
+      <label class="control-label col-sm-3">Week Days:</label>
+      <div class="col-sm-7">
+        <div isteven-multi-select input-model="timerDays" output-model="weekDaysOutput" button-label="displayName" item-label="displayName" 
+            tick-property="ticked" output-properties="id" on-close="updateWeekDays()" on-item-click="updateWeekDays()">
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group" ng-show="(timer.type != 1) && (timer.frequency == 1)">
+      <label class="control-label col-sm-3">Week Day:</label>
+      <div class="col-sm-7">
+        <select class="form-control" ng-options="timerDay.id as timerDay.displayName for timerDay in timerDays" ng-model="timer.frequencyDataString"></select>
+      </div>
+    </div>
+    
+    <div class="form-group" ng-show="(timer.type != 1) && (timer.frequency == 2)">
+      <label class="control-label col-sm-3" for="timer.monthly">Month day:</label>
+      <div class="col-sm-2">
+        <select class="form-control" ng-options="monthDay for monthDay in monthDays" ng-model="timer.frequencyDataString"></select>
+      </div>
+    </div>
+    
+    <div class="form-group" ng-show="timer.type == 1">
+      <label class="control-label col-sm-3" for="timer.cron">Cron Expression:</label>
+      <div class="col-sm-7">
+        <input type="text" tooltip-html="htmlTooltipCron" tooltip-class="customClass" tooltip-placement="bottom" class="form-control" id="timer.cron" placeholder="Cron Expression" ng-model="timer.frequencyDataString">
+      </div>
+    </div>
+    
+     <div class="form-group" ng-show="timer.type != 1">
+      <label class="control-label col-sm-3" for="timer.monthly">Time (HH:mm:ss):</label>
+      <div class="input-group">
+        <div class="col-sm-4">
+          <select class="form-control" ng-change="timeOnChange(triggerHour, triggerMinute, triggerSecond)" ng-init="triggerHour = 0" ng-options="hour for hour in hours" ng-model="triggerHour"></select>
+        </div>
+        <div class="col-sm-4">
+          <select class="form-control" ng-change="timeOnChange(triggerHour, triggerMinute, triggerSecond)" ng-init="triggerMinute = 0" ng-options="minute for minute in minutes" ng-model="triggerMinute"></select>
+        </div>
+        <div class="col-sm-4">
+          <select class="form-control" ng-change="timeOnChange(triggerHour, triggerMinute, triggerSecond)" ng-init="triggerSecond = 0" ng-options="second for second in minutes" ng-model="triggerSecond"></select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="control-label col-sm-3" for="timer.payLoad">Pay Load:</label>
+      <div class="col-sm-7">          
+        <input type="text" class="form-control" id="timer.variable4" placeholder="Payload" ng-model="timer.payload">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="control-label col-sm-3" for="alarm.trigger">Validity From:</label>
+          <div class="col-sm-7">
+            <div class="dropup">
+              <a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="" href="">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="timer.validFromString">
+                  <span class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </span>
+                </div>
+              </a>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <datetimepicker data-ng-model="validFrom" data-on-set-time="timer.validFromString = validityOnTimeSet(newDate)" data-datetimepicker-config="{ dropdownSelector: '#dropdown1', minuteStep:2.5}"/>
+              </ul>
+            </div>
+      </div>
+    </div>       
+    
+    
+    <div class="form-group">
+      <label class="control-label col-sm-3" for="alarm.trigger">Validity To:</label>
+          <div class="col-sm-7">
+            <div class="dropup">
+              <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
+                <div class="input-group">
+                  <input type="text" class="form-control" data-ng-model="timer.validToString">
+                  <span class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </span>
+                </div>
+              </a>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <datetimepicker data-ng-model="validTo" data-on-set-time="timer.validToString = validityOnTimeSet(newDate)" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minuteStep:2.5 }"/>
+              </ul>
+            </div>
+      </div>
+    </div>       
+    
+    
+    
+   
+  </form>
+  
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
+    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+  </div>
+</div>
+
+<style>
+    /* Specify styling for tooltip contents */
+    .tooltip.customClass .tooltip-inner {
+        min-width: 450px; 
+        text-align: left;
+    }
+    /* Hide arrow */
+    .tooltip.customClass .tooltip-arrow {
+        display: none;
+    }
+</style>

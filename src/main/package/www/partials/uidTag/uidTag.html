@@ -1,0 +1,53 @@
+<!--
+
+    Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="page-header">
+    <h3><b><i class="fa fa-tags"></i> UidTag </b><small>Unique Identification Tag for each sensor</small></h3>
+</div>
+
+	<div class="panel panel-default">
+	  <!-- Default panel contents --TOP -->
+	  <div class="panel-heading">
+		<form class="form-inline">
+			<div class="form-group">
+				<label class="sr-only" for="search">Search</label>
+				<input type="text" class="form-control ng-pristine ng-valid input-sm ng-valid" 
+				ng-model="query" id="search" placeholder="Search" ng-model="query" 
+				ng-change="updateFilteredList()"/>
+			</div>
+			<a href='' class="text-default pull-right" ng-click="add()" tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
+		</form>
+	 </div>
+	
+	  <!-- Table -->
+	  <table class="table table-hover table-bordered table-striped" at-table at-paginated 
+	  at-list="filteredList" at-config="config">
+			<thead></thead>
+			<tbody>
+	      <tr>
+          <td at-implicit at-sortable at-attribute="uid" at-title="UID"></td>
+          <td at-implicit at-sortable at-attribute="sensor.nameWithNode" at-title="Name"></td>
+					<td at-implicit at-sortable at-attribute="sensor.node.id" at-title="Node Id"></td>
+          <td at-implicit at-sortable at-attribute="sensor.sensorId" at-title="Sensor Id"></td>
+					<td class="text-center">
+						<a href='' ng-click="delete(item)" class="text-danger" tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<at-pagination class="pull-right" at-list="filteredList" at-config="config"></at-pagination>
+	</div>
