@@ -3,11 +3,11 @@
 
 == About
 
-*MyController.org* is a controller for the http://www.mysensors.org/[MySensors] project.
+*MyController.org* is a controller for the http://www.mysensors.org/[MySensors] project. Considered system resources in mind. Even we can run it in Raspberry PI (256 MB) very first model also.
 
 == System Requirement
 
-As MyController.org is very lightweight, Required only
+MyController.org server is very lightweight, It required very less resource
 
   * Disk        : ~30 MB
   * Memory(RAM) : 40 MB
