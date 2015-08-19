@@ -1,4 +1,4 @@
-= Mycontroller.org - The Open Source Controller for mysensors.org
+= MyController.org - The Open Source Controller for mysensors.org
 :source-language: java, angularjs
 
 == About
@@ -13,10 +13,10 @@ As MyController.org is very lightweight, Required only
   * Memory(RAM) : 40 MB
   * Java        : 1.8 or later
 
-  NOTE: Tested upto 3 nodes and 10 sensors with the above configuration.
+  NOTE: Tested up to 3 nodes and 10 sensors with the above configuration.
 
-===== Supported platformes (tested)
-MyController.or is java based application server. We can run it in any platform which supports Java.
+===== Supported Platforms (tested)
+MyController.org is java based application server. We can run it in any platform which supports Java.
 
 - Linux
 - Windows
@@ -63,15 +63,15 @@ mcc.serialport.driver.type=auto
 mcc.serialport.name=/dev/ttyUSB0
 mcc.serialport.baud.rate=115200
 ```
-- `mcc.serialport.driver.type`: Available driver type: `pi4j, jssc, jserialcomm, auto`. It is recommended to keep in `auto`.
-- `mcc.serialport.name` : will vary based on platform and number of ports. Find it in your computer and update
-- `mcc.serialport.baud.rate` : by default http://www.mysensors.org/build/serial_gateway[Serial Gateway] uses `115200`. If you changed on your setup you have to update your custom value
+- `mcc.serialport.driver.type`: Available driver types: `pi4j, jssc, jserialcomm, auto`. It is recommended to keep in `auto`. *For now `jssc` driver is not stable with MyController.org*
+- `mcc.serialport.name` : will vary based on platform and number of ports. Find it on your computer and update
+- `mcc.serialport.baud.rate` : by default http://www.mysensors.org/build/serial_gateway[Serial Gateway] uses `115200`. If you changed on your setup you have to update your custom value here.
 
 *Database Configuration*
 ```
 mcc.h2db.location=../conf/mycontroller
 ```
-You can change default location.
+You can change default location and file name. File will be stored with the file extension `.mv.db`. Do not add file extenstion.
 
 *Web server configuration*
 ```
@@ -81,11 +81,11 @@ ssl.keystore.file=../conf/keystore.jks
 ssl.keystore.password=password
 ssl.keystore.type=JKS
 ```
-- `enable.https` : Enable/disable https. Only one protocol supported.
+- `enable.https` : Enable/disable https. Only one protocol supported at a time.
 - `http.port` : Port number you want to access MyController.org server
 - `ssl.keystore.file, ssl.keystore.password, ssl.keystore.type` : If https is enabled these fields are mandatory.
 
-IMPORTANT: Change default `ssl.keystore.file` and `ssl.keystore.password`
+IMPORTANT: Change default `ssl.keystore.file` and `ssl.keystore.password` and https protocol is recommended
 
 *Logger configuration*
 
