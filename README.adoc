@@ -1,2 +1,111 @@
 = Mycontroller.org - The Open Source Controller for mysensors.org
 :source-language: java, angularjs
+
+== About
+
+*MyController.org* is a controller for the http://www.mysensors.org/[MySensors] project.
+
+== System Requirement
+
+As MyController.org is very lightweight, Required only
+
+  * Disk        : ~30 MB
+  * Memory(RAM) : 40 MB
+  * Java        : 1.8 or later
+
+  NOTE: Tested upto 3 nodes and 10 sensors with the above configuration.
+
+===== Supported platformes (tested)
+MyController.or is java based application server. We can run it in any platform which supports Java.
+
+- Linux
+- Windows
+- Raspberry PI
+
+== Available Features
+
+Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.1[0.0.1] version,
+
+- Supports only http://www.mysensors.org/build/serial_gateway[Serial Gateway]
+- Auto discover and update nodes(upon nodes restart or receive any data)
+- Timer - Help you schedule time based operations. You can control till the seconds. Types,
+      * Normal (daily, weekly, monthly)
+      * Cron
+      * Before/After Sun Rises and Sun Sets
+- Alarm - based on information received from sensor
+      * Notifications: Send Payload to another sensor, Sens https://www.plivo.com/[SMS], Send Email
+- Graphical reports (Last one hour, 24 hours, 30 days, years)
+- Forward payload from one sensor to another sensor
+- Logs report
+- Send Payload to sensor
+- Reboot, Erase EEPROM, Update Firmware for any nodes which is running with https://github.com/mysensors/Arduino/tree/master/MYSBootloader[MYSBootloader]
+- Maintain firmware for all the nodes
+- Display battery level of node
+- Unique Identification number for each sensor
+- MyController.org server health status
+
+== Installation
+
+====== Download(executable bundle),
+
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.1/mycontroller-standalone-0.0.1-bundle.zip[mycontroller-standalone-0.0.1-bundle.zip]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.1/mycontroller-standalone-0.0.1-bundle.tar.gz[mycontroller-standalone-0.0.1-bundle.tar.gz]
+
+====== Configuration
+
+Extract downloaded bundle where exactly do you want to run. Configuration files located in `mycontroller/conf`
+
+File: `mycontroller.properties`
+
+*Serial Port Configuration*
+```
+mcc.serialport.driver.type=auto
+mcc.serialport.name=/dev/ttyUSB0
+mcc.serialport.baud.rate=115200
+```
+- `mcc.serialport.driver.type`: Available driver type: `pi4j, jssc, jserialcomm, auto`. It is recommended to keep in `auto`.
+- `mcc.serialport.name` : will vary based on platform and number of ports. Find it in your computer and update
+- `mcc.serialport.baud.rate` : by default http://www.mysensors.org/build/serial_gateway[Serial Gateway] uses `115200`. If you changed on your setup you have to update your custom value
+
+*Database Configuration*
+```
+mcc.h2db.location=../conf/mycontroller
+```
+You can change default location.
+
+*Web server configuration*
+```
+enable.https=true
+http.port=8443
+ssl.keystore.file=../conf/keystore.jks
+ssl.keystore.password=password
+ssl.keystore.type=JKS
+```
+- `enable.https` : Enable/disable https. Only one protocol supported.
+- `http.port` : Port number you want to access MyController.org server
+- `ssl.keystore.file, ssl.keystore.password, ssl.keystore.type` : If https is enabled these fields are mandatory.
+
+IMPORTANT: Change default `ssl.keystore.file` and `ssl.keystore.password`
+
+*Logger configuration*
+
+Configuration File Name: `logback.xml`
+
+Default log file location: `logs/mycontroller.log`
+
+====== Start/Stop Server
+Executable scripts are located in `mycontroller/bin/`
+
+* Linux
+    - Start : `./start.sh`
+    - Stop  : `./stop.sh`
+
+* Windows
+    - Start : Double click on `start.bat`
+    - Stop  : `Ctrl+C`
+
+* Other Platforms
+    
+```
+java -Xms8m -Xmx40m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -jar ../lib/mycontroller-standalone-0.0.1-single.jar
+```
