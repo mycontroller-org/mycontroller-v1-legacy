@@ -194,7 +194,7 @@ public class StartApp {
             if (AppProperties.getOsArch().startsWith("arm")) {
                 serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.PI4J.toString();
             } else {
-                serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSSC.toString();
+                serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString();
             }
         }
         //Open Serial Port
