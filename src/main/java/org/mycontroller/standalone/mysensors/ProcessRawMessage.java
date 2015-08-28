@@ -388,7 +388,7 @@ public class ProcessRawMessage {
             FirmwareConfigResponse firmwareConfigResponse = new FirmwareConfigResponse();
             firmwareConfigResponse.setByteBufferPosition(0);
 
-            if (bootLoaderCommand) {
+            if (bootLoaderCommand) {//If it is bootloader command
                 if (node.getEraseEEPROM() != null && node.getEraseEEPROM()) {
                     firmwareConfigResponse.loadEraseEepromCommand();
                     node.setEraseEEPROM(false); //Remove erase EEPROM flag and update in to database
@@ -398,7 +398,7 @@ public class ProcessRawMessage {
                             firmwareConfigRequest);
                     return;
                 }
-            } else if (firmware == null) {
+            } else if (firmware == null) {//Non bootloader command
                 if (DaoUtils.getSettingsDao().get(Settings.ENABLE_NOT_AVAILABLE_TO_DEFAULT_FIRMWARE).getValue()
                         .equalsIgnoreCase("true")) {
                     _logger.debug("If requested firmware is not available, redirect to default firmware is set, Checking the default firmware");
@@ -410,12 +410,15 @@ public class ProcessRawMessage {
                         _logger.warn("There is no default firmware set!");
                     }
                 }
+                //Selected, default: No firmware available for this request
+                if (firmware == null) {
+                    _logger.warn("Selected Firmware is not available, FirmwareConfigRequest:[{}]",
+                            firmwareConfigRequest);
+                    return;
+                }
             }
 
-            if (firmware == null) {
-                _logger.warn("Selected Firmware is not available, FirmwareConfigRequest:[{}]", firmwareConfigRequest);
-                return;
-            } else {
+            if (firmware != null) {
                 firmwareConfigResponse.setType(firmware.getType().getId());
                 firmwareConfigResponse.setVersion(firmware.getVersion().getId());
                 firmwareConfigResponse.setBlocks(firmware.getBlocks());

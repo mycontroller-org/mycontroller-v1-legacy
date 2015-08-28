@@ -129,7 +129,7 @@ public class ExecuteAlarm implements Runnable {
 
     private void alarmTriggerCall(Alarm alarm, boolean triggerAlarm) throws Exception {
         if (triggerAlarm) {
-            if (!alarm.getTriggered()) {
+            if (!alarm.getTriggered() || !alarm.getIgnoreDuplicate()) {
                 switch (AlarmUtils.TYPE.get(alarm.getType())) {
                     case SEND_PAYLOAD:
                         alarmSendPayLoad(alarm);

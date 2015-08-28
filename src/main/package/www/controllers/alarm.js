@@ -137,6 +137,7 @@ myControllerModule.controller('AMaddController', function ($scope, $modalInstanc
   $scope.alarm.sensor = {};
   $scope.alarm.sensor.node = {};
   $scope.alarm.sensor.id = sensor.id;
+  $scope.alarm.ignoreDuplicate = true;
   $scope.header = "Add Alarm for '"+sensor.nameWithNode+"'";
   $scope.alarmNotifications = TypesFactory.getAlarmTypes();
   $scope.sensorvalueTypes = TypesFactory.getSensorValueTypes();

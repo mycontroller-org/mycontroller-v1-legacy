@@ -54,6 +54,9 @@ public class Alarm {
     @DatabaseField(canBeNull = true)
     private Long lastTrigger;
 
+    @DatabaseField(canBeNull = true, defaultValue = "true")
+    private Boolean ignoreDuplicate;
+
     @DatabaseField(canBeNull = true)
     private Long lastNotification;
 
@@ -307,6 +310,14 @@ public class Alarm {
 
     public void setEvaluationCount(Integer evaluationCount) {
         this.evaluationCount = evaluationCount;
+    }
+
+    public Boolean getIgnoreDuplicate() {
+        return ignoreDuplicate;
+    }
+
+    public void setIgnoreDuplicate(Boolean ignoreDuplicate) {
+        this.ignoreDuplicate = ignoreDuplicate;
     }
 
 }
