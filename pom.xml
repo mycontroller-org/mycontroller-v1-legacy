@@ -21,7 +21,7 @@
 
   <groupId>org.mycontroller</groupId>
   <artifactId>mycontroller-standalone</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-alpha1</version>
   <packaging>jar</packaging>
 
   <name>MyController.org</name>

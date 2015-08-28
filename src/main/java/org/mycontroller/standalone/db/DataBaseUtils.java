@@ -200,6 +200,20 @@ public class DataBaseUtils {
 
             DaoUtils.getSettingsDao().create(new Settings(Settings.MC_DB_VERSION, "1", "Database Schema Revision"));
             _logger.info("MC DB version[{}] upgraded to version[{}]", dbVersion, 1);
+            dbVersion = 1;
+        }
+        if (dbVersion < 2) {
+
+            settings = DaoUtils.getSettingsDao().get(Settings.MC_VERSION);
+            settings.setValue("0.0.2-alpha1");
+            DaoUtils.getSettingsDao().update(settings);
+
+            settings = DaoUtils.getSettingsDao().get(Settings.MC_DB_VERSION);
+            settings.setValue("2");
+            DaoUtils.getSettingsDao().update(settings);
+
+            _logger.info("MC DB version[{}] upgraded to version[{}]", dbVersion, 2);
+            dbVersion = 2;
         }
     }
 
