@@ -24,7 +24,7 @@ MyController.org is java based application server. We can run it in any platform
 
 == Available Features
 
-Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.1[0.0.1] version,
+Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.2-alpha1[0.0.2-alpha2] version,
 
 - Supports only http://www.mysensors.org/build/serial_gateway[Serial Gateway]
 - Auto discover and update nodes(upon nodes restart or receive any data)
@@ -48,8 +48,8 @@ Features available in https://github.com/mycontroller-org/mycontroller/releases/
 
 ====== Download(executable bundle),
 
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.1/mycontroller-standalone-0.0.1-bundle.zip[mycontroller-standalone-0.0.1-bundle.zip]
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.1/mycontroller-standalone-0.0.1-bundle.tar.gz[mycontroller-standalone-0.0.1-bundle.tar.gz]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha1/mycontroller-standalone-0.0.2-alpha1-bundle.zip[mycontroller-standalone-0.0.2-alpha1-bundle.zip]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha1/mycontroller-standalone-0.0.2-alpha1-bundle.tar.gz[mycontroller-standalone-0.0.2-alpha1-bundle.tar.gz]
 
 ====== Configuration
 
