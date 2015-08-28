@@ -62,7 +62,7 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDao<ForwardPayload, Integ
     public void deleteBySensorRefId(int sensorRefId) {
         try {
             DeleteBuilder<ForwardPayload, Integer> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId);
+            deleteBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId).or().eq(ForwardPayload.FORWARD_SENSOR_REF_ID, sensorRefId);
             int deleteCount = deleteBuilder.delete();
             _logger.debug("Deleted sensorRefId:[{}], delete count:{}", sensorRefId, deleteCount);
         } catch (SQLException ex) {
