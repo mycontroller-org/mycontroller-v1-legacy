@@ -20,7 +20,7 @@ MyController.org is java based application server. We can run it in any platform
 
 - Linux
 - Windows
-- Raspberry PI
+- Raspberry PI (Oracle Java recommend)
 
 == Available Features
 
