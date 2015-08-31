@@ -26,7 +26,7 @@ MyController.org is java based application server. We can run it in any platform
 
 == Available Features
 
-Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.2-alpha1[0.0.2-alpha2] version,
+Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.2-alpha1[0.0.2-alpha1] version,
 
 - Supports only http://www.mysensors.org/build/serial_gateway[Serial Gateway]
 - Auto discover and update nodes(upon nodes restart or receive any data)
