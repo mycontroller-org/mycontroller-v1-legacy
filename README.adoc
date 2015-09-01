@@ -87,6 +87,10 @@ ssl.keystore.type=JKS
 - `http.port` : Port number you want to access MyController.org server
 - `ssl.keystore.file, ssl.keystore.password, ssl.keystore.type` : If https is enabled these fields are mandatory.
 
+Default URL: `https://<ip>:8443` (ex: `https://localhost:8443`)
+
+Default username/password: `admin/admin`
+
 IMPORTANT: Change default `ssl.keystore.file` and `ssl.keystore.password` and https protocol is recommended
 
 *Logger configuration*
