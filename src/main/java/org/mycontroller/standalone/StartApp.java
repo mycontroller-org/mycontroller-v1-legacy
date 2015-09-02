@@ -145,6 +145,10 @@ public class StartApp {
             server.setPort(ObjectFactory.getAppProperties().getHttpPort());
         }
 
+        if (ObjectFactory.getAppProperties().getBindAddress() != null) {
+            server.setBindAddress(ObjectFactory.getAppProperties().getBindAddress());
+        }
+
         //Deploy RestEasy with TJWS
         server.setDeployment(getResteasyDeployment());
         server.addFileMapping("/", new File(ObjectFactory.getAppProperties().getWwwFileLocation()));

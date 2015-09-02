@@ -15,6 +15,13 @@
 # limitations under the License.
 #
 
+# Get user current location
+USER_LOCATION=$PWD
+ACTUAL_LOCATION=`dirname $0`
+
+# Change the location to where exactly script is located
+cd ${ACTUAL_LOCATION}
+
 
 #Java Heap settings
 HEAP_MIN=-Xms8m
@@ -44,10 +51,13 @@ if [[ "$_java" ]]; then
         then
           echo "Mycontroller.org server is already running on pid[${MC_PID}]"
         else
-          java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -jar ../lib/mycontroller-standalone-${MC_VERSION}-single.jar > ../logs/mycontroller.log 2>&1 &
+          java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -jar ../lib/mycontroller-standalone-${MC_VERSION}-single.jar >> ../logs/mycontroller.log 2>&1 &
           echo 'Start issued for Mycontroller'
         fi
     else         
       echo "Mycontroller.org server required java version $JAVA_VERSION or later"
     fi
 fi
+
+# back to user location
+cd ${USER_LOCATION}

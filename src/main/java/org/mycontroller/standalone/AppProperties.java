@@ -20,13 +20,17 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 public class AppProperties {
-    public static final String APPLICATION_NAME = "Mycontroller.org";
+    private static final Logger _logger = LoggerFactory.getLogger(AppProperties.class.getName());
+
+    public static final String APPLICATION_NAME = "MyController.org";
     private String serialPortName;
     private String serialPortDriver;
     private int serialPortBaudRate;
@@ -37,6 +41,7 @@ public class AppProperties {
     private String sslKeystoreFile;
     private String sslKeystorePassword;
     private String sslKeystoreType;
+    private String bindAddress;
 
     public enum SERIAL_PORT_DRIVER {
         AUTO,
@@ -53,19 +58,30 @@ public class AppProperties {
     }
 
     public void loadProperties(Properties properties) {
-        this.serialPortName = (properties.getProperty("mcc.serialport.name").trim());
-        this.serialPortDriver = (properties.getProperty("mcc.serialport.driver.type").trim());
-        this.serialPortBaudRate = Integer.valueOf(properties.getProperty("mcc.serialport.baud.rate").trim());
-        this.h2DbLocation = properties.getProperty("mcc.h2db.location").trim();
-        this.wwwFileLocation = properties.getProperty("www.file.location").trim();
-        this.httpPort = Integer.valueOf(properties.getProperty("http.port").trim());
-        if (properties.getProperty("enable.https") != null) {
-            if (Boolean.valueOf(properties.getProperty("enable.https").trim())) {
+        this.serialPortName = getValue(properties, "mcc.serialport.name");
+        this.serialPortDriver = getValue(properties, "mcc.serialport.driver.type");
+        this.serialPortBaudRate = Integer.valueOf(getValue(properties, "mcc.serialport.baud.rate"));
+        this.h2DbLocation = getValue(properties, "mcc.h2db.location");
+        this.wwwFileLocation = getValue(properties, "www.file.location");
+        this.httpPort = Integer.valueOf(getValue(properties, "http.port"));
+        if (getValue(properties, "enable.https") != null) {
+            if (Boolean.valueOf(getValue(properties, "enable.https"))) {
                 this.isHttpsEnabled = true;
-                this.sslKeystoreFile = properties.getProperty("ssl.keystore.file").trim();
-                this.sslKeystorePassword = properties.getProperty("ssl.keystore.password").trim();
-                this.sslKeystoreType = properties.getProperty("ssl.keystore.type").trim();
+                this.sslKeystoreFile = getValue(properties, "ssl.keystore.file");
+                this.sslKeystorePassword = getValue(properties, "ssl.keystore.password");
+                this.sslKeystoreType = getValue(properties, "ssl.keystore.type");
             }
+        }
+        this.bindAddress = getValue(properties, "bind.address");
+    }
+
+    private String getValue(Properties properties, String key) {
+        String value = properties.getProperty(key);
+        _logger.debug("Key:{}-->{}", key, value);
+        if (value != null) {
+            return value.trim();
+        } else {
+            return null;
         }
     }
 
@@ -175,5 +191,9 @@ public class AppProperties {
 
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public String getBindAddress() {
+        return bindAddress;
     }
 }
