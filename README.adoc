@@ -73,7 +73,7 @@ mcc.serialport.baud.rate=115200
 ```
 mcc.h2db.location=../conf/mycontroller
 ```
-You can change default location and file name. File will be stored with the file extension `.mv.db`. Do not add file extenstion.
+You can change default location and file name. File will be stored with the file extension `.h2.db`. Do not add file extenstion.
 
 *Web server configuration*
 ```
