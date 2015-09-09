@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.serialport;
+package org.mycontroller.standalone.gateway.serialport;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.mysensors.RawMessage;

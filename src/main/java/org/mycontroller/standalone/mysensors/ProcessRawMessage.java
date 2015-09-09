@@ -22,6 +22,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.NodeIdException;
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
@@ -40,6 +41,7 @@ import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.uidtag.ExecuteUidTag;
+import org.mycontroller.standalone.gateway.MySensorsGatewayException;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
@@ -63,13 +65,13 @@ public class ProcessRawMessage {
 
     private Firmware firmware;
 
-    public void messageTypeSelector(RawMessage rawMessage) {
+    public void messageTypeSelector(RawMessage rawMessage) throws MySensorsGatewayException {
         if (rawMessage.getAck() == 1) {
             _logger.info("This is ack message[{}]", rawMessage);
         }
 
         if (rawMessage.isTxMessage()) {
-            ObjectFactory.getiSerialPort().writeBytes(rawMessage.getGWBytes());
+            ProcessRawMessageUtils.sendMessage(rawMessage);
             _logger.debug("This is Tx Message[{}] sent", rawMessage);
         }
 
@@ -126,6 +128,12 @@ public class ProcessRawMessage {
             }
 
         } else {
+            Node node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
+            if (node == null) {
+                node = new Node(rawMessage.getNodeId());
+                node.setUpdateTime(System.currentTimeMillis());
+                DaoUtils.getNodeDao().create(node);
+            }
             Sensor sensor = DaoUtils.getSensorDao().get(rawMessage.getNodeId(), rawMessage.getChildSensorId());
             if (sensor == null) {
                 sensor = new Sensor(rawMessage.getChildSensorId(),
@@ -180,7 +188,8 @@ public class ProcessRawMessage {
                 _logger.debug("Time request resolved.");
                 break;
             case I_VERSION:
-                _logger.warn("This is gateway version request message, should be processed by gateway! Message:{}",
+                _logger.debug("Gateway version requested by {}! Message:{}",
+                        AppProperties.APPLICATION_NAME,
                         rawMessage);
                 break;
             case I_ID_REQUEST:
@@ -518,7 +527,7 @@ public class ProcessRawMessage {
                 sensor.setStatus(rawMessage.getPayLoad());
                 DaoUtils.getSensorDao().update(sensor);
                 _logger.debug("This type not be implemented yet, PayloadType:{}, MessageType:{}, RawMessage:{}",
-                        type, MyMessages.MESSAGE_TYPE_SET_REQ.get(rawMessage.getMessageType()).toString(),
+                        type, MyMessages.MESSAGE_TYPE_SET_REQ.get(rawMessage.getSubType()).toString(),
                         rawMessage.getPayLoad());
                 break;
         }

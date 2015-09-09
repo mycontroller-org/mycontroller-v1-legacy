@@ -15,6 +15,10 @@
  */
 package org.mycontroller.standalone.mysensors;
 
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +40,33 @@ public class RawMessage {
 
     public RawMessage() {
 
+    }
+
+    public RawMessage(String topic, MqttMessage message) throws RawMessageException {
+        String[] msgArry = topic.split("/");
+        if (message.getPayload() != null) {
+            this.payLoad = message.toString();
+        }
+        if (msgArry.length >= 4) {
+            this.nodeId = Integer.valueOf(msgArry[1]);
+            this.childSensorId = Integer.valueOf(msgArry[2]);
+            this.subType = Integer.valueOf(msgArry[3]);
+            if (this.subType == 61) {
+                this.messageType = MESSAGE_TYPE.C_INTERNAL.ordinal();
+                this.subType = MESSAGE_TYPE_INTERNAL.I_SKETCH_NAME.ordinal();
+            } else if (this.subType == 62) {
+                this.messageType = MESSAGE_TYPE.C_INTERNAL.ordinal();
+                this.subType = MESSAGE_TYPE_INTERNAL.I_SKETCH_VERSION.ordinal();
+            } else {
+                this.messageType = MESSAGE_TYPE.C_SET.ordinal();
+            }
+            this.ack = 0;
+
+            _logger.debug("Message: {}", this.toString());
+        } else {
+            _logger.debug("Unknown message format, Topic:[{}], PayLoad:[{}]", topic, message);
+            throw new RawMessageException("Unknown message format, Topic:" + topic + ", PayLoad:" + message);
+        }
     }
 
     public RawMessage(int nodeId, int childSensorId, int messageType, int ack, int subType, String payLoad,
@@ -189,6 +220,16 @@ public class RawMessage {
         message.append(this.subType).append(";");
         message.append(this.payLoad).append("\n");
         return message.toString();
+    }
+
+    public String getMqttTopic() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ObjectFactory.getAppProperties().getMqttGatewayBrokerRootTopic());
+        builder.append("/").append(this.getNodeId());
+        builder.append("/").append(this.getChildSensorId());
+        builder.append("/").append(this.getMessageType());
+
+        return builder.toString();
     }
 
     public byte[] getGWBytes() {

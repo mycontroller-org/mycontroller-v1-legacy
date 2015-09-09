@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.serialport;
+package org.mycontroller.standalone.gateway.serialport;
 
 import java.io.IOException;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.gateway.IMySensorsGateway;
+import org.mycontroller.standalone.mysensors.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +30,7 @@ import com.pi4j.io.serial.SerialFactory;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class SerialPortPi4jImpl implements ISerialPort {
+public class SerialPortPi4jImpl implements IMySensorsGateway {
     private static Logger _logger = LoggerFactory.getLogger(SerialPortPi4jImpl.class.getName());
 
     private Serial serial;
@@ -37,9 +39,9 @@ public class SerialPortPi4jImpl implements ISerialPort {
         this.initialize();
     }
 
-    public synchronized void writeBytes(byte[] data) {
+    public synchronized void write(RawMessage rawMessage) {
         try {
-            serial.write(data);
+            serial.write(rawMessage.getGWBytes());
         } catch (IllegalStateException ilEx) {
             _logger.error("exception on pi4j serialport,", ilEx);
         } catch (IOException ioEx) {

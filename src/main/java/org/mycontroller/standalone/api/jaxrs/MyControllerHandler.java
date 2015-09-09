@@ -28,12 +28,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.IdJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.SerialPortJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.StringValueJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
+import org.mycontroller.standalone.gateway.MySensorsGatewayException;
 import org.mycontroller.standalone.mysensors.ProcessRawMessageUtils;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.slf4j.Logger;
@@ -99,15 +101,24 @@ public class MyControllerHandler {
     @POST
     @Path("/serialport/send/raw")
     public Response postInSerialportRaw(StringValueJson mySensorsRawMessage) {
-        ProcessRawMessageUtils.sendMessage(mySensorsRawMessage.getValue());
-        return RestUtils.getResponse(Status.OK);
+        try {
+            ProcessRawMessageUtils.sendMessage(mySensorsRawMessage.getValue());
+            return RestUtils.getResponse(Status.OK);
+        } catch (MySensorsGatewayException ex) {
+            return RestUtils.getResponse(Status.INTERNAL_SERVER_ERROR, new ApiError(ex.getMessage()));
+        }
     }
 
     @POST
     @Path("/serialport/send/")
     public Response postInSerialport(RawMessage rawMessage) {
-        ProcessRawMessageUtils.sendMessage(rawMessage);
-        return RestUtils.getResponse(Status.OK);
+        try {
+            ProcessRawMessageUtils.sendMessage(rawMessage);
+            return RestUtils.getResponse(Status.OK);
+        } catch (MySensorsGatewayException ex) {
+            return RestUtils.getResponse(Status.INTERNAL_SERVER_ERROR, new ApiError(ex.getMessage()));
+        }
+
     }
 
     @GET
@@ -115,7 +126,7 @@ public class MyControllerHandler {
     public Response getOsStatus() {
         return RestUtils.getResponse(Status.OK, new StatusOS());
     }
-    
+
     @GET
     @Path("/jvmStatus")
     public Response getJvmStatus() {

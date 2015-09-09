@@ -42,12 +42,25 @@ public class AppProperties {
     private String sslKeystorePassword;
     private String sslKeystoreType;
     private String bindAddress;
+    private String gatewayType;
+    private String ethernetGatewayHost;
+    private Integer ethernetGatewayPort;
+    private Integer ethernetGatewayKeepAliveFrequency;
+    private String mqttGatewayBrokerHost;
+    private Integer mqttGatewayBrokerPort;
+    private String mqttGatewayBrokerRootTopic;
 
     public enum SERIAL_PORT_DRIVER {
         AUTO,
         PI4J,
         JSSC,
         JSERIALCOMM;
+    }
+
+    public enum GATEWAY_TYPES {
+        SERIAL,
+        ETHERNET,
+        MQTT;
     }
 
     public AppProperties() {
@@ -58,9 +71,17 @@ public class AppProperties {
     }
 
     public void loadProperties(Properties properties) {
+        this.gatewayType = getValue(properties, "mcc.ethernet.gateway.type");
         this.serialPortName = getValue(properties, "mcc.serialport.name");
         this.serialPortDriver = getValue(properties, "mcc.serialport.driver.type");
         this.serialPortBaudRate = Integer.valueOf(getValue(properties, "mcc.serialport.baud.rate"));
+        this.ethernetGatewayHost = getValue(properties, "mcc.ethernet.gateway.host");
+        this.ethernetGatewayPort = Integer.valueOf(getValue(properties, "mcc.ethernet.gateway.port"));
+        this.ethernetGatewayKeepAliveFrequency = Integer.valueOf(getValue(properties,
+                "mcc.ethernet.gateway.keep.alive.frequency"));
+        this.mqttGatewayBrokerHost = getValue(properties, "mcc.mqtt.gateway.broker.host");
+        this.mqttGatewayBrokerPort = Integer.valueOf(getValue(properties, "mcc.mqtt.gateway.broker.port"));
+        this.mqttGatewayBrokerRootTopic = getValue(properties, "mcc.mqtt.gateway.broker.root.topic");
         this.h2DbLocation = getValue(properties, "mcc.h2db.location");
         this.wwwFileLocation = getValue(properties, "www.file.location");
         this.httpPort = Integer.valueOf(getValue(properties, "http.port"));
@@ -73,6 +94,7 @@ public class AppProperties {
             }
         }
         this.bindAddress = getValue(properties, "bind.address");
+
     }
 
     private String getValue(Properties properties, String key) {
@@ -195,5 +217,33 @@ public class AppProperties {
 
     public String getBindAddress() {
         return bindAddress;
+    }
+
+    public String getEthernetGatewayHost() {
+        return ethernetGatewayHost;
+    }
+
+    public String getGatewayType() {
+        return gatewayType;
+    }
+
+    public Integer getEthernetGatewayPort() {
+        return ethernetGatewayPort;
+    }
+
+    public Integer getEthernetGatewayKeepAliveFrequency() {
+        return ethernetGatewayKeepAliveFrequency;
+    }
+
+    public String getMqttGatewayBrokerHost() {
+        return mqttGatewayBrokerHost;
+    }
+
+    public Integer getMqttGatewayBrokerPort() {
+        return mqttGatewayBrokerPort;
+    }
+
+    public String getMqttGatewayBrokerRootTopic() {
+        return mqttGatewayBrokerRootTopic;
     }
 }

@@ -50,7 +50,6 @@
     <license.failIfUnknown>true</license.failIfUnknown>
 
     <!-- dependency versions -->
-    <version.junit>3.8.1</version.junit>
     <version.org.scream3r>2.8.0</version.org.scream3r>
     <version.com.pi4j>1.1-SNAPSHOT</version.com.pi4j>
     <version.com.fazecast>1.3.7</version.com.fazecast>
@@ -67,19 +66,13 @@
     <version.org.apache.commons>1.4</version.org.apache.commons>
     <version.com.plivo>3.0.6</version.com.plivo>
     <version.commons-codec>1.10</version.commons-codec>
+    <version.org.eclipse.paho>1.0.2</version.org.eclipse.paho>
 
     <!-- plugins version -->
     <version.com.mycila.license-maven-plugin>2.11</version.com.mycila.license-maven-plugin>
   </properties>
 
   <dependencies>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${version.junit}</version>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.scream3r</groupId>
@@ -202,6 +195,12 @@
       <version>${version.commons-codec}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.eclipse.paho</groupId>
+      <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+      <version>${version.org.eclipse.paho}</version>
+    </dependency>
+
   </dependencies>
 
   <repositories>
@@ -213,6 +212,10 @@
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
       </snapshots>
+    </repository>
+    <repository>
+      <id>Eclipse Paho Repo</id>
+      <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
     </repository>
   </repositories>
 
@@ -239,6 +242,9 @@
             <exclude>src/main/package/www/libs/**</exclude>
             <exclude>src/main/package/www/images/**</exclude>
             <exclude>src/main/assembly/**</exclude>
+            <exclude>src/main/assembly/**</exclude>
+            <exclude>README.adoc</exclude>
+            <exclude>LICENSE</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -287,7 +293,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.4</version>
@@ -303,7 +309,7 @@
           <descriptor>src/main/assembly/binary-deployment.xml</descriptor>
         </configuration>
       </plugin>
-      
+
     </plugins>
   </build>
 </project>

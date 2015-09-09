@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.serialport;
+package org.mycontroller.standalone.gateway.serialport;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.gateway.IMySensorsGateway;
+import org.mycontroller.standalone.mysensors.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,28 +29,28 @@ import jssc.SerialPortList;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class SerialPortJsscImpl implements ISerialPort{
+public class SerialPortJsscImpl implements IMySensorsGateway {
     private static final Logger _logger = LoggerFactory.getLogger(SerialPortJsscImpl.class.getName());
     private SerialPort serialPort;
 
-    public SerialPortJsscImpl(){
+    public SerialPortJsscImpl() {
         this.initialize();
     }
 
-    public synchronized void writeBytes(byte[] data) {
+    @Override
+    public synchronized void write(RawMessage rawMessage) {
         try {
-            serialPort.writeBytes(data);
+            serialPort.writeBytes(rawMessage.getGWBytes());
         } catch (SerialPortException ex) {
             _logger.error("Exception while writing data, ", ex);
-        }       
+        }
     }
 
-
-    private void initialize(){
+    private void initialize() {
         String[] portNames = SerialPortList.getPortNames();
-        _logger.debug("Number of serial port available:{}",portNames.length);
-        for(int portNo=0; portNo<portNames.length;portNo++){
-            _logger.debug("SerialPortJson[{}]:{}",portNo+1,portNames[portNo]);
+        _logger.debug("Number of serial port available:{}", portNames.length);
+        for (int portNo = 0; portNo < portNames.length; portNo++) {
+            _logger.debug("SerialPortJson[{}]:{}", portNo + 1, portNames[portNo]);
         }
         // create an instance of the serial communications class
         serialPort = new SerialPort(ObjectFactory.getAppProperties().getSerialPortName());
@@ -75,9 +77,9 @@ public class SerialPortJsscImpl implements ISerialPort{
     public void close() {
         try {
             this.serialPort.closePort();
-            _logger.debug("serialPort{} closed",serialPort.getPortName());
+            _logger.debug("serialPort{} closed", serialPort.getPortName());
         } catch (SerialPortException ex) {
-            _logger.error("unable to close the port{}",serialPort.getPortName(), ex);
+            _logger.error("unable to close the port{}", serialPort.getPortName(), ex);
         }
 
     }

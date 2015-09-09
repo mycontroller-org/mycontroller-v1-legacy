@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.serialport;
+package org.mycontroller.standalone.gateway.serialport;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.gateway.IMySensorsGateway;
+import org.mycontroller.standalone.mysensors.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,7 @@ import com.fazecast.jSerialComm.SerialPort;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class SerialPortjSerialCommImpl implements ISerialPort {
+public class SerialPortjSerialCommImpl implements IMySensorsGateway {
     private static final Logger _logger = LoggerFactory.getLogger(SerialPortJsscImpl.class.getName());
     private SerialPort serialPort;
 
@@ -34,8 +36,8 @@ public class SerialPortjSerialCommImpl implements ISerialPort {
     }
 
     @Override
-    public void writeBytes(byte[] data) {
-        serialPort.writeBytes(data, data.length);
+    public synchronized void write(RawMessage rawMessage) {
+        serialPort.writeBytes(rawMessage.getGWBytes(), rawMessage.getGWBytes().length);
     }
 
     @Override
@@ -49,7 +51,8 @@ public class SerialPortjSerialCommImpl implements ISerialPort {
         SerialPort[] serialPorts = SerialPort.getCommPorts();
         _logger.info("Number of serial port available:{}", serialPorts.length);
         for (int portNo = 0; portNo < serialPorts.length; portNo++) {
-            _logger.info("SerialPort[{}]:[{},{}]", portNo + 1, serialPorts[portNo].getSystemPortName(), serialPorts[portNo].getDescriptivePortName());
+            _logger.info("SerialPort[{}]:[{},{}]", portNo + 1, serialPorts[portNo].getSystemPortName(),
+                    serialPorts[portNo].getDescriptivePortName());
         }
         // create an instance of the serial communications class
         serialPort = SerialPort.getCommPort(ObjectFactory.getAppProperties().getSerialPortName());

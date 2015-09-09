@@ -13,13 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.serialport;
+package org.mycontroller.standalone.gateway;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 0.0.2
  */
-public interface ISerialPort {
-    void writeBytes(byte[] data);
-    void close();
+public class MySensorsGatewayException extends Exception {
+    /**  */
+    private static final long serialVersionUID = -8153159211504366698L;
+    private String message = null;
+
+    public MySensorsGatewayException() {
+        super();
+    }
+
+    public MySensorsGatewayException(String message) {
+        super(message);
+        this.message = message;
+    }
+
+    public MySensorsGatewayException(Throwable cause) {
+        super(cause);
+    }
+
+    @Override
+    public String toString() {
+        return message;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }

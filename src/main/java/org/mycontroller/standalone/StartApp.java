@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
+import org.mycontroller.standalone.AppProperties.GATEWAY_TYPES;
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
@@ -42,13 +43,15 @@ import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.db.TimerUtils;
+import org.mycontroller.standalone.gateway.IMySensorsGateway;
+import org.mycontroller.standalone.gateway.ethernet.EthernetGatewayImpl;
+import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
+import org.mycontroller.standalone.gateway.serialport.SerialPortJsscImpl;
+import org.mycontroller.standalone.gateway.serialport.SerialPortPi4jImpl;
+import org.mycontroller.standalone.gateway.serialport.SerialPortjSerialCommImpl;
 import org.mycontroller.standalone.mysensors.MessageMonitorThread;
 import org.mycontroller.standalone.mysensors.RawMessageQueue;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
-import org.mycontroller.standalone.serialport.ISerialPort;
-import org.mycontroller.standalone.serialport.SerialPortJsscImpl;
-import org.mycontroller.standalone.serialport.SerialPortPi4jImpl;
-import org.mycontroller.standalone.serialport.SerialPortjSerialCommImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,30 +194,42 @@ public class StartApp {
         Thread thread = new Thread(messageMonitorThread);
         thread.start();
 
-        // - Start Serial port
-        String serialPortDriver = ObjectFactory.getAppProperties().getSerialPortDriver();
-        if (ObjectFactory.getAppProperties().getSerialPortDriver()
-                .equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.AUTO.toString())) {
-            if (AppProperties.getOsArch().startsWith("arm")) {
-                serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.PI4J.toString();
-            } else {
-                serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString();
+        _logger.debug("MySensors Gateway Type:{}", ObjectFactory.getAppProperties().getGatewayType());
+        //Start communication with MySensors gateway
+        if (ObjectFactory.getAppProperties().getGatewayType().equalsIgnoreCase(GATEWAY_TYPES.SERIAL.toString())) {
+            // - Start Serial port
+            String serialPortDriver = ObjectFactory.getAppProperties().getSerialPortDriver();
+            if (ObjectFactory.getAppProperties().getSerialPortDriver()
+                    .equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.AUTO.toString())) {
+                if (AppProperties.getOsArch().startsWith("arm")) {
+                    serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.PI4J.toString();
+                } else {
+                    serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString();
+                }
             }
-        }
-        //Open Serial Port
-        if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSSC.toString())) {
-            ISerialPort iSerialPort = new SerialPortJsscImpl();
-            ObjectFactory.setiSerialPort(iSerialPort);
-        } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.PI4J.toString())) {
-            ISerialPort iSerialPort = new SerialPortPi4jImpl();
-            ObjectFactory.setiSerialPort(iSerialPort);
-        } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString())) {
-            ISerialPort iSerialPort = new SerialPortjSerialCommImpl();
-            ObjectFactory.setiSerialPort(iSerialPort);
-        } else {
-            _logger.warn("Driver[{}] not supported yet...",
-                    ObjectFactory.getAppProperties().getSerialPortDriver());
-            return false;
+            //Open Serial Port
+            if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSSC.toString())) {
+                IMySensorsGateway serialGateway = new SerialPortJsscImpl();
+                ObjectFactory.setMySensorsGateway(serialGateway);
+            } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.PI4J.toString())) {
+                IMySensorsGateway serialGateway = new SerialPortPi4jImpl();
+                ObjectFactory.setMySensorsGateway(serialGateway);
+            } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString())) {
+                IMySensorsGateway serialGateway = new SerialPortjSerialCommImpl();
+                ObjectFactory.setMySensorsGateway(serialGateway);
+            } else {
+                _logger.warn("Driver[{}] not supported yet...",
+                        ObjectFactory.getAppProperties().getSerialPortDriver());
+                return false;
+            }
+        } else if (ObjectFactory.getAppProperties().getGatewayType()
+                .equalsIgnoreCase(GATEWAY_TYPES.ETHERNET.toString())) {
+            IMySensorsGateway ethernetGateway = new EthernetGatewayImpl();
+            ObjectFactory.setMySensorsGateway(ethernetGateway);
+        } else if (ObjectFactory.getAppProperties().getGatewayType()
+                .equalsIgnoreCase(GATEWAY_TYPES.MQTT.toString())) {
+            IMySensorsGateway mqttGateway = new MqttGatewayImpl();
+            ObjectFactory.setMySensorsGateway(mqttGateway);
         }
 
         // - Start scheduler
@@ -237,7 +252,7 @@ public class StartApp {
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
         SchedulerUtils.stop();
-        ObjectFactory.getiSerialPort().close();
+        ObjectFactory.getMySensorsGateway().close();
         MessageMonitorThread.setTerminationIssued(true);
         DataBaseUtils.stop();
         _logger.debug("All services stopped. Shutting down...");
