@@ -88,13 +88,11 @@ public class ProcessRawMessage {
                 break;
             case C_SET:
                 _logger.debug("Received a 'Set' message");
-                this.setSubMessageTypeSelector(rawMessage);
+                this.recordSetTypeData(rawMessage);
                 break;
             case C_REQ:
                 _logger.debug("Received a 'Req' message");
-                _logger.debug("Req Message[type:{},payload:{}], This type not be implemented yet",
-                        MESSAGE_TYPE_INTERNAL.get(rawMessage.getSubType()),
-                        rawMessage.getPayLoad());
+                this.responseReqTypeData(rawMessage);
                 break;
             case C_INTERNAL:
                 _logger.debug("Received a 'Internal' message");
@@ -445,21 +443,22 @@ public class ProcessRawMessage {
         }
     }
 
-    private void setSubMessageTypeSelector(RawMessage rawMessage) {
-        this.recordData(rawMessage);
-    }
-
-    private void updateNode(RawMessage rawMessage) {
-        Node node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
-        if (node == null) {
-            _logger.debug("This Node[{}] not available in our DB, Adding...", rawMessage.getNodeId());
-            node = new Node(rawMessage.getNodeId());
-            DaoUtils.getNodeDao().create(node);
+    private void responseReqTypeData(RawMessage rawMessage) {
+        Sensor sensor = this.getSensor(rawMessage);
+        if (sensor.getLastValue() != null) {
+            rawMessage.setTxMessage(true);
+            rawMessage.setMessageType(MESSAGE_TYPE.C_SET.ordinal());
+            rawMessage.setAck(0);
+            rawMessage.setPayLoad(sensor.getLastValue());
+            ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
+            _logger.debug("Request processed! Message Sent: {}", rawMessage);
+        } else {
+            _logger.warn("Data not available! but there is request from sensor[{}], "
+                    + "Ignored this request!", rawMessage);
         }
     }
 
-    private void recordData(RawMessage rawMessage) {
-        PAYLOAD_TYPE type = MyMessages.getPayLoadType(MESSAGE_TYPE_SET_REQ.get(rawMessage.getSubType()));
+    private Sensor getSensor(RawMessage rawMessage) {
         Sensor sensor = DaoUtils.getSensorDao().get(rawMessage.getNodeId(), rawMessage.getChildSensorId());
         if (sensor == null) {
             updateNode(rawMessage);
@@ -475,6 +474,21 @@ public class ProcessRawMessage {
             DaoUtils.getSensorDao().create(sensor);
             sensor = DaoUtils.getSensorDao().get(rawMessage.getNodeId(), rawMessage.getChildSensorId());
         }
+        return sensor;
+    }
+
+    private void updateNode(RawMessage rawMessage) {
+        Node node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
+        if (node == null) {
+            _logger.debug("This Node[{}] not available in our DB, Adding...", rawMessage.getNodeId());
+            node = new Node(rawMessage.getNodeId());
+            DaoUtils.getNodeDao().create(node);
+        }
+    }
+
+    private void recordSetTypeData(RawMessage rawMessage) {
+        PAYLOAD_TYPE type = MyMessages.getPayLoadType(MESSAGE_TYPE_SET_REQ.get(rawMessage.getSubType()));
+        Sensor sensor = this.getSensor(rawMessage);
 
         _logger.debug("Sensor:{}[NodeId:{},SesnorId:{},SubType({}):{}], PayLoad Type: {}",
                 sensor.getNameWithNode(),
