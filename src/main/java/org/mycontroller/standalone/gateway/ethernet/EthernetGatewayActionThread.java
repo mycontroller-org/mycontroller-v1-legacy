@@ -83,7 +83,7 @@ public class EthernetGatewayActionThread implements Runnable {
             _logger.info("EthernetGateway[{}:{}] closed",
                     ObjectFactory.getAppProperties().getEthernetGatewayHost(),
                     ObjectFactory.getAppProperties().getEthernetGatewayPort());
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             _logger.error("Exception,", ex);
         }
     }
