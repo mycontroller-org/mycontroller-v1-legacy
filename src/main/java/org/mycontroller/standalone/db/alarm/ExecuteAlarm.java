@@ -230,7 +230,7 @@ public class ExecuteAlarm implements Runnable {
             unit += alarm.getSensor().getUnit();
         }
 
-        builder.append("Dear User,\nTher is an alarm triggered for you!\n")
+        builder.append("Dear User,\nThere is an alarm triggered for you!\n")
                 .append(String.format("\n\t%-30s%-2s", "Alarm Name", ":")).append(alarm.getName())
                 .append(String.format("\n\t%-30s%-2s", "Condition", ":")).append("if {Sensor Value} ")
                 .append(alarm.getTriggerString())
