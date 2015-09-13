@@ -15,7 +15,7 @@ MyController.org server is very lightweight, It required very less resource, bel
   * Memory(RAM) : 40 MB
   * Java        : 1.8 or later
 
-  NOTE: Tested up to 3 nodes and 10 sensors with the above configuration.
+  NOTE: Test done up to 5 nodes and 20 sensors with the above configuration.
 
 ===== Supported Platforms (tested)
 MyController.org is java based application server. We can run it in any platform which supports Java.
