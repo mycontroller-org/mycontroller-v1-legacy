@@ -15,7 +15,6 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.mysensors.MyMessages;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
@@ -121,10 +120,6 @@ public class Sensor {
         this.updateTime = updateTime;
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
     public Integer getId() {
         return id;
     }
@@ -220,5 +215,20 @@ public class Sensor {
 
     public void setLastValue(String lastValue) {
         this.lastValue = lastValue;
+    }
+    
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id:").append(this.id);
+        builder.append(", SensorId:").append(this.sensorId);
+        builder.append(", Name:").append(this.name);
+        builder.append(", MessageType:").append(this.messageType);
+        builder.append(", Type:").append(this.type);
+        builder.append(", LastValue:").append(this.lastValue);
+        builder.append(", Status:").append(this.status);
+        builder.append(", Unit:").append(this.unit);
+        builder.append(", UpdateTime:").append(this.updateTime);
+        builder.append(", Node: ").append(this.node);
+        return builder.toString();
     }
 }

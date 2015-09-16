@@ -15,7 +15,6 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
 
 import com.j256.ormlite.field.DatabaseField;
@@ -116,10 +115,6 @@ public class Node {
         this.type = type;
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
     public String getTypeString() {
         if (type != null) {
             return MESSAGE_TYPE_PRESENTATION.get(type).toString();
@@ -157,6 +152,20 @@ public class Node {
 
     public void setEraseEEPROM(Boolean eraseEEPROM) {
         this.eraseEEPROM = eraseEEPROM;
+    }
+    
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id:").append(this.id);
+        builder.append(", Name:").append(this.name);
+        builder.append(", Type:").append(this.type);
+        builder.append(", Version:").append(this.version);
+        builder.append(", MySensorsVersion:").append(this.mySensorsVersion);
+        builder.append(", BatteryLevel:").append(this.batteryLevel);
+        builder.append(", EraseEEPROM:").append(this.eraseEEPROM);
+        builder.append(", Firmware:").append(this.firmware);
+        builder.append(", UpdateTime:").append(this.updateTime);
+        return builder.toString();
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.mycontroller.standalone.db.SensorLogUtils.LOG_TYPE;
 
 import com.j256.ormlite.field.DatabaseField;
@@ -112,7 +111,14 @@ public class SensorLog {
     }
 
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id: ").append(this.id);
+        builder.append(", Timestamp: ").append(this.timestamp);
+        builder.append(", LogType: ").append(this.logType);
+        builder.append(", Log: ").append(this.log);
+        builder.append(", Sent: ").append(this.sent);
+        builder.append(", Sensor: ").append(this.sensor);
+        return builder.toString();
     }
 
     public Boolean getSent() {
