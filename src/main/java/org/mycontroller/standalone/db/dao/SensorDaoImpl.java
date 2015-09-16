@@ -49,7 +49,7 @@ public class SensorDaoImpl extends BaseAbstractDao<Sensor, Integer> implements S
                 Integer count = this.getDao().create(sensor);
                 _logger.debug("Created Sensor:[{}], Create count:{}", sensor, count);
             } else {
-                _logger.warn("Sensor:[{}], Sensser Id should be in the range of 0~254", sensor);
+                _logger.warn("Sensor:[{}], Sensor Id should be in the range of 0~254", sensor);
             }
         } catch (SQLException ex) {
             _logger.error("unable to add Sensor:[{}]", sensor, ex);
