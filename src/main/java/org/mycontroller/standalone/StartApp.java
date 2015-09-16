@@ -232,11 +232,11 @@ public class StartApp {
             ObjectFactory.setMySensorsGateway(mqttGateway);
         }
 
-        // - Start scheduler
-        SchedulerUtils.startScheduler();
-
         // - Load starting values
         loadStartingValues();
+
+        // - Start scheduler
+        SchedulerUtils.startScheduler();
 
         // - Start Web Server
         startHTTPWebServer();
