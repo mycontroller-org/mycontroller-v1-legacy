@@ -1,7 +1,7 @@
 = MyController.org - The Open Source Controller for mysensors.org
 :source-language: java, angularjs
 
-==== WIKI: https://sourceforge.net/p/mycontroller-org/wiki/MyController.org/
+==== WIKI: http://www.mycontroller.org
 
 == About
 
