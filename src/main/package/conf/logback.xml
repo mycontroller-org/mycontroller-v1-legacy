@@ -53,8 +53,7 @@
   <logger level="INFO" name="org.mycontroller.standalone.db"/>
   <logger level="INFO" name="org.mycontroller.standalone.db.alarm"/>
   <logger level="INFO" name="org.mycontroller.standalone.db.TimerUtils"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db.fwpayload.ExecuteForwardPayload"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db.dao.ForwardPayloadDaoImpl"/>
+  <logger level="INFO" name="org.mycontroller.standalone.db.dao"/>
   <logger level="INFO" name="org.mycontroller.standalone.gateway"/>
 
   <root level="WARN">
