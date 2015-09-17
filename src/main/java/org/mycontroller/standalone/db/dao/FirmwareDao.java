@@ -31,6 +31,8 @@ public interface FirmwareDao {
     void delete(Integer typeId, Integer versionId);
     void update(Firmware firmware);
     List<Firmware> getAll();
+    List<Firmware> getAllFirmwareByType(int typeId);
+    List<Firmware> getAllFirmwareByVersion(int versionId);
     Firmware get(Firmware firmware);
     Firmware get(int id);
     Firmware get(Integer typeId, Integer versionId);

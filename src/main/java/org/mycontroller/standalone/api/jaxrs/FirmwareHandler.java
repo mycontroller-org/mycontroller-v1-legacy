@@ -120,30 +120,28 @@ public class FirmwareHandler {
     @POST
     @Path("/")
     public Response createFirmware(Firmware firmware) {
-        FirmwareUtils.updateFirmwareFromHexString(firmware);
-        firmware.setTimestamp(System.currentTimeMillis());
-        DaoUtils.getFirmwareDao().create(firmware);
+        FirmwareUtils.createFirmware(firmware);
         return RestUtils.getResponse(Status.CREATED);
     }
 
     @DELETE
     @Path("/types/{id}")
     public Response deleteFirmwareType(@PathParam("id") int id) {
-        DaoUtils.getFirmwareTypeDao().delete(id);
+        FirmwareUtils.deleteFirmwareType(id);
         return RestUtils.getResponse(Status.OK);
     }
 
     @DELETE
     @Path("/versions/{id}")
     public Response deleteFirmwareVersion(@PathParam("id") int id) {
-        DaoUtils.getFirmwareVersionDao().delete(id);
+        FirmwareUtils.deleteFirmwareVersion(id);
         return RestUtils.getResponse(Status.OK);
     }
 
     @DELETE
     @Path("/{id}")
     public Response deleteFirmware(@PathParam("id") int id) {
-        DaoUtils.getFirmwareDao().delete(id);
+        FirmwareUtils.deleteFirmware(id);
         return RestUtils.getResponse(Status.OK);
     }
 
