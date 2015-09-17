@@ -143,5 +143,16 @@ public class Firmware {
     public void setHexFileString(String hexFileString) {
         this.hexFileString = hexFileString;
     }
+    
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id:").append(this.id);
+        builder.append(", Timestamp:").append(this.timestamp);
+        builder.append(", Blocks:").append(this.blocks);
+        builder.append(", CRC:").append(this.crc);
+        builder.append(", Type:[").append(this.type);
+        builder.append("], Version:[").append(this.version).append("]");
+        return builder.toString();
+    }
 
 }

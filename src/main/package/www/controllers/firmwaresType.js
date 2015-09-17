@@ -50,7 +50,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     modalInstance.result.then(function (selectedFirmwareType) {
       $scope.selected = selectedFirmwareType;
       FirmwaresFactory.deleteFirmwareType({ id: selectedFirmwareType.id },function(response) {
-        alertService.success("Deleted a firmwareType["+selectedFirmwareType.firmwareTypeName+"]");
+        alertService.success("Deleted a firmwareType[id:"+selectedFirmwareType.id+", Name:"+selectedFirmwareType.name+"]");
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwareTypes(function(response) {
         },function(error){

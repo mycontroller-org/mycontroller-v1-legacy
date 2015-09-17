@@ -33,7 +33,7 @@ public class FirmwareVersion {
         this.id = id;
     }
 
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
     private Integer id;
 
     @DatabaseField(canBeNull = false, unique = true)
@@ -53,5 +53,12 @@ public class FirmwareVersion {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id:").append(this.id);
+        builder.append(", Name:").append(this.name);
+        return builder.toString();
     }
 }
