@@ -203,29 +203,28 @@ public class DataBaseUtils {
             dbVersion = 1;
         }
         if (dbVersion < 2) {
-            settings = DaoUtils.getSettingsDao().get(Settings.MC_VERSION);
-            settings.setValue("0.0.2-alpha1");
-            DaoUtils.getSettingsDao().update(settings);
-
-            settings = DaoUtils.getSettingsDao().get(Settings.MC_DB_VERSION);
-            settings.setValue("2");
-            DaoUtils.getSettingsDao().update(settings);
-
-            _logger.info("MC DB version[{}] upgraded to version[{}]", dbVersion, 2);
-            dbVersion = 2;
+            upgradeVersion("0.0.2-alpha1", dbVersion, dbVersion + 1);
+            dbVersion++;
         }
         if (dbVersion < 3) {
-            settings = DaoUtils.getSettingsDao().get(Settings.MC_VERSION);
-            settings.setValue("0.0.2-alpha2");
-            DaoUtils.getSettingsDao().update(settings);
-
-            settings = DaoUtils.getSettingsDao().get(Settings.MC_DB_VERSION);
-            settings.setValue("3");
-            DaoUtils.getSettingsDao().update(settings);
-
-            _logger.info("MC DB version[{}] upgraded to version[{}]", dbVersion, 3);
-            dbVersion = 3;
+            upgradeVersion("0.0.2-alpha2", dbVersion, dbVersion + 1);
+            dbVersion++;
         }
+        if (dbVersion < 4) {
+            upgradeVersion("0.0.2-alpha3", dbVersion, dbVersion + 1);
+            dbVersion++;
+        }
+    }
+
+    private static void upgradeVersion(String appVersion, int dbVersionOld, int dbVersionNew) {
+        Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_VERSION);
+        settings.setValue(appVersion);
+        DaoUtils.getSettingsDao().update(settings);
+
+        settings = DaoUtils.getSettingsDao().get(Settings.MC_DB_VERSION);
+        settings.setValue(String.valueOf(dbVersionNew));
+        DaoUtils.getSettingsDao().update(settings);
+        _logger.info("MC DB version[{}] upgraded to version[{}]", dbVersionOld, dbVersionNew);
     }
 
     //http://www.h2database.com/html/tutorial.html#upgrade_backup_restore
