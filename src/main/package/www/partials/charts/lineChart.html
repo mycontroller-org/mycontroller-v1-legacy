@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-line-chart"></i> Graphical Report </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium'}}</small></small></h3>
+    <h3><b><i class="fa fa-line-chart"></i> Graphical Report </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
   </div>
   <div class="continer center">
       <div class="panel panel-default">

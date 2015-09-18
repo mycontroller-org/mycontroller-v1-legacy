@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-bell-o"></i> Alarm </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium'}}</small></small></h3>
+    <h3><b><i class="fa fa-bell-o"></i> Alarm </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
 </div>
 
 	<div class="panel panel-default">
@@ -43,7 +43,7 @@
 			<td at-title="Condition">if {value} {{item.triggerString}} {{item.thresholdValue}}</td>
 			<td at-implicit at-sortable at-attribute="dampeningString" at-title="Dampening"></td>
 			<td at-title="Notification">{{item.typeString}}: {{item.notificationString}}</td>
-			<td at-attribute="lastTrigger" at-sortable at-title="Last Trigger">{{item.lastTrigger | date:'medium'}}</td>
+			<td at-attribute="lastTrigger" at-sortable at-title="Last Trigger">{{item.lastTrigger | date:'medium':about.timezone}}</td>
 					<td class="text-center">
 						<a href='' ng-click="update(item)" class="text-default"  tooltip="Edit">
 						<i class="fa fa-lg fa-edit"></i></a>&nbsp;

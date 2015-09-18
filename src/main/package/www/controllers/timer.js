@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('TimerController', function(alertService,
-$scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestError) {
+$scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestError, about) {
   
   $scope.sensor = TimersFactory.getSensorData({"id":$stateParams.id});
     
@@ -25,6 +25,9 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
     maxPages:10,
     fillLastPage: false
   }
+  //about, Timezone, etc.,
+  $scope.about = about;
+
 
   //Filter
   $scope.updateFilteredList = function() {

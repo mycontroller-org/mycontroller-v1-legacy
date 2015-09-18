@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('FirmwareController', function(alertService,
-$scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
+$scope, $filter, FirmwaresFactory, $location, $modal, displayRestError, about) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -24,6 +24,8 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     fillLastPage: false
   }
 
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //Filter
   $scope.updateFilteredList = function() {

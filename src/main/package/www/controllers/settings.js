@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsController', function(alertService,
-$scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestError) {
+$scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestError, about) {
   
   $scope.config = {
     itemsPerPage: 100,
     maxPages:1,
     fillLastPage: false
   }
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //settings SunriseSunset List
    $scope.settingsSunriseSunsetList = SettingsFactory.getSunriseSunset(function(response) {

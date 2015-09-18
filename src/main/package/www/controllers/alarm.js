@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('AlarmController', function(alertService,
-$scope, $filter, AlarmsFactory, $location, $modal, $stateParams, displayRestError) {
+$scope, $filter, AlarmsFactory, $location, $modal, $stateParams, displayRestError, about) {
   
   $scope.sensor = AlarmsFactory.getSensorData({"id":$stateParams.id});
     
@@ -25,6 +25,9 @@ $scope, $filter, AlarmsFactory, $location, $modal, $stateParams, displayRestErro
     maxPages:10,
     fillLastPage: false
   }
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //Filter
   $scope.updateFilteredList = function() {

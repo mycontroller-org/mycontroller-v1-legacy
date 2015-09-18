@@ -47,7 +47,7 @@
       <img class="media-object" src="..." alt="...">
     </a>-->
           <p><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}} / {{sensor.messageTypeString}}
-          <br>Last seen: {{sensor.updateTime | date:'medium'}}</small><strong class="pull-right" tooltip="Status"><b>{{sensor.status}} {{sensor.unit}}</b></strong>
+          <br>Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small><strong class="pull-right" tooltip="Status"><b>{{sensor.status}} {{sensor.unit}}</b></strong>
           </p> 
         
         

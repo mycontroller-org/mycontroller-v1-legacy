@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory) {
+myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory, about, $filter) {
   
   //http://krispo.github.io/angular-nvd3
     var chartOptions = {
@@ -39,7 +39,7 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
                 xAxis: {
                     showMaxMin: false,
                     tickFormat: function(d) {
-                        return d3.time.format('%H:%M')(new Date(d))
+                        return d3.time.format('HH:mm')(new Date(d))
                     },
                     //axisLabel: 'Timestamp',
                     rotateLabels: -20
@@ -62,6 +62,8 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
                     },function(error){
                       displayRestError.display(error);            
                     });
+  //about, Timezone, etc.,
+  $scope.about = about;                    
   
   $scope.sensor.$promise.then(function (sensor) {
     $scope.sensor = sensor;
@@ -69,10 +71,10 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
     var yAxisD3Format=',.2f';
     var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
     var chartInterpolate='linear';//cardinal
-    var lastOneHourDateFormat = '%H:%M'; //https://github.com/mbostock/d3/wiki/Time-Formatting
-    var last24HoursDateFormat = '%H:%M';
-    var last30DaysDateFormat = '%d-%b %H:%M';
-    var allDataDateFormat = '%d-%b-%Y';
+    var lastOneHourDateFormat = 'HH:mm'; //https://docs.angularjs.org/api/ng/filter/date
+    var last24HoursDateFormat = 'HH:mm';
+    var last30DaysDateFormat = 'dd-MMM HH:mm';
+    var allDataDateFormat = 'dd-MMM-yyyy';
     var lastOneHourText = 'Last one hour (1 minute interval)';
     var last24HoursText = 'Last 24 hours (5 minutes interval)';
     var last30DaysText = 'Last 30 days (1 hour interval)';
@@ -81,10 +83,10 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
     var yAxisD3Format='.0f';
     var chartLineColor=["#1f77b4"];
     var chartInterpolate='step-after';
-    var lastOneHourDateFormat = '%H:%M:%S';
-    var last24HoursDateFormat = '%H:%M:%S';
-    var last30DaysDateFormat = '%d-%b %H:%M:%S';
-    var allDataDateFormat = '%d-%b-%Y %H:%M:%S';
+    var lastOneHourDateFormat = 'HH:mm:ss';
+    var last24HoursDateFormat = 'HH:mm:ss';
+    var last30DaysDateFormat = 'dd-MMM HH:mm:ss';
+    var allDataDateFormat = 'dd-MMM-yyyy HH:mm:ss';
     var lastOneHourText = 'Last one hour';
     var last24HoursText = 'Last 24 hours';
     var last30DaysText = 'Last 30 days';
@@ -100,19 +102,19 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(yAxisD3Format)(d);};
         
           $scope.chartOptionsLastOneHour = chartOptions;
-          $scope.chartOptionsLastOneHour.chart.xAxis.tickFormat = function(d) {return d3.time.format(lastOneHourDateFormat)(new Date(d))};
+          $scope.chartOptionsLastOneHour.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, lastOneHourDateFormat, about.timezone)};
           $scope.chartOptionsLastOneHour.title.text = lastOneHourText;
 
           $scope.chartOptionsLast24Hours = angular.copy(chartOptions);
-          $scope.chartOptionsLast24Hours.chart.xAxis.tickFormat = function(d) {return d3.time.format(last24HoursDateFormat)(new Date(d))};
+          $scope.chartOptionsLast24Hours.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, last24HoursDateFormat, about.timezone)};
           $scope.chartOptionsLast24Hours.title.text = last24HoursText;
           
           $scope.chartOptionsLast30Days = angular.copy(chartOptions);
-          $scope.chartOptionsLast30Days.chart.xAxis.tickFormat = function(d) {return d3.time.format(last30DaysDateFormat)(new Date(d))};
+          $scope.chartOptionsLast30Days.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, last30DaysDateFormat, about.timezone)};
           $scope.chartOptionsLast30Days.title.text = last30DaysText;
           
           $scope.chartOptionsAllDays = angular.copy(chartOptions);
-          $scope.chartOptionsAllDays.chart.xAxis.tickFormat = function(d) {return d3.time.format(allDataDateFormat)(new Date(d))};
+          $scope.chartOptionsAllDays.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, allDataDateFormat, about.timezone)};
           $scope.chartOptionsAllDays.title.text = allDataText;
           
 });

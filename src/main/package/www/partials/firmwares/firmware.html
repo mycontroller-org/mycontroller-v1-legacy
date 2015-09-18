@@ -42,7 +42,7 @@
 					<td at-implicit at-sortable at-attribute="version.name" at-title="Version"></td>
 					<td at-implicit at-sortable at-attribute="blocks"></td>
           <td at-implicit at-sortable at-attribute="crc" at-title="CRC"></td>
-					<td at-sortable at-title="Uploaded On">{{item.timestamp | date:'medium'}}</td>
+					<td at-sortable at-title="Uploaded On">{{item.timestamp | date:'medium':about.timezone}}</td>
 					<td class="text-center">
 						<a href='' ng-click="update(item)" class="text-default"  tooltip="Edit">
 						<i class="fa fa-lg fa-edit"></i></a>&nbsp;

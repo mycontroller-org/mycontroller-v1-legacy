@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-list"></i> Logs </b><small ng-show="sensor.node.id">{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium'}}</small></small></h3>
+    <h3><b><i class="fa fa-list"></i> Logs </b><small ng-show="sensor.node.id">{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
 </div>
 
 	<div class="panel panel-default">
@@ -38,7 +38,7 @@
 			<thead></thead>
 			<tbody>
 	      <tr>
-          <td at-attribute="timestamp" width="165px" at-sortable at-initial-sorting="desc" at-title="Time">{{item.timestamp | date:'medium'}}</td>
+          <td at-attribute="timestamp" width="165px" at-sortable at-initial-sorting="desc" at-title="Time">{{item.timestamp | date:'medium':about.timezone}}</td>
           <td at-implicit at-sortable at-attribute="logTypeString" at-title="Type"></td>
 					<td at-implicit at-sortable at-attribute="status" at-title="Status"></td>
           <td at-implicit at-sortable at-attribute="log" at-title="Log"></td>

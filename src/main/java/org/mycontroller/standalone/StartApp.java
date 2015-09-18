@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.mycontroller.standalone.AppProperties.GATEWAY_TYPES;
+import org.mycontroller.standalone.api.jaxrs.AboutHandler;
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
@@ -114,6 +115,7 @@ public class StartApp {
         resources.add(UidTagHandler.class.getName());
         resources.add(FirmwareHandler.class.getName());
         resources.add(SettingsHandler.class.getName());
+        resources.add(AboutHandler.class.getName());
 
         //Add PreFlight handler
         //resources.add(OptionsHandler.class.getName());

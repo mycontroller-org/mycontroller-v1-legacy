@@ -226,3 +226,10 @@ myControllerModule.factory('StatusFactory', function ($resource) {
    getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} }
   })
 });
+
+//About Services
+myControllerModule.factory('AboutFactory', function ($resource) {
+  return $resource('/mc/rest/about', {}, {
+    about:  { method: 'GET'}
+  })
+});

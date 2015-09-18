@@ -174,10 +174,18 @@ myControllerModule.controller('NavBarCtrl', ['$scope', '$location', function($sc
 }]);
 
 
-myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http) {
+myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about) {
   
   // keep user logged in after page refresh
   $rootScope.globals = $cookieStore.get('globals') || {};
+  var mcabout = $cookieStore.get('mcabout') || {};
+  about.timezone = mcabout.timezone;
+  about.timezoneMilliseconds = mcabout.timezoneMilliseconds;
+  about.timezoneString = mcabout.timezoneString;
+  about.systemDate = mcabout.systemDate;
+  about.appName = mcabout.appName;
+  about.appVersion = mcabout.appVersion;
+  
   if ($rootScope.globals.currentUser) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
   }
@@ -194,7 +202,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, alertService) {
+    function ($state, $scope, $rootScope, AuthenticationService, alertService, AboutFactory, displayRestError, about, $cookieStore) {
         // reset login status
         AuthenticationService.ClearCredentials();
  
@@ -203,6 +211,18 @@ myControllerModule.controller('LoginController',
             AuthenticationService.Login($scope.username, $scope.password, function(response) {
                 if(response.success) {
                     AuthenticationService.SetCredentials($scope.username, $scope.password);
+                    AboutFactory.about(function(response) {
+                        about.timezone = response.timezone;
+                        about.timezoneMilliseconds = response.timezoneMilliseconds;
+                        about.timezoneString = response.timezoneString;
+                        about.systemDate = response.systemDate;
+                        about.appName = response.appName;
+                        about.appVersion = response.appVersion;
+                        $cookieStore.put('mcabout', about);
+                    },function(error){
+                      displayRestError.display(error);            
+                    });
+                    
                     alertService.success("Login success!");
                     $state.go('dashboard'); 
                 } else {
@@ -244,5 +264,12 @@ myControllerModule.filter('byteToMBsizeConvertor', function() {
     }
     return Math.floor(sizeInByte /(1024 * 1024)) + " MB";
   }
-});    
+});
 
+myControllerModule.value("about", {
+    timezone: '+0000',
+    timezoneString: 'GMT',
+    systemDate: '',
+    appVersion:'-',
+    appName: '-'    
+});

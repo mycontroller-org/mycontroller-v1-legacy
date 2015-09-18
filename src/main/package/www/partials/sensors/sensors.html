@@ -50,7 +50,7 @@
 	        <td at-implicit at-sortable at-attribute="name"></td>
 					<td at-implicit at-sortable at-attribute="typeString" at-title="Type"></td>
           <td at-implicit at-sortable at-attribute="messageTypeString" at-title="Variable Type"></td>
-          <td at-sortable at-title="Last Seen">{{item.updateTime | date:'medium'}}</td>
+          <td at-sortable at-title="Last Seen">{{item.updateTime | date:'medium':about.timezone}}</td>
 					<td class="text-center">
 						<a href='' ng-click="update(item)" class="text-default"  tooltip="Edit">
 						<i class="fa fa-lg fa-edit"></i></a>&nbsp;

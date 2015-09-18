@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsController', function(alertService,
-$scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestError) {
+$scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestError, about) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -23,6 +23,9 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     maxPages:10,
     fillLastPage: false
   }
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //Filter
   $scope.updateFilteredList = function() {
