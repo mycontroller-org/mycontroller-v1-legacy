@@ -57,7 +57,6 @@
   <body>
     <style>
       body { padding-top: 13px; padding-bottom: 70px;}
-      //body {padding-bottom: 70px;}
       .tick line { display: none; }
     </style>
 
@@ -99,8 +98,20 @@
             
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="https://github.com/mycontroller-org"><i class="fa fa-github fa-lg"></i> Source</a></li>
-            <li ng-class="{ active: isActive('/login')}"><a href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-out fa-lg"></i> Log In/Out</a></li>
+            
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-life-ring fa-lg"></i> Support <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="https://github.com/mycontroller-org/mycontroller/releases"><i class="fa fa-file-archive-o fa-lg"></i> Releases</a></li>
+                <li><a href="http://www.mycontroller.org"><i class="fa fa-book fa-lg"></i> Documents</a></li>
+                <li><a href="https://github.com/mycontroller-org/mycontroller"><i class="fa fa-github fa-lg"></i> Source Code</a></li>
+              </ul>
+            </li>
+            
+            <li ng-class="{ active: isActive('/login')}">
+              <a ng-hide="isActive('/login')" href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-out fa-lg"></i> Log Out</a>
+              <a ng-show="isActive('/login')" href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-in fa-lg"></i> Log In</a>
+            </li>
           </ul>
         </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
@@ -111,10 +122,14 @@
     </div>
 
     <!-- Footer -->
-
-    <nav class="navbar navbar-default navbar-fixed-bottom" >
-      <div class="container-fluid">
-        <div class="pull-right"><p class="navbar-text">Copyright ©2015, All Rights Reserved</p></div>
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container-fluid" ng-controller="FooterCtrl">
+        <div class="pull-left hidden-xs" ng-show="about.appVersion">
+          <p class="navbar-text">Version: {{about.appVersion}}, Timezone:  {{about.timezoneString}}({{about.timezone}})</p>
+        </div>
+        <div class="pull-right">
+          <p class="navbar-text">Copyright ©2015, All Rights Reserved</p>
+        </div>
       </div>
     </nav>
   
@@ -144,7 +159,6 @@
     <script src="app.js"></script>
     <script src="services/alert_services.js"></script>
     <script src="services/rest_services.js"></script>
-    <script src="services/authentication_services.js"></script>
     <script src="controllers/dashboard.js"></script>
     <script src="controllers/sensors.js"></script>
     <script src="controllers/nodes.js"></script>

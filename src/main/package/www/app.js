@@ -31,6 +31,9 @@ var myControllerModule = angular.module('myController',[
   'angularModalService'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
+  //For any unmatched url, redirect to /dashboard
+  $urlRouterProvider.otherwise('/dashboard');
+  
 	$stateProvider
     .state('sensors', {
       url:"/sensors",
@@ -160,13 +163,10 @@ config(function($stateProvider, $urlRouterProvider) {
         requireLogin: false
       }
     });
-    
-  //For any unmatched url, redirect to /dashboard
-  //$urlRouterProvider.otherwise({redirectTo: '/dashboard'});
 });
 
 
-//NavCtrl
+//McNavCtrl
 myControllerModule.controller('McNavBarCtrl', ['$scope', '$location', function($scope, $location) {
    $scope.isCollapsed = true;
     $scope.isActive = function (viewLocation) { 
@@ -267,9 +267,15 @@ myControllerModule.filter('byteToMBsizeConvertor', function() {
 });
 
 myControllerModule.value("about", {
-    timezone: '+0000',
-    timezoneString: 'GMT',
-    systemDate: '',
+    timezone: '-',
+    timezoneString: '-',
+    systemDate: '-',
     appVersion:'-',
     appName: '-'    
+});
+
+//FooterCtrl
+myControllerModule.controller('FooterCtrl', function($scope, about) {
+  //about, Timezone, etc.,
+  $scope.about = about;
 });
