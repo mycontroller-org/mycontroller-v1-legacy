@@ -165,14 +165,6 @@ config(function($stateProvider, $urlRouterProvider) {
   //$urlRouterProvider.otherwise({redirectTo: '/dashboard'});
 });
 
-//NavCtrl
-myControllerModule.controller('NavBarCtrl', ['$scope', '$location', function($scope, $location) {
-   $scope.isCollapsed = true;
-    $scope.isActive = function (viewLocation) { 
-        return viewLocation === $location.path();
-    };
-}]);
-
 
 myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about) {
   

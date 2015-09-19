@@ -16,154 +16,151 @@
 
 -->
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="myController" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="myController" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="myController" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="myController" class="no-js"> <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  
-  <title>MyController.org - The Open Source Controller</title>
-  
-  <link rel="icon" type="image/ico" href="images/favicon.ico"/>
-  
-  <!-- Application specific css -->
-  <link rel="stylesheet" src="app.css">
-  
-  <link rel="stylesheet" src="libs/html5-boilerplate/css/normalize.css">
-  <link rel="stylesheet" src="libs/html5-boilerplate/css/main.css">
+<html lang="en" ng-app="myController" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
 
-  
-  <!-- https://github.com/danielcrisp/angular-rangeslider -->
-  <link rel="stylesheet" href="libs/angular-rangeslider/angular.rangeSlider.css">
-  
-  <!-- https://github.com/isteven/angular-multi-select -->
-  <link rel="stylesheet" href="libs/angular-multi-select/isteven-multi-select.css">
-  
-  <!-- https://github.com/dalelotts/angular-bootstrap-datetimepicker -->
-  <link rel="stylesheet" href="libs/angular-bootstrap-datetimepicker/css/datetimepicker.css"/>
-    
-  <!-- Font awesome icons-->
-  <link href="libs/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="libs/font-mfizz-1.2/font-mfizz.css" rel="stylesheet">
-  
-  <!-- GUI theams -->
-  <link href="libs/bootswatch/yeti/bootstrap.min.css" rel="stylesheet">
-  <!-- <link href="https://bootswatch.com/yeti/bootstrap.min.css" rel="stylesheet" > -->
-  
-  <link rel="stylesheet" href="libs/nvd3/nv.d3.min.css">
-     
+    <title>MyController.org - The Open Source Controller</title>
 
-</head>
-<body>
-<style>
-body { padding-top: 13px; padding-bottom: 70px;}
-//body {padding-bottom: 70px;}
-.tick line { display: none; }
-</style>
-<nav class="navbar navbar-default navbar-fixed-top" ng-controller="NavBarCtrl">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" ng-init="isCollapsed = true" ng-click="isCollapsed = !isCollapsed">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="http://www.mycontroller.org"><b><img src="images/mc_logo.png"  height="25" width="24"</img> MyController.org</b></a>
+    <link rel="icon" type="image/ico" href="images/favicon.ico"/>
+
+    <!-- Application specific css -->
+    <link rel="stylesheet" src="app.css">
+
+    <link rel="stylesheet" src="libs/html5-boilerplate/css/normalize.css">
+    <link rel="stylesheet" src="libs/html5-boilerplate/css/main.css">
+
+
+    <!-- https://github.com/danielcrisp/angular-rangeslider -->
+    <link rel="stylesheet" href="libs/angular-rangeslider/angular.rangeSlider.css">
+
+    <!-- https://github.com/isteven/angular-multi-select -->
+    <link rel="stylesheet" href="libs/angular-multi-select/isteven-multi-select.css">
+
+    <!-- https://github.com/dalelotts/angular-bootstrap-datetimepicker -->
+    <link rel="stylesheet" href="libs/angular-bootstrap-datetimepicker/css/datetimepicker.css"/>
+  
+    <!-- Font awesome icons-->
+    <link href="libs/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="libs/font-mfizz-1.2/font-mfizz.css" rel="stylesheet">
+
+    <!-- GUI theams -->
+    <link href="libs/bootswatch/yeti/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="https://bootswatch.com/yeti/bootstrap.min.css" rel="stylesheet" > -->
+
+    <link rel="stylesheet" href="libs/nvd3/nv.d3.min.css">
+
+  </head>
+  <body>
+    <style>
+      body { padding-top: 13px; padding-bottom: 70px;}
+      //body {padding-bottom: 70px;}
+      .tick line { display: none; }
+    </style>
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mcMainMenu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://www.mycontroller.org"><b><img src="images/mc_logo.png"  height="25" width="24"</img> MyController.org</b></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="mcMainMenu">
+          <ul class="nav navbar-nav">
+            <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-bolt fa-lg"></i> Dashboard</a></li>
+            <li ng-class="{ active: isActive('/nodes')}"><a data-toggle="collapse" data-target="#mcMainMenu.in" href="#/nodes" ><i class="fa fa-sitemap fa-lg"></i> Nodes</a></li>
+            <li ng-class="{ active: isActive('/sensors')}"><a href="#/sensors" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-eye fa-lg"></i> Sensors</a></li>
+            <li ng-class="{ active: isActive('/sensorsaction')}"><a href="#/sensorsaction" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-magic fa-lg"></i> Action Board</a></li>
+            <li ng-class="{ active: isActive('/uidtag')}"><a href="#/uidtag" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-tags fa-lg"></i> UID Tag</a></li>
+            
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="">More <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li ng-class="{ active: isActive('/settings')}"><a href="#/settings" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-cogs fa-lg"></i> System Settings</a></li>
+                <li ng-class="{ active: isActive('/users')}"><a href="#/users" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-users fa-lg"></i> Users</a></li>
+                <li class="divider"></li>
+                <li ng-class="{ active: isActive('/firmwareType')}"><a href="#/firmwareType" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware Type</a></li>
+                <li ng-class="{ active: isActive('/firmwareVersion')}"><a href="#/firmwareVersion" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware Version</a></li>
+                <li ng-class="{ active: isActive('/firmware')}"><a href="#/firmware" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware</a></li>
+                <li class="divider"></li>
+                <li ng-class="{ active: isActive('/logs')}"><a href="#/logs" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-list fa-lg"></i> Logs</a></li>
+                <li ng-class="{ active: isActive('/status')}"><a href="#/status" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-heartbeat fa-lg"></i> System Status</a></li>
+              </ul>
+            </li>
+            
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="https://github.com/mycontroller-org"><i class="fa fa-github fa-lg"></i> Source</a></li>
+            <li ng-class="{ active: isActive('/login')}"><a href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-out fa-lg"></i> Log In/Out</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container-fluid">
+      <div ui-view ></div> 
     </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="navbar-collapse" ng-class="{collapse: isCollapsed}">
-      <ul class="nav navbar-nav">
-        <li><a href="#/dashboard"><i class="fa fa-bolt fa-lg"></i> Dashboard</a></li>
-        <li ng-class="{ active: isActive('/nodes')}"><a href="#/nodes" ><i class="fa fa-sitemap fa-lg"></i> Nodes</a></li>
-        <li ng-class="{ active: isActive('/sensors')}"><a href="#/sensors"><i class="fa fa-eye fa-lg"></i> Sensors</a></li>
-        <li ng-class="{ active: isActive('/sensorsaction')}"><a href="#/sensorsaction"><i class="fa fa-magic fa-lg"></i> Action Board</a></li>
-        <li ng-class="{ active: isActive('/uidtag')}"><a href="#/uidtag"><i class="fa fa-tags fa-lg"></i> UID Tag</a></li>
-        <li class="dropdown" ng-class="{ open : ddMore }" ng-init="ddMore = false" ng-click="ddMore = !ddMore">
-          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">More <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li ng-class="{ active: isActive('/settings')}"><a href="#/settings"><i class="fa fa-cogs fa-lg"></i> System Settings</a></li>
-            <li ng-class="{ active: isActive('/users')}"><a href="#/users"><i class="fa fa-users fa-lg"></i> Users</a></li>
-            <li class="divider"></li>
-            <li><a href="#/firmwareType"><i class="fa fa-flask fa-lg"></i> Firmware Type</a></li>
-            <li><a href="#/firmwareVersion"><i class="fa fa-flask fa-lg"></i> Firmware Version</a></li>
-            <li><a href="#/firmware"><i class="fa fa-flask fa-lg"></i> Firmware</a></li>
-            <li class="divider"></li>
-            <li><a href="#/logs"><i class="fa fa-list fa-lg"></i> Logs</a></li>
-            <li><a href="#/status"><i class="fa fa-heartbeat fa-lg"></i> System Status</a></li>
-          </ul>
-        </li>
-        
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="https://github.com/mycontroller-org"><i class="fa fa-github fa-lg"></i> Source</a></li>
-        <li><a href="#/login"><i class="fa fa-sign-out fa-lg"></i> Log In/Out</a></li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+    <!-- Footer -->
 
-  <div class="container-fluid">
-  <div ui-view ></div> 
-</div>
-
-<!-- Footer -->
-
-<nav class="navbar navbar-default navbar-fixed-bottom" >
-  <div class="container-fluid">
-<div class="pull-right"><p class="navbar-text">Copyright ©2015, All Rights Reserved</p></div>
-
-  </div>
-</nav>
-
-  <!-- Third party js-->
-  <script src="libs/jquery/jquery.min.js"></script>
-  <script src="libs/bootstrap/bootstrap.min.js"></script>
-  <script src="libs/angular/angular.min.js"></script>
-  <script src="libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-  <script src="libs/angular-ui-router/angular-ui-router.min.js"></script>
-  <script src="libs/at-table/angular-table.min.js"></script>
-  <script src="libs/angular-resource/angular-resource.min.js"></script>
-  <script src="libs/angular-ui-confirm/angular-ui-confirm.min.js"></script>
-  <script src="libs/angular-modal-service/angular-modal-service.min.js"></script>
-  <script src="libs/angular-base64/angular-base64.min.js"></script>
-  <script src="libs/remarkable-bootstrap-notify/bootstrap-notify.min.js"></script> 
-  <script src="libs/angular-cookies/angular-cookies.min.js"></script> 
-  <script src="libs/angular-rangeslider/angular.rangeSlider.js"></script> 
-  <script src="libs/angular-multi-select/isteven-multi-select.js"></script>  
-  <script src="libs/html5-boilerplate/modernizr-2.8.3.min.js"></script>
-  <script src="libs/moment/moment.min.js"></script>
-  <script src="libs/angular-bootstrap-datetimepicker/js/datetimepicker.js"></script>
-  <script src="libs/d3/d3.min.js"></script>
-  <script src="libs/nvd3/nv.d3.min.js"></script> <!-- or use another assembly -->
-  <script src="libs/angular-nvd3/angular-nvd3.min.js"></script>
-
-  <!-- Application js-->
-  <script src="app.js"></script>
-  <script src="services/alert_services.js"></script>
-  <script src="services/rest_services.js"></script>
-  <script src="services/authentication_services.js"></script>
-  <script src="controllers/dashboard.js"></script>
-  <script src="controllers/sensors.js"></script>
-  <script src="controllers/nodes.js"></script>
-  <script src="controllers/sensorsAction.js"></script>
-  <script src="controllers/charts.js"></script>
-  <script src="controllers/users.js"></script>
-  <script src="controllers/alarm.js"></script>
-  <script src="controllers/timer.js"></script>
-  <script src="controllers/settings.js"></script>
-  <script src="controllers/sensorLog.js"></script>
-  <script src="controllers/forwardPayload.js"></script>
-  <script src="controllers/uidTag.js"></script>
-  <script src="controllers/firmwares.js"></script>
-  <script src="controllers/firmwaresType.js"></script>
-  <script src="controllers/firmwaresVersion.js"></script>
-  <script src="controllers/status.js"></script>
+    <nav class="navbar navbar-default navbar-fixed-bottom" >
+      <div class="container-fluid">
+        <div class="pull-right"><p class="navbar-text">Copyright ©2015, All Rights Reserved</p></div>
+      </div>
+    </nav>
   
-</body>
+    <!-- Third party js-->
+    <script src="libs/jquery/jquery.min.js"></script>
+    <script src="libs/bootstrap/bootstrap.min.js"></script>
+    <script src="libs/angular/angular.min.js"></script>
+    <script src="libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="libs/angular-ui-router/angular-ui-router.min.js"></script>
+    <script src="libs/at-table/angular-table.min.js"></script>
+    <script src="libs/angular-resource/angular-resource.min.js"></script>
+    <script src="libs/angular-ui-confirm/angular-ui-confirm.min.js"></script>
+    <script src="libs/angular-modal-service/angular-modal-service.min.js"></script>
+    <script src="libs/angular-base64/angular-base64.min.js"></script>
+    <script src="libs/remarkable-bootstrap-notify/bootstrap-notify.min.js"></script> 
+    <script src="libs/angular-cookies/angular-cookies.min.js"></script> 
+    <script src="libs/angular-rangeslider/angular.rangeSlider.js"></script> 
+    <script src="libs/angular-multi-select/isteven-multi-select.js"></script>  
+    <script src="libs/html5-boilerplate/modernizr-2.8.3.min.js"></script>
+    <script src="libs/moment/moment.min.js"></script>
+    <script src="libs/angular-bootstrap-datetimepicker/js/datetimepicker.js"></script>
+    <script src="libs/d3/d3.min.js"></script>
+    <script src="libs/nvd3/nv.d3.min.js"></script> <!-- or use another assembly -->
+    <script src="libs/angular-nvd3/angular-nvd3.min.js"></script>
+  
+    <!-- Application js-->
+    <script src="app.js"></script>
+    <script src="services/alert_services.js"></script>
+    <script src="services/rest_services.js"></script>
+    <script src="services/authentication_services.js"></script>
+    <script src="controllers/dashboard.js"></script>
+    <script src="controllers/sensors.js"></script>
+    <script src="controllers/nodes.js"></script>
+    <script src="controllers/sensorsAction.js"></script>
+    <script src="controllers/charts.js"></script>
+    <script src="controllers/users.js"></script>
+    <script src="controllers/alarm.js"></script>
+    <script src="controllers/timer.js"></script>
+    <script src="controllers/settings.js"></script>
+    <script src="controllers/sensorLog.js"></script>
+    <script src="controllers/forwardPayload.js"></script>
+    <script src="controllers/uidTag.js"></script>
+    <script src="controllers/firmwares.js"></script>
+    <script src="controllers/firmwaresType.js"></script>
+    <script src="controllers/firmwaresVersion.js"></script>
+    <script src="controllers/status.js"></script>
+  
+  </body>
 </html>
