@@ -166,6 +166,14 @@ config(function($stateProvider, $urlRouterProvider) {
 });
 
 
+//NavCtrl
+myControllerModule.controller('McNavBarCtrl', ['$scope', '$location', function($scope, $location) {
+   $scope.isCollapsed = true;
+    $scope.isActive = function (viewLocation) { 
+        return viewLocation === $location.path();
+    };
+}]);
+
 myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about) {
   
   // keep user logged in after page refresh
