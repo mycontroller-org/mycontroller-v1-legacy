@@ -1,6 +1,8 @@
 image::logo-mycontroller.org_full.png[MyController.org, link="http://www.mycontroller.org"]
 :source-language: java, angularjs
 
+---
+
 ====== Project website: http://www.mycontroller.org
 ====== http://demo.mycontroller.org[Demo Link] Authentication: demo/demo
 
