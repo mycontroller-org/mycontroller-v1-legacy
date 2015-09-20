@@ -60,7 +60,11 @@ public class SchedulerUtils {
         //Load Timer jobs
         List<Timer> timers = DaoUtils.getTimerDao().getAllEnabled();
         for (Timer timer : timers) {
-            loadTimerJob(timer);
+            try {
+                loadTimerJob(timer);
+            } catch (Exception ex) {
+                _logger.error("Unable to load timer[{}]", timer, ex);
+            }
         }
     }
 
