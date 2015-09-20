@@ -84,8 +84,12 @@ public class SensorLogDaoImpl extends BaseAbstractDao<SensorLog, Integer> implem
                         .and().le("timestamp", sensorLog.getTimestamp())
                         .and().eq("logType", sensorLog.getLogType());
             } else {
-                deleteBuilder.where().le("timestamp", sensorLog.getTimestamp())
-                        .and().eq("logType", sensorLog.getLogType());
+                if (sensorLog.getLogType() != null) {
+                    deleteBuilder.where().le("timestamp", sensorLog.getTimestamp())
+                            .and().eq("logType", sensorLog.getLogType());
+                } else {
+                    deleteBuilder.where().le("timestamp", sensorLog.getTimestamp());
+                }
             }
 
             int deleteCount = deleteBuilder.delete();

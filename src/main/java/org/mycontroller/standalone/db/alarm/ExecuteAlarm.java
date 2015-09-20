@@ -181,7 +181,7 @@ public class ExecuteAlarm implements Runnable {
                         break;
                 }
             } else {
-                _logger.info("Special Operation:[{}]", specialOperation);
+                _logger.debug("Special Operation:[{}]", specialOperation);
                 switch (specialOperation.getOperationType()) {
                     case INVERT:
                         sendPayLoad.setPayLoad(String.valueOf(Double.valueOf(sensor.getLastValue()) > 0 ? 0 : 1));
