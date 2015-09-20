@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.db.alarm;
+package org.mycontroller.standalone.db;
 
-import org.mycontroller.standalone.db.AlarmUtils;
-import org.mycontroller.standalone.db.AlarmUtils.SEND_PAYLOAD_OPERATIONS;
+import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -25,9 +24,11 @@ import org.mycontroller.standalone.db.AlarmUtils.SEND_PAYLOAD_OPERATIONS;
 public class PayloadSpecialOperation {
 
     public PayloadSpecialOperation(String payload) {
-        this.operationType = AlarmUtils.SEND_PAYLOAD_OPERATIONS.findByValue(payload.toLowerCase());
+        this.operationType = PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS.findByValue(payload.toLowerCase());
         if (this.operationType == null) {
-            this.operationType = AlarmUtils.SEND_PAYLOAD_OPERATIONS.findByValue(payload.substring(0, 1).toLowerCase());
+            this.operationType = 
+                    PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS.findByValue(
+                    payload.substring(0, 1).toLowerCase());
             if (this.operationType != null) {
                 this.value = Double.valueOf(payload.substring(1));
             }

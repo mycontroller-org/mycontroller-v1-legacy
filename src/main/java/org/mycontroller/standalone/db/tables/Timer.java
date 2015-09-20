@@ -17,7 +17,10 @@ package org.mycontroller.standalone.db.tables;
 
 import java.util.List;
 
+import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.db.PayloadSpecialOperation;
 import org.mycontroller.standalone.db.TimerUtils;
+import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
 
 import com.j256.ormlite.field.DatabaseField;
 
@@ -201,12 +204,40 @@ public class Timer {
         this.payload = payload;
     }
 
+    public String getPayloadFormatted() {
+        StringBuilder builder = new StringBuilder();
+        PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(this.payload);
+        if (specialOperation.getOperationType() != null) {
+            if (specialOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.REBOOT) {
+                builder.append(" ").append(specialOperation.getOperationType().value());
+            } else {
+                if (specialOperation.getValue() != null) {
+                    builder.append(" {sen.value} ")
+                            .append(specialOperation.getOperationType().value())
+                            .append(" ")
+                            .append(NumericUtils.getDoubleAsString(specialOperation.getValue()));
+                } else {
+                    builder.append(" ")
+                            .append(specialOperation.getOperationType().value())
+                            .append(" {sen.value}");
+                }
+            }
+        } else {
+            builder.append(this.payload);
+        }
+        return builder.toString();
+    }
+
+    public void setPayloadFormatted(String payload) {
+        // To ignore JSON serialization
+    }
+
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Name:").append(name)
-                .append(", Type:").append(getTimerDataString())
-                .append(", Payload:").append(payload)
-                .append(", Validity:").append(getValidityString());
+                .append(", Type:").append(getTimerDataString());
+        builder.append(", PayLoad:").append(this.getPayloadFormatted());
+        builder.append(", Validity:").append(getValidityString());
         return builder.toString();
     }
 }

@@ -19,6 +19,8 @@ import java.text.DecimalFormat;
 
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.PayloadSpecialOperation;
+import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.tables.Sensor;
 
 /**
@@ -69,15 +71,19 @@ public class SendPayLoad {
         buffer.append("PayLoad:");
         PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(this.payLoad);
         if (specialOperation.getOperationType() != null) {
-            if (specialOperation.getValue() != null) {
-                buffer.append(" {sen.value} ")
-                        .append(specialOperation.getOperationType().value())
-                        .append(" ")
-                        .append(NumericUtils.getDoubleAsString(specialOperation.getValue()));
+            if (specialOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.REBOOT) {
+                buffer.append(" ").append(specialOperation.getOperationType().value());
             } else {
-                buffer.append(" ")
-                        .append(specialOperation.getOperationType().value())
-                        .append(" {sen.value}");
+                if (specialOperation.getValue() != null) {
+                    buffer.append(" {sen.value} ")
+                            .append(specialOperation.getOperationType().value())
+                            .append(" ")
+                            .append(NumericUtils.getDoubleAsString(specialOperation.getValue()));
+                } else {
+                    buffer.append(" ")
+                            .append(specialOperation.getOperationType().value())
+                            .append(" {sen.value}");
+                }
             }
         } else {
             buffer.append(this.payLoad);

@@ -16,18 +16,19 @@
 package org.mycontroller.standalone.db;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.User;
+import org.mycontroller.standalone.jobs.MidNightJob;
+import org.mycontroller.standalone.jobs.SensorLogAggregationJob;
+import org.mycontroller.standalone.jobs.metrics.MetricsFiveMinutesAggregationJob;
+import org.mycontroller.standalone.jobs.metrics.MetricsOneDayAggregationJob;
+import org.mycontroller.standalone.jobs.metrics.MetricsOneHourAggregationJob;
+import org.mycontroller.standalone.jobs.metrics.MetricsOneMinuteAggregationJob;
 import org.mycontroller.standalone.mysensors.MyMessages;
-import org.mycontroller.standalone.scheduler.jobs.MidNightJob;
-import org.mycontroller.standalone.scheduler.jobs.MetricsFiveMinutesAggregationJob;
-import org.mycontroller.standalone.scheduler.jobs.MetricsOneDayAggregationJob;
-import org.mycontroller.standalone.scheduler.jobs.MetricsOneHourAggregationJob;
-import org.mycontroller.standalone.scheduler.jobs.MetricsOneMinuteAggregationJob;
-import org.mycontroller.standalone.scheduler.jobs.SensorLogAggregationJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -202,17 +203,19 @@ public class DataBaseUtils {
             _logger.info("MC DB version[{}] upgraded to version[{}]", dbVersion, 1);
             dbVersion = 1;
         }
-        if (dbVersion < 2) {
-            upgradeVersion("0.0.2-alpha1", dbVersion, dbVersion + 1);
-            dbVersion++;
-        }
-        if (dbVersion < 3) {
-            upgradeVersion("0.0.2-alpha2", dbVersion, dbVersion + 1);
-            dbVersion++;
-        }
-        if (dbVersion < 4) {
-            upgradeVersion("0.0.2-alpha3", dbVersion, dbVersion + 1);
-            dbVersion++;
+        if (dbVersion < 5) {
+            List<SystemJob> systemJobs = DaoUtils.getSystemJobDao().getAll();
+            for (SystemJob systemJob : systemJobs) {
+                systemJob.setClassName(systemJob.getClassName().replaceAll(
+                        "org.mycontroller.standalone.scheduler.jobs.Metrics",
+                        "org.mycontroller.standalone.jobs.metrics.Metrics"));
+                systemJob.setClassName(systemJob.getClassName().replaceAll(
+                        "org.mycontroller.standalone.scheduler.jobs",
+                        "org.mycontroller.standalone.jobs"));
+                DaoUtils.getSystemJobDao().update(systemJob);
+            }
+            upgradeVersion("0.0.2-alpha4", dbVersion, dbVersion + 1);
+            dbVersion = 5;
         }
     }
 

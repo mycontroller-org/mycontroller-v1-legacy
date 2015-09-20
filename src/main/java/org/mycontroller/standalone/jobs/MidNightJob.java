@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.scheduler.jobs;
+package org.mycontroller.standalone.jobs;
 
-import org.mycontroller.standalone.db.AGGREGATION_TYPE;
+import org.mycontroller.standalone.db.TimerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,14 +26,20 @@ import com.xeiam.sundial.exceptions.JobInterruptException;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class MetricsOneMinuteAggregationJob extends Job {
-    private static final Logger _logger = LoggerFactory.getLogger(MetricsOneMinuteAggregationJob.class.getName());
+public class MidNightJob extends Job {
+    private static final Logger _logger = LoggerFactory.getLogger(MidNightJob.class);
+
+    private void updateSunriseSunset() {
+        try {
+            TimerUtils.updateSunriseSunset();
+        } catch (Exception ex) {
+            _logger.error("Failed to update sunrise/sunsettime", ex);
+        }
+    }
 
     @Override
     public void doRun() throws JobInterruptException {
-        _logger.debug("One Minute Aggregation job triggered");
-        //Do Aggregation for last one minute and purge
-        new MetricsAggregationBase(AGGREGATION_TYPE.ONE_MINUTE).runAggregate();
-        _logger.debug("One Minute Aggregation job completed");
+        updateSunriseSunset();
     }
+
 }

@@ -23,7 +23,7 @@ import java.util.TimeZone;
 
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.scheduler.jobs.ManageSunRiseSetJobs;
+import org.mycontroller.standalone.jobs.ManageSunRiseSetJobs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -212,12 +212,14 @@ public class TimerUtils {
     public static String getValidityString(Timer timer) {
         StringBuilder stringBuilder = new StringBuilder();
         if (timer.getValidFrom() != null && timer.getValidTo() != null) {
-            stringBuilder.append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidFrom())));
+            stringBuilder
+                    .append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidFrom())));
             stringBuilder.append(" ~ ");
             stringBuilder.append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidTo())));
         } else if (timer.getValidFrom() != null) {
             stringBuilder.append("From ");
-            stringBuilder.append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidFrom())));
+            stringBuilder
+                    .append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidFrom())));
         } else if (timer.getValidTo() != null) {
             stringBuilder.append("Till ");
             stringBuilder.append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidTo())));

@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.scheduler.jobs;
+package org.mycontroller.standalone.jobs.timer;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.PayloadSpecialOperation;
+import org.mycontroller.standalone.db.PayloadSpecialOperationUtils;
 import org.mycontroller.standalone.db.SensorLogUtils;
+import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.slf4j.Logger;
@@ -39,14 +43,37 @@ public class TimerJob extends Job {
 
     private void executeTimer(Timer timer) {
         Sensor sensor = DaoUtils.getSensorDao().get(timer.getSensor().getId());
-        RawMessage rawMessage = new RawMessage(
-                sensor.getNode().getId(),
-                sensor.getSensorId(),
-                MESSAGE_TYPE.C_SET.ordinal(), //messageType
-                0, //ack
-                sensor.getMessageType(),//subType
-                timer.getPayload(),
-                true);// isTxMessage
+        String payload = null;
+
+        PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(timer.getPayload());
+        if (specialOperation.getOperationType() != null) {
+            payload = PayloadSpecialOperationUtils.getPayload(specialOperation, sensor.getLastValue());
+        } else {
+            payload = timer.getPayload();
+        }
+
+        RawMessage rawMessage = null;
+        if (specialOperation.getOperationType() != null
+                && specialOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.REBOOT) {
+            rawMessage = new RawMessage(
+                    sensor.getNode().getId(),
+                    255,
+                    MESSAGE_TYPE.C_INTERNAL.ordinal(), //messageType
+                    0, //ack
+                    MESSAGE_TYPE_INTERNAL.I_REBOOT.ordinal(),//subType
+                    "",
+                    true);// isTxMessage
+        } else {
+            rawMessage = new RawMessage(
+                    sensor.getNode().getId(),
+                    sensor.getSensorId(),
+                    MESSAGE_TYPE.C_SET.ordinal(), //messageType
+                    0, //ack
+                    sensor.getMessageType(),//subType
+                    payload,
+                    true);// isTxMessage
+        }
+
         ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
     }
 

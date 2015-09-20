@@ -35,8 +35,8 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.jobs.metrics.MetricsAggregationBase;
 import org.mycontroller.standalone.mysensors.MyMessages;
-import org.mycontroller.standalone.scheduler.jobs.MetricsAggregationBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

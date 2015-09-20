@@ -24,11 +24,15 @@ import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.AlarmUtils;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.PayloadSpecialOperation;
+import org.mycontroller.standalone.db.PayloadSpecialOperationUtils;
+import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.SensorLogUtils;
 import org.mycontroller.standalone.db.tables.Alarm;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.mysensors.MyMessages;
 import org.mycontroller.standalone.mysensors.RawMessage;
@@ -161,11 +165,12 @@ public class ExecuteAlarm implements Runnable {
     private void alarmSendPayLoad(Alarm alarm) {
         SendPayLoad sendPayLoad = AlarmUtils.getSendPayLoad(alarm);
         Sensor sensor = DaoUtils.getSensorDao().get(sendPayLoad.getSensorRefId());
+        PayloadSpecialOperation specialOperation = null;
         _logger.debug("Sesnor: ", sensor);
         boolean checkPreviosValue = false;
         if (sensor != null) {
             String modifiedPayLoad = sendPayLoad.getPayLoad();
-            PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(sendPayLoad.getPayLoad());
+            specialOperation = new PayloadSpecialOperation(sendPayLoad.getPayLoad());
             if (specialOperation.getOperationType() == null) {
                 checkPreviosValue = true;
                 switch (MyMessages.getPayLoadType(MESSAGE_TYPE_SET_REQ.get(sensor.getMessageType()))) {
@@ -182,35 +187,8 @@ public class ExecuteAlarm implements Runnable {
                 }
             } else {
                 _logger.debug("Special Operation:[{}]", specialOperation);
-                switch (specialOperation.getOperationType()) {
-                    case INVERT:
-                        sendPayLoad.setPayLoad(String.valueOf(Double.valueOf(sensor.getLastValue()) > 0 ? 0 : 1));
-                        break;
-                    case INCREMENT:
-                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) + 1);
-                        break;
-                    case DECREMENT:
-                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) - 1);
-                        break;
-                    case ADD:
-                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) + specialOperation.getValue());
-                        break;
-                    case SUBTRACT:
-                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) - specialOperation.getValue());
-                        break;
-                    case MULTIPLIE:
-                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) * specialOperation.getValue());
-                        break;
-                    case DIVIDE:
-                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) / specialOperation.getValue());
-                        break;
-                    case MODULUS:
-                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) % specialOperation.getValue());
-                        break;
-                    default:
-                        _logger.warn("Selected Operation not implemented:[{}]", specialOperation);
-                        break;
-                }
+                sendPayLoad
+                        .setPayLoad(PayloadSpecialOperationUtils.getPayload(specialOperation, sensor.getLastValue()));
             }
             _logger.debug("Original Payload:{}, Modified Payload:{}", sendPayLoad.getPayLoad(), modifiedPayLoad);
             if (modifiedPayLoad.equals(sensor.getStatus()) && checkPreviosValue) {
@@ -218,14 +196,28 @@ public class ExecuteAlarm implements Runnable {
                 return;
             }
         }
-        RawMessage rawMessage = new RawMessage(
-                sensor.getNode().getId(),
-                sensor.getSensorId(),
-                MESSAGE_TYPE.C_SET.ordinal(), //messageType
-                0, //ack
-                sensor.getMessageType(),//subType
-                sendPayLoad.getPayLoad(),
-                true);// isTxMessage
+
+        RawMessage rawMessage;
+        if (specialOperation.getOperationType() != null
+                && specialOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.REBOOT) {
+            rawMessage = new RawMessage(
+                    sensor.getNode().getId(),
+                    255,
+                    MESSAGE_TYPE.C_INTERNAL.ordinal(), //messageType
+                    0, //ack
+                    MESSAGE_TYPE_INTERNAL.I_REBOOT.ordinal(),//subType
+                    "",
+                    true);// isTxMessage
+        } else {
+            rawMessage = new RawMessage(
+                    sensor.getNode().getId(),
+                    sensor.getSensorId(),
+                    MESSAGE_TYPE.C_SET.ordinal(), //messageType
+                    0, //ack
+                    sensor.getMessageType(),//subType
+                    sendPayLoad.getPayLoad(),
+                    true);// isTxMessage
+        }
         ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
     }
 

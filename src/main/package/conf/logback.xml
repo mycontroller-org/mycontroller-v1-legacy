@@ -49,7 +49,7 @@
   <logger level="INFO" name="org.mycontroller.standalone"/>
   <logger level="INFO" name="org.mycontroller.standalone.mysensors"/>
   <logger level="INFO" name="org.mycontroller.standalone.scheduler"/>
-  <logger level="INFO" name="org.mycontroller.standalone.scheduler.jobs"/>
+  <logger level="INFO" name="org.mycontroller.standalone.jobs"/>
   <logger level="INFO" name="org.mycontroller.standalone.db"/>
   <logger level="INFO" name="org.mycontroller.standalone.db.alarm"/>
   <logger level="INFO" name="org.mycontroller.standalone.db.TimerUtils"/>

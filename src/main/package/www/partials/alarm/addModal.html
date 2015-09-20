@@ -111,7 +111,7 @@
     <div class="form-group" ng-show="alarm.type == 0">
       <label class="control-label col-sm-3" for="alarm.variable2">Pay Load:</label>
       <div class="col-sm-6">          
-        <input type="text" class="form-control" id="alarm.variable2" placeholder="Payload" ng-model="alarm.variable2">
+        <input type="text" tooltip-html="htmlTooltipSplOper" tooltip-class="customClass" tooltip-placement="top" class="form-control" id="alarm.variable2" placeholder="Payload" ng-model="alarm.variable2">
       </div>
     </div>
    
@@ -123,3 +123,15 @@
   </div>
 </div>
 
+
+<style>
+    /* Specify styling for tooltip contents */
+    .tooltip.customClass .tooltip-inner {
+        min-width: 450px; 
+        text-align: left;
+    }
+    /* Hide arrow */
+    .tooltip.customClass .tooltip-arrow {
+        display: none;
+    }
+</style>
