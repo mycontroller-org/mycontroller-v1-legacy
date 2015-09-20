@@ -24,6 +24,10 @@ import java.math.RoundingMode;
  */
 public class NumericUtils {
     public static final int DOUBLE_ROUND = 3;
+    public static final long SECOND = 1000;
+    public static final long MINUTE = SECOND * 60;
+    public static final long HOUR = MINUTE * 60;
+    public static final long DAY = HOUR * 24;
 
     private NumericUtils() {
 

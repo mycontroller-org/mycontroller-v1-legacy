@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.scheduler.jobs;
 
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.SensorLogUtils.LOG_TYPE;
 import org.mycontroller.standalone.db.tables.SensorLog;
@@ -30,10 +31,11 @@ import com.xeiam.sundial.exceptions.JobInterruptException;
  */
 public class SensorLogAggregationJob extends Job {
     private static final Logger _logger = LoggerFactory.getLogger(SensorLogAggregationJob.class.getName());
-    private static final long TRUNCATE_ALARM_LOG_BEFORE = 1000 * 60 * 60 * 18;
-    private static final long TRUNCATE_SENSOR_LOG_BEFORE = 1000 * 60 * 30;
-    private static final long TRUNCATE_SENSOR_LOG_OTHERS_BEFORE = 1000 * 60 * 60 * 3;
-    private static final long TRUNCATE_TIMER_LOG_BEFORE = 1000 * 60 * 60 * 18;
+    private static final long TRUNCATE_SENSOR_LOG_BEFORE = NumericUtils.MINUTE * 30;
+    private static final long TRUNCATE_SENSOR_LOG_OTHERS_BEFORE = NumericUtils.MINUTE * 30;
+    private static final long TRUNCATE_ALARM_LOG_BEFORE = NumericUtils.HOUR * 12;
+    private static final long TRUNCATE_TIMER_LOG_BEFORE = NumericUtils.HOUR * 12;
+    private static final long TRUNCATE_ALL_OTHERS = NumericUtils.DAY * 3;
 
     private void truncateSensorLogs() {
         SensorLog sensorLog = new SensorLog();
@@ -64,11 +66,14 @@ public class SensorLogAggregationJob extends Job {
         DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
 
         //Truncate Scheduler related logs
-        sensorLog.setLogType(LOG_TYPE.ALARM.ordinal());
+        sensorLog.setLogType(LOG_TYPE.TIMER.ordinal());
         sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_TIMER_LOG_BEFORE);
         DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
-        
-        //TODO: Remove other logs which is not listed here
+
+        //Remove other logs which is not listed here
+        sensorLog.setLogType(null);
+        sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_ALL_OTHERS);
+        DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
     }
 
     @Override
