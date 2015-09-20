@@ -23,7 +23,6 @@ import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.AlarmUtils;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
-import org.mycontroller.standalone.db.AlarmUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.SensorLogUtils;
 import org.mycontroller.standalone.db.tables.Alarm;
@@ -166,9 +165,8 @@ public class ExecuteAlarm implements Runnable {
         boolean checkPreviosValue = false;
         if (sensor != null) {
             String modifiedPayLoad = sendPayLoad.getPayLoad();
-            SEND_PAYLOAD_OPERATIONS OperationType = AlarmUtils.SEND_PAYLOAD_OPERATIONS.findByValue(sendPayLoad
-                    .getPayLoad().toLowerCase());
-            if (OperationType == null) {
+            PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(sendPayLoad.getPayLoad());
+            if (specialOperation.getOperationType() == null) {
                 checkPreviosValue = true;
                 switch (MyMessages.getPayLoadType(MESSAGE_TYPE_SET_REQ.get(sensor.getMessageType()))) {
                     case PL_BOOLEAN:
@@ -183,22 +181,37 @@ public class ExecuteAlarm implements Runnable {
                         break;
                 }
             } else {
-                switch (OperationType) {
+                _logger.info("Special Operation:[{}]", specialOperation);
+                switch (specialOperation.getOperationType()) {
                     case INVERT:
                         sendPayLoad.setPayLoad(String.valueOf(Double.valueOf(sensor.getLastValue()) > 0 ? 0 : 1));
                         break;
                     case INCREMENT:
-                        sendPayLoad.setPayLoad(String.valueOf(Double.valueOf(sensor.getLastValue()) + 1));
+                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) + 1);
                         break;
                     case DECREMENT:
-                        sendPayLoad.setPayLoad(String.valueOf(Double.valueOf(sensor.getLastValue()) - 1));
+                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) - 1);
+                        break;
+                    case ADD:
+                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) + specialOperation.getValue());
+                        break;
+                    case SUBTRACT:
+                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) - specialOperation.getValue());
+                        break;
+                    case MULTIPLIE:
+                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) * specialOperation.getValue());
+                        break;
+                    case DIVIDE:
+                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) / specialOperation.getValue());
+                        break;
+                    case MODULUS:
+                        sendPayLoad.setPayLoad(Double.valueOf(sensor.getLastValue()) % specialOperation.getValue());
                         break;
                     default:
-                        _logger.warn("Selected Operation not implemented:[{}]", OperationType.value());
+                        _logger.warn("Selected Operation not implemented:[{}]", specialOperation);
                         break;
                 }
             }
-
             _logger.debug("Original Payload:{}, Modified Payload:{}", sendPayLoad.getPayLoad(), modifiedPayLoad);
             if (modifiedPayLoad.equals(sensor.getStatus()) && checkPreviosValue) {
                 _logger.debug("Already destination with the same payload. Skipped...Destination[{}]", sendPayLoad);

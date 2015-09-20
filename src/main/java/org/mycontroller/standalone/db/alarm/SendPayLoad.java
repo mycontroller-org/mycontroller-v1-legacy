@@ -15,6 +15,9 @@
  */
 package org.mycontroller.standalone.db.alarm;
 
+import java.text.DecimalFormat;
+
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Sensor;
 
@@ -23,6 +26,7 @@ import org.mycontroller.standalone.db.tables.Sensor;
  * @since 0.0.1
  */
 public class SendPayLoad {
+    public DecimalFormat decimalFormat = new DecimalFormat("#.####");
     private Integer sensorRefId;
     private String payLoad;
 
@@ -51,14 +55,33 @@ public class SendPayLoad {
         this.payLoad = payLoad;
     }
 
+    public void setPayLoad(Double payLoad) {
+        this.payLoad = decimalFormat.format(payLoad);
+    }
+
     public String toString() {
         Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
         StringBuffer buffer = new StringBuffer();
         buffer.append("Node: ").append(sensor.getNameWithNode());
         buffer.append("[Nid:").append(sensor.getNode().getId())
                 .append(",Sid:").append(sensor.getSensorId()).append("], ");
-        buffer.append("PayLoad:").append(this.payLoad);
+
+        buffer.append("PayLoad:");
+        PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(this.payLoad);
+        if (specialOperation.getOperationType() != null) {
+            if (specialOperation.getValue() != null) {
+                buffer.append(" {sen.value} ")
+                        .append(specialOperation.getOperationType().value())
+                        .append(" ")
+                        .append(NumericUtils.getDoubleAsString(specialOperation.getValue()));
+            } else {
+                buffer.append(" ")
+                        .append(specialOperation.getOperationType().value())
+                        .append(" {sen.value}");
+            }
+        } else {
+            buffer.append(this.payLoad);
+        }
         return buffer.toString();
     }
-
 }

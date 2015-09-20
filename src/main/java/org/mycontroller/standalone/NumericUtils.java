@@ -37,9 +37,17 @@ public class NumericUtils {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
-    
-    public static Double getDouble(String value){
+
+    public static Double getDouble(String value) {
         return round(Double.valueOf(value), DOUBLE_ROUND);
+    }
+
+    public static String getDoubleAsString(double value) {
+        if (value % 1 != 0) {
+            return String.valueOf(value);
+        } else {
+            return String.valueOf((int) value);
+        }
     }
 
 }
