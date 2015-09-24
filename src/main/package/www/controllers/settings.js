@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsController', function(alertService,
-$scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestError, about) {
+$scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestError, about, TypesFactory) {
   
   $scope.config = {
     itemsPerPage: 100,
@@ -61,7 +61,14 @@ $scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestEr
                     },function(error){
                       displayRestError.display(error);            
                     });
-  
+
+  //settings Graph List
+   $scope.settingsGraphList = SettingsFactory.getGraph(function(response) {
+                    },function(error){
+                      displayRestError.display(error);            
+                    });                    
+                    
+ 
   //Update settings
   $scope.update = function (settings, size) {
     var editModalInstance = $modal.open({
@@ -74,11 +81,6 @@ $scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestEr
     editModalInstance.result.then(function (updateSettings) {
       SettingsFactory.update(updateSettings,function(response) {
         alertService.success("Updated ["+settings.frindlyName+"]");
-        //Update display table
-        $scope.orgList = SettingsFactory.getAll( function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
       $scope.filteredList = $scope.orgList;
       },function(error){
         displayRestError.display(error);            
@@ -95,7 +97,11 @@ myControllerModule.controller('SSMupdateController', function ($scope, $modalIns
   $scope.header = "Update Settings : "+settings.frindlyName;
   if(settings.key == 'default_firmware'){
     $scope.firmwares = FirmwaresFactory.getAllFirmwares();
-  }
+  }else if(settings.key == 'graph_interpolate_type'){
+    //GraphInterpolateTypes
+    $scope.graphInterpolateTypes = TypesFactory.getGraphInterpolateTypes();
+  } 
+  
   $scope.update = function() {$modalInstance.close(settings);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

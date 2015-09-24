@@ -141,4 +141,20 @@ public class TypesUtils {
         }
         return typesIdNameMappers;
     }
+
+    public static ArrayList<String> getGraphInterpolateTypes() {
+        ArrayList<String> types = new ArrayList<String>();
+        types.add("linear");
+        types.add("basis");
+        types.add("cardinal");
+        types.add("monotone");
+        types.add("bundle");
+        types.add("step-before");
+        types.add("step-after");
+        types.add("basis-open");
+        types.add("basis-closed");
+        types.add("cardinal-open");
+        types.add("cardinal-closed");
+        return types;
+    }
 }

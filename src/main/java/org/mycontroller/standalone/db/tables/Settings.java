@@ -50,11 +50,12 @@ public class Settings {
     public static final String SMS_AUTH_ID = "sms_auth_id";
     public static final String SMS_AUTH_TOKEN = "sms_auth_token";
     public static final String SMS_FROM_PHONE_NUMBER = "sms_from_phone_number";
-    
+
     public static final String SERIALPORT_NAME = "serialport_name";
     public static final String SERIALPORT_BAUD_RATE = "serialport_baud_rate";
     public static final String SERIALPORT_DRIVER_TYPE = "serialport_driver_type";
-        
+
+    public static final String GRAPH_INTERPOLATE_TYPE = "graph_interpolate_type";
 
     public Settings() {
 

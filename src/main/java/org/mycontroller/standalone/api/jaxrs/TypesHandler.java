@@ -56,7 +56,7 @@ public class TypesHandler {
     public Response getNodeTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getNodeTypes());
     }
-    
+
     @GET
     @Path("/roles")
     public Response getUserRoles() {
@@ -109,5 +109,11 @@ public class TypesHandler {
     @Path("/sensors/{nodeId}")
     public Response getSensors(@PathParam("nodeId") int nodeId) {
         return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(nodeId));
+    }
+
+    @GET
+    @Path("/graphInterpolate")
+    public Response getGraphInterpolateTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGraphInterpolateTypes());
     }
 }

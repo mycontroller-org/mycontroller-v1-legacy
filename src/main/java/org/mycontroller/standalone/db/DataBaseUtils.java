@@ -214,6 +214,10 @@ public class DataBaseUtils {
                         "org.mycontroller.standalone.jobs"));
                 DaoUtils.getSystemJobDao().update(systemJob);
             }
+
+            //Add Line chart default interpolate type
+            settings = new Settings(Settings.GRAPH_INTERPOLATE_TYPE, "linear", "Interpolate Type", true);
+            DaoUtils.getSettingsDao().create(settings);
             upgradeVersion("0.0.2-alpha4", dbVersion, dbVersion + 1);
             dbVersion = 5;
         }

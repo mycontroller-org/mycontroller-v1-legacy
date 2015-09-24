@@ -77,7 +77,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getSensors:  { method: 'GET', isArray: true, params: {type: 'sensors'} },
     getTimerTypes:  { method: 'GET', isArray: true, params: {type: 'timerTypes'}  },
     getTimerFrequencies:  { method: 'GET', isArray: true, params: {type: 'timerFrequencies'}  },
-    getTimerDays:  { method: 'GET', isArray: true, params: {type: 'timerDays'}  }
+    getTimerDays:  { method: 'GET', isArray: true, params: {type: 'timerDays'}  },
+    getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  }
   })
 });
 
@@ -210,13 +211,15 @@ myControllerModule.factory('SensorLogFactory', function ($resource) {
 
 //MyController Settings Services
 myControllerModule.factory('SettingsFactory', function ($resource) {
-  return $resource('/mc/rest/settings/:type', {}, {
+  return $resource('/mc/rest/settings/:type/:key_', {key_: '@key_'}, {
     getSunriseSunset: { method: 'GET', isArray: true, params: {type:'sunriseSunset'} },
     getNodeDefaults: { method: 'GET', isArray: true, params: {type:'nodeDefaults'} },
     getEmail: { method: 'GET', isArray: true, params: {type:'email'} },
     getSMS: { method: 'GET', isArray: true, params: {type:'sms'} },
     getVersion: { method: 'GET', isArray: true, params: {type:'version'} },
     getUnits: { method: 'GET', isArray: true, params: {type:'units'} },
+    getGraph: { method: 'GET', isArray: true, params: {type:'graph'} },
+    get: { method: 'GET', isArray: false, params: {type:'settings'} },
     update: { method: 'PUT'}
   })
 });

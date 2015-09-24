@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory, about, $filter) {
+myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory) {
   
   //http://krispo.github.io/angular-nvd3
+  //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
     var chartOptions = {
             chart: {
                 type: 'lineChart',
@@ -58,19 +59,22 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
         };
         
   
+  //Get Chart Interpolate Type
+  $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
+  
   $scope.sensor = MetricsFactory.sensorData({"sensorId":$stateParams.sensorId}, function(response) {
                     },function(error){
                       displayRestError.display(error);            
                     });
   //about, Timezone, etc.,
-  $scope.about = about;                    
+  $scope.about = about;     
   
   $scope.sensor.$promise.then(function (sensor) {
     $scope.sensor = sensor;
     if($scope.sensor.metricType === 0){
     var yAxisD3Format=',.2f';
     var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
-    var chartInterpolate='linear';//cardinal
+    var chartInterpolate= $scope.interpolateType.value;//cardinal
     var lastOneHourDateFormat = 'HH:mm'; //https://docs.angularjs.org/api/ng/filter/date
     var last24HoursDateFormat = 'HH:mm';
     var last30DaysDateFormat = 'dd-MMM HH:mm';

@@ -112,4 +112,11 @@ public class SettingsUtils {
         }
         return settings;
     }
+
+    public static List<Settings> getGraphSettings() {
+        ArrayList<String> keys = new ArrayList<String>();
+        keys.add(Settings.GRAPH_INTERPOLATE_TYPE);
+        List<Settings> settings = DaoUtils.getSettingsDao().get(keys);
+        return settings;
+    }
 }

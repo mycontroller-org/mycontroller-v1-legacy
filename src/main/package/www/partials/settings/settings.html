@@ -92,6 +92,23 @@
           <td class="text-center" ng-hide="item.userEditable" class="col-md-2"></td>
 				</tr>
 			</tbody>
+		</table>   
+    
+  <div class="page-header">
+    <h4><i class="fa fa-line-chart"></i> Graphs:</h4>
+  </div>
+  <table class="table table-hover table-bordered table-striped" at-table at-paginated 
+	  at-list="settingsGraphList" at-config="config">
+			<tbody>
+	      <tr>
+					<td at-implicit at-sortable at-attribute="frindlyName" at-title="Name" class="col-md-3"></td>
+          <td at-implicit at-sortable at-attribute="value" class="col-md-7"></td>
+					<td class="text-center" ng-show="item.userEditable" class="col-md-2">
+						<a href='' ng-click="update(item)" class="text-primary" tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
+					</td>
+          <td class="text-center" ng-hide="item.userEditable" class="col-md-2"></td>
+				</tr>
+			</tbody>
 		</table>    
     
   <div class="page-header">

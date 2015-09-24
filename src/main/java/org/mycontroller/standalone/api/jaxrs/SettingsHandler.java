@@ -24,6 +24,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -118,4 +119,18 @@ public class SettingsHandler {
     public Response getUnits() {
         return RestUtils.getResponse(Status.OK, SettingsUtils.getDisplayUnits());
     }
+
+    @GET
+    @Path("/graph")
+    public Response getGraph() {
+        return RestUtils.getResponse(Status.OK, SettingsUtils.getGraphSettings());
+    }
+
+    @GET
+    @Path("/settings/{key}")
+    public Response getSettings(@PathParam("key") String key) {
+        Settings settings = DaoUtils.getSettingsDao().get(key);
+        return RestUtils.getResponse(Status.OK, settings);
+    }
+
 }
