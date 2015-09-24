@@ -170,6 +170,26 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
+  
+  //Node Discover
+  $scope.discover = function (size) {
+    var addModalInstance = $modal.open({
+    templateUrl: 'partials/nodes/discoverModal.html',
+    controller: 'NMdiscoverController',
+    size: size
+    });
+
+    addModalInstance.result.then(function (node) {
+      NodesFactory.discover(function(response) {
+        alertService.success("Node Discover initiated successfully");
+      },function(error){
+        displayRestError.display(error);            
+      });      
+    }), 
+    function () {
+    }
+  };
+  
 });
 
 
@@ -225,5 +245,16 @@ myControllerModule.controller('NMeraseEepromController', function ($scope, $moda
     +"<br>Click 'Erase EEPROM' to proceed further."
     +"<br><I>Node: </I>[id:"+node.id+",name:"+node.name +",type:"+node.typeString+"]");
   $scope.eraseEeprom = function() {$modalInstance.close($scope.node); };
+  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
+});
+
+//Discover Modal
+myControllerModule.controller('NMdiscoverController', function ($scope, $modalInstance, $sce) {
+  $scope.header = "Node Discover Util";
+  $scope.discoverMsg = $sce.trustAsHtml("<b>Warning!</b> You are about trigger Node Discover util"
+    +"<br>This util will send REBOOT message for all the nodes (id: 1 to 254)"
+    +"<br>Node REBOOT may cause issues on your production setup"
+    +"<br>Click 'Discover' to proceed further");
+  $scope.discover = function() {$modalInstance.close(); };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

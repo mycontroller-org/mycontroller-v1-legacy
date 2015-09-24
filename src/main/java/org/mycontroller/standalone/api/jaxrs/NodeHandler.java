@@ -38,6 +38,7 @@ import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
+import org.mycontroller.standalone.mysensors.NodeDiscover;
 import org.mycontroller.standalone.mysensors.RawMessage;
 
 /**
@@ -102,6 +103,21 @@ public class NodeHandler {
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST,
                     new ApiError("Selected Node not available! Node:[" + node.toString() + "]"));
+        }
+    }
+
+    @POST
+    @Path("/nodeDiscover")
+    public Response executeNodeDiscover() {
+        if (NodeDiscover.isDiscoverNodesRunning()) {
+            return RestUtils.getResponse(Status.FORBIDDEN, new ApiError("Node Discover util is already running!"));
+        } else {
+            try {
+                new Thread(new NodeDiscover()).start();
+                return RestUtils.getResponse(Status.OK, new ApiError("Node Discover util completed successfully"));
+            } catch (Exception ex) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+            }
         }
     }
 

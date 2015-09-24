@@ -37,7 +37,8 @@ myControllerModule.factory('NodesFactory', function ($resource) {
     create: { method: 'POST'},
     update: { method: 'PUT' },
     delete: { method: 'DELETE' },
-    reboot: { method: 'POST', params: {nodeId: 'reboot'}}
+    reboot: { method: 'POST', params: {nodeId: 'reboot'}},
+    discover: { method: 'POST', params: {nodeId: 'nodeDiscover'}}
   })
 });
 
