@@ -46,14 +46,14 @@
     <div class="form-group">
       <label class="control-label col-sm-3" for="sensor.type">Sensor Type:</label>
       <div class="col-sm-6">
-        <select class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes" ng-model="sensor.type" required></select>
+        <select class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes | orderBy:'displayName'" ng-model="sensor.type" required></select>
       </div>
     </div>
     
     <div class="form-group">
       <label class="control-label col-sm-3" for="sensor.messageType">Variable Type:</label>
       <div class="col-sm-6">
-        <select class="form-control" ng-options="sensorValueType.id as sensorValueType.displayName for sensorValueType in sensorValueTypes" ng-model="sensor.messageType" required></select>
+        <select class="form-control" ng-options="sensorValueType.id as sensorValueType.displayName for sensorValueType in sensorValueTypes | orderBy:'displayName'" ng-model="sensor.messageType" required></select>
       </div>
     </div>
     
