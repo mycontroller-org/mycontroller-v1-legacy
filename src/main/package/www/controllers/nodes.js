@@ -190,7 +190,7 @@ myControllerModule.controller('NMdeleteController', function ($scope, $modalInst
 myControllerModule.controller('NMaddController', function ($scope, $modalInstance, TypesFactory, FirmwaresFactory) {
   $scope.node = {};
   $scope.header = "Add Node";
-  $scope.sensorTypes = TypesFactory.getSensorTypes();
+  $scope.nodeTypes = TypesFactory.getNodeTypes();
   $scope.add = function() {$modalInstance.close($scope.node); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
@@ -198,7 +198,7 @@ myControllerModule.controller('NMaddController', function ($scope, $modalInstanc
 myControllerModule.controller('NMupdateController', function ($scope, $modalInstance, node, TypesFactory, FirmwaresFactory) {
   $scope.node = node;
   $scope.header = "Update Node";
-  $scope.sensorTypes = TypesFactory.getSensorTypes();
+  $scope.nodeTypes = TypesFactory.getNodeTypes();
   $scope.firmwares = FirmwaresFactory.getAllFirmwares();
   $scope.update = function() {$modalInstance.close($scope.node);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }

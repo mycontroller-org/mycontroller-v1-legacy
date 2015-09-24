@@ -57,6 +57,17 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
+    public static ArrayList<TypesIdNameMapper> getNodeTypes() {
+        MESSAGE_TYPE_PRESENTATION[] types = MESSAGE_TYPE_PRESENTATION.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (MESSAGE_TYPE_PRESENTATION type : types) {
+            if (type.name().contains("NODE")) {
+                typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.name()));
+            }
+        }
+        return typesIdNameMappers;
+    }
+
     public static ArrayList<TypesIdNameMapper> getAlarmTriggerTypes() {
         TRIGGER[] triggers = TRIGGER.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();

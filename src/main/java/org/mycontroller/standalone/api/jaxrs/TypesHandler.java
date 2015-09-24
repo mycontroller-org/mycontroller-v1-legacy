@@ -52,6 +52,12 @@ public class TypesHandler {
     }
 
     @GET
+    @Path("/nodeTypes")
+    public Response getNodeTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNodeTypes());
+    }
+    
+    @GET
     @Path("/roles")
     public Response getUserRoles() {
         return RestUtils.getResponse(Status.OK, USER_ROLE.values());

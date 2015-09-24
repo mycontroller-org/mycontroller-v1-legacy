@@ -39,7 +39,7 @@
     <div class="form-group">
       <label class="control-label col-sm-3" for="node.typeString">Node Type:</label>
             <div class="col-sm-6">
-        <select class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes" ng-model="node.type" required></select>
+        <select class="form-control" ng-options="nodeTypes.id as nodeTypes.displayName for nodeTypes in nodeTypes | orderBy:'displayName'" ng-model="node.type" required></select>
       </div>
     </div>
      

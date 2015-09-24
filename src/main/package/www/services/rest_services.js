@@ -65,6 +65,7 @@ myControllerModule.factory('FirmwaresFactory', function ($resource) {
 //Types Services
 myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
+    getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
     getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}  },
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },
     getAlarmTypes:  { method: 'GET', isArray: true, params: {type: 'alarmtypes'}  },
