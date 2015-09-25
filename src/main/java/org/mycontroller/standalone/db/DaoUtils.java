@@ -25,6 +25,8 @@ import org.mycontroller.standalone.db.dao.FirmwareTypeDao;
 import org.mycontroller.standalone.db.dao.FirmwareTypeDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareVersionDao;
 import org.mycontroller.standalone.db.dao.FirmwareVersionDaoImpl;
+import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDao;
+import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsOnOffTypeDeviceDao;
@@ -55,6 +57,10 @@ import org.slf4j.LoggerFactory;
  * @since 0.0.1
  */
 public class DaoUtils {
+    private DaoUtils() {
+
+    }
+
     private static final Logger _logger = LoggerFactory.getLogger(DaoUtils.class);
     private static NodeDao nodeDao = null;
     private static SensorDao sensorDao = null;
@@ -71,6 +77,7 @@ public class DaoUtils {
     private static FirmwareTypeDao firmwareTypeDao = null;
     private static FirmwareVersionDao firmwareVersionDao = null;
     private static FirmwareDao firmwareDao = null;
+    private static MetricsBatteryUsageDao metricsBatteryUsageDao = null;
 
     public static void loadAllDao() {
         try {
@@ -89,6 +96,7 @@ public class DaoUtils {
             firmwareTypeDao = new FirmwareTypeDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareVersionDao = new FirmwareVersionDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareDao = new FirmwareDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsBatteryUsageDao = new MetricsBatteryUsageDaoImpl(DataBaseUtils.getConnectionSource());
         } catch (SQLException sqlEx) {
             _logger.error("Unable to load Dao,", sqlEx);
         } catch (DbException dbEx) {
@@ -154,6 +162,10 @@ public class DaoUtils {
 
     public static FirmwareDao getFirmwareDao() {
         return firmwareDao;
+    }
+
+    public static MetricsBatteryUsageDao getMetricsBatteryUsageDao() {
+        return metricsBatteryUsageDao;
     }
 
 }

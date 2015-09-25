@@ -92,6 +92,7 @@ myControllerModule.factory('MetricsFactory', function ($resource) {
     last30Days: { method: 'GET', isArray: true, params: {type: 'last30Days'}},
     lastYear: { method: 'GET', isArray: true, params: {type: 'lastYear'}},
     allYears: { method: 'GET', isArray: true, params: {type: 'allYears'}},
+    batteryUsage: { method: 'GET', isArray: true, params: {type: 'batteryUsage'}},
     sensorData: { method: 'GET', isArray: false, params: {type: 'sensorData'}}         
   })
 });

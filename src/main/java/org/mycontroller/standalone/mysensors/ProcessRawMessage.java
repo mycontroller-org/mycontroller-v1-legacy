@@ -34,6 +34,7 @@ import org.mycontroller.standalone.db.alarm.ExecuteAlarm;
 import org.mycontroller.standalone.db.fwpayload.ExecuteForwardPayload;
 import org.mycontroller.standalone.db.tables.Alarm;
 import org.mycontroller.standalone.db.tables.Firmware;
+import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
@@ -166,9 +167,14 @@ public class ProcessRawMessage {
                 Node node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
                 if (node == null) {
                     updateNode(rawMessage);
+                    node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
                 }
                 node.setBatteryLevel(rawMessage.getPayLoad());
                 DaoUtils.getNodeDao().update(node);
+                //Update battery level in to metrics table
+                MetricsBatteryUsage batteryUsage = new MetricsBatteryUsage(
+                        node, System.currentTimeMillis(), rawMessage.getPayLoadDouble());
+                DaoUtils.getMetricsBatteryUsageDao().create(batteryUsage);
 
                 break;
             case I_TIME:

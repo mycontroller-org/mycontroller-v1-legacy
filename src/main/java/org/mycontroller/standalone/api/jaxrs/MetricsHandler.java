@@ -32,6 +32,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataKeyValuesJso
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -110,6 +111,12 @@ public class MetricsHandler {
         return RestUtils.getResponse(Status.OK, sensor);
     }
 
+    @GET
+    @Path("/batteryUsage/{nodeId}")
+    public Response getBatteryUsageDetails(@PathParam("nodeId") int nodeId) {
+        return RestUtils.getResponse(Status.OK, this.getBatterUsage(nodeId));
+    }
+
     private ArrayList<MetricsChartDataKeyValuesJson> getAllAfter(AGGREGATION_TYPE aggregationType, int sensorId) {
         MetricsAggregationBase metricsAggregationBase = new MetricsAggregationBase();
         Sensor sensor = DaoUtils.getSensorDao().get(sensorId); //Here sensorId means 'id'(db reference) not actual sensorId
@@ -164,4 +171,21 @@ public class MetricsHandler {
         return finalData;
     }
 
+    private ArrayList<MetricsChartDataKeyValuesJson> getBatterUsage(int nodeId) {
+        ArrayList<MetricsChartDataKeyValuesJson> finalData = new ArrayList<MetricsChartDataKeyValuesJson>();
+        List<MetricsBatteryUsage> metrics = DaoUtils.getMetricsBatteryUsageDao().getAll(nodeId);
+        if (metrics == null) {
+            _logger.debug("No data");
+            return null;
+        }
+        else {
+            MetricsChartDataKeyValuesJson chartData = new MetricsChartDataKeyValuesJson("Battery Level");
+            for (MetricsBatteryUsage metric : metrics) {
+                chartData.add(new Object[] { metric.getTimestamp(), metric.getValue() });
+            }
+
+            finalData.add(chartData);
+        }
+        return finalData;
+    }
 }

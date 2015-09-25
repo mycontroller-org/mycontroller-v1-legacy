@@ -179,12 +179,28 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
     size: size
     });
 
-    addModalInstance.result.then(function (node) {
+    addModalInstance.result.then(function () {
       NodesFactory.discover(function(response) {
         alertService.success("Node Discover initiated successfully");
       },function(error){
         displayRestError.display(error);            
       });      
+    }), 
+    function () {
+    }
+  };
+  
+  //Node Battery Level graph
+  $scope.displayBatteryLevel = function (node, size) {
+    var addModalInstance = $modal.open({
+    templateUrl: 'partials/nodes/batteryLevelChart.html',
+    controller: 'NMbatteryLevelController',
+    windowClass: 'battery-modal-window',
+    size: size,
+    resolve: {node: function () {return node;}}
+    });
+
+    addModalInstance.result.then(function () {
     }), 
     function () {
     }
@@ -258,3 +274,81 @@ myControllerModule.controller('NMdiscoverController', function ($scope, $modalIn
   $scope.discover = function() {$modalInstance.close(); };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
+
+//Discover Modal
+myControllerModule.controller('NMbatteryLevelController', function ($modalInstance, $scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, node) {
+  $scope.header = "Node Battery Level";
+  
+  //http://krispo.github.io/angular-nvd3
+  //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
+    $scope.chartOptions = {
+            chart: {
+                type: 'lineChart',
+                interpolate: 'linear',
+                noErrorCheck: true,
+                height: 270,
+                margin : {
+                    top: 0,
+                    right: 20,
+                    bottom: 60,
+                    left: 40
+                },
+                color: ["#1f77b4"],
+                
+                x: function(d){return d[0];},
+                y: function(d){return d[1];},
+                useVoronoi: false,
+                clipEdge: false,
+                transitionDuration: 500,
+                useInteractiveGuideline: true,
+                xAxis: {
+                    showMaxMin: false,
+                    tickFormat: function(d) {
+                        return d3.time.format('HH:mm')(new Date(d))
+                    },
+                    //axisLabel: 'Timestamp',
+                    rotateLabels: -20
+                },
+                yAxis: {
+                    tickFormat: function(d){
+                        return d3.format(',.2f')(d);
+                    },
+                    //axisLabel: ''
+                }
+            },
+              title: {
+                enable: false,
+                text: 'Battery Status ('+node.name+')'
+            }
+        };
+        
+  
+  //Get Chart Interpolate Type
+  $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
+
+  //about, Timezone, etc.,
+  $scope.about = about;     
+  
+  $scope.interpolateType.$promise.then(function (interpolateType) {
+    $scope.interpolateType = interpolateType;
+  
+    var chartDateFormat = 'medium'; //https://docs.angularjs.org/api/ng/filter/date
+    
+    $scope.chartOptions.chart.type = 'lineChart'; //workaround to suppress 'type undefined error'
+    $scope.chartOptions.chart.interpolate = $scope.interpolateType.value;//cardinal
+    $scope.chartOptions.chart.color = ["#1f77b4"];
+    $scope.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(',.2f')(d);};
+  
+    $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, chartDateFormat, about.timezone)};
+    $scope.chartOptions.title.text = 'Battery Status of "'+node.name+'" (Id:'+node.id+')';
+  });
+  
+  $scope.getMetrics = function(){
+    $scope.batteryUsageChartMetrics = MetricsFactory.batteryUsage({"sensorId":node.id}); //Note here we should use sensorId as key, check rest_service.js
+  }
+  $scope.getMetrics();
+  
+  $scope.close = function() {$modalInstance.close(); };
+  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
+});
+
