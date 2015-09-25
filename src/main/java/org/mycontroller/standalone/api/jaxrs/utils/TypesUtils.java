@@ -35,6 +35,8 @@ import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
  * @since 0.0.1
  */
 public class TypesUtils {
+    public static final String NODE_IDENTIFIER = "NODE";
+
     private TypesUtils() {
 
     }
@@ -52,7 +54,9 @@ public class TypesUtils {
         MESSAGE_TYPE_PRESENTATION[] types = MESSAGE_TYPE_PRESENTATION.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (MESSAGE_TYPE_PRESENTATION type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.name()));
+            if (!type.name().contains(NODE_IDENTIFIER)) {
+                typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.name()));
+            }
         }
         return typesIdNameMappers;
     }
@@ -61,7 +65,7 @@ public class TypesUtils {
         MESSAGE_TYPE_PRESENTATION[] types = MESSAGE_TYPE_PRESENTATION.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (MESSAGE_TYPE_PRESENTATION type : types) {
-            if (type.name().contains("NODE")) {
+            if (type.name().contains(NODE_IDENTIFIER)) {
                 typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.name()));
             }
         }
