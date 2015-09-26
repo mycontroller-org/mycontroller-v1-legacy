@@ -216,7 +216,7 @@ public class Sensor {
     public void setLastValue(String lastValue) {
         this.lastValue = lastValue;
     }
-    
+
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Id:").append(this.id);
@@ -228,7 +228,7 @@ public class Sensor {
         builder.append(", Status:").append(this.status);
         builder.append(", Unit:").append(this.unit);
         builder.append(", UpdateTime:").append(this.updateTime);
-        builder.append(", Node: ").append(this.node);
+        builder.append(", Node:[").append(this.node).append("]");
         return builder.toString();
     }
 }

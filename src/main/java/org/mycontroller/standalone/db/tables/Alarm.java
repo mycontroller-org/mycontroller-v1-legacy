@@ -320,4 +320,31 @@ public class Alarm {
         this.ignoreDuplicate = ignoreDuplicate;
     }
 
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id:").append(this.id);
+        builder.append(", Enabled:").append(this.enabled);
+        builder.append(", Name:").append(this.name);
+        builder.append(", Sensor:[").append(this.sensor).append("]");
+        builder.append(", timestamp:").append(this.timestamp);
+        builder.append(", ignoreDuplicate:").append(this.ignoreDuplicate);
+        builder.append(", lastTrigger:").append(this.lastTrigger);
+        builder.append(", lastNotification:").append(this.lastNotification);
+        builder.append(", triggered:").append(this.triggered);
+        builder.append(", occurrenceCount:").append(this.occurrenceCount);
+        builder.append(", evaluationCount:").append(this.evaluationCount);
+        builder.append(", type:").append(this.type);
+        builder.append(", trigger:").append(this.trigger);
+        builder.append(", thresholdValue:").append(this.thresholdValue);
+        builder.append(", dampeningType:").append(this.dampeningType);
+        builder.append(", dampeningVar1:").append(this.dampeningVar1);
+        builder.append(", dampeningVar2:").append(this.dampeningVar2);
+        builder.append(", variable1:").append(this.variable1);
+        builder.append(", variable2:").append(this.variable2);
+        builder.append(", variable3:").append(this.variable3);
+        builder.append(", variable4:").append(this.variable4);
+        builder.append(", variable5:").append(this.variable5);
+        return builder.toString();
+    }
+
 }

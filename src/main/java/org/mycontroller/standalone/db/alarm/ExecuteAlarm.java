@@ -278,8 +278,8 @@ public class ExecuteAlarm implements Runnable {
             try {
                 runAlarm(alarm);
             } catch (Exception ex) {
+                _logger.error("failed to execute alarm:[{}],", alarm, ex);
                 SensorLogUtils.setAlarmLog(alarm, null, ex.getMessage());
-                _logger.error("failed to execute alarm,", ex);
             }
         }
     }
