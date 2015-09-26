@@ -32,6 +32,7 @@ import com.pi4j.io.serial.SerialFactory;
  */
 public class SerialPortPi4jImpl implements IMySensorsGateway {
     private static Logger _logger = LoggerFactory.getLogger(SerialPortPi4jImpl.class.getName());
+    private SerialDataListenerPi4j dataListenerPi4J;
 
     private Serial serial;
 
@@ -53,7 +54,7 @@ public class SerialPortPi4jImpl implements IMySensorsGateway {
         try {
             // create an instance of the serial communications class
             this.serial = SerialFactory.createInstance();
-            SerialDataListenerPi4j dataListenerPi4J = new SerialDataListenerPi4j();
+            this.dataListenerPi4J = new SerialDataListenerPi4j();
             // create and register the serial data listener
             serial.addListener(dataListenerPi4J);
             // open the serial port
@@ -72,6 +73,9 @@ public class SerialPortPi4jImpl implements IMySensorsGateway {
     public void close() {
         if (this.serial.isOpen()) {
             try {
+                if (this.dataListenerPi4J != null) {
+                    this.serial.removeListener(dataListenerPi4J);
+                }
                 this.serial.close();
                 _logger.debug("serialPort{} closed",
                         ObjectFactory.getAppProperties().getSerialPortName());
