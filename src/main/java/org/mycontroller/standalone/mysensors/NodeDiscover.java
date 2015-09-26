@@ -58,7 +58,7 @@ public class NodeDiscover implements Runnable {
                 rawMessage.setNodeId(nodeId);
                 ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(300);
                 } catch (InterruptedException ex) {
                     _logger.error("Exception, ", ex);
                 }
