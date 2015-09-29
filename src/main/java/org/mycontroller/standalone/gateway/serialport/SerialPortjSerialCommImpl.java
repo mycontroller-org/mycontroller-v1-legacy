@@ -28,7 +28,7 @@ import com.fazecast.jSerialComm.SerialPort;
  * @since 0.0.1
  */
 public class SerialPortjSerialCommImpl implements IMySensorsGateway {
-    private static final Logger _logger = LoggerFactory.getLogger(SerialPortJsscImpl.class.getName());
+    private static final Logger _logger = LoggerFactory.getLogger(SerialPortjSerialCommImpl.class.getName());
     private SerialPort serialPort;
 
     public SerialPortjSerialCommImpl() {
