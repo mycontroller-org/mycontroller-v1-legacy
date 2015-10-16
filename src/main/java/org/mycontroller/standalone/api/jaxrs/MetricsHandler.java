@@ -32,10 +32,12 @@ import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataKeyValuesJso
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.TypeUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.jobs.metrics.MetricsAggregationBase;
 import org.mycontroller.standalone.mysensors.MyMessages;
 import org.slf4j.Logger;
@@ -123,14 +125,16 @@ public class MetricsHandler {
 
         ArrayList<MetricsChartDataKeyValuesJson> finalData = new ArrayList<MetricsChartDataKeyValuesJson>();
 
-        if (sensor.getMetricType() == null) {
+        List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAll(sensor.getId());
+
+        if (sensorValues.get(0).getMetricType() == null) {
             //Sensor pay load type not up to date
             _logger.debug("Payload type not updated in sensor.");
             return null;
-        } else if (sensor.getMetricType() == MyMessages.PAYLOAD_TYPE.PL_DOUBLE.ordinal()) {
+        } else if (sensorValues.get(0).getMetricType() == TypeUtils.METRIC_TYPE.DOUBLE.ordinal()) {
             _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_DOUBLE.toString());
             List<MetricsDoubleTypeDevice> metrics = metricsAggregationBase.getMetricsDoubleTypeAllAfter(
-                    aggregationType, sensor);
+                    aggregationType, sensorValues.get(0));
             if (metrics == null) {
                 //throw new ApiError("No data available");
                 return null;
@@ -149,10 +153,10 @@ public class MetricsHandler {
             finalData.add(minChartData);
             finalData.add(avgChartData);
             finalData.add(maxChartData);
-        } else if (sensor.getMetricType() == MyMessages.PAYLOAD_TYPE.PL_BOOLEAN.ordinal()) {
+        } else if (sensorValues.get(0).getMetricType() == TypeUtils.METRIC_TYPE.BINARY.ordinal()) {
             _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_BOOLEAN.toString());
             List<MetricsOnOffTypeDevice> metrics = metricsAggregationBase.getMetricsBooleanTypeAllAfter(
-                    aggregationType, sensor);
+                    aggregationType, sensorValues.get(0));
             if (metrics == null) {
                 //throw new ApiError("No data available");
                 return null;

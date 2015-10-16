@@ -60,7 +60,7 @@ public class AlarmUtils {
         GREATER_THAN_EQUAL(">="),
         LESSER_THAN("<"),
         LESSER_THAN_EQUAL("<="),
-        EQUAL("="),
+        EQUAL("=="),
         NOT_EQUAL("!=");
 
         public static TRIGGER get(int id) {
@@ -108,7 +108,7 @@ public class AlarmUtils {
     }
 
     public static SendPayLoad getSendPayLoad(Alarm alarm) {
-        return new SendPayLoad(alarm.getVariable1(), alarm.getVariable2());
+        return new SendPayLoad(alarm.getVariable1(), alarm.getVariable2(), alarm.getVariable3());
     }
 
     public static void setSendPayLoad(Alarm alarm, SendPayLoad sendPayLoad) {

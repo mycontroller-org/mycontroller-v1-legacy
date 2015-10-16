@@ -16,7 +16,9 @@
 package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.AlarmUtils;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -26,10 +28,12 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 
 @DatabaseTable(tableName = "alarm")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Alarm {
     public static final String SENSOR_REF_ID = "sensor_ref_id";
     public static final String ENABLED = "enabled";
     public static final String TRIGGERED = "triggered";
+    public static final String VARIABLE_TYPE = "variable_type";
 
     public Alarm() {
         this.triggered = false;
@@ -47,6 +51,9 @@ public class Alarm {
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID,
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Sensor sensor;
+
+    @DatabaseField(canBeNull = false, columnName = VARIABLE_TYPE)
+    private Integer variableType;
 
     @DatabaseField(canBeNull = true)
     private Long timestamp;
@@ -326,6 +333,7 @@ public class Alarm {
         builder.append(", Enabled:").append(this.enabled);
         builder.append(", Name:").append(this.name);
         builder.append(", Sensor:[").append(this.sensor).append("]");
+        builder.append(", Variable Type:").append(this.getVariableTypeString());
         builder.append(", timestamp:").append(this.timestamp);
         builder.append(", ignoreDuplicate:").append(this.ignoreDuplicate);
         builder.append(", lastTrigger:").append(this.lastTrigger);
@@ -345,6 +353,21 @@ public class Alarm {
         builder.append(", variable4:").append(this.variable4);
         builder.append(", variable5:").append(this.variable5);
         return builder.toString();
+    }
+
+    public Integer getVariableType() {
+        return variableType;
+    }
+
+    public String getVariableTypeString() {
+        if (variableType != null) {
+            return MESSAGE_TYPE_SET_REQ.get(variableType).toString();
+        }
+        return "";
+    }
+
+    public void setVariableType(Integer variableType) {
+        this.variableType = variableType;
     }
 
 }

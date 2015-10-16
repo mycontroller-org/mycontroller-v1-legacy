@@ -15,7 +15,11 @@
  */
 package org.mycontroller.standalone.gateway.serialport;
 
+import java.util.HashMap;
+
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
 import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.slf4j.Logger;
@@ -30,6 +34,7 @@ import com.fazecast.jSerialComm.SerialPort;
 public class SerialPortjSerialCommImpl implements IMySensorsGateway {
     private static final Logger _logger = LoggerFactory.getLogger(SerialPortjSerialCommImpl.class.getName());
     private SerialPort serialPort;
+    private GatewayInfo gatewayInfo = new GatewayInfo();
 
     public SerialPortjSerialCommImpl() {
         initialize();
@@ -54,12 +59,27 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
             _logger.info("SerialPort[{}]:[{},{}]", portNo + 1, serialPorts[portNo].getSystemPortName(),
                     serialPorts[portNo].getDescriptivePortName());
         }
+
+        //Update Gateway Info
+        gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
+        gatewayInfo.setData(new HashMap<String, Object>());
+
+        gatewayInfo.getData().put(SerialPortCommon.DRIVER_TYPE,
+                ObjectFactory.getAppProperties().getSerialPortDriver());
+        gatewayInfo.getData().put(SerialPortCommon.SELECTED_DRIVER_TYPE,
+                AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString());
+        gatewayInfo.getData().put(SerialPortCommon.PORT_NAME,
+                ObjectFactory.getAppProperties().getSerialPortName());
+        gatewayInfo.getData().put(SerialPortCommon.BAUD_RATE,
+                ObjectFactory.getAppProperties().getSerialPortBaudRate());
+
         // create an instance of the serial communications class
         serialPort = SerialPort.getCommPort(ObjectFactory.getAppProperties().getSerialPortName());
 
         serialPort.openPort();//Open port
         if (!serialPort.isOpen()) {
             _logger.error("Unable to open serial port:[{}]", ObjectFactory.getAppProperties().getSerialPortName());
+            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "ERROR: Unable to open!");
             return;
         }
         serialPort.setComPortParameters(
@@ -74,7 +94,12 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
                 ObjectFactory.getAppProperties().getSerialPortDriver(),
                 ObjectFactory.getAppProperties().getSerialPortName(),
                 ObjectFactory.getAppProperties().getSerialPortBaudRate());
+        gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
+    }
 
+    @Override
+    public GatewayInfo getGatewayInfo() {
+        return gatewayInfo;
     }
 
 }

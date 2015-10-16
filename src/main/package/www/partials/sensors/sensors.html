@@ -17,13 +17,16 @@
 -->
 <div class="page-header">
   <h3>
-    <div class="form-group pull-right col-xs-3">          
-      <select class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-change="nodeChange(nodeId)" ng-model="nodeId">
-        <option value="">-- All Nodes --</option>
-      </select>
-    </div>
+      <div class="form-horizontal form-group-sm pull-right col-xs-2">
+        <div class="form-group form-inline">
+          <select style="width:220px" class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-change="nodeChange(nodeId)" ng-model="nodeId">
+            <option value="">-- All Nodes --</option>
+          </select>
+        </div>
+      </div>
+
     <b><i class="fa fa-eye"></i> Sensors </b></h3>
-  </div>
+</div>
 	
   <div class="panel panel-default">
 	  <!-- Default panel contents --TOP -->
@@ -49,7 +52,7 @@
 					<td at-implicit at-sortable at-attribute="sensorId"></td>
 	        <td at-implicit at-sortable at-attribute="name"></td>
 					<td at-implicit at-sortable at-attribute="typeString" at-title="Type"></td>
-          <td at-implicit at-sortable at-attribute="messageTypeString" at-title="Variable Type"></td>
+          <td at-implicit at-sortable at-attribute="variableTypes" at-title="Variable Type(s)"></td>
           <td at-sortable at-title="Last Seen">{{item.updateTime | date:'medium':about.timezone}}</td>
 					<td class="text-center">
 						<a href='' ng-click="update(item)" class="text-default"  tooltip="Edit">

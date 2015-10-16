@@ -39,6 +39,10 @@ import org.mycontroller.standalone.db.dao.SensorDao;
 import org.mycontroller.standalone.db.dao.SensorDaoImpl;
 import org.mycontroller.standalone.db.dao.SensorLogDao;
 import org.mycontroller.standalone.db.dao.SensorLogDaoImpl;
+import org.mycontroller.standalone.db.dao.SensorValueDao;
+import org.mycontroller.standalone.db.dao.SensorValueDaoImpl;
+import org.mycontroller.standalone.db.dao.SensorsVariablesMapDao;
+import org.mycontroller.standalone.db.dao.SensorsVariablesMapDaoImpl;
 import org.mycontroller.standalone.db.dao.SettingsDao;
 import org.mycontroller.standalone.db.dao.SettingsDaoImpl;
 import org.mycontroller.standalone.db.dao.SystemJobDao;
@@ -64,6 +68,7 @@ public class DaoUtils {
     private static final Logger _logger = LoggerFactory.getLogger(DaoUtils.class);
     private static NodeDao nodeDao = null;
     private static SensorDao sensorDao = null;
+    private static SensorValueDao sensorValueDao = null;
     private static SettingsDao settingsDao = null;
     private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
     private static MetricsOnOffTypeDeviceDao metricsOnOffTypeDeviceDao = null;
@@ -78,11 +83,13 @@ public class DaoUtils {
     private static FirmwareVersionDao firmwareVersionDao = null;
     private static FirmwareDao firmwareDao = null;
     private static MetricsBatteryUsageDao metricsBatteryUsageDao = null;
+    private static SensorsVariablesMapDao sensorsVariablesMapDao = null;
 
     public static void loadAllDao() {
         try {
             nodeDao = new NodeDaoImpl(DataBaseUtils.getConnectionSource());
             sensorDao = new SensorDaoImpl(DataBaseUtils.getConnectionSource());
+            sensorValueDao = new SensorValueDaoImpl(DataBaseUtils.getConnectionSource());
             settingsDao = new SettingsDaoImpl(DataBaseUtils.getConnectionSource());
             metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             metricsOnOffTypeDeviceDao = new MetricsOnOffTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
@@ -97,6 +104,7 @@ public class DaoUtils {
             firmwareVersionDao = new FirmwareVersionDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareDao = new FirmwareDaoImpl(DataBaseUtils.getConnectionSource());
             metricsBatteryUsageDao = new MetricsBatteryUsageDaoImpl(DataBaseUtils.getConnectionSource());
+            sensorsVariablesMapDao = new SensorsVariablesMapDaoImpl(DataBaseUtils.getConnectionSource());
         } catch (SQLException sqlEx) {
             _logger.error("Unable to load Dao,", sqlEx);
         } catch (DbException dbEx) {
@@ -166,6 +174,14 @@ public class DaoUtils {
 
     public static MetricsBatteryUsageDao getMetricsBatteryUsageDao() {
         return metricsBatteryUsageDao;
+    }
+
+    public static SensorValueDao getSensorValueDao() {
+        return sensorValueDao;
+    }
+
+    public static SensorsVariablesMapDao getSensorsVariablesMapDao() {
+        return sensorsVariablesMapDao;
     }
 
 }

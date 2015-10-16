@@ -142,16 +142,27 @@ myControllerModule.controller('AMaddController', function ($sce, $scope, $modalI
   $scope.alarm.sensor.node = {};
   $scope.alarm.sensor.id = sensor.id;
   $scope.alarm.ignoreDuplicate = true;
-  $scope.header = "Add Alarm for '"+sensor.nameWithNode+"'";
+  $scope.header = "New Alarm for '"+sensor.nameWithNode+"'";
   $scope.alarmNotifications = TypesFactory.getAlarmTypes();
   $scope.sensorvalueTypes = TypesFactory.getSensorValueTypes();
   $scope.alarmTriggers = TypesFactory.getAlarmTriggers();
   $scope.alarmDampeningTypes = TypesFactory.getAlarmDampeningTypes();
   $scope.nodes = TypesFactory.getNodes();
-      //Updated sensors for add/edit payload
+  $scope.variableTypes = TypesFactory.getSensorVariableTypes({id:sensor.type});
+
+  
+  //Updated sensors for add/edit payload
   $scope.refreshSensors = function(nodeId){
       return TypesFactory.getSensors({id: nodeId});
   };
+    
+  $scope.sendPayloadVariableTypes = {};
+  
+  //Updated Variable Types
+  $scope.refreshVariableTypes = function(sensorRefId){
+      return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
+  };
+   
   $scope.add = function() {$modalInstance.close($scope.alarm); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
@@ -159,7 +170,7 @@ myControllerModule.controller('AMaddController', function ($sce, $scope, $modalI
 //Delete Modal
 myControllerModule.controller('AMdeleteController', function ($scope, $modalInstance, $sce, alarm) {
   $scope.header = "Delete an Alarm";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete an alarm"
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete an alarm"
     +"<br>Deletion process will remove complete trace of this alarm!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>Alarm: [Name:"+alarm.name+"]</I>");
@@ -172,20 +183,34 @@ myControllerModule.controller('AMdeleteController', function ($scope, $modalInst
 myControllerModule.controller('AMupdateController', function ($sce, $scope, $modalInstance, alarm, TypesFactory, SensorsFactory) {
   $scope.htmlTooltipSplOper = $sce.trustAsHtml('<p align="left">For Special Operations:<br>All the operations done with last sensor value<br><table><thead><tr><th>Operation</th><th>Value</th><th>Example</th><th style="text-align: center;">Result</th></tr></thead><tbody><tr><td style="padding:0 5px 0 5px;">Invert</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Increment</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Decrement</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Addition</td><td style="padding:0 5px 0 5px;">+{user.value}</td><td style="padding:0 5px 0 5px;">+2</td><td style="padding:0 5px 0 5px;">{sensor.value}+2</td></tr><tr><td style="padding:0 5px 0 5px;">Subtraction</td><td style="padding:0 5px 0 5px;">-{user.value}</td><td style="padding:0 5px 0 5px;">-5</td><td style="padding:0 5px 0 5px;">{sensor.value}-5</td></tr><tr><td style="padding:0 5px 0 5px;">Multiplication</td><td style="padding:0 5px 0 5px;">*{user.value}</td><td style="padding:0 5px 0 5px;">*2</td><td style="padding:0 5px 0 5px;">{sensor.value}*2</td></tr><tr><td style="padding:0 5px 0 5px;">Division</td><td style="padding:0 5px 0 5px;">/{user.value}</td><td style="padding:0 5px 0 5px;">/9</td><td style="padding:0 5px 0 5px;">{sensor.value}/9</td></tr><tr><td style="padding:0 5px 0 5px;">Modulus</td><td style="padding:0 5px 0 5px;">%{user.value}</td><td style="padding:0 5px 0 5px;">%4</td><td style="padding:0 5px 0 5px;">{sensor.value}%4</td></tr><tr><td style="padding:0 5px 0 5px;">Reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">Reboot Node</td></tr></tbody></table><br><b><I>Note: Space not allowed</b></I><br></p>');
   $scope.alarm = alarm;
-  $scope.header = "Update Alarm : "+alarm.name;
-  $scope.payLoadsensor = {};
+  $scope.header = "Modify Alarm : '"+alarm.name+"'";
+  $scope.alarmNotifications = TypesFactory.getAlarmTypes();
   $scope.alarmTriggers = TypesFactory.getAlarmTriggers();
   $scope.sensorvalueTypes = TypesFactory.getSensorValueTypes();
   $scope.alarmDampeningTypes = TypesFactory.getAlarmDampeningTypes();
+  $scope.variableTypes = TypesFactory.getSensorVariableTypes({id:alarm.sensor.type});
+  
+  $scope.nodes = TypesFactory.getNodes();
+
+
   //This should be changed in good way. variable3 is String and in select option values in int not matching
   if($scope.alarm.type == 0){
     $scope.alarm.variable1 = parseInt($scope.alarm.variable1);
-    $scope.payLoadsensor  = SensorsFactory.getByRefId({sensorRefId: $scope.alarm.variable1}, function(response) {
-        $scope.sensors = TypesFactory.getSensors({id: $scope.alarm.sensor.node.id});
-        },function(error){
-          displayRestError.display(error);            
-        });
-  }  
+    $scope.alarm.variable2 = parseInt($scope.alarm.variable2);
+    
+    $scope.nodeId = alarm.sensor.node.id;
+      //Updated Sensors/Variable Types
+    $scope.sensors = TypesFactory.getSensors({id:alarm.sensor.node.id});
+    $scope.sendPayloadVariableTypes = TypesFactory.getSensorVariableTypesBySensorRefId({id:alarm.variable1});
+  } 
+  
+  $scope.refreshVariableTypes = function(sensorRefId){
+      return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
+  };
+  
+  $scope.alarm.variableType = parseInt($scope.alarm.variableType);
+  $scope.alarm.type = parseInt($scope.alarm.type);
+   
   if($scope.alarm.dampeningType == 1 || $scope.alarm.dampeningType == 2){
     $scope.alarm.dampeningVar1 = parseInt($scope.alarm.dampeningVar1);
   } 
@@ -193,12 +218,20 @@ myControllerModule.controller('AMupdateController', function ($sce, $scope, $mod
     $scope.alarm.dampeningVar2 = parseInt($scope.alarm.dampeningVar2);
   }  
   
-  $scope.nodes = TypesFactory.getNodes();
-  //$scope.sensors = TypesFactory.getSensors({id: $scope.alarm.sensor.node.id});
   //Updated sensors for add/edit payload
   $scope.refreshSensors = function(nodeId){
       return TypesFactory.getSensors({id: nodeId});
   };
+  
+  //Updated variable fileds on change of notification types
+  $scope.refreshNotificationType = function(){
+      $scope.alarm.variable1 = null;
+      $scope.alarm.variable2 = null;
+      $scope.alarm.variable3 = null;
+      $scope.alarm.variable4 = null;
+      $scope.alarm.variable5 = null;
+  };
+  
   $scope.update = function() {$modalInstance.close(alarm);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

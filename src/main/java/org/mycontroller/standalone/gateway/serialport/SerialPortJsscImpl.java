@@ -15,7 +15,11 @@
  */
 package org.mycontroller.standalone.gateway.serialport;
 
+import java.util.HashMap;
+
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
 import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.slf4j.Logger;
@@ -32,6 +36,7 @@ import jssc.SerialPortList;
 public class SerialPortJsscImpl implements IMySensorsGateway {
     private static final Logger _logger = LoggerFactory.getLogger(SerialPortJsscImpl.class.getName());
     private SerialPort serialPort;
+    private GatewayInfo gatewayInfo = new GatewayInfo();
 
     public SerialPortJsscImpl() {
         this.initialize();
@@ -52,6 +57,19 @@ public class SerialPortJsscImpl implements IMySensorsGateway {
         for (int portNo = 0; portNo < portNames.length; portNo++) {
             _logger.debug("SerialPortJson[{}]:{}", portNo + 1, portNames[portNo]);
         }
+        //Update Gateway Info
+        gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
+        gatewayInfo.setData(new HashMap<String, Object>());
+
+        gatewayInfo.getData().put(SerialPortCommon.DRIVER_TYPE,
+                ObjectFactory.getAppProperties().getSerialPortDriver());
+        gatewayInfo.getData().put(SerialPortCommon.SELECTED_DRIVER_TYPE,
+                AppProperties.SERIAL_PORT_DRIVER.JSSC.toString());
+        gatewayInfo.getData().put(SerialPortCommon.PORT_NAME,
+                ObjectFactory.getAppProperties().getSerialPortName());
+        gatewayInfo.getData().put(SerialPortCommon.BAUD_RATE,
+                ObjectFactory.getAppProperties().getSerialPortBaudRate());
+
         // create an instance of the serial communications class
         serialPort = new SerialPort(ObjectFactory.getAppProperties().getSerialPortName());
         try {
@@ -69,7 +87,9 @@ public class SerialPortJsscImpl implements IMySensorsGateway {
                     ObjectFactory.getAppProperties().getSerialPortDriver(),
                     ObjectFactory.getAppProperties().getSerialPortName(),
                     ObjectFactory.getAppProperties().getSerialPortBaudRate());
+            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
         } catch (SerialPortException ex) {
+            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "ERROR: " + ex.getMessage());
             _logger.error("Failed to load serial port, ", ex);
         }
     }
@@ -82,6 +102,11 @@ public class SerialPortJsscImpl implements IMySensorsGateway {
             _logger.error("unable to close the port{}", serialPort.getPortName(), ex);
         }
 
+    }
+
+    @Override
+    public GatewayInfo getGatewayInfo() {
+        return gatewayInfo;
     }
 
 }

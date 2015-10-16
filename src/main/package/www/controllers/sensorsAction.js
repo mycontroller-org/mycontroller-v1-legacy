@@ -91,6 +91,17 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
       });
       */
     }
+    
+    
+  //Send payload by button
+  $scope.sendPL = function (sensor, payloadJson) {
+    SensorsFactory.sendPayload({nodeId: "sendPayload"}, payloadJson,function(response) {
+        alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+payloadJson.payload);
+        $scope.updateSensor(sensor);
+    },function(error){
+        displayRestError.display(error);            
+    });
+  }
   
   //ON/OFF Sensor
   $scope.onOff = function (sensor) {
@@ -116,10 +127,10 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     resolve: {sensor: function () {return sensor;}}
     });
 
-    editModalInstance.result.then(function (sensor) {
-      SensorsFactory.sendPayload({nodeId: sensor.id, payload: sensor.newPayload},function(response) {
+    editModalInstance.result.then(function (payloadJson) {
+      SensorsFactory.sendPayload({nodeId: "sendPayload"},payloadJson,function(response) {
         //displayRestError.display(response, 201, "Payload sent to ["+sensor.nameWithNode+"]");   
-        alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+sensor.newPayload);
+        alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+payloadJson.payload);
         $scope.updateSensor(sensor);
       },function(error){
         displayRestError.display(error);            
@@ -139,9 +150,10 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     resolve: {sensor: function () {return sensor;}}
     });
 
-    editModalInstance.result.then(function (sensor) {
-      SensorsFactory.update({nodeId: sensor.node.id}, sensor,function(response) {
+    editModalInstance.result.then(function (keyValues) {
+      SensorsFactory.updateOthers({sensorId: sensor.id}, keyValues,function(response) {
         alertService.success("Updat success ["+sensor.nameWithNode+"]");
+        $scope.updateSensor(sensor);
       },function(error){
         displayRestError.display(error);            
       });        
@@ -154,10 +166,13 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
 
 });
 
-myControllerModule.controller('SAsendPayloadController', function ($scope, $modalInstance, sensor, SensorsFactory) {
+myControllerModule.controller('SAsendPayloadController', function ($scope, $modalInstance, sensor, SensorsFactory, TypesFactory) {
   $scope.sensor = sensor;
-  $scope.header = "Send Payload to "+$scope.sensor.nameWithNode;  
+  $scope.header = "Send Payload to '"+$scope.sensor.nameWithNode+"'";  
   $scope.sensor.sliderPayload=sensor.lastValue;
+  $scope.payloadJson={};
+  $scope.payloadJson.nodeId=sensor.node.id;
+  $scope.payloadJson.sensorId=sensor.sensorId;
   $scope.$watch('sensor.sliderPayload', function() {
      $scope.sliderOnChange();
   });
@@ -170,13 +185,17 @@ myControllerModule.controller('SAsendPayloadController', function ($scope, $moda
   $scope.sliderOnChange = function() {
         $scope.sensor.newPayload = $scope.sensor.sliderPayload;  
   };
-  $scope.send = function() {$modalInstance.close($scope.sensor);}
+  
+  $scope.variableTypes = TypesFactory.getSensorVariableTypes({id: sensor.type});
+  
+  $scope.send = function() {$modalInstance.close($scope.payloadJson);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('SAeditController', function ($scope, $modalInstance, sensor) {
+myControllerModule.controller('SAeditController', function ($scope, $modalInstance, sensor, SensorsFactory) {
   $scope.sensor = sensor;
-  $scope.header = "Update "+$scope.sensor.nameWithNode;
-  $scope.edit = function() {$modalInstance.close($scope.sensor);}
+  $scope.keyValues = SensorsFactory.getOthers({sensorId : sensor.id});
+  $scope.header = "Update '"+$scope.sensor.nameWithNode+"'";
+  $scope.edit = function() {$modalInstance.close($scope.keyValues);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

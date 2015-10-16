@@ -73,14 +73,14 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
     }
 
     @Override
-    public void deleteBySensorRefId(int sensorRefId) {
+    public void deleteBySensorRefId(int sensorValueRefId) {
         try {
             DeleteBuilder<MetricsOnOffTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().lt(MetricsOnOffTypeDevice.SENSOR_REF_ID, sensorRefId);
+            deleteBuilder.where().lt(MetricsOnOffTypeDevice.SENSOR_VALUE_REF_ID, sensorValueRefId);
             int count = this.getDao().delete(deleteBuilder.prepare());
-            _logger.debug("Metric-sensorRefId:[{}] deleted, Delete count:{}", sensorRefId, count);
+            _logger.debug("Metric-sensorValueRefId:[{}] deleted, Delete count:{}", sensorValueRefId, count);
         } catch (SQLException ex) {
-            _logger.error("unable to delete metric-sensorRefId:[{}]", sensorRefId, ex);
+            _logger.error("unable to delete metric-sensorValueRefId:[{}]", sensorValueRefId, ex);
         }
     }
 
@@ -112,8 +112,8 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
             return this.getDao().query(
                     this.getDao()
                             .queryBuilder()
-                            .where().eq(MetricsOnOffTypeDevice.SENSOR_REF_ID,
-                                    metric.getSensor().getId())
+                            .where().eq(MetricsOnOffTypeDevice.SENSOR_VALUE_REF_ID,
+                                    metric.getSensorValue().getId())
                             .and().between(MetricsOnOffTypeDevice.TIMESTAMP,
                                     metric.getTimestampFrom(), metric.getTimestampTo())
                             .prepare());
@@ -129,7 +129,7 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
             return this.getDao().query(
                     this.getDao()
                             .queryBuilder()
-                            .where().eq(MetricsOnOffTypeDevice.SENSOR_REF_ID, metric.getSensor().getId())
+                            .where().eq(MetricsOnOffTypeDevice.SENSOR_VALUE_REF_ID, metric.getSensorValue().getId())
                             .and().ge(MetricsOnOffTypeDevice.TIMESTAMP, metric.getTimestamp())
                             .prepare());
         } catch (SQLException ex) {
@@ -143,7 +143,7 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
         try {
             return this.getDao().queryForFirst(
                     this.getDao().queryBuilder()
-                            .where().eq(MetricsOnOffTypeDevice.SENSOR_REF_ID, metric.getSensor().getId())
+                            .where().eq(MetricsOnOffTypeDevice.SENSOR_VALUE_REF_ID, metric.getSensorValue().getId())
                             .and().eq(MetricsOnOffTypeDevice.TIMESTAMP, metric.getTimestamp()).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);

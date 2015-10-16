@@ -17,30 +17,40 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
+  
   <div class="modal-body">
    
-  <form class="form-horizontal" role="form" name="form">
-    
-    <div class="form-group">
-      <label class="control-label col-sm-3">Node:</label>
-      <div class="col-sm-6">          
-        <select class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-model="plProxy.sensorDestination.node.id" ng-change="sensors = refreshSensors(plProxy.sensorDestination.node.id)" required></select>
+    <form class="form-horizontal form-group-sm" role="form" name="form">
+      
+      
+      <div class="form-group form-inline">
+        <label class="control-label col-sm-1"></label>
+        <select style="width:230px" class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-model="plProxy.sensorDestination.node.id" ng-change="sensors = refreshSensors(plProxy.sensorDestination.node.id)" required>
+          <option value="">-- Destination Node --</option>
+        </select>
+        <select style="width:230px" class="form-control" ng-options="sensor.id as sensor.displayName for sensor in sensors" ng-model="plProxy.sensorDestination.id" ng-change="desSensorVariableTypes = refreshVariableTypes(plProxy.sensorDestination.id)" required>
+          <option value="">-- Destination Sensor --</option>
+        </select>
       </div>
-    </div>
-    
-    <div class="form-group">
-      <label class="control-label col-sm-3">Sensor:</label>
-      <div class="col-sm-6">          
-        <select class="form-control" ng-options="sensor.id as sensor.displayName for sensor in sensors" ng-model="plProxy.sensorDestination.id" required></select>
+      
+      <div class="form-group form-inline">
+        <label class="control-label col-sm-1"></label>
+        <select style="width:230px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in sourceSensorVariableTypes | filter:{ ticked : 'true' }" ng-model="plProxy.sourceType" required>
+          <option value="">-- Source Variable --</option>
+        </select>
+        <select style="width:230px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in desSensorVariableTypes | filter:{ ticked : 'true' }" ng-model="plProxy.destinationType" required>
+          <option value="">-- Destination Variable --</option>
+        </select>
       </div>
-    </div>
-  </form>
+    
+
+    </form>
   
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
   </div>
 </div>
 

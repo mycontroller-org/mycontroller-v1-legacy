@@ -113,10 +113,24 @@ config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('variableMapper', {
+      url:"/variableMapper",
+      templateUrl: "partials/variableMapper/variableMapper.html",
+      controller: "VariableMapperController",
+       data: {
+        requireLogin: true
+      }
     }).state('uidtag', {
       url:"/uidtag",
       templateUrl: "partials/uidTag/uidTag.html",
       controller: "UidTagController",
+       data: {
+        requireLogin: true
+      }
+    }).state('sendRawMessage', {
+      url:"/sendRawMessage",
+      templateUrl: "partials/rawMessage/rawMessage.html",
+      controller: "RawMessageController",
        data: {
         requireLogin: true
       }
@@ -127,10 +141,17 @@ config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
-    }).state('status', {
-      url:"/status",
-      templateUrl: "partials/status/status.html",
-      controller: "StatusController",
+    }).state('systemstatus', {
+      url:"/systemstatus",
+      templateUrl: "partials/status/systemStatus.html",
+      controller: "SystemStatusController",
+       data: {
+        requireLogin: true
+      }
+    }).state('gatewaystatus', {
+      url:"/gatewaystatus",
+      templateUrl: "partials/status/gatewayStatus.html",
+      controller: "GatewayStatusController",
        data: {
         requireLogin: true
       }
@@ -202,7 +223,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, alertService, AboutFactory, displayRestError, about, $cookieStore) {
+    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, displayRestError, about, $cookieStore) {
         // reset login status
         AuthenticationService.ClearCredentials();
  
@@ -211,7 +232,7 @@ myControllerModule.controller('LoginController',
             AuthenticationService.Login($scope.username, $scope.password, function(response) {
                 if(response.success) {
                     AuthenticationService.SetCredentials($scope.username, $scope.password);
-                    AboutFactory.about(function(response) {
+                    StatusFactory.about(function(response) {
                         about.timezone = response.timezone;
                         about.timezoneMilliseconds = response.timezoneMilliseconds;
                         about.timezoneString = response.timezoneString;

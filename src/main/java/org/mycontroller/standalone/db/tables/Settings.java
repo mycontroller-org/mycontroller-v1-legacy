@@ -30,11 +30,9 @@ public class Settings {
     public static final String MC_VERSION = "mc-version";
     public static final String MC_DB_VERSION = "mc-db-version";
     public static final String LAST_ONE_DAY_AGGREGATION = "last_one_day_aggregation";
-    public static final String DEFAULT_UNIT_TEMPERATURE = "du-temperature";
-    public static final String DEFAULT_UNIT_DISTANCE = "du-distance";
-    public static final String DEFAULT_UNIT_PERCENTAGE = "du-percentage";
     public static final String SUNRISE_TIME = "timer-sunrise";
     public static final String SUNSET_TIME = "timer-sunset";
+    public static final String CITY_NAME = "city_name";
     public static final String CITY_LATITUDE = "city_latitude";
     public static final String CITY_LONGITUDE = "city_longitude";
     public static final String DEFAULT_FIRMWARE = "default_firmware";
@@ -56,6 +54,10 @@ public class Settings {
     public static final String SERIALPORT_DRIVER_TYPE = "serialport_driver_type";
 
     public static final String GRAPH_INTERPOLATE_TYPE = "graph_interpolate_type";
+
+    public static final String DEFAULT_UNIT = "du_";
+
+    public static final String ENABLE_SEND_PAYLOAD = "enable_send_payload";
 
     public Settings() {
 

@@ -24,6 +24,7 @@ import org.mycontroller.standalone.db.TIME_REF;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,49 +61,53 @@ public class MetricsAggregationBase {
         _logger.debug("Sensors List:{}", sensors);
 
         for (Sensor sensor : sensors) {
-            List<MetricsDoubleTypeDevice> metrics = this.getMetricsDoubleTypeAllAfter(sensor);
-            //Calculate Metrics
-            if (metrics.size() > 0) {
-                int samples = 0;
-                if (this.aggregationType.ordinal() == AGGREGATION_TYPE.ONE_MINUTE.ordinal()) {
-                    samples = metrics.size();
-                }
-                _logger.debug("Number of records:{}", metrics.size());
-                Double min = Double.MAX_VALUE;
-                Double max = Double.MIN_VALUE;
-                Double sum = 0D;
-                for (MetricsDoubleTypeDevice metric : metrics) {
+            List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAllDoubleMetric(sensor.getId());
+
+            for (SensorValue sensorValue : sensorValues) {
+                List<MetricsDoubleTypeDevice> metrics = this.getMetricsDoubleTypeAllAfter(sensorValue);
+                //Calculate Metrics
+                if (metrics.size() > 0) {
+                    int samples = 0;
                     if (this.aggregationType.ordinal() == AGGREGATION_TYPE.ONE_MINUTE.ordinal()) {
-                        if (metric.getAvg() > max) {
-                            max = metric.getAvg();
-                        }
-
-                        if (metric.getAvg() < min) {
-                            min = metric.getAvg();
-                        }
-                        sum = sum + metric.getAvg();
-                    } else {
-                        if (metric.getMax() > max) {
-                            max = metric.getMax();
-                        }
-
-                        if (metric.getMin() < min) {
-                            min = metric.getMin();
-                        }
-                        sum = sum + (metric.getAvg() * metric.getSamples());
-                        samples = samples + metric.getSamples();
+                        samples = metrics.size();
                     }
+                    _logger.debug("Number of records:{}", metrics.size());
+                    Double min = Double.MAX_VALUE;
+                    Double max = Double.MIN_VALUE;
+                    Double sum = 0D;
+                    for (MetricsDoubleTypeDevice metric : metrics) {
+                        if (this.aggregationType.ordinal() == AGGREGATION_TYPE.ONE_MINUTE.ordinal()) {
+                            if (metric.getAvg() > max) {
+                                max = metric.getAvg();
+                            }
+
+                            if (metric.getAvg() < min) {
+                                min = metric.getAvg();
+                            }
+                            sum = sum + metric.getAvg();
+                        } else {
+                            if (metric.getMax() > max) {
+                                max = metric.getMax();
+                            }
+
+                            if (metric.getMin() < min) {
+                                min = metric.getMin();
+                            }
+                            sum = sum + (metric.getAvg() * metric.getSamples());
+                            samples = samples + metric.getSamples();
+                        }
+                    }
+                    Double avg = sum / samples;
+                    MetricsDoubleTypeDevice metric = new MetricsDoubleTypeDevice();
+                    metric.setAggregationType(this.aggregationType.ordinal());
+                    metric.setSensorValue(sensorValue);
+                    metric.setMin(NumericUtils.round(min, NumericUtils.DOUBLE_ROUND));
+                    metric.setMax(NumericUtils.round(max, NumericUtils.DOUBLE_ROUND));
+                    metric.setAvg(NumericUtils.round(avg, NumericUtils.DOUBLE_ROUND));
+                    metric.setSamples(samples);
+                    metric.setTimestamp(entryTimestamp);
+                    DaoUtils.getMetricsDoubleTypeDeviceDao().create(metric);
                 }
-                Double avg = sum / samples;
-                MetricsDoubleTypeDevice metric = new MetricsDoubleTypeDevice();
-                metric.setAggregationType(this.aggregationType.ordinal());
-                metric.setSensor(sensor);
-                metric.setMin(NumericUtils.round(min, NumericUtils.DOUBLE_ROUND));
-                metric.setMax(NumericUtils.round(max, NumericUtils.DOUBLE_ROUND));
-                metric.setAvg(NumericUtils.round(avg, NumericUtils.DOUBLE_ROUND));
-                metric.setSamples(samples);
-                metric.setTimestamp(entryTimestamp);
-                DaoUtils.getMetricsDoubleTypeDeviceDao().create(metric);
             }
         }
         this.purgeDB();
@@ -148,33 +153,35 @@ public class MetricsAggregationBase {
         }
     }
 
-    public List<MetricsDoubleTypeDevice> getMetricsDoubleTypeAllAfter(AGGREGATION_TYPE aggregationType, Sensor sensor) {
+    public List<MetricsDoubleTypeDevice> getMetricsDoubleTypeAllAfter(AGGREGATION_TYPE aggregationType,
+            SensorValue sensorValue) {
         this.setValuesBasedOnType(aggregationType);
-        return this.getMetricsDoubleTypeAllAfter(sensor);
+        return this.getMetricsDoubleTypeAllAfter(sensorValue);
     }
 
-    private List<MetricsDoubleTypeDevice> getMetricsDoubleTypeAllAfter(Sensor sensor) {
+    private List<MetricsDoubleTypeDevice> getMetricsDoubleTypeAllAfter(SensorValue sensorValue) {
         List<MetricsDoubleTypeDevice> metrics = DaoUtils
                 .getMetricsDoubleTypeDeviceDao()
                 .getAllAfter(new MetricsDoubleTypeDevice(
-                        sensor,
+                        sensorValue,
                         this.retriveDataAggregationType.ordinal(),
                         System.currentTimeMillis() - this.referanceTime));
         return metrics;
     }
-    
+
     /** Get metric data for boolean type */
 
-    public List<MetricsOnOffTypeDevice> getMetricsBooleanTypeAllAfter(AGGREGATION_TYPE aggregationType, Sensor sensor) {
+    public List<MetricsOnOffTypeDevice> getMetricsBooleanTypeAllAfter(AGGREGATION_TYPE aggregationType,
+            SensorValue sensorValue) {
         this.setValuesBasedOnType(aggregationType);
-        return this.getMetricsOnOffTypeAllAfter(sensor);
+        return this.getMetricsOnOffTypeAllAfter(sensorValue);
     }
 
-    private List<MetricsOnOffTypeDevice> getMetricsOnOffTypeAllAfter(Sensor sensor) {
+    private List<MetricsOnOffTypeDevice> getMetricsOnOffTypeAllAfter(SensorValue sensorValue) {
         List<MetricsOnOffTypeDevice> metrics = DaoUtils
                 .getMetricsOnOffTypeDeviceDao()
                 .getAllAfter(new MetricsOnOffTypeDevice(
-                        sensor,
+                        sensorValue,
                         System.currentTimeMillis() - this.referanceTime));
         return metrics;
     }

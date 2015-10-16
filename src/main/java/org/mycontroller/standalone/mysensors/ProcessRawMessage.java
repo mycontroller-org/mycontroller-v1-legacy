@@ -30,6 +30,7 @@ import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.SensorLogUtils;
 import org.mycontroller.standalone.db.SensorLogUtils.LOG_TYPE;
+import org.mycontroller.standalone.db.TypeUtils.METRIC_TYPE;
 import org.mycontroller.standalone.db.alarm.ExecuteAlarm;
 import org.mycontroller.standalone.db.fwpayload.ExecuteForwardPayload;
 import org.mycontroller.standalone.db.tables.Alarm;
@@ -40,6 +41,7 @@ import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.uidtag.ExecuteUidTag;
 import org.mycontroller.standalone.gateway.MySensorsGatewayException;
@@ -116,12 +118,12 @@ public class ProcessRawMessage {
             if (node == null) {
                 node = new Node(rawMessage.getNodeId());
                 node.setUpdateTime(System.currentTimeMillis());
-                node.setMySensorsVersion(rawMessage.getPayLoad());
+                node.setMySensorsVersion(rawMessage.getPayload());
                 node.setType(rawMessage.getSubType());
                 DaoUtils.getNodeDao().create(node);
             } else {
                 node.setUpdateTime(System.currentTimeMillis());
-                node.setMySensorsVersion(rawMessage.getPayLoad());
+                node.setMySensorsVersion(rawMessage.getPayload());
                 node.setType(rawMessage.getSubType());
                 DaoUtils.getNodeDao().update(node);
             }
@@ -136,18 +138,18 @@ public class ProcessRawMessage {
             Sensor sensor = DaoUtils.getSensorDao().get(rawMessage.getNodeId(), rawMessage.getChildSensorId());
             if (sensor == null) {
                 sensor = new Sensor(rawMessage.getChildSensorId(),
-                        rawMessage.getSubType(), rawMessage.getPayLoad());
+                        rawMessage.getSubType(), rawMessage.getPayload());
                 sensor.setNode(new Node(rawMessage.getNodeId()));
                 DaoUtils.getSensorDao().create(sensor);
             } else {
                 sensor.setType(rawMessage.getSubType());
-                sensor.setName(rawMessage.getPayLoad());
+                sensor.setName(rawMessage.getPayload());
                 DaoUtils.getSensorDao().update(sensor);
             }
         }
         _logger.debug("Presentation Message[type:{},payload:{}]",
                 MESSAGE_TYPE_PRESENTATION.get(rawMessage.getSubType()),
-                rawMessage.getPayLoad());
+                rawMessage.getPayload());
         SensorLogUtils.setSensorPresentationData(MESSAGE_TYPE_PRESENTATION.get(rawMessage.getSubType()), rawMessage,
                 null);
     }
@@ -163,17 +165,17 @@ public class ProcessRawMessage {
                 }
                 _logger.debug("Battery Level:[nodeId:{},Level:{}%]",
                         rawMessage.getNodeId(),
-                        rawMessage.getPayLoad());
+                        rawMessage.getPayload());
                 Node node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
                 if (node == null) {
                     updateNode(rawMessage);
                     node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
                 }
-                node.setBatteryLevel(rawMessage.getPayLoad());
+                node.setBatteryLevel(rawMessage.getPayload());
                 DaoUtils.getNodeDao().update(node);
                 //Update battery level in to metrics table
                 MetricsBatteryUsage batteryUsage = new MetricsBatteryUsage(
-                        node, System.currentTimeMillis(), rawMessage.getPayLoadDouble());
+                        node, System.currentTimeMillis(), rawMessage.getPayloadDouble());
                 DaoUtils.getMetricsBatteryUsageDao().create(batteryUsage);
 
                 break;
@@ -185,7 +187,7 @@ public class ProcessRawMessage {
                 long utcTime = System.currentTimeMillis();
                 long timeOffset = timeZone.getOffset(utcTime);
                 long localTime = utcTime + timeOffset;
-                rawMessage.setPayLoad(String.valueOf(localTime / 1000));
+                rawMessage.setPayload(String.valueOf(localTime / 1000));
                 rawMessage.setTxMessage(true);
                 _logger.debug("Time Message:[{}]", rawMessage);
                 ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
@@ -199,7 +201,7 @@ public class ProcessRawMessage {
             case I_ID_REQUEST:
                 try {
                     int nodeId = ObjectFactory.getAppProperties().getNextNodeId();
-                    rawMessage.setPayLoad(nodeId);
+                    rawMessage.setPayload(nodeId);
                     rawMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_ID_RESPONSE.ordinal());
                     rawMessage.setTxMessage(true);
                     ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
@@ -218,10 +220,10 @@ public class ProcessRawMessage {
                 if (rawMessage.isTxMessage()) {
                     return;
                 }
-                rawMessage.setPayLoad(ObjectFactory.getAppProperties().getMetricType());
+                rawMessage.setPayload(ObjectFactory.getAppProperties().getMetricType());
                 rawMessage.setTxMessage(true);
                 ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
-                _logger.debug("Configuration sent as follow[M/I]?:{}", rawMessage.getPayLoad());
+                _logger.debug("Configuration sent as follow[M/I]?:{}", rawMessage.getPayload());
                 break;
             case I_LOG_MESSAGE:
                 if (rawMessage.isTxMessage()) {
@@ -230,7 +232,7 @@ public class ProcessRawMessage {
                 _logger.debug("Node trace-log message[nodeId:{},sensorId:{},message:{}]",
                         rawMessage.getNodeId(),
                         rawMessage.getChildSensorId(),
-                        rawMessage.getPayLoad());
+                        rawMessage.getPayload());
                 break;
             case I_SKETCH_NAME:
                 if (rawMessage.isTxMessage()) {
@@ -238,12 +240,12 @@ public class ProcessRawMessage {
                 }
                 _logger.debug("Internal Message[type:{},name:{}]",
                         MESSAGE_TYPE_INTERNAL.get(rawMessage.getSubType()),
-                        rawMessage.getPayLoad());
+                        rawMessage.getPayload());
                 node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
                 if (node == null) {
-                    DaoUtils.getNodeDao().create(new Node(rawMessage.getNodeId(), rawMessage.getPayLoad()));
+                    DaoUtils.getNodeDao().create(new Node(rawMessage.getNodeId(), rawMessage.getPayload()));
                 } else {
-                    node.setName(rawMessage.getPayLoad());
+                    node.setName(rawMessage.getPayload());
                     DaoUtils.getNodeDao().update(node);
                 }
 
@@ -254,9 +256,9 @@ public class ProcessRawMessage {
                 }
                 _logger.debug("Internal Message[type:{},version:{}]",
                         MESSAGE_TYPE_INTERNAL.get(rawMessage.getSubType()),
-                        rawMessage.getPayLoad());
+                        rawMessage.getPayload());
                 node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
-                node.setVersion(rawMessage.getPayLoad());
+                node.setVersion(rawMessage.getPayload());
                 DaoUtils.getNodeDao().createOrUpdate(node);
                 break;
 
@@ -268,14 +270,14 @@ public class ProcessRawMessage {
                 }
                 _logger.debug("Gateway Ready[nodeId:{},message:{}]",
                         rawMessage.getNodeId(),
-                        rawMessage.getPayLoad());
+                        rawMessage.getPayload());
                 break;
 
             default:
                 _logger.warn(
                         "Internal Message[type:{},payload:{}], This type may not be supported (or) not implemented yet",
                         MESSAGE_TYPE_INTERNAL.get(rawMessage.getSubType()),
-                        rawMessage.getPayLoad());
+                        rawMessage.getPayload());
                 break;
         }
     }
@@ -302,7 +304,7 @@ public class ProcessRawMessage {
             default:
                 _logger.debug("Stream Message[type:{},payload:{}], This type not be implemented yet",
                         MESSAGE_TYPE_STREAM.get(rawMessage.getSubType()),
-                        rawMessage.getPayLoad());
+                        rawMessage.getPayload());
                 break;
         }
     }
@@ -311,7 +313,7 @@ public class ProcessRawMessage {
         FirmwareRequest firmwareRequest = new FirmwareRequest();
         try {
             firmwareRequest.setByteBuffer(
-                    ByteBuffer.wrap(Hex.decodeHex(rawMessage.getPayLoad().toCharArray())).order(
+                    ByteBuffer.wrap(Hex.decodeHex(rawMessage.getPayload().toCharArray())).order(
                             ByteOrder.LITTLE_ENDIAN), 0);
             _logger.debug("Firmware Request:[Type:{},Version:{},Block:{}]", firmwareRequest.getType(),
                     firmwareRequest.getVersion(),
@@ -359,7 +361,7 @@ public class ProcessRawMessage {
             }
             rawMessage.setTxMessage(true);
             rawMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.ordinal());
-            rawMessage.setPayLoad(Hex.encodeHexString(firmwareResponse.getByteBuffer().array()) + builder.toString());
+            rawMessage.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array()) + builder.toString());
             ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
@@ -373,7 +375,7 @@ public class ProcessRawMessage {
         FirmwareConfigRequest firmwareConfigRequest = new FirmwareConfigRequest();
         try {
             firmwareConfigRequest.setByteBuffer(
-                    ByteBuffer.wrap(Hex.decodeHex(rawMessage.getPayLoad().toCharArray())).order(
+                    ByteBuffer.wrap(Hex.decodeHex(rawMessage.getPayload().toCharArray())).order(
                             ByteOrder.LITTLE_ENDIAN), 0);
             boolean bootLoaderCommand = false;
             Firmware firmware = null;
@@ -440,7 +442,7 @@ public class ProcessRawMessage {
 
             rawMessage.setTxMessage(true);
             rawMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.ordinal());
-            rawMessage.setPayLoad(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase());
+            rawMessage.setPayload(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase());
             ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
             _logger.debug("FirmwareConfigRequest:[{}]", firmwareConfigRequest);
             _logger.debug("FirmwareConfigResponse:[{}]", firmwareConfigResponse);
@@ -451,17 +453,41 @@ public class ProcessRawMessage {
 
     private void responseReqTypeData(RawMessage rawMessage) {
         Sensor sensor = this.getSensor(rawMessage);
-        if (sensor.getLastValue() != null) {
+        SensorValue sensorValue = DaoUtils.getSensorValueDao().get(sensor.getId(), rawMessage.getSubType());
+        if (sensorValue != null && sensorValue.getLastValue() != null) {
             rawMessage.setTxMessage(true);
             rawMessage.setMessageType(MESSAGE_TYPE.C_SET.ordinal());
             rawMessage.setAck(0);
-            rawMessage.setPayLoad(sensor.getLastValue());
+            rawMessage.setPayload(sensorValue.getLastValue());
             ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
             _logger.debug("Request processed! Message Sent: {}", rawMessage);
         } else {
             _logger.warn("Data not available! but there is request from sensor[{}], "
                     + "Ignored this request!", rawMessage);
         }
+    }
+
+    private SensorValue updateSensorValue(RawMessage rawMessage, Sensor sensor, PAYLOAD_TYPE payloadType) {
+        SensorValue sensorValue = DaoUtils.getSensorValueDao().get(sensor.getId(), rawMessage.getSubType());
+        METRIC_TYPE metricType = MyMessages.getMetricType(payloadType);
+        if (sensorValue == null) {
+            sensorValue = new SensorValue(sensor, rawMessage.getSubType(), rawMessage.getPayload(),
+                    System.currentTimeMillis(), metricType.ordinal());
+            _logger.debug("This SensorValue:[{}] for Sensor:{}] is not available in our DB, Adding...",
+                    sensorValue, sensor);
+            DaoUtils.getSensorValueDao().create(sensorValue);
+            sensorValue = DaoUtils.getSensorValueDao().get(sensorValue);
+        } else {
+            sensorValue.setLastValue(rawMessage.getPayload());
+            sensorValue.setTimestamp(System.currentTimeMillis());
+            DaoUtils.getSensorValueDao().update(sensorValue);
+        }
+
+        //TODO: Add unit
+        /* if (rawMessage.getSubType() == MESSAGE_TYPE_SET_REQ.V_UNIT_PREFIX.ordinal()) {
+             sensor.setUnit(rawMessage.getPayLoad());
+         }*/
+        return sensorValue;
     }
 
     private Sensor getSensor(RawMessage rawMessage) {
@@ -472,11 +498,6 @@ public class ProcessRawMessage {
                     rawMessage.getChildSensorId(), rawMessage.getNodeId());
             sensor = new Sensor(rawMessage.getChildSensorId());
             sensor.setNode(new Node(rawMessage.getNodeId()));
-            if (rawMessage.getSubType() == MESSAGE_TYPE_SET_REQ.V_UNIT_PREFIX.ordinal()) {
-                sensor.setUnit(rawMessage.getPayLoad());
-            } else {
-                sensor.setMessageType(rawMessage.getSubType());
-            }
             DaoUtils.getSensorDao().create(sensor);
             sensor = DaoUtils.getSensorDao().get(rawMessage.getNodeId(), rawMessage.getChildSensorId());
         }
@@ -493,19 +514,22 @@ public class ProcessRawMessage {
     }
 
     private void recordSetTypeData(RawMessage rawMessage) {
-        PAYLOAD_TYPE type = MyMessages.getPayLoadType(MESSAGE_TYPE_SET_REQ.get(rawMessage.getSubType()));
+        PAYLOAD_TYPE payloadType = MyMessages.getPayLoadType(MESSAGE_TYPE_SET_REQ.get(rawMessage.getSubType()));
         Sensor sensor = this.getSensor(rawMessage);
+        SensorValue sensorValue = this.updateSensorValue(rawMessage, sensor, payloadType);
 
         _logger.debug("Sensor:{}[NodeId:{},SesnorId:{},SubType({}):{}], PayLoad Type: {}",
                 sensor.getNameWithNode(),
                 sensor.getNode().getId(), sensor.getSensorId(),
                 rawMessage.getSubType(),
                 MESSAGE_TYPE_SET_REQ.get(rawMessage.getSubType()),
-                type.toString());
+                payloadType.toString());
 
         if (rawMessage.getSubType() == MESSAGE_TYPE_SET_REQ.V_UNIT_PREFIX.ordinal()) {
-            //Set Unit
-            sensor.setUnit(rawMessage.getPayLoad());
+            //TODO: Add fix
+            /*
+              //Set Unit
+              sensor.setUnit(rawMessage.getPayLoad());*/
             DaoUtils.getSensorDao().update(sensor);
             //Log message data
             SensorLogUtils.setSensorOtherData(LOG_TYPE.SENSOR,
@@ -513,70 +537,66 @@ public class ProcessRawMessage {
             return;
         }
 
-        if (sensor.getMessageType() == null) {
+        /*if (sensor.getMessageType() == null) {
             sensor.setMessageType(rawMessage.getSubType());
         } else if (sensor.getMessageType() != rawMessage.getSubType()) {
             sensor.setMessageType(rawMessage.getSubType());
         }
-
+        */
         sensor.setUpdateTime(System.currentTimeMillis());
-        sensor.setLastValue(rawMessage.getPayLoad());
-        switch (type) {
-            case PL_DOUBLE:
-                sensor.setStatus(String.valueOf(NumericUtils.round(rawMessage.getPayLoadDouble(),
-                        NumericUtils.DOUBLE_ROUND)));
-                DaoUtils.getSensorDao().update(sensor);
+        DaoUtils.getSensorDao().update(sensor);
+
+        switch (METRIC_TYPE.get(sensorValue.getMetricType())) {
+            case DOUBLE:
                 DaoUtils.getMetricsDoubleTypeDeviceDao()
                         .create(new MetricsDoubleTypeDevice(
-                                sensor,
+                                sensorValue,
                                 AGGREGATION_TYPE.RAW.ordinal(),
                                 System.currentTimeMillis(),
-                                NumericUtils.getDouble(rawMessage.getPayLoad()),
+                                NumericUtils.getDouble(rawMessage.getPayload()),
                                 1));
                 break;
-            case PL_BOOLEAN:
-                sensor.setStatus(rawMessage.getPayLoadBoolean() ? "ON" : "OFF");
-                DaoUtils.getSensorDao().update(sensor);
+            case BINARY:
                 DaoUtils.getMetricsOnOffTypeDeviceDao()
                         .create(new MetricsOnOffTypeDevice(
-                                sensor,
+                                sensorValue,
                                 System.currentTimeMillis(),
-                                rawMessage.getPayLoadBoolean()));
+                                rawMessage.getPayloadBoolean()));
                 break;
             default:
-                sensor.setStatus(rawMessage.getPayLoad());
-                DaoUtils.getSensorDao().update(sensor);
                 _logger.debug("This type not be implemented yet, PayloadType:{}, MessageType:{}, RawMessage:{}",
-                        type, MyMessages.MESSAGE_TYPE_SET_REQ.get(rawMessage.getSubType()).toString(),
-                        rawMessage.getPayLoad());
+                        payloadType, MyMessages.MESSAGE_TYPE_SET_REQ.get(rawMessage.getSubType()).toString(),
+                        rawMessage.getPayload());
                 break;
         }
 
         //Log message data
-        SensorLogUtils.setSensorData(sensor, rawMessage.isTxMessage(), null);
+        SensorLogUtils.setSensorData(sensor, rawMessage.isTxMessage(), sensorValue, null);
 
         if (!rawMessage.isTxMessage()) {
             //Execute UidTag
             if (sensor.getType() != null
                     && sensor.getType() != null
                     && sensor.getType() == MESSAGE_TYPE_PRESENTATION.S_CUSTOM.ordinal()
-                    && sensor.getMessageType() == MESSAGE_TYPE_SET_REQ.V_VAR5.ordinal()) {
-                ExecuteUidTag executeUidTag = new ExecuteUidTag(sensor);
+                    && sensorValue.getVariableType() == MESSAGE_TYPE_SET_REQ.V_VAR5.ordinal()) {
+                ExecuteUidTag executeUidTag = new ExecuteUidTag(sensor, sensorValue);
                 new Thread(executeUidTag).start();
             }
         }
 
-        //Forward Payload to another node, if any and only on receive from gateway
-        List<ForwardPayload> forwardPayloads = DaoUtils.getForwardPayloadDao().getAll(sensor.getId());
-        if (forwardPayloads.size() > 0 && forwardPayloads != null) {
-            ExecuteForwardPayload executeForwardPayload = new ExecuteForwardPayload(forwardPayloads, sensor);
+        //TODO: Forward Payload to another node, if any and only on receive from gateway
+        List<ForwardPayload> forwardPayloads = DaoUtils.getForwardPayloadDao().getAll(sensor.getId(),
+                sensorValue.getVariableType());
+        if (forwardPayloads != null && !forwardPayloads.isEmpty()) {
+            ExecuteForwardPayload executeForwardPayload =
+                    new ExecuteForwardPayload(forwardPayloads, sensor, sensorValue);
             new Thread(executeForwardPayload).run();
         }
 
         //Trigger Alarm for this sensor
-        List<Alarm> alarms = DaoUtils.getAlarmDao().getAll(sensor.getId(), true);
+        List<Alarm> alarms = DaoUtils.getAlarmDao().getAllEnabled(sensor.getId(), sensorValue.getVariableType());
         if (alarms.size() > 0 && alarms != null) {
-            ExecuteAlarm executeAlarm = new ExecuteAlarm(alarms);
+            ExecuteAlarm executeAlarm = new ExecuteAlarm(alarms, sensorValue);
             new Thread(executeAlarm).run();
         }
     }

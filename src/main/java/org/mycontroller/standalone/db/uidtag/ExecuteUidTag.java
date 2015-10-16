@@ -23,7 +23,9 @@ import org.apache.commons.codec.binary.Hex;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.UidTag;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.structs.UidTagStruct;
@@ -38,24 +40,25 @@ public class ExecuteUidTag implements Runnable {
     private static final Logger _logger = LoggerFactory.getLogger(ExecuteUidTag.class);
 
     private Sensor sensor;
+    private SensorValue sensorValue;
 
-    public ExecuteUidTag(Sensor sensor) {
+    public ExecuteUidTag(Sensor sensor, SensorValue sensorValue) {
         this.sensor = sensor;
     }
 
     //Request - 
     //Response -
     private void executeUidTag() throws DecoderException {
-        _logger.debug("UID TAG RX String:[{}]", sensor.getLastValue());
+        _logger.debug("UID TAG RX String:[{}]", sensorValue.getLastValue());
 
-        if (sensor.getLastValue().equalsIgnoreCase("NA")) {
+        if (sensorValue.getLastValue().equalsIgnoreCase("NA")) {
             //Nothing to do, just return from here
             return;
         }
         UidTagStruct uidTagStruct = new UidTagStruct();
 
         uidTagStruct.setByteBuffer(
-                ByteBuffer.wrap(Hex.decodeHex(sensor.getLastValue().toCharArray())).order(
+                ByteBuffer.wrap(Hex.decodeHex(sensorValue.getLastValue().toCharArray())).order(
                         ByteOrder.LITTLE_ENDIAN), 0);
 
         _logger.debug("ByteBuffer:[{}]", Hex.encodeHexString(uidTagStruct.getByteBuffer().array()));
@@ -67,16 +70,21 @@ public class ExecuteUidTag implements Runnable {
                 sensor.getSensorId(),
                 MESSAGE_TYPE.C_SET.ordinal(), //messageType
                 0, //ack
-                sensor.getMessageType(),//subType
+                MESSAGE_TYPE_SET_REQ.V_VAR5.ordinal(),//subType
                 Hex.encodeHexString(uidTagStruct.getByteBuffer().array()),
                 true);// isTxMessage
 
         UidTag uidTag = DaoUtils.getUidTagDao().get(uidTagStruct.getUid());
         if (uidTagStruct.getStatus() == 0) {
             if (uidTag != null) {
-                uidTagStruct.setStatus(1); //Set success
-                uidTagStruct.setPayload(Integer.valueOf(uidTag.getSensor().getLastValue()));
-                rawMessage.setPayLoad(Hex.encodeHexString(uidTagStruct.getByteBuffer().array()));
+                SensorValue sensorValueDes =
+                        DaoUtils.getSensorValueDao().get(uidTag.getSensor().getId(), uidTagStruct.getType());
+                if (sensorValueDes != null) {
+                    uidTagStruct.setStatus(1); //Set success
+                    //TODO: add support for string, payload might be anything, should not restrect with Integer
+                    uidTagStruct.setPayload(Integer.valueOf(sensorValueDes.getLastValue()));
+                    rawMessage.setPayload(Hex.encodeHexString(uidTagStruct.getByteBuffer().array()));
+                }
             }
         } else if (uidTag != null) {
             RawMessage rawMessageToDevice = new RawMessage(
@@ -84,13 +92,13 @@ public class ExecuteUidTag implements Runnable {
                     uidTag.getSensor().getSensorId(),
                     MESSAGE_TYPE.C_SET.ordinal(), //messageType
                     0, //ack
-                    uidTag.getSensor().getMessageType(),//subType
+                    MESSAGE_TYPE_SET_REQ.V_VAR5.ordinal(),//subType
                     String.valueOf(uidTagStruct.getPayload()),
                     true);// isTxMessage
             ObjectFactory.getRawMessageQueue().putMessage(rawMessageToDevice);
         } else {
             uidTagStruct.setStatus(0);
-            rawMessage.setPayLoad(Hex.encodeHexString(uidTagStruct.getByteBuffer().array()));
+            rawMessage.setPayload(Hex.encodeHexString(uidTagStruct.getByteBuffer().array()));
         }
         ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
         _logger.debug("Message Sent:[{}]", rawMessage.toString());

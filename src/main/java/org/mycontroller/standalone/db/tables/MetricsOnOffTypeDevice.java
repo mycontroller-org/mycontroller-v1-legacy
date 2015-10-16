@@ -22,11 +22,11 @@ import com.j256.ormlite.field.DatabaseField;
  * @since 0.0.1
  */
 public class MetricsOnOffTypeDevice {
-    public static final String SENSOR_REF_ID = "sensor_ref_id";
+    public static final String SENSOR_VALUE_REF_ID = "sensor_value_ref_id";
     public static final String TIMESTAMP = "timestamp";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID)
-    private Sensor sensor;
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_VALUE_REF_ID)
+    private SensorValue sensorValue;
     @DatabaseField(uniqueCombo = true, canBeNull = false)
     private Long timestamp;
     @DatabaseField(canBeNull = false)
@@ -39,22 +39,22 @@ public class MetricsOnOffTypeDevice {
 
     }
 
-    public MetricsOnOffTypeDevice(Sensor sensor, Long timestamp) {
-        this(sensor, timestamp, null);
+    public MetricsOnOffTypeDevice(SensorValue sensorValue, Long timestamp) {
+        this(sensorValue, timestamp, null);
     }
 
-    public MetricsOnOffTypeDevice(Sensor sensor, Long timestamp, Boolean state) {
-        this.sensor = sensor;
+    public MetricsOnOffTypeDevice(SensorValue sensorValue, Long timestamp, Boolean state) {
+        this.sensorValue = sensorValue;
         this.state = state;
         this.timestamp = timestamp;
     }
 
-    public Sensor getSensor() {
-        return sensor;
+    public SensorValue getSensorValue() {
+        return sensorValue;
     }
 
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
+    public void setSensorValue(SensorValue sensorValue) {
+        this.sensorValue = sensorValue;
     }
 
     public Boolean getState() {

@@ -126,7 +126,7 @@ $scope, $filter, UsersFactory, $location, $modal, displayRestError) {
 myControllerModule.controller('UdeleteController', function ($scope, $modalInstance, $sce, user) {
   $scope.user = user;
   $scope.header = "Delete User";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete a User"
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a User"
     +"<br>Deletion process will remove complete trace of this user!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>User: [id:"+user.id+",userId:"+user.name +",role:"+user.role+"]</I>");

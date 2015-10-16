@@ -140,9 +140,10 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
   $scope.timer.sensor = {};
   $scope.timer.frequencyData = [];
   $scope.timer.sensor.id = sensor.id;
-  $scope.header = "Add Timer for '"+sensor.nameWithNode+"'";
+  $scope.header = "New Timer for '"+sensor.nameWithNode+"'";
   $scope.timerDays = TypesFactory.getTimerDays({allDays:true});
   $scope.timerFrequencies = TypesFactory.getTimerFrequencies();
+  $scope.variableTypes = TypesFactory.getSensorVariableTypes({id:sensor.type});
   $scope.timerTypes = TypesFactory.getTimerTypes();
   $scope.monthDays = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
   $scope.hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
@@ -185,8 +186,8 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
 
 //Delete Modal
 myControllerModule.controller('TMdeleteController', function ($scope, $modalInstance, $sce, timer) {
-  $scope.header = "Delete a Timer";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete an timer"
+  $scope.header = "Delete Timer: '"+timer.name+"'";
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete an timer"
     +"<br>Deletion process will remove complete trace of this timer!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>Timer: [Name:"+timer.name+"]</I>");
@@ -198,7 +199,7 @@ myControllerModule.controller('TMdeleteController', function ($scope, $modalInst
 
 myControllerModule.controller('TMupdateController', function ($scope, $modalInstance, timer, TypesFactory) {
   $scope.timer = timer;
-  $scope.header = "Update Timer : "+timer.name;
+  $scope.header = "Modify Timer : '"+timer.name+"'";
   $scope.sensorValueTypes = TypesFactory.getSensorValueTypes();
   //This should be changed in good way. variable3 is String and in select option values in int not matching
   if($scope.timer.type == 0){

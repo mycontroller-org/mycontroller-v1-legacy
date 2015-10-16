@@ -16,19 +16,26 @@
 package org.mycontroller.standalone.api.jaxrs.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.AlarmUtils.TRIGGER;
 import org.mycontroller.standalone.db.AlarmUtils.TYPE;
 import org.mycontroller.standalone.db.TimerUtils.FREQUENCY;
 import org.mycontroller.standalone.db.TimerUtils.WEEK_DAY;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_STREAM;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -160,5 +167,134 @@ public class TypesUtils {
         types.add("cardinal-open");
         types.add("cardinal-closed");
         return types;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getSensorVariableTypes(int sensorType, String tickDisplayNames) {
+        List<SensorsVariablesMap> variableTypes = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        List<String> tickNames = null;
+        if (tickDisplayNames != null) {
+            tickNames = Arrays.asList(tickDisplayNames.split(SensorUtils.VARIABLE_TYPE_SPLITER));
+        }
+        for (SensorsVariablesMap variableType : variableTypes) {
+            boolean isTicked = false;
+            if (tickDisplayNames != null) {
+                if (tickNames.contains(variableType.getVariableTypeString())) {
+                    isTicked = true;
+                }
+            }
+            typesIdNameMappers.add(new TypesIdNameMapper(
+                    variableType.getVariableType(), variableType.getVariableTypeString(), isTicked));
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getSensorVariableTypesAll(int sensorTypeId) {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        List<SensorsVariablesMap> variablesMap = DaoUtils.getSensorsVariablesMapDao().getAll(sensorTypeId);
+        String variables = null;
+        for (SensorsVariablesMap variableMap : variablesMap) {
+            if (variables != null) {
+                variables += SensorUtils.VARIABLE_TYPE_SPLITER + variableMap.getVariableTypeString();
+            } else {
+                variables = variableMap.getVariableTypeString();
+            }
+        }
+
+        MESSAGE_TYPE_SET_REQ[] types = MESSAGE_TYPE_SET_REQ.values();
+        for (MESSAGE_TYPE_SET_REQ type : types) {
+            typesIdNameMappers.add(new TypesIdNameMapper(
+                    type.ordinal(),
+                    type.name(),
+                    variables != null ? variables.contains(type.toString()) : false));
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getMessageTypes() {
+        MESSAGE_TYPE[] types = MESSAGE_TYPE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (MESSAGE_TYPE type : types) {
+            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getMessageSubTypes(int messageType) {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        switch (MESSAGE_TYPE.get(messageType)) {
+            case C_INTERNAL:
+                MESSAGE_TYPE_INTERNAL[] typesInt = MESSAGE_TYPE_INTERNAL.values();
+                for (MESSAGE_TYPE_INTERNAL type : typesInt) {
+                    typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+                }
+                break;
+            case C_PRESENTATION:
+                MESSAGE_TYPE_PRESENTATION[] typesPre = MESSAGE_TYPE_PRESENTATION.values();
+                for (MESSAGE_TYPE_PRESENTATION type : typesPre) {
+                    typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+                }
+                break;
+            case C_REQ:
+            case C_SET:
+                MESSAGE_TYPE_SET_REQ[] typesSetReq = MESSAGE_TYPE_SET_REQ.values();
+                for (MESSAGE_TYPE_SET_REQ type : typesSetReq) {
+                    typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+                }
+                break;
+            case C_STREAM:
+                MESSAGE_TYPE_STREAM[] typesStr = MESSAGE_TYPE_STREAM.values();
+                for (MESSAGE_TYPE_STREAM type : typesStr) {
+                    typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+                }
+                break;
+            default:
+                break;
+        }
+
+        return typesIdNameMappers;
+    }
+
+    public static List<KeyValueJson> getVariableMapperList() {
+        List<KeyValueJson> keyValueJsons = new ArrayList<KeyValueJson>();
+        StringBuilder builder = new StringBuilder();
+        MESSAGE_TYPE_PRESENTATION[] types = MESSAGE_TYPE_PRESENTATION.values();
+        for (MESSAGE_TYPE_PRESENTATION type : types) {
+            if (!type.name().contains(NODE_IDENTIFIER)) {
+                builder.setLength(0);
+                List<SensorsVariablesMap> variablesMap = DaoUtils.getSensorsVariablesMapDao().getAll(type.ordinal());
+                if (variablesMap != null) {
+                    for (SensorsVariablesMap sensorsVariablesMap : variablesMap) {
+                        if (builder.length() != 0) {
+                            builder.append(SensorUtils.VARIABLE_TYPE_SPLITER).append(
+                                    sensorsVariablesMap.getVariableTypeString());
+                        } else {
+                            builder.append(sensorsVariablesMap.getVariableTypeString());
+                        }
+                    }
+                }
+                keyValueJsons.add(new KeyValueJson(
+                        type.toString(),
+                        builder.toString(),
+                        type.ordinal(),
+                        org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson.TYPE.VARIABLE_MAPPER));
+            }
+        }
+        return keyValueJsons;
+    }
+
+    public static void updateVariableMap(KeyValueJson keyValue) {
+        //Delete existing map
+        int sensorType = MESSAGE_TYPE_PRESENTATION.valueOf(keyValue.getKey()).ordinal();
+        DaoUtils.getSensorsVariablesMapDao().delete(sensorType);
+        if (keyValue.getValue() != null && keyValue.getValue().length() > 0) {
+            //Create New Map
+            String[] variables = keyValue.getValue().split(SensorUtils.VARIABLE_TYPE_SPLITER);
+            for (String variable : variables) {
+                DaoUtils.getSensorsVariablesMapDao().create(
+                        sensorType,
+                        MESSAGE_TYPE_SET_REQ.valueOf(variable).ordinal());
+            }
+        }
     }
 }

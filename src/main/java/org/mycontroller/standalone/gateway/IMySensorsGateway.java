@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.gateway;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
 import org.mycontroller.standalone.mysensors.RawMessage;
 
 /**
@@ -30,4 +31,6 @@ public interface IMySensorsGateway {
     void write(RawMessage rawMessage) throws MySensorsGatewayException;
 
     void close();
+
+    GatewayInfo getGatewayInfo();
 }

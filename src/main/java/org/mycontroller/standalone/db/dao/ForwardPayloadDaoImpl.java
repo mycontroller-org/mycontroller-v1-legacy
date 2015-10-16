@@ -48,10 +48,10 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDao<ForwardPayload, Integ
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Integer id) {
         ForwardPayload forwardPayload = new ForwardPayload(id);
         try {
-            int count = this.getDao().delete(forwardPayload);
+            Integer count = this.getDao().delete(forwardPayload);
             _logger.debug("ForwardPayload:[{}] deleted, Delete count:{}", forwardPayload, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete ForwardPayload:[{}]", forwardPayload, ex);
@@ -59,11 +59,12 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDao<ForwardPayload, Integ
     }
 
     @Override
-    public void deleteBySensorRefId(int sensorRefId) {
+    public void deleteBySensorRefId(Integer sensorRefId) {
         try {
             DeleteBuilder<ForwardPayload, Integer> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId).or().eq(ForwardPayload.FORWARD_SENSOR_REF_ID, sensorRefId);
-            int deleteCount = deleteBuilder.delete();
+            deleteBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId).or()
+                    .eq(ForwardPayload.FORWARD_SENSOR_REF_ID, sensorRefId);
+            Integer deleteCount = deleteBuilder.delete();
             _logger.debug("Deleted sensorRefId:[{}], delete count:{}", sensorRefId, deleteCount);
         } catch (SQLException ex) {
             _logger.error("unable to delete sensorRefId:{}", sensorRefId, ex);
@@ -81,13 +82,23 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDao<ForwardPayload, Integ
     }
 
     @Override
-    public List<ForwardPayload> getAll(int sensorRefId) {
+    public List<ForwardPayload> getAll(Integer sensorRefId) {
+        return this.getAll(sensorRefId, null);
+    }
+
+    @Override
+    public List<ForwardPayload> getAll(Integer sensorRefId, Integer sourceType) {
         try {
             QueryBuilder<ForwardPayload, Integer> queryBuilder = this.getDao().queryBuilder();
-            queryBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId);
+            if (sourceType != null) {
+                queryBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId).and()
+                        .eq(ForwardPayload.SOURCE_TYPE, sourceType);
+            } else {
+                queryBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId);
+            }
             return queryBuilder.query();
         } catch (SQLException ex) {
-            _logger.error("unable to fetch sensorRefId{}", sensorRefId, ex);
+            _logger.error("unable to fetch sensorRefId{}, sourceType", sensorRefId, sourceType, ex);
         }
         return null;
     }

@@ -18,9 +18,11 @@ package org.mycontroller.standalone.db;
 import org.mycontroller.standalone.db.tables.Alarm;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorLog;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.mysensors.RawMessage;
 
@@ -108,7 +110,7 @@ public class SensorLogUtils {
         DaoUtils.getSensorLogDao().add(sensorLog);
     }
 
-    public static void setSensorData(Sensor sensor, Boolean dataSent, String errorMsg) {
+    public static void setSensorData(Sensor sensor, Boolean dataSent, SensorValue sensorValue, String errorMsg) {
         SensorLog sensorLog = new SensorLog(
                 sensor.getId(),
                 System.currentTimeMillis(),
@@ -123,7 +125,8 @@ public class SensorLogUtils {
         }
         buffer.append("[NodeId:").append(sensor.getNode().getId())
                 .append(", SensorId:").append(sensor.getSensorId())
-                .append(", PayLoad: ").append(sensor.getStatus()).append("]");
+                .append(", Type:").append(MESSAGE_TYPE_SET_REQ.get(sensorValue.getVariableType()))
+                .append(", PayLoad: ").append(sensorValue.getLastValue()).append("]");
         if (errorMsg != null) {
             buffer.append(", Error:").append(errorMsg);
         }
@@ -145,7 +148,7 @@ public class SensorLogUtils {
         buffer.append("]");
         buffer.append(", [NodeId:").append(rawMessage.getNodeId()).append(", SensorId:")
                 .append(rawMessage.getChildSensorId())
-                .append(", PayLoad: ").append(rawMessage.getPayLoad()).append("]");
+                .append(", PayLoad: ").append(rawMessage.getPayload()).append("]");
         if (errorMsg != null) {
             buffer.append(", Error: ").append(errorMsg);
 

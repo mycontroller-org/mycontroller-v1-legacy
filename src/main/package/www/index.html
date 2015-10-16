@@ -69,7 +69,6 @@
       .battery-modal-window .modal-dialog {
         width: 95%;
       }
-      
     </style>
 
   </head>
@@ -77,6 +76,13 @@
     <style>
       body { padding-top: 13px; padding-bottom: 70px;}
       .tick line { display: none; }
+      .modal-body {position: relative; padding-top: 20px; padding-right: 10px; padding-bottom: 2px; padding-left: 10px;}
+      .modal-body-text-only {position: relative; padding: 5px 20px;}
+      .modal-header { background-color: rgba(0, 0, 0, 0.07);}
+      .modal-footer {padding: 12px;}
+      .mc-dialog {/*border-style: solid; border-width: 1px; border-color: #D3D3D3;*/}
+      .panel-body-action-board {padding-top: 3px;}
+      .multiSelect > button {font-size: 12px; min-height: 35px !important; border-radius: 0px;}
     </style>
 
     <nav class="navbar navbar-default navbar-fixed-top" ng-controller="McNavBarCtrl">
@@ -98,20 +104,29 @@
             <li ng-class="{ active: isActive('/nodes')}"><a data-toggle="collapse" data-target="#mcMainMenu.in" href="#/nodes" ><i class="fa fa-sitemap fa-lg"></i> Nodes</a></li>
             <li ng-class="{ active: isActive('/sensors')}"><a href="#/sensors" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-eye fa-lg"></i> Sensors</a></li>
             <li ng-class="{ active: isActive('/sensorsaction')}"><a href="#/sensorsaction" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-magic fa-lg"></i> Action Board</a></li>
-            <li ng-class="{ active: isActive('/uidtag')}"><a href="#/uidtag" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-tags fa-lg"></i> UID Tag</a></li>
             
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="">More <span class="caret"></span></a>
+              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-cube fa-lg"></i> Utils <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li ng-class="{ active: isActive('/settings')}"><a href="#/settings" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-cogs fa-lg"></i> System Settings</a></li>
-                <li ng-class="{ active: isActive('/users')}"><a href="#/users" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-users fa-lg"></i> Users</a></li>
+                <li ng-class="{ active: isActive('/sendRawMessage')}"><a href="#/sendRawMessage" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-barcode fa-lg"></i> Send Raw Message</a></li>
+                <li ng-class="{ active: isActive('/uidtag')}"><a href="#/uidtag" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-tags fa-lg"></i> UID Tag</a></li>
+                <li ng-class="{ active: isActive('/variableMapper')}"><a href="#/variableMapper" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-clone fa-lg"></i> Variable Mapper</a></li>
                 <li class="divider"></li>
                 <li ng-class="{ active: isActive('/firmwareType')}"><a href="#/firmwareType" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware Type</a></li>
                 <li ng-class="{ active: isActive('/firmwareVersion')}"><a href="#/firmwareVersion" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware Version</a></li>
                 <li ng-class="{ active: isActive('/firmware')}"><a href="#/firmware" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware</a></li>
                 <li class="divider"></li>
+                <li ng-class="{ active: isActive('/users')}"><a href="#/users" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-users fa-lg"></i> Users</a></li>
+                <li ng-class="{ active: isActive('/settings')}"><a href="#/settings" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-cogs fa-lg"></i> System Settings</a></li>
+              </ul>
+            </li>
+                        
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-file-text-o fa-lg"></i> Status <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li ng-class="{ active: isActive('/gatewaystatus')}"><a href="#/gatewaystatus" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-plug fa-lg"></i> Gateway</a></li>
+                <li ng-class="{ active: isActive('/systemstatus')}"><a href="#/systemstatus" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-heartbeat fa-lg"></i> System Status</a></li>
                 <li ng-class="{ active: isActive('/logs')}"><a href="#/logs" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-list fa-lg"></i> Logs</a></li>
-                <li ng-class="{ active: isActive('/status')}"><a href="#/status" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-heartbeat fa-lg"></i> System Status</a></li>
               </ul>
             </li>
             
@@ -194,6 +209,8 @@
     <script src="controllers/firmwaresType.js"></script>
     <script src="controllers/firmwaresVersion.js"></script>
     <script src="controllers/status.js"></script>
+    <script src="controllers/rawMessage.js"></script>
+    <script src="controllers/variableMapper.js"></script>
   
   </body>
 </html>

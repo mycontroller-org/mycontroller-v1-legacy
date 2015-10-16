@@ -103,11 +103,19 @@ myControllerModule.controller('PPMaddController', function ($scope, $modalInstan
   $scope.plProxy.sensorDestination.node = {};
   $scope.plProxy.sensorSource.id = sensor.id;
   $scope.nodes = TypesFactory.getNodes();
-      //Update sensors
+  $scope.sourceSensorVariableTypes = TypesFactory.getSensorVariableTypesBySensorRefId({id: sensor.id});
+  
+  //Update sensors
   $scope.refreshSensors = function(nodeId){
       return TypesFactory.getSensors({id: nodeId});
   };
-  $scope.header = "Add Forward Payload entry for '"+sensor.nameWithNode+"'";
+  
+  //Updated Variable Types
+  $scope.refreshVariableTypes = function(sensorRefId){
+      return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
+  };
+  
+  $scope.header = "New Forward Payload entry for '"+sensor.nameWithNode+"'";
   $scope.add = function() {$modalInstance.close($scope.plProxy); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
@@ -115,10 +123,9 @@ myControllerModule.controller('PPMaddController', function ($scope, $modalInstan
 //Delete Modal
 myControllerModule.controller('PPMdeleteController', function ($scope, $modalInstance, $sce, plProxy) {
   $scope.header = "Delete a Forward Payload entry";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete an timer"
-    +"<br>Deletion process will remove complete trace of this timer!" 
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a forward entry"
     +"<br>Click 'Delete' to proceed."
-    +"<br><I>Timer: [Name:"+plProxy.sensorDestination.nameWithNode+"]</I>");
+    +"<br>Sensor Name: ["+plProxy.sensorDestination.nameWithNode+"]");
   $scope.remove = function() {
     $modalInstance.close(plProxy);
   };

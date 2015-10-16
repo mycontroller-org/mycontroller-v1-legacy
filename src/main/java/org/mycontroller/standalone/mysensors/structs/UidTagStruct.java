@@ -25,6 +25,7 @@ import javolution.io.Struct;
  */
 public class UidTagStruct extends Struct {
     private Unsigned16 uid = new Unsigned16();
+    private Unsigned16 type = new Unsigned16();
     private Unsigned16 status = new Unsigned16();
     private Unsigned16 payload = new Unsigned16();
 
@@ -47,6 +48,7 @@ public class UidTagStruct extends Struct {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("UID: ").append(uid);
+        builder.append(", Type: ").append(type);
         builder.append(", Status: ").append(status);
         builder.append(", Payload: ").append(payload);
         return builder.toString();
@@ -62,5 +64,13 @@ public class UidTagStruct extends Struct {
 
     public void setPayload(int payload) {
         this.payload.set(payload);
+    }
+
+    public int getType() {
+        return type.get();
+    }
+
+    public void setType(int type) {
+        this.type.set(type);
     }
 }

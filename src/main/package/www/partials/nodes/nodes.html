@@ -44,7 +44,7 @@
           <td at-implicit at-sortable at-attribute="version"></td>
 					<td at-implicit at-sortable at-attribute="mySensorsVersion" at-title="MySensors Version"></td>
           <td at-sortable at-title="Battery Level (%)">
-            <i ng-hide="item.batteryLevel =='-'" class="fa fa-battery-{{(item.batteryLevel/22) | number:0}}">
+            <i ng-hide="item.batteryLevel =='-'" class="fa fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}">
               {{item.batteryLevel}} %
               <a ng-click="displayBatteryLevel(item)" tooltip="Graphical Report" href=''><i class="fa fa-line-chart"></i></a>
             </i>

@@ -100,6 +100,11 @@ myControllerModule.controller('UTMaddController', function ($scope, $modalInstan
   $scope.refreshSensors = function(nodeId){
       return TypesFactory.getSensors({id: nodeId});
   };
+  
+  $scope.refreshVariableTypes = function(sensorRefId){
+      return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
+  };
+  
   $scope.header = "Add new UID entry";
   $scope.add = function() {$modalInstance.close($scope.uidTag); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }

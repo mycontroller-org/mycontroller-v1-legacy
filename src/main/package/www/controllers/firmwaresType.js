@@ -128,7 +128,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
 myControllerModule.controller('FTMdeleteController', function ($scope, $modalInstance, $sce, firmwareType) {
   $scope.firmwareType = firmwareType;
   $scope.header = "Delete Firmware Type";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete a Firmware Type"
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Firmware Type"
     +"<br>Deletion process will remove complete trace of this firmwareType!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>Firmware Type: </I>[id:"+firmwareType.id+",name:"+firmwareType.name +"]");

@@ -49,7 +49,7 @@ public class NodeDiscover implements Runnable {
         rawMessage.setMessageType(MESSAGE_TYPE.C_INTERNAL.ordinal());
         rawMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_REBOOT.ordinal());
         rawMessage.setTxMessage(true);
-        rawMessage.setPayLoad("");
+        rawMessage.setPayload("");
 
         try {
             int nodeId = NODE_ID_MIN;

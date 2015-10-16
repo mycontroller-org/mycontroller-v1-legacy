@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.gateway.mqtt;
 
+import java.util.HashMap;
+
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -22,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
 import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.gateway.MySensorsGatewayException;
 import org.mycontroller.standalone.mysensors.RawMessage;
@@ -41,12 +44,24 @@ public class MqttGatewayImpl implements IMySensorsGateway {
     public static final int KEEP_ALIVE = 1000 * 5;
     public static final String CLIENT_ID = "MC";
     public static final int MY_SENSORS_QOS = 0;
+    private GatewayInfo gatewayInfo = new GatewayInfo();
 
     private IMqttClient mqttClient;
     private MqttCallbackListener mqttCallbackListener;
 
     public MqttGatewayImpl() {
         try {
+            //Update Gateway Info
+            gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
+            gatewayInfo.setData(new HashMap<String, Object>());
+
+            gatewayInfo.getData().put(MqttGatewayCommon.IP,
+                    ObjectFactory.getAppProperties().getMqttGatewayBrokerHost());
+            gatewayInfo.getData().put(MqttGatewayCommon.PORT,
+                    ObjectFactory.getAppProperties().getMqttGatewayBrokerPort());
+            gatewayInfo.getData().put(MqttGatewayCommon.TOPIC,
+                    ObjectFactory.getAppProperties().getMqttGatewayBrokerRootTopic());
+
             mqttClient = new MqttClient(
                     "tcp://" + ObjectFactory.getAppProperties().getMqttGatewayBrokerHost() + ":"
                             + ObjectFactory.getAppProperties().getMqttGatewayBrokerPort(), CLIENT_ID);
@@ -58,7 +73,9 @@ public class MqttGatewayImpl implements IMySensorsGateway {
             mqttClient.setCallback(mqttCallbackListener);
             mqttClient.subscribe(ObjectFactory.getAppProperties().getMqttGatewayBrokerRootTopic() + "/#");
             _logger.info("MQTT Gateway[{}] connected successfully..", mqttClient.getServerURI());
+            gatewayInfo.getData().put(MqttGatewayCommon.CONNECTION_STATUS, "Connected Successfully");
         } catch (MqttException ex) {
+            gatewayInfo.getData().put(MqttGatewayCommon.CONNECTION_STATUS, "ERROR: " + ex.getMessage());
             _logger.error(
                     "Unable to connect with MQTT broker gateway[{}], Reason Code: {}, Reboot '{}' service once MQTT Broker gateway comes UP!",
                     mqttClient.getServerURI(), ex.getReasonCode(), AppProperties.APPLICATION_NAME, ex);
@@ -67,9 +84,9 @@ public class MqttGatewayImpl implements IMySensorsGateway {
 
     @Override
     public synchronized void write(RawMessage rawMessage) throws MySensorsGatewayException {
-        _logger.debug("Message to send, Topic:[{}], PayLoad:[{}]", rawMessage.getMqttTopic(), rawMessage.getPayLoad());
+        _logger.debug("Message to send, Topic:[{}], PayLoad:[{}]", rawMessage.getMqttTopic(), rawMessage.getPayload());
         try {
-            MqttMessage message = new MqttMessage(rawMessage.getPayLoadBytes());
+            MqttMessage message = new MqttMessage(rawMessage.getPayloadBytes());
             message.setQos(MY_SENSORS_QOS);
             mqttClient.publish(rawMessage.getMqttTopic(), message);
         } catch (MqttException ex) {
@@ -93,6 +110,11 @@ public class MqttGatewayImpl implements IMySensorsGateway {
         } catch (Exception ex) {
             _logger.error("Exception,", ex);
         }
+    }
+
+    @Override
+    public GatewayInfo getGatewayInfo() {
+        return gatewayInfo;
     }
 
 }

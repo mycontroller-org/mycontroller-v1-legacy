@@ -25,8 +25,14 @@ import org.mycontroller.standalone.db.tables.ForwardPayload;
  */
 public interface ForwardPayloadDao {
     void create(ForwardPayload forwardPayload);
-    void delete(int id);
-    void deleteBySensorRefId(int sensorRefId);
+
+    void delete(Integer id);
+
+    void deleteBySensorRefId(Integer sensorRefId);
+
     List<ForwardPayload> getAll();
-    List<ForwardPayload> getAll(int sensorRefId);
+
+    List<ForwardPayload> getAll(Integer sensorRefId);
+
+    List<ForwardPayload> getAll(Integer sensorRefId, Integer sourceType);
 }

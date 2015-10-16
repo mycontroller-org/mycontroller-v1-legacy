@@ -15,14 +15,16 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UidTag {
     public static final String SENSOR_REF_ID = "sensor_ref_id";
     public static final String STARTS_WITH = "uid";
@@ -41,15 +43,22 @@ public class UidTag {
         this.sensor = sensor;
     }
 
-    @DatabaseField(canBeNull = false, uniqueIndex = true, id = true)
+    @DatabaseField(canBeNull = false, unique = true, id = true)
     private Integer uid;
 
-    @DatabaseField(canBeNull = false, foreign = true, unique = true, columnName = SENSOR_REF_ID,
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID,
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Sensor sensor;
 
+    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    private Integer variableType;
+
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        StringBuilder builder = new StringBuilder();
+        builder.append("UID:").append(this.uid);
+        builder.append(", Sensor:[").append(this.sensor).append("]");
+        builder.append(", Variable Type:").append(this.variableType);
+        return builder.toString();
     }
 
     public Integer getUid() {
@@ -66,5 +75,20 @@ public class UidTag {
 
     public void setSensor(Sensor sensor) {
         this.sensor = sensor;
+    }
+
+    public Integer getVariableType() {
+        return variableType;
+    }
+
+    public String getVariableTypeString() {
+        if (this.variableType != null) {
+            return MESSAGE_TYPE_SET_REQ.get(this.variableType).toString();
+        }
+        return null;
+    }
+
+    public void setVariableType(Integer variableType) {
+        this.variableType = variableType;
     }
 }

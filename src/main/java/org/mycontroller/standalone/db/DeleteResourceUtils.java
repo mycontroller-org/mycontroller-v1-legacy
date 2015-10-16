@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.slf4j.Logger;
@@ -44,9 +45,11 @@ public class DeleteResourceUtils {
         //Delete Alarm list
         DaoUtils.getAlarmDao().deleteBySensorRefId(sensor.getId());
 
-        //Delete from metrics table
-        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorRefId(sensor.getId());
-        DaoUtils.getMetricsOnOffTypeDeviceDao().deleteBySensorRefId(sensor.getId());
+        //Delete all variable Types
+        List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAll(sensor.getId());
+        for (SensorValue sensorValue : sensorValues) {
+            deleteSensorValue(sensorValue);
+        }
 
         //Clear Forward Payload Table
         DaoUtils.getForwardPayloadDao().deleteBySensorRefId(sensor.getId());
@@ -61,6 +64,15 @@ public class DeleteResourceUtils {
         DaoUtils.getSensorDao().delete(sensor);
         _logger.debug("Deleted sensor trace for sensor:[{}]", sensor);
 
+    }
+
+    public static void deleteSensorValue(SensorValue sensorValue) {
+        //Delete from metrics table
+        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorRefId(sensorValue.getId());
+        DaoUtils.getMetricsOnOffTypeDeviceDao().deleteBySensorRefId(sensorValue.getId());
+
+        //Delete SensorValue entry
+        DaoUtils.getSensorValueDao().delete(sensorValue);
     }
 
     public static void deleteNode(Node node) {

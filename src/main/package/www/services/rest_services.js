@@ -25,7 +25,9 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     update: { method: 'PUT' },
     delete: { method: 'DELETE', params: {sensorId: '@sensorId'} },
     getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
-    sendPayload: { method: 'POST', params: {sensorId: '@payload'} }
+    sendPayload: { method: 'POST'},
+    getOthers: { method: 'GET', isArray: true, params: {nodeId: 'getOthers'}},
+    updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}}
   })
 });
 
@@ -78,7 +80,14 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getTimerTypes:  { method: 'GET', isArray: true, params: {type: 'timerTypes'}  },
     getTimerFrequencies:  { method: 'GET', isArray: true, params: {type: 'timerFrequencies'}  },
     getTimerDays:  { method: 'GET', isArray: true, params: {type: 'timerDays'}  },
-    getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  }
+    getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  },
+    getSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypes'}  },
+    getSensorVariableTypesAll:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesAll'}  },    
+    getSensorVariableTypesBySensorRefId:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesBySenRef'}  },
+    getMessageTypes:  { method: 'GET', isArray: true, params: {type: 'messageTypes'}  },
+    getMessageSubTypes:  { method: 'GET', isArray: true, params: {type: 'messageSubTypes'} },
+    getSensorVariableMapper:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapper'} },
+    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} },  
   })
 });
 
@@ -229,13 +238,9 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
 myControllerModule.factory('StatusFactory', function ($resource) {
   return $resource('/mc/rest/:type', {}, {
    getOsStatus: { method: 'GET', params: {type:'osStatus'} },
-   getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} }
-  })
-});
-
-//About Services
-myControllerModule.factory('AboutFactory', function ($resource) {
-  return $resource('/mc/rest/about', {}, {
-    about:  { method: 'GET'}
+   getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
+   about: { method: 'GET', params: {type:'about'} },
+   getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
+   sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
   })
 });

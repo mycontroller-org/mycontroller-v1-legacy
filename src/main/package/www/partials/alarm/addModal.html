@@ -17,108 +17,74 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
+  
   <div class="modal-body">
    
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
+  <form class="form-horizontal form-group-sm" role="form" name="form">
+    
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="alarm.name">Name:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="alarm.name" placeholder="Alarm Name" ng-model="alarm.name" required>
-      </div>
+      <input style="width:320px" type="text" class="form-control" id="alarm.name" placeholder="Alarm Name" ng-model="alarm.name" required>
     </div>
     
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="alarm.trigger">Trigger When Value:</label>
-        <div class="input-group">
-          <div class="col-sm-4">
-            <select class="form-control" ng-options="alarmTrigger.id as alarmTrigger.displayName for alarmTrigger in alarmTriggers" ng-model="alarm.trigger" required></select>
-          </div>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" id="alarm.thresholdValue" placeholder="Threshold Value" ng-model="alarm.thresholdValue" required>
-          </div>
-      </div>
+      <select style="width:150px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
+        ng-model="alarm.variableType" required></select>
+      <select style="width:65px" class="form-control" ng-options="alarmTrigger.id as alarmTrigger.displayName for alarmTrigger in alarmTriggers" ng-model="alarm.trigger" required></select>
+      <input style="width:95px" type="text" style="width:60px" class="form-control" id="alarm.thresholdValue" placeholder="Threshold" ng-model="alarm.thresholdValue" required>
     </div>
     
-    <div class="form-group">
-      <label class=" control-label col-sm-3 checkbox">Ignore Duplicate</label>
-      <div class="col-sm-6">          
-        <input type="checkbox" ng-model="alarm.ignoreDuplicate">
-      </div>
+    <div class="form-group form-inline">
+      <label class=" control-label col-sm-3 checkbox">Ignore Duplicate:</label>
+      <input type="checkbox" ng-model="alarm.ignoreDuplicate">
     </div>
     
     <legend></legend>
     
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="alarm.dampeningType">Dampening:</label>
-      <div class="col-sm-6">
-        <select class="form-control" ng-options="alarmDampeningType.id as alarmDampeningType.displayName for alarmDampeningType in alarmDampeningTypes" ng-model="alarm.dampeningType" required></select>
-      </div>
-    </div>
-    
-    <div class="form-group" ng-show="alarm.dampeningType == 1 || alarm.dampeningType == 2">
-      <label class="control-label col-sm-3" for="alarm.dampeningVar1">Occurrences:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="alarm.dampeningVar1" placeholder="Occurrences" ng-model="alarm.dampeningVar1" ng-required="alarm.dampeningType == 1 || alarm.dampeningType == 2">
-      </div>
-    </div>
-    
-    <div class="form-group" ng-show="alarm.dampeningType == 2">
-      <label class="control-label col-sm-3" for="alarm.dampeningVar2">Evaluations:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="alarm.dampeningVar2" placeholder="Evaluations" ng-model="alarm.dampeningVar2" ng-required="alarm.dampeningType == 2">
-      </div>
+      <select style="width:130px" class="form-control" ng-options="alarmDampeningType.id as alarmDampeningType.displayName for alarmDampeningType in alarmDampeningTypes" ng-model="alarm.dampeningType" required></select>
+      <input style="width:90px" ng-show="alarm.dampeningType > 0" type="text" class="form-control" id="alarm.dampeningVar1" placeholder="Occurrences" ng-model="alarm.dampeningVar1" ng-required="alarm.dampeningType == 1 || alarm.dampeningType == 2">
+      <input style="width:90px" ng-show="alarm.dampeningType == 2" type="text" class="form-control" id="alarm.dampeningVar2" placeholder="Evaluations" ng-model="alarm.dampeningVar2" ng-required="alarm.dampeningType == 2">
     </div>
     
     <legend></legend>
     
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="alarm.type">Notification Type:</label>
-      <div class="col-sm-6">
-        <select class="form-control" ng-options="notification.id as notification.displayName for notification in alarmNotifications" ng-model="alarm.type" required></select>
-      </div>
+      <select style="width:150px" class="form-control" ng-options="notification.id as notification.displayName for notification in alarmNotifications" ng-model="alarm.type" required></select>
     </div>
     
-    <div class="form-group" ng-show="alarm.type == 2">
+    <div class="form-group form-inline" ng-show="alarm.type == 2">
       <label class="control-label col-sm-3" for="alarm.variable1">Email(s):</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="alarm.variable1" placeholder="Email(s) comma seperated values" ng-model="alarm.variable1">
-      </div>
+      <input style="width:320px" type="text" class="form-control" id="alarm.variable1" placeholder="Email(s) comma seperated values" ng-model="alarm.variable1">
     </div>
     
-    <div class="form-group" ng-show="alarm.type == 1">
+    <div class="form-group form-inline" ng-show="alarm.type == 1">
       <label class="control-label col-sm-3" for="alarm.variable1">Phone Number(s):</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="alarm.variable1" placeholder="Phone number(s) comma seperated" ng-model="alarm.variable1">
-      </div>
+      <input style="width:320px" type="text" class="form-control" id="alarm.variable1" placeholder="Phone number(s) comma seperated" ng-model="alarm.variable1">
     </div>
 
-    <div class="form-group" ng-show="alarm.type == 0">
-      <label class="control-label col-sm-3">Node:</label>
-      <div class="col-sm-6">          
-        <select class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-model="nodeId" ng-change="sensors = refreshSensors(nodeId)"></select>
-      </div>
+    <div class="form-group form-inline" ng-show="alarm.type == 0">
+      <label class="control-label col-sm-3">Node / Sensor:</label>
+      <select style="width:150px" class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-model="nodeId" ng-change="sensors = refreshSensors(nodeId)"></select>
+      <select style="width:150px" class="form-control" ng-options="sensor.id as sensor.displayName for sensor in sensors" ng-model="alarm.variable1" ng-change="sendPayloadVariableTypes = refreshVariableTypes(alarm.variable1)"></select>
     </div>
-    
-    <div class="form-group" ng-show="alarm.type == 0">
-      <label class="control-label col-sm-3" for="alarm.variable1">Sensor:</label>
-      <div class="col-sm-6">          
-        <select class="form-control" ng-options="sensor.id as sensor.displayName for sensor in sensors" ng-model="alarm.variable1"></select>
-      </div>
-    </div>
-    
-    <div class="form-group" ng-show="alarm.type == 0">
-      <label class="control-label col-sm-3" for="alarm.variable2">Pay Load:</label>
-      <div class="col-sm-6">          
-        <input type="text" tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="top" class="form-control" id="alarm.variable2" placeholder="Payload" ng-model="alarm.variable2">
-      </div>
+
+    <div class="form-group form-inline" ng-show="alarm.type == 0">
+      <label class="control-label col-sm-3">Type / Payload:</label>
+      <select style="width:150px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in sendPayloadVariableTypes | orderBy:'displayName'" 
+        ng-model="alarm.variable2"></select>
+      <input style="width:150px" type="text" tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="top" class="form-control" id="alarm.variable3" placeholder="Payload" ng-model="alarm.variable3">
     </div>
    
   </form>
   
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
   </div>
 </div>

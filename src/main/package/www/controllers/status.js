@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('StatusController', function(alertService,
+myControllerModule.controller('SystemStatusController', function(alertService,
 $scope, $filter, StatusFactory, $location, $modal, $stateParams, displayRestError) {
   
   $scope.config = {
@@ -32,5 +32,22 @@ $scope, $filter, StatusFactory, $location, $modal, $stateParams, displayRestErro
                     },function(error){
                       displayRestError.display(error);            
                     });  
+  
+});
+
+myControllerModule.controller('GatewayStatusController', function(alertService,
+$scope, $filter, StatusFactory, $location, $modal, $stateParams, displayRestError) {
+  
+  $scope.config = {
+    itemsPerPage: 100,
+    maxPages:1,
+    fillLastPage: false
+  }
+
+  //Gateway Information
+   $scope.gatewayInfo = StatusFactory.getGatewayInfo(function(response) {
+                    },function(error){
+                      displayRestError.display(error);            
+                    }); 
   
 });
