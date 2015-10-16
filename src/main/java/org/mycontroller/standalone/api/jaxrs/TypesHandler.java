@@ -147,6 +147,12 @@ public class TypesHandler {
     }
 
     @GET
+    @Path("/graphSensorVariableTypes/{sensorRefId}")
+    public Response getGraphSensorVariableTypes(@PathParam("sensorRefId") int sensorRefId) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGraphSensorVariableTypes(sensorRefId));
+    }
+
+    @GET
     @Path("/messageTypes")
     public Response getMessageTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getMessageTypes());

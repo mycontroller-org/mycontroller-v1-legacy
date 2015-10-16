@@ -203,4 +203,10 @@ public class SensorHandler {
         ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
         return RestUtils.getResponse(Status.OK);
     }
+
+    @GET
+    @Path("sensorValue/{sensorValueId}")
+    public Response getSensorValue(@PathParam("sensorValueId") int sensorValueId) {
+        return RestUtils.getResponse(Status.OK, DaoUtils.getSensorValueDao().get(sensorValueId));
+    }
 }

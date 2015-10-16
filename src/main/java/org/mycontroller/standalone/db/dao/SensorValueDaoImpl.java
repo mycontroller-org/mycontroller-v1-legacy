@@ -197,6 +197,16 @@ public class SensorValueDaoImpl extends BaseAbstractDao<SensorValue, Integer> im
         }
     }
 
+    @Override
+    public SensorValue get(int id) {
+        try {
+            return this.getDao().queryForId(id);
+        } catch (SQLException ex) {
+            _logger.error("unable to get", ex);
+            return null;
+        }
+    }
+
     private void nodeIdSensorIdnullCheck(Integer sensorRefId, Integer messageVariableTypeId) throws DbException {
         if (sensorRefId != null && messageVariableTypeId != null) {
             return;

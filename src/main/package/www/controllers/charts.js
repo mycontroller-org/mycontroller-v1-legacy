@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory) {
+myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, TypesFactory, SensorsFactory) {
+  
+  
+  $scope.variableTypes = TypesFactory.getGraphSensorVariableTypes({id:$stateParams.sensorId});
+  
+  $scope.variableType = {};
+  
+  //Update SensorValue
+  $scope.updateSensorValue = function(variableTypeId){
+    if(variableTypeId == null){
+      return;
+    }
+       $scope.variableType = SensorsFactory.getSensorValue({sensorId:variableTypeId});
+ 
   
   //http://krispo.github.io/angular-nvd3
   //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
@@ -71,7 +84,7 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
   
   $scope.sensor.$promise.then(function (sensor) {
     $scope.sensor = sensor;
-    if($scope.sensor.metricType === 0){
+    if($scope.variableType.metricType == 1){
     var yAxisD3Format=',.2f';
     var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
     var chartInterpolate= $scope.interpolateType.value;//cardinal
@@ -83,7 +96,7 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
     var last24HoursText = 'Last 24 hours (5 minutes interval)';
     var last30DaysText = 'Last 30 days (1 hour interval)';
     var allDataText = 'All available data (1 day interval)';
-  }else if($scope.sensor.metricType === 1){
+  }else if($scope.variableType.metricType == 2){
     var yAxisD3Format='.0f';
     var chartLineColor=["#1f77b4"];
     var chartInterpolate='step-after';
@@ -120,7 +133,6 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           $scope.chartOptionsAllDays = angular.copy(chartOptions);
           $scope.chartOptionsAllDays.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, allDataDateFormat, about.timezone)};
           $scope.chartOptionsAllDays.title.text = allDataText;
-          
 });
   
   $scope.chartOptionsLastOneHour = chartOptions;
@@ -129,17 +141,15 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
   $scope.chartOptionsAllDays = angular.copy(chartOptions);
   
  //Get list of Sensors
-    $scope.getMetrics = function(){
-      //$scope.data = MetricsFactory.last5Minutes({"sensorId":"1"});
-      //$scope.sensor = MetricsFactory.sensorData({"sensorId":$stateParams.sensorId});
-      $scope.lastOneHourChartMetrics = MetricsFactory.lastOneHour({"sensorId":$stateParams.sensorId});
-      $scope.last24HoursChartMetrics = MetricsFactory.last24Hours({"sensorId":$stateParams.sensorId});
-      $scope.last30DaysChartMetrics = MetricsFactory.last30Days({"sensorId":$stateParams.sensorId});
-      $scope.allDaysChartMetrics = MetricsFactory.allYears({"sensorId":$stateParams.sensorId});
-    }
-    $scope.getMetrics();
+    $scope.variableType.$promise.then(function (variableType) {
+    //$scope.data = MetricsFactory.last5Minutes({"sensorId":$stateParams.sensorId});
+    $scope.lastOneHourChartMetrics = MetricsFactory.lastOneHour({sensorId : variableType.id});
+    $scope.last24HoursChartMetrics = MetricsFactory.last24Hours({sensorId : variableType.id});
+    $scope.last30DaysChartMetrics = MetricsFactory.last30Days({sensorId : variableType.id});
+    $scope.allDaysChartMetrics = MetricsFactory.allYears({sensorId : variableType.id});
+  });
     //setInterval($scope.getMetrics, 1000*60);
-  
+   }
   
         
 });

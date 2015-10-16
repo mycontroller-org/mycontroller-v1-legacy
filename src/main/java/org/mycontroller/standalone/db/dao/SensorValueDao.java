@@ -42,6 +42,8 @@ public interface SensorValueDao {
     List<SensorValue> getAll();
 
     SensorValue get(SensorValue sensorValue);
+    
+    SensorValue get(int id);
 
     SensorValue get(Integer sensorRefId, Integer variableTypeId);
 

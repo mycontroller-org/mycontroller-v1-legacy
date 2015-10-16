@@ -28,8 +28,10 @@ import org.mycontroller.standalone.db.AlarmUtils.TRIGGER;
 import org.mycontroller.standalone.db.AlarmUtils.TYPE;
 import org.mycontroller.standalone.db.TimerUtils.FREQUENCY;
 import org.mycontroller.standalone.db.TimerUtils.WEEK_DAY;
+import org.mycontroller.standalone.db.TypeUtils.METRIC_TYPE;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
@@ -185,6 +187,20 @@ public class TypesUtils {
             }
             typesIdNameMappers.add(new TypesIdNameMapper(
                     variableType.getVariableType(), variableType.getVariableTypeString(), isTicked));
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getGraphSensorVariableTypes(int sensorRefId) {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAll(sensorRefId);
+        for (SensorValue sensorValue : sensorValues) {
+            if (sensorValue.getMetricType() != METRIC_TYPE.NONE.ordinal()) {
+                typesIdNameMappers.add(new TypesIdNameMapper(
+                        sensorValue.getId(),
+                        sensorValue.getSensor().getId(),
+                        MESSAGE_TYPE_SET_REQ.get(sensorValue.getVariableType()).toString()));
+            }
         }
         return typesIdNameMappers;
     }

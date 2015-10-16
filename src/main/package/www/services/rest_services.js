@@ -27,7 +27,8 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
     sendPayload: { method: 'POST'},
     getOthers: { method: 'GET', isArray: true, params: {nodeId: 'getOthers'}},
-    updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}}
+    updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}},
+    getSensorValue: { method: 'GET', params: {nodeId: 'sensorValue'}}
   })
 });
 
@@ -87,7 +88,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getMessageTypes:  { method: 'GET', isArray: true, params: {type: 'messageTypes'}  },
     getMessageSubTypes:  { method: 'GET', isArray: true, params: {type: 'messageSubTypes'} },
     getSensorVariableMapper:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapper'} },
-    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} },  
+    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} }, 
+    getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} }, 
   })
 });
 

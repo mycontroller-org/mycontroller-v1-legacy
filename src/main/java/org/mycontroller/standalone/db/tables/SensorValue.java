@@ -20,6 +20,7 @@ import org.mycontroller.standalone.db.TypeUtils.METRIC_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -28,6 +29,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since 0.0.2
  */
 @DatabaseTable(tableName = "sensors_values")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SensorValue {
     public static final String ID = "id";
     public static final String SENSOR_REF_ID = "sensor_ref_id";
@@ -99,7 +101,7 @@ public class SensorValue {
         StringBuilder builder = new StringBuilder();
         builder.append("Id:").append(this.id);
         builder.append(", Sensor:").append("[").append(sensor).append("]");
-        builder.append(", Variable Type:").append(MESSAGE_TYPE_SET_REQ.get(this.variableType))
+        builder.append(", Variable Type:").append(getVariableTypeString())
                 .append("(").append(this.variableType).append(")");
         builder.append(", Metric Type:").append(METRIC_TYPE.get(this.metricType))
                 .append("(").append(this.metricType).append(")");
@@ -119,6 +121,10 @@ public class SensorValue {
 
     public Integer getVariableType() {
         return variableType;
+    }
+
+    public String getVariableTypeString() {
+        return MESSAGE_TYPE_SET_REQ.get(this.variableType).toString();
     }
 
     public Long getTimestamp() {
