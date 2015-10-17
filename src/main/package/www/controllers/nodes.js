@@ -266,10 +266,10 @@ myControllerModule.controller('NMeraseEepromController', function ($scope, $moda
 
 //Discover Modal
 myControllerModule.controller('NMdiscoverController', function ($scope, $modalInstance, $sce) {
-  $scope.header = "Node Discover Util";
-  $scope.discoverMsg = $sce.trustAsHtml("You are about trigger Node Discover util"
-    +"<br>This util will send REBOOT message for all the nodes (id: 1 to 254)"
-    +"<br>Node REBOOT may cause issues on your production setup"
+  $scope.header = "Node Discover Utility";
+  $scope.discoverMsg = $sce.trustAsHtml("You are about trigger Node Discover Utility"
+    +"<br>This action will send I_PRESENTATION message for all the nodes (id: 1 to 254)"
+    +"<br>I_PRESENTATION may cause huge trafic on your MySensors network"
     +"<br>Click 'Discover' to proceed further");
   $scope.discover = function() {$modalInstance.close(); };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
