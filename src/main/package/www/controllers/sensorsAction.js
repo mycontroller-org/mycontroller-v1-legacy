@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionController', function(alertService,
-$scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestError, about) {
+$scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestError, about) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -32,6 +32,7 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
   };
   
   //Send list of Sensors
+  $scope.orgList = {};
   $scope.orgList = SensorsFactory.query(function(response) {
                     },function(error){
                       displayRestError.display(error);            
@@ -59,11 +60,10 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     });
   }
   
-  //Update all sensors data
-  $scope.updateSensor = function (sensor) {
     /*
      * Update only one sensor data
      */
+  $scope.updateSensor = function (sensor) {
     for (var sId=0; sId<$scope.orgList.length; sId++){
        if($scope.orgList[sId].id == sensor.id){
          SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId },function(response) {
@@ -74,23 +74,58 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
          break;
        }
      }    
-     
-     //Update all sensors data
-     /*
-     SensorsFactory.query(function(response) {
-       $scope.tmpList = response;
-       for (var sId=0; sId<$scope.orgList.length; sId++){
-        for (var tId=0; tId<$scope.tmpList.length; tId++){
-          if($scope.orgList[sId].id == $scope.tmpList[tId].id){
-            $scope.orgList[sId] = $scope.tmpList[tId];
-          }
-        }
-       }
-      },function(error){
-        displayRestError.display(error);            
-      });
-      */
     }
+    
+    
+  //Update all sensors data
+  $scope.updateAllSensors = function () {  
+   SensorsFactory.query(function(response) {
+     $scope.tmpList = response;
+     for (var sId=0; sId<$scope.orgList.length; sId++){
+      for (var tId=0; tId<$scope.tmpList.length; tId++){
+        if($scope.orgList[sId].id == $scope.tmpList[tId].id){
+          $scope.orgList[sId] = $scope.tmpList[tId];
+        }
+      }
+     }
+    },function(error){
+      displayRestError.display(error);            
+    });
+  }
+  
+  //Initiate the Refresh Timer object.
+  $scope.refreshTimer = null;
+  $scope.refreshTime = 0;
+  
+  $scope.refreshTimeChange = function (){
+    $scope.StopRefreshTimer();
+    if($scope.refreshTime == 0){
+      return;
+    }
+    $scope.StartRefreshTimer();
+  }
+  
+  //Start Refresh Timer function.
+  $scope.StartRefreshTimer = function () {
+    // Don't start a new timer, if one running already
+     if ( angular.isDefined($scope.refreshTimer) ) return;
+    //Initialize the Timer to run every milliseconds defined in $scope.refreshTime
+    $scope.refreshTimer = $interval($scope.updateAllSensors, $scope.refreshTime);
+  };
+  
+  //Stop and distroy function.
+  $scope.StopRefreshTimer = function () {
+    //Cancel the Refresh Timer.
+    if (angular.isDefined($scope.refreshTimer)) {
+      $interval.cancel($scope.refreshTimer);
+      $scope.refreshTimer = undefined;
+    }
+  };
+  
+  $scope.$on('$destroy', function() {
+    // Make sure that the interval is destroyed too
+    $scope.StopRefreshTimer();
+  });
     
     
   //Send payload by button

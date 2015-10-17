@@ -17,8 +17,17 @@
 -->
   <div class="page-header">
     <h3>
-      <div class="form-horizontal form-group-sm pull-right col-xs-4">
+      <div class="form-horizontal form-group-sm pull-right col-xs-6">
         <div class="form-group form-inline">
+          <select style="width:158px;" class="form-control form-inline" ng-change="refreshTimeChange()" ng-model="refreshTime" >
+            <option value="0" ng-selected="true">-- Never Refresh --</option>
+            <option value="5000">5 Seconds Once</option>
+            <option value="15000">15 Seconds Once</option>
+            <option value="30000">30 Seconds Once</option>
+            <option value="60000">1 Minute Once</option>
+            <option value="300000">5 Minutes Once</option>
+            <option value="600000">10 Minutes Once</option>
+          </select>
           <select style="width:200px" class="form-control form-inline" ng-options="node.id as node.displayName for node in nodes" ng-change="nodeChange(nodeId)" ng-model="nodeId">
             <option value="">-- All Nodes --</option>
           </select>
