@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('AlarmController', function(alertService,
-$scope, $filter, AlarmsFactory, $location, $modal, $stateParams, displayRestError, about) {
+$scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestError, about) {
   
   $scope.sensor = AlarmsFactory.getSensorData({"id":$stateParams.id});
     
@@ -53,7 +53,7 @@ $scope, $filter, AlarmsFactory, $location, $modal, $stateParams, displayRestErro
   
     //Add a Node
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/alarm/addModal.html',
     controller: 'AMaddController',
     size: size,
@@ -80,7 +80,7 @@ $scope, $filter, AlarmsFactory, $location, $modal, $stateParams, displayRestErro
     
   //Delete alarm
   $scope.delete = function (alarm, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'AMdeleteController',
     size: size,
@@ -108,7 +108,7 @@ $scope, $filter, AlarmsFactory, $location, $modal, $stateParams, displayRestErro
     
     //Update an alarm
   $scope.update = function (alarm, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/alarm/updateModal.html',
     controller: 'AMupdateController',
     size: size,

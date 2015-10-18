@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, $filter, NodesFactory, $location, $modal, displayRestError) {
+$scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -38,7 +38,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
   //Delete a Node
   $scope.delete = function (node, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'NMdeleteController',
     size: size,
@@ -68,7 +68,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
     
   //Add a Node
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/addModal.html',
     controller: 'NMaddController',
     size: size,
@@ -96,7 +96,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
   //Reboot a Node
   $scope.reboot = function (node, size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/rebootModal.html',
     controller: 'NMrebootController',
     size: size,
@@ -117,7 +117,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
     //Erase EEPROM of a Node
   $scope.eraseEeprom = function (node, size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/eraseEepromModal.html',
     controller: 'NMeraseEepromController',
     size: size,
@@ -144,7 +144,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
     
   //Update a Node
   $scope.update = function (node, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/updateModal.html',
     controller: 'NMupdateController',
     size: size,
@@ -173,7 +173,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
   //Node Discover
   $scope.discover = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/discoverModal.html',
     controller: 'NMdiscoverController',
     size: size
@@ -192,7 +192,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
   //Node Battery Level graph
   $scope.displayBatteryLevel = function (node, size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/batteryLevelChart.html',
     controller: 'NMbatteryLevelController',
     windowClass: 'battery-modal-window',

@@ -78,7 +78,7 @@
       <label class="control-label col-sm-3">Type / Payload:</label>
       <select style="width:150px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in sendPayloadVariableTypes | orderBy:'displayName'" 
         ng-model="alarm.variable2"></select>
-      <input style="width:150px" type="text" tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="top" class="form-control" id="alarm.variable3" placeholder="Payload" ng-model="alarm.variable3">
+      <input style="width:150px" type="text" uib-tooltip-html="htmlTooltipSplOper" uib-tooltip-class="customClass350px" uib-tooltip-placement="top" class="form-control" id="alarm.variable3" placeholder="Payload" ng-model="alarm.variable3">
     </div>
    
   </form>

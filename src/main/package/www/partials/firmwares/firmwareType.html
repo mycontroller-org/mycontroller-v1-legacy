@@ -28,7 +28,7 @@
 				ng-model="query" id="search" placeholder="Search" ng-model="query" 
 				ng-change="updateFilteredList()"/>
 			</div>
-			<a href='' class="text-default pull-right" ng-click="add()" tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
+			<a href='' class="text-default pull-right" ng-click="add()" uib-tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
 		</form>
 	 </div>
 	
@@ -41,9 +41,9 @@
           <td at-implicit at-sortable at-attribute="id"></td>
 					<td at-implicit at-sortable at-attribute="name" at-title="Type Name"></td>
 					<td class="text-center">
-						<a href='' ng-click="update(item)" class="text-default"  tooltip="Edit">
+						<a href='' ng-click="update(item)" class="text-default"  uib-tooltip="Edit">
 						<i class="fa fa-lg fa-edit"></i></a>&nbsp;
-						<a href='' ng-click="delete(item)" class="text-danger" tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
+						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
 					</td>
 				</tr>
 			</tbody>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('VariableMapperController', function(alertService, $scope, $filter, $modal, displayRestError, TypesFactory) {
+myControllerModule.controller('VariableMapperController', function(alertService, $scope, $filter, $uibModal, displayRestError, TypesFactory) {
   
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -36,7 +36,7 @@ myControllerModule.controller('VariableMapperController', function(alertService,
   
   //Update
   $scope.edit = function (keyValue, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/variableMapper/editModal.html',
     controller: 'VMPeditController',
     size: size,

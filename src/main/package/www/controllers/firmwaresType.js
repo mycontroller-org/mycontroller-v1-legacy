@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('FirmwareTypeController', function(alertService,
-$scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
+$scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -38,7 +38,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
   
   //Delete a Firmware Type
   $scope.delete = function (firmwareType, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'FTMdeleteController',
     size: size,
@@ -68,7 +68,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     
   //Add a Firmware Type
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/firmwares/firmwareTypeAddModal.html',
     controller: 'FTMaddController',
     size: size,
@@ -96,7 +96,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     
   //Update a Firmware Type
   $scope.update = function (firmwareType, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/firmwares/firmwareTypeUpdateModal.html',
     controller: 'FTMupdateController',
     size: size,

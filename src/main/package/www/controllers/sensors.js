@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsController', function(alertService,
-$scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestError, about) {
+$scope, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, about) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -63,7 +63,7 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
   
   //Delete a Sensor
   $scope.delete = function (sensor, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'SMdeleteController',
     size: size,
@@ -92,7 +92,7 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     
   //Add a Sensor
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/sensors/addModal.html',
     controller: 'SMaddController',
     size: size,
@@ -118,7 +118,7 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     
   //Update a Sensor
   $scope.update = function (sensor, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/sensors/updateModal.html',
     controller: 'SMupdateController',
     size: size,

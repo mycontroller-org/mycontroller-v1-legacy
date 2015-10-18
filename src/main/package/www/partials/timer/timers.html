@@ -29,7 +29,7 @@
 				ng-model="query" id="search" placeholder="Search" ng-model="query" 
 				ng-change="updateFilteredList()"/>
 			</div>
-			<a href='' class="text-default pull-right" ng-click="add()" tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
+			<a href='' class="text-default pull-right" ng-click="add()" uib-tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
 		</form>
 	 </div>
 	
@@ -45,7 +45,7 @@
           <td at-implicit at-sortable at-attribute="payloadFormatted" at-title="Payload"></td>
           <td at-implicit at-attribute="validityString" at-sortable at-title="Validity"></td>
 					<td class="text-center">
-						<a href='' ng-click="delete(item)" class="text-danger" tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
+						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
 					</td>
 				</tr>
 			</tbody>

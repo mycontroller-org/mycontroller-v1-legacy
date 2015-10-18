@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('UsersController', function(alertService,
-$scope, $filter, UsersFactory, $location, $modal, displayRestError) {
+$scope, $filter, UsersFactory, $location, $uibModal, displayRestError) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -39,7 +39,7 @@ $scope, $filter, UsersFactory, $location, $modal, displayRestError) {
   
   //Delete
   $scope.delete = function (user, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'UdeleteController',
     size: size,
@@ -68,7 +68,7 @@ $scope, $filter, UsersFactory, $location, $modal, displayRestError) {
     
   //Add a User
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/users/addModal.html',
     controller: 'UaddController',
     size: size,
@@ -95,7 +95,7 @@ $scope, $filter, UsersFactory, $location, $modal, displayRestError) {
     
   //Update a User
   $scope.update = function (user, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/users/updateModal.html',
     controller: 'UupdateController',
     size: size,

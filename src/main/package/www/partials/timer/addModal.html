@@ -53,7 +53,7 @@
     
     <div class="form-group form-inline" ng-show="timer.type == 1">
       <label class="control-label col-sm-3" for="timer.cron">Cron Expression:</label>
-      <input style="width:320px" type="text" tooltip-html="htmlTooltipCron" tooltip-class="customClass450px" tooltip-placement="bottom" class="form-control" id="timer.cron" placeholder="Cron Expression" ng-model="timer.frequencyDataString">
+      <input style="width:320px" type="text" uib-tooltip-html="htmlTooltipCron" uib-tooltip-class="customClass450px" uib-tooltip-placement="bottom" class="form-control" id="timer.cron" placeholder="Cron Expression" ng-model="timer.frequencyDataString">
     </div>
     
      <div class="form-group form-inline" ng-show="timer.type != 1">
@@ -67,7 +67,7 @@
       <label class="control-label col-sm-3" for="sensor.newPayload">Type / Payload:</label>
       <select style="width:158px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
         ng-model="timer.sensorVariableType" required></select>
-      <input style="width:158px" type="text" tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="bottom" class="form-control" id="timer.variable4" placeholder="Payload" ng-model="timer.payload">
+      <input style="width:158px" type="text" uib-tooltip-html="htmlTooltipSplOper" uib-tooltip-class="customClass350px" uib-tooltip-placement="bottom" class="form-control" id="timer.variable4" placeholder="Payload" ng-model="timer.payload">
     </div>
     
     <div class="form-group form-inline">

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SystemStatusController', function(alertService,
-$scope, $filter, StatusFactory, $location, $modal, $stateParams, displayRestError) {
+$scope, $filter, StatusFactory, $location, $uibModal, $stateParams, displayRestError) {
   
   $scope.config = {
     itemsPerPage: 100,
@@ -36,7 +36,7 @@ $scope, $filter, StatusFactory, $location, $modal, $stateParams, displayRestErro
 });
 
 myControllerModule.controller('GatewayStatusController', function(alertService,
-$scope, $filter, StatusFactory, $location, $modal, $stateParams, displayRestError) {
+$scope, $filter, StatusFactory, $location, $uibModal, $stateParams, displayRestError) {
   
   $scope.config = {
     itemsPerPage: 100,

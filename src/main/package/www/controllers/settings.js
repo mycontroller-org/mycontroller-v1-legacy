@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsController', function(alertService,
-$scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestError, about, TypesFactory) {
+$scope, $filter, SettingsFactory, $location, $uibModal, $stateParams, displayRestError, about, TypesFactory) {
   
   $scope.config = {
     itemsPerPage: 100,
@@ -71,7 +71,7 @@ $scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestEr
  
   //Update settings
   $scope.update = function (settings, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/settings/updateModal.html',
     controller: 'SSMupdateController',
     size: size,

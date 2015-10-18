@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('TimerController', function(alertService,
-$scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestError, about) {
+$scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestError, about) {
   
   $scope.sensor = TimersFactory.getSensorData({"id":$stateParams.id});
     
@@ -53,7 +53,7 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
   
   //Add new
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/timer/addModal.html',
     controller: 'TMaddController',
     size: size,
@@ -80,7 +80,7 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
     
   //Delete timer
   $scope.delete = function (timer, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'TMdeleteController',
     size: size,
@@ -108,7 +108,7 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
     
     //Update an timer
   $scope.update = function (timer, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/timer/updateModal.html',
     controller: 'TMupdateController',
     size: size,

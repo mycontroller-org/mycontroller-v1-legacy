@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionController', function(alertService,
-$scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestError, about) {
+$scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, about) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -155,7 +155,7 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $modal, dis
  
   //Update payload model
   $scope.sendPayload = function (sensor, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/sensorsAction/sendPayloadModal.html',
     controller: 'SAsendPayloadController',
     size: size,
@@ -178,7 +178,7 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $modal, dis
   
   //Update sensor model
   $scope.editSensor = function (sensor, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/sensorsAction/editModal.html',
     controller: 'SAeditController',
     size: size,

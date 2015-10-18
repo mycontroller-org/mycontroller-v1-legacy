@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ForwardPayloadController', function(alertService,
-$scope, $filter, TimersFactory, ForwardPayloadFactory, $modal, $stateParams, displayRestError) {
+$scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, displayRestError) {
   
   $scope.sensor = TimersFactory.getSensorData({"id":$stateParams.id});
     
@@ -43,7 +43,7 @@ $scope, $filter, TimersFactory, ForwardPayloadFactory, $modal, $stateParams, dis
   
   //Add new
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/forwardPayload/addModal.html',
     controller: 'PPMaddController',
     size: size,
@@ -70,7 +70,7 @@ $scope, $filter, TimersFactory, ForwardPayloadFactory, $modal, $stateParams, dis
     
   //Delete timer
   $scope.delete = function (plProxy, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'PPMdeleteController',
     size: size,
