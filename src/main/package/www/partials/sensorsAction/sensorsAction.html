@@ -44,7 +44,7 @@
         <div class="panel-heading">
 			<div>
         <label class="btn btn-default btn-xs pull-right" ng-model="radioModel"ng-click="sensor = refresh(sensor)" uib-tooltip="Refresh"><i class="fa fa-refresh"></i></label>
-				<p class="panel-title" ng-init="status = false" uib-tooltip-placement="top" uib-tooltip="{{sensor.nameWithNode}}">
+				<p class="panel-title" ng-init="status = false" tooltip-placement="top" uib-tooltip="{{sensor.nameWithNode}}">
 					{{sensor.nameWithNode ? sensor.nameWithNode : '-' | limitTo:30}}{{sensor.nameWithNode.length > 30 ? '...' : ''}}</p>
 			</div>
 
