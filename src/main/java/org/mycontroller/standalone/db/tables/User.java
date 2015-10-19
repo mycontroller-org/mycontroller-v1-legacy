@@ -20,6 +20,7 @@ import java.security.Principal;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.mycontroller.standalone.db.USER_ROLE;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -27,7 +28,8 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "users")
+@DatabaseTable(tableName = "user")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Principal {
     public static final String NAME = "name";
     public static final String EMAIL = "email";

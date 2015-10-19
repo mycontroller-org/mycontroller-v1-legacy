@@ -25,11 +25,13 @@ import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@DatabaseTable(tableName = "timer")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Timer {
     public static final String SENSOR_REF_ID = "sensor_ref_id";

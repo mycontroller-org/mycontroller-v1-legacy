@@ -17,6 +17,7 @@ package org.mycontroller.standalone.db.tables;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -25,6 +26,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since 0.0.1
  */
 @DatabaseTable(tableName = "settings")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Settings {
     public static final String AUTO_NODE_ID = "auto-node-key";
     public static final String MC_VERSION = "mc-version";
@@ -58,7 +60,7 @@ public class Settings {
     public static final String DEFAULT_UNIT = "du_";
 
     public static final String ENABLE_SEND_PAYLOAD = "enable_send_payload";
-    
+
     public static final String MY_SENSORS_CONFIG = "mys_config";
 
     public Settings() {

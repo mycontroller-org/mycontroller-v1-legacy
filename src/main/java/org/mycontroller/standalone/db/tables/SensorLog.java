@@ -17,12 +17,16 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.SensorLogUtils.LOG_TYPE;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@DatabaseTable(tableName = "sensor_log")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SensorLog {
     public static final String SENSOR_REF_ID = "sensor_ref_id";
 

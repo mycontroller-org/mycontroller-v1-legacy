@@ -15,12 +15,16 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@DatabaseTable(tableName = "metrics_binary")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MetricsBinaryTypeDevice {
     public static final String SENSOR_VALUE_REF_ID = "sensor_value_ref_id";
     public static final String TIMESTAMP = "timestamp";

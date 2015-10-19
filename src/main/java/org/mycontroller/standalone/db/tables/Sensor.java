@@ -27,7 +27,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "sensors")
+@DatabaseTable(tableName = "sensor")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Sensor {
     public static final String SENSOR_ID = "sensor_id";

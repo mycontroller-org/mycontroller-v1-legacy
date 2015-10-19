@@ -26,7 +26,6 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-
 @DatabaseTable(tableName = "alarm")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Alarm {
