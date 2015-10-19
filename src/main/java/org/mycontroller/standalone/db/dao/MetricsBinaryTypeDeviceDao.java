@@ -17,19 +17,19 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
-import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface MetricsOnOffTypeDeviceDao {
-    void create(MetricsOnOffTypeDevice metric);
-    void createOrUpdate(MetricsOnOffTypeDevice metric);
-    void delete(MetricsOnOffTypeDevice metric);
+public interface MetricsBinaryTypeDeviceDao {
+    void create(MetricsBinaryTypeDevice metric);
+    void createOrUpdate(MetricsBinaryTypeDevice metric);
+    void delete(MetricsBinaryTypeDevice metric);
     void deleteBySensorRefId(int sensorRefId);
-    void deletePrevious(MetricsOnOffTypeDevice metric);
-    void update(MetricsOnOffTypeDevice metric);
-    List<MetricsOnOffTypeDevice> getAll(MetricsOnOffTypeDevice metric);
-    MetricsOnOffTypeDevice get(MetricsOnOffTypeDevice metric);
+    void deletePrevious(MetricsBinaryTypeDevice metric);
+    void update(MetricsBinaryTypeDevice metric);
+    List<MetricsBinaryTypeDevice> getAll(MetricsBinaryTypeDevice metric);
+    MetricsBinaryTypeDevice get(MetricsBinaryTypeDevice metric);
 }

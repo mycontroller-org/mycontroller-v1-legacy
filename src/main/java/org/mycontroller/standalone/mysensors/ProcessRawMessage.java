@@ -37,7 +37,7 @@ import org.mycontroller.standalone.db.tables.Alarm;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -557,8 +557,8 @@ public class ProcessRawMessage {
                                 1));
                 break;
             case BINARY:
-                DaoUtils.getMetricsOnOffTypeDeviceDao()
-                        .create(new MetricsOnOffTypeDevice(
+                DaoUtils.getMetricsBinaryTypeDeviceDao()
+                        .create(new MetricsBinaryTypeDevice(
                                 sensorValue,
                                 System.currentTimeMillis(),
                                 rawMessage.getPayloadBoolean()));

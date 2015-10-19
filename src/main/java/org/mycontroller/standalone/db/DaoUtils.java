@@ -29,8 +29,8 @@ import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDao;
 import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDaoImpl;
-import org.mycontroller.standalone.db.dao.MetricsOnOffTypeDeviceDao;
-import org.mycontroller.standalone.db.dao.MetricsOnOffTypeDeviceDaoImpl;
+import org.mycontroller.standalone.db.dao.MetricsBinaryTypeDeviceDao;
+import org.mycontroller.standalone.db.dao.MetricsBinaryTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.NodeDao;
 import org.mycontroller.standalone.db.dao.NodeDaoImpl;
 import org.mycontroller.standalone.db.dao.ForwardPayloadDao;
@@ -71,7 +71,7 @@ public class DaoUtils {
     private static SensorValueDao sensorValueDao = null;
     private static SettingsDao settingsDao = null;
     private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
-    private static MetricsOnOffTypeDeviceDao metricsOnOffTypeDeviceDao = null;
+    private static MetricsBinaryTypeDeviceDao metricsBinaryTypeDeviceDao = null;
     private static SystemJobDao systemJobDao = null;
     private static UserDao userDao = null;
     private static AlarmDao alarmDao = null;
@@ -92,7 +92,7 @@ public class DaoUtils {
             sensorValueDao = new SensorValueDaoImpl(DataBaseUtils.getConnectionSource());
             settingsDao = new SettingsDaoImpl(DataBaseUtils.getConnectionSource());
             metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
-            metricsOnOffTypeDeviceDao = new MetricsOnOffTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsBinaryTypeDeviceDao = new MetricsBinaryTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             systemJobDao = new SystemJobDaoImpl(DataBaseUtils.getConnectionSource());
             userDao = new UserDaoImpl(DataBaseUtils.getConnectionSource());
             alarmDao = new AlarmDaoImpl(DataBaseUtils.getConnectionSource());
@@ -136,8 +136,8 @@ public class DaoUtils {
         return userDao;
     }
 
-    public static MetricsOnOffTypeDeviceDao getMetricsOnOffTypeDeviceDao() {
-        return metricsOnOffTypeDeviceDao;
+    public static MetricsBinaryTypeDeviceDao getMetricsBinaryTypeDeviceDao() {
+        return metricsBinaryTypeDeviceDao;
     }
 
     public static AlarmDao getAlarmDao() {

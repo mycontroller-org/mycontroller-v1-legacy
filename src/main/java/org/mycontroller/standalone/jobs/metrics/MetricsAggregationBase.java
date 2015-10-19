@@ -23,7 +23,7 @@ import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.TIME_REF;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
 import org.slf4j.Logger;
@@ -156,12 +156,12 @@ public class MetricsAggregationBase {
 
     /** Get metric data for boolean type */
 
-    public List<MetricsOnOffTypeDevice> getMetricsBinaryData(SensorValue sensorValue, Long fromTimestamp) {
-        MetricsOnOffTypeDevice offTypeDevice = new MetricsOnOffTypeDevice(sensorValue);
+    public List<MetricsBinaryTypeDevice> getMetricsBinaryData(SensorValue sensorValue, Long fromTimestamp) {
+        MetricsBinaryTypeDevice binaryTypeDevice = new MetricsBinaryTypeDevice(sensorValue);
         if (fromTimestamp != null) {
-            offTypeDevice.setTimestampFrom(fromTimestamp);
+            binaryTypeDevice.setTimestampFrom(fromTimestamp);
         }
-        return DaoUtils.getMetricsOnOffTypeDeviceDao().getAll(offTypeDevice);
+        return DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(binaryTypeDevice);
     }
 
     private void purgeDB() {

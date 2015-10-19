@@ -21,7 +21,7 @@ import com.j256.ormlite.field.DatabaseField;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class MetricsOnOffTypeDevice {
+public class MetricsBinaryTypeDevice {
     public static final String SENSOR_VALUE_REF_ID = "sensor_value_ref_id";
     public static final String TIMESTAMP = "timestamp";
 
@@ -35,19 +35,19 @@ public class MetricsOnOffTypeDevice {
     private Long timestampFrom;
     private Long timestampTo;
 
-    public MetricsOnOffTypeDevice() {
+    public MetricsBinaryTypeDevice() {
 
     }
 
-    public MetricsOnOffTypeDevice(SensorValue sensorValue) {
+    public MetricsBinaryTypeDevice(SensorValue sensorValue) {
         this(sensorValue, null, null);
     }
 
-    public MetricsOnOffTypeDevice(SensorValue sensorValue, Long timestamp) {
+    public MetricsBinaryTypeDevice(SensorValue sensorValue, Long timestamp) {
         this(sensorValue, timestamp, null);
     }
 
-    public MetricsOnOffTypeDevice(SensorValue sensorValue, Long timestamp, Boolean state) {
+    public MetricsBinaryTypeDevice(SensorValue sensorValue, Long timestamp, Boolean state) {
         this.sensorValue = sensorValue;
         this.state = state;
         this.timestamp = timestamp;

@@ -35,7 +35,7 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.TypeUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.jobs.metrics.MetricsAggregationBase;
@@ -149,7 +149,7 @@ public class MetricsHandler {
             }
         } else if (sensorValue.getMetricType() == TypeUtils.METRIC_TYPE.BINARY.ordinal()) {
             _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_BOOLEAN.toString());
-            List<MetricsOnOffTypeDevice> metrics = metricsAggregationBase.getMetricsBinaryData(
+            List<MetricsBinaryTypeDevice> metrics = metricsAggregationBase.getMetricsBinaryData(
                     sensorValue,
                     lastNmilliSeconds != null ? System.currentTimeMillis() - lastNmilliSeconds : null);
             if (metrics == null) {
@@ -162,7 +162,7 @@ public class MetricsHandler {
             String name = sensor.getName() != null ? sensor.getName() : "State";
             MetricsChartDataKeyValuesJson minChartData = new MetricsChartDataKeyValuesJson(name);
 
-            for (MetricsOnOffTypeDevice metric : metrics) {
+            for (MetricsBinaryTypeDevice metric : metrics) {
                 minChartData.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
             }
 
