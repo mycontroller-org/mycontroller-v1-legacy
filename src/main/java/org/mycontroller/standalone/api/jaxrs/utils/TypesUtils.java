@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.mycontroller.standalone.AppProperties.MYSENSORS_CONFIG;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
@@ -168,6 +170,15 @@ public class TypesUtils {
         types.add("basis-closed");
         types.add("cardinal-open");
         types.add("cardinal-closed");
+        return types;
+    }
+
+    public static ArrayList<String> getMysConfigTypes() {
+        ArrayList<String> types = new ArrayList<String>();
+        MYSENSORS_CONFIG[] configTypes = MYSENSORS_CONFIG.values();
+        for (MYSENSORS_CONFIG configType : configTypes) {
+            types.add(StringUtils.capitalize(configType.toString().toLowerCase()));
+        }
         return types;
     }
 

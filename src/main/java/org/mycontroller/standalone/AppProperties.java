@@ -63,6 +63,11 @@ public class AppProperties {
         MQTT;
     }
 
+    public enum MYSENSORS_CONFIG {
+        METRIC,
+        IMPERIAL
+    }
+
     public AppProperties() {
     }
 
@@ -136,8 +141,15 @@ public class AppProperties {
         return Integer.valueOf(settings.getValue());
     }
 
-    //TODO: Get this one from database
     public String getMetricType() {
+        Settings settings = DaoUtils.getSettingsDao().get(Settings.MY_SENSORS_CONFIG);
+        if (settings != null && settings.getValue() != null) {
+            if (settings.getValue().equalsIgnoreCase(MYSENSORS_CONFIG.METRIC.toString())) {
+                return "M";
+            } else if (settings.getValue().equalsIgnoreCase(MYSENSORS_CONFIG.IMPERIAL.toString())) {
+                return "I";
+            }
+        }
         return "M";
     }
 

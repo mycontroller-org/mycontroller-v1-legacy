@@ -58,6 +58,8 @@ public class Settings {
     public static final String DEFAULT_UNIT = "du_";
 
     public static final String ENABLE_SEND_PAYLOAD = "enable_send_payload";
+    
+    public static final String MY_SENSORS_CONFIG = "mys_config";
 
     public Settings() {
 

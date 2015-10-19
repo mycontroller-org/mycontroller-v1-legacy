@@ -121,6 +121,12 @@ public class TypesHandler {
     public Response getGraphInterpolateTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGraphInterpolateTypes());
     }
+    
+    @GET
+    @Path("/mysConfigTypes")
+    public Response getMysConfigTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMysConfigTypes());
+    }
 
     @GET
     @Path("/sensorVariableTypesAll/{sensorType}")

@@ -82,6 +82,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getTimerFrequencies:  { method: 'GET', isArray: true, params: {type: 'timerFrequencies'}  },
     getTimerDays:  { method: 'GET', isArray: true, params: {type: 'timerDays'}  },
     getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  },
+    getMysConfigTypes:  { method: 'GET', isArray: true, params: {type: 'mysConfigTypes'}  },
     getSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypes'}  },
     getSensorVariableTypesAll:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesAll'}  },    
     getSensorVariableTypesBySensorRefId:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesBySenRef'}  },

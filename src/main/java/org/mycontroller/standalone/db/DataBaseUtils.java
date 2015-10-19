@@ -125,7 +125,10 @@ public class DataBaseUtils {
         }
         if (dbVersion == 0) { //Update version 1 schema
             //System Settings
-            DaoUtils.getSettingsDao().create(new Settings(Settings.MC_VERSION, "0.0.1", "MC Version"));
+            DaoUtils.getSettingsDao().create(new Settings(Settings.MC_VERSION, "0.0.2-alpha5", "MC Version"));
+
+            // Metric or Imperial to sensors
+            DaoUtils.getSettingsDao().create(new Settings(Settings.MY_SENSORS_CONFIG, "Metric", "MySensors Config", true));
 
             createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_TEMP, "°C", "Temperature", true);
             createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_HUM, "%", "Humidity", true);
