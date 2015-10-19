@@ -39,11 +39,11 @@ public class NodeDaoImpl extends BaseAbstractDao<Node, Integer> implements NodeD
     @Override
     public void create(Node node) {
         try {
-            if (node.getId() < 255 && node.getId() > 0) {
+            if (node.getId() < 255 && node.getId() >= 0) {
                 int count = this.getDao().create(node);
                 _logger.debug("Created Node:[{}], Create count:{}", node, count);
             } else {
-                _logger.warn("Node:[{}], Node Id should be in the range of 1~254", node);
+                _logger.warn("Node:[{}], Node Id should be in the range of 0~254", node);
             }
         } catch (SQLException ex) {
             _logger.error("unable to add Node:[{}]", node, ex);
