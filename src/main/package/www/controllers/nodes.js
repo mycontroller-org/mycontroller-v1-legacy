@@ -344,7 +344,7 @@ myControllerModule.controller('NMbatteryLevelController', function ($modalInstan
   });
   
   $scope.getMetrics = function(){
-    $scope.batteryUsageChartMetrics = MetricsFactory.batteryUsage({"sensorId":node.id}); //Note here we should use sensorId as key, check rest_service.js
+    $scope.batteryUsageChartMetrics = MetricsFactory.batteryUsage({"nodeId":node.id});
   }
   $scope.getMetrics();
   
