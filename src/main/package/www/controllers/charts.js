@@ -14,142 +14,140 @@
  * limitations under the License.
  */
 myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, TypesFactory, SensorsFactory) {
-  
-  
-  $scope.variableTypes = TypesFactory.getGraphSensorVariableTypes({id:$stateParams.sensorId});
-  
-  $scope.variableType = {};
-  
-  //Update SensorValue
-  $scope.updateSensorValue = function(variableTypeId){
-    if(variableTypeId == null){
-      return;
-    }
-       $scope.variableType = SensorsFactory.getSensorValue({sensorId:variableTypeId});
  
-  
-  //http://krispo.github.io/angular-nvd3
-  //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
-    var chartOptions = {
-            chart: {
-                type: 'lineChart',
-                interpolate: 'linear',
-                noErrorCheck: true,
-                height: 270,
-                margin : {
-                    top: 0,
-                    right: 20,
-                    bottom: 60,
-                    left: 40
-                },
-                color: ["#2ca02c","#1f77b4", "#ff7f0e"],
-              
-                x: function(d){return d[0];},
-                y: function(d){return d[1];},
-                useVoronoi: false,
-                clipEdge: false,
-                transitionDuration: 500,
-                useInteractiveGuideline: true,
-                xAxis: {
-                    showMaxMin: false,
-                    tickFormat: function(d) {
-                        return d3.time.format('HH:mm')(new Date(d))
-                    },
-                    //axisLabel: 'Timestamp',
-                    rotateLabels: -20
-                },
-                yAxis: {
-                    tickFormat: function(d){
-                        return d3.format(',.2f')(d);
-                    },
-                    //axisLabel: ''
-                }
-            },
-              title: {
-                enable: false,
-                text: 'Last one hour (1 minute interval)'
-            }
-        };
-        
-  
   //Get Chart Interpolate Type
   $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
   
   $scope.sensor = MetricsFactory.sensorData({"sensorId":$stateParams.sensorId}, function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });
+    },function(error){
+      displayRestError.display(error);            
+    });
   //about, Timezone, etc.,
-  $scope.about = about;     
+  $scope.about = about;  
+  $scope.variableType = {};
   
-  $scope.sensor.$promise.then(function (sensor) {
-    $scope.sensor = sensor;
-    if($scope.variableType.metricType == 1){
-    var yAxisD3Format=',.2f';
-    var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
-    var chartInterpolate= $scope.interpolateType.value;//cardinal
-    var lastOneHourDateFormat = 'HH:mm'; //https://docs.angularjs.org/api/ng/filter/date
-    var last24HoursDateFormat = 'HH:mm';
-    var last30DaysDateFormat = 'dd-MMM HH:mm';
-    var allDataDateFormat = 'dd-MMM-yyyy';
-    var lastOneHourText = 'Last one hour (1 minute interval)';
-    var last24HoursText = 'Last 24 hours (5 minutes interval)';
-    var last30DaysText = 'Last 30 days (1 hour interval)';
-    var allDataText = 'All available data (1 day interval)';
-  }else if($scope.variableType.metricType == 2){
-    var yAxisD3Format='.0f';
-    var chartLineColor=["#1f77b4"];
-    var chartInterpolate='step-after';
-    var lastOneHourDateFormat = 'HH:mm:ss';
-    var last24HoursDateFormat = 'HH:mm:ss';
-    var last30DaysDateFormat = 'dd-MMM HH:mm:ss';
-    var allDataDateFormat = 'dd-MMM-yyyy HH:mm:ss';
-    var lastOneHourText = 'Last one hour';
-    var last24HoursText = 'Last 24 hours';
-    var last30DaysText = 'Last 30 days';
-    var allDataText = 'All available data';
-  }
-   //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
-   
-
-        
-          chartOptions.chart.type = 'lineChart'; //workaround to suppress 'type undefined error'
-          chartOptions.chart.interpolate = chartInterpolate;
-          chartOptions.chart.color = chartLineColor;
-          chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(yAxisD3Format)(d);};
-        
-          $scope.chartOptionsLastOneHour = chartOptions;
-          $scope.chartOptionsLastOneHour.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, lastOneHourDateFormat, about.timezone)};
-          $scope.chartOptionsLastOneHour.title.text = lastOneHourText;
-
-          $scope.chartOptionsLast24Hours = angular.copy(chartOptions);
-          $scope.chartOptionsLast24Hours.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, last24HoursDateFormat, about.timezone)};
-          $scope.chartOptionsLast24Hours.title.text = last24HoursText;
-          
-          $scope.chartOptionsLast30Days = angular.copy(chartOptions);
-          $scope.chartOptionsLast30Days.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, last30DaysDateFormat, about.timezone)};
-          $scope.chartOptionsLast30Days.title.text = last30DaysText;
-          
-          $scope.chartOptionsAllDays = angular.copy(chartOptions);
-          $scope.chartOptionsAllDays.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, allDataDateFormat, about.timezone)};
-          $scope.chartOptionsAllDays.title.text = allDataText;
-});
-  
-  $scope.chartOptionsLastOneHour = chartOptions;
-  $scope.chartOptionsLast24Hours = angular.copy(chartOptions);
-  $scope.chartOptionsLast30Days = angular.copy(chartOptions);
-  $scope.chartOptionsAllDays = angular.copy(chartOptions);
-  
- //Get list of Sensors
-    $scope.variableType.$promise.then(function (variableType) {
-    //$scope.data = MetricsFactory.last5Minutes({"sensorId":$stateParams.sensorId});
-    $scope.lastOneHourChartMetrics = MetricsFactory.lastOneHour({sensorId : variableType.id});
-    $scope.last24HoursChartMetrics = MetricsFactory.last24Hours({sensorId : variableType.id});
-    $scope.last30DaysChartMetrics = MetricsFactory.last30Days({sensorId : variableType.id});
-    $scope.allDaysChartMetrics = MetricsFactory.allYears({sensorId : variableType.id});
+  $scope.variableTypes = TypesFactory.getGraphSensorVariableTypes({id:$stateParams.sensorId}, function(response) {
+    if(response.length == 1){
+        $scope.variableTypeId = response[0].id;
+        $scope.updateSensorVariableType($scope.variableTypeId);
+    }      
+  },function(error){
+    displayRestError.display(error);            
   });
-    //setInterval($scope.getMetrics, 1000*60);
-   }
   
+  //Update Sensor Variable Type
+  $scope.updateSensorVariableType = function(variableTypeId){
+    if(variableTypeId == null){
+      return;
+    }  
+    $scope.variableType = SensorsFactory.getSensorValue({sensorId:variableTypeId});
+  
+    //http://krispo.github.io/angular-nvd3
+    //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
+    var chartOptions = {
+        chart: {
+            type: 'lineChart',
+            interpolate: 'linear',
+            noErrorCheck: true,
+            height: 270,
+            margin : {
+                top: 0,
+                right: 20,
+                bottom: 60,
+                left: 40
+            },
+            color: ["#2ca02c","#1f77b4", "#ff7f0e"],
+          
+            x: function(d){return d[0];},
+            y: function(d){return d[1];},
+            useVoronoi: false,
+            clipEdge: false,
+            transitionDuration: 500,
+            useInteractiveGuideline: true,
+            xAxis: {
+                showMaxMin: false,
+                tickFormat: function(d) {
+                    return d3.time.format('HH:mm')(new Date(d))
+                },
+                //axisLabel: 'Timestamp',
+                rotateLabels: -20
+            },
+            yAxis: {
+                tickFormat: function(d){
+                    return d3.format(',.2f')(d);
+                },
+                //axisLabel: ''
+            }
+        },
+          title: {
+            enable: false,
+            text: 'Last one hour (1 minute interval)'
+        }
+    };
+
+    $scope.sensor.$promise.then(function (sensor) {
+      $scope.sensor = sensor;
+      $scope.variableType.$promise.then(function (variableType) {
+        if($scope.variableType.metricType == 1){
+          var yAxisD3Format=',.2f';
+          var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
+          var chartInterpolate= $scope.interpolateType.value;//cardinal
+          var lastOneHourDateFormat = 'HH:mm'; //https://docs.angularjs.org/api/ng/filter/date
+          var last24HoursDateFormat = 'HH:mm';
+          var last30DaysDateFormat = 'dd-MMM HH:mm';
+          var allDataDateFormat = 'dd-MMM-yyyy';
+          var lastOneHourText = 'Last one hour (1 minute interval)';
+          var last24HoursText = 'Last 24 hours (5 minutes interval)';
+          var last30DaysText = 'Last 30 days (1 hour interval)';
+          var allDataText = 'All available data (1 day interval)';
+        }else if($scope.variableType.metricType == 2){
+          var yAxisD3Format='.0f';
+          var chartLineColor=["#1f77b4"];
+          var chartInterpolate='step-after';
+          var lastOneHourDateFormat = 'HH:mm:ss';
+          var last24HoursDateFormat = 'HH:mm:ss';
+          var last30DaysDateFormat = 'dd-MMM HH:mm:ss';
+          var allDataDateFormat = 'dd-MMM-yyyy HH:mm:ss';
+          var lastOneHourText = 'Last one hour';
+          var last24HoursText = 'Last 24 hours';
+          var last30DaysText = 'Last 30 days';
+          var allDataText = 'All available data';
+        }
+        //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
+     
+        chartOptions.chart.type = 'lineChart'; //workaround to suppress 'type undefined error'
+        chartOptions.chart.interpolate = chartInterpolate;
+        chartOptions.chart.color = chartLineColor;
+        chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(yAxisD3Format)(d);};
+      
+        //Copy and update last One hour
+        $scope.chartOptionsLastOneHour = chartOptions;
+        $scope.chartOptionsLastOneHour.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, lastOneHourDateFormat, about.timezone)};
+        $scope.chartOptionsLastOneHour.title.text = lastOneHourText;
+
+        //Copy and update last 24 hours
+        $scope.chartOptionsLast24Hours = angular.copy(chartOptions);
+        $scope.chartOptionsLast24Hours.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, last24HoursDateFormat, about.timezone)};
+        $scope.chartOptionsLast24Hours.title.text = last24HoursText;
+        
+        //Copy and update last 30 days
+        $scope.chartOptionsLast30Days = angular.copy(chartOptions);
+        $scope.chartOptionsLast30Days.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, last30DaysDateFormat, about.timezone)};
+        $scope.chartOptionsLast30Days.title.text = last30DaysText;
+        
+        //Copy and update for all available data
+        $scope.chartOptionsAllDays = angular.copy(chartOptions);
+        $scope.chartOptionsAllDays.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, allDataDateFormat, about.timezone)};
+        $scope.chartOptionsAllDays.title.text = allDataText;
+        
+        //Get list of Metrics types
+        //$scope.data = MetricsFactory.last5Minutes({"sensorId":$stateParams.sensorId});
+        $scope.lastOneHourChartMetrics = MetricsFactory.lastOneHour({sensorId : variableType.id});
+        $scope.last24HoursChartMetrics = MetricsFactory.last24Hours({sensorId : variableType.id});
+        $scope.last30DaysChartMetrics = MetricsFactory.last30Days({sensorId : variableType.id});
+        $scope.allDaysChartMetrics = MetricsFactory.allYears({sensorId : variableType.id});    
+      });
+    });
+  };
         
 });

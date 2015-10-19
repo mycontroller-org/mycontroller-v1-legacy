@@ -19,7 +19,7 @@
     <h3>
        <div class="form-horizontal form-group-sm pull-right col-xs-2">
         <div class="form-group form-inline">
-          <select style="width:220px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes" ng-change="updateSensorValue(variableTypeId)" ng-model="variableTypeId">
+          <select style="width:220px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes" ng-change="updateSensorVariableType(variableTypeId)" ng-model="variableTypeId">
             <option value="">-- Select Variable Type --</option>
           </select>
         </div>
