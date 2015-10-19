@@ -17,8 +17,6 @@ package org.mycontroller.standalone.mysensors;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,25 +45,17 @@ public class RawMessage {
     }
 
     public RawMessage(String topic, MqttMessage message) throws RawMessageException {
-        String[] msgArry = topic.split("/");
         if (message.getPayload() != null) {
             this.payload = message.toString();
         }
-        if (msgArry.length >= 4) {
+        // Topic structure: MY_MQTT_TOPIC_PREFIX/NODE-ID/SENSOR-ID/CMD-TYPE/ACK-FLAG/SUB-TYPE
+        String[] msgArry = topic.split("/");
+        if (msgArry.length == 6) {
             this.nodeId = Integer.valueOf(msgArry[1]);
             this.childSensorId = Integer.valueOf(msgArry[2]);
-            this.subType = Integer.valueOf(msgArry[3]);
-            if (this.subType == 61) {
-                this.messageType = MESSAGE_TYPE.C_INTERNAL.ordinal();
-                this.subType = MESSAGE_TYPE_INTERNAL.I_SKETCH_NAME.ordinal();
-            } else if (this.subType == 62) {
-                this.messageType = MESSAGE_TYPE.C_INTERNAL.ordinal();
-                this.subType = MESSAGE_TYPE_INTERNAL.I_SKETCH_VERSION.ordinal();
-            } else {
-                this.messageType = MESSAGE_TYPE.C_SET.ordinal();
-            }
-            this.ack = 0;
-
+            this.messageType = Integer.valueOf(msgArry[3]);
+            this.ack = Integer.valueOf(msgArry[4]);
+            this.subType = Integer.valueOf(msgArry[5]);
             _logger.debug("Message: {}", this.toString());
         } else {
             _logger.debug("Unknown message format, Topic:[{}], PayLoad:[{}]", topic, message);
@@ -228,11 +218,14 @@ public class RawMessage {
     }
 
     public String getMqttTopic() {
+        // Topic structure: MY_MQTT_TOPIC_PREFIX/NODE-ID/SENSOR-ID/CMD-TYPE/ACK-FLAG/SUB-TYPE
         StringBuilder builder = new StringBuilder();
         builder.append(ObjectFactory.getAppProperties().getMqttGatewayBrokerRootTopic());
         builder.append("/").append(this.getNodeId());
         builder.append("/").append(this.getChildSensorId());
         builder.append("/").append(this.getMessageType());
+        builder.append("/").append(this.getAck());
+        builder.append("/").append(this.getSubType());
 
         return builder.toString();
     }
