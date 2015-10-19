@@ -40,6 +40,8 @@ public interface SensorDao {
 
     void delete(Integer nodeId, Integer sensorId);
 
+    void updateWithEnableSendPayload(Sensor sensor);
+
     void update(Sensor sensor);
 
     void update(Integer nodeId, Sensor sensor);

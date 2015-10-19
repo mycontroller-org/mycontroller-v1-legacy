@@ -346,7 +346,7 @@ public class SensorUtils {
                 Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
                 sensor.setEnableSendPayload(keyValue.getValue() != null && keyValue.getValue().length() > 0 ?
                         keyValue.getValue().equalsIgnoreCase("true") : null);
-                DaoUtils.getSensorDao().update(sensor);
+                DaoUtils.getSensorDao().updateWithEnableSendPayload(sensor);
             }
         }
     }

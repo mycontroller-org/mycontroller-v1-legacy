@@ -117,13 +117,14 @@ public class SensorDaoImpl extends BaseAbstractDao<Sensor, Integer> implements S
         this.delete(sensor);
     }
 
-    @Override
-    public void update(Sensor sensor) {
+    private void update(Sensor sensor, boolean updateWithEnableSendPayload) {
         try {
             this.nodeIdSensorIdnullCheck(sensor);
             UpdateBuilder<Sensor, Integer> updateBuilder = this.getDao().updateBuilder();
 
-            updateBuilder.updateColumnValue("enableSendPayload", sensor.getEnableSendPayloadRaw());
+            if (updateWithEnableSendPayload) {
+                updateBuilder.updateColumnValue("enableSendPayload", sensor.getEnableSendPayloadRaw());
+            }
 
             if (sensor.getType() != null) {
                 updateBuilder.updateColumnValue("type", sensor.getType());
@@ -145,6 +146,16 @@ public class SensorDaoImpl extends BaseAbstractDao<Sensor, Integer> implements S
         } catch (DbException dbEx) {
             _logger.error("unable to update, sensor:{}", sensor, dbEx);
         }
+    }
+
+    @Override
+    public void update(Sensor sensor) {
+        update(sensor, false);
+    }
+
+    @Override
+    public void updateWithEnableSendPayload(Sensor sensor) {
+        update(sensor, true);
     }
 
     @Override
