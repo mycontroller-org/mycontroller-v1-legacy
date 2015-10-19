@@ -23,6 +23,7 @@ import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson.TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.SensorsGuiButton;
+import org.mycontroller.standalone.db.TypeUtils.METRIC_TYPE;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.Settings;
@@ -80,6 +81,10 @@ public class SensorUtils {
     }
 
     public static void setGuiButton(SensorValue sensorValue, SensorsGuiButton guiButton) {
+        //Update Graphical Report Status
+        if (sensorValue.getMetricType() != METRIC_TYPE.NONE.ordinal()) {
+            guiButton.getGraph().setShow(true);
+        }
         switch (MESSAGE_TYPE_SET_REQ.get(sensorValue.getVariableType())) {
             case V_TEMP:
             case V_HUM:

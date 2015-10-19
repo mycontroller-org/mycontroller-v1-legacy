@@ -20,6 +20,7 @@ package org.mycontroller.standalone.api.jaxrs.mapper;
  * @since 0.0.2
  */
 public class SensorsGuiButton {
+    private ButtonStatus graph = new ButtonStatus();
     private ButtonStatus onOff = new ButtonStatus();
     private ButtonStatus armed = new ButtonStatus();
     private ButtonStatus tripped = new ButtonStatus();
@@ -64,5 +65,13 @@ public class SensorsGuiButton {
 
     public ButtonStatus getCover() {
         return cover;
+    }
+
+    public ButtonStatus getGraph() {
+        return graph;
+    }
+
+    public void setGraph(ButtonStatus graphicalReport) {
+        this.graph = graphicalReport;
     }
 }

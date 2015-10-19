@@ -84,7 +84,7 @@
       </div>  
 
       <div class="pull-right">
-        <a class="btn btn-default btn-xs" ng-model="radioModel" href="#/charts/{{sensor.id}}" uib-tooltip="Graphical Report"><i class="fa fa-line-chart"></i></a>
+        <a class="btn btn-default btn-xs" ng-show="sensor.guiButtons.graph.show" ng-model="radioModel" href="#/charts/{{sensor.id}}" uib-tooltip="Graphical Report"><i class="fa fa-line-chart"></i></a>
         <a class="btn btn-default btn-xs" ng-model="radioModel" href="#/timer/{{sensor.id}}" uib-tooltip="Timer"><i class="fa fa-clock-o"></i></a>
         <a class="btn btn-default btn-xs" ng-model="radioModel" href="#/alarm/{{sensor.id}}" uib-tooltip="Alarm"><i class="fa fa-bell-o"></i></a>
         <a class="btn btn-default btn-xs" ng-model="radioModel" href="#/forwardPayload/{{sensor.id}}" uib-tooltip="Forward Payload"><i class="fa fa-forward"></i></a>
