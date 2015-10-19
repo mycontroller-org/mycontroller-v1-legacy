@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
@@ -109,29 +111,16 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
     @Override
     public List<MetricsOnOffTypeDevice> getAll(MetricsOnOffTypeDevice metric) {
         try {
-            return this.getDao().query(
-                    this.getDao()
-                            .queryBuilder()
-                            .where().eq(MetricsOnOffTypeDevice.SENSOR_VALUE_REF_ID,
-                                    metric.getSensorValue().getId())
-                            .and().between(MetricsOnOffTypeDevice.TIMESTAMP,
-                                    metric.getTimestampFrom(), metric.getTimestampTo())
-                            .prepare());
-        } catch (SQLException ex) {
-            _logger.error("unable to get, metric:{}", metric, ex);
-        }
-        return null;
-    }
-
-    @Override
-    public List<MetricsOnOffTypeDevice> getAllAfter(MetricsOnOffTypeDevice metric) {
-        try {
-            return this.getDao().query(
-                    this.getDao()
-                            .queryBuilder()
-                            .where().eq(MetricsOnOffTypeDevice.SENSOR_VALUE_REF_ID, metric.getSensorValue().getId())
-                            .and().ge(MetricsOnOffTypeDevice.TIMESTAMP, metric.getTimestamp())
-                            .prepare());
+            QueryBuilder<MetricsOnOffTypeDevice, Object> queryBuilder = this.getDao().queryBuilder();
+            Where<MetricsOnOffTypeDevice, Object> where = queryBuilder.where();
+            where.eq(MetricsOnOffTypeDevice.SENSOR_VALUE_REF_ID, metric.getSensorValue().getId());
+            if (metric.getTimestampFrom() != null) {
+                where.and().ge(MetricsOnOffTypeDevice.TIMESTAMP, metric.getTimestampFrom());
+            }
+            if (metric.getTimestampTo() != null) {
+                where.and().le(MetricsOnOffTypeDevice.TIMESTAMP, metric.getTimestampTo());
+            }
+            return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
         }

@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, TypesFactory, SensorsFactory) {
+myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory,
+  about, $filter, SettingsFactory, TypesFactory, SensorsFactory, displayRestError) {
  
   //Get Chart Interpolate Type
   $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
   
-  $scope.sensor = MetricsFactory.sensorData({"sensorId":$stateParams.sensorId}, function(response) {
+  $scope.sensor = SensorsFactory.getSensorByRefId({"sensorRefId":$stateParams.sensorId}, function(response) {
     },function(error){
       displayRestError.display(error);            
     });
@@ -92,26 +93,28 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var yAxisD3Format=',.2f';
           var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
           var chartInterpolate= $scope.interpolateType.value;//cardinal
-          var lastOneHourDateFormat = 'HH:mm'; //https://docs.angularjs.org/api/ng/filter/date
-          var last24HoursDateFormat = 'HH:mm';
-          var last30DaysDateFormat = 'dd-MMM HH:mm';
-          var allDataDateFormat = 'dd-MMM-yyyy';
-          var lastOneHourText = 'Last one hour (1 minute interval)';
-          var last24HoursText = 'Last 24 hours (5 minutes interval)';
-          var last30DaysText = 'Last 30 days (1 hour interval)';
-          var allDataText = 'All available data (1 day interval)';
+          var dateFormatRawData = 'HH:mm';
+          var dateFormatMinuteData = 'HH:mm'; //https://docs.angularjs.org/api/ng/filter/date
+          var dateFormat5MinutesData = 'HH:mm';
+          var dateFormatHourData = 'dd-MMM HH:mm';
+          var dateFormatDayData = 'dd-MMM-yyyy';
+          var textRawData = 'Last one hour (Raw Data)';
+          var textMinuteData = 'Last 6 hours (1 minute interval)';
+          var text5MinutesData = 'Last 24 hours (5 minutes interval)';
+          var textHourData = 'Last 30 days (1 hour interval)';
+          var textDayData = 'All available data (1 day interval)';
         }else if($scope.variableType.metricType == 2){
           var yAxisD3Format='.0f';
           var chartLineColor=["#1f77b4"];
           var chartInterpolate='step-after';
-          var lastOneHourDateFormat = 'HH:mm:ss';
-          var last24HoursDateFormat = 'HH:mm:ss';
-          var last30DaysDateFormat = 'dd-MMM HH:mm:ss';
-          var allDataDateFormat = 'dd-MMM-yyyy HH:mm:ss';
-          var lastOneHourText = 'Last one hour';
-          var last24HoursText = 'Last 24 hours';
-          var last30DaysText = 'Last 30 days';
-          var allDataText = 'All available data';
+          var dateFormatMinuteData = 'HH:mm:ss';
+          var dateFormat5MinutesData = 'HH:mm:ss';
+          var dateFormatHourData = 'dd-MMM HH:mm:ss';
+          var dateFormatDayData = 'dd-MMM-yyyy HH:mm:ss';
+          var textMinuteData = 'Last 6 hours';
+          var text5MinutesData = 'Last 24 hours';
+          var textHourData = 'Last 30 days';
+          var textDayData = 'All available data';
         }
         //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
      
@@ -119,33 +122,43 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
         chartOptions.chart.interpolate = chartInterpolate;
         chartOptions.chart.color = chartLineColor;
         chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(yAxisD3Format)(d);};
+        
+        if($scope.variableType.metricType == 1){
+          //Chart options for one Minute sample interval data
+          $scope.chartRawDataOptions = chartOptions;
+          $scope.chartRawDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatRawData, about.timezone)};
+          $scope.chartRawDataOptions.title.text = textRawData;
+        }
       
-        //Copy and update last One hour
-        $scope.chartOptionsLastOneHour = chartOptions;
-        $scope.chartOptionsLastOneHour.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, lastOneHourDateFormat, about.timezone)};
-        $scope.chartOptionsLastOneHour.title.text = lastOneHourText;
+        //Chart options for one Minute sample interval data
+        $scope.chartMinuteDataOptions = angular.copy(chartOptions);
+        $scope.chartMinuteDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatMinuteData, about.timezone)};
+        $scope.chartMinuteDataOptions.title.text = textMinuteData;
 
-        //Copy and update last 24 hours
-        $scope.chartOptionsLast24Hours = angular.copy(chartOptions);
-        $scope.chartOptionsLast24Hours.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, last24HoursDateFormat, about.timezone)};
-        $scope.chartOptionsLast24Hours.title.text = last24HoursText;
+        //Chart options for 5 Minutes sample interval data
+        $scope.chart5MinutesDataOptions = angular.copy(chartOptions);
+        $scope.chart5MinutesDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormat5MinutesData, about.timezone)};
+        $scope.chart5MinutesDataOptions.title.text = text5MinutesData;
         
-        //Copy and update last 30 days
-        $scope.chartOptionsLast30Days = angular.copy(chartOptions);
-        $scope.chartOptionsLast30Days.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, last30DaysDateFormat, about.timezone)};
-        $scope.chartOptionsLast30Days.title.text = last30DaysText;
+        //Chart options for one Hour sample interval data
+        $scope.chartHourDataOptions = angular.copy(chartOptions);
+        $scope.chartHourDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatHourData, about.timezone)};
+        $scope.chartHourDataOptions.title.text = textHourData;
         
-        //Copy and update for all available data
-        $scope.chartOptionsAllDays = angular.copy(chartOptions);
-        $scope.chartOptionsAllDays.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, allDataDateFormat, about.timezone)};
-        $scope.chartOptionsAllDays.title.text = allDataText;
+        //Chart options for one Day sample interval data
+        $scope.chartDayDataOptions = angular.copy(chartOptions);
+        $scope.chartDayDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatDayData, about.timezone)};
+        $scope.chartDayDataOptions.title.text = textDayData;
         
         //Get list of Metrics types
-        //$scope.data = MetricsFactory.last5Minutes({"sensorId":$stateParams.sensorId});
-        $scope.lastOneHourChartMetrics = MetricsFactory.lastOneHour({sensorId : variableType.id});
-        $scope.last24HoursChartMetrics = MetricsFactory.last24Hours({sensorId : variableType.id});
-        $scope.last30DaysChartMetrics = MetricsFactory.last30Days({sensorId : variableType.id});
-        $scope.allDaysChartMetrics = MetricsFactory.allYears({sensorId : variableType.id});    
+        var hour = 60*60*1000;
+        if($scope.variableType.metricType == 1){
+          $scope.metricsDataRaw = MetricsFactory.getRawData({"variableTypeId":variableType.id, "lastNmilliSeconds": hour});          
+        }
+        $scope.metricsDataMinute = MetricsFactory.getOneMinuteData({"variableTypeId":variableType.id, "lastNmilliSeconds": hour*6});
+        $scope.metricsData5Minutes = MetricsFactory.getFiveMinutesData({"variableTypeId":variableType.id, "lastNmilliSeconds": hour*24});
+        $scope.metricsDataHour = MetricsFactory.getOneHourData({"variableTypeId":variableType.id, "lastNmilliSeconds": hour*24*30});
+        $scope.metricsDataDay = MetricsFactory.getOneDayData({"variableTypeId":variableType.id});
       });
     });
   };

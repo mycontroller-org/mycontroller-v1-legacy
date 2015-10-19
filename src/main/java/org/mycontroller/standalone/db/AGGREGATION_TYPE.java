@@ -24,8 +24,5 @@ public enum AGGREGATION_TYPE {
     ONE_MINUTE,
     FIVE_MINUTES,
     ONE_HOUR,
-    ONE_DAY,
-    THIRTY_DAYS,
-    ONE_YEAR,
-    ALL_DAYS
+    ONE_DAY
 }

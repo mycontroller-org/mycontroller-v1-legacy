@@ -39,6 +39,10 @@ public class MetricsOnOffTypeDevice {
 
     }
 
+    public MetricsOnOffTypeDevice(SensorValue sensorValue) {
+        this(sensorValue, null, null);
+    }
+
     public MetricsOnOffTypeDevice(SensorValue sensorValue, Long timestamp) {
         this(sensorValue, timestamp, null);
     }

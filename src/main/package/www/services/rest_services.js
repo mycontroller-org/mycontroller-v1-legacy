@@ -26,6 +26,7 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     delete: { method: 'DELETE', params: {sensorId: '@sensorId'} },
     getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
     sendPayload: { method: 'POST'},
+    getSensorByRefId: { method: 'GET', params: {nodeId: 'sensorByRefId'}},
     getOthers: { method: 'GET', isArray: true, params: {nodeId: 'getOthers'}},
     updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}},
     getSensorValue: { method: 'GET', params: {nodeId: 'sensorValue'}}
@@ -96,16 +97,13 @@ myControllerModule.factory('TypesFactory', function ($resource) {
 
 //Metrics Services
 myControllerModule.factory('MetricsFactory', function ($resource) {
-  return $resource('/mc/rest/metrics/:type/:sensorId', {sensorId: '@sensorId'}, {
-    lastMinute: { method: 'GET', isArray: true, params: {type: 'lastMinute'}},
-    last5Minutes: { method: 'GET', isArray: true, params: {type: 'last5Minutes'}},
-    lastOneHour: { method: 'GET', isArray: true, params: {type: 'lastOneHour'}},
-    last24Hours: { method: 'GET', isArray: true, params: {type: 'last24Hours'}},
-    last30Days: { method: 'GET', isArray: true, params: {type: 'last30Days'}},
-    lastYear: { method: 'GET', isArray: true, params: {type: 'lastYear'}},
-    allYears: { method: 'GET', isArray: true, params: {type: 'allYears'}},
+  return $resource('/mc/rest/metrics/:type', {}, {
+    getRawData: { method: 'GET', isArray: true, params: {type: 'rawData'}},
+    getOneMinuteData: { method: 'GET', isArray: true, params: {type: 'oneMinuteData'}},
+    getFiveMinutesData: { method: 'GET', isArray: true, params: {type: 'fiveMinutesData'}},
+    getOneHourData: { method: 'GET', isArray: true, params: {type: 'oneHourData'}},
+    getOneDayData: { method: 'GET', isArray: true, params: {type: 'oneDayData'}},
     batteryUsage: { method: 'GET', isArray: true, params: {type: 'batteryUsage'}},
-    sensorData: { method: 'GET', isArray: false, params: {type: 'sensorData'}}         
   })
 });
 

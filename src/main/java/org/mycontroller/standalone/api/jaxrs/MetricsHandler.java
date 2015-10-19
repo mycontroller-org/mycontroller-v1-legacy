@@ -23,8 +23,8 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -55,75 +55,53 @@ public class MetricsHandler {
     private static final Logger _logger = LoggerFactory.getLogger(MetricsHandler.class.getName());
 
     @GET
-    @Path("/lastMinute/{variableTypeId}/")
-    public Response getLastMinute(@PathParam("variableTypeId") int variableTypeId) {
-        ArrayList<MetricsChartDataKeyValuesJson> chartDataJson = this.getAllAfter(AGGREGATION_TYPE.ONE_MINUTE,
-                variableTypeId);
-        return RestUtils.getResponse(Status.OK, chartDataJson);
+    @Path("/rawData")
+    public Response getLastMinute(@QueryParam("variableTypeId") int variableTypeId,
+            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
+        return RestUtils.getResponse(Status.OK,
+                this.getMetrics(AGGREGATION_TYPE.RAW, variableTypeId, lastNmilliSeconds));
     }
 
     @GET
-    @Path("/last5Minutes/{variableTypeId}")
-    public Response getLast5Minutes(@PathParam("variableTypeId") int variableTypeId) {
-        ArrayList<MetricsChartDataKeyValuesJson> chartDataJson = this.getAllAfter(AGGREGATION_TYPE.FIVE_MINUTES,
-                variableTypeId);
-        return RestUtils.getResponse(Status.OK, chartDataJson);
+    @Path("/oneMinuteData")
+    public Response getLast5Minutes(@QueryParam("variableTypeId") int variableTypeId,
+            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
+        return RestUtils.getResponse(Status.OK,
+                this.getMetrics(AGGREGATION_TYPE.ONE_MINUTE, variableTypeId, lastNmilliSeconds));
     }
 
     @GET
-    @Path("/lastOneHour/{variableTypeId}")
-    public Response getLastOneHour(@PathParam("variableTypeId") int variableTypeId) {
-        ArrayList<MetricsChartDataKeyValuesJson> chartDataJson = this.getAllAfter(AGGREGATION_TYPE.ONE_HOUR,
-                variableTypeId);
-        return RestUtils.getResponse(Status.OK, chartDataJson);
+    @Path("/fiveMinutesData")
+    public Response getLastOneHour(@QueryParam("variableTypeId") int variableTypeId,
+            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
+        return RestUtils.getResponse(Status.OK,
+                this.getMetrics(AGGREGATION_TYPE.FIVE_MINUTES, variableTypeId, lastNmilliSeconds));
     }
 
     @GET
-    @Path("/last24Hours/{variableTypeId}")
-    public Response getLast24Hours(@PathParam("variableTypeId") int variableTypeId) {
-        ArrayList<MetricsChartDataKeyValuesJson> chartDataJson = this.getAllAfter(AGGREGATION_TYPE.ONE_DAY,
-                variableTypeId);
-        return RestUtils.getResponse(Status.OK, chartDataJson);
+    @Path("/oneHourData")
+    public Response getLast24Hours(@QueryParam("variableTypeId") int variableTypeId,
+            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
+        return RestUtils.getResponse(Status.OK,
+                this.getMetrics(AGGREGATION_TYPE.ONE_HOUR, variableTypeId, lastNmilliSeconds));
     }
 
     @GET
-    @Path("/last30Days/{variableTypeId}")
-    public Response getLast30Days(@PathParam("variableTypeId") int variableTypeId) {
-        ArrayList<MetricsChartDataKeyValuesJson> chartDataJson = this.getAllAfter(AGGREGATION_TYPE.THIRTY_DAYS,
-                variableTypeId);
-        return RestUtils.getResponse(Status.OK, chartDataJson);
+    @Path("/oneDayData")
+    public Response getLast30Days(@QueryParam("variableTypeId") int variableTypeId,
+            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
+        return RestUtils.getResponse(Status.OK,
+                this.getMetrics(AGGREGATION_TYPE.ONE_DAY, variableTypeId, lastNmilliSeconds));
     }
 
     @GET
-    @Path("/lastYear/{variableTypeId}")
-    public Response getLastYear(@PathParam("variableTypeId") int variableTypeId) {
-        ArrayList<MetricsChartDataKeyValuesJson> chartDataJson = this.getAllAfter(AGGREGATION_TYPE.ONE_YEAR,
-                variableTypeId);
-        return RestUtils.getResponse(Status.OK, chartDataJson);
-    }
-
-    @GET
-    @Path("/allYears/{variableTypeId}")
-    public Response getAllYears(@PathParam("variableTypeId") int variableTypeId) {
-        ArrayList<MetricsChartDataKeyValuesJson> chartDataJson = this.getAllAfter(AGGREGATION_TYPE.ALL_DAYS,
-                variableTypeId);
-        return RestUtils.getResponse(Status.OK, chartDataJson);
-    }
-
-    @GET
-    @Path("/sensorData/{id}")
-    public Response getSensorDetails(@PathParam("id") int id) {
-        Sensor sensor = DaoUtils.getSensorDao().get(id);
-        return RestUtils.getResponse(Status.OK, sensor);
-    }
-
-    @GET
-    @Path("/batteryUsage/{nodeId}")
-    public Response getBatteryUsageDetails(@PathParam("nodeId") int nodeId) {
+    @Path("/batteryUsage")
+    public Response getBatteryUsageDetails(@QueryParam("nodeId") int nodeId) {
         return RestUtils.getResponse(Status.OK, this.getBatterUsage(nodeId));
     }
 
-    private ArrayList<MetricsChartDataKeyValuesJson> getAllAfter(AGGREGATION_TYPE aggregationType, int variableTypeId) {
+    private ArrayList<MetricsChartDataKeyValuesJson> getMetrics(AGGREGATION_TYPE aggregationType, int variableTypeId,
+            Long lastNmilliSeconds) {
         MetricsAggregationBase metricsAggregationBase = new MetricsAggregationBase();
 
         ArrayList<MetricsChartDataKeyValuesJson> finalData = new ArrayList<MetricsChartDataKeyValuesJson>();
@@ -136,31 +114,44 @@ public class MetricsHandler {
             return null;
         } else if (sensorValue.getMetricType() == TypeUtils.METRIC_TYPE.DOUBLE.ordinal()) {
             _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_DOUBLE.toString());
-            List<MetricsDoubleTypeDevice> metrics = metricsAggregationBase.getMetricsDoubleTypeAllAfter(
-                    aggregationType, sensorValue);
+
+            List<MetricsDoubleTypeDevice> metrics = metricsAggregationBase.getMetricsDoubleData(
+                    sensorValue,
+                    aggregationType,
+                    lastNmilliSeconds != null ? System.currentTimeMillis() - lastNmilliSeconds : null);
+
             if (metrics == null) {
                 //throw new ApiError("No data available");
                 return null;
             }
 
-            MetricsChartDataKeyValuesJson minChartData = new MetricsChartDataKeyValuesJson("Minimum");
-            MetricsChartDataKeyValuesJson avgChartData = new MetricsChartDataKeyValuesJson("Average");
-            MetricsChartDataKeyValuesJson maxChartData = new MetricsChartDataKeyValuesJson("Maximum");
+            if (aggregationType == AGGREGATION_TYPE.RAW) {
+                MetricsChartDataKeyValuesJson rawChartData = new MetricsChartDataKeyValuesJson(
+                        sensorValue.getVariableTypeString());
+                for (MetricsDoubleTypeDevice metric : metrics) {
+                    rawChartData.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
+                }
+                finalData.add(rawChartData);
+            } else {
+                MetricsChartDataKeyValuesJson minChartData = new MetricsChartDataKeyValuesJson("Minimum");
+                MetricsChartDataKeyValuesJson avgChartData = new MetricsChartDataKeyValuesJson("Average");
+                MetricsChartDataKeyValuesJson maxChartData = new MetricsChartDataKeyValuesJson("Maximum");
 
-            for (MetricsDoubleTypeDevice metric : metrics) {
-                minChartData.add(new Object[] { metric.getTimestamp(), metric.getMin() });
-                avgChartData.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
-                maxChartData.add(new Object[] { metric.getTimestamp(), metric.getMax() });
+                for (MetricsDoubleTypeDevice metric : metrics) {
+                    minChartData.add(new Object[] { metric.getTimestamp(), metric.getMin() });
+                    avgChartData.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
+                    maxChartData.add(new Object[] { metric.getTimestamp(), metric.getMax() });
+                }
 
+                finalData.add(minChartData);
+                finalData.add(avgChartData);
+                finalData.add(maxChartData);
             }
-
-            finalData.add(minChartData);
-            finalData.add(avgChartData);
-            finalData.add(maxChartData);
         } else if (sensorValue.getMetricType() == TypeUtils.METRIC_TYPE.BINARY.ordinal()) {
             _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_BOOLEAN.toString());
-            List<MetricsOnOffTypeDevice> metrics = metricsAggregationBase.getMetricsBooleanTypeAllAfter(
-                    aggregationType, sensorValue);
+            List<MetricsOnOffTypeDevice> metrics = metricsAggregationBase.getMetricsBinaryData(
+                    sensorValue,
+                    lastNmilliSeconds != null ? System.currentTimeMillis() - lastNmilliSeconds : null);
             if (metrics == null) {
                 //throw new ApiError("No data available");
                 return null;

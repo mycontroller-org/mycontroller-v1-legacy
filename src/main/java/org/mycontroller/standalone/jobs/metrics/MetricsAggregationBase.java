@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.jobs.metrics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.NumericUtils;
@@ -35,9 +36,6 @@ import org.slf4j.LoggerFactory;
 public class MetricsAggregationBase {
     private static final Logger _logger = LoggerFactory.getLogger(MetricsAggregationBase.class.getName());
     private AGGREGATION_TYPE aggregationType = null;
-    private Long referanceTime = null;
-    private AGGREGATION_TYPE retriveDataAggregationType = null;
-    private Long entryTimestamp = null;
 
     public MetricsAggregationBase(AGGREGATION_TYPE aggregationType) {
         this.aggregationType = aggregationType;
@@ -50,12 +48,9 @@ public class MetricsAggregationBase {
         if (this.aggregationType == null) {
             _logger.warn("Should create object with valid aggregation type!");
             return;
-        } else {
-            setValuesBasedOnType(this.aggregationType);
         }
 
-        _logger.debug("type:{},referenceTime:{}, retriveDataType:{}", this.aggregationType, this.referanceTime,
-                this.retriveDataAggregationType);
+        _logger.debug("Run Aggregation, type:{}", this.aggregationType);
 
         List<Sensor> sensors = DaoUtils.getSensorDao().getAll();
         _logger.debug("Sensors List:{}", sensors);
@@ -64,7 +59,7 @@ public class MetricsAggregationBase {
             List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAllDoubleMetric(sensor.getId());
 
             for (SensorValue sensorValue : sensorValues) {
-                List<MetricsDoubleTypeDevice> metrics = this.getMetricsDoubleTypeAllAfter(sensorValue);
+                List<MetricsDoubleTypeDevice> metrics = this.getLowLevelData(sensorValue, aggregationType);
                 //Calculate Metrics
                 if (metrics.size() > 0) {
                     int samples = 0;
@@ -105,7 +100,7 @@ public class MetricsAggregationBase {
                     metric.setMax(NumericUtils.round(max, NumericUtils.DOUBLE_ROUND));
                     metric.setAvg(NumericUtils.round(avg, NumericUtils.DOUBLE_ROUND));
                     metric.setSamples(samples);
-                    metric.setTimestamp(entryTimestamp);
+                    metric.setTimestamp(System.currentTimeMillis() - TIME_REF.ONE_SECOND);
                     DaoUtils.getMetricsDoubleTypeDeviceDao().create(metric);
                 }
             }
@@ -113,81 +108,65 @@ public class MetricsAggregationBase {
         this.purgeDB();
     }
 
-    private void setValuesBasedOnType(AGGREGATION_TYPE aggregationType) {
+    private List<MetricsDoubleTypeDevice> getLowLevelData(SensorValue sensorValue, AGGREGATION_TYPE aggregationType) {
         switch (aggregationType) {
             case ONE_MINUTE:
-                referanceTime = TIME_REF.ONE_MINUTE;
-                retriveDataAggregationType = AGGREGATION_TYPE.RAW;
-                entryTimestamp = System.currentTimeMillis();
-                break;
+                return this.getMetricsDoubleData(sensorValue, AGGREGATION_TYPE.RAW,
+                        this.getFromTime(aggregationType));
             case FIVE_MINUTES:
-                referanceTime = TIME_REF.FIVE_MINUTES;
-                retriveDataAggregationType = AGGREGATION_TYPE.ONE_MINUTE;
-                entryTimestamp = System.currentTimeMillis() - TIME_REF.ONE_SECOND;
-                break;
+                return this.getMetricsDoubleData(sensorValue, AGGREGATION_TYPE.ONE_MINUTE,
+                        this.getFromTime(aggregationType));
             case ONE_HOUR:
-                referanceTime = TIME_REF.ONE_HOUR;
-                retriveDataAggregationType = AGGREGATION_TYPE.ONE_MINUTE;
-                entryTimestamp = System.currentTimeMillis() - TIME_REF.ONE_SECOND;
-                break;
+                return this.getMetricsDoubleData(sensorValue, AGGREGATION_TYPE.FIVE_MINUTES,
+                        this.getFromTime(aggregationType));
             case ONE_DAY:
-                referanceTime = TIME_REF.ONE_DAY;
-                retriveDataAggregationType = AGGREGATION_TYPE.FIVE_MINUTES;
-                entryTimestamp = System.currentTimeMillis() - TIME_REF.ONE_SECOND;
-                break;
-            case THIRTY_DAYS:
-                referanceTime = TIME_REF.ONE_HOUR_MAX_RETAIN_TIME;
-                retriveDataAggregationType = AGGREGATION_TYPE.ONE_HOUR;
-                break;
-            case ONE_YEAR:
-                referanceTime = TIME_REF.ONE_YEAR;
-                retriveDataAggregationType = AGGREGATION_TYPE.ONE_DAY;
-                break;
-            case ALL_DAYS:
-                referanceTime = TIME_REF.MILLISECONDS_2015;
-                retriveDataAggregationType = AGGREGATION_TYPE.ONE_DAY;
-                break;
+                return this.getMetricsDoubleData(sensorValue, AGGREGATION_TYPE.ONE_HOUR,
+                        this.getFromTime(aggregationType));
             default:
-                _logger.warn("Invalid type! nothing to do, type:{}", this.aggregationType);
-                return;
+                return new ArrayList<MetricsDoubleTypeDevice>();
+        }
+
+    }
+
+    private Long getFromTime(AGGREGATION_TYPE aggregationType) {
+        switch (aggregationType) {
+            case RAW:
+                return null;
+            case ONE_MINUTE:
+                return System.currentTimeMillis() - TIME_REF.ONE_MINUTE;
+            case FIVE_MINUTES:
+                return System.currentTimeMillis() - TIME_REF.FIVE_MINUTES;
+            case ONE_HOUR:
+                return System.currentTimeMillis() - TIME_REF.ONE_HOUR;
+            case ONE_DAY:
+                return System.currentTimeMillis() - TIME_REF.ONE_DAY;
+            default:
+                return null;
         }
     }
 
-    public List<MetricsDoubleTypeDevice> getMetricsDoubleTypeAllAfter(AGGREGATION_TYPE aggregationType,
-            SensorValue sensorValue) {
-        this.setValuesBasedOnType(aggregationType);
-        return this.getMetricsDoubleTypeAllAfter(sensorValue);
-    }
-
-    private List<MetricsDoubleTypeDevice> getMetricsDoubleTypeAllAfter(SensorValue sensorValue) {
-        List<MetricsDoubleTypeDevice> metrics = DaoUtils
-                .getMetricsDoubleTypeDeviceDao()
-                .getAllAfter(new MetricsDoubleTypeDevice(
-                        sensorValue,
-                        this.retriveDataAggregationType.ordinal(),
-                        System.currentTimeMillis() - this.referanceTime));
-        return metrics;
+    public List<MetricsDoubleTypeDevice> getMetricsDoubleData(SensorValue sensorValue, AGGREGATION_TYPE aggrType,
+            Long fromTimestamp) {
+        MetricsDoubleTypeDevice metricsDoubleType = new MetricsDoubleTypeDevice(sensorValue, aggrType.ordinal());
+        if (fromTimestamp != null) {
+            metricsDoubleType.setTimestampFrom(fromTimestamp);
+        }
+        return DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(metricsDoubleType);
     }
 
     /** Get metric data for boolean type */
 
-    public List<MetricsOnOffTypeDevice> getMetricsBooleanTypeAllAfter(AGGREGATION_TYPE aggregationType,
-            SensorValue sensorValue) {
-        this.setValuesBasedOnType(aggregationType);
-        return this.getMetricsOnOffTypeAllAfter(sensorValue);
-    }
-
-    private List<MetricsOnOffTypeDevice> getMetricsOnOffTypeAllAfter(SensorValue sensorValue) {
-        List<MetricsOnOffTypeDevice> metrics = DaoUtils
-                .getMetricsOnOffTypeDeviceDao()
-                .getAllAfter(new MetricsOnOffTypeDevice(
-                        sensorValue,
-                        System.currentTimeMillis() - this.referanceTime));
-        return metrics;
+    public List<MetricsOnOffTypeDevice> getMetricsBinaryData(SensorValue sensorValue, Long fromTimestamp) {
+        MetricsOnOffTypeDevice offTypeDevice = new MetricsOnOffTypeDevice(sensorValue);
+        if (fromTimestamp != null) {
+            offTypeDevice.setTimestampFrom(fromTimestamp);
+        }
+        return DaoUtils.getMetricsOnOffTypeDeviceDao().getAll(offTypeDevice);
     }
 
     private void purgeDB() {
         switch (aggregationType) {
+            case RAW:
             case ONE_MINUTE:
                 MetricsAggregationUtils.purgeRawData();
                 MetricsAggregationUtils.purgeOneMinuteData();
@@ -196,15 +175,6 @@ public class MetricsAggregationBase {
                 MetricsAggregationUtils.purgeFiveMinutesData();
                 break;
             case ONE_HOUR:
-                /*Settings lastDayAggregation = DaoUtils.getSettingsDao().get(Settings.LAST_ONE_DAY_AGGREGATION);
-                long yesterday = (System.currentTimeMillis() / TIME_REF.ONE_DAY) - TIME_REF.ONE_DAY;
-                if (lastDayAggregation == null) {
-                    long lastDay = System.currentTimeMillis() / TIME_REF.ONE_DAY;
-                    lastDayAggregation = new Settings(Settings.LAST_ONE_DAY_AGGREGATION, lastDay);
-                    DaoUtils.getSettingsDao().create(lastDayAggregation);
-                } else if (yesterday == lastDayAggregation.getLongValue()) {
-                    MetricsAggregationUtils.purgeOneHourData();
-                }*/
                 MetricsAggregationUtils.purgeOneHourData();
                 break;
             default:

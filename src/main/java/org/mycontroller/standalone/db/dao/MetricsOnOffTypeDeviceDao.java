@@ -31,6 +31,5 @@ public interface MetricsOnOffTypeDeviceDao {
     void deletePrevious(MetricsOnOffTypeDevice metric);
     void update(MetricsOnOffTypeDevice metric);
     List<MetricsOnOffTypeDevice> getAll(MetricsOnOffTypeDevice metric);
-    List<MetricsOnOffTypeDevice> getAllAfter(MetricsOnOffTypeDevice metric);
     MetricsOnOffTypeDevice get(MetricsOnOffTypeDevice metric);
 }

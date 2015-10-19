@@ -28,16 +28,32 @@
   </div>
   
   <div ng-show="variableType.id">
+    <div ng-show="variableType.metricType == 1">
+      <div class="continer center">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+            <div>
+              <p class="panel-title" >
+                {{chartRawDataOptions.title.text}}</p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <nvd3 options="chartRawDataOptions" data="metricsDataRaw"></nvd3>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="continer center">
         <div class="panel panel-default">
           <div class="panel-heading">
           <div>
             <p class="panel-title" >
-              {{chartOptionsLastOneHour.title.text}}</p>
+              {{chartMinuteDataOptions.title.text}}</p>
           </div>
         </div>
         <div class="panel-body">
-          <nvd3 options="chartOptionsLastOneHour" data="lastOneHourChartMetrics"></nvd3>
+          <nvd3 options="chartMinuteDataOptions" data="metricsDataMinute"></nvd3>
         </div>
       </div>
     </div>
@@ -47,11 +63,11 @@
         <div class="panel-heading">
           <div>
             <p class="panel-title" >
-              {{chartOptionsLast24Hours.title.text}}</p>
+              {{chart5MinutesDataOptions.title.text}}</p>
           </div>
         </div>
         <div class="panel-body">
-          <nvd3 options="chartOptionsLast24Hours" data="last24HoursChartMetrics"></nvd3>
+          <nvd3 options="chart5MinutesDataOptions" data="metricsData5Minutes"></nvd3>
         </div>
       </div>
     </div>
@@ -61,11 +77,11 @@
           <div class="panel-heading">
           <div>
             <p class="panel-title" >
-              {{chartOptionsLast30Days.title.text}}</p>
+              {{chartHourDataOptions.title.text}}</p>
           </div>
         </div>
         <div class="panel-body">
-          <nvd3 options="chartOptionsLast30Days" data="last30DaysChartMetrics"></nvd3>
+          <nvd3 options="chartHourDataOptions" data="metricsDataHour"></nvd3>
         </div>
       </div>
     </div>
@@ -75,11 +91,11 @@
           <div class="panel-heading">
           <div>
             <p class="panel-title" >
-              {{chartOptionsAllDays.title.text}}</p>
+              {{chartDayDataOptions.title.text}}</p>
           </div>
         </div>
         <div class="panel-body">
-          <nvd3 options="chartOptionsAllDays" data="allDaysChartMetrics"></nvd3>
+          <nvd3 options="chartDayDataOptions" data="metricsDataDay"></nvd3>
         </div>
       </div>
     </div>  

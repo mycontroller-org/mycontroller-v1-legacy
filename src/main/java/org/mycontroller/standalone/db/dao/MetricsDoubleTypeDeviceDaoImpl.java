@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
@@ -111,32 +113,21 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDao<MetricsDoubl
     @Override
     public List<MetricsDoubleTypeDevice> getAll(MetricsDoubleTypeDevice metric) {
         try {
-            return this.getDao().query(
-                    this.getDao()
-                            .queryBuilder()
-                            .where().eq(MetricsDoubleTypeDevice.SENSOR_VALUE_REF_ID,
-                                    metric.getSensorValue().getId())
-                            .and().eq(MetricsDoubleTypeDevice.AGGREGATION_TYPE,
-                                    metric.getAggregationType())
-                            .and().between(MetricsDoubleTypeDevice.TIMESTAMP,
-                                    metric.getTimestampFrom(), metric.getTimestampTo())
-                            .prepare());
-        } catch (SQLException ex) {
-            _logger.error("unable to get, metric:{}", metric, ex);
-        }
-        return null;
-    }
-
-    @Override
-    public List<MetricsDoubleTypeDevice> getAllAfter(MetricsDoubleTypeDevice metric) {
-        try {
-            return this.getDao().query(
-                    this.getDao()
-                            .queryBuilder()
-                            .where().eq(MetricsDoubleTypeDevice.SENSOR_VALUE_REF_ID, metric.getSensorValue().getId())
-                            .and().eq(MetricsDoubleTypeDevice.AGGREGATION_TYPE, metric.getAggregationType())
-                            .and().ge(MetricsDoubleTypeDevice.TIMESTAMP, metric.getTimestamp())
-                            .prepare());
+            QueryBuilder<MetricsDoubleTypeDevice, Object> queryBuilder = this.getDao().queryBuilder();
+            Where<MetricsDoubleTypeDevice, Object> whereBuilder = queryBuilder.where();
+            whereBuilder.eq(MetricsDoubleTypeDevice.SENSOR_VALUE_REF_ID,
+                    metric.getSensorValue().getId())
+                    .and().eq(MetricsDoubleTypeDevice.AGGREGATION_TYPE,
+                            metric.getAggregationType());
+            if (metric.getTimestampFrom() != null) {
+                whereBuilder.and().ge(MetricsDoubleTypeDevice.TIMESTAMP,
+                        metric.getTimestampFrom());
+            }
+            if (metric.getTimestampTo() != null) {
+                whereBuilder.and().le(MetricsDoubleTypeDevice.TIMESTAMP,
+                        metric.getTimestampTo());
+            }
+            return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
         }

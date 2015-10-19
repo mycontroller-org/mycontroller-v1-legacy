@@ -52,10 +52,12 @@ public class MetricsDoubleTypeDevice {
     private Long timestampFrom;
     private Long timestampTo;
 
+    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType) {
+        this(sensorValue, aggregationType, null, null, aggregationType);
+    }
+
     public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType, Long timestamp) {
-        this.sensorValue = sensorValue;
-        this.aggregationType = aggregationType;
-        this.timestamp = timestamp;
+        this(sensorValue, aggregationType, timestamp, null, aggregationType);
     }
 
     public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType, Long timestamp, Double avg,
@@ -65,11 +67,6 @@ public class MetricsDoubleTypeDevice {
         this.timestamp = timestamp;
         this.avg = avg;
         this.samples = samples;
-    }
-
-    public MetricsDoubleTypeDevice(Integer aggregationType, Long timestamp) {
-        this.aggregationType = aggregationType;
-        this.timestamp = timestamp;
     }
 
     public MetricsDoubleTypeDevice() {

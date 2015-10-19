@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.PayloadJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -123,6 +124,17 @@ public class SensorHandler {
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST);
         }
+    }
+
+    @GET
+    @Path("/sensorByRefId")
+    public Response getSensorByRefId(@QueryParam("sensorRefId") Integer sensorRefId) {
+        if (sensorRefId != null) {
+            return RestUtils.getResponse(Status.OK, DaoUtils.getSensorDao().get(sensorRefId));
+        } else {
+            return RestUtils.getResponse(Status.OK, new ApiError("sensorRefId should not be null"));
+        }
+
     }
 
     @PUT
