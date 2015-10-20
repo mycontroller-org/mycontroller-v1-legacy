@@ -68,7 +68,7 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
             xAxis: {
                 showMaxMin: false,
                 tickFormat: function(d) {
-                    return d3.time.format('HH:mm')(new Date(d))
+                    return d3.time.format('hh:mm a')(new Date(d))
                 },
                 //axisLabel: 'Timestamp',
                 rotateLabels: -20
@@ -93,10 +93,10 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var yAxisD3Format=',.2f';
           var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
           var chartInterpolate= $scope.interpolateType.value;//cardinal
-          var dateFormatRawData = 'HH:mm';
-          var dateFormatMinuteData = 'HH:mm'; //https://docs.angularjs.org/api/ng/filter/date
-          var dateFormat5MinutesData = 'HH:mm';
-          var dateFormatHourData = 'dd-MMM HH:mm';
+          var dateFormatRawData = 'hh:mm a';
+          var dateFormatMinuteData = 'hh:mm a'; //https://docs.angularjs.org/api/ng/filter/date
+          var dateFormat5MinutesData = 'hh:mm a';
+          var dateFormatHourData = 'dd-MMM hh:mm a';
           var dateFormatDayData = 'dd-MMM-yyyy';
           var textRawData = 'Last one hour (Raw Data)';
           var textMinuteData = 'Last 6 hours (1 minute interval)';
@@ -107,10 +107,10 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var yAxisD3Format='.0f';
           var chartLineColor=["#1f77b4"];
           var chartInterpolate='step-after';
-          var dateFormatMinuteData = 'HH:mm:ss';
-          var dateFormat5MinutesData = 'HH:mm:ss';
-          var dateFormatHourData = 'dd-MMM HH:mm:ss';
-          var dateFormatDayData = 'dd-MMM-yyyy HH:mm:ss';
+          var dateFormatMinuteData = 'hh:mm:ss a';
+          var dateFormat5MinutesData = 'hh:mm:ss a';
+          var dateFormatHourData = 'dd-MMM hh:mm:ss a';
+          var dateFormatDayData = 'dd-MMM-yyyy hh:mm:ss a';
           var textMinuteData = 'Last 6 hours';
           var text5MinutesData = 'Last 24 hours';
           var textHourData = 'Last 30 days';
