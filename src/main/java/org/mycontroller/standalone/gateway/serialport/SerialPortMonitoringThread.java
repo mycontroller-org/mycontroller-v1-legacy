@@ -35,7 +35,7 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
     private IMySensorsGateway serialGateway = null;
     private boolean terminated = false;
     private boolean terminate = false;
-    public static final long RETRY_WAIT_TIME = TIME_REF.ONE_SECOND * 5; //30 seconds
+    public static final long RETRY_WAIT_TIME = TIME_REF.ONE_SECOND * 30; //30 seconds
 
     public SerialPortMonitoringThread() {
         this.connect();
