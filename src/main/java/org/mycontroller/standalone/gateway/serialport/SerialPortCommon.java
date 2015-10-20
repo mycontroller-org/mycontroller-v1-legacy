@@ -25,6 +25,7 @@ public class SerialPortCommon {
     public static final String PORT_NAME = "portName";
     public static final String BAUD_RATE = "baudRate";
     public static final String CONNECTION_STATUS = "connectionStatus";
+    public static final String IS_CONNECTED = "isConnected";
 
     public static final String MESSAGE_SPLITTER = "\n";//"\r\n"
 }

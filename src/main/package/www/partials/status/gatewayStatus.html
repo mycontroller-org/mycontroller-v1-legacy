@@ -30,7 +30,8 @@
       <tr ng-show="gatewayInfo.type == 'serial'"><td class="col-md-2">Selected Driver</td><td>{{gatewayInfo.data.selectedDriverType}}</td></tr>
       <tr ng-show="gatewayInfo.type == 'serial'"><td class="col-md-2">Port Name</td><td>{{gatewayInfo.data.portName}}</td></tr>
       <tr ng-show="gatewayInfo.type == 'serial'"><td class="col-md-2">Baud Rate</td><td>{{gatewayInfo.data.baudRate}}</td></tr>
-      <tr ng-show="gatewayInfo.type == 'serial'"><td class="col-md-2">Connection Status</td><td>{{gatewayInfo.data.connectionStatus}}</td></tr>
+      <tr ng-show="gatewayInfo.type == 'serial'"><td class="col-md-2">Is Connected</td><td>{{gatewayInfo.data.isConnected}}</td></tr>
+      <tr ng-show="gatewayInfo.type == 'serial'"><td class="col-md-2">Connection Message</td><td>{{gatewayInfo.data.connectionStatus}}</td></tr>
       <!-- Ethernet Gateway -->
       <tr ng-show="gatewayInfo.type == 'ethernet'"><td class="col-md-2">Host/IP</td><td>{{gatewayInfo.data.ip}}</td></tr>
       <tr ng-show="gatewayInfo.type == 'ethernet'"><td class="col-md-2">Port</td><td>{{gatewayInfo.data.port}}</td></tr>

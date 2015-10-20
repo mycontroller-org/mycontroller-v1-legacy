@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.gateway.serialport;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.mycontroller.standalone.mysensors.RawMessageException;
 import org.slf4j.Logger;
@@ -32,10 +33,12 @@ import jssc.SerialPortException;
  */
 public class SerialDataListenerJssc implements SerialPortEventListener {
     private static Logger _logger = LoggerFactory.getLogger(SerialDataListenerJssc.class.getName());
-    SerialPort serialPort;
+    private SerialPort serialPort;
+    private GatewayInfo gatewayInfo;
 
-    public SerialDataListenerJssc(SerialPort serialPort) {
+    public SerialDataListenerJssc(SerialPort serialPort, GatewayInfo gatewayInfo) {
         this.serialPort = serialPort;
+        this.gatewayInfo = gatewayInfo;
     }
 
     StringBuilder message = new StringBuilder();
@@ -61,11 +64,13 @@ public class SerialDataListenerJssc implements SerialPortEventListener {
                 }
             } catch (SerialPortException ex) {
                 _logger.error("Serail Event Exception, ", ex);
+                gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
+                gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, ex.getMessage());
+                message.setLength(0);
             } catch (RawMessageException rEx) {
                 _logger.warn(rEx.getMessage());
                 message.setLength(0);
             }
-
         }
     }
 

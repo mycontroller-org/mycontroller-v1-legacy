@@ -43,12 +43,9 @@ import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.db.TimerUtils;
-import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.gateway.ethernet.EthernetGatewayImpl;
 import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
-import org.mycontroller.standalone.gateway.serialport.SerialPortJsscImpl;
-import org.mycontroller.standalone.gateway.serialport.SerialPortPi4jImpl;
-import org.mycontroller.standalone.gateway.serialport.SerialPortjSerialCommImpl;
+import org.mycontroller.standalone.gateway.serialport.MySensorsSerialPort;
 import org.mycontroller.standalone.mysensors.MessageMonitorThread;
 import org.mycontroller.standalone.mysensors.RawMessageQueue;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
@@ -196,40 +193,17 @@ public class StartApp {
 
         _logger.debug("MySensors Gateway Type:{}", ObjectFactory.getAppProperties().getGatewayType());
         //Start communication with MySensors gateway
-        if (ObjectFactory.getAppProperties().getGatewayType().equalsIgnoreCase(GATEWAY_TYPES.SERIAL.toString())) {
-            // - Start Serial port
-            String serialPortDriver = ObjectFactory.getAppProperties().getSerialPortDriver();
-            if (ObjectFactory.getAppProperties().getSerialPortDriver()
-                    .equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.AUTO.toString())) {
-                if (AppProperties.getOsArch().startsWith("arm")) {
-                    serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.PI4J.toString();
-                } else {
-                    serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString();
-                }
-            }
-            //Open Serial Port
-            if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSSC.toString())) {
-                IMySensorsGateway serialGateway = new SerialPortJsscImpl();
-                ObjectFactory.setMySensorsGateway(serialGateway);
-            } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.PI4J.toString())) {
-                IMySensorsGateway serialGateway = new SerialPortPi4jImpl();
-                ObjectFactory.setMySensorsGateway(serialGateway);
-            } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString())) {
-                IMySensorsGateway serialGateway = new SerialPortjSerialCommImpl();
-                ObjectFactory.setMySensorsGateway(serialGateway);
-            } else {
-                _logger.warn("Driver[{}] not supported yet...",
-                        ObjectFactory.getAppProperties().getSerialPortDriver());
-                return false;
-            }
+        if (ObjectFactory.getAppProperties().getGatewayType()
+                .equalsIgnoreCase(GATEWAY_TYPES.SERIAL.toString())) {
+            ObjectFactory.setMySensorsGateway(new MySensorsSerialPort());
+
         } else if (ObjectFactory.getAppProperties().getGatewayType()
                 .equalsIgnoreCase(GATEWAY_TYPES.ETHERNET.toString())) {
-            IMySensorsGateway ethernetGateway = new EthernetGatewayImpl();
-            ObjectFactory.setMySensorsGateway(ethernetGateway);
+            ObjectFactory.setMySensorsGateway(new EthernetGatewayImpl());
+
         } else if (ObjectFactory.getAppProperties().getGatewayType()
                 .equalsIgnoreCase(GATEWAY_TYPES.MQTT.toString())) {
-            IMySensorsGateway mqttGateway = new MqttGatewayImpl();
-            ObjectFactory.setMySensorsGateway(mqttGateway);
+            ObjectFactory.setMySensorsGateway(new MqttGatewayImpl());
         }
 
         // - Load starting values

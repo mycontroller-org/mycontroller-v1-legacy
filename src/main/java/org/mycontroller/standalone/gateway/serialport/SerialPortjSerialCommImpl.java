@@ -42,21 +42,28 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
 
     @Override
     public synchronized void write(RawMessage rawMessage) {
-        serialPort.writeBytes(rawMessage.getGWBytes(), rawMessage.getGWBytes().length);
+        try {
+            serialPort.writeBytes(rawMessage.getGWBytes(), rawMessage.getGWBytes().length);
+        } catch (Exception ex) {
+            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
+            _logger.error("Error,", ex);
+        }
     }
 
     @Override
     public void close() {
         if (this.serialPort.closePort()) {
-            _logger.info("serialPort{} closed", serialPort.getDescriptivePortName());
+            _logger.debug("serialPort{} closed", serialPort.getDescriptivePortName());
+        } else {
+            _logger.warn("Failed to close serialPort{}", serialPort.getDescriptivePortName());
         }
     }
 
     private void initialize() {
         SerialPort[] serialPorts = SerialPort.getCommPorts();
-        _logger.info("Number of serial port available:{}", serialPorts.length);
+        _logger.debug("Number of serial port available:{}", serialPorts.length);
         for (int portNo = 0; portNo < serialPorts.length; portNo++) {
-            _logger.info("SerialPort[{}]:[{},{}]", portNo + 1, serialPorts[portNo].getSystemPortName(),
+            _logger.debug("SerialPort[{}]:[{},{}]", portNo + 1, serialPorts[portNo].getSystemPortName(),
                     serialPorts[portNo].getDescriptivePortName());
         }
 
@@ -64,6 +71,7 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
         gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
         gatewayInfo.setData(new HashMap<String, Object>());
 
+        gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
         gatewayInfo.getData().put(SerialPortCommon.DRIVER_TYPE,
                 ObjectFactory.getAppProperties().getSerialPortDriver());
         gatewayInfo.getData().put(SerialPortCommon.SELECTED_DRIVER_TYPE,
@@ -89,12 +97,13 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
                 SerialPort.NO_PARITY);
 
         // create and register the serial data listener
-        serialPort.addDataListener(new SerialDataListenerjSerialComm(serialPort));
+        serialPort.addDataListener(new SerialDataListenerjSerialComm(serialPort, gatewayInfo));
         _logger.debug("Serial port initialized with the driver:{}, PortName:{}, BaudRate:{}",
                 ObjectFactory.getAppProperties().getSerialPortDriver(),
                 ObjectFactory.getAppProperties().getSerialPortName(),
                 ObjectFactory.getAppProperties().getSerialPortBaudRate());
         gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
+        gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, true);
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.mycontroller.standalone.gateway.serialport;
 import java.io.IOException;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.mycontroller.standalone.mysensors.RawMessageException;
 import org.slf4j.Logger;
@@ -33,6 +34,12 @@ import com.pi4j.io.serial.SerialDataEventListener;
 public class SerialDataListenerPi4j implements SerialDataEventListener {
     private static Logger _logger = LoggerFactory.getLogger(SerialDataListenerPi4j.class.getName());
     StringBuilder message = new StringBuilder();
+    private GatewayInfo gatewayInfo;
+
+    public SerialDataListenerPi4j(GatewayInfo gatewayInfo) {
+        this.gatewayInfo = gatewayInfo;
+
+    }
 
     public void dataReceived(SerialDataEvent event) {
         try {
@@ -54,6 +61,9 @@ public class SerialDataListenerPi4j implements SerialDataEventListener {
             }
         } catch (IOException ex) {
             _logger.error("exception on pi4j data event, ", ex);
+            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
+            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, ex.getMessage());
+            message.setLength(0);
         } catch (RawMessageException rEx) {
             _logger.warn(rEx.getMessage());
             message.setLength(0);
