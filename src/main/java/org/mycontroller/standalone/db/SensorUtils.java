@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.db;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -164,8 +165,18 @@ public class SensorUtils {
                 break;
             case V_VOLTAGE:
             case V_CURRENT:
+                break;
             case V_RGB:
+                guiButton.getRgb().setShow(true);
+                guiButton.getRgb().setValue(
+                        sensorValue.getLastValue() != null ? "#" + sensorValue.getLastValue() : null);
+                guiButton.getRgb().setVariableType(MESSAGE_TYPE_SET_REQ.V_RGB.ordinal());
+                break;
             case V_RGBW:
+                guiButton.getRgbw().setShow(true);
+                guiButton.getRgbw().setValue(getRgbaFromHex(sensorValue.getLastValue()));
+                guiButton.getRgbw().setVariableType(MESSAGE_TYPE_SET_REQ.V_RGBW.ordinal());
+                break;
             case V_ID:
             case V_UNIT_PREFIX:
             case V_HVAC_SETPOINT_COOL:
@@ -180,6 +191,44 @@ public class SensorUtils {
             default:
                 break;
         }
+    }
+
+    public static String getHexFromRgba(String rgba) {
+        if (rgba == null) {
+            return null;
+        }
+        //rgba(120,24,24,0.31)
+        String[] value = rgba.replace("rgba(", "").replace(")", "").split(",");
+        if (value.length == 4) {
+            int white = (int) ((1.0 - Double.valueOf(value[3])) * 255.0); // a-b=x, x*255=yy
+            return String.format("%02x%02x%02x%02x",
+                    Integer.valueOf(value[0]),
+                    Integer.valueOf(value[1]),
+                    Integer.valueOf(value[2]),
+                    white);
+        } else {
+            //Throw Exception
+            return null;
+        }
+    }
+
+    public static String getRgbaFromHex(String hex) {
+        if (hex == null) {
+            return null;
+        }
+        //RRGGBBWW
+        int red = Integer.valueOf(hex.substring(0, 2), 16);
+        int blue = Integer.valueOf(hex.substring(2, 4), 16);
+        int green = Integer.valueOf(hex.substring(4, 6), 16);
+        double white = 1.0 - (Integer.valueOf(hex.substring(6, 8), 16) / 255.0);// x=yy/255, b=a-x
+        StringBuilder builder = new StringBuilder();
+        builder.append("rgba(")
+                .append(red).append(",")
+                .append(blue).append(",")
+                .append(green).append(",")
+                .append(new DecimalFormat("#.#").format(white))
+                .append(")");
+        return builder.toString();
     }
 
     public static String getValue(SensorValue sensorValue) {

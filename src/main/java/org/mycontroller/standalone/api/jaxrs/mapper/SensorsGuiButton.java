@@ -30,6 +30,8 @@ public class SensorsGuiButton {
     private ButtonStatus hvacFlowMode = new ButtonStatus();
     private ButtonStatus lockStatus = new ButtonStatus();
     private ButtonStatus cover = new ButtonStatus();
+    private ButtonStatus rgb = new ButtonStatus();
+    private ButtonStatus rgbw = new ButtonStatus();
 
     public ButtonStatus getOnOff() {
         return onOff;
@@ -71,7 +73,11 @@ public class SensorsGuiButton {
         return graph;
     }
 
-    public void setGraph(ButtonStatus graphicalReport) {
-        this.graph = graphicalReport;
+    public ButtonStatus getRgb() {
+        return rgb;
+    }
+
+    public ButtonStatus getRgbw() {
+        return rgbw;
     }
 }

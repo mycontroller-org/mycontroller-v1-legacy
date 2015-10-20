@@ -36,7 +36,9 @@ public class PayloadJson {
         DECREASE,
         UP,
         DOWN,
-        STOP;
+        STOP,
+        RGB,
+        RGBW;
 
         public static BUTTON_TYPE get(int id) {
             for (BUTTON_TYPE type : values()) {

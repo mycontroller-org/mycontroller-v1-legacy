@@ -198,6 +198,14 @@ public class SensorHandler {
                 case STOP:
                     payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_STOP.ordinal());
                     break;
+                case RGB:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_RGB.ordinal());
+                    payload.setPayload(payload.getPayload().replace("#", ""));
+                    break;
+                case RGBW:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_RGBW.ordinal());
+                    payload.setPayload(SensorUtils.getHexFromRgba(payload.getPayload()));
+                    break;
                 default:
                     break;
             }

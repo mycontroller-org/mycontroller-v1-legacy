@@ -28,6 +28,7 @@ var myControllerModule = angular.module('myController',[
   'isteven-multi-select',
   'ui.bootstrap.datetimepicker',
   'base64',
+  'colorpicker.module',
   'angularModalService'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
