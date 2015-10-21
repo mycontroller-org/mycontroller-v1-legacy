@@ -138,7 +138,7 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
     });
 
     editModalInstance.result.then(function (updateAlarm) {
-      $scope.updateAlarm();
+      $scope.updateAlarm(updateAlarm);
     }), 
     function () {
       //console.log('Modal dismissed at: ' + new Date());

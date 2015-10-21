@@ -45,8 +45,7 @@
             </a>
           </td>
           <td at-implicit at-sortable at-attribute="name"></td>
-          <td at-implicit at-sortable at-attribute="variableTypeString" at-title="Variable Type"></td>
-          <td at-title="Condition">if {value} {{item.triggerString}} {{item.thresholdValue}}</td>
+          <td at-title="Condition">if { {{item.variableTypeString}} } {{item.triggerString}} {{item.thresholdValue}}</td>
           <td at-implicit at-sortable at-attribute="dampeningString" at-title="Dampening"></td>
           <td at-title="Notification">{{item.typeString}}: {{item.notificationString}}</td>
           <td at-attribute="lastTrigger" at-sortable at-title="Last Trigger">{{item.lastTrigger | date:'medium':about.timezone}}</td>

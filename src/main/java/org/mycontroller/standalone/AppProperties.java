@@ -31,6 +31,8 @@ public class AppProperties {
     private static final Logger _logger = LoggerFactory.getLogger(AppProperties.class.getName());
 
     public static final String APPLICATION_NAME = "MyController.org";
+    public static final String EMAIL_TEMPLATE_ALARM = "../conf/templates/emailTemplateAlarm.html";
+
     private String serialPortName;
     private String serialPortDriver;
     private int serialPortBaudRate;

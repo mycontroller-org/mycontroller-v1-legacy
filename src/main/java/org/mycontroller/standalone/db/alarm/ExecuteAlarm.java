@@ -15,10 +15,16 @@
  */
 package org.mycontroller.standalone.db.alarm;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.mail.EmailException;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.AlarmUtils;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
@@ -225,7 +231,7 @@ public class ExecuteAlarm implements Runnable {
     private void alarmSendEmail(Alarm alarm) throws EmailException {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("Alarm: [").append(alarm.getName()).append("] triggered! Node:[")
+        builder.append("Alarm: [").append(alarm.getName()).append("] triggered! Sensor:[")
                 .append(alarm.getSensor().getNameWithNode()).append("]");
         String subject = builder.toString();
 
@@ -236,21 +242,60 @@ public class ExecuteAlarm implements Runnable {
             unit += sensorValue.getUnit();
         }
 
-        builder.append("Dear User,\nThere is an alarm triggered for you!\n")
-                .append(String.format("\n\t%-30s%-2s", "Alarm Name", ":")).append(alarm.getName())
-                .append(String.format("\n\t%-30s%-2s", "Condition", ":")).append("if {Sensor Value} ")
-                .append(alarm.getTriggerString())
-                .append(" ").append(alarm.getThresholdValue()).append(unit)
-                .append(String.format("\n\t%-30s%-2s", "Sensor", ":")).append(alarm.getSensor().getNameWithNode())
-                .append(String.format("\n\t%-30s%-2s", "Id", ":")).append("Node Id:")
-                .append(alarm.getSensor().getNode().getId())
-                .append(", Sensor Id:").append(alarm.getSensor().getSensorId())
-                .append(", Type:").append(MESSAGE_TYPE_SET_REQ.get(sensorValue.getVariableType()).toString())
-                .append(String.format("\n\t%-30s%-2s", "Present Value", ":"))
-                .append(sensorValue.getLastValue())
-                .append(unit)
-                .append("\n\n\n-- Powered by www.mycontroller.org");
-        EmailUtils.sendSimpleEmail(AlarmUtils.getSendEmail(alarm), subject, builder.toString());
+        builder.append("<table border='0'>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Alarm Name").append("</td>");
+        builder.append("<td>").append(": ").append(alarm.getName()).append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Condition").append("</td>");
+        builder.append("<td>")
+                .append(": if {").append(alarm.getVariableTypeString()).append("} ").append(alarm.getTriggerString())
+                .append(" ").append(alarm.getThresholdValue()).append(unit).append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Dampening").append("</td>");
+        builder.append("<td>")
+                .append(": ").append(alarm.getDampeningString()).append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Sensor").append("</td>");
+        builder.append("<td>")
+                .append(": Name:").append(alarm.getSensor().getNameWithNode()).append(", Id:[Node:")
+                .append(alarm.getSensor().getNode().getId()).append(", Sensor:")
+                .append(alarm.getSensor().getSensorId()).append("]").append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Sensor Value").append("</td>");
+        builder.append("<td>")
+                .append(": ").append(sensorValue.getLastValue()).append(unit).append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Triggered at").append("</td>");
+        builder.append("<td>")
+                .append(": ").append(new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a z").format(new Date()))
+                .append("</td>");
+        builder.append("<tr>");
+
+        builder.append("</table>");
+
+        String message = null;
+        try {
+            message = new String(Files.readAllBytes(Paths.get(AppProperties.EMAIL_TEMPLATE_ALARM)),
+                    StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            _logger.error("Exception, ", ex);
+            message = ex.getMessage();
+        }
+
+        EmailUtils.sendSimpleEmail(AlarmUtils.getSendEmail(alarm), subject,
+                message.replaceAll(EmailUtils.ALARM_INFO, builder.toString()));
     }
 
     private void alarmSendSMS(Alarm alarm) throws Exception {
