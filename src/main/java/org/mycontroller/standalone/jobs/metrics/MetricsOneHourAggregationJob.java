@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.metrics.jobs;
+package org.mycontroller.standalone.jobs.metrics;
 
 import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.metrics.MetricsAggregationBase;
