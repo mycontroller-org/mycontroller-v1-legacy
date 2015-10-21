@@ -42,7 +42,8 @@ myControllerModule.factory('NodesFactory', function ($resource) {
     update: { method: 'PUT' },
     delete: { method: 'DELETE' },
     reboot: { method: 'POST', params: {nodeId: 'reboot'}},
-    discover: { method: 'POST', params: {nodeId: 'nodeDiscover'}}
+    discover: { method: 'POST', params: {nodeId: 'nodeDiscover'}},
+    uploadFirmware: { method: 'POST', params: {nodeId: 'uploadFirmware'}},
   })
 });
 

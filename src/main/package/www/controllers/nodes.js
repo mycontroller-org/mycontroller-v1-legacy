@@ -94,6 +94,15 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
     }
   };
   
+  // Upload Firmware
+  $scope.uploadFirmware = function (node, size) {
+    NodesFactory.uploadFirmware(node,function(response) {
+        alertService.success("Upload Firmware initiated for Node[id:"+node.id+",name:"+node.name+"]");
+      },function(error){
+        displayRestError.display(error);            
+      });      
+    };
+  
   //Reboot a Node
   $scope.reboot = function (node, size) {
     var addModalInstance = $uibModal.open({
