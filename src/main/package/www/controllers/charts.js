@@ -109,7 +109,7 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var yAxisD3Format=',.2f';
           var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
           var chartInterpolate= $scope.interpolateType.value;//cardinal
-          var dateFormatRawData = 'hh:mm a';
+          var dateFormatRawData = 'hh:mm:ss a';
           var dateFormatMinuteData = 'hh:mm a'; //https://docs.angularjs.org/api/ng/filter/date
           var dateFormat5MinutesData = 'hh:mm a';
           var dateFormatHourData = 'dd-MMM hh:mm a';
