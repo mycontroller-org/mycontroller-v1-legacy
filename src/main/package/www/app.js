@@ -29,6 +29,7 @@ var myControllerModule = angular.module('myController',[
   'ui.bootstrap.datetimepicker',
   'base64',
   'colorpicker.module',
+  'ngFileSaver',
   'angularModalService'
 ]).
 config(function($stateProvider, $urlRouterProvider) {

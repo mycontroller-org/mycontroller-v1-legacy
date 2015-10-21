@@ -245,8 +245,8 @@ public class TimerUtils {
             return null;
         }
     }
-    
-    public static void updateTimer(Timer timer){
+
+    public static void updateTimer(Timer timer) {
         timer.setTimestamp(System.currentTimeMillis()); //Set current time
         DaoUtils.getTimerDao().update(timer);
         SchedulerUtils.reloadTimerJob(timer);

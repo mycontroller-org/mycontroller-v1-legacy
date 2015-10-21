@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.jobs.metrics;
+package org.mycontroller.standalone.metrics.jobs;
 
 import org.mycontroller.standalone.db.AGGREGATION_TYPE;
+import org.mycontroller.standalone.metrics.MetricsAggregationBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

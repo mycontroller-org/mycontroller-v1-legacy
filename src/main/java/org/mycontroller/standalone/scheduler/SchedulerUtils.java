@@ -28,7 +28,7 @@ import org.mycontroller.standalone.db.TimerUtils.TYPE;
 import org.mycontroller.standalone.db.TimerUtils.WEEK_DAY;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.jobs.timer.TimerJob;
+import org.mycontroller.standalone.timer.jobs.TimerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.jobs.timer;
+package org.mycontroller.standalone.timer.jobs;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;

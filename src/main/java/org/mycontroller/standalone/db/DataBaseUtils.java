@@ -24,10 +24,10 @@ import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.jobs.MidNightJob;
 import org.mycontroller.standalone.jobs.SensorLogAggregationJob;
-import org.mycontroller.standalone.jobs.metrics.MetricsFiveMinutesAggregationJob;
-import org.mycontroller.standalone.jobs.metrics.MetricsOneDayAggregationJob;
-import org.mycontroller.standalone.jobs.metrics.MetricsOneHourAggregationJob;
-import org.mycontroller.standalone.jobs.metrics.MetricsOneMinuteAggregationJob;
+import org.mycontroller.standalone.metrics.jobs.MetricsFiveMinutesAggregationJob;
+import org.mycontroller.standalone.metrics.jobs.MetricsOneDayAggregationJob;
+import org.mycontroller.standalone.metrics.jobs.MetricsOneHourAggregationJob;
+import org.mycontroller.standalone.metrics.jobs.MetricsOneMinuteAggregationJob;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 import org.slf4j.Logger;
@@ -128,7 +128,8 @@ public class DataBaseUtils {
             DaoUtils.getSettingsDao().create(new Settings(Settings.MC_VERSION, "0.0.2-alpha5", "MC Version"));
 
             // Metric or Imperial to sensors
-            DaoUtils.getSettingsDao().create(new Settings(Settings.MY_SENSORS_CONFIG, "Metric", "MySensors Config", true));
+            DaoUtils.getSettingsDao().create(
+                    new Settings(Settings.MY_SENSORS_CONFIG, "Metric", "MySensors Config", true));
 
             createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_TEMP, "°C", "Temperature", true);
             createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_HUM, "%", "Humidity", true);

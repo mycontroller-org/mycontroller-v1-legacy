@@ -28,6 +28,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataKeyValuesJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.AGGREGATION_TYPE;
@@ -38,7 +39,8 @@ import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
-import org.mycontroller.standalone.jobs.metrics.MetricsAggregationBase;
+import org.mycontroller.standalone.metrics.MetricsAggregationBase;
+import org.mycontroller.standalone.metrics.MetricsCsvEngine;
 import org.mycontroller.standalone.mysensors.MyMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +94,20 @@ public class MetricsHandler {
             @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
         return RestUtils.getResponse(Status.OK,
                 this.getMetrics(AGGREGATION_TYPE.ONE_DAY, variableTypeId, lastNmilliSeconds));
+    }
+
+    @GET
+    @Path("/csvFile")
+    public Response getCsvFile(@QueryParam("variableTypeId") int variableTypeId,
+            @QueryParam("aggregationType") int aggregationType) {
+        try {
+            return RestUtils.getResponse(Status.OK,
+                    new MetricsCsvEngine().getMetricsCSV(variableTypeId, aggregationType));
+        } catch (Exception ex) {
+            _logger.error("Error,", ex);
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError(ex.getMessage()));
+        }
     }
 
     @GET

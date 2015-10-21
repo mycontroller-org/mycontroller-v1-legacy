@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory,
-  about, $filter, SettingsFactory, TypesFactory, SensorsFactory, displayRestError) {
- 
+  about, $filter, SettingsFactory, TypesFactory, SensorsFactory, displayRestError, FileSaver, Blob) {
+    
   //Get Chart Interpolate Type
   $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
   
@@ -35,6 +35,22 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
   },function(error){
     displayRestError.display(error);            
   });
+  
+  
+  //Download csv file for metrics
+  $scope.downloadCSV = function(variableTypeId, aggregationType){
+    MetricsFactory.getCsvFile({"variableTypeId":variableTypeId, "aggregationType": aggregationType},function(response) {
+        var data = new Blob([response.data], { type: 'text/plain;charset=utf-8' });
+        var config = {
+          data: data,
+          filename: response.fileName
+        };
+        FileSaver.saveAs(config);
+      },function(error){
+        displayRestError.display(error);            
+      });
+  };
+ 
   
   //Update Sensor Variable Type
   $scope.updateSensorVariableType = function(variableTypeId){

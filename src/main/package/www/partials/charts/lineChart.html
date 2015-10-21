@@ -34,7 +34,11 @@
             <div class="panel-heading">
             <div>
               <p class="panel-title" >
-                {{chartRawDataOptions.title.text}}</p>
+                {{chartRawDataOptions.title.text}}
+                <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 0)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+                  <i class="fa fa-download"></i>
+                </a>
+              </p>
             </div>
           </div>
           <div class="panel-body">
@@ -49,7 +53,11 @@
           <div class="panel-heading">
           <div>
             <p class="panel-title" >
-              {{chartMinuteDataOptions.title.text}}</p>
+              {{chartMinuteDataOptions.title.text}}
+              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 1)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+                <i class="fa fa-download"></i>
+              </a>
+            </p>
           </div>
         </div>
         <div class="panel-body">
@@ -63,7 +71,11 @@
         <div class="panel-heading">
           <div>
             <p class="panel-title" >
-              {{chart5MinutesDataOptions.title.text}}</p>
+              {{chart5MinutesDataOptions.title.text}}
+              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 2)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+                <i class="fa fa-download"></i>
+              </a>
+            </p>
           </div>
         </div>
         <div class="panel-body">
@@ -77,7 +89,11 @@
           <div class="panel-heading">
           <div>
             <p class="panel-title" >
-              {{chartHourDataOptions.title.text}}</p>
+              {{chartHourDataOptions.title.text}}
+              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 3)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+                <i class="fa fa-download"></i>
+              </a>
+            </p>
           </div>
         </div>
         <div class="panel-body">
@@ -91,7 +107,11 @@
           <div class="panel-heading">
           <div>
             <p class="panel-title" >
-              {{chartDayDataOptions.title.text}}</p>
+              {{chartDayDataOptions.title.text}}
+              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 4)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+                <i class="fa fa-download"></i>
+              </a>
+            </p>
           </div>
         </div>
         <div class="panel-body">

@@ -104,6 +104,7 @@ myControllerModule.factory('MetricsFactory', function ($resource) {
     getFiveMinutesData: { method: 'GET', isArray: true, params: {type: 'fiveMinutesData'}},
     getOneHourData: { method: 'GET', isArray: true, params: {type: 'oneHourData'}},
     getOneDayData: { method: 'GET', isArray: true, params: {type: 'oneDayData'}},
+    getCsvFile: { method: 'GET', isArray: false, params: {type: 'csvFile'}},
     batteryUsage: { method: 'GET', isArray: true, params: {type: 'batteryUsage'}},
   })
 });

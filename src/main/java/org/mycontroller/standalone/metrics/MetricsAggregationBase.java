@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.jobs.metrics;
+package org.mycontroller.standalone.metrics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +128,7 @@ public class MetricsAggregationBase {
 
     }
 
-    private Long getFromTime(AGGREGATION_TYPE aggregationType) {
+    public Long getFromTime(AGGREGATION_TYPE aggregationType) {
         switch (aggregationType) {
             case RAW:
                 return null;
