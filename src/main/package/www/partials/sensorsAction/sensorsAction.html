@@ -17,7 +17,7 @@
 -->
   <div class="page-header">
     <h3>
-      <div class="form-horizontal form-group-sm pull-right col-xs-6">
+      <div class="form-horizontal form-group-sm pull-right col-xs-5">
         <div class="form-group form-inline">
           <select style="width:158px;" class="form-control form-inline" ng-change="refreshTimeChange()" ng-model="refreshTime" >
             <option value="0" ng-selected="true">-- Never Refresh --</option>
@@ -31,7 +31,7 @@
           <select style="width:200px" class="form-control form-inline" ng-options="node.id as node.displayName for node in nodes" ng-change="nodeChange(nodeId)" ng-model="nodeId">
             <option value="">-- All Nodes --</option>
           </select>
-          <input style="width:220px" type="text" class="form-control ng-pristine ng-valid" ng-model="query" id="search" placeholder="Find Sensor" ng-model="query" 
+          <input style="width:170px" type="text" class="form-control ng-pristine ng-valid" ng-model="query" id="search" placeholder="Find Sensor" ng-model="query" 
           ng-change="updateFilteredList()"/>
 			  </div>
       </div>         
@@ -43,9 +43,12 @@
       <div class="panel panel-default">
         <div class="panel-heading">
 			<div>
-        <label class="btn btn-default btn-xs pull-right" ng-model="radioModel"ng-click="sensor = refresh(sensor)" uib-tooltip="Refresh"><i class="fa fa-refresh"></i></label>
-				<p class="panel-title" ng-init="status = false" tooltip-placement="top" uib-tooltip="{{sensor.nameWithNode}}">
-					{{sensor.nameWithNode ? sensor.nameWithNode : '-' | limitTo:30}}{{sensor.nameWithNode.length > 30 ? '...' : ''}}</p>
+        <a href="" class="text-default panel-title pull-right" ng-model="radioModel" ng-click="refresh(sensor)" tooltip-placement="left" uib-tooltip="Refresh">
+          <i class="fa fa-refresh"></i>
+        </a>
+				<p class="panel-title" ng-init="status = false" tooltip-placement="bottom" uib-tooltip="{{sensor.nameWithNode}}">
+					{{sensor.nameWithNode ? sensor.nameWithNode : '-' | limitTo:30}}{{sensor.nameWithNode.length > 30 ? '...' : ''}}
+        </p>
 			</div>
 
         </div>
@@ -54,7 +57,8 @@
       <img class="media-object" src="..." alt="...">
     </a>-->
           <p><small>Nid:{{sensor.node.id}}, Sid:{{sensor.sensorId}}, [{{sensor.typeString}}/ {{sensor.variableTypes}}]
-          <br>Last seen: {{sensor.lastSeen}}</small><strong class="pull-right" uib-tooltip="Status"><b>{{sensor.status}}</b></strong>
+            <br><span tooltip-placement="right" uib-tooltip="{{sensor.updateTime | date:'medium':about.timezone}}">Last seen: {{sensor.lastSeen}}</span></small>
+            <strong class="pull-right" tooltip-placement="top" uib-tooltip="Status"><b>{{sensor.status}}</b></strong>
           </p> 
         
         
@@ -87,12 +91,12 @@
       </div>  
 
       <div class="pull-right">
-        <a class="btn btn-default btn-xs" ng-show="sensor.guiButtons.graph.show" ng-model="radioModel" href="#/charts/{{sensor.id}}" uib-tooltip="Graphical Report"><i class="fa fa-line-chart"></i></a>
-        <a class="btn btn-default btn-xs" ng-model="radioModel" href="#/timer/{{sensor.id}}" uib-tooltip="Timer"><i class="fa fa-clock-o"></i></a>
-        <a class="btn btn-default btn-xs" ng-model="radioModel" href="#/alarm/{{sensor.id}}" uib-tooltip="Alarm"><i class="fa fa-bell-o"></i></a>
-        <a class="btn btn-default btn-xs" ng-model="radioModel" href="#/forwardPayload/{{sensor.id}}" uib-tooltip="Forward Payload"><i class="fa fa-forward"></i></a>
-        <a class="btn btn-default btn-xs" ng-model="radioModel" href="#/sensorlog/{{sensor.id}}" uib-tooltip="Logs"><i class="fa fa-list"></i></a>
-        <label class="btn btn-default btn-xs" ng-model="radioModel" ng-click="editSensor(sensor)" uib-tooltip="Edit"><i class="fa fa-edit"></i></label>
+        <a class="btn btn-default btn-xs" href="#/charts/{{sensor.id}}" uib-tooltip="Graphical Report" ng-show="sensor.guiButtons.graph.show"><i class="fa fa-line-chart"></i></a>
+        <a class="btn btn-default btn-xs" href="#/timer/{{sensor.id}}" uib-tooltip="Timer"><i class="fa fa-clock-o"></i></a>
+        <a class="btn btn-default btn-xs" href="#/alarm/{{sensor.id}}" uib-tooltip="Alarm"><i class="fa fa-bell-o"></i></a>
+        <a class="btn btn-default btn-xs" href="#/forwardPayload/{{sensor.id}}" uib-tooltip="Forward Payload"><i class="fa fa-forward"></i></a>
+        <a class="btn btn-default btn-xs" href="#/sensorlog/{{sensor.id}}" uib-tooltip="Logs"><i class="fa fa-list"></i></a>
+        <label class="btn btn-default btn-xs" href="" ng-click="editSensor(sensor)" uib-tooltip="Edit"><i class="fa fa-edit"></i></label>
       </div>
         </div>
       </div>

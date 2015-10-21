@@ -18,10 +18,6 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
     
   $scope.filteredList=[];
   $scope.orgList=[];
-  $scope.config = {
-    itemsPerPage: 5,
-    fillLastPage: false
-  }
   
   //about, Timezone, etc.,
   $scope.about = about;
@@ -52,34 +48,29 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
  
  //Refresh sensor data
   $scope.refresh = function (sensor) {
-    //SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId });
-    return SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId },function(response) {
-        //Nothing to do.
-    },function(error){
-        displayRestError.display(error);
-    });
+    $scope.updateSensor(sensor, false);
   }
   
     /*
      * Update only one sensor data
      */
   $scope.updateSensor = function (sensor, updateOnlyStatus) {
-    for (var sId=0; sId<$scope.orgList.length; sId++){
-       if($scope.orgList[sId].id == sensor.id){
-         SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId },function(response) {
-           if(updateOnlyStatus){
-              $scope.orgList[sId].status = response.status;
-              $scope.orgList[sId].lastSeen = response.lastSeen;
-           }else{
-              $scope.orgList[sId] = response;
-           }
-        },function(error){
-          displayRestError.display(error);
-        });
-         break;
-       }
-     }    
-    }
+    SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId },function(response) {
+      sensor.status = response.status;
+      sensor.lastSeen = response.lastSeen;
+      if(!updateOnlyStatus){
+        //sensor = response;
+        sensor.guiButtons = response.guiButtons;
+        sensor.nameWithNode = response.nameWithNode;
+        sensor.typeString = response.typeString;
+        sensor.variableTypes = response.variableTypes;
+        sensor.enableSendPayload = response.enableSendPayload;
+        sensor.updateTime = response.updateTime;
+      }
+    },function(error){
+      displayRestError.display(error);
+    });
+  }
     
     
   //Update all sensors data
@@ -134,9 +125,9 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
     
     
   //Send payload by button
-  $scope.sendPL = function (sensor, payloadJson, multipleCalls) {
+  $scope.sendPL = function (sensor, payloadJson, singleCall) {
     SensorsFactory.sendPayload({nodeId: "sendPayload"}, payloadJson,function(response) {
-        if(multipleCalls){
+        if(singleCall){
           alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+payloadJson.payload);
           $scope.updateSensor(sensor, false); 
         }else{
@@ -197,7 +188,7 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
     editModalInstance.result.then(function (keyValues) {
       SensorsFactory.updateOthers({sensorId: sensor.id}, keyValues,function(response) {
         alertService.success("Updat success ["+sensor.nameWithNode+"]");
-        $scope.updateSensor(sensor);
+        $scope.updateSensor(sensor, false);
       },function(error){
         displayRestError.display(error);            
       });        
