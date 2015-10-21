@@ -278,7 +278,11 @@ public class ExecuteAlarm implements Runnable {
     public void run() {
         for (Alarm alarm : this.alarms) {
             try {
-                runAlarm(alarm);
+                if (alarm.getEnabled()) {
+                    runAlarm(alarm);
+                } else {
+                    _logger.debug("Alarm[{}] disabled, no action needed.");
+                }
             } catch (Exception ex) {
                 _logger.error("failed to execute alarm:[{}],", alarm, ex);
                 SensorLogUtils.setAlarmLog(alarm, null, ex.getMessage());

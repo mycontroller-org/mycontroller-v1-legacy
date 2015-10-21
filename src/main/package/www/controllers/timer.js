@@ -49,7 +49,37 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
   $scope.filteredList = $scope.orgList;
   //setInterval($scope.getTimers, 1000*30);
   
+  //Update display table
+  $scope.updateDisplayTable = function(){
+    TimersFactory.getAll({"id":$stateParams.id}, function(response) {
+      $scope.orgList = response;
+      $scope.filteredList = $scope.orgList;    
+    },function(error){
+        displayRestError.display(error);            
+      });
+  };
+  
+  // Enable/Disable Timer
+  $scope.enableDisable = function(timer){
+    if(timer.enabled){
+      timer.enabled = false;
+    }else{
+      timer.enabled = true;
+    }
+    timer.frequencyData = timer.frequencyData.split(',');
+    $scope.updateTimer(timer);
+  };
 
+  // Update timer
+  $scope.updateTimer = function(updateTimer) {
+    TimersFactory.update(updateTimer,function(response) {
+        alertService.success("Updated a timer["+updateTimer.name+"]");
+        //Update display table
+        $scope.updateDisplayTable();
+      },function(error){
+        displayRestError.display(error);            
+      });
+  };
   
   //Add new
   $scope.add = function (size) {
@@ -64,11 +94,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
       TimersFactory.create(newTimer,function(response) {
         alertService.success("Added a timer[Name:"+newTimer.name+"]");
         //Update display table
-        $scope.orgList = TimersFactory.getAll({"id":$stateParams.id}, function(response) {
-        },function(error){
-          displayRestError.display(error);          
-        });
-        $scope.filteredList = $scope.orgList;
+        $scope.updateDisplayTable();
       },function(error){
         displayRestError.display(error);            
       });
@@ -116,17 +142,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
     });
 
     editModalInstance.result.then(function (updateTimer) {
-      TimersFactory.update(updateTimer,function(response) {
-        alertService.success("Updated a timer["+updateTimer.name+"]");
-        //Update display table
-        $scope.orgList = TimersFactory.getAll({"id":$stateParams.id}, function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
-      },function(error){
-        displayRestError.display(error);            
-      });
+      $scope.updateTimer();
     }), 
     function () {
       //console.log('Modal dismissed at: ' + new Date());

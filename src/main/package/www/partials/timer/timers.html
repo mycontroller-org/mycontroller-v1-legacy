@@ -39,7 +39,12 @@
 			<thead></thead>
 			<tbody>
 	      <tr>
-					<td at-implicit at-sortable at-attribute="name"></td>
+					<td class="text-center" at-sortable at-title="Enabled">
+            <a href='' ng-click="enableDisable(item);" class="text-{{item.enabled ? 'success' : 'danger'}}" uib-tooltip="{{item.enabled ? 'Disable' : 'Enable'}}">
+              <i class="fa fa-circle"></i>
+            </a>
+          </td>
+          <td at-implicit at-sortable at-attribute="name"></td>
 					<td at-implicit at-sortable at-attribute="timerDataString" at-title="Type"></td>
           <td at-implicit at-sortable at-attribute="sensorVariableTypeString" at-title="Variable Type"></td>
           <td at-implicit at-sortable at-attribute="payloadFormatted" at-title="Payload"></td>

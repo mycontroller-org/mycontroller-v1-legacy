@@ -113,6 +113,12 @@ public class SchedulerUtils {
     }
 
     public static synchronized void loadTimerJob(Timer timer) {
+        //Check is it enabled or disabled
+        if (!timer.getEnabled()) {
+            _logger.debug("Timer[{}] disabled. No action needed", timer);
+            return;
+        }
+
         //Check Valid To, if available 
         if (timer.getValidTo() != null) {
             if (timer.getValidTo() <= System.currentTimeMillis()) {

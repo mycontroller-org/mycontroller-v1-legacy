@@ -49,8 +49,38 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
   $scope.filteredList = $scope.orgList;
   //setInterval($scope.getAlarms, 1000*30);
   
-
   
+  // Update display table
+  $scope.updateDisplayTable = function(){
+    AlarmsFactory.getAll({"id":$stateParams.id}, function(response) {
+      $scope.orgList = response;
+      $scope.filteredList = $scope.orgList;
+    },function(error){
+      displayRestError.display(error);            
+    });    
+  };  
+  
+  // Enable/Disable Alarm
+  $scope.enableDisable = function(alarm){
+    if(alarm.enabled){
+      alarm.enabled = false;
+    }else{
+      alarm.enabled = true;
+    }
+    $scope.updateAlarm(alarm);
+  };
+
+  // Update Alarm
+  $scope.updateAlarm = function(updateAlarm) {
+    AlarmsFactory.update(updateAlarm,function(response) {
+      alertService.success("Updated an alarm["+updateAlarm.name+"]");
+        //Update display table
+        $scope.updateDisplayTable();
+      },function(error){
+        displayRestError.display(error);            
+      });
+  };
+ 
     //Add a Node
   $scope.add = function (size) {
     var addModalInstance = $uibModal.open({
@@ -64,11 +94,7 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
       AlarmsFactory.create(newAlarm,function(response) {
         alertService.success("Added an alarm[Name:"+newAlarm.name+"]");
         //Update display table
-        $scope.orgList = AlarmsFactory.getAll({"id":$stateParams.id}, function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-        $scope.filteredList = $scope.orgList;
+        $scope.updateDisplayTable();
       },function(error){
         displayRestError.display(error);            
       });    
@@ -92,11 +118,7 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
       AlarmsFactory.delete({id: selectedAlarm.id},function(response) {
         alertService.success("Deleted an Alarm["+selectedAlarm.name+"]");
         //Update display table
-        $scope.orgList = AlarmsFactory.getAll({"id":$stateParams.id}, function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-        $scope.filteredList = $scope.orgList;
+        $scope.updateDisplayTable();
       },function(error){
         displayRestError.display(error);            
       });    
@@ -116,17 +138,7 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
     });
 
     editModalInstance.result.then(function (updateAlarm) {
-      AlarmsFactory.update(updateAlarm,function(response) {
-        alertService.success("Updated an alarm["+updateAlarm.name+"]");
-        //Update display table
-        $scope.orgList = AlarmsFactory.getAll({"id":$stateParams.id}, function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
-      },function(error){
-        displayRestError.display(error);            
-      });
+      $scope.updateAlarm();
     }), 
     function () {
       //console.log('Modal dismissed at: ' + new Date());

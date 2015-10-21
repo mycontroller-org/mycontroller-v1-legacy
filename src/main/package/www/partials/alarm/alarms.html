@@ -39,17 +39,22 @@
 			<thead></thead>
 			<tbody>
 	      <tr>
-			<td at-implicit at-sortable at-attribute="name"></td>
-			<td at-implicit at-sortable at-attribute="variableTypeString" at-title="Variable Type"></td>
-      <td at-title="Condition">if {value} {{item.triggerString}} {{item.thresholdValue}}</td>
-			<td at-implicit at-sortable at-attribute="dampeningString" at-title="Dampening"></td>
-			<td at-title="Notification">{{item.typeString}}: {{item.notificationString}}</td>
-			<td at-attribute="lastTrigger" at-sortable at-title="Last Trigger">{{item.lastTrigger | date:'medium':about.timezone}}</td>
-      <td class="text-center">
-        <a href='' ng-click="update(item)" class="text-default"  uib-tooltip="Edit">
-        <i class="fa fa-lg fa-edit"></i></a>&nbsp;
-        <a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
-      </td>
+          <td class="text-center" at-sortable at-title="Enabled">
+            <a href='' ng-click="enableDisable(item);" class="text-{{item.enabled ? 'success' : 'danger'}}" uib-tooltip="{{item.enabled ? 'Disable' : 'Enable'}}">
+              <i class="fa fa-circle"></i>
+            </a>
+          </td>
+          <td at-implicit at-sortable at-attribute="name"></td>
+          <td at-implicit at-sortable at-attribute="variableTypeString" at-title="Variable Type"></td>
+          <td at-title="Condition">if {value} {{item.triggerString}} {{item.thresholdValue}}</td>
+          <td at-implicit at-sortable at-attribute="dampeningString" at-title="Dampening"></td>
+          <td at-title="Notification">{{item.typeString}}: {{item.notificationString}}</td>
+          <td at-attribute="lastTrigger" at-sortable at-title="Last Trigger">{{item.lastTrigger | date:'medium':about.timezone}}</td>
+          <td class="text-center">
+            <a href='' ng-click="update(item)" class="text-default"  uib-tooltip="Edit">
+            <i class="fa fa-lg fa-edit"></i></a>&nbsp;
+            <a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
+          </td>
 				</tr>
 			</tbody>
 		</table>

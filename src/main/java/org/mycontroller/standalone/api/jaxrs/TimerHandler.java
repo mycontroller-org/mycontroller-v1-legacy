@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.TimerUtils;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.Sensor;
 
@@ -49,7 +50,7 @@ public class TimerHandler {
     public Response get(@PathParam("id") int id) {
         return RestUtils.getResponse(Status.OK, DaoUtils.getTimerDao().get(id));
     }
-    
+
     @GET
     @Path("/{sensorRefId}/all")
     public Response getAll(@PathParam("sensorRefId") int sensorRefId) {
@@ -66,8 +67,7 @@ public class TimerHandler {
     @PUT
     @Path("/")
     public Response update(Timer timer) {
-        timer.setTimestamp(System.currentTimeMillis()); //Set current time
-        DaoUtils.getTimerDao().update(timer);
+        TimerUtils.updateTimer(timer);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
@@ -78,7 +78,7 @@ public class TimerHandler {
         DaoUtils.getTimerDao().create(timer);
         return RestUtils.getResponse(Status.CREATED);
     }
-    
+
     @GET
     @Path("/{id}/sensorData")
     public Response getSensorDetails(@PathParam("id") int id) {

@@ -24,6 +24,7 @@ import java.util.TimeZone;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.jobs.ManageSunRiseSetJobs;
+import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,6 +244,12 @@ public class TimerUtils {
             _logger.error("exception, ", ex);
             return null;
         }
+    }
+    
+    public static void updateTimer(Timer timer){
+        timer.setTimestamp(System.currentTimeMillis()); //Set current time
+        DaoUtils.getTimerDao().update(timer);
+        SchedulerUtils.reloadTimerJob(timer);
     }
 
 }
