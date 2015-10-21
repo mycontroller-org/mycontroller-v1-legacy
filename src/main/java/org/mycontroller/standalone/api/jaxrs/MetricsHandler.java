@@ -104,7 +104,6 @@ public class MetricsHandler {
             return RestUtils.getResponse(Status.OK,
                     new MetricsCsvEngine().getMetricsCSV(variableTypeId, aggregationType));
         } catch (Exception ex) {
-            _logger.error("Error,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST,
                     new ApiError(ex.getMessage()));
         }
