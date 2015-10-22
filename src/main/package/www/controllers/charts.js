@@ -71,7 +71,7 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
                 top: 0,
                 right: 20,
                 bottom: 60,
-                left: 40
+                left: 65
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
           
@@ -137,7 +137,7 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
         chartOptions.chart.type = 'lineChart'; //workaround to suppress 'type undefined error'
         chartOptions.chart.interpolate = chartInterpolate;
         chartOptions.chart.color = chartLineColor;
-        chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(yAxisD3Format)(d);};
+        chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(yAxisD3Format)(d) + ' ' + $scope.variableType.unit ;};
         
         if($scope.variableType.metricType == 1){
           //Chart options for one Minute sample interval data
