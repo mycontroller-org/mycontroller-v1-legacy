@@ -64,20 +64,20 @@ public class SerialPortJsscImpl implements IMySensorsGateway {
 
         gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
         gatewayInfo.getData().put(SerialPortCommon.DRIVER_TYPE,
-                ObjectFactory.getAppProperties().getSerialPortDriver());
+                ObjectFactory.getAppProperties().getGatewaySerialPortDriver());
         gatewayInfo.getData().put(SerialPortCommon.SELECTED_DRIVER_TYPE,
                 AppProperties.SERIAL_PORT_DRIVER.JSSC.toString());
         gatewayInfo.getData().put(SerialPortCommon.PORT_NAME,
-                ObjectFactory.getAppProperties().getSerialPortName());
+                ObjectFactory.getAppProperties().getGatewaySerialPortName());
         gatewayInfo.getData().put(SerialPortCommon.BAUD_RATE,
-                ObjectFactory.getAppProperties().getSerialPortBaudRate());
+                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
 
         // create an instance of the serial communications class
-        serialPort = new SerialPort(ObjectFactory.getAppProperties().getSerialPortName());
+        serialPort = new SerialPort(ObjectFactory.getAppProperties().getGatewaySerialPortName());
         try {
             serialPort.openPort();//Open port
             serialPort.setParams(
-                    ObjectFactory.getAppProperties().getSerialPortBaudRate(),
+                    ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate(),
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE,
                     SerialPort.DATABITS_8);
@@ -86,9 +86,9 @@ public class SerialPortJsscImpl implements IMySensorsGateway {
             // create and register the serial data listener
             serialPort.addEventListener(new SerialDataListenerJssc(serialPort, gatewayInfo));//Add SerialPortEventListener
             _logger.debug("Serial port initialized with the driver:{}, PortName:{}, BaudRate:{}",
-                    ObjectFactory.getAppProperties().getSerialPortDriver(),
-                    ObjectFactory.getAppProperties().getSerialPortName(),
-                    ObjectFactory.getAppProperties().getSerialPortBaudRate());
+                    ObjectFactory.getAppProperties().getGatewaySerialPortDriver(),
+                    ObjectFactory.getAppProperties().getGatewaySerialPortName(),
+                    ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
             gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
             gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, true);
         } catch (SerialPortException ex) {

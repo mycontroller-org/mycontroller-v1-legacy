@@ -50,7 +50,7 @@ public class DataBaseUtils {
     private static JdbcPooledConnectionSource connectionPooledSource = null;
     // this uses h2 by default but change to match your database
     //private static String databaseUrl = "jdbc:h2:mem:account";
-    private static String databaseUrl = "jdbc:h2:file:" + ObjectFactory.getAppProperties().getH2DbLocation();
+    private static String databaseUrl = "jdbc:h2:file:" + ObjectFactory.getAppProperties().getDbH2DbLocation();
 
     //private static String databaseUrl = "jdbc:sqlite:/tmp/mysensors.db";
 

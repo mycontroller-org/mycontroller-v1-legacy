@@ -43,8 +43,8 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
 
     private void connect() {
         // - Start Serial port
-        String serialPortDriver = ObjectFactory.getAppProperties().getSerialPortDriver();
-        if (ObjectFactory.getAppProperties().getSerialPortDriver()
+        String serialPortDriver = ObjectFactory.getAppProperties().getGatewaySerialPortDriver();
+        if (ObjectFactory.getAppProperties().getGatewaySerialPortDriver()
                 .equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.AUTO.toString())) {
             if (AppProperties.getOsArch().startsWith("arm")) {
                 serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.PI4J.toString();
@@ -61,9 +61,9 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
             serialGateway = new SerialPortjSerialCommImpl();
         } else {
             _logger.warn("Unkown serial port driver[{}] specified",
-                    ObjectFactory.getAppProperties().getSerialPortDriver());
+                    ObjectFactory.getAppProperties().getGatewaySerialPortDriver());
             throw new RuntimeException("Unkown serial port driver["
-                    + ObjectFactory.getAppProperties().getSerialPortDriver() + "] specified");
+                    + ObjectFactory.getAppProperties().getGatewaySerialPortDriver() + "] specified");
         }
 
     }

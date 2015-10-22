@@ -56,22 +56,22 @@ public class MqttGatewayImpl implements IMySensorsGateway {
             gatewayInfo.setData(new HashMap<String, Object>());
 
             gatewayInfo.getData().put(MqttGatewayCommon.IP,
-                    ObjectFactory.getAppProperties().getMqttGatewayBrokerHost());
+                    ObjectFactory.getAppProperties().getGatewayMqttHost());
             gatewayInfo.getData().put(MqttGatewayCommon.PORT,
-                    ObjectFactory.getAppProperties().getMqttGatewayBrokerPort());
+                    ObjectFactory.getAppProperties().getGatewayMqttPort());
             gatewayInfo.getData().put(MqttGatewayCommon.TOPIC,
-                    ObjectFactory.getAppProperties().getMqttGatewayBrokerRootTopic());
+                    ObjectFactory.getAppProperties().getGatewayMqttRootTopic());
 
             mqttClient = new MqttClient(
-                    "tcp://" + ObjectFactory.getAppProperties().getMqttGatewayBrokerHost() + ":"
-                            + ObjectFactory.getAppProperties().getMqttGatewayBrokerPort(), CLIENT_ID);
+                    "tcp://" + ObjectFactory.getAppProperties().getGatewayMqttHost() + ":"
+                            + ObjectFactory.getAppProperties().getGatewayMqttPort(), CLIENT_ID);
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setConnectionTimeout(CONNECTION_TIME_OUT);
             connectOptions.setKeepAliveInterval(KEEP_ALIVE);
             mqttClient.connect(connectOptions);
             mqttCallbackListener = new MqttCallbackListener(mqttClient);
             mqttClient.setCallback(mqttCallbackListener);
-            mqttClient.subscribe(ObjectFactory.getAppProperties().getMqttGatewayBrokerRootTopic() + "/#");
+            mqttClient.subscribe(ObjectFactory.getAppProperties().getGatewayMqttRootTopic() + "/#");
             _logger.info("MQTT Gateway[{}] connected successfully..", mqttClient.getServerURI());
             gatewayInfo.getData().put(MqttGatewayCommon.CONNECTION_STATUS, "Connected Successfully");
         } catch (MqttException ex) {

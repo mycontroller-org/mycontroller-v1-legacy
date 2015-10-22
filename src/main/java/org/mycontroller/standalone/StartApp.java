@@ -134,24 +134,24 @@ public class StartApp {
 
     private static void startHTTPWebServer() {
         //Check HTTPS enabled?
-        if (ObjectFactory.getAppProperties().isHttpsEnabled()) {
+        if (ObjectFactory.getAppProperties().isWebHttpsEnabled()) {
             // Set up SSL connections on server
-            server.setSSLPort(ObjectFactory.getAppProperties().getHttpPort());
-            server.setSSLKeyStoreFile(ObjectFactory.getAppProperties().getSslKeystoreFile());
-            server.setSSLKeyStorePass(ObjectFactory.getAppProperties().getSslKeystorePassword());
-            server.setSSLKeyStoreType(ObjectFactory.getAppProperties().getSslKeystoreType());
+            server.setSSLPort(ObjectFactory.getAppProperties().getWebHttpPort());
+            server.setSSLKeyStoreFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile());
+            server.setSSLKeyStorePass(ObjectFactory.getAppProperties().getWebSslKeystorePassword());
+            server.setSSLKeyStoreType(ObjectFactory.getAppProperties().getWebSslKeystoreType());
         } else {
             //Set http communication port
-            server.setPort(ObjectFactory.getAppProperties().getHttpPort());
+            server.setPort(ObjectFactory.getAppProperties().getWebHttpPort());
         }
 
-        if (ObjectFactory.getAppProperties().getBindAddress() != null) {
-            server.setBindAddress(ObjectFactory.getAppProperties().getBindAddress());
+        if (ObjectFactory.getAppProperties().getWebBindAddress() != null) {
+            server.setBindAddress(ObjectFactory.getAppProperties().getWebBindAddress());
         }
 
         //Deploy RestEasy with TJWS
         server.setDeployment(getResteasyDeployment());
-        server.addFileMapping("/", new File(ObjectFactory.getAppProperties().getWwwFileLocation()));
+        server.addFileMapping("/", new File(ObjectFactory.getAppProperties().getWebFileLocation()));
 
         //Enable Authentication
         server.setSecurityDomain(new BasicAthenticationSecurityDomain());
@@ -162,8 +162,8 @@ public class StartApp {
 
         server.start();
         _logger.info("TJWS server started successfully, HTTPS Enabled?:{}, HTTP(S) Port: [{}]",
-                ObjectFactory.getAppProperties().isHttpsEnabled(),
-                ObjectFactory.getAppProperties().getHttpPort());
+                ObjectFactory.getAppProperties().isWebHttpsEnabled(),
+                ObjectFactory.getAppProperties().getWebHttpPort());
         _logger.info("MyController.org server started in [{}] ms", System.currentTimeMillis() - start);
     }
 

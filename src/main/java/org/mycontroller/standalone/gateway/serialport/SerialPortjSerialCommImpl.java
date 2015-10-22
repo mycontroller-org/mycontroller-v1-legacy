@@ -73,25 +73,25 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
 
         gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
         gatewayInfo.getData().put(SerialPortCommon.DRIVER_TYPE,
-                ObjectFactory.getAppProperties().getSerialPortDriver());
+                ObjectFactory.getAppProperties().getGatewaySerialPortDriver());
         gatewayInfo.getData().put(SerialPortCommon.SELECTED_DRIVER_TYPE,
                 AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString());
         gatewayInfo.getData().put(SerialPortCommon.PORT_NAME,
-                ObjectFactory.getAppProperties().getSerialPortName());
+                ObjectFactory.getAppProperties().getGatewaySerialPortName());
         gatewayInfo.getData().put(SerialPortCommon.BAUD_RATE,
-                ObjectFactory.getAppProperties().getSerialPortBaudRate());
+                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
 
         // create an instance of the serial communications class
-        serialPort = SerialPort.getCommPort(ObjectFactory.getAppProperties().getSerialPortName());
+        serialPort = SerialPort.getCommPort(ObjectFactory.getAppProperties().getGatewaySerialPortName());
 
         serialPort.openPort();//Open port
         if (!serialPort.isOpen()) {
-            _logger.error("Unable to open serial port:[{}]", ObjectFactory.getAppProperties().getSerialPortName());
+            _logger.error("Unable to open serial port:[{}]", ObjectFactory.getAppProperties().getGatewaySerialPortName());
             gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "ERROR: Unable to open!");
             return;
         }
         serialPort.setComPortParameters(
-                ObjectFactory.getAppProperties().getSerialPortBaudRate(),
+                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate(),
                 8,  // data bits
                 SerialPort.ONE_STOP_BIT,
                 SerialPort.NO_PARITY);
@@ -99,9 +99,9 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
         // create and register the serial data listener
         serialPort.addDataListener(new SerialDataListenerjSerialComm(serialPort, gatewayInfo));
         _logger.debug("Serial port initialized with the driver:{}, PortName:{}, BaudRate:{}",
-                ObjectFactory.getAppProperties().getSerialPortDriver(),
-                ObjectFactory.getAppProperties().getSerialPortName(),
-                ObjectFactory.getAppProperties().getSerialPortBaudRate());
+                ObjectFactory.getAppProperties().getGatewaySerialPortDriver(),
+                ObjectFactory.getAppProperties().getGatewaySerialPortName(),
+                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
         gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
         gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, true);
     }
