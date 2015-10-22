@@ -100,7 +100,7 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
             }
             if (!isTerminate()
                     && !(boolean) serialGateway.getGatewayInfo().getData().get(SerialPortCommon.IS_CONNECTED)) {
-                _logger.warn("Serial Port[Name:{}, Driver{}] not connected, Reconnect initiated...",
+                _logger.info("Serial Port[Name:{}, Driver{}] not connected, Reconnect initiated...",
                         serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
                         serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE));
                 reconnect();
