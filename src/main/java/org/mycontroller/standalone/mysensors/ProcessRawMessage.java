@@ -65,6 +65,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessRawMessage {
     private static final Logger _logger = LoggerFactory.getLogger(ProcessRawMessage.class.getName());
+    private static final int FIRMWARE_PRINT_LOG = 100;
 
     private Firmware firmware;
 
@@ -359,12 +360,27 @@ public class ProcessRawMessage {
                 firmware = null;
                 _logger.debug("Firmware unloaded...");
             }
+
+            // Print firmware status in sensor logs
+            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0
+                    || firmwareRequest.getBlock() == (firmware.getBlocks() - 1)) {
+                SensorLogUtils.setSensorStreamData(MESSAGE_TYPE_STREAM.ST_FIRMWARE_REQUEST,
+                        "Block No: " + firmwareRequest.getBlock(), rawMessage, null);
+            }
+
             rawMessage.setTxMessage(true);
             rawMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.ordinal());
             rawMessage.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array()) + builder.toString());
             ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
+
+            // Print firmware status in sensor logs
+            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0
+                    || firmwareRequest.getBlock() == (firmware.getBlocks() - 1)) {
+                SensorLogUtils.setSensorStreamData(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE,
+                        "Block No:" + firmwareRequest.getBlock(), rawMessage, null);
+            }
 
         } catch (DecoderException ex) {
             _logger.error("Exception, ", ex);
