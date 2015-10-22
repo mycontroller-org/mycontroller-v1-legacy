@@ -68,8 +68,8 @@ public class DeleteResourceUtils {
 
     public static void deleteSensorValue(SensorValue sensorValue) {
         //Delete from metrics table
-        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorRefId(sensorValue.getId());
-        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorRefId(sensorValue.getId());
+        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorValueRefId(sensorValue.getId());
+        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorValueRefId(sensorValue.getId());
 
         //Delete SensorValue entry
         DaoUtils.getSensorValueDao().delete(sensorValue);

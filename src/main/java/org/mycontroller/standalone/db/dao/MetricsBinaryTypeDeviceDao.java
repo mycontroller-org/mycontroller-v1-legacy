@@ -27,7 +27,7 @@ public interface MetricsBinaryTypeDeviceDao {
     void create(MetricsBinaryTypeDevice metric);
     void createOrUpdate(MetricsBinaryTypeDevice metric);
     void delete(MetricsBinaryTypeDevice metric);
-    void deleteBySensorRefId(int sensorRefId);
+    void deleteBySensorValueRefId(int sensorRefId);
     void deletePrevious(MetricsBinaryTypeDevice metric);
     void update(MetricsBinaryTypeDevice metric);
     List<MetricsBinaryTypeDevice> getAll(MetricsBinaryTypeDevice metric);

@@ -89,11 +89,11 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDao<MetricsDoubl
     }
 
     @Override
-    public void deleteBySensorRefId(int sensorValueRefId) {
+    public void deleteBySensorValueRefId(int sensorValueRefId) {
         try {
             DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
             deleteBuilder.where().eq(MetricsDoubleTypeDevice.SENSOR_VALUE_REF_ID, sensorValueRefId);
-            int count = this.getDao().delete(deleteBuilder.prepare());
+            int count = deleteBuilder.delete();
             _logger.debug("Metric-sensorValueRefId:[{}] deleted, Delete count:{}", sensorValueRefId, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric-sensorValueRefId:[{}]", sensorValueRefId, ex);

@@ -29,12 +29,16 @@ import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
 public class SensorUtils {
+    private static final Logger _logger = LoggerFactory.getLogger(SensorUtils.class);
+
     private SensorUtils() {
 
     }
@@ -356,8 +360,10 @@ public class SensorUtils {
         Sensor sensorOld = DaoUtils.getSensorDao().get(sensor.getId());
         List<String> newVariables = Arrays.asList(sensor.getVariableTypes().split(VARIABLE_TYPE_SPLITER));
         List<String> oldVariables = Arrays.asList(sensorOld.getVariableTypes().split(VARIABLE_TYPE_SPLITER));
+        _logger.debug("Sensor Variables: Old Variables:[{}], New Variables:[{}]", oldVariables, newVariables);
         for (String newVariable : newVariables) {
             if (!oldVariables.contains(newVariable)) {
+                _logger.debug("Creating entry for variable:{}", newVariable);
                 //Create new entry
                 DaoUtils.getSensorValueDao().create(
                         new SensorValue(sensor, MESSAGE_TYPE_SET_REQ.valueOf(newVariable.trim()).ordinal()));
@@ -367,8 +373,9 @@ public class SensorUtils {
         if (oldVariables != null && !oldVariables.isEmpty()) {
             for (String removeVariable : oldVariables) {
                 if (!newVariables.contains(removeVariable)) {
-                    DeleteResourceUtils.deleteSensorValue(DaoUtils.getSensorValueDao().get(
-                            sensor.getId(), MESSAGE_TYPE_SET_REQ.valueOf(removeVariable.trim()).ordinal()));
+                    _logger.debug("Removing entry for variable:{}", removeVariable);
+                    DeleteResourceUtils.deleteSensorValue(DaoUtils.getSensorValueDao().get(sensor.getId(),
+                            MESSAGE_TYPE_SET_REQ.valueOf(removeVariable.trim()).ordinal()));
                 }
             }
         }

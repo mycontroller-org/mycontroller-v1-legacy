@@ -28,7 +28,7 @@ public interface MetricsDoubleTypeDeviceDao {
     void createOrUpdate(MetricsDoubleTypeDevice metric);
     void delete(MetricsDoubleTypeDevice metric);
     void deletePrevious(MetricsDoubleTypeDevice metric);
-    void deleteBySensorRefId(int sensorRefId);
+    void deleteBySensorValueRefId(int sensorRefId);
     void update(MetricsDoubleTypeDevice metric);
     List<MetricsDoubleTypeDevice> getAll(MetricsDoubleTypeDevice metric);
     List<MetricsDoubleTypeDevice> getAll();

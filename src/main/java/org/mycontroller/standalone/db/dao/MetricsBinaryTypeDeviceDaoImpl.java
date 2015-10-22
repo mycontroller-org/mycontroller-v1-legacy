@@ -75,11 +75,11 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDao<MetricsBinar
     }
 
     @Override
-    public void deleteBySensorRefId(int sensorValueRefId) {
+    public void deleteBySensorValueRefId(int sensorValueRefId) {
         try {
             DeleteBuilder<MetricsBinaryTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().lt(MetricsBinaryTypeDevice.SENSOR_VALUE_REF_ID, sensorValueRefId);
-            int count = this.getDao().delete(deleteBuilder.prepare());
+            deleteBuilder.where().eq(MetricsBinaryTypeDevice.SENSOR_VALUE_REF_ID, sensorValueRefId);
+            int count = deleteBuilder.delete();
             _logger.debug("Metric-sensorValueRefId:[{}] deleted, Delete count:{}", sensorValueRefId, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric-sensorValueRefId:[{}]", sensorValueRefId, ex);
