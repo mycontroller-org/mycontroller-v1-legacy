@@ -37,7 +37,8 @@ public class AppProperties {
 
     private String gatewaySerialPortName;
     private String gatewaySerialPortDriver;
-    private int gatewaySerialPortBaudRate;
+    private Integer gatewaySerialPortBaudRate;
+    private Integer gatewaySerialPortRetryFrequency;
 
     private String gatewayEthernetHost;
     private Integer gatewayEthernetPort;
@@ -55,6 +56,10 @@ public class AppProperties {
     private String webSslKeystorePassword;
     private String webSslKeystoreType;
     private String webBindAddress;
+
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
     public enum SERIAL_PORT_DRIVER {
         AUTO,
@@ -88,6 +93,8 @@ public class AppProperties {
             this.gatewaySerialPortName = getValue(properties, "mcc.gateway.serialport.name");
             this.gatewaySerialPortDriver = getValue(properties, "mcc.gateway.serialport.driver.type");
             this.gatewaySerialPortBaudRate = Integer.valueOf(getValue(properties, "mcc.gateway.serialport.baud.rate"));
+            this.gatewaySerialPortRetryFrequency = Integer.valueOf(getValue(properties,
+                    "mcc.gateway.serialport.retry.frequency"));
 
         } else if (this.gatewayType.equalsIgnoreCase(GATEWAY_TYPES.ETHERNET.toString())) {
             this.gatewayEthernetHost = getValue(properties, "mcc.gateway.ethernet.host");
@@ -127,30 +134,6 @@ public class AppProperties {
         } else {
             return null;
         }
-    }
-
-    public String getGatewaySerialPortName() {
-        return gatewaySerialPortName;
-    }
-
-    public void setGatewaySerialPortName(String serialPortName) {
-        this.gatewaySerialPortName = serialPortName;
-    }
-
-    public String getGatewaySerialPortDriver() {
-        return gatewaySerialPortDriver;
-    }
-
-    public void setGatewaySerialPortDriver(String serialPortDriver) {
-        this.gatewaySerialPortDriver = serialPortDriver;
-    }
-
-    public int getGatewaySerialPortBaudRate() {
-        return gatewaySerialPortBaudRate;
-    }
-
-    public void setGatewaySerialPortBaudRate(int serialPortBaudRate) {
-        this.gatewaySerialPortBaudRate = serialPortBaudRate;
     }
 
     public int getNodeId() {
@@ -212,6 +195,50 @@ public class AppProperties {
         return System.getProperties().getProperty("os.version");
     }
 
+    public String getGatewayType() {
+        return gatewayType;
+    }
+
+    public String getGatewaySerialPortName() {
+        return gatewaySerialPortName;
+    }
+
+    public String getGatewaySerialPortDriver() {
+        return gatewaySerialPortDriver;
+    }
+
+    public Integer getGatewaySerialPortBaudRate() {
+        return gatewaySerialPortBaudRate;
+    }
+
+    public Integer getGatewaySerialPortRetryFrequency() {
+        return gatewaySerialPortRetryFrequency;
+    }
+
+    public String getGatewayEthernetHost() {
+        return gatewayEthernetHost;
+    }
+
+    public Integer getGatewayEthernetPort() {
+        return gatewayEthernetPort;
+    }
+
+    public Integer getGatewayEthernetKeepAliveFrequency() {
+        return gatewayEthernetKeepAliveFrequency;
+    }
+
+    public String getGatewayMqttHost() {
+        return gatewayMqttHost;
+    }
+
+    public Integer getGatewayMqttPort() {
+        return gatewayMqttPort;
+    }
+
+    public String getGatewayMqttRootTopic() {
+        return gatewayMqttRootTopic;
+    }
+
     public String getDbH2DbLocation() {
         return dbH2DbLocation;
     }
@@ -240,39 +267,7 @@ public class AppProperties {
         return webSslKeystoreType;
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
     public String getWebBindAddress() {
         return webBindAddress;
-    }
-
-    public String getGatewayEthernetHost() {
-        return gatewayEthernetHost;
-    }
-
-    public String getGatewayType() {
-        return gatewayType;
-    }
-
-    public Integer getGatewayEthernetPort() {
-        return gatewayEthernetPort;
-    }
-
-    public Integer getGatewayEthernetKeepAliveFrequency() {
-        return gatewayEthernetKeepAliveFrequency;
-    }
-
-    public String getGatewayMqttHost() {
-        return gatewayMqttHost;
-    }
-
-    public Integer getGatewayMqttPort() {
-        return gatewayMqttPort;
-    }
-
-    public String getGatewayMqttRootTopic() {
-        return gatewayMqttRootTopic;
     }
 }

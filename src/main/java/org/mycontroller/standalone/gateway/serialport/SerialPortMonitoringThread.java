@@ -18,7 +18,6 @@ package org.mycontroller.standalone.gateway.serialport;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
-import org.mycontroller.standalone.db.TIME_REF;
 import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.gateway.MySensorsGatewayException;
 import org.mycontroller.standalone.mysensors.RawMessage;
@@ -35,9 +34,10 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
     private IMySensorsGateway serialGateway = null;
     private boolean terminated = false;
     private boolean terminate = false;
-    public static final long RETRY_WAIT_TIME = TIME_REF.ONE_SECOND * 30; //30 seconds
+    private long RETRY_WAIT_TIME;
 
     public SerialPortMonitoringThread() {
+        RETRY_WAIT_TIME = ObjectFactory.getAppProperties().getGatewaySerialPortRetryFrequency() * 1000;
         this.connect();
     }
 
@@ -79,7 +79,7 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
                     serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
                     serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE));
         } else {
-            _logger.warn("Serial Port[Name:{}, Driver{}], Unable to reconnected! Will do next try after {} seconds",
+            _logger.warn("Serial Port[Name:{}, Driver{}], Unable to reconnected! Will do next try after {} second(s)",
                     serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
                     serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE),
                     RETRY_WAIT_TIME / 1000);
