@@ -45,18 +45,17 @@ public class SerialDataListenerPi4j implements SerialDataEventListener {
         try {
             byte[] buffer = event.getBytes();
             for (byte b : buffer) {
-                if ((b == '\r' || b == '\n') && message.length() > 0) {
+                if ((b == SerialPortCommon.MESSAGE_SPLITTER) && message.length() > 0) {
                     String toProcess = message.toString();
                     _logger.debug("Received a message:[{}]", toProcess);
                     //Send Message to message factory
                     ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(toProcess));
                     message.setLength(0);
-                }
-                else {
-                    if (b != '\n') {
-                        _logger.trace("Received a char:[{}]", ((char) b));
-                        message.append((char) b);
-                    }
+                } else if (b != SerialPortCommon.MESSAGE_SPLITTER) {
+                    _logger.trace("Received a char:[{}]", ((char) b));
+                    message.append((char) b);
+                } else {
+                    _logger.debug("Received MESSAGE_SPLITTER and current message length is ZERO! Nothing to do");
                 }
             }
         } catch (IOException ex) {
@@ -65,7 +64,10 @@ public class SerialDataListenerPi4j implements SerialDataEventListener {
             gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, ex.getMessage());
             message.setLength(0);
         } catch (RawMessageException rEx) {
-            _logger.warn(rEx.getMessage());
+            _logger.warn("RawMessage Exception,", rEx.getMessage());
+            message.setLength(0);
+        } catch (Exception ex) {
+            _logger.error("Exception,", ex.getMessage());
             message.setLength(0);
         }
     }

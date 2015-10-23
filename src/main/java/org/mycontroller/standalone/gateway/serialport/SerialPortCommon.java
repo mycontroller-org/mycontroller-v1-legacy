@@ -27,5 +27,5 @@ public class SerialPortCommon {
     public static final String CONNECTION_STATUS = "connectionStatus";
     public static final String IS_CONNECTED = "isConnected";
 
-    public static final String MESSAGE_SPLITTER = "\n";//"\r\n"
+    public static final byte MESSAGE_SPLITTER = '\n';   // Message splitter char for serial message
 }
