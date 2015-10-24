@@ -30,6 +30,8 @@ var myControllerModule = angular.module('myController',[
   'base64',
   'colorpicker.module',
   'ngFileSaver',
+  'pascalprecht.translate',
+  'ngSanitize',
   'angularModalService'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
@@ -190,12 +192,16 @@ config(function($stateProvider, $urlRouterProvider) {
 
 
 //McNavCtrl
-myControllerModule.controller('McNavBarCtrl', ['$scope', '$location', function($scope, $location) {
+myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate) {
    $scope.isCollapsed = true;
     $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
     };
-}]);
+    
+    $scope.changeLanguage = function (langKey) {
+      $translate.use(langKey);
+    };
+});
 
 myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about) {
   
@@ -301,4 +307,21 @@ myControllerModule.value("about", {
 myControllerModule.controller('FooterCtrl', function($scope, about) {
   //about, Timezone, etc.,
   $scope.about = about;
+});
+
+/** 
+ * i18n Language support
+ * */
+ 
+myControllerModule.config(function($translateProvider) {
+  // Enable escaping of HTML
+  //$translateProvider.useSanitizeValueStrategy('sanitize');
+  $translateProvider.useSanitizeValueStrategy(null);
+  $translateProvider.useStaticFilesLoader({
+    prefix: 'languages/mc_locale_',
+    suffix: '.json'
+  });
+ 
+  $translateProvider.preferredLanguage('en-us');
+  
 });

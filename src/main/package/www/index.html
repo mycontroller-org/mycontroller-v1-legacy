@@ -70,33 +70,33 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="mcMainMenu">
           <ul class="nav navbar-nav">
-            <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-bolt fa-lg"></i> Dashboard</a></li>
-            <li ng-class="{ active: isActive('/nodes')}"><a data-toggle="collapse" data-target="#mcMainMenu.in" href="#/nodes" ><i class="fa fa-sitemap fa-lg"></i> Nodes</a></li>
-            <li ng-class="{ active: isActive('/sensors')}"><a href="#/sensors" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-eye fa-lg"></i> Sensors</a></li>
-            <li ng-class="{ active: isActive('/sensorsaction')}"><a href="#/sensorsaction" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-magic fa-lg"></i> Action Board</a></li>
+            <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-bolt fa-lg"></i> {{ 'MENU.DASHBOARD' | translate }}</a></li>
+            <li ng-class="{ active: isActive('/nodes')}"><a data-toggle="collapse" data-target="#mcMainMenu.in" href="#/nodes" ><i class="fa fa-sitemap fa-lg"></i> {{ 'MENU.NODES' | translate }}</a></li>
+            <li ng-class="{ active: isActive('/sensors')}"><a href="#/sensors" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-eye fa-lg"></i> {{ 'MENU.SENSORS' | translate }}</a></li>
+            <li ng-class="{ active: isActive('/sensorsaction')}"><a href="#/sensorsaction" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-magic fa-lg"></i> {{ 'MENU.ACTION_BOARD' | translate }}</a></li>
             
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-cube fa-lg"></i> Utils <span class="caret"></span></a>
+              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-cube fa-lg"></i> {{ 'MENU.UTILS' | translate }} <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li ng-class="{ active: isActive('/sendRawMessage')}"><a href="#/sendRawMessage" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-barcode fa-lg"></i> Send Raw Message</a></li>
-                <li ng-class="{ active: isActive('/uidtag')}"><a href="#/uidtag" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-tags fa-lg"></i> UID Tag</a></li>
-                <li ng-class="{ active: isActive('/variableMapper')}"><a href="#/variableMapper" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-clone fa-lg"></i> Variable Mapper</a></li>
+                <li ng-class="{ active: isActive('/sendRawMessage')}"><a href="#/sendRawMessage" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-barcode fa-lg"></i> {{ 'MENU.SEND_RAW_MESSAGE' | translate }}</a></li>
+                <li ng-class="{ active: isActive('/uidtag')}"><a href="#/uidtag" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-tags fa-lg"></i> {{ 'MENU.UID_TAG' | translate }}</a></li>
+                <li ng-class="{ active: isActive('/variableMapper')}"><a href="#/variableMapper" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-clone fa-lg"></i> {{ 'MENU.VARIABLE_MAPPER' | translate }}</a></li>
                 <li class="divider"></li>
-                <li ng-class="{ active: isActive('/firmwareType')}"><a href="#/firmwareType" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware Type</a></li>
-                <li ng-class="{ active: isActive('/firmwareVersion')}"><a href="#/firmwareVersion" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware Version</a></li>
-                <li ng-class="{ active: isActive('/firmware')}"><a href="#/firmware" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> Firmware</a></li>
+                <li ng-class="{ active: isActive('/firmwareType')}"><a href="#/firmwareType" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> {{ 'MENU.FIRMWARE_TYPE' | translate }}</a></li>
+                <li ng-class="{ active: isActive('/firmwareVersion')}"><a href="#/firmwareVersion" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> {{ 'MENU.FIRMWARE_VERSION' | translate }}</a></li>
+                <li ng-class="{ active: isActive('/firmware')}"><a href="#/firmware" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> {{ 'MENU.FIRMWARE' | translate }}</a></li>
                 <li class="divider"></li>
-                <li ng-class="{ active: isActive('/users')}"><a href="#/users" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-users fa-lg"></i> Users</a></li>
-                <li ng-class="{ active: isActive('/settings')}"><a href="#/settings" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-cogs fa-lg"></i> System Settings</a></li>
+                <li ng-class="{ active: isActive('/users')}"><a href="#/users" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-users fa-lg"></i> {{ 'MENU.USERS' | translate }}</a></li>
+                <li ng-class="{ active: isActive('/settings')}"><a href="#/settings" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-cogs fa-lg"></i> {{ 'MENU.SYSTEM_SETTINGS' | translate }}</a></li>
               </ul>
             </li>
                         
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-file-text-o fa-lg"></i> Status <span class="caret"></span></a>
+              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-file-text-o fa-lg"></i> {{ 'MENU.STATUS' | translate }} <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li ng-class="{ active: isActive('/gatewaystatus')}"><a href="#/gatewaystatus" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-plug fa-lg"></i> Gateway</a></li>
-                <li ng-class="{ active: isActive('/systemstatus')}"><a href="#/systemstatus" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-heartbeat fa-lg"></i> System Status</a></li>
-                <li ng-class="{ active: isActive('/logs')}"><a href="#/logs" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-list fa-lg"></i> Logs</a></li>
+                <li ng-class="{ active: isActive('/gatewaystatus')}"><a href="#/gatewaystatus" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-plug fa-lg"></i> {{ 'MENU.GATEWAY' | translate }}</a></li>
+                <li ng-class="{ active: isActive('/systemstatus')}"><a href="#/systemstatus" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-heartbeat fa-lg"></i> {{ 'MENU.SYSTEM_STATUS' | translate }}</a></li>
+                <li ng-class="{ active: isActive('/logs')}"><a href="#/logs" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-list fa-lg"></i> {{ 'MENU.SENSOR_LOGS' | translate }}</a></li>
               </ul>
             </li>
             
@@ -104,17 +104,26 @@
           <ul class="nav navbar-nav navbar-right">
             
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-life-ring fa-lg"></i> Support <span class="caret"></span></a>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="">{{ 'MENU.LANGUAGE_NAME' | translate }} <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="https://github.com/mycontroller-org/mycontroller/releases"><i class="fa fa-file-archive-o fa-lg"></i> Releases</a></li>
-                <li><a href="http://www.mycontroller.org"><i class="fa fa-book fa-lg"></i> Documents</a></li>
-                <li><a href="https://github.com/mycontroller-org/mycontroller"><i class="fa fa-github fa-lg"></i> Source Code</a></li>
+                <li><a href="" ng-click="changeLanguage('en-us')"> English-US</a></li>
+                <li><a href="" ng-click="changeLanguage('ta-in')">  தமிழ்</a></li>
+                <li><a href="" ng-click="changeLanguage('de-de')"> Deutsche</a></li>
+              </ul>
+            </li>
+            
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-life-ring fa-lg"></i> {{ 'MENU.SUPPORT' | translate }} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="https://github.com/mycontroller-org/mycontroller/releases"><i class="fa fa-file-archive-o fa-lg"></i> {{ 'MENU.RELEASES' | translate }}</a></li>
+                <li><a href="http://www.mycontroller.org"><i class="fa fa-book fa-lg"></i> {{ 'MENU.DOCUMENTS' | translate }}</a></li>
+                <li><a href="https://github.com/mycontroller-org/mycontroller"><i class="fa fa-github fa-lg"></i> {{ 'MENU.SOURCE_CODE' | translate }}</a></li>
               </ul>
             </li>
             
             <li ng-class="{ active: isActive('/login')}">
-              <a ng-hide="isActive('/login')" href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-out fa-lg"></i> Log Out</a>
-              <a ng-show="isActive('/login')" href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-in fa-lg"></i> Log In</a>
+              <a ng-hide="isActive('/login')" href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-out fa-lg"></i> {{ 'MENU.LOG_OUT' | translate }}</a>
+              <a ng-show="isActive('/login')" href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-in fa-lg"></i> {{ 'MENU.LOG_IN' | translate }}</a>
             </li>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -158,7 +167,12 @@
     <script src="libs/nvd3/nv.d3.min.js"></script> <!-- or use another assembly -->
     <script src="libs/angular-nvd3/angular-nvd3.min.js"></script>
     <script src="libs/angular-bootstrap-colorpicker/bootstrap-colorpicker-module.min.js"></script>
-    <script src="libs/angular-file-saver/angular-file-saver.bundle.min.js"></script>
+    <script src="libs/angular-file-saver/angular-file-saver.bundle.min.js"></script>    
+    <!-- Multi Language support-->
+    <script src="libs/angular-translate/angular-translate.min.js"></script>
+    <script src="libs/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="libs/angular-translate-loader-url/angular-translate-loader-url.min.js"></script>
+    <script src="libs/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
   
     <!-- Application js-->
     <script src="app.js"></script>
