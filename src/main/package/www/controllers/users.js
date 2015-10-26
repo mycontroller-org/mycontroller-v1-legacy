@@ -144,9 +144,10 @@ myControllerModule.controller('UaddController', function ($scope, $modalInstance
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('UupdateController', function ($scope, $modalInstance, user) {
+myControllerModule.controller('UupdateController', function ($scope, $modalInstance, TypesFactory, user) {
   $scope.user = user;
   $scope.header = "Update User";
+  $scope.roles = TypesFactory.getUserRoles();
   $scope.update = function() {$modalInstance.close($scope.user);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

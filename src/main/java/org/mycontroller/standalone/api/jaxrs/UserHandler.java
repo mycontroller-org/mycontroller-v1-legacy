@@ -79,6 +79,12 @@ public class UserHandler {
     @PUT
     @Path("/")
     public Response update(User user) {
+        User userOrg = RestUtils.getUser(request);
+        if (user.getId() == user.getId()) {
+            if (userOrg.getRoleId() != user.getRoleId()) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("You cannot change your role"));
+            }
+        }
         DaoUtils.getUserDao().update(user);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
