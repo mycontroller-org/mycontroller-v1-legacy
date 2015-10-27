@@ -43,6 +43,6 @@
   
   "TITLE.LOGIN": "Требуется аутентификация",
   
-  "DASHBOARD.TITLE" : "приборная панель",
+  "DASHBOARD.TITLE" : "Приборная панель",
   "DASHBOARD.WELCOME_MSG" : "Welcome to {{mcWebsite}} Just started growing {{mcWebsite}}. Dashboard is under development. Meanwhile you can try other features :)"
 }
