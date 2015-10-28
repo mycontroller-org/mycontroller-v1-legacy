@@ -350,6 +350,11 @@ public class DataBaseUtils {
 
         }
 
+        if (dbVersion == 6) {
+            upgradeVersion("0.0.2-alpha6-SNAPSHOT", dbVersion, dbVersion + 1);
+            dbVersion = 7;
+        }
+
     }
 
     private static void createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION sensorType,
@@ -369,7 +374,6 @@ public class DataBaseUtils {
         DaoUtils.getSystemJobDao().create(new SystemJob(name, cronExpression, isEnabled, clazz.getName()));
     }
 
-    @SuppressWarnings("unused")
     private static void upgradeVersion(String appVersion, int dbVersionOld, int dbVersionNew) {
         Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_VERSION);
         settings.setValue(appVersion);
@@ -378,7 +382,8 @@ public class DataBaseUtils {
         settings = DaoUtils.getSettingsDao().get(Settings.MC_DB_VERSION);
         settings.setValue(String.valueOf(dbVersionNew));
         DaoUtils.getSettingsDao().update(settings);
-        _logger.info("MC DB version[{}] upgraded to version[{}]", dbVersionOld, dbVersionNew);
+        _logger.info("MC DB version[{}] upgraded to version[{}], Application version:{}", dbVersionOld, dbVersionNew,
+                appVersion);
     }
 
     //http://www.h2database.com/html/tutorial.html#upgrade_backup_restore
