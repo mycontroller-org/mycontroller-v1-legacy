@@ -94,10 +94,38 @@
   "LOGIN.LOGIN" : "Авторизоваться",
   "LOGIN.USERNAME_IS_REQUIRED" : "Требуется имя пользователя",  
   
+  "ALARM.TRIGGER_WHEN_VALUE" : "Trigger When Value", 
+  "ALARM.IGNORE_DUPLICATE" : "Игнорировать Дубликаты",   
+  "ALARM.DAMPENING" : "Dampening", 
+  "ALARM.NOTIFICATION_TYPE" : "Notification Type", 
+  "ALARM.EMAIL" : "Электронная Почта",   
+  "ALARM.PHONE_NUMBER" : "Телефонный Номер", 
+  "ALARM.NODE" : "Нода / Сенсор", 
+  "ALARM.TYPE" : "Тип / Сообщение",   
+  "ALARM.ALARM" : "Alarm",  
+
+  "FIRMWARE.TYPE" : "Тип", 
+  "FIRMWARE.VERSION" : "Версия",   
+  "FIRMWARE.HEX_FILE" : "Hex Файл", 
+  "FIRMWARE.TYPE_ID" : "Id Типа", 
+  "FIRMWARE.TYPE_NAME" : "Имя Типа",   
+  "FIRMWARE.VERSION_ID" : "Id Версии", 
+
+  "FORWARD_PAYLOAD.DESTINATION_NODE" : "Destination Node", 
+  "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Destination Sensor",   
+  "FORWARD_PAYLOAD.SOURCE_VARIABLE" : "Source Variable", 
+  "FORWARD_PAYLOAD.DESTINATION_VARIABLE" : "Destination Variable",   
+  "FORWARD_PAYLOAD.FORWARD_PAYLOAD" : "Forward Payload", 
+  
   "SYSTEM.ADD" : "Добавить",
   "SYSTEM.CANCEL" : "Отмена",
   "SYSTEM.UPDATE" : "Обновить",  
   "SYSTEM.SEARCH" : "Поиск", 
+  "SYSTEM.NAME" : "Имя",   
+  
+  "CHART.SELECT_VARIABLE_TYPE" : "Select Variable Type", 
+  "CHART.GRAPHICAL_REPORT" : "Графический Отчет",   
+  "CHART.VARIABLE_TYPE_TEXT" : "Select <B>Variable Type</B> on top side right corner to load Graphical Report...",   
   
   "DASHBOARD.TITLE" : "Приборная панель",
   "DASHBOARD.WELCOME_MSG" : "Welcome to {{mcWebsite}} Just started growing {{mcWebsite}}. Dashboard is under development. Meanwhile you can try other features :)"

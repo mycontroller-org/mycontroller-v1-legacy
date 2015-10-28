@@ -24,7 +24,7 @@
   <form class="form-horizontal form-group-sm" role="form" name="form">
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="firmwareVersion.id">Version Id:</label>
+      <label class="control-label col-sm-3" for="firmwareVersion.id">{{ 'FIRMWARE.VERSION_ID' | translate }}:</label>
       <input style="width:320px" type="text" class="form-control" id="firmwareVersion.id" placeholder="Auto Generate" ng-model="firmwareVersion.id">
     </div>
     
@@ -36,8 +36,8 @@
   </form>
   
   <div class="modal-footer">
-    <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
-    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> {{ 'SYSTEM.ADD' | translate }}</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
 </div>
 

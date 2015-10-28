@@ -20,11 +20,11 @@
        <div class="form-horizontal form-group-sm pull-right col-xs-2">
         <div class="form-group form-inline">
           <select style="width:220px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes" ng-change="updateSensorVariableType(variableTypeId)" ng-model="variableTypeId">
-            <option value="">-- Select Variable Type --</option>
+            <option value="">-- {{ 'CHART.SELECT_VARIABLE_TYPE' | translate }} --</option>
           </select>
         </div>
       </div>
-      <b><i class="fa fa-line-chart"></i> Graphical Report </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{variableType.variableTypeString}}, Last seen: {{variableType.timestamp | date:'medium':about.timezone}}</small></small></h3>
+      <b><i class="fa fa-line-chart"></i> {{ 'CHART.GRAPHICAL_REPORT' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{variableType.variableTypeString}}, Last seen: {{variableType.timestamp | date:'medium':about.timezone}}</small></small></h3>
   </div>
   
   <div ng-show="variableType.id">
@@ -122,5 +122,5 @@
   </div>
   
   <div ng-hide="variableType.id" class="well" style="text-align:center;">
-    Select <B>Variable Type</B> on top side right corner to load Graphical Report...
+    {{ 'CHART.VARIABLE_TYPE_TEXT' | translate }}
   </div>  
