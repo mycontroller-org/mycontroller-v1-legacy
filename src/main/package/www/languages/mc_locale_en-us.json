@@ -93,11 +93,39 @@
   
   "LOGIN.LOGIN" : "Log in",
   "LOGIN.USERNAME_IS_REQUIRED" : "Username is required",  
+
+  "ALARM.TRIGGER_WHEN_VALUE" : "Trigger When Value", 
+  "ALARM.IGNORE_DUPLICATE" : "Ignore Duplicate",   
+  "ALARM.DAMPENING" : "Dampening", 
+  "ALARM.NOTIFICATION_TYPE" : "Notification Type", 
+  "ALARM.EMAIL" : "Email(s)",   
+  "ALARM.PHONE_NUMBER" : "Phone Number(s)", 
+  "ALARM.NODE" : "Node / Sensor", 
+  "ALARM.TYPE" : "Type / Payload",   
+  "ALARM.ALARM" : "Alarm", 
+
+  "FIRMWARE.TYPE" : "Type", 
+  "FIRMWARE.VERSION" : "Version",   
+  "FIRMWARE.HEX_FILE" : "Hex File", 
+  "FIRMWARE.TYPE_ID" : "Type Id", 
+  "FIRMWARE.TYPE_NAME" : "Type Name",   
+  "FIRMWARE.VERSION_ID" : "Version Id", 
+
+  "FORWARD_PAYLOAD.DESTINATION_NODE" : "Destination Node", 
+  "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Destination Sensor",   
+  "FORWARD_PAYLOAD.SOURCE_VARIABLE" : "Source Variable", 
+  "FORWARD_PAYLOAD.DESTINATION_VARIABLE" : "Destination Variable",   
+  "FORWARD_PAYLOAD.FORWARD_PAYLOAD" : "Forward Payload", 
   
   "SYSTEM.ADD" : "Add",
   "SYSTEM.CANCEL" : "Cancel",
   "SYSTEM.UPDATE" : "Update",  
   "SYSTEM.SEARCH" : "Search", 
+  "SYSTEM.NAME" : "Name", 
+
+  "CHART.SELECT_VARIABLE_TYPE" : "Select Variable Type", 
+  "CHART.GRAPHICAL_REPORT" : "Graphical Report",   
+  "CHART.VARIABLE_TYPE_TEXT" : "Select <B>Variable Type</B> on top side right corner to load Graphical Report...",   
   
   "DASHBOARD.TITLE" : "Dashboard",
   "DASHBOARD.WELCOME_MSG" : "Welcome to {{mcWebsite}} Just started growing {{mcWebsite}}. Dashboard is under development. Meanwhile you can try other features :)"

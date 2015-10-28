@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-forward"></i> Forward Payload </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
+    <h3><b><i class="fa fa-forward"></i> {{ 'FORWARD_PAYLOAD.FORWARD_PAYLOAD' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
 </div>
 
 	<div class="panel panel-default">
@@ -24,7 +24,7 @@
 	  <div class="panel-heading">
 		<form class="form-inline">
 			<div class="form-group">
-				<label class="sr-only" for="search">Search</label>
+				<label class="sr-only" for="search">{{ 'SYSTEM.SEARCH' | translate }}</label>
 				<input type="text" class="form-control ng-pristine ng-valid input-sm ng-valid" 
 				ng-model="query" id="search" placeholder="Search" ng-model="query" 
 				ng-change="updateFilteredList()"/>
