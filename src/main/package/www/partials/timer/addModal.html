@@ -23,55 +23,55 @@
    
   <form class="form-horizontal form-group-sm" role="form" name="form">
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="timer.name">Name:</label>
+      <label class="control-label col-sm-3" for="timer.name">{{ 'SYSTEM.NAME' | translate }}:</label>
       <input style="width:320px" type="text" class="form-control" id="timer.name" placeholder="Timer Name" ng-model="timer.name" required>
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="timer.type">Type / Frequency:</label>
+      <label class="control-label col-sm-3" for="timer.type">{{ 'TIMER.TYPE_FREQUENCY' | translate }}:</label>
       <select style="width:158px" class="form-control" ng-options="timerType.id as timerType.displayName for timerType in timerTypes" ng-model="timer.type" required></select>
       <select style="width:158px" class="form-control" ng-hide="timer.type == 1" ng-change="onFrequencyChange()" ng-options="timerFrequency.id as timerFrequency.displayName for timerFrequency in timerFrequencies" ng-model="timer.frequency"></select>
     </div>
     
     
     <div class="form-group form-inline" ng-show="(timer.type != 1) && (timer.frequency == 0)">
-      <label class="control-label col-sm-3">Week Days:</label>
+      <label class="control-label col-sm-3">{{ 'TIMER.WEEK_DAYS' | translate }}:</label>
       <div isteven-multi-select input-model="timerDays" output-model="weekDaysOutput" button-label="displayName" item-label="displayName" 
             tick-property="ticked" output-properties="id" on-close="updateWeekDays()" on-item-click="updateWeekDays()">
       </div>
     </div>
     
     <div class="form-group form-inline" ng-show="(timer.type != 1) && (timer.frequency == 1)">
-      <label class="control-label col-sm-3">Week Day:</label>
+      <label class="control-label col-sm-3">{{ 'TIMER.WEEK_DAY' | translate }}:</label>
       <select style="width:158px" class="form-control" ng-options="timerDay.id as timerDay.displayName for timerDay in timerDays" ng-model="timer.frequencyDataString"></select>
     </div>
     
     <div class="form-group form-inline" ng-show="(timer.type != 1) && (timer.frequency == 2)">
-      <label class="control-label col-sm-3" for="timer.monthly">Month day:</label>
+      <label class="control-label col-sm-3" for="timer.monthly">{{ 'TIMER.MONTH_DAY' | translate }}:</label>
       <select style="width:70px" class="form-control" ng-options="monthDay for monthDay in monthDays" ng-model="timer.frequencyDataString"></select>
     </div>
     
     <div class="form-group form-inline" ng-show="timer.type == 1">
-      <label class="control-label col-sm-3" for="timer.cron">Cron Expression:</label>
+      <label class="control-label col-sm-3" for="timer.cron">{{ 'TIMER.CRON_EXPRESSION' | translate }}:</label>
       <input style="width:320px" type="text" uib-tooltip-html="htmlTooltipCron" tooltip-class="customClass450px" tooltip-placement="bottom" class="form-control" id="timer.cron" placeholder="Cron Expression" ng-model="timer.frequencyDataString">
     </div>
     
      <div class="form-group form-inline" ng-show="timer.type != 1">
-      <label class="control-label col-sm-3" for="timer.monthly">Time (HH:mm:ss):</label>
+      <label class="control-label col-sm-3" for="timer.monthly">{{ 'TIMER.TIME' | translate }}:</label>
       <select style="width:70px" class="form-control" ng-change="timeOnChange(triggerHour, triggerMinute, triggerSecond)" ng-init="triggerHour = 0" ng-options="hour for hour in hours" ng-model="triggerHour"></select>
       <select style="width:70px" class="form-control" ng-change="timeOnChange(triggerHour, triggerMinute, triggerSecond)" ng-init="triggerMinute = 0" ng-options="minute for minute in minutes" ng-model="triggerMinute"></select>
       <select style="width:70px" class="form-control" ng-change="timeOnChange(triggerHour, triggerMinute, triggerSecond)" ng-init="triggerSecond = 0" ng-options="second for second in minutes" ng-model="triggerSecond"></select>
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="sensor.newPayload">Type / Payload:</label>
+      <label class="control-label col-sm-3" for="sensor.newPayload">{{ 'ALARM.TYPE' | translate }}:</label>
       <select style="width:158px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
         ng-model="timer.sensorVariableType" required></select>
       <input style="width:158px" type="text" uib-tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="bottom" class="form-control" id="timer.variable4" placeholder="Payload" ng-model="timer.payload">
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="alarm.trigger">Validity From:</label>
+      <label class="control-label col-sm-3" for="alarm.trigger">{{ 'TIMER.VALIDATION_FROM' | translate }}:</label>
         <div class="dropup">
           <a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="" href="">
             <div class="input-group">
@@ -89,7 +89,7 @@
     
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="alarm.trigger">Validity To:</label>
+      <label class="control-label col-sm-3" for="alarm.trigger">{{ 'TIMER.VALIDATION_TO' | translate }}:</label>
       <div class="dropup">
         <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
           <div class="input-group">
@@ -108,7 +108,7 @@
   </form>
  
   <div class="modal-footer">
-    <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
-    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> {{ 'SYSTEM.ADD' | translate }}</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
 </div>

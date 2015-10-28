@@ -24,7 +24,7 @@
   <form class="form-horizontal form-group-sm" role="form" name="form">
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="sensor.newPayload">Type / Payload:</label>
+      <label class="control-label col-sm-3" for="sensor.newPayload">{{ 'ALARM.TYPE' | translate }}:</label>
       <select style="width:200px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
         ng-model="payloadJson.variableType" required></select>
       <input style="width:200px" type="text" class="form-control" id="sensor.newPayload" placeholder="Payload" ng-model="payloadJson.payload" ng-disabled="enableSlider" required>
@@ -33,7 +33,7 @@
   </form>
 
   <div class="modal-footer">
-    <button class="btn btn-primary btn-xs" ng-click="send()" ng-disabled="form.$invalid"><i class="fa fa-cloud-upload"> Send</i></button>
-    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="send()" ng-disabled="form.$invalid"><i class="fa fa-cloud-upload"> {{ 'SYSTEM.SEND' | translate }}</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
 </div>
