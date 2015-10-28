@@ -43,6 +43,21 @@
   
   "TITLE.LOGIN": "Authentication Required",
   
+  "GATEWAY_STATUS.GATEWAY_TYPE" : "Gateway Type",
+  "GATEWAY_STATUS.SERIAL_DRIVER_TYPE" : "Driver Type",
+  "GATEWAY_STATUS.SERIAL_SELECTED_DRIVER" : "Selected Driver",
+  "GATEWAY_STATUS.SERIAL_PORT_NAME" : "Port Name",
+  "GATEWAY_STATUS.SERIAL_BAUD_RATE" : "Baud Rate",
+  "GATEWAY_STATUS.SERIAL_IS_CONNECTED" : "Is Connected",
+  "GATEWAY_STATUS.SERIAL_CONNECTION_MESSAGE" : "Connection Message",
+  "GATEWAY_STATUS.ETHERNET_HOST_IP" : "Host/IP",
+  "GATEWAY_STATUS.ETHERNET_PORT" : "Port",
+  "GATEWAY_STATUS.ETHERNET_KEEP_ALIVE_TIME" : "Keep Alive Time",
+  "GATEWAY_STATUS.ETHERNET_CONNECTION_STATUS" : "Connection Status",
+  "GATEWAY_STATUS.MQTT_HOST_IP" : "Host/IP",
+  "GATEWAY_STATUS.MQTT_PORT" : "Port",
+  "GATEWAY_STATUS.MQTT_TOPIC" : "Topic",
+  
   "DASHBOARD.TITLE" : "Dashboard",
   "DASHBOARD.WELCOME_MSG" : "Welcome to {{mcWebsite}} Just started growing {{mcWebsite}}. Dashboard is under development. Meanwhile you can try other features :)"
 }
