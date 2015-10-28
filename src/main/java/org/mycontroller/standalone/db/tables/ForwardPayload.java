@@ -16,16 +16,23 @@
 package org.mycontroller.standalone.db.tables;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@DatabaseTable(tableName = "forward_payload")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ForwardPayload {
     public static final String SENSOR_REF_ID = "sensor_ref_id";
     public static final String FORWARD_SENSOR_REF_ID = "forward_sensor_ref_id";
+    public static final String SOURCE_TYPE = "s_var_type";
+    public static final String DESTINATION_TYPE = "d_var_type";
 
     public ForwardPayload() {
 
@@ -35,9 +42,11 @@ public class ForwardPayload {
         this.id = id;
     }
 
-    public ForwardPayload(Sensor sensorSource, Sensor sensorProxy) {
+    public ForwardPayload(Sensor sensorSource, Sensor sensorProxy, Integer sourceType, Integer destinationType) {
         this.sensorSource = sensorSource;
         this.sensorDestination = sensorProxy;
+        this.sourceType = sourceType;
+        this.destinationType = destinationType;
     }
 
     @DatabaseField(generatedId = true)
@@ -50,6 +59,11 @@ public class ForwardPayload {
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Sensor sensorDestination;
 
+    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = SOURCE_TYPE)
+    private Integer sourceType;
+
+    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = DESTINATION_TYPE)
+    private Integer destinationType;
 
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
@@ -77,6 +91,30 @@ public class ForwardPayload {
 
     public void setSensorDestination(Sensor sensorDestination) {
         this.sensorDestination = sensorDestination;
+    }
+
+    public Integer getSourceType() {
+        return sourceType;
+    }
+
+    public Integer getDestinationType() {
+        return destinationType;
+    }
+
+    public void setSourceType(Integer sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public void setDestinationType(Integer destinationType) {
+        this.destinationType = destinationType;
+    }
+
+    public String getSourceTypeString() {
+        return MESSAGE_TYPE_SET_REQ.get(sourceType).toString();
+    }
+
+    public String getDestinationTypeString() {
+        return MESSAGE_TYPE_SET_REQ.get(destinationType).toString();
     }
 
 }

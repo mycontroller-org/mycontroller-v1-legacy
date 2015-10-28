@@ -47,9 +47,9 @@ public class NodeDiscover implements Runnable {
         rawMessage.setAck(0);
         rawMessage.setChildSensorId(255);
         rawMessage.setMessageType(MESSAGE_TYPE.C_INTERNAL.ordinal());
-        rawMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_REBOOT.ordinal());
+        rawMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_PRESENTATION.ordinal());
         rawMessage.setTxMessage(true);
-        rawMessage.setPayLoad("");
+        rawMessage.setPayload("");
 
         try {
             int nodeId = NODE_ID_MIN;

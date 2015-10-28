@@ -15,7 +15,11 @@
  */
 package org.mycontroller.standalone.gateway.serialport;
 
+import java.util.HashMap;
+
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
 import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.slf4j.Logger;
@@ -30,6 +34,7 @@ import com.fazecast.jSerialComm.SerialPort;
 public class SerialPortjSerialCommImpl implements IMySensorsGateway {
     private static final Logger _logger = LoggerFactory.getLogger(SerialPortjSerialCommImpl.class.getName());
     private SerialPort serialPort;
+    private GatewayInfo gatewayInfo = new GatewayInfo();
 
     public SerialPortjSerialCommImpl() {
         initialize();
@@ -37,44 +42,73 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
 
     @Override
     public synchronized void write(RawMessage rawMessage) {
-        serialPort.writeBytes(rawMessage.getGWBytes(), rawMessage.getGWBytes().length);
+        try {
+            serialPort.writeBytes(rawMessage.getGWBytes(), rawMessage.getGWBytes().length);
+        } catch (Exception ex) {
+            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
+            _logger.error("Error,", ex);
+        }
     }
 
     @Override
     public void close() {
         if (this.serialPort.closePort()) {
-            _logger.info("serialPort{} closed", serialPort.getDescriptivePortName());
+            _logger.debug("serialPort{} closed", serialPort.getDescriptivePortName());
+        } else {
+            _logger.warn("Failed to close serialPort{}", serialPort.getDescriptivePortName());
         }
     }
 
     private void initialize() {
         SerialPort[] serialPorts = SerialPort.getCommPorts();
-        _logger.info("Number of serial port available:{}", serialPorts.length);
+        _logger.debug("Number of serial port available:{}", serialPorts.length);
         for (int portNo = 0; portNo < serialPorts.length; portNo++) {
-            _logger.info("SerialPort[{}]:[{},{}]", portNo + 1, serialPorts[portNo].getSystemPortName(),
+            _logger.debug("SerialPort[{}]:[{},{}]", portNo + 1, serialPorts[portNo].getSystemPortName(),
                     serialPorts[portNo].getDescriptivePortName());
         }
+
+        //Update Gateway Info
+        gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
+        gatewayInfo.setData(new HashMap<String, Object>());
+
+        gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
+        gatewayInfo.getData().put(SerialPortCommon.DRIVER_TYPE,
+                ObjectFactory.getAppProperties().getGatewaySerialPortDriver());
+        gatewayInfo.getData().put(SerialPortCommon.SELECTED_DRIVER_TYPE,
+                AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString());
+        gatewayInfo.getData().put(SerialPortCommon.PORT_NAME,
+                ObjectFactory.getAppProperties().getGatewaySerialPortName());
+        gatewayInfo.getData().put(SerialPortCommon.BAUD_RATE,
+                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
+
         // create an instance of the serial communications class
-        serialPort = SerialPort.getCommPort(ObjectFactory.getAppProperties().getSerialPortName());
+        serialPort = SerialPort.getCommPort(ObjectFactory.getAppProperties().getGatewaySerialPortName());
 
         serialPort.openPort();//Open port
         if (!serialPort.isOpen()) {
-            _logger.error("Unable to open serial port:[{}]", ObjectFactory.getAppProperties().getSerialPortName());
+            _logger.error("Unable to open serial port:[{}]", ObjectFactory.getAppProperties().getGatewaySerialPortName());
+            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "ERROR: Unable to open!");
             return;
         }
         serialPort.setComPortParameters(
-                ObjectFactory.getAppProperties().getSerialPortBaudRate(),
+                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate(),
                 8,  // data bits
                 SerialPort.ONE_STOP_BIT,
                 SerialPort.NO_PARITY);
 
         // create and register the serial data listener
-        serialPort.addDataListener(new SerialDataListenerjSerialComm(serialPort));
+        serialPort.addDataListener(new SerialDataListenerjSerialComm(serialPort, gatewayInfo));
         _logger.debug("Serial port initialized with the driver:{}, PortName:{}, BaudRate:{}",
-                ObjectFactory.getAppProperties().getSerialPortDriver(),
-                ObjectFactory.getAppProperties().getSerialPortName(),
-                ObjectFactory.getAppProperties().getSerialPortBaudRate());
+                ObjectFactory.getAppProperties().getGatewaySerialPortDriver(),
+                ObjectFactory.getAppProperties().getGatewaySerialPortName(),
+                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
+        gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
+        gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, true);
+    }
 
+    @Override
+    public GatewayInfo getGatewayInfo() {
+        return gatewayInfo;
     }
 
 }

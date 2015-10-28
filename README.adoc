@@ -29,7 +29,7 @@ MyController.org is java based application server. We can run it in any platform
 
 == Available Features
 
-Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.2-alpha4[0.0.2-alpha4] version,
+Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.2-alpha5[0.0.2-alpha5] version,
 
 - Supports http://www.mysensors.org/build/serial_gateway[Serial Gateway], http://www.mysensors.org/build/ethernet_gateway[Ethernet Gateway], http://www.mysensors.org/build/mqtt_gateway[MQTT Gateway] and NRF24L01+ gateway via PiGatewaySerial (https://github.com/mysensors/Raspberry) on Raspberry PI
 - Auto discover and update nodes(upon nodes restart or receive any data)
@@ -53,8 +53,8 @@ Features available in https://github.com/mycontroller-org/mycontroller/releases/
 
 ====== Download(executable bundle),
 
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha4/mycontroller-standalone-0.0.2-alpha4-bundle.zip[mycontroller-standalone-0.0.2-alpha4-bundle.zip]
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha4/mycontroller-standalone-0.0.2-alpha4-bundle.tar.gz[mycontroller-standalone-0.0.2-alpha4-bundle.tar.gz]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha5/mycontroller-standalone-0.0.2-alpha5-bundle.zip[mycontroller-standalone-0.0.2-alpha5-bundle.zip]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha5/mycontroller-standalone-0.0.2-alpha5-bundle.tar.gz[mycontroller-standalone-0.0.2-alpha5-bundle.tar.gz]
 
 ====== Configuration
 

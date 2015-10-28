@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, $filter, NodesFactory, $location, $modal, displayRestError) {
+$scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -38,7 +38,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
   //Delete a Node
   $scope.delete = function (node, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'NMdeleteController',
     size: size,
@@ -68,7 +68,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
     
   //Add a Node
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/addModal.html',
     controller: 'NMaddController',
     size: size,
@@ -94,9 +94,18 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
     }
   };
   
+  // Upload Firmware
+  $scope.uploadFirmware = function (node, size) {
+    NodesFactory.uploadFirmware(node,function(response) {
+        alertService.success("Upload Firmware initiated for Node[id:"+node.id+",name:"+node.name+"]");
+      },function(error){
+        displayRestError.display(error);            
+      });      
+    };
+  
   //Reboot a Node
   $scope.reboot = function (node, size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/rebootModal.html',
     controller: 'NMrebootController',
     size: size,
@@ -117,7 +126,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
     //Erase EEPROM of a Node
   $scope.eraseEeprom = function (node, size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/eraseEepromModal.html',
     controller: 'NMeraseEepromController',
     size: size,
@@ -144,7 +153,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
     
   //Update a Node
   $scope.update = function (node, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/updateModal.html',
     controller: 'NMupdateController',
     size: size,
@@ -173,7 +182,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
   //Node Discover
   $scope.discover = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/discoverModal.html',
     controller: 'NMdiscoverController',
     size: size
@@ -192,7 +201,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
   
   //Node Battery Level graph
   $scope.displayBatteryLevel = function (node, size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/nodes/batteryLevelChart.html',
     controller: 'NMbatteryLevelController',
     windowClass: 'battery-modal-window',
@@ -213,7 +222,7 @@ $scope, $filter, NodesFactory, $location, $modal, displayRestError) {
 myControllerModule.controller('NMdeleteController', function ($scope, $modalInstance, $sce, node) {
   $scope.node = node;
   $scope.header = "Delete Node";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete a Node"
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Node"
     +"<br>Deletion process will remove complete trace of this node!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>Node: </I>[id:"+node.id+",name:"+node.name +",type:"+node.typeString+"]");
@@ -225,7 +234,7 @@ myControllerModule.controller('NMdeleteController', function ($scope, $modalInst
 
 myControllerModule.controller('NMaddController', function ($scope, $modalInstance, TypesFactory, FirmwaresFactory) {
   $scope.node = {};
-  $scope.header = "Add Node";
+  $scope.header = "New Node";
   $scope.nodeTypes = TypesFactory.getNodeTypes();
   $scope.add = function() {$modalInstance.close($scope.node); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
@@ -233,7 +242,7 @@ myControllerModule.controller('NMaddController', function ($scope, $modalInstanc
 
 myControllerModule.controller('NMupdateController', function ($scope, $modalInstance, node, TypesFactory, FirmwaresFactory) {
   $scope.node = node;
-  $scope.header = "Update Node";
+  $scope.header = "Modify Node '"+node.name+"'";
   $scope.nodeTypes = TypesFactory.getNodeTypes();
   $scope.firmwares = FirmwaresFactory.getAllFirmwares();
   $scope.update = function() {$modalInstance.close($scope.node);}
@@ -244,7 +253,7 @@ myControllerModule.controller('NMupdateController', function ($scope, $modalInst
 myControllerModule.controller('NMrebootController', function ($scope, $modalInstance, $sce, node) {
   $scope.node = node;
   $scope.header = "Reboot Node";
-  $scope.rebootMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to reboot a Node"
+  $scope.rebootMsg = $sce.trustAsHtml("You are about to reboot a Node"
     +"<br>Click 'Reboot' to proceed further."
     +"<br><I>Node: </I>[id:"+node.id+",name:"+node.name +",type:"+node.typeString+"]");
   $scope.reboot = function() {$modalInstance.close($scope.node); };
@@ -256,7 +265,7 @@ myControllerModule.controller('NMrebootController', function ($scope, $modalInst
 myControllerModule.controller('NMeraseEepromController', function ($scope, $modalInstance, $sce, node) {
   $scope.node = node;
   $scope.header = "Erase EEPROM of a Node";
-  $scope.eraseMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to erase complete EEPROM of a Node"
+  $scope.eraseMsg = $sce.trustAsHtml("You are about to erase complete EEPROM of a Node"
     +"<br>This action will remove complete configuration of the node including node Id!"
     +"<br>Click 'Erase EEPROM' to proceed further."
     +"<br><I>Node: </I>[id:"+node.id+",name:"+node.name +",type:"+node.typeString+"]");
@@ -266,10 +275,10 @@ myControllerModule.controller('NMeraseEepromController', function ($scope, $moda
 
 //Discover Modal
 myControllerModule.controller('NMdiscoverController', function ($scope, $modalInstance, $sce) {
-  $scope.header = "Node Discover Util";
-  $scope.discoverMsg = $sce.trustAsHtml("<b>Warning!</b> You are about trigger Node Discover util"
-    +"<br>This util will send REBOOT message for all the nodes (id: 1 to 254)"
-    +"<br>Node REBOOT may cause issues on your production setup"
+  $scope.header = "Node Discover Utility";
+  $scope.discoverMsg = $sce.trustAsHtml("You are about trigger Node Discover Utility"
+    +"<br>This action will send I_PRESENTATION message for all the nodes (id: 1 to 254)"
+    +"<br>I_PRESENTATION may cause huge trafic on your MySensors network"
     +"<br>Click 'Discover' to proceed further");
   $scope.discover = function() {$modalInstance.close(); };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
@@ -344,7 +353,7 @@ myControllerModule.controller('NMbatteryLevelController', function ($modalInstan
   });
   
   $scope.getMetrics = function(){
-    $scope.batteryUsageChartMetrics = MetricsFactory.batteryUsage({"sensorId":node.id}); //Note here we should use sensorId as key, check rest_service.js
+    $scope.batteryUsageChartMetrics = MetricsFactory.batteryUsage({"nodeId":node.id});
   }
   $scope.getMetrics();
   

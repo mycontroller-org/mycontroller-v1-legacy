@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -22,7 +23,8 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable
+@DatabaseTable(tableName = "firmware_type")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FirmwareType {
 
     public FirmwareType() {

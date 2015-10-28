@@ -16,15 +16,18 @@
 
 -->
 <div>
+  
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
-  <div class="modal-body">
-   
-    <div ng-bind-html="eraseMsg"></div>
+  
+  <div class="modal-body modal-body-text-only">
+    <small ng-bind-html="eraseMsg"></small>
   </div>
+  
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="eraseEeprom(node)"><i class="fa fa-eraser"> Erase EEPROM</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="eraseEeprom(node)"><i class="fa fa-eraser"> Erase EEPROM</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
   </div>
+  
 </div>

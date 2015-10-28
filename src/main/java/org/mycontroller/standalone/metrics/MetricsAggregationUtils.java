@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.jobs.metrics;
+package org.mycontroller.standalone.metrics;
 
 import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -31,7 +31,7 @@ public class MetricsAggregationUtils {
 
     public static void removePreviousData(AGGREGATION_TYPE type, long timestamp) {
         DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(
-                new MetricsDoubleTypeDevice(type.ordinal(), timestamp));
+                new MetricsDoubleTypeDevice(null, type.ordinal(), timestamp));
     }
 
     public static void purgeRawData() {

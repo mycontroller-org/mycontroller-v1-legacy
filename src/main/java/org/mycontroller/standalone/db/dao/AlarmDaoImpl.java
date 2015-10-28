@@ -24,6 +24,7 @@ import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
@@ -38,7 +39,7 @@ public class AlarmDaoImpl extends BaseAbstractDao<Alarm, Integer> implements Ala
     @Override
     public void create(Alarm alarm) {
         try {
-            int count = this.getDao().create(alarm);
+            Integer count = this.getDao().create(alarm);
             _logger.debug("Created Alarm:[{}], Create count:{}", alarm, count);
         } catch (SQLException ex) {
             _logger.error("unable to add Alarm:[{}]", alarm, ex);
@@ -60,7 +61,7 @@ public class AlarmDaoImpl extends BaseAbstractDao<Alarm, Integer> implements Ala
     @Override
     public void delete(Alarm alarm) {
         try {
-            int count = this.getDao().delete(alarm);
+            Integer count = this.getDao().delete(alarm);
             _logger.debug("Alarm:[{}] deleted, Delete count:{}", alarm, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete alarm:[{}]", alarm, ex);
@@ -68,7 +69,7 @@ public class AlarmDaoImpl extends BaseAbstractDao<Alarm, Integer> implements Ala
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Integer id) {
         try {
             this.getDao().deleteById(id);
         } catch (SQLException ex) {
@@ -77,11 +78,11 @@ public class AlarmDaoImpl extends BaseAbstractDao<Alarm, Integer> implements Ala
     }
 
     @Override
-    public void deleteBySensorRefId(int sensorRefId) {
+    public void deleteBySensorRefId(Integer sensorRefId) {
         try {
             DeleteBuilder<Alarm, Integer> deleteBuilder = this.getDao().deleteBuilder();
             deleteBuilder.where().eq(Alarm.SENSOR_REF_ID, sensorRefId);
-            int count = deleteBuilder.delete();
+            Integer count = deleteBuilder.delete();
             _logger.debug("deleted alarms with sensorRefId:[{}], Deletion Count:{}", sensorRefId, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete alarms with sensorRefId:[{}]", sensorRefId, ex);
@@ -91,7 +92,7 @@ public class AlarmDaoImpl extends BaseAbstractDao<Alarm, Integer> implements Ala
     @Override
     public void update(Alarm alarm) {
         try {
-            int count = this.getDao().update(alarm);
+            Integer count = this.getDao().update(alarm);
             _logger.debug("Updated Alarm:[{}], Update count:{}", alarm, count);
         } catch (SQLException ex) {
             _logger.error("unable to update alarm:[{}]", alarm, ex);
@@ -110,29 +111,44 @@ public class AlarmDaoImpl extends BaseAbstractDao<Alarm, Integer> implements Ala
     }
 
     @Override
-    public List<Alarm> getAll(int sensorRefId) {
+    public List<Alarm> getAll(Integer sensorRefId) {
         return getAll(sensorRefId, null);
     }
 
     @Override
-    public List<Alarm> getAll(int sensorRefId, Boolean enabled) {
+    public List<Alarm> getAll(Integer sensorRefId, Boolean enabled) {
+        return this.getAll(sensorRefId, null, enabled);
+    }
+
+    @Override
+    public List<Alarm> getAllEnabled(Integer sensorRefId, Integer variableType) {
+        return this.getAll(sensorRefId, variableType, true);
+    }
+
+    @Override
+    public List<Alarm> getAll(Integer sensorRefId, Integer variableType, Boolean enabled) {
         try {
             QueryBuilder<Alarm, Integer> queryBuilder = this.getDao().queryBuilder();
+            Where<Alarm, Integer> where = queryBuilder.where();
+            where.eq(Alarm.SENSOR_REF_ID, sensorRefId);
             if (enabled != null) {
-                queryBuilder.where().eq(Alarm.ENABLED, enabled).and().eq(Alarm.SENSOR_REF_ID, sensorRefId);
-            } else {
-                queryBuilder.where().eq(Alarm.SENSOR_REF_ID, sensorRefId);
+                where.and().eq(Alarm.ENABLED, enabled);
             }
+            if (variableType != null) {
+                where.and().eq(Alarm.VARIABLE_TYPE, variableType);
+            }
+            queryBuilder.setWhere(where);
             List<Alarm> alarms = this.getDao().query(queryBuilder.prepare());
             return alarms;
         } catch (SQLException ex) {
-            _logger.error("unable to get all alarms:[selsorRefId:{}, Enabled:{}]", sensorRefId, enabled, ex);
+            _logger.error("unable to get all alarms:[selsorRefId:{}, variableType:{}, Enabled:{}]",
+                    sensorRefId, variableType, enabled, ex);
             return null;
         }
     }
 
     @Override
-    public Alarm get(int id) {
+    public Alarm get(Integer id) {
         try {
             return this.getDao().queryForId(id);
         } catch (SQLException ex) {
@@ -146,7 +162,7 @@ public class AlarmDaoImpl extends BaseAbstractDao<Alarm, Integer> implements Ala
         try {
             UpdateBuilder<Alarm, Integer> updateBuilder = getDao().updateBuilder();
             updateBuilder.updateColumnValue(Alarm.TRIGGERED, false).where().eq(Alarm.TRIGGERED, true);
-            int count = updateBuilder.update();
+            Integer count = updateBuilder.update();
             _logger.debug("Number of rows updated:[{}]", count);
         } catch (SQLException ex) {
             _logger.error("unable to update alarm triggered status", ex);

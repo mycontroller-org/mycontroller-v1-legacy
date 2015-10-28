@@ -15,18 +15,11 @@
     limitations under the License.
 
 -->
-<div class="modal-body">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <div>
-        <p class="panel-title" >
-          {{chartOptions.title.text}} 
-          <button class="btn btn-default btn-xs pull-right" ng-click="cancel()"><i class="fa fa-close"></i></button>
-        </p>
-      </div>
-    </div>
-    <div class="panel-body">
-      <nvd3 options="chartOptions" data="batteryUsageChartMetrics"></nvd3>
-    </div>
+<div>
+  <div class="modal-header">
+    <div class="modal-title"><b>{{chartOptions.title.text}} </b></div>
+  </div>
+  <div class="modal-body">
+    <nvd3 options="chartOptions" data="batteryUsageChartMetrics"></nvd3>
   </div>
 </div>

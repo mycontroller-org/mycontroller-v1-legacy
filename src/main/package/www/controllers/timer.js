@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('TimerController', function(alertService,
-$scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestError, about) {
+$scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestError, about) {
   
   $scope.sensor = TimersFactory.getSensorData({"id":$stateParams.id});
     
@@ -49,11 +49,41 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
   $scope.filteredList = $scope.orgList;
   //setInterval($scope.getTimers, 1000*30);
   
+  //Update display table
+  $scope.updateDisplayTable = function(){
+    TimersFactory.getAll({"id":$stateParams.id}, function(response) {
+      $scope.orgList = response;
+      $scope.filteredList = $scope.orgList;    
+    },function(error){
+        displayRestError.display(error);            
+      });
+  };
+  
+  // Enable/Disable Timer
+  $scope.enableDisable = function(timer){
+    if(timer.enabled){
+      timer.enabled = false;
+    }else{
+      timer.enabled = true;
+    }
+    timer.frequencyData = timer.frequencyData.split(',');
+    $scope.updateTimer(timer);
+  };
 
+  // Update timer
+  $scope.updateTimer = function(updateTimer) {
+    TimersFactory.update(updateTimer,function(response) {
+        alertService.success("Updated a timer["+updateTimer.name+"]");
+        //Update display table
+        $scope.updateDisplayTable();
+      },function(error){
+        displayRestError.display(error);            
+      });
+  };
   
   //Add new
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/timer/addModal.html',
     controller: 'TMaddController',
     size: size,
@@ -64,11 +94,7 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
       TimersFactory.create(newTimer,function(response) {
         alertService.success("Added a timer[Name:"+newTimer.name+"]");
         //Update display table
-        $scope.orgList = TimersFactory.getAll({"id":$stateParams.id}, function(response) {
-        },function(error){
-          displayRestError.display(error);          
-        });
-        $scope.filteredList = $scope.orgList;
+        $scope.updateDisplayTable();
       },function(error){
         displayRestError.display(error);            
       });
@@ -80,7 +106,7 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
     
   //Delete timer
   $scope.delete = function (timer, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'TMdeleteController',
     size: size,
@@ -108,7 +134,7 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
     
     //Update an timer
   $scope.update = function (timer, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/timer/updateModal.html',
     controller: 'TMupdateController',
     size: size,
@@ -116,17 +142,7 @@ $scope, $filter, TimersFactory, $location, $modal, $stateParams, displayRestErro
     });
 
     editModalInstance.result.then(function (updateTimer) {
-      TimersFactory.update(updateTimer,function(response) {
-        alertService.success("Updated a timer["+updateTimer.name+"]");
-        //Update display table
-        $scope.orgList = TimersFactory.getAll({"id":$stateParams.id}, function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
-      },function(error){
-        displayRestError.display(error);            
-      });
+      $scope.updateTimer();
     }), 
     function () {
       //console.log('Modal dismissed at: ' + new Date());
@@ -140,9 +156,10 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
   $scope.timer.sensor = {};
   $scope.timer.frequencyData = [];
   $scope.timer.sensor.id = sensor.id;
-  $scope.header = "Add Timer for '"+sensor.nameWithNode+"'";
+  $scope.header = "New Timer for '"+sensor.nameWithNode+"'";
   $scope.timerDays = TypesFactory.getTimerDays({allDays:true});
   $scope.timerFrequencies = TypesFactory.getTimerFrequencies();
+  $scope.variableTypes = TypesFactory.getSensorVariableTypes({id:sensor.type});
   $scope.timerTypes = TypesFactory.getTimerTypes();
   $scope.monthDays = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
   $scope.hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
@@ -185,8 +202,8 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
 
 //Delete Modal
 myControllerModule.controller('TMdeleteController', function ($scope, $modalInstance, $sce, timer) {
-  $scope.header = "Delete a Timer";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete an timer"
+  $scope.header = "Delete Timer: '"+timer.name+"'";
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete an timer"
     +"<br>Deletion process will remove complete trace of this timer!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>Timer: [Name:"+timer.name+"]</I>");
@@ -198,7 +215,7 @@ myControllerModule.controller('TMdeleteController', function ($scope, $modalInst
 
 myControllerModule.controller('TMupdateController', function ($scope, $modalInstance, timer, TypesFactory) {
   $scope.timer = timer;
-  $scope.header = "Update Timer : "+timer.name;
+  $scope.header = "Modify Timer : '"+timer.name+"'";
   $scope.sensorValueTypes = TypesFactory.getSensorValueTypes();
   //This should be changed in good way. variable3 is String and in select option values in int not matching
   if($scope.timer.type == 0){

@@ -24,8 +24,14 @@ public enum AGGREGATION_TYPE {
     ONE_MINUTE,
     FIVE_MINUTES,
     ONE_HOUR,
-    ONE_DAY,
-    THIRTY_DAYS,
-    ONE_YEAR,
-    ALL_DAYS
+    ONE_DAY;
+
+    public static AGGREGATION_TYPE get(int id) {
+        for (AGGREGATION_TYPE type : values()) {
+            if (type.ordinal() == id) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(String.valueOf(id));
+    }
 }

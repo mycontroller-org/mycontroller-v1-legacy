@@ -25,7 +25,11 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     update: { method: 'PUT' },
     delete: { method: 'DELETE', params: {sensorId: '@sensorId'} },
     getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
-    sendPayload: { method: 'POST', params: {sensorId: '@payload'} }
+    sendPayload: { method: 'POST'},
+    getSensorByRefId: { method: 'GET', params: {nodeId: 'sensorByRefId'}},
+    getOthers: { method: 'GET', isArray: true, params: {nodeId: 'getOthers'}},
+    updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}},
+    getSensorValue: { method: 'GET', params: {nodeId: 'sensorValue'}}
   })
 });
 
@@ -38,7 +42,8 @@ myControllerModule.factory('NodesFactory', function ($resource) {
     update: { method: 'PUT' },
     delete: { method: 'DELETE' },
     reboot: { method: 'POST', params: {nodeId: 'reboot'}},
-    discover: { method: 'POST', params: {nodeId: 'nodeDiscover'}}
+    discover: { method: 'POST', params: {nodeId: 'nodeDiscover'}},
+    uploadFirmware: { method: 'POST', params: {nodeId: 'uploadFirmware'}},
   })
 });
 
@@ -78,22 +83,29 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getTimerTypes:  { method: 'GET', isArray: true, params: {type: 'timerTypes'}  },
     getTimerFrequencies:  { method: 'GET', isArray: true, params: {type: 'timerFrequencies'}  },
     getTimerDays:  { method: 'GET', isArray: true, params: {type: 'timerDays'}  },
-    getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  }
+    getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  },
+    getMysConfigTypes:  { method: 'GET', isArray: true, params: {type: 'mysConfigTypes'}  },
+    getSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypes'}  },
+    getSensorVariableTypesAll:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesAll'}  },    
+    getSensorVariableTypesBySensorRefId:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesBySenRef'}  },
+    getMessageTypes:  { method: 'GET', isArray: true, params: {type: 'messageTypes'}  },
+    getMessageSubTypes:  { method: 'GET', isArray: true, params: {type: 'messageSubTypes'} },
+    getSensorVariableMapper:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapper'} },
+    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} }, 
+    getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} }, 
   })
 });
 
 //Metrics Services
 myControllerModule.factory('MetricsFactory', function ($resource) {
-  return $resource('/mc/rest/metrics/:type/:sensorId', {sensorId: '@sensorId'}, {
-    lastMinute: { method: 'GET', isArray: true, params: {type: 'lastMinute'}},
-    last5Minutes: { method: 'GET', isArray: true, params: {type: 'last5Minutes'}},
-    lastOneHour: { method: 'GET', isArray: true, params: {type: 'lastOneHour'}},
-    last24Hours: { method: 'GET', isArray: true, params: {type: 'last24Hours'}},
-    last30Days: { method: 'GET', isArray: true, params: {type: 'last30Days'}},
-    lastYear: { method: 'GET', isArray: true, params: {type: 'lastYear'}},
-    allYears: { method: 'GET', isArray: true, params: {type: 'allYears'}},
+  return $resource('/mc/rest/metrics/:type', {}, {
+    getRawData: { method: 'GET', isArray: true, params: {type: 'rawData'}},
+    getOneMinuteData: { method: 'GET', isArray: true, params: {type: 'oneMinuteData'}},
+    getFiveMinutesData: { method: 'GET', isArray: true, params: {type: 'fiveMinutesData'}},
+    getOneHourData: { method: 'GET', isArray: true, params: {type: 'oneHourData'}},
+    getOneDayData: { method: 'GET', isArray: true, params: {type: 'oneDayData'}},
+    getCsvFile: { method: 'GET', isArray: false, params: {type: 'csvFile'}},
     batteryUsage: { method: 'GET', isArray: true, params: {type: 'batteryUsage'}},
-    sensorData: { method: 'GET', isArray: false, params: {type: 'sensorData'}}         
   })
 });
 
@@ -229,13 +241,9 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
 myControllerModule.factory('StatusFactory', function ($resource) {
   return $resource('/mc/rest/:type', {}, {
    getOsStatus: { method: 'GET', params: {type:'osStatus'} },
-   getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} }
-  })
-});
-
-//About Services
-myControllerModule.factory('AboutFactory', function ($resource) {
-  return $resource('/mc/rest/about', {}, {
-    about:  { method: 'GET'}
+   getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
+   about: { method: 'GET', params: {type:'about'} },
+   getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
+   sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
   })
 });

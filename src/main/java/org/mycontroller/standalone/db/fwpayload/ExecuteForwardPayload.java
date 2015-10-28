@@ -20,6 +20,7 @@ import java.util.List;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.slf4j.Logger;
@@ -33,10 +34,12 @@ public class ExecuteForwardPayload implements Runnable {
     private static final Logger _logger = LoggerFactory.getLogger(ExecuteForwardPayload.class);
     private List<ForwardPayload> forwardPayloads;
     private Sensor sensor;
+    private SensorValue sensorValue;
 
-    public ExecuteForwardPayload(List<ForwardPayload> forwardPayloads, Sensor sensor) {
+    public ExecuteForwardPayload(List<ForwardPayload> forwardPayloads, Sensor sensor, SensorValue sensorValue) {
         this.forwardPayloads = forwardPayloads;
         this.sensor = sensor;
+        this.sensorValue = sensorValue;
     }
 
     private void execute(ForwardPayload forwardPayload) {
@@ -46,8 +49,8 @@ public class ExecuteForwardPayload implements Runnable {
                 forwardPayload.getSensorDestination().getSensorId(),
                 MESSAGE_TYPE.C_SET.ordinal(), //messageType
                 0, //ack
-                forwardPayload.getSensorDestination().getMessageType(),//subType
-                sensor.getLastValue(),
+                forwardPayload.getDestinationType(),//subType
+                sensorValue.getLastValue(),
                 true);// isTxMessage
         ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
     }

@@ -17,44 +17,43 @@ package org.mycontroller.standalone.api.jaxrs.mapper;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 0.0.2
  */
-public class SerialPortJson {
-    private String name;
-    private String driver;
-    private int baudRate;
+public class ButtonStatus {
+    private Boolean show = false;
+    private String value;
+    private Integer variableType;
 
-    public SerialPortJson() {
+    public ButtonStatus() {
 
     }
 
-    public SerialPortJson(String name, String driver, int baudRate) {
-        this.name = name;
-        this.driver = driver;
-        this.baudRate = baudRate;
+    public ButtonStatus(Boolean show, String value) {
+
     }
 
-    public String getName() {
-        return name;
+    public Boolean getShow() {
+        return show;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getValue() {
+        return value;
     }
 
-    public String getDriver() {
-        return driver;
+    public void setShow(Boolean show) {
+        this.show = show;
     }
 
-    public void setDriver(String driver) {
-        this.driver = driver;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public int getBaudRate() {
-        return baudRate;
+    public Integer getVariableType() {
+        return variableType;
     }
 
-    public void setBaudRate(int baudRate) {
-        this.baudRate = baudRate;
+    public void setVariableType(Integer variableType) {
+        this.variableType = variableType;
     }
+
 }

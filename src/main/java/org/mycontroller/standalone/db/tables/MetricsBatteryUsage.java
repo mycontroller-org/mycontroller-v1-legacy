@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -22,7 +23,8 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@DatabaseTable
+@DatabaseTable(tableName = "metrics_battery")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MetricsBatteryUsage {
     public static final String NODE_REF_ID = "node_ref_id";
     public static final String TIMESTAMP = "timestamp";

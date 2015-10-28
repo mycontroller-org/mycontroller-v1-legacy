@@ -17,6 +17,7 @@ package org.mycontroller.standalone.db.tables;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -25,7 +26,8 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable
+@DatabaseTable(tableName = "firmware")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Firmware {
 
     public static final String TYPE_ID = "type_id";
@@ -66,7 +68,7 @@ public class Firmware {
 
     @DatabaseField(canBeNull = false, dataType = DataType.SERIALIZABLE)
     private ArrayList<Byte> data;
-    
+
     private String hexFileString;
 
     public Integer getId() {
@@ -124,7 +126,7 @@ public class Firmware {
     public void setData(ArrayList<Byte> data) {
         this.data = data;
     }
-    
+
     public void setFirmwareName(String firmwareName) {
         //This is ignore json serialization error
     }
@@ -143,7 +145,7 @@ public class Firmware {
     public void setHexFileString(String hexFileString) {
         this.hexFileString = hexFileString;
     }
-    
+
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Id:").append(this.id);

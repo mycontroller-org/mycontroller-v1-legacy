@@ -18,29 +18,31 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffTypeDevice, Object> implements
-        MetricsOnOffTypeDeviceDao {
-    private static final Logger _logger = LoggerFactory.getLogger(MetricsOnOffTypeDeviceDaoImpl.class);
+public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDao<MetricsBinaryTypeDevice, Object> implements
+        MetricsBinaryTypeDeviceDao {
+    private static final Logger _logger = LoggerFactory.getLogger(MetricsBinaryTypeDeviceDaoImpl.class);
 
-    public MetricsOnOffTypeDeviceDaoImpl(ConnectionSource connectionSource)
+    public MetricsBinaryTypeDeviceDaoImpl(ConnectionSource connectionSource)
             throws SQLException {
-        super(connectionSource, MetricsOnOffTypeDevice.class);
+        super(connectionSource, MetricsBinaryTypeDevice.class);
     }
 
     @Override
-    public void create(MetricsOnOffTypeDevice metric) {
+    public void create(MetricsBinaryTypeDevice metric) {
         try {
             int count = this.getDao().create(metric);
             _logger.debug("Created Metric:[{}], Create count:{}", metric, count);
@@ -51,7 +53,7 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
     }
 
     @Override
-    public void createOrUpdate(MetricsOnOffTypeDevice metric) {
+    public void createOrUpdate(MetricsBinaryTypeDevice metric) {
         try {
             CreateOrUpdateStatus status = this.getDao().createOrUpdate(metric);
             _logger.debug("CreateOrUpdate Metric:[{}],Create:{},Update:{},Lines Changed:{}",
@@ -63,7 +65,7 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
     }
 
     @Override
-    public void delete(MetricsOnOffTypeDevice metric) {
+    public void delete(MetricsBinaryTypeDevice metric) {
         try {
             int count = this.getDao().delete(metric);
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
@@ -73,22 +75,22 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
     }
 
     @Override
-    public void deleteBySensorRefId(int sensorRefId) {
+    public void deleteBySensorValueRefId(int sensorValueRefId) {
         try {
-            DeleteBuilder<MetricsOnOffTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().lt(MetricsOnOffTypeDevice.SENSOR_REF_ID, sensorRefId);
-            int count = this.getDao().delete(deleteBuilder.prepare());
-            _logger.debug("Metric-sensorRefId:[{}] deleted, Delete count:{}", sensorRefId, count);
+            DeleteBuilder<MetricsBinaryTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
+            deleteBuilder.where().eq(MetricsBinaryTypeDevice.SENSOR_VALUE_REF_ID, sensorValueRefId);
+            int count = deleteBuilder.delete();
+            _logger.debug("Metric-sensorValueRefId:[{}] deleted, Delete count:{}", sensorValueRefId, count);
         } catch (SQLException ex) {
-            _logger.error("unable to delete metric-sensorRefId:[{}]", sensorRefId, ex);
+            _logger.error("unable to delete metric-sensorValueRefId:[{}]", sensorValueRefId, ex);
         }
     }
 
     @Override
-    public void deletePrevious(MetricsOnOffTypeDevice metric) {
+    public void deletePrevious(MetricsBinaryTypeDevice metric) {
         try {
-            DeleteBuilder<MetricsOnOffTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().lt(MetricsOnOffTypeDevice.TIMESTAMP, metric.getTimestamp());
+            DeleteBuilder<MetricsBinaryTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
+            deleteBuilder.where().lt(MetricsBinaryTypeDevice.TIMESTAMP, metric.getTimestamp());
             int count = this.getDao().delete(deleteBuilder.prepare());
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
@@ -97,7 +99,7 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
     }
 
     @Override
-    public void update(MetricsOnOffTypeDevice metric) {
+    public void update(MetricsBinaryTypeDevice metric) {
         try {
             int count = this.getDao().update(metric);
             _logger.debug("Metric:[{}] updated, Update count:{}", metric, count);
@@ -107,16 +109,18 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
     }
 
     @Override
-    public List<MetricsOnOffTypeDevice> getAll(MetricsOnOffTypeDevice metric) {
+    public List<MetricsBinaryTypeDevice> getAll(MetricsBinaryTypeDevice metric) {
         try {
-            return this.getDao().query(
-                    this.getDao()
-                            .queryBuilder()
-                            .where().eq(MetricsOnOffTypeDevice.SENSOR_REF_ID,
-                                    metric.getSensor().getId())
-                            .and().between(MetricsOnOffTypeDevice.TIMESTAMP,
-                                    metric.getTimestampFrom(), metric.getTimestampTo())
-                            .prepare());
+            QueryBuilder<MetricsBinaryTypeDevice, Object> queryBuilder = this.getDao().queryBuilder();
+            Where<MetricsBinaryTypeDevice, Object> where = queryBuilder.where();
+            where.eq(MetricsBinaryTypeDevice.SENSOR_VALUE_REF_ID, metric.getSensorValue().getId());
+            if (metric.getTimestampFrom() != null) {
+                where.and().ge(MetricsBinaryTypeDevice.TIMESTAMP, metric.getTimestampFrom());
+            }
+            if (metric.getTimestampTo() != null) {
+                where.and().le(MetricsBinaryTypeDevice.TIMESTAMP, metric.getTimestampTo());
+            }
+            return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
         }
@@ -124,27 +128,12 @@ public class MetricsOnOffTypeDeviceDaoImpl extends BaseAbstractDao<MetricsOnOffT
     }
 
     @Override
-    public List<MetricsOnOffTypeDevice> getAllAfter(MetricsOnOffTypeDevice metric) {
-        try {
-            return this.getDao().query(
-                    this.getDao()
-                            .queryBuilder()
-                            .where().eq(MetricsOnOffTypeDevice.SENSOR_REF_ID, metric.getSensor().getId())
-                            .and().ge(MetricsOnOffTypeDevice.TIMESTAMP, metric.getTimestamp())
-                            .prepare());
-        } catch (SQLException ex) {
-            _logger.error("unable to get, metric:{}", metric, ex);
-        }
-        return null;
-    }
-
-    @Override
-    public MetricsOnOffTypeDevice get(MetricsOnOffTypeDevice metric) {
+    public MetricsBinaryTypeDevice get(MetricsBinaryTypeDevice metric) {
         try {
             return this.getDao().queryForFirst(
                     this.getDao().queryBuilder()
-                            .where().eq(MetricsOnOffTypeDevice.SENSOR_REF_ID, metric.getSensor().getId())
-                            .and().eq(MetricsOnOffTypeDevice.TIMESTAMP, metric.getTimestamp()).prepare());
+                            .where().eq(MetricsBinaryTypeDevice.SENSOR_VALUE_REF_ID, metric.getSensorValue().getId())
+                            .and().eq(MetricsBinaryTypeDevice.TIMESTAMP, metric.getTimestamp()).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
         }

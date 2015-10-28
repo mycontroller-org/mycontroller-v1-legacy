@@ -79,7 +79,6 @@ public class TimerDaoImpl extends BaseAbstractDao<Timer, Integer> implements Tim
     public void update(Timer timer) {
         try {
             int count = this.getDao().update(timer);
-            SchedulerUtils.reloadTimerJob(timer);
             _logger.debug("Updated Timer:[{}], Update count:{}", timer, count);
         } catch (SQLException ex) {
             _logger.error("unable to update timer:[{}]", timer, ex);

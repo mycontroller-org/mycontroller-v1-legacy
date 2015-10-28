@@ -15,18 +15,22 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class MetricsOnOffTypeDevice {
-    public static final String SENSOR_REF_ID = "sensor_ref_id";
+@DatabaseTable(tableName = "metrics_binary")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class MetricsBinaryTypeDevice {
+    public static final String SENSOR_VALUE_REF_ID = "sensor_value_ref_id";
     public static final String TIMESTAMP = "timestamp";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID)
-    private Sensor sensor;
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_VALUE_REF_ID)
+    private SensorValue sensorValue;
     @DatabaseField(uniqueCombo = true, canBeNull = false)
     private Long timestamp;
     @DatabaseField(canBeNull = false)
@@ -35,26 +39,30 @@ public class MetricsOnOffTypeDevice {
     private Long timestampFrom;
     private Long timestampTo;
 
-    public MetricsOnOffTypeDevice() {
+    public MetricsBinaryTypeDevice() {
 
     }
 
-    public MetricsOnOffTypeDevice(Sensor sensor, Long timestamp) {
-        this(sensor, timestamp, null);
+    public MetricsBinaryTypeDevice(SensorValue sensorValue) {
+        this(sensorValue, null, null);
     }
 
-    public MetricsOnOffTypeDevice(Sensor sensor, Long timestamp, Boolean state) {
-        this.sensor = sensor;
+    public MetricsBinaryTypeDevice(SensorValue sensorValue, Long timestamp) {
+        this(sensorValue, timestamp, null);
+    }
+
+    public MetricsBinaryTypeDevice(SensorValue sensorValue, Long timestamp, Boolean state) {
+        this.sensorValue = sensorValue;
         this.state = state;
         this.timestamp = timestamp;
     }
 
-    public Sensor getSensor() {
-        return sensor;
+    public SensorValue getSensorValue() {
+        return sensorValue;
     }
 
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
+    public void setSensorValue(SensorValue sensorValue) {
+        this.sensorValue = sensorValue;
     }
 
     public Boolean getState() {

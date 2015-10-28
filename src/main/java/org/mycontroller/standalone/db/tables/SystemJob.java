@@ -17,6 +17,7 @@ package org.mycontroller.standalone.db.tables;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -25,6 +26,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since 0.0.1
  */
 @DatabaseTable(tableName = "system_job")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SystemJob {
     public static final String ENABLED = "enabled";
 

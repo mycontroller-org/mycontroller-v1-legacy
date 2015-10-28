@@ -17,37 +17,23 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
   <div class="modal-body">
    
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.newPayload">Payload:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="sensor.newPayload" placeholder="Payload" ng-model="sensor.newPayload" ng-disabled="enableSlider" required>
-      </div>
+  <form class="form-horizontal form-group-sm" role="form" name="form">
+    
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.newPayload">Type / Payload:</label>
+      <select style="width:200px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
+        ng-model="payloadJson.variableType" required></select>
+      <input style="width:200px" type="text" class="form-control" id="sensor.newPayload" placeholder="Payload" ng-model="payloadJson.payload" ng-disabled="enableSlider" required>
     </div>
-    
-     <div class="form-group">
-      <label class=" control-label col-sm-3 checkbox"><input type="checkbox" ng-model="enableSlider">Slider:</label>
-      <div class="col-sm-6">          
-        <div range-slider min="0" max="sliderMax" model-max="sensor.sliderPayload" pin-handle="min" on-handle-up="sliderReleased()" disabled="!enableSlider"></div>
-      </div>
-    </div>
-    
-    <div class="form-group" ng-show="enableSlider">
-      <label class="control-label col-sm-3" for="sliderMaximum">Slider Maximum:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="sliderMaximum" placeholder="Maximum" ng-init="sliderMax = 100" ng-model="sliderMax" required>
-      </div>
-    </div>   
-    
-        
+      
   </form>
 
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="send()" ng-disabled="form.$invalid"><i class="fa fa-cloud-upload"> Send</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="send()" ng-disabled="form.$invalid"><i class="fa fa-cloud-upload"> Send</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
   </div>
 </div>

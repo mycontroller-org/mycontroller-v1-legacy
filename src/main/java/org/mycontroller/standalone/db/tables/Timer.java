@@ -21,15 +21,21 @@ import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.PayloadSpecialOperation;
 import org.mycontroller.standalone.db.TimerUtils;
 import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@DatabaseTable(tableName = "timer")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Timer {
     public static final String SENSOR_REF_ID = "sensor_ref_id";
+    public static final String SENSOR_VARIABLE_TYPE = "sensor_var_type";
     public static final String ENABLED = "enabled";
 
     @DatabaseField(generatedId = true)
@@ -43,6 +49,9 @@ public class Timer {
 
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID)
     private Sensor sensor;
+
+    @DatabaseField(canBeNull = false, columnName = SENSOR_VARIABLE_TYPE)
+    private Integer sensorVariableType;
 
     @DatabaseField(canBeNull = false)
     private Integer type;
@@ -236,8 +245,24 @@ public class Timer {
         StringBuilder builder = new StringBuilder();
         builder.append("Name:").append(name)
                 .append(", Type:").append(getTimerDataString());
+        builder.append(", Variable Type:").append(this.getSensorVariableTypeString());
         builder.append(", PayLoad:").append(this.getPayloadFormatted());
         builder.append(", Validity:").append(getValidityString());
         return builder.toString();
+    }
+
+    public Integer getSensorVariableType() {
+        return sensorVariableType;
+    }
+
+    public String getSensorVariableTypeString() {
+        if (sensorVariableType != null) {
+            return MESSAGE_TYPE_SET_REQ.get(sensorVariableType).toString();
+        }
+        return "";
+    }
+
+    public void setSensorVariableType(Integer sensorVariableType) {
+        this.sensorVariableType = sensorVariableType;
     }
 }

@@ -17,6 +17,7 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -24,7 +25,8 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "nodes")
+@DatabaseTable(tableName = "node")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Node {
     public static final String FIRMWARE_ID = "firmware_id";
 
@@ -153,7 +155,7 @@ public class Node {
     public void setEraseEEPROM(Boolean eraseEEPROM) {
         this.eraseEEPROM = eraseEEPROM;
     }
-    
+
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Id:").append(this.id);

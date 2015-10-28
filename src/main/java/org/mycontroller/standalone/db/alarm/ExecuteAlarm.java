@@ -15,11 +15,16 @@
  */
 package org.mycontroller.standalone.db.alarm;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.mail.EmailException;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.AlarmUtils;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
@@ -30,11 +35,11 @@ import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_
 import org.mycontroller.standalone.db.SensorLogUtils;
 import org.mycontroller.standalone.db.tables.Alarm;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
-import org.mycontroller.standalone.mysensors.MyMessages;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.mycontroller.standalone.sms.SMSUtils;
 import org.slf4j.Logger;
@@ -48,42 +53,44 @@ public class ExecuteAlarm implements Runnable {
     private static final Logger _logger = LoggerFactory.getLogger(ExecuteAlarm.class);
 
     private List<Alarm> alarms;
+    private SensorValue sensorValue;
 
-    public ExecuteAlarm(List<Alarm> alarms) {
+    public ExecuteAlarm(List<Alarm> alarms, SensorValue sensorValue) {
         this.alarms = alarms;
+        this.sensorValue = sensorValue;
     }
 
     public void runAlarm(Alarm alarm) throws Exception {
         boolean triggerAlarm = false;
-        Sensor sensor = DaoUtils.getSensorDao().get(alarm.getSensor().getId());
+        //Sensor sensor = DaoUtils.getSensorDao().get(alarm.getSensor().getId());
         switch (AlarmUtils.TRIGGER.get(alarm.getTrigger())) {
             case EQUAL:
-                if (sensor.getLastValue().equals(alarm.getThresholdValue())) {
+                if (sensorValue.getLastValue().equals(alarm.getThresholdValue())) {
                     triggerAlarm = true;
                 }
                 break;
             case GREATER_THAN:
-                if (Double.parseDouble(sensor.getLastValue()) > Double.parseDouble(alarm.getThresholdValue())) {
+                if (Double.parseDouble(sensorValue.getLastValue()) > Double.parseDouble(alarm.getThresholdValue())) {
                     triggerAlarm = true;
                 }
                 break;
             case GREATER_THAN_EQUAL:
-                if (Double.parseDouble(sensor.getLastValue()) >= Double.parseDouble(alarm.getThresholdValue())) {
+                if (Double.parseDouble(sensorValue.getLastValue()) >= Double.parseDouble(alarm.getThresholdValue())) {
                     triggerAlarm = true;
                 }
                 break;
             case LESSER_THAN:
-                if (Double.parseDouble(sensor.getLastValue()) < Double.parseDouble(alarm.getThresholdValue())) {
+                if (Double.parseDouble(sensorValue.getLastValue()) < Double.parseDouble(alarm.getThresholdValue())) {
                     triggerAlarm = true;
                 }
                 break;
             case LESSER_THAN_EQUAL:
-                if (Double.parseDouble(sensor.getLastValue()) <= Double.parseDouble(alarm.getThresholdValue())) {
+                if (Double.parseDouble(sensorValue.getLastValue()) <= Double.parseDouble(alarm.getThresholdValue())) {
                     triggerAlarm = true;
                 }
                 break;
             case NOT_EQUAL:
-                if (!sensor.getLastValue().equals(alarm.getThresholdValue())) {
+                if (!sensorValue.getLastValue().equals(alarm.getThresholdValue())) {
                     triggerAlarm = true;
                 }
                 break;
@@ -165,36 +172,36 @@ public class ExecuteAlarm implements Runnable {
     private void alarmSendPayLoad(Alarm alarm) {
         SendPayLoad sendPayLoad = AlarmUtils.getSendPayLoad(alarm);
         Sensor sensor = DaoUtils.getSensorDao().get(sendPayLoad.getSensorRefId());
+        SensorValue sensorValuedestination = null;
+        if (sensor != null) {
+            sensorValuedestination = DaoUtils.getSensorValueDao().get(sensor.getId(), sendPayLoad.getVariableType());
+        }
         PayloadSpecialOperation specialOperation = null;
         _logger.debug("Sesnor: ", sensor);
-        boolean checkPreviosValue = false;
         if (sensor != null) {
-            String modifiedPayLoad = sendPayLoad.getPayLoad();
             specialOperation = new PayloadSpecialOperation(sendPayLoad.getPayLoad());
-            if (specialOperation.getOperationType() == null) {
-                checkPreviosValue = true;
-                switch (MyMessages.getPayLoadType(MESSAGE_TYPE_SET_REQ.get(sensor.getMessageType()))) {
-                    case PL_BOOLEAN:
-                        modifiedPayLoad = sendPayLoad.getPayLoad().trim().equalsIgnoreCase("1") ? "ON" : "OFF";
-                        break;
-                    case PL_DOUBLE:
-                        modifiedPayLoad = String.valueOf(NumericUtils.round(
-                                Double.valueOf(sendPayLoad.getPayLoad()),
-                                NumericUtils.DOUBLE_ROUND));
-                        break;
-                    default:
-                        break;
+            if (specialOperation.getOperationType() != null) {
+                _logger.debug("Special Operation:[{}]", specialOperation);
+                if (sensorValuedestination != null && sensorValuedestination.getLastValue() != null) {
+                    sendPayLoad.setPayLoad(PayloadSpecialOperationUtils.getPayload(
+                            specialOperation, sensorValuedestination.getLastValue()));
+                } else {
+                    _logger.warn("Cannot run Special Operations, there is no reference value on target sensor");
+                    return;
                 }
             } else {
-                _logger.debug("Special Operation:[{}]", specialOperation);
-                sendPayLoad
-                        .setPayLoad(PayloadSpecialOperationUtils.getPayload(specialOperation, sensor.getLastValue()));
+                _logger.debug("Payload to be sent:{}", sendPayLoad.getPayLoad());
+                if (sensorValuedestination != null && sensorValuedestination.getLastValue() != null) {
+                    if (sendPayLoad.getPayLoad().equals(sensorValuedestination.getLastValue())) {
+                        _logger.debug("Already destination with the same payload. Skipped...Destination[{}]",
+                                sendPayLoad);
+                        return;
+                    }
+                }
             }
-            _logger.debug("Original Payload:{}, Modified Payload:{}", sendPayLoad.getPayLoad(), modifiedPayLoad);
-            if (modifiedPayLoad.equals(sensor.getStatus()) && checkPreviosValue) {
-                _logger.debug("Already destination with the same payload. Skipped...Destination[{}]", sendPayLoad);
-                return;
-            }
+        } else {
+            _logger.warn("Target not available!");
+            return;
         }
 
         RawMessage rawMessage;
@@ -214,7 +221,7 @@ public class ExecuteAlarm implements Runnable {
                     sensor.getSensorId(),
                     MESSAGE_TYPE.C_SET.ordinal(), //messageType
                     0, //ack
-                    sensor.getMessageType(),//subType
+                    sendPayLoad.getVariableType(),//subType
                     sendPayLoad.getPayLoad(),
                     true);// isTxMessage
         }
@@ -224,50 +231,90 @@ public class ExecuteAlarm implements Runnable {
     private void alarmSendEmail(Alarm alarm) throws EmailException {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("Alarm: [").append(alarm.getName()).append("] triggered! Node:[")
+        builder.append("Alarm: [").append(alarm.getName()).append("] triggered! Sensor:[")
                 .append(alarm.getSensor().getNameWithNode()).append("]");
         String subject = builder.toString();
 
         builder.setLength(0);
 
         String unit = " ";
-        if (alarm.getSensor().getUnit() != null && alarm.getSensor().getUnit().length() > 0) {
-            unit += alarm.getSensor().getUnit();
+        if (sensorValue.getUnit() != null && sensorValue.getUnit().length() > 0) {
+            unit += sensorValue.getUnit();
         }
 
-        builder.append("Dear User,\nThere is an alarm triggered for you!\n")
-                .append(String.format("\n\t%-30s%-2s", "Alarm Name", ":")).append(alarm.getName())
-                .append(String.format("\n\t%-30s%-2s", "Condition", ":")).append("if {Sensor Value} ")
-                .append(alarm.getTriggerString())
-                .append(" ").append(alarm.getThresholdValue()).append(unit)
-                .append(String.format("\n\t%-30s%-2s", "Sensor", ":")).append(alarm.getSensor().getNameWithNode())
-                .append(String.format("\n\t%-30s%-2s", "Id", ":")).append("Node Id:")
-                .append(alarm.getSensor().getNode().getId())
-                .append(", Sensor Id:")
-                .append(alarm.getSensor().getSensorId())
-                .append(String.format("\n\t%-30s%-2s", "Sensor Present Value", ":"))
-                .append(alarm.getSensor().getLastValue())
-                .append(unit)
-                .append("\n\n\n-- Powered by www.mycontroller.org");
-        EmailUtils.sendSimpleEmail(AlarmUtils.getSendEmail(alarm), subject, builder.toString());
+        builder.append("<table border='0'>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Alarm Name").append("</td>");
+        builder.append("<td>").append(": ").append(alarm.getName()).append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Condition").append("</td>");
+        builder.append("<td>")
+                .append(": if {").append(alarm.getVariableTypeString()).append("} ").append(alarm.getTriggerString())
+                .append(" ").append(alarm.getThresholdValue()).append(unit).append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Dampening").append("</td>");
+        builder.append("<td>")
+                .append(": ").append(alarm.getDampeningString()).append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Sensor").append("</td>");
+        builder.append("<td>")
+                .append(": Name:").append(alarm.getSensor().getNameWithNode()).append(", Id:[Node:")
+                .append(alarm.getSensor().getNode().getId()).append(", Sensor:")
+                .append(alarm.getSensor().getSensorId()).append("]").append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Sensor Value").append("</td>");
+        builder.append("<td>")
+                .append(": ").append(sensorValue.getLastValue()).append(unit).append("</td>");
+        builder.append("<tr>");
+
+        builder.append("<tr>");
+        builder.append("<td>").append("Triggered at").append("</td>");
+        builder.append("<td>")
+                .append(": ").append(new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a z").format(new Date()))
+                .append("</td>");
+        builder.append("<tr>");
+
+        builder.append("</table>");
+
+        String message = null;
+        try {
+            message = new String(Files.readAllBytes(Paths.get(AppProperties.EMAIL_TEMPLATE_ALARM)),
+                    StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            _logger.error("Exception, ", ex);
+            message = ex.getMessage();
+        }
+
+        EmailUtils.sendSimpleEmail(AlarmUtils.getSendEmail(alarm), subject,
+                message.replaceAll(EmailUtils.ALARM_INFO, builder.toString()));
     }
 
     private void alarmSendSMS(Alarm alarm) throws Exception {
         StringBuilder builder = new StringBuilder();
         String unit = "";
-        if (alarm.getSensor().getUnit() != null && alarm.getSensor().getUnit().length() > 0) {
-            unit = " " + alarm.getSensor().getUnit();
+        if (sensorValue.getUnit() != null && sensorValue.getUnit().length() > 0) {
+            unit = " " + sensorValue.getUnit();
         }
         builder.append("Alarm: [")
                 .append(alarm.getName())
                 .append("], Cond: if VAL ")
                 .append(alarm.getTriggerString())
                 .append(" ").append(alarm.getThresholdValue()).append(unit)
-                .append(", Present Value:").append(alarm.getSensor().getLastValue()).append(unit)
+                .append(", Present Value:").append(sensorValue.getLastValue()).append(unit)
                 .append(", Node:[")
                 .append(alarm.getSensor().getNameWithNode())
                 .append("],id[N:").append(alarm.getSensor().getNode().getId()).append(",S:")
-                .append(alarm.getSensor().getSensorId()).append("]")
+                .append(alarm.getSensor().getSensorId())
+                .append(", T:").append(MESSAGE_TYPE_SET_REQ.get(sensorValue.getVariableType()).toString()).append("]")
                 .append("\nwww.mycontroller.org");
         SMSUtils.sendSMS(AlarmUtils.getSendSMS(alarm).getToPhoneNumber(), builder.toString());
     }
@@ -276,7 +323,11 @@ public class ExecuteAlarm implements Runnable {
     public void run() {
         for (Alarm alarm : this.alarms) {
             try {
-                runAlarm(alarm);
+                if (alarm.getEnabled()) {
+                    runAlarm(alarm);
+                } else {
+                    _logger.debug("Alarm[{}] disabled, no action needed.");
+                }
             } catch (Exception ex) {
                 _logger.error("failed to execute alarm:[{}],", alarm, ex);
                 SensorLogUtils.setAlarmLog(alarm, null, ex.getMessage());

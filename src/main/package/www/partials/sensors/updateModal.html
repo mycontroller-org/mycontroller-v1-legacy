@@ -17,52 +17,48 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
+  
   <div class="modal-body">
    
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.node.id">Node Id:</label>
-      <div class="col-sm-6">          
-        <p class="form-control-static">{{sensor.node.id}}</p>
-      </div>
+  <form class="form-horizontal form-group-sm" role="form" name="form">
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.node.id">Node:</label>
+      <p class="form-control-static">Id:{{sensor.node.id}} [{{sensor.node.name}}]</p>
     </div>
     
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="sensor.sensorId">Sensor Id:</label>
-      <div class="col-sm-6">          
-        <p class="form-control-static">{{sensor.sensorId}}</p>
-      </div>
+      <p class="form-control-static">{{sensor.sensorId}}</p>
     </div>
     
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="sensor.name">Sensor Name:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="sensor.name" placeholder="Sensor Name" ng-model="sensor.name" required>
-      </div>
+      <input style="width:320px" type="text" class="form-control" id="sensor.name" placeholder="Sensor Name" ng-model="sensor.name" required>
     </div>
     
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="sensor.type">Sensor Type:</label>
-      <div class="col-sm-6">
-        <select class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes | orderBy:'displayName'" ng-model="sensor.type" required></select>
-      </div>
+      <select style="width:320px" class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes | orderBy:'displayName'" 
+        ng-model="sensor.type" ng-change="sensorVariableTypes = refreshVariableTypes(sensor.type)" required></select>
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.messageType">Variable Type:</label>
-      <div class="col-sm-6">
-        <select class="form-control" ng-options="sensorValueType.id as sensorValueType.displayName for sensorValueType in sensorValueTypes | orderBy:'displayName'" ng-model="sensor.messageType" required></select>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.messageType">Variable Type(s):</label>
+      <div isteven-multi-select input-model="sensorVariableTypes" output-model="variableTypes" button-label="displayName" item-label="displayName" 
+            tick-property="ticked" output-properties="displayName" max-labels="3" search-property="displayName" 
+            on-close="updateVariableTypes()" on-item-click="updateVariableTypes()">
       </div>
     </div>
-    
-    <div><I>Note:</I> Sensor <I> data will be overwritten if sensor sends data mentioned above</div>
+   
   </form>
+  <small><B><I>Warning: </I></B>When you remove variable type(s), related resources will be removed (metrics, etc.,)</small>
+  <br><small><B><I>Note: </I></B>Sensor data will be overwritten if sensor sends data mentioned above</small>
   
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> Update</i> </button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid || variableTypes.length == 0"><i class="fa fa-pencil"> Update</i> </button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
   </div>
 </div>
 

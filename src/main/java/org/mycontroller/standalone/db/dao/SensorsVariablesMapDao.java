@@ -17,20 +17,26 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
-import org.mycontroller.standalone.db.tables.MetricsOnOffTypeDevice;
+import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 0.0.2
  */
-public interface MetricsOnOffTypeDeviceDao {
-    void create(MetricsOnOffTypeDevice metric);
-    void createOrUpdate(MetricsOnOffTypeDevice metric);
-    void delete(MetricsOnOffTypeDevice metric);
-    void deleteBySensorRefId(int sensorRefId);
-    void deletePrevious(MetricsOnOffTypeDevice metric);
-    void update(MetricsOnOffTypeDevice metric);
-    List<MetricsOnOffTypeDevice> getAll(MetricsOnOffTypeDevice metric);
-    List<MetricsOnOffTypeDevice> getAllAfter(MetricsOnOffTypeDevice metric);
-    MetricsOnOffTypeDevice get(MetricsOnOffTypeDevice metric);
+public interface SensorsVariablesMapDao {
+    void create(SensorsVariablesMap sensorsVariablesMap);
+
+    void create(Integer sensorType, Integer variableType);
+
+    void delete(SensorsVariablesMap sensorsVariablesMap);
+
+    void delete(Integer sensorType);
+
+    List<SensorsVariablesMap> getAll(Integer sensorType);
+
+    List<SensorsVariablesMap> getAll();
+
+    SensorsVariablesMap get(SensorsVariablesMap sensorsVariablesMap);
+
+    SensorsVariablesMap get(Integer sensorType, Integer variableType);
 }

@@ -30,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.codec.binary.Hex;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -38,6 +39,8 @@ import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_STREAM;
+import org.mycontroller.standalone.mysensors.structs.FirmwareConfigResponse;
 import org.mycontroller.standalone.mysensors.NodeDiscover;
 import org.mycontroller.standalone.mysensors.RawMessage;
 
@@ -103,6 +106,42 @@ public class NodeHandler {
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST,
                     new ApiError("Selected Node not available! Node:[" + node.toString() + "]"));
+        }
+    }
+
+    @POST
+    @Path("/uploadFirmware")
+    public Response uploadFirmware(Node node) {
+        Node nodeRef = DaoUtils.getNodeDao().get(node.getId());
+        if (nodeRef != null) {
+            if (nodeRef.getFirmware() != null) {
+                FirmwareConfigResponse firmwareConfigResponse = new FirmwareConfigResponse();
+                firmwareConfigResponse.setByteBufferPosition(0);
+
+                firmwareConfigResponse.setType(nodeRef.getFirmware().getType().getId());
+                firmwareConfigResponse.setVersion(nodeRef.getFirmware().getVersion().getId());
+                firmwareConfigResponse.setBlocks(nodeRef.getFirmware().getBlocks());
+                firmwareConfigResponse.setCrc(nodeRef.getFirmware().getCrc());
+
+                RawMessage rawMessage = new RawMessage(
+                        node.getId(),
+                        255,
+                        MESSAGE_TYPE.C_STREAM.ordinal(),
+                        0,
+                        MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.ordinal(),
+                        Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase(),
+                        true);
+                ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
+                return RestUtils.getResponse(Status.OK);
+            } else {
+                return RestUtils.getResponse(Status.BAD_REQUEST,
+                        new ApiError("There is no firmware mapped with this Node:[Id:" + node.getId() + ", Name:"
+                                + node.getName() + "]"));
+            }
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Selected Node not available! Node:[Id:" + node.getId() + ", Name:"
+                            + node.getName() + "]"));
         }
     }
 

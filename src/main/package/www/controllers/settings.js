@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsController', function(alertService,
-$scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestError, about, TypesFactory) {
+$scope, $filter, SettingsFactory, $location, $uibModal, $stateParams, displayRestError, about, TypesFactory) {
   
   $scope.config = {
     itemsPerPage: 100,
@@ -71,7 +71,7 @@ $scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestEr
  
   //Update settings
   $scope.update = function (settings, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/settings/updateModal.html',
     controller: 'SSMupdateController',
     size: size,
@@ -100,7 +100,10 @@ myControllerModule.controller('SSMupdateController', function ($scope, $modalIns
   }else if(settings.key == 'graph_interpolate_type'){
     //GraphInterpolateTypes
     $scope.graphInterpolateTypes = TypesFactory.getGraphInterpolateTypes();
-  } 
+  } else if(settings.key == 'mys_config'){
+    //MySensors Config Types
+    $scope.mysConfigTypes = TypesFactory.getMysConfigTypes();
+  }
   
   $scope.update = function() {$modalInstance.close(settings);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }

@@ -17,51 +17,43 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
-  <div class="modal-body">
-   
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="user.fullName">Full Name:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="user.fullName" placeholder="Full Name" ng-model="user.fullName" required>
+  
+  <div class="modal-body">   
+    <form class="form-horizontal form-group-sm" role="form" name="form">
+      
+      <div class="form-group form-inline">
+        <label class="control-label col-sm-3" for="user.id">Username:</label>
+        <p style="width:320px" class="form-control-static">{{user.name}}</p>
       </div>
-    </div>
-    
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="user.id">User Id:</label>
-      <div class="col-sm-6">          
-        <p class="form-control-static">{{user.id}}</p>
+      
+      <div class="form-group form-inline">
+        <label class="control-label col-sm-3" for="user.fullName">Full Name:</label>
+        <input style="width:320px" type="text" class="form-control" id="user.fullName" placeholder="Full Name" ng-model="user.fullName" required>
       </div>
-    </div>
-    
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="user.password">Password:</label>
-      <div class="col-sm-6">          
-        <input type="password" class="form-control" id="password" placeholder="Password" ng-model="user.password" required>
+      
+      <div class="form-group form-inline">
+        <label class="control-label col-sm-3" for="user.password">Password:</label>
+        <input style="width:320px" type="password" class="form-control" id="password" placeholder="Password" ng-model="user.password" required>
       </div>
-    </div>
-    
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="user.email">Email:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="user.email" placeholder="Email" ng-model="user.email" required>
+      
+      <div class="form-group form-inline">
+        <label class="control-label col-sm-3" for="user.email">Email:</label>
+        <input style="width:320px" type="text" class="form-control" id="user.email" placeholder="Email" ng-model="user.email" required>
       </div>
-    </div>
-    
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="user.role">Role:</label>
-      <div class="col-sm-6">          
-        <p class="form-control-static">{{user.role}}</p>
+      
+      <div class="form-group form-inline">
+        <label class="control-label col-sm-3" for="user.role">Role:</label>
+        <select style="width:158px" class="form-control" ng-options="role for role in roles" placeholder="Select a role" ng-model="user.role" required></select>
       </div>
-    </div>
-   
-  </form>
+     
+    </form>
+  </div>
   
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> Update</i> </button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> Update</i> </button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
   </div>
 </div>
 

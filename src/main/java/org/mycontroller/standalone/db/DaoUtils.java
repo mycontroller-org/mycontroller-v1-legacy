@@ -29,8 +29,8 @@ import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDao;
 import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDaoImpl;
-import org.mycontroller.standalone.db.dao.MetricsOnOffTypeDeviceDao;
-import org.mycontroller.standalone.db.dao.MetricsOnOffTypeDeviceDaoImpl;
+import org.mycontroller.standalone.db.dao.MetricsBinaryTypeDeviceDao;
+import org.mycontroller.standalone.db.dao.MetricsBinaryTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.NodeDao;
 import org.mycontroller.standalone.db.dao.NodeDaoImpl;
 import org.mycontroller.standalone.db.dao.ForwardPayloadDao;
@@ -39,6 +39,10 @@ import org.mycontroller.standalone.db.dao.SensorDao;
 import org.mycontroller.standalone.db.dao.SensorDaoImpl;
 import org.mycontroller.standalone.db.dao.SensorLogDao;
 import org.mycontroller.standalone.db.dao.SensorLogDaoImpl;
+import org.mycontroller.standalone.db.dao.SensorValueDao;
+import org.mycontroller.standalone.db.dao.SensorValueDaoImpl;
+import org.mycontroller.standalone.db.dao.SensorsVariablesMapDao;
+import org.mycontroller.standalone.db.dao.SensorsVariablesMapDaoImpl;
 import org.mycontroller.standalone.db.dao.SettingsDao;
 import org.mycontroller.standalone.db.dao.SettingsDaoImpl;
 import org.mycontroller.standalone.db.dao.SystemJobDao;
@@ -64,9 +68,10 @@ public class DaoUtils {
     private static final Logger _logger = LoggerFactory.getLogger(DaoUtils.class);
     private static NodeDao nodeDao = null;
     private static SensorDao sensorDao = null;
+    private static SensorValueDao sensorValueDao = null;
     private static SettingsDao settingsDao = null;
     private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
-    private static MetricsOnOffTypeDeviceDao metricsOnOffTypeDeviceDao = null;
+    private static MetricsBinaryTypeDeviceDao metricsBinaryTypeDeviceDao = null;
     private static SystemJobDao systemJobDao = null;
     private static UserDao userDao = null;
     private static AlarmDao alarmDao = null;
@@ -78,14 +83,16 @@ public class DaoUtils {
     private static FirmwareVersionDao firmwareVersionDao = null;
     private static FirmwareDao firmwareDao = null;
     private static MetricsBatteryUsageDao metricsBatteryUsageDao = null;
+    private static SensorsVariablesMapDao sensorsVariablesMapDao = null;
 
     public static void loadAllDao() {
         try {
             nodeDao = new NodeDaoImpl(DataBaseUtils.getConnectionSource());
             sensorDao = new SensorDaoImpl(DataBaseUtils.getConnectionSource());
+            sensorValueDao = new SensorValueDaoImpl(DataBaseUtils.getConnectionSource());
             settingsDao = new SettingsDaoImpl(DataBaseUtils.getConnectionSource());
             metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
-            metricsOnOffTypeDeviceDao = new MetricsOnOffTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsBinaryTypeDeviceDao = new MetricsBinaryTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             systemJobDao = new SystemJobDaoImpl(DataBaseUtils.getConnectionSource());
             userDao = new UserDaoImpl(DataBaseUtils.getConnectionSource());
             alarmDao = new AlarmDaoImpl(DataBaseUtils.getConnectionSource());
@@ -97,6 +104,7 @@ public class DaoUtils {
             firmwareVersionDao = new FirmwareVersionDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareDao = new FirmwareDaoImpl(DataBaseUtils.getConnectionSource());
             metricsBatteryUsageDao = new MetricsBatteryUsageDaoImpl(DataBaseUtils.getConnectionSource());
+            sensorsVariablesMapDao = new SensorsVariablesMapDaoImpl(DataBaseUtils.getConnectionSource());
         } catch (SQLException sqlEx) {
             _logger.error("Unable to load Dao,", sqlEx);
         } catch (DbException dbEx) {
@@ -128,8 +136,8 @@ public class DaoUtils {
         return userDao;
     }
 
-    public static MetricsOnOffTypeDeviceDao getMetricsOnOffTypeDeviceDao() {
-        return metricsOnOffTypeDeviceDao;
+    public static MetricsBinaryTypeDeviceDao getMetricsBinaryTypeDeviceDao() {
+        return metricsBinaryTypeDeviceDao;
     }
 
     public static AlarmDao getAlarmDao() {
@@ -166,6 +174,14 @@ public class DaoUtils {
 
     public static MetricsBatteryUsageDao getMetricsBatteryUsageDao() {
         return metricsBatteryUsageDao;
+    }
+
+    public static SensorValueDao getSensorValueDao() {
+        return sensorValueDao;
+    }
+
+    public static SensorsVariablesMapDao getSensorsVariablesMapDao() {
+        return sensorsVariablesMapDao;
     }
 
 }

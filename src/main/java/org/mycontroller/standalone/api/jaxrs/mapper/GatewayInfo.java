@@ -13,35 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs;
+package org.mycontroller.standalone.api.jaxrs.mapper;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import javax.annotation.security.PermitAll;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.mycontroller.standalone.api.jaxrs.mapper.About;
-import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+public class GatewayInfo {
+    private String type;
+    private Map<String, Object> data = new HashMap<String, Object>();
 
-@Path("/rest/about")
-@Produces(APPLICATION_JSON)
-@Consumes(APPLICATION_JSON)
-@PermitAll
-public class AboutHandler {
-    @GET
-    @Path("/")
-    public Response about() {
-        return RestUtils.getResponse(Status.OK, new About());
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Map<String, Object> getData() {
+        return data;
+    }
+
+    public void setData(Map<String, Object> data) {
+        this.data = data;
     }
 
 }

@@ -16,7 +16,7 @@
 
 -->
   <div class="page-header">
-    <h3><b><i class="fa fa-sitemap"></i> Nodes </b><button class="btn btn-xs btn-default" ng-click="discover()" tooltip="Discover Nodes" tooltip-placement="right"><i class="fa fa-search"></i></button></h3>
+    <h3><b><i class="fa fa-sitemap"></i> {{ 'TITLE.NODES' | translate }} </b><button class="btn btn-xs btn-default" ng-click="discover()" uib-tooltip="Discover Nodes" tooltip-placement="right"><i class="fa fa-search"></i></button></h3>
   </div>
 	<div class="panel panel-default">
 	  <!-- Default panel contents --TOP -->
@@ -28,7 +28,7 @@
 				ng-model="query" id="search" placeholder="Search" ng-model="query" 
 				ng-change="updateFilteredList()"/>
 			</div>
-			<a href='' class="text-default pull-right" ng-click="add()" tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
+			<a href='' class="text-default pull-right" ng-click="add()" uib-tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
 		</form>
 	 </div>
 	
@@ -44,18 +44,19 @@
           <td at-implicit at-sortable at-attribute="version"></td>
 					<td at-implicit at-sortable at-attribute="mySensorsVersion" at-title="MySensors Version"></td>
           <td at-sortable at-title="Battery Level (%)">
-            <i ng-hide="item.batteryLevel =='-'" class="fa fa-battery-{{(item.batteryLevel/22) | number:0}}">
+            <i ng-hide="item.batteryLevel =='-'" class="fa fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}">
               {{item.batteryLevel}} %
-              <a ng-click="displayBatteryLevel(item)" tooltip="Graphical Report" href=''><i class="fa fa-line-chart"></i></a>
+              <a ng-click="displayBatteryLevel(item)" uib-tooltip="Graphical Report" href=''><i class="fa fa-line-chart"></i></a>
             </i>
             <label ng-show="item.batteryLevel =='-'">-</label>
           </td>
           <td at-implicit at-sortable at-attribute="firmware.firmwareName" at-title="Firmware"></td>
 					<td class="text-center">
-            <a href='' ng-click="reboot(item)" class="text-default" tooltip="Reboot"><i class="fa fa-lg fa-undo"></i></a>&nbsp;
-            <a href='' ng-click="eraseEeprom(item)" class="text-default" tooltip="Erase EEPROM"><i class="fa fa-lg fa-eraser"></i></a>&nbsp;
-						<a href='' ng-click="update(item)" class="text-default"  tooltip="Edit"><i class="fa fa-lg fa-edit"></i></a>&nbsp;
-						<a href='' ng-click="delete(item)" class="text-danger" tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
+            <a href='' ng-click="reboot(item)" class="text-default" uib-tooltip="Reboot"><i class="fa fa-lg fa-undo"></i></a>&nbsp;
+            <a href='' ng-click="uploadFirmware(item)" class="text-default" uib-tooltip="Upload Firmware"><i class="fa fa-lg fa-upload"></i></a>&nbsp;
+            <a href='' ng-click="eraseEeprom(item)" class="text-default" uib-tooltip="Erase EEPROM"><i class="fa fa-lg fa-eraser"></i></a>&nbsp;
+						<a href='' ng-click="update(item)" class="text-default"  uib-tooltip="Edit"><i class="fa fa-lg fa-edit"></i></a>&nbsp;
+						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
 					</td>
 				</tr>
 			</tbody>

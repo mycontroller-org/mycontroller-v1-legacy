@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorLogController', function(alertService,
-$scope, $filter, SensorLogFactory, $location, $modal, $stateParams, about) {
+$scope, $filter, SensorLogFactory, $location, $uibModal, $stateParams, about) {
   
   $scope.sensor = SensorLogFactory.getSensorData({"id":$stateParams.id},function(response) {
                     },function(error){
@@ -44,7 +44,7 @@ $scope, $filter, SensorLogFactory, $location, $modal, $stateParams, about) {
 });
 
 myControllerModule.controller('LogsController', function(alertService,
-$scope, $filter, SensorLogFactory, $location, $modal, $stateParams, about) {
+$scope, $filter, SensorLogFactory, $location, $uibModal, $stateParams, about) {
       
   $scope.filteredList=[];
   $scope.orgList=[];

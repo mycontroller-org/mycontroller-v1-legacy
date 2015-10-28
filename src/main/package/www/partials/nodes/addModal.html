@@ -15,54 +15,44 @@
     limitations under the License.
 
 -->
-<div>
+<div class="mc-dialog">
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
   <div class="modal-body">
    
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
+  <form class="form-horizontal form-group-sm" role="form" name="form">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="node.id">Node Id:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="node.id" placeholder="Node Id" ng-model="node.id" required>
-      </div>
+      <input style="width:320px" type="text" class="form-control" id="node.id" placeholder="Node Id" ng-model="node.id" required>
     </div>
     
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="node.name">Name:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="node.name" placeholder="Node Name" ng-model="node.name" required>
-      </div>
+      <input style="width:320px" type="text" class="form-control" id="node.name" placeholder="Node Name" ng-model="node.name" required>
     </div>
     
-	<div class="form-group">
+	<div class="form-group form-inline">
       <label class="control-label col-sm-3" for="node.typeString">Node Type:</label>
-      <div class="col-sm-6">
-        <select class="form-control" ng-options="nodeTypes.id as nodeTypes.displayName for nodeTypes in nodeTypes | orderBy:'displayName'" ng-model="node.type" required></select>
-      </div>
+      <select style="width:320px" class="form-control" ng-options="nodeTypes.id as nodeTypes.displayName for nodeTypes in nodeTypes | orderBy:'displayName'" ng-model="node.type" required></select>
     </div>
      
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="node.version">Version:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="node.version" placeholder="Version" ng-model="node.version">
-      </div>
+      <input style="width:320px" type="text" class="form-control" id="node.version" placeholder="Version" ng-model="node.version">
     </div>
     
-    <div class="form-group">
+    <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="node.mySensorsVersion">MySensors Version:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="node.mySensorsVersion" placeholder="MySensors Version" ng-model="node.mySensorsVersion">
-      </div>
+      <input style="width:320px" type="text" class="form-control" id="node.mySensorsVersion" placeholder="MySensors Version" ng-model="node.mySensorsVersion">
     </div>
    
   </form>
-  <div><I>Note:</I> Node <I> data will be overwritten if node sends data mentioned above</div>
+  <small><b><I>Note: </I></b>Node data will be overwritten if node sends data mentioned above<small>
   
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
   </div>
 </div>
 

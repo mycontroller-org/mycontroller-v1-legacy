@@ -13,28 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.mapper;
+package org.mycontroller.standalone.gateway.ethernet;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 0.0.2
  */
-public class IdJson {
-    private String id;
-
-    public IdJson() {
-
-    }
-
-    public IdJson(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+public class EthernetGatewayCommon {
+    public static final String IP = "ip";
+    public static final String PORT = "port";
+    public static final String ALIVE_FREQUENCY = "aliveFrequency";
+    public static final String CONNECTION_STATUS = "connectionStatus";
 }

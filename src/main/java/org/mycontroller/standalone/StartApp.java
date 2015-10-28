@@ -25,7 +25,6 @@ import java.util.Properties;
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.mycontroller.standalone.AppProperties.GATEWAY_TYPES;
-import org.mycontroller.standalone.api.jaxrs.AboutHandler;
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
@@ -44,12 +43,9 @@ import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.db.TimerUtils;
-import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.gateway.ethernet.EthernetGatewayImpl;
 import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
-import org.mycontroller.standalone.gateway.serialport.SerialPortJsscImpl;
-import org.mycontroller.standalone.gateway.serialport.SerialPortPi4jImpl;
-import org.mycontroller.standalone.gateway.serialport.SerialPortjSerialCommImpl;
+import org.mycontroller.standalone.gateway.serialport.MySensorsSerialPort;
 import org.mycontroller.standalone.mysensors.MessageMonitorThread;
 import org.mycontroller.standalone.mysensors.RawMessageQueue;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
@@ -115,7 +111,6 @@ public class StartApp {
         resources.add(UidTagHandler.class.getName());
         resources.add(FirmwareHandler.class.getName());
         resources.add(SettingsHandler.class.getName());
-        resources.add(AboutHandler.class.getName());
 
         //Add PreFlight handler
         //resources.add(OptionsHandler.class.getName());
@@ -139,24 +134,24 @@ public class StartApp {
 
     private static void startHTTPWebServer() {
         //Check HTTPS enabled?
-        if (ObjectFactory.getAppProperties().isHttpsEnabled()) {
+        if (ObjectFactory.getAppProperties().isWebHttpsEnabled()) {
             // Set up SSL connections on server
-            server.setSSLPort(ObjectFactory.getAppProperties().getHttpPort());
-            server.setSSLKeyStoreFile(ObjectFactory.getAppProperties().getSslKeystoreFile());
-            server.setSSLKeyStorePass(ObjectFactory.getAppProperties().getSslKeystorePassword());
-            server.setSSLKeyStoreType(ObjectFactory.getAppProperties().getSslKeystoreType());
+            server.setSSLPort(ObjectFactory.getAppProperties().getWebHttpPort());
+            server.setSSLKeyStoreFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile());
+            server.setSSLKeyStorePass(ObjectFactory.getAppProperties().getWebSslKeystorePassword());
+            server.setSSLKeyStoreType(ObjectFactory.getAppProperties().getWebSslKeystoreType());
         } else {
             //Set http communication port
-            server.setPort(ObjectFactory.getAppProperties().getHttpPort());
+            server.setPort(ObjectFactory.getAppProperties().getWebHttpPort());
         }
 
-        if (ObjectFactory.getAppProperties().getBindAddress() != null) {
-            server.setBindAddress(ObjectFactory.getAppProperties().getBindAddress());
+        if (ObjectFactory.getAppProperties().getWebBindAddress() != null) {
+            server.setBindAddress(ObjectFactory.getAppProperties().getWebBindAddress());
         }
 
         //Deploy RestEasy with TJWS
         server.setDeployment(getResteasyDeployment());
-        server.addFileMapping("/", new File(ObjectFactory.getAppProperties().getWwwFileLocation()));
+        server.addFileMapping("/", new File(ObjectFactory.getAppProperties().getWebFileLocation()));
 
         //Enable Authentication
         server.setSecurityDomain(new BasicAthenticationSecurityDomain());
@@ -167,8 +162,8 @@ public class StartApp {
 
         server.start();
         _logger.info("TJWS server started successfully, HTTPS Enabled?:{}, HTTP(S) Port: [{}]",
-                ObjectFactory.getAppProperties().isHttpsEnabled(),
-                ObjectFactory.getAppProperties().getHttpPort());
+                ObjectFactory.getAppProperties().isWebHttpsEnabled(),
+                ObjectFactory.getAppProperties().getWebHttpPort());
         _logger.info("MyController.org server started in [{}] ms", System.currentTimeMillis() - start);
     }
 
@@ -198,40 +193,17 @@ public class StartApp {
 
         _logger.debug("MySensors Gateway Type:{}", ObjectFactory.getAppProperties().getGatewayType());
         //Start communication with MySensors gateway
-        if (ObjectFactory.getAppProperties().getGatewayType().equalsIgnoreCase(GATEWAY_TYPES.SERIAL.toString())) {
-            // - Start Serial port
-            String serialPortDriver = ObjectFactory.getAppProperties().getSerialPortDriver();
-            if (ObjectFactory.getAppProperties().getSerialPortDriver()
-                    .equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.AUTO.toString())) {
-                if (AppProperties.getOsArch().startsWith("arm")) {
-                    serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.PI4J.toString();
-                } else {
-                    serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString();
-                }
-            }
-            //Open Serial Port
-            if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSSC.toString())) {
-                IMySensorsGateway serialGateway = new SerialPortJsscImpl();
-                ObjectFactory.setMySensorsGateway(serialGateway);
-            } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.PI4J.toString())) {
-                IMySensorsGateway serialGateway = new SerialPortPi4jImpl();
-                ObjectFactory.setMySensorsGateway(serialGateway);
-            } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString())) {
-                IMySensorsGateway serialGateway = new SerialPortjSerialCommImpl();
-                ObjectFactory.setMySensorsGateway(serialGateway);
-            } else {
-                _logger.warn("Driver[{}] not supported yet...",
-                        ObjectFactory.getAppProperties().getSerialPortDriver());
-                return false;
-            }
+        if (ObjectFactory.getAppProperties().getGatewayType()
+                .equalsIgnoreCase(GATEWAY_TYPES.SERIAL.toString())) {
+            ObjectFactory.setMySensorsGateway(new MySensorsSerialPort());
+
         } else if (ObjectFactory.getAppProperties().getGatewayType()
                 .equalsIgnoreCase(GATEWAY_TYPES.ETHERNET.toString())) {
-            IMySensorsGateway ethernetGateway = new EthernetGatewayImpl();
-            ObjectFactory.setMySensorsGateway(ethernetGateway);
+            ObjectFactory.setMySensorsGateway(new EthernetGatewayImpl());
+
         } else if (ObjectFactory.getAppProperties().getGatewayType()
                 .equalsIgnoreCase(GATEWAY_TYPES.MQTT.toString())) {
-            IMySensorsGateway mqttGateway = new MqttGatewayImpl();
-            ObjectFactory.setMySensorsGateway(mqttGateway);
+            ObjectFactory.setMySensorsGateway(new MqttGatewayImpl());
         }
 
         // - Load starting values

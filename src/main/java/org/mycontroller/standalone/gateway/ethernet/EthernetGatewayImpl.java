@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.gateway.ethernet;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
 import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.gateway.MySensorsGatewayException;
 import org.mycontroller.standalone.mysensors.RawMessage;
@@ -41,6 +42,14 @@ public class EthernetGatewayImpl implements IMySensorsGateway {
     @Override
     public synchronized void write(RawMessage rawMessage) throws MySensorsGatewayException {
         monitoringThread.write(rawMessage);
+    }
+
+    @Override
+    public GatewayInfo getGatewayInfo() {
+        if (monitoringThread != null) {
+            return monitoringThread.getGatewayInfo();
+        }
+        return null;
     }
 
 }

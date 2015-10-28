@@ -21,18 +21,18 @@ package org.mycontroller.standalone.db;
  */
 public class TIME_REF {
     public static final long ONE_SECOND = 1000;
-    public static final long ONE_MINUTE = ONE_SECOND * 60; // 1 minute
-    public static final long FIVE_MINUTES = ONE_MINUTE * 5; // 5 minute
+    public static final long ONE_MINUTE = ONE_SECOND * 60;   // 1 minute
+    public static final long FIVE_MINUTES = ONE_MINUTE * 5;  // 5 minute
     public static final long THREE_MINUTES = ONE_MINUTE * 3; // 5 minute    
-    public static final long ONE_HOUR = ONE_MINUTE * 60; // 1 hour
-    public static final long ONE_DAY = ONE_HOUR * 24; // 1 day
-    public static final long ONE_YEAR = ONE_DAY * 365; // 1 year
+    public static final long ONE_HOUR = ONE_MINUTE * 60;     // 1 hour
+    public static final long ONE_DAY = ONE_HOUR * 24;        // 1 day
+    public static final long ONE_YEAR = ONE_DAY * 365;       // 1 year
 
-    public static final long RAW_DATA_MAX_RETAIN_TIME = ONE_SECOND * 10; // 10 seconds
-    public static final long ONE_MINUTE_MAX_RETAIN_TIME = ONE_HOUR; // 60 minutes
-    public static final long FIVE_MINUTES_MAX_RETAIN_TIME = ONE_DAY; // 30 days
-    public static final long ONE_HOUR_MAX_RETAIN_TIME = ONE_DAY * 30; // 30 days
-    
+    public static final long RAW_DATA_MAX_RETAIN_TIME = ONE_HOUR;       // 60 minutes
+    public static final long ONE_MINUTE_MAX_RETAIN_TIME = ONE_HOUR * 6; // 6 Hours
+    public static final long FIVE_MINUTES_MAX_RETAIN_TIME = ONE_DAY;    // 24 hours
+    public static final long ONE_HOUR_MAX_RETAIN_TIME = ONE_DAY * 30;   // 30 days
+
     public static final long MILLISECONDS_2015 = 1420050600000l;
 
     public static final String DAY_FORMAT_YYYYMMDD = "yyyyMMdd";

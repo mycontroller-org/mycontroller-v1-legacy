@@ -22,6 +22,7 @@ import org.mycontroller.standalone.db.PayloadSpecialOperationUtils;
 import org.mycontroller.standalone.db.SensorLogUtils;
 import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.RawMessage;
@@ -47,7 +48,16 @@ public class TimerJob extends Job {
 
         PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(timer.getPayload());
         if (specialOperation.getOperationType() != null) {
-            payload = PayloadSpecialOperationUtils.getPayload(specialOperation, sensor.getLastValue());
+            SensorValue sensorValue = DaoUtils.getSensorValueDao().get(timer.getSensor().getId(),
+                    timer.getSensorVariableType());
+            if (specialOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.REBOOT) {
+                //Nothing to do
+            } else if (sensorValue != null && sensorValue.getLastValue() != null) {
+                payload = PayloadSpecialOperationUtils.getPayload(specialOperation, sensorValue.getLastValue());
+            } else {
+                _logger.warn("Unable to run special oprtaion, there is no reference value, Timer:[{}]", timer);
+                return;
+            }
         } else {
             payload = timer.getPayload();
         }
@@ -69,7 +79,7 @@ public class TimerJob extends Job {
                     sensor.getSensorId(),
                     MESSAGE_TYPE.C_SET.ordinal(), //messageType
                     0, //ack
-                    sensor.getMessageType(),//subType
+                    timer.getSensorVariableType(),//subType
                     payload,
                     true);// isTxMessage
         }
