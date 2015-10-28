@@ -23,49 +23,49 @@
 <div class="continer left">
   
   <div class="page-header">
-    <h4><i class="icon-shell" style="font-size:1.5em"></i> Operating System:</h4>
+    <h4><i class="icon-shell" style="font-size:1.5em"></i> {{ 'SYSTEM_STATUS.OPERATING_SYSTEM' | translate }}:</h4>
   </div>
   <table class="table table-hover table-bordered table-striped">
 		<tbody>
-      <tr><td class="col-md-2">Operating System</td><td>{{osStatus.name}}</td></tr>
-      <tr><td class="col-md-2">Architecture</td><td>{{osStatus.arch}}</td></tr>
-      <tr><td class="col-md-2">Version/Kernel</td><td>{{osStatus.version}}</td></tr>
-      <tr><td class="col-md-2">Available Process</td><td>{{osStatus.availableProcess}}</td></tr>
-      <tr><td class="col-md-2">System Load Average</td><td>{{osStatus.systemLoadAverage}}</td></tr>
-      <tr><td class="col-md-2">System Cpu Load</td><td>{{osStatus.systemCpuLoad}}</td></tr>
-      <tr><td class="col-md-2">Process Cpu</td><td>Load: {{osStatus.processCpuLoad}}, Time: {{osStatus.processCpuTime}}</td></tr>
-      <tr><td class="col-md-2">Physical Memory (RAM)</td>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.OPERATING_SYSTEM' | translate }}</td><td>{{osStatus.name}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.ARCHITECTURE' | translate }}</td><td>{{osStatus.arch}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.VERSION_KERNEL' | translate }}</td><td>{{osStatus.version}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.AVAILABLE_PROCESS' | translate }}</td><td>{{osStatus.availableProcess}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.SYSTEM_LOAD_AVERAGE' | translate }}</td><td>{{osStatus.systemLoadAverage}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.SYSTEM_CPU_LOAD' | translate }}</td><td>{{osStatus.systemCpuLoad}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.PROCESS_CPU' | translate }}</td><td>Load: {{osStatus.processCpuLoad}}, Time: {{osStatus.processCpuTime}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.PHYSICAL_MEMORY' | translate }}</td>
           <td>
             Free: {{osStatus.freePhysicalMemorySize | byteToMBsizeConvertor}}, 
             Total: {{osStatus.totalPhysicalMemorySize | byteToMBsizeConvertor}}
           </td>
       </tr>
-      <tr><td class="col-md-2">Swap Space</td>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.SWAP_SPACE' | translate }}</td>
           <td>
             Free: {{osStatus.freeSwapSpaceSize | byteToMBsizeConvertor}}, 
             Total: {{osStatus.totalSwapSpaceSize | byteToMBsizeConvertor}}
           </td>
       </tr>
-      <tr><td class="col-md-2">Committed Virtual Memory Size</td><td>{{osStatus.committedVirtualMemorySize | byteToMBsizeConvertor}}</td></tr>
-      <tr><td class="col-md-2">User working directory</td><td>{{osStatus.userWorkingDir}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.COMMITTED_VIRTUAL_MEMORY_SIZE' | translate }}</td><td>{{osStatus.committedVirtualMemorySize | byteToMBsizeConvertor}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.USER_WORKING_DIRECTORY' | translate }}</td><td>{{osStatus.userWorkingDir}}</td></tr>
 		</tbody>
 	</table>    
   
   <div class="page-header">
-    <h4><i class="icon-java" style="font-size:2em"></i> Java Virtual Machine Specification:</h4>
+    <h4><i class="icon-java" style="font-size:2em"></i> {{ 'SYSTEM_STATUS.JAVA_JAVA_VIRTUAL_MACHINE_SPECIFICATION' | translate }}:</h4>
   </div>
   <table class="table table-hover table-bordered table-striped">
 		<tbody>
-      <tr><td class="col-md-2">Java Home</td><td>{{osStatus.javaHome}}</td></tr>
-      <tr><td class="col-md-2">Java Vendor Url</td><td>{{osStatus.javaVendorUrl}}</td></tr>
-      <tr><td class="col-md-2">VM Name</td><td>{{jvmStatus.jvmInfo.vmName}}</td></tr>
-      <tr><td class="col-md-2">VM Vendor</td><td>{{jvmStatus.jvmInfo.vmVendor}}</td></tr>
-      <tr><td class="col-md-2">VM Version</td><td>{{jvmStatus.jvmInfo.vmVersion}}</td></tr>
-      <tr><td class="col-md-2">Specification Vendor</td><td>{{jvmStatus.jvmInfo.specVendor}}</td></tr>
-      <tr><td class="col-md-2">Specification Version</td><td>{{jvmStatus.jvmInfo.specVersion}}</td></tr>
-      <tr><td class="col-md-2">Management Specification Version</td><td>{{jvmStatus.jvmInfo.managementSpecVersion}}</td></tr>
-      <tr><td class="col-md-2">Up Time</td><td>{{jvmStatus.jvmInfo.uptime | millSecondsToTimeString}}</td></tr>
-      <tr><td class="col-md-2">Heap Memory</td>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.JAVA_HOME' | translate }}</td><td>{{osStatus.javaHome}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.JAVA_VENDOR_URL' | translate }}</td><td>{{osStatus.javaVendorUrl}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.VM_NAME' | translate }}</td><td>{{jvmStatus.jvmInfo.vmName}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.VM_VENDOR' | translate }}</td><td>{{jvmStatus.jvmInfo.vmVendor}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.VM_VERSION' | translate }}</td><td>{{jvmStatus.jvmInfo.vmVersion}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.SPECIFICATION_VENDOR' | translate }}</td><td>{{jvmStatus.jvmInfo.specVendor}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.SPECIFICATION_VERSION' | translate }}</td><td>{{jvmStatus.jvmInfo.specVersion}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.MANAGEMENT_SPECIFICATION_VERSION' | translate }}</td><td>{{jvmStatus.jvmInfo.managementSpecVersion}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.UP_TIME' | translate }}</td><td>{{jvmStatus.jvmInfo.uptime | millSecondsToTimeString}}</td></tr>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.HEAP_MEMORY' | translate }}</td>
           <td>
             Used: {{jvmStatus.memory.heapMemoryUsage.used | byteToMBsizeConvertor}}, 
             Committed: {{jvmStatus.memory.heapMemoryUsage.committed | byteToMBsizeConvertor}}, 
@@ -73,7 +73,7 @@
             Max: {{jvmStatus.memory.heapMemoryUsage.max | byteToMBsizeConvertor}}
           </td>
       </tr>
-      <tr><td class="col-md-2">Non Heap Memory</td>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.NON_HEAP_MEMORY' | translate }}</td>
           <td>
             Used: {{jvmStatus.memory.nonHeapMemoryUsage.used | byteToMBsizeConvertor}}, 
             Committed: {{jvmStatus.memory.nonHeapMemoryUsage.committed | byteToMBsizeConvertor}}, 
@@ -81,7 +81,7 @@
             Max: {{jvmStatus.memory.nonHeapMemoryUsage.max | byteToMBsizeConvertor}}
           </td>
       </tr>
-      <tr><td class="col-md-2">Threads Count</td>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.THREADS_COUNT' | translate }}</td>
           <td>
             Current: {{jvmStatus.thread.threadCount}}, 
             Peak: {{jvmStatus.thread.peakThreadCount}}, 
@@ -89,14 +89,14 @@
             Daemon: {{jvmStatus.thread.daemonThreadCount}}
           </td>
       </tr>
-      <tr><td class="col-md-2">Class Loading Details</td>
+      <tr><td class="col-md-2">{{ 'SYSTEM_STATUS.CLASS_LOADING_DETAILS' | translate }}</td>
           <td>
             Loaded: {{jvmStatus.classLoadingDetail.loadedClassCount}}, 
             Unloaded: {{jvmStatus.classLoadingDetail.unloadedClassCount}}, 
             Total loaded: {{jvmStatus.classLoadingDetail.totalLoadedClassCount}}
           </td>
       </tr>
-      <tr ng-repeat="garbageCollector in jvmStatus.garbageCollectors"><td class="col-md-2">Garbage Collector - {{garbageCollector.name}}</td>
+      <tr ng-repeat="garbageCollector in jvmStatus.garbageCollectors"><td class="col-md-2">{{ 'SYSTEM_STATUS.GARBAGE_COLLECTOR' | translate }} - {{garbageCollector.name}}</td>
           <td>
             Collection time: {{garbageCollector.collectionTime}}, 
             Collection count: {{garbageCollector.collectionCount}}, 
