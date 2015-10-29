@@ -24,45 +24,45 @@
   <form class="form-horizontal form-group-sm" role="form" name="form">
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="node.id">Node Id:</label>
+      <label class="control-label col-sm-3" for="node.id">{{ 'NODE.NODE_ID' | translate }}:</label>
       <p style="width:320px" class="form-control-static">{{node.id}}</p>
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="node.name">Name:</label>
+      <label class="control-label col-sm-3" for="node.name">{{ 'SYSTEM.NAME' | translate }}:</label>
       <input style="width:320px" type="text" class="form-control" id="node.name" placeholder="Node Name" ng-model="node.name" required>
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="node.typeString">Node Type:</label>
+      <label class="control-label col-sm-3" for="node.typeString">{{ 'NODE.NODE_TYPE' | translate }}:</label>
       <select style="width:320px" class="form-control" ng-options="nodeTypes.id as nodeTypes.displayName for nodeTypes in nodeTypes | orderBy:'displayName'" ng-model="node.type" required></select>
     </div>
      
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="node.version">Version:</label>
+      <label class="control-label col-sm-3" for="node.version">{{ 'NODE.VERSION' | translate }}:</label>
       <input style="width:320px" type="text" class="form-control" id="node.version" placeholder="Version" ng-model="node.version">
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="node.mySensorsVersion">MySensors Version:</label>
+      <label class="control-label col-sm-3" for="node.mySensorsVersion">{{ 'NODE.MY_SENSORS_VERSION' | translate }}:</label>
       <input style="width:320px" type="text" class="form-control" id="node.mySensorsVersion" placeholder="MySensors Version" ng-model="node.mySensorsVersion">
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" >Firmware:</label>
+      <label class="control-label col-sm-3" >{{ 'NODE.FIRMWARE' | translate }}:</label>
       <select style="width:320px" class="form-control" ng-options="firmware.id as firmware.firmwareName for firmware in firmwares" ng-model="node.firmware.id">
         <option value="">-- Choose Firmware --</option>
       </select>
     </div>
    
   </form>
-  <small><b><I>Note: </I></b>Node data will be overwritten if node sends data mentioned above<small>
+  <small>{{ 'NODE.NODE_NOTE' | translate }} <small>
    
   </form>
   
   <div class="modal-footer">
-    <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> Update</i> </button>
-    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> {{ 'SYSTEM.UPDATE' | translate }}</i> </button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
 </div>
 

@@ -24,28 +24,28 @@
    
   <form class="form-horizontal form-group-sm" role="form" name="form">
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="sensor.node.id">Node:</label>
+      <label class="control-label col-sm-3" for="sensor.node.id">{{ 'NODE.NODE' | translate }}:</label>
       <p class="form-control-static">Id:{{sensor.node.id}} [{{sensor.node.name}}]</p>
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="sensor.sensorId">Sensor Id:</label>
+      <label class="control-label col-sm-3" for="sensor.sensorId">{{ 'NODE.SENSOR_ID' | translate }}:</label>
       <p class="form-control-static">{{sensor.sensorId}}</p>
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="sensor.name">Sensor Name:</label>
+      <label class="control-label col-sm-3" for="sensor.name">{{ 'NODE.SENSOR_NAME' | translate }}:</label>
       <input style="width:320px" type="text" class="form-control" id="sensor.name" placeholder="Sensor Name" ng-model="sensor.name" required>
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="sensor.type">Sensor Type:</label>
+      <label class="control-label col-sm-3" for="sensor.type">{{ 'NODE.SENSOR_TYPE' | translate }}:</label>
       <select style="width:320px" class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes | orderBy:'displayName'" 
         ng-model="sensor.type" ng-change="sensorVariableTypes = refreshVariableTypes(sensor.type)" required></select>
     </div>
     
     <div class="form-group form-inline">
-      <label class="control-label col-sm-3" for="sensor.messageType">Variable Type(s):</label>
+      <label class="control-label col-sm-3" for="sensor.messageType">{{ 'NODE.VARIABLE_TYPE' | translate }}:</label>
       <div isteven-multi-select input-model="sensorVariableTypes" output-model="variableTypes" button-label="displayName" item-label="displayName" 
             tick-property="ticked" output-properties="displayName" max-labels="3" search-property="displayName" 
             on-close="updateVariableTypes()" on-item-click="updateVariableTypes()">
@@ -53,12 +53,12 @@
     </div>
    
   </form>
-  <small><B><I>Warning: </I></B>When you remove variable type(s), related resources will be removed (metrics, etc.,)</small>
-  <br><small><B><I>Note: </I></B>Sensor data will be overwritten if sensor sends data mentioned above</small>
+  <small>{{ 'NODE.WARNING' | translate }}</small>
+  <br><small>{{ 'NODE.SENSORS_NOTE' | translate }} </small>
   
   <div class="modal-footer">
-    <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid || variableTypes.length == 0"><i class="fa fa-pencil"> Update</i> </button>
-    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid || variableTypes.length == 0"><i class="fa fa-pencil"> {{ 'SYSTEM.UPDATE' | translate }}</i> </button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
 </div>
 
