@@ -132,7 +132,7 @@
   "NODE.SENSOR_TYPE" : "Sensor Type",
   "NODE.VARIABLE_TYPE" : "Variable Type(s)",		  
   "NODE.SENSORS_NOTE" : "<B><I>Note: </I></B>Sensor data will be overwritten if sensor sends data mentioned above",
-  "NODE.WARNING" : "<B><I>Warning: </I></B>When you remove variable type(s), related resources will be removed (metrics, etc.,)",
+  "NODE.SENSORS_WARNING" : "<B><I>Warning: </I></B>When you remove variable type(s), related resources will be removed (metrics, etc.,)",
 
   "RAW.MESSAGE" : "Message",
 

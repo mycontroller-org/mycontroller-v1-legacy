@@ -121,6 +121,4 @@
     </div>  
   </div>
   
-  <div ng-hide="variableType.id" class="well" style="text-align:center;">
-    {{ 'CHART.VARIABLE_TYPE_TEXT' | translate }}
-  </div>  
+  <div ng-hide="variableType.id" class="well" style="text-align:center;" ng-bind-html="'CHART.VARIABLE_TYPE_TEXT' | translate"></div>  
