@@ -92,7 +92,8 @@
   "USERS.ROLE" : "Role",  
   
   "LOGIN.LOGIN" : "Log in",
-  "LOGIN.USERNAME_IS_REQUIRED" : "Username is required",  
+  "LOGIN.USERNAME_IS_REQUIRED" : "Username is required", 
+  "LOGIN.PASSWORD_IS_REQUIRED" : "Password is required",
 
   "ALARM.TRIGGER_WHEN_VALUE" : "Trigger When Value", 
   "ALARM.IGNORE_DUPLICATE" : "Ignore Duplicate",   
