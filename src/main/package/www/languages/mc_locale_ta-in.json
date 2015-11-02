@@ -111,6 +111,7 @@
   "FIRMWARE.TYPE_ID" : "Type Id", 
   "FIRMWARE.TYPE_NAME" : "Type Name",   
   "FIRMWARE.VERSION_ID" : "Version Id", 
+  "FIRMWARE.UPLOAD_FIRMWARE" : "Upload Firmware",   
  
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Destination Node", 
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Destination Sensor",   
@@ -122,6 +123,7 @@
 
   "NODE.NODE_ID" : "Node Id",
   "NODE.NODE_TYPE" : "Node Type",
+  "NODE.NAME" : "Node Name",    
   "NODE.VERSION" : "Version",
   "NODE.MY_SENSORS_VERSION" : "MySensors Version",
   "NODE.FIRMWARE" : "Firmware",
@@ -134,9 +136,23 @@
   "NODE.VARIABLE_TYPE" : "Variable Type(s)",		  
   "NODE.SENSORS_NOTE" : "<B><I>Note: </I></B>Sensor data will be overwritten if sensor sends data mentioned above",
   "NODE.SENSORS_WARNING" : "<B><I>Warning: </I></B>When you remove variable type(s), related resources will be removed (metrics, etc.,)",
-
+  "NODE.BATTERY_LEVEL" : "Battery Level (%)",
+  "NODE.GRAPHICAL_REPORT" : "Graphical Report",
+  
+  "SENSORS.SENSOR" : "Sensor",
+  "SENSORS.TYPE" : "Type",  
+  "SENSORS.SENSOR_TYPE" : "Sensor Type",
+  "SENSORS.VARIABLES" : "Variables",  
+  
   "RAW.MESSAGE" : "Message",
-
+  "RAW.PAYLOAD" : "Payload",
+  "RAW.MESSAGE_TYPE_ID" : "Message Type Id",
+  "RAW.ACK" : "ack",
+  "RAW.SUB_TYPE" : "Sub Type",
+  
+  "UID.UNIQUE_IDENTIFICATION_NUMBER" : "Unique Identification Number", 
+  "UID.UNIQUE_IDENTIFICATION_TAG" : "Unique Identification Tag for each sensor",  
+  
   "SENSORS_ACTIONS.NEVER_REFRESH" : "Never Refresh",
   "SENSORS_ACTIONS.5S" : "5 Seconds Once",
   "SENSORS_ACTIONS.15S" : "15 Seconds Once",
@@ -144,7 +160,8 @@
   "SENSORS_ACTIONS.1M" : "1 Minute Once",		  
   "SENSORS_ACTIONS.5M" : "5 Minutes Once",
   "SENSORS_ACTIONS.10M" : "10 Minutes Once",
-
+  "SENSORS_ACTIONS.FIND_SENSOR" : "Find Sensor",
+  
   "SETTINGS.CHOOSE_FIRMWARE" : "Choose Firmware",
   "SETTINGS.INTERPOLATE_TYPES" : "Interpolate Types",
   "SETTINGS.CONFIG_TYPE" : "Config Type",
@@ -174,6 +191,7 @@
   "SYSTEM.REBOOT" : "Reboot",
   "SYSTEM.SEND" : "Send",
   "SYSTEM.VALUE" : "Value", 
+  "SYSTEM.EDIT" : "Edit",  
   
   "CHART.SELECT_VARIABLE_TYPE" : "Select Variable Type", 
   "CHART.GRAPHICAL_REPORT" : "Graphical Report",   

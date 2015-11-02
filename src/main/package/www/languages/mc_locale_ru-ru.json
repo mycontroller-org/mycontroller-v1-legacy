@@ -111,6 +111,7 @@
   "FIRMWARE.TYPE_ID" : "Id Типа", 
   "FIRMWARE.TYPE_NAME" : "Имя Типа",   
   "FIRMWARE.VERSION_ID" : "Id Версии", 
+  "FIRMWARE.UPLOAD_FIRMWARE" : "Загрузить Прошивку",   
 
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Узел назначения", 
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Датчик назначения",   
@@ -122,6 +123,7 @@
 
   "NODE.NODE_ID" : "Id Узла",
   "NODE.NODE_TYPE" : "Тип Узла",
+  "NODE.NAME" : "Имя Узла",    
   "NODE.VERSION" : "Версия",
   "NODE.MY_SENSORS_VERSION" : "Версия MySensors",
   "NODE.FIRMWARE" : "Прошивка",
@@ -134,9 +136,23 @@
   "NODE.VARIABLE_TYPE" : "Тип Переменной",		  
   "NODE.SENSORS_NOTE" : "<b><I>Примечание: </I></b>Данные датчиков будут перезаписаны, если датчик посылает данные, упомянутые выше",
   "NODE.SENSORS_WARNING" : "<B><I>Предупреждение: </I></B>При удалении переменной, связанные ресурсы будут удалены (метрики, и т.д.)",
-
+  "NODE.BATTERY_LEVEL" : "Заряд батареи (%)",
+  "NODE.GRAPHICAL_REPORT" : "Графический отчет",
+  
+  "SENSORS.SENSOR" : "Сенсор",
+  "SENSORS.TYPE" : "Тип",    
+  "SENSORS.SENSOR_TYPE" : "Тип Сенсора",
+  "SENSORS.VARIABLES" : "Переменные",  
+  
   "RAW.MESSAGE" : "Сообщение",
-
+  "RAW.PAYLOAD" : "Значение",
+  "RAW.MESSAGE_TYPE_ID" : "Id Типа Сообщения",
+  "RAW.ACK" : "ack",
+  "RAW.SUB_TYPE" : "Под Тип",
+  
+  "UID.UNIQUE_IDENTIFICATION_NUMBER" : "Уникальный идентификационный номер",
+  "UID.UNIQUE_IDENTIFICATION_TAG" : "Уникальный идентификатор для каждого датчика",  
+  
   "SENSORS_ACTIONS.NEVER_REFRESH" : "Никогда не Обновлять",
   "SENSORS_ACTIONS.5S" : "Каждые 5 секунд",
   "SENSORS_ACTIONS.15S" : "Каждые 15 секунд",
@@ -144,7 +160,8 @@
   "SENSORS_ACTIONS.1M" : "Каждую 1 минуту",		  
   "SENSORS_ACTIONS.5M" : "Каждые 5 минут",
   "SENSORS_ACTIONS.10M" : "Каждые 10 минут",
-
+  "SENSORS_ACTIONS.FIND_SENSOR" : "Поиск Сенсора",
+  
   "SETTINGS.CHOOSE_FIRMWARE" : "Выбирите Прошивку",
   "SETTINGS.INTERPOLATE_TYPES" : "Interpolate Types",
   "SETTINGS.CONFIG_TYPE" : "Тип Конфигурации",
@@ -167,7 +184,7 @@
   "SYSTEM.ADD" : "Добавить",
   "SYSTEM.CANCEL" : "Отмена",
   "SYSTEM.UPDATE" : "Обновить",
-  "SYSTEM.DELETE" : "Delete", 
+  "SYSTEM.DELETE" : "Удалить", 
   "SYSTEM.SEARCH" : "Поиск", 
   "SYSTEM.NAME" : "Имя",   
   "SYSTEM.DISCOVER" : "Обнаружить", 
@@ -175,6 +192,7 @@
   "SYSTEM.REBOOT" : "Перезагрузка",
   "SYSTEM.SEND" : "Отправить",
   "SYSTEM.VALUE" : "Значение", 
+  "SYSTEM.EDIT" : "Редактировать",  
   
   "CHART.SELECT_VARIABLE_TYPE" : "Выберите тип переменной", 
   "CHART.GRAPHICAL_REPORT" : "Графический Отчет",   

@@ -32,17 +32,17 @@
         <option value="1">ack</option>
       </select>
       <select style="width:158px" class="form-control" ng-options="messageSubType.id as messageSubType.displayName for messageSubType in messageSubTypes" ng-model="rawMessage.subType" required></select>
-      <input style="width:158px" type="text" class="form-control" placeholder="Payload" ng-model="rawMessage.payload">
+      <input style="width:158px" type="text" class="form-control" placeholder="{{ 'RAW.PAYLOAD' | translate }}" ng-model="rawMessage.payload">
     </div>    
     
     <div class="form-group form-inline">
       <label class="control-label col-sm-1" for="alarm.trigger">{{ 'RAW.MESSAGE' | translate }}:</label>
-      <input style="width:158px" type="text" class="form-control" placeholder="Node Id" ng-model="rawMessage.nodeId" required>
-      <input style="width:158px" type="text" class="form-control" placeholder="Sensor Id" ng-model="rawMessage.childSensorId" required>
-      <input style="width:158px" type="text" class="form-control" placeholder="Message Type Id" ng-model="rawMessage.messageType" required>
-      <input style="width:85px" type="text" class="form-control" placeholder="ack" ng-model="rawMessage.ack" required>
-      <input style="width:158px" type="text" class="form-control" placeholder="Sub Type" ng-model="rawMessage.subType" required>
-      <input style="width:158px" type="text" class="form-control" placeholder="Payload" ng-model="rawMessage.payload">
+      <input style="width:158px" type="text" class="form-control" placeholder="{{ 'NODE.NODE_ID' | translate }}" ng-model="rawMessage.nodeId" required>
+      <input style="width:158px" type="text" class="form-control" placeholder="{{ 'NODE.SENSOR_ID' | translate }}" ng-model="rawMessage.childSensorId" required>
+      <input style="width:158px" type="text" class="form-control" placeholder="{{ 'RAW.MESSAGE_TYPE_ID' | translate }}" ng-model="rawMessage.messageType" required>
+      <input style="width:85px" type="text" class="form-control" placeholder="{{ 'RAW.ACK' | translate }}" ng-model="rawMessage.ack" required>
+      <input style="width:158px" type="text" class="form-control" placeholder="{{ 'RAW.SUB_TYPE' | translate }}" ng-model="rawMessage.subType" required>
+      <input style="width:158px" type="text" class="form-control" placeholder="{{ 'RAW.PAYLOAD' | translate }}" ng-model="rawMessage.payload">
       <button class="btn btn-primary btn-sm" ng-click="sendRawMessage()" ng-disabled="form.$invalid"><i class="fa fa-cloud-upload"> {{ 'SYSTEM.SEND' | translate }}</i></button>
     </div>  
 

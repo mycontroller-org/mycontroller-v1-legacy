@@ -111,6 +111,7 @@
   "FIRMWARE.TYPE_ID" : "Typ Id", 
   "FIRMWARE.TYPE_NAME" : "Typ Name",   
   "FIRMWARE.VERSION_ID" : "Version Id",   
+  "FIRMWARE.UPLOAD_FIRMWARE" : "Upload Firmware",   
 
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Ziel Knoten", 
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Ziel Sensor",   
@@ -122,6 +123,7 @@
 
   "NODE.NODE_ID" : "Knoten Id",
   "NODE.NODE_TYPE" : "Konten Typ",
+  "NODE.NAME" : "Node Name",    
   "NODE.VERSION" : "Version",
   "NODE.MY_SENSORS_VERSION" : "MySensors Version",
   "NODE.FIRMWARE" : "Firmware",
@@ -134,9 +136,23 @@
   "NODE.VARIABLE_TYPE" : "Variable Type(n)",		  
   "NODE.SENSORS_NOTE" : "<B><I>Hinweis: </I></B>Sensordaten werden überschrieben, wenn der Sensor oben genannten Daten sendet",
   "NODE.SENSORS_WARNING" : "<B><I>Warnung: </I></B>Wenn Sie einen Variable Type(n) löschen, werden verwandte Ressourcen entfernt (Metriken usw.)",
-
+  "NODE.BATTERY_LEVEL" : "Battery Level (%)",
+  "NODE.GRAPHICAL_REPORT" : "Graphical Report",
+  
+  "SENSORS.SENSOR" : "Sensor",
+  "SENSORS.TYPE" : "Type",  
+  "SENSORS.SENSOR_TYPE" : "Sensor Type",
+  "SENSORS.VARIABLES" : "Variables",  
+  
   "RAW.MESSAGE" : "Nachricht",
+  "RAW.PAYLOAD" : "Payload",
+  "RAW.MESSAGE_TYPE_ID" : "Message Type Id",
+  "RAW.ACK" : "ack",
+  "RAW.SUB_TYPE" : "Sub Type",
 
+  "UID.UNIQUE_IDENTIFICATION_NUMBER" : "Unique Identification Number", 
+  "UID.UNIQUE_IDENTIFICATION_TAG" : "Unique Identification Tag for each sensor",
+  
   "SENSORS_ACTIONS.NEVER_REFRESH" : "Kein Refresh",
   "SENSORS_ACTIONS.5S" : "Alle 5 Sekunden",
   "SENSORS_ACTIONS.15S" : "Alle 15 Sekunden",
@@ -144,7 +160,8 @@
   "SENSORS_ACTIONS.1M" : "Jede Minute",		  
   "SENSORS_ACTIONS.5M" : "Alle 5 Minuten",
   "SENSORS_ACTIONS.10M" : "Alle 10 Minuten",
-
+  "SENSORS_ACTIONS.FIND_SENSOR" : "Find Sensor",
+  
   "SETTINGS.CHOOSE_FIRMWARE" : "Wähle Firmware",
   "SETTINGS.INTERPOLATE_TYPES" : ">Interpolierter Typ",
   "SETTINGS.CONFIG_TYPE" : "Configuration Typ",
@@ -174,6 +191,7 @@
   "SYSTEM.REBOOT" : "Reboot",
   "SYSTEM.SEND" : "Senden",
   "SYSTEM.VALUE" : "Wert", 
+  "SYSTEM.EDIT" : "Edit",  
   
   "CHART.SELECT_VARIABLE_TYPE" : "Variable Typ auswählen", 
   "CHART.GRAPHICAL_REPORT" : "Graphischer Bericht",   
