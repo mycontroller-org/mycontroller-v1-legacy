@@ -92,7 +92,8 @@
   "USERS.ROLE" : "Роль",  
   
   "LOGIN.LOGIN" : "Авторизоваться",
-  "LOGIN.USERNAME_IS_REQUIRED" : "Требуется имя пользователя",  
+  "LOGIN.USERNAME_IS_REQUIRED" : "Требуется имя пользователя",
+  "LOGIN.PASSWORD_IS_REQUIRED" : "Password is required",
   
   "ALARM.TRIGGER_WHEN_VALUE" : "Запускать При Значении", 
   "ALARM.IGNORE_DUPLICATE" : "Игнорировать Дубликаты",   
