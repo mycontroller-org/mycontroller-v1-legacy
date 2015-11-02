@@ -94,7 +94,9 @@
   "LOGIN.LOGIN" : "Einloggen",
   "LOGIN.USERNAME_IS_REQUIRED" : "Benutzername wird benötigt",
   "LOGIN.PASSWORD_IS_REQUIRED" : "Passwort wird benötigt",
-  
+
+  "ALARM.NAME" : "Alarm Name",
+  "ALARM.TRESHOLD" : "Threshold",  
   "ALARM.TRIGGER_WHEN_VALUE" : "Auslösen bei Wert", 
   "ALARM.IGNORE_DUPLICATE" : "Ignoriere Duplikate",   
   "ALARM.DAMPENING" : "Dampening", 
@@ -104,7 +106,12 @@
   "ALARM.NODE" : "Knoten / Sensor", 
   "ALARM.TYPE" : "Typ / Nutzdaten",   
   "ALARM.ALARM" : "Alarm", 
-
+  "ALARM.EMAIL_NOTE" : "Email(s) comma seperated values", 
+  "ALARM.PHONE_NUMBER_NOTE" : "Phone number(s) comma seperated",   
+  "ALARM.CONDITION" : "Condition", 
+  "ALARM.NOTIFICATION" : "Notification", 
+  "ALARM.LAST_TRIGGER" : "Last Trigger", 
+  
   "FIRMWARE.TYPE" : "Typ", 
   "FIRMWARE.VERSION" : "Version",   
   "FIRMWARE.HEX_FILE" : "Hex Datei", 
@@ -112,7 +119,8 @@
   "FIRMWARE.TYPE_NAME" : "Typ Name",   
   "FIRMWARE.VERSION_ID" : "Version Id",   
   "FIRMWARE.UPLOAD_FIRMWARE" : "Upload Firmware",   
-
+  "FIREWARE.AUTO_GENERATE" : "Auto Generate",
+  
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Ziel Knoten", 
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Ziel Sensor",   
   "FORWARD_PAYLOAD.SOURCE_VARIABLE" : "Quellvariable", 
@@ -180,6 +188,8 @@
   "TIMER.TIME" : "Zeit (HH:mm:ss)",
   "TIMER.VALIDATION_FROM" : "Gülig von",
   "TIMER.VALIDATION_TO" : "Gültig bis",  
+  "TIMER.NAME" : "Timer Name",  
+  "TIMER.VALIDITY" : "Validity",
   
   "SYSTEM.ADD" : "Hinzufügen",
   "SYSTEM.CANCEL" : "Abbrechen",
@@ -192,10 +202,15 @@
   "SYSTEM.SEND" : "Senden",
   "SYSTEM.VALUE" : "Wert", 
   "SYSTEM.EDIT" : "Edit",  
+  "SYSTEM.ENABLED" : "Enabled",
   
   "CHART.SELECT_VARIABLE_TYPE" : "Variable Typ auswählen", 
   "CHART.GRAPHICAL_REPORT" : "Graphischer Bericht",   
   "CHART.VARIABLE_TYPE_TEXT" : "Suchen Sie den <B>Variable Typ</B> oben rechts in der Ecke aus,um den graphischen Bericht zu laden...",   
+  
+  "LOG.TIME" : "Time",
+  "LOG.TYPE" : "Type",
+  "LOG.LOG" : "Log",  
   
   "DASHBOARD.TITLE" : "Anzeigetafel",
   "DASHBOARD.WELCOME_MSG" : "Herzlich Willkommen zu {{mcWebsite}} Wir fangen an größer zu werden {{mcWebsite}}. Die Anzeigetafel ist in der Entwicklung. Inzwischen kannst du andere Funktionen benutzen :)"

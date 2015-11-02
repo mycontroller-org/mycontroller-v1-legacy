@@ -26,7 +26,7 @@
 			<div class="form-group">
 				<label class="sr-only" for="search">{{ 'SYSTEM.SEARCH' | translate }}</label>
 				<input type="text" class="form-control ng-pristine ng-valid input-sm ng-valid" 
-				ng-model="query" id="search" placeholder="Search" ng-model="query" 
+				ng-model="query" id="search" placeholder="{{ 'SYSTEM.SEARCH' | translate }}" ng-model="query" 
 				ng-change="updateFilteredList()"/>
 			</div>
 		</form>
@@ -38,10 +38,10 @@
 			<thead></thead>
 			<tbody>
 	      <tr>
-          <td at-attribute="timestamp" width="165px" at-sortable at-initial-sorting="desc" at-title="Time">{{item.timestamp | date:'medium':about.timezone}}</td>
-          <td at-implicit at-sortable at-attribute="logTypeString" at-title="Type"></td>
-					<td at-implicit at-sortable at-attribute="status" at-title="Status"></td>
-          <td at-implicit at-sortable at-attribute="log" at-title="Log"></td>
+          <td at-attribute="timestamp" width="165px" at-sortable at-initial-sorting="desc" at-title="{{ 'LOG.TIME' | translate }}">{{item.timestamp | date:'medium':about.timezone}}</td>
+          <td at-implicit at-sortable at-attribute="logTypeString" at-title="{{ 'LOG.TYPE' | translate }}"></td>
+					<td at-implicit at-sortable at-attribute="status" at-title="{{ 'MENU.STATUS' | translate }}"></td>
+          <td at-implicit at-sortable at-attribute="log" at-title="{{ 'LOG.LOG' | translate }}"></td>
 				</tr>
 			</tbody>
 		</table>

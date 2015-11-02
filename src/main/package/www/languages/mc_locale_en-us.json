@@ -95,6 +95,8 @@
   "LOGIN.USERNAME_IS_REQUIRED" : "Username is required", 
   "LOGIN.PASSWORD_IS_REQUIRED" : "Password is required",
 
+  "ALARM.NAME" : "Alarm Name",
+  "ALARM.TRESHOLD" : "Threshold",
   "ALARM.TRIGGER_WHEN_VALUE" : "Trigger When Value", 
   "ALARM.IGNORE_DUPLICATE" : "Ignore Duplicate",   
   "ALARM.DAMPENING" : "Dampening", 
@@ -104,6 +106,11 @@
   "ALARM.NODE" : "Node / Sensor", 
   "ALARM.TYPE" : "Type / Payload",   
   "ALARM.ALARM" : "Alarm", 
+  "ALARM.EMAIL_NOTE" : "Email(s) comma seperated values", 
+  "ALARM.PHONE_NUMBER_NOTE" : "Phone number(s) comma seperated", 
+  "ALARM.CONDITION" : "Condition", 
+  "ALARM.NOTIFICATION" : "Notification", 
+  "ALARM.LAST_TRIGGER" : "Last Trigger", 
 
   "FIRMWARE.TYPE" : "Type", 
   "FIRMWARE.VERSION" : "Version",   
@@ -111,7 +118,8 @@
   "FIRMWARE.TYPE_ID" : "Type Id", 
   "FIRMWARE.TYPE_NAME" : "Type Name",   
   "FIRMWARE.VERSION_ID" : "Version Id", 
-  "FIRMWARE.UPLOAD_FIRMWARE" : "Upload Firmware",  
+  "FIRMWARE.UPLOAD_FIRMWARE" : "Upload Firmware", 
+  "FIREWARE.AUTO_GENERATE" : "Auto Generate",
 
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Destination Node", 
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Destination Sensor",   
@@ -179,7 +187,9 @@
   "TIMER.CRON_EXPRESSION" : "Cron Expression",		  
   "TIMER.TIME" : "Time (HH:mm:ss)",
   "TIMER.VALIDATION_FROM" : "Validity From",
-  "TIMER.VALIDATION_TO" : "Validity To",  
+  "TIMER.VALIDATION_TO" : "Validity To", 
+  "TIMER.NAME" : "Timer Name", 
+  "TIMER.VALIDITY" : "Validity",
   
   "SYSTEM.ADD" : "Add",
   "SYSTEM.CANCEL" : "Cancel",
@@ -193,10 +203,15 @@
   "SYSTEM.SEND" : "Send",
   "SYSTEM.VALUE" : "Value",  
   "SYSTEM.EDIT" : "Edit",
+  "SYSTEM.ENABLED" : "Enabled",  
   
   "CHART.SELECT_VARIABLE_TYPE" : "Select Variable Type", 
   "CHART.GRAPHICAL_REPORT" : "Graphical Report",   
   "CHART.VARIABLE_TYPE_TEXT" : "Select <B>Variable Type</B> on top side right corner to load Graphical Report...",   
+
+  "LOG.TIME" : "Time",
+  "LOG.TYPE" : "Type",
+  "LOG.LOG" : "Log",
   
   "DASHBOARD.TITLE" : "Dashboard",
   "DASHBOARD.WELCOME_MSG" : "Welcome to {{mcWebsite}} Just started growing {{mcWebsite}}. Dashboard is under development. Meanwhile you can try other features :)"

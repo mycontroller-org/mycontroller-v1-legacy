@@ -94,7 +94,9 @@
   "LOGIN.LOGIN" : "Авторизоваться",
   "LOGIN.USERNAME_IS_REQUIRED" : "Требуется имя пользователя",
   "LOGIN.PASSWORD_IS_REQUIRED" : "Требуется пароль",
-  
+
+  "ALARM.NAME" : "Имя Аварийной сигнализации",
+  "ALARM.TRESHOLD" : "Порог",  
   "ALARM.TRIGGER_WHEN_VALUE" : "Запускать При Значении", 
   "ALARM.IGNORE_DUPLICATE" : "Игнорировать Дубликаты",   
   "ALARM.DAMPENING" : "Dampening", 
@@ -103,8 +105,13 @@
   "ALARM.PHONE_NUMBER" : "Телефонный Номер", 
   "ALARM.NODE" : "Узел / Сенсор", 
   "ALARM.TYPE" : "Тип / Сообщение",   
-  "ALARM.ALARM" : "Аварийная Сигнализация",  
-
+  "ALARM.ALARM" : "Аварийная Сигнализация", 
+  "ALARM.EMAIL_NOTE" : "Почтовые ящики разделенные запятой", 
+  "ALARM.PHONE_NUMBER_NOTE" : "Телефоны разделеные запятой",   
+  "ALARM.CONDITION" : "Состояние", 
+  "ALARM.NOTIFICATION" : "Уведомление", 
+  "ALARM.LAST_TRIGGER" : "Последнее срабатывание", 
+  
   "FIRMWARE.TYPE" : "Тип", 
   "FIRMWARE.VERSION" : "Версия",   
   "FIRMWARE.HEX_FILE" : "Hex Файл", 
@@ -112,7 +119,8 @@
   "FIRMWARE.TYPE_NAME" : "Имя Типа",   
   "FIRMWARE.VERSION_ID" : "Id Версии", 
   "FIRMWARE.UPLOAD_FIRMWARE" : "Загрузить Прошивку",   
-
+  "FIREWARE.AUTO_GENERATE" : "Автогенерация",
+  
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Узел назначения", 
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Датчик назначения",   
   "FORWARD_PAYLOAD.SOURCE_VARIABLE" : "Исходная Переменная", 
@@ -180,6 +188,8 @@
   "TIMER.TIME" : "Время (HH:mm:ss)",
   "TIMER.VALIDATION_FROM" : "Выполнять От",
   "TIMER.VALIDATION_TO" : "Выполнять До",  
+  "TIMER.NAME" : "Имя таймера",  
+  "TIMER.VALIDITY" : "Время действия",
   
   "SYSTEM.ADD" : "Добавить",
   "SYSTEM.CANCEL" : "Отмена",
@@ -193,6 +203,11 @@
   "SYSTEM.SEND" : "Отправить",
   "SYSTEM.VALUE" : "Значение", 
   "SYSTEM.EDIT" : "Редактировать",  
+  "SYSTEM.ENABLED" : "Включен",
+
+  "LOG.TIME" : "Время",
+  "LOG.TYPE" : "Тип",
+  "LOG.LOG" : "Лог",
   
   "CHART.SELECT_VARIABLE_TYPE" : "Выберите тип переменной", 
   "CHART.GRAPHICAL_REPORT" : "Графический Отчет",   
