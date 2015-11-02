@@ -31,7 +31,7 @@
         <label for="password">{{ 'USERS.PASSWORD' | translate }}</label>
         <i class="fa fa-key"></i>
         <input type="password" name="password" id="password" class="form-control" ng-model="password" required />
-        <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">{{ 'LOGIN.USERNAME_IS_REQUIRED' | translate }}</span>
+        <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">{{ 'LOGIN.PASSWORD_IS_REQUIRED' | translate }}</span>
     </div>
     <div class="form-actions">
         <button type="submit" ng-disabled="form.$invalid || dataLoading" class="btn btn-primary"><i class="fa fa-sign-in"> {{ 'LOGIN.LOGIN' | translate }}</i></button>
