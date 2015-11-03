@@ -53,7 +53,7 @@
 	        <td at-implicit at-sortable at-attribute="name" at-title="{{ 'SYSTEM.NAME' | translate }}"></td>
 					<td at-implicit at-sortable at-attribute="typeString" at-title="{{ 'LOG.TYPE' | translate }}"></td>
           <td at-implicit at-sortable at-attribute="variableTypes" at-title="{{ 'NODE.VARIABLE_TYPE' | translate }}"></td>
-          <td at-sortable at-title="Last Seen">{{item.updateTime | date:'medium':about.timezone}}</td>
+          <td at-sortable at-title="{{ 'SENSORS_ACTIONS.LAST_SEEN' | translate }}">{{item.updateTime | date:'medium':about.timezone}}</td>
 					<td class="text-center">
 						<a href='' ng-click="update(item)" class="text-default"  uib-tooltip="{{ 'SYSTEM.EDIT' | translate }}">
 						<i class="fa fa-lg fa-edit"></i></a>&nbsp;

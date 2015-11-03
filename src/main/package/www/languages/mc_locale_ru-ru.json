@@ -230,7 +230,7 @@
   "LOG.LOG" : "Лог",
   
   "CHART.SELECT_VARIABLE_TYPE" : "Выберите тип переменной", 
-  "CHART.GRAPHICAL_REPORT" : "Графический Отчет",   
+  "CHART.GRAPHICAL_REPORT" : "График",   
   "CHART.VARIABLE_TYPE_TEXT" : "Выбрать <B>Тип Переменной</B> в верхнеи правом углу, чтобы загрузить графический отчет ...",   
   
   "DASHBOARD.TITLE" : "Приборная панель",
