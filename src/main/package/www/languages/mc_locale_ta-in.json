@@ -146,6 +146,7 @@
   "NODE.SENSORS_WARNING" : "<B><I>Warning: </I></B>When you remove variable type(s), related resources will be removed (metrics, etc.,)",
   "NODE.BATTERY_LEVEL" : "Battery Level (%)",
   "NODE.GRAPHICAL_REPORT" : "Graphical Report",
+  "NODE.DISCOVER_NODES" : "Discover Nodes", 
   
   "SENSORS.SENSOR" : "Sensor",
   "SENSORS.TYPE" : "Type",  

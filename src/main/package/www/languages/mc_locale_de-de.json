@@ -146,6 +146,7 @@
   "NODE.SENSORS_WARNING" : "<B><I>Warnung: </I></B>Wenn Sie einen Variable Type(n) löschen, werden verwandte Ressourcen entfernt (Metriken usw.)",
   "NODE.BATTERY_LEVEL" : "Battery Level (%)",
   "NODE.GRAPHICAL_REPORT" : "Graphical Report",
+  "NODE.DISCOVER_NODES" : "Discover Nodes", 
   
   "SENSORS.SENSOR" : "Sensor",
   "SENSORS.TYPE" : "Type",  
