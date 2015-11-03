@@ -94,7 +94,9 @@
   "LOGIN.LOGIN" : "Авторизоваться",
   "LOGIN.USERNAME_IS_REQUIRED" : "Требуется имя пользователя",
   "LOGIN.PASSWORD_IS_REQUIRED" : "Требуется пароль",
-  
+
+  "ALARM.NAME" : "Имя Аварийной сигнализации",
+  "ALARM.TRESHOLD" : "Порог",  
   "ALARM.TRIGGER_WHEN_VALUE" : "Запускать При Значении", 
   "ALARM.IGNORE_DUPLICATE" : "Игнорировать Дубликаты",   
   "ALARM.DAMPENING" : "Dampening", 
@@ -103,15 +105,22 @@
   "ALARM.PHONE_NUMBER" : "Телефонный Номер", 
   "ALARM.NODE" : "Узел / Сенсор", 
   "ALARM.TYPE" : "Тип / Сообщение",   
-  "ALARM.ALARM" : "Аварийная Сигнализация",  
-
+  "ALARM.ALARM" : "Аварийная Сигнализация", 
+  "ALARM.EMAIL_NOTE" : "Почтовые ящики разделенные запятой", 
+  "ALARM.PHONE_NUMBER_NOTE" : "Телефоны разделеные запятой",   
+  "ALARM.CONDITION" : "Состояние", 
+  "ALARM.NOTIFICATION" : "Уведомление", 
+  "ALARM.LAST_TRIGGER" : "Последнее срабатывание", 
+  
   "FIRMWARE.TYPE" : "Тип", 
   "FIRMWARE.VERSION" : "Версия",   
   "FIRMWARE.HEX_FILE" : "Hex Файл", 
   "FIRMWARE.TYPE_ID" : "Id Типа", 
   "FIRMWARE.TYPE_NAME" : "Имя Типа",   
   "FIRMWARE.VERSION_ID" : "Id Версии", 
-
+  "FIRMWARE.UPLOAD_FIRMWARE" : "Загрузить Прошивку",   
+  "FIREWARE.AUTO_GENERATE" : "Автогенерация",
+  
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Узел назначения", 
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Датчик назначения",   
   "FORWARD_PAYLOAD.SOURCE_VARIABLE" : "Исходная Переменная", 
@@ -122,6 +131,7 @@
 
   "NODE.NODE_ID" : "Id Узла",
   "NODE.NODE_TYPE" : "Тип Узла",
+  "NODE.NAME" : "Имя Узла",    
   "NODE.VERSION" : "Версия",
   "NODE.MY_SENSORS_VERSION" : "Версия MySensors",
   "NODE.FIRMWARE" : "Прошивка",
@@ -134,9 +144,23 @@
   "NODE.VARIABLE_TYPE" : "Тип Переменной",		  
   "NODE.SENSORS_NOTE" : "<b><I>Примечание: </I></b>Данные датчиков будут перезаписаны, если датчик посылает данные, упомянутые выше",
   "NODE.SENSORS_WARNING" : "<B><I>Предупреждение: </I></B>При удалении переменной, связанные ресурсы будут удалены (метрики, и т.д.)",
-
+  "NODE.BATTERY_LEVEL" : "Заряд батареи (%)",
+  "NODE.GRAPHICAL_REPORT" : "Графический отчет",
+  
+  "SENSORS.SENSOR" : "Сенсор",
+  "SENSORS.TYPE" : "Тип",    
+  "SENSORS.SENSOR_TYPE" : "Тип Сенсора",
+  "SENSORS.VARIABLES" : "Переменные",  
+  
   "RAW.MESSAGE" : "Сообщение",
-
+  "RAW.PAYLOAD" : "Значение",
+  "RAW.MESSAGE_TYPE_ID" : "Id Типа Сообщения",
+  "RAW.ACK" : "ack",
+  "RAW.SUB_TYPE" : "Под Тип",
+  
+  "UID.UNIQUE_IDENTIFICATION_NUMBER" : "Уникальный идентификационный номер",
+  "UID.UNIQUE_IDENTIFICATION_TAG" : "Уникальный идентификатор для каждого датчика",  
+  
   "SENSORS_ACTIONS.NEVER_REFRESH" : "Никогда не Обновлять",
   "SENSORS_ACTIONS.5S" : "Каждые 5 секунд",
   "SENSORS_ACTIONS.15S" : "Каждые 15 секунд",
@@ -144,7 +168,28 @@
   "SENSORS_ACTIONS.1M" : "Каждую 1 минуту",		  
   "SENSORS_ACTIONS.5M" : "Каждые 5 минут",
   "SENSORS_ACTIONS.10M" : "Каждые 10 минут",
-
+  "SENSORS_ACTIONS.FIND_SENSOR" : "Поиск Сенсора",
+  "SENSORS_ACTIONS.REFRESH" : "Обновить",
+  "SENSORS_ACTIONS.LAST_SEEN" : "Последний раз",
+  "SENSORS_ACTIONS.ON" : "Вкл",
+  "SENSORS_ACTIONS.OFF" : "Выкл",  
+  "SENSORS_ACTIONS.LOCK" : "Закрыто",  
+  "SENSORS_ACTIONS.UNLOCK" : "Открыто",  
+  "SENSORS_ACTIONS.BYPASS" : "Обход",  
+  "SENSORS_ACTIONS.ARM" : "Arm",  
+  "SENSORS_ACTIONS.UNTRIP" : "Untrip",  
+  "SENSORS_ACTIONS.TRIP" : "Trip",  
+  "SENSORS_ACTIONS.UP" : "Вверх",  
+  "SENSORS_ACTIONS.DOWN" : "Вниз",  
+  "SENSORS_ACTIONS.STOP" : "Стоп",  
+  "SENSORS_ACTIONS.DECREASE" : "Уменьшать",  
+  "SENSORS_ACTIONS.INCREASE" : "Увеличивать",  
+  "SENSORS_ACTIONS.RGB" : "RGB",  
+  "SENSORS_ACTIONS.RGBA" : "RGBA",   
+  "SENSORS_ACTIONS.SEND_PEYLOAD" : "ОТправить Пакет",  
+  "SENSORS_ACTIONS.TIMER" : "Таймер",  
+  "SENSORS_ACTIONS.LOGS" : "Логи",  
+  
   "SETTINGS.CHOOSE_FIRMWARE" : "Выбирите Прошивку",
   "SETTINGS.INTERPOLATE_TYPES" : "Interpolate Types",
   "SETTINGS.CONFIG_TYPE" : "Тип Конфигурации",
@@ -163,11 +208,13 @@
   "TIMER.TIME" : "Время (HH:mm:ss)",
   "TIMER.VALIDATION_FROM" : "Выполнять От",
   "TIMER.VALIDATION_TO" : "Выполнять До",  
+  "TIMER.NAME" : "Имя таймера",  
+  "TIMER.VALIDITY" : "Время действия",
   
   "SYSTEM.ADD" : "Добавить",
   "SYSTEM.CANCEL" : "Отмена",
   "SYSTEM.UPDATE" : "Обновить",
-  "SYSTEM.DELETE" : "Delete", 
+  "SYSTEM.DELETE" : "Удалить", 
   "SYSTEM.SEARCH" : "Поиск", 
   "SYSTEM.NAME" : "Имя",   
   "SYSTEM.DISCOVER" : "Обнаружить", 
@@ -175,6 +222,12 @@
   "SYSTEM.REBOOT" : "Перезагрузка",
   "SYSTEM.SEND" : "Отправить",
   "SYSTEM.VALUE" : "Значение", 
+  "SYSTEM.EDIT" : "Редактировать",  
+  "SYSTEM.ENABLED" : "Включен",
+
+  "LOG.TIME" : "Время",
+  "LOG.TYPE" : "Тип",
+  "LOG.LOG" : "Лог",
   
   "CHART.SELECT_VARIABLE_TYPE" : "Выберите тип переменной", 
   "CHART.GRAPHICAL_REPORT" : "Графический Отчет",   

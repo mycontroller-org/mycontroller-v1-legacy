@@ -26,7 +26,7 @@
 			<div class="form-group">
 				<label class="sr-only" for="search">{{ 'SYSTEM.SEARCH' | translate }}</label>
 				<input type="text" class="form-control ng-pristine ng-valid input-sm ng-valid" 
-				ng-model="query" id="search" placeholder="Search" ng-model="query" 
+				ng-model="query" id="search" placeholder="{{ 'SYSTEM.SEARCH' | translate }}" ng-model="query" 
 				ng-change="updateFilteredList()"/>
 			</div>
 		</form>
@@ -38,10 +38,10 @@
 			<thead></thead>
 			<tbody>
 	      <tr>
-          <td at-implicit at-sortable at-attribute="key" at-title="Sensor Type"></td>
-          <td at-implicit at-sortable at-attribute="value" at-title="Variables"></td>
+          <td at-implicit at-sortable at-attribute="key" at-title="{{ 'SENSORS.SENSOR_TYPE' | translate }}"></td>
+          <td at-implicit at-sortable at-attribute="value" at-title="{{ 'SENSORS.VARIABLES' | translate }}"></td>
 					<td class="text-center">
-						<a href='' ng-click="edit(item)" class="text-default"  uib-tooltip="Edit"><i class="fa fa-lg fa-edit"></i></a>
+						<a href='' ng-click="edit(item)" class="text-default"  uib-tooltip="{{ 'SYSTEM.EDIT' | translate }}"><i class="fa fa-lg fa-edit"></i></a>
 					</td>
 				</tr>
 			</tbody>

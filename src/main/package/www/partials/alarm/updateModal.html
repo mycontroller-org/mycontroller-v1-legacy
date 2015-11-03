@@ -33,7 +33,7 @@
       <select style="width:150px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
         ng-model="alarm.variableType" required></select>
       <select style="width:65px" class="form-control" ng-options="alarmTrigger.id as alarmTrigger.displayName for alarmTrigger in alarmTriggers" ng-model="alarm.trigger" required></select>
-      <input style="width:95px" type="text" style="width:60px" class="form-control" id="alarm.thresholdValue" placeholder="Threshold" ng-model="alarm.thresholdValue" required>
+      <input style="width:95px" type="text" style="width:60px" class="form-control" id="alarm.thresholdValue" placeholder="{{ 'ALARM.TRESHOLD' | translate }}" ng-model="alarm.thresholdValue" required>
     </div>
     
     <div class="form-group form-inline">
@@ -59,12 +59,12 @@
     
     <div class="form-group form-inline" ng-show="alarm.type == 2">
       <label class="control-label col-sm-3" for="alarm.variable1">{{ 'ALARM.EMAIL' | translate }}:</label>
-      <input style="width:320px" type="text" class="form-control" id="alarm.variable1" placeholder="Email(s) comma seperated values" ng-model="alarm.variable1">
+      <input style="width:320px" type="text" class="form-control" id="alarm.variable1" placeholder="{{ 'ALARM.EMAIL_NOTE' | translate }}" ng-model="alarm.variable1">
     </div>
     
     <div class="form-group form-inline" ng-show="alarm.type == 1">
       <label class="control-label col-sm-3" for="alarm.variable1">{{ 'ALARM.PHONE_NUMBER' | translate }}:</label>
-      <input style="width:320px" type="text" class="form-control" id="alarm.variable1" placeholder="Phone number(s) comma seperated" ng-model="alarm.variable1">
+      <input style="width:320px" type="text" class="form-control" id="alarm.variable1" placeholder="{{ 'ALARM.PHONE_NUMBER_NOTE' | translate }}" ng-model="alarm.variable1">
     </div>
 
     <div class="form-group form-inline" ng-show="alarm.type == 0">
@@ -77,7 +77,7 @@
       <label class="control-label col-sm-3">{{ 'ALARM.TYPE' | translate }}:</label>
       <select style="width:150px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in sendPayloadVariableTypes | orderBy:'displayName'" 
         ng-model="alarm.variable2"></select>
-      <input style="width:150px" type="text" uib-tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="top" class="form-control" id="alarm.variable3" placeholder="Payload" ng-model="alarm.variable3">
+      <input style="width:150px" type="text" uib-tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="top" class="form-control" id="alarm.variable3" placeholder="{{ 'RAW.PAYLOAD' | translate }}" ng-model="alarm.variable3">
     </div>
    
   </form>

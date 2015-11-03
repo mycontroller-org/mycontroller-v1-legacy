@@ -24,7 +24,7 @@
   <form class="form-horizontal form-group-sm" role="form" name="form">
     <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="timer.name">{{ 'SYSTEM.NAME' | translate }}:</label>
-      <input style="width:320px" type="text" class="form-control" id="timer.name" placeholder="Timer Name" ng-model="timer.name" required>
+      <input style="width:320px" type="text" class="form-control" id="timer.name" placeholder="{{ 'TIMER.NAME' | translate }}" ng-model="timer.name" required>
     </div>
     
     <div class="form-group form-inline">
@@ -67,7 +67,7 @@
       <label class="control-label col-sm-3" for="sensor.newPayload">{{ 'ALARM.TYPE' | translate }}:</label>
       <select style="width:158px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
         ng-model="timer.sensorVariableType" required></select>
-      <input style="width:158px" type="text" uib-tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="bottom" class="form-control" id="timer.variable4" placeholder="Payload" ng-model="timer.payload">
+      <input style="width:158px" type="text" uib-tooltip-html="htmlTooltipSplOper" tooltip-class="customClass350px" tooltip-placement="bottom" class="form-control" id="timer.variable4" placeholder="{{ 'RAW.PAYLOAD' | translate }}" ng-model="timer.payload">
     </div>
     
     <div class="form-group form-inline">

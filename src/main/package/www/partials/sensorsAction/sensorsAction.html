@@ -31,7 +31,7 @@
           <select style="width:200px" class="form-control form-inline" ng-options="node.id as node.displayName for node in nodes" ng-change="nodeChange(nodeId)" ng-model="nodeId">
             <option value="">-- {{ 'NODE.ALL_NODES' | translate }} --</option>
           </select>
-          <input style="width:170px" type="text" class="form-control ng-pristine ng-valid" ng-model="query" id="search" placeholder="Find Sensor" ng-model="query" 
+          <input style="width:170px" type="text" class="form-control ng-pristine ng-valid" ng-model="query" id="search" placeholder="{{ 'SENSORS_ACTIONS.FIND_SENSOR' | translate }}" ng-model="query" 
           ng-change="updateFilteredList()"/>
 			  </div>
       </div>         
@@ -43,7 +43,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
 			<div>
-        <a href="" class="text-default panel-title pull-right" ng-model="radioModel" ng-click="refresh(sensor)" tooltip-placement="left" uib-tooltip="Refresh">
+        <a href="" class="text-default panel-title pull-right" ng-model="radioModel" ng-click="refresh(sensor)" tooltip-placement="left" uib-tooltip="{{ 'SENSORS_ACTIONS.REFRESH' | translate }}">
           <i class="fa fa-refresh"></i>
         </a>
 				<p class="panel-title" ng-init="status = false" tooltip-placement="bottom" uib-tooltip="{{sensor.nameWithNode}}">
@@ -57,46 +57,46 @@
       <img class="media-object" src="..." alt="...">
     </a>-->
           <p><small>Nid:{{sensor.node.id}}, Sid:{{sensor.sensorId}}, [{{sensor.typeString}}/ {{sensor.variableTypes}}]
-            <br><span tooltip-placement="right" uib-tooltip="{{sensor.updateTime | date:'medium':about.timezone}}">Last seen: {{sensor.lastSeen}}</span></small>
+            <br><span tooltip-placement="right" uib-tooltip="{{sensor.updateTime | date:'medium':about.timezone}}">{{ 'SENSORS_ACTIONS.LAST_SEEN' | translate }}: {{sensor.lastSeen}}</span></small>
             <strong class="pull-right" tooltip-placement="top" uib-tooltip="Status"><b>{{sensor.status}}</b></strong>
           </p> 
         
         
       <div class="pull-left">
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.onOff.show && sensor.guiButtons.onOff.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'on_off'}, true);" uib-tooltip="On"><i class="fa fa-toggle-off"></i></label>
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.onOff.show && sensor.guiButtons.onOff.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'on_off'}, true);" uib-tooltip="Off"><i class="fa fa-toggle-on"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.onOff.show && sensor.guiButtons.onOff.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'on_off'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.ON' | translate }}"><i class="fa fa-toggle-off"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.onOff.show && sensor.guiButtons.onOff.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'on_off'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.OFF' | translate }}"><i class="fa fa-toggle-on"></i></label>
         
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.lockStatus.show && sensor.guiButtons.lockStatus.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'lock_unlock'}, true);" uib-tooltip="Lock"><i class="fa fa-unlock"></i></label>
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.lockStatus.show && sensor.guiButtons.lockStatus.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'lock_unlock'}, true);" uib-tooltip="Unlock"><i class="fa fa-lock"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.lockStatus.show && sensor.guiButtons.lockStatus.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'lock_unlock'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.LOCK' | translate }}"><i class="fa fa-unlock"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.lockStatus.show && sensor.guiButtons.lockStatus.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'lock_unlock'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.UNLOCK' | translate }}"><i class="fa fa-lock"></i></label>
         
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.armed.show && sensor.guiButtons.armed.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'armed'}, true);" uib-tooltip="Bypass"><i class="fa fa-bell"></i></label>
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.armed.show && sensor.guiButtons.armed.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'armed'}, true);" uib-tooltip="Arm"><i class="fa fa-bell-slash"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.armed.show && sensor.guiButtons.armed.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'armed'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.BYPASS' | translate }}"><i class="fa fa-bell"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.armed.show && sensor.guiButtons.armed.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'armed'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.ARM' | translate }}"><i class="fa fa-bell-slash"></i></label>
        
         
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.armed.show && sensor.guiButtons.tripped.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'tripped'}, true);" uib-tooltip="Untrip"><i class="fa fa-thumbs-down"></i></label>
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.armed.show && sensor.guiButtons.tripped.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'tripped'}, true);" uib-tooltip="Trip"><i class="fa fa-thumbs-up"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.armed.show && sensor.guiButtons.tripped.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'tripped'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.UNTRIP' | translate }}"><i class="fa fa-thumbs-down"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.armed.show && sensor.guiButtons.tripped.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'tripped'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.TRIP' | translate }}"><i class="fa fa-thumbs-up"></i></label>
         
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.cover.show" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'up'}, true);" uib-tooltip="Up"><i class="fa fa-arrow-up"></i></label>
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.cover.show" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'-1', buttonType:'down'}, true);" uib-tooltip="Down"><i class="fa fa-arrow-down"></i></label>
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.cover.show" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'stop'}, true);" uib-tooltip="Stop"><i class="fa fa-stop"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.cover.show" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'up'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.UP' | translate }}"><i class="fa fa-arrow-up"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.cover.show" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'-1', buttonType:'down'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.DOWN' | translate }}"><i class="fa fa-arrow-down"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.cover.show" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'stop'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.STOP' | translate }}"><i class="fa fa-stop"></i></label>
         
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.increaseDecrease.show" ng-model="radioModel" ng-click="sendPL(sensor, {variableType:sensor.guiButtons.increaseDecrease.variableType,sensorRefId:sensor.id, payload:'1', buttonType:'decrease'}, true);" uib-tooltip="Decrease"><i class="fa fa-minus-circle"></i></label>
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.increaseDecrease.show" ng-model="radioModel" ng-click="sendPL(sensor, {variableType:sensor.guiButtons.increaseDecrease.variableType,sensorRefId:sensor.id, payload:'1', buttonType:'increase'}, true);" uib-tooltip="Increase"><i class="fa fa-plus-circle"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.increaseDecrease.show" ng-model="radioModel" ng-click="sendPL(sensor, {variableType:sensor.guiButtons.increaseDecrease.variableType,sensorRefId:sensor.id, payload:'1', buttonType:'decrease'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.DECREASE' | translate }}"><i class="fa fa-minus-circle"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.increaseDecrease.show" ng-model="radioModel" ng-click="sendPL(sensor, {variableType:sensor.guiButtons.increaseDecrease.variableType,sensorRefId:sensor.id, payload:'1', buttonType:'increase'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.INCREASE' | translate }}"><i class="fa fa-plus-circle"></i></label>
         
-        <label style="background-color:{{rgbColor}};" class="btn btn-default btn-xs" ng-init="rgbColor=sensor.guiButtons.rgb.value" ng-show="sensor.guiButtons.rgb.show" colorpicker colorpicker-position="top" ng-model="rgbColor" ng-change="sendPL(sensor, {sensorRefId:sensor.id, payload:rgbColor, buttonType:'rgb'}, false);" uib-tooltip="RGB"><i class="fa fa-eyedropper"></i></label>
-        <label style="background-color:{{rgbaColor}};" class="btn btn-default btn-xs" ng-init="rgbaColor=sensor.guiButtons.rgbw.value" ng-show="sensor.guiButtons.rgbw.show" colorpicker="rgba" colorpicker-position="top" ng-model="rgbaColor" ng-change="sendPL(sensor, {sensorRefId:sensor.id, payload:rgbaColor, buttonType:'rgbw'}, false);" uib-tooltip="RGBA"><i class="fa fa-eyedropper"></i></label>
+        <label style="background-color:{{rgbColor}};" class="btn btn-default btn-xs" ng-init="rgbColor=sensor.guiButtons.rgb.value" ng-show="sensor.guiButtons.rgb.show" colorpicker colorpicker-position="top" ng-model="rgbColor" ng-change="sendPL(sensor, {sensorRefId:sensor.id, payload:rgbColor, buttonType:'rgb'}, false);" uib-tooltip="{{ 'SENSORS_ACTIONS.RGB' | translate }}"><i class="fa fa-eyedropper"></i></label>
+        <label style="background-color:{{rgbaColor}};" class="btn btn-default btn-xs" ng-init="rgbaColor=sensor.guiButtons.rgbw.value" ng-show="sensor.guiButtons.rgbw.show" colorpicker="rgba" colorpicker-position="top" ng-model="rgbaColor" ng-change="sendPL(sensor, {sensorRefId:sensor.id, payload:rgbaColor, buttonType:'rgbw'}, false);" uib-tooltip="{{ 'SENSORS_ACTIONS.RGBA' | translate }}"><i class="fa fa-eyedropper"></i></label>
         
         
-        <label class="btn btn-default btn-xs" ng-model="radioModel" ng-show="sensor.enableSendPayload" ng-click="sendPayload(sensor)" uib-tooltip="Send Payload"><i class="fa fa-terminal"></i></label>
+        <label class="btn btn-default btn-xs" ng-model="radioModel" ng-show="sensor.enableSendPayload" ng-click="sendPayload(sensor)" uib-tooltip="{{ 'SENSORS_ACTIONS.SEND_PEYLOAD' | translate }}"><i class="fa fa-terminal"></i></label>
       </div>  
 
       <div class="pull-right">
-        <a class="btn btn-default btn-xs" href="#/charts/{{sensor.id}}" uib-tooltip="Graphical Report" ng-show="sensor.guiButtons.graph.show"><i class="fa fa-line-chart"></i></a>
-        <a class="btn btn-default btn-xs" href="#/timer/{{sensor.id}}" uib-tooltip="Timer"><i class="fa fa-clock-o"></i></a>
-        <a class="btn btn-default btn-xs" href="#/alarm/{{sensor.id}}" uib-tooltip="Alarm"><i class="fa fa-bell-o"></i></a>
-        <a class="btn btn-default btn-xs" href="#/forwardPayload/{{sensor.id}}" uib-tooltip="Forward Payload"><i class="fa fa-forward"></i></a>
-        <a class="btn btn-default btn-xs" href="#/sensorlog/{{sensor.id}}" uib-tooltip="Logs"><i class="fa fa-list"></i></a>
-        <label class="btn btn-default btn-xs" href="" ng-click="editSensor(sensor)" uib-tooltip="Edit"><i class="fa fa-edit"></i></label>
+        <a class="btn btn-default btn-xs" href="#/charts/{{sensor.id}}" uib-tooltip="{{ 'CHART.GRAPHICAL_REPORT' | translate }}" ng-show="sensor.guiButtons.graph.show"><i class="fa fa-line-chart"></i></a>
+        <a class="btn btn-default btn-xs" href="#/timer/{{sensor.id}}" uib-tooltip="{{ 'SENSORS_ACTIONS.TIMER' | translate }}"><i class="fa fa-clock-o"></i></a>
+        <a class="btn btn-default btn-xs" href="#/alarm/{{sensor.id}}" uib-tooltip="{{ 'ALARM.ALARM' | translate }}"><i class="fa fa-bell-o"></i></a>
+        <a class="btn btn-default btn-xs" href="#/forwardPayload/{{sensor.id}}" uib-tooltip="{{ 'FORWARD_PAYLOAD.FORWARD_PAYLOAD' | translate }}"><i class="fa fa-forward"></i></a>
+        <a class="btn btn-default btn-xs" href="#/sensorlog/{{sensor.id}}" uib-tooltip="{{ 'SENSORS_ACTIONS.LOGS' | translate }}"><i class="fa fa-list"></i></a>
+        <label class="btn btn-default btn-xs" href="" ng-click="editSensor(sensor)" uib-tooltip="{{ 'SYSTEM.EDIT' | translate }}"><i class="fa fa-edit"></i></label>
       </div>
         </div>
       </div>

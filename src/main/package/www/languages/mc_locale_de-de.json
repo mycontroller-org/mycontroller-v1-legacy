@@ -94,7 +94,9 @@
   "LOGIN.LOGIN" : "Einloggen",
   "LOGIN.USERNAME_IS_REQUIRED" : "Benutzername wird benötigt",
   "LOGIN.PASSWORD_IS_REQUIRED" : "Passwort wird benötigt",
-  
+
+  "ALARM.NAME" : "Alarm Name",
+  "ALARM.TRESHOLD" : "Threshold",  
   "ALARM.TRIGGER_WHEN_VALUE" : "Auslösen bei Wert", 
   "ALARM.IGNORE_DUPLICATE" : "Ignoriere Duplikate",   
   "ALARM.DAMPENING" : "Dampening", 
@@ -104,14 +106,21 @@
   "ALARM.NODE" : "Knoten / Sensor", 
   "ALARM.TYPE" : "Typ / Nutzdaten",   
   "ALARM.ALARM" : "Alarm", 
-
+  "ALARM.EMAIL_NOTE" : "Email(s) comma seperated values", 
+  "ALARM.PHONE_NUMBER_NOTE" : "Phone number(s) comma seperated",   
+  "ALARM.CONDITION" : "Condition", 
+  "ALARM.NOTIFICATION" : "Notification", 
+  "ALARM.LAST_TRIGGER" : "Last Trigger", 
+  
   "FIRMWARE.TYPE" : "Typ", 
   "FIRMWARE.VERSION" : "Version",   
   "FIRMWARE.HEX_FILE" : "Hex Datei", 
   "FIRMWARE.TYPE_ID" : "Typ Id", 
   "FIRMWARE.TYPE_NAME" : "Typ Name",   
   "FIRMWARE.VERSION_ID" : "Version Id",   
-
+  "FIRMWARE.UPLOAD_FIRMWARE" : "Upload Firmware",   
+  "FIREWARE.AUTO_GENERATE" : "Auto Generate",
+  
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Ziel Knoten", 
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Ziel Sensor",   
   "FORWARD_PAYLOAD.SOURCE_VARIABLE" : "Quellvariable", 
@@ -122,6 +131,7 @@
 
   "NODE.NODE_ID" : "Knoten Id",
   "NODE.NODE_TYPE" : "Konten Typ",
+  "NODE.NAME" : "Node Name",    
   "NODE.VERSION" : "Version",
   "NODE.MY_SENSORS_VERSION" : "MySensors Version",
   "NODE.FIRMWARE" : "Firmware",
@@ -134,9 +144,23 @@
   "NODE.VARIABLE_TYPE" : "Variable Type(n)",		  
   "NODE.SENSORS_NOTE" : "<B><I>Hinweis: </I></B>Sensordaten werden überschrieben, wenn der Sensor oben genannten Daten sendet",
   "NODE.SENSORS_WARNING" : "<B><I>Warnung: </I></B>Wenn Sie einen Variable Type(n) löschen, werden verwandte Ressourcen entfernt (Metriken usw.)",
-
+  "NODE.BATTERY_LEVEL" : "Battery Level (%)",
+  "NODE.GRAPHICAL_REPORT" : "Graphical Report",
+  
+  "SENSORS.SENSOR" : "Sensor",
+  "SENSORS.TYPE" : "Type",  
+  "SENSORS.SENSOR_TYPE" : "Sensor Type",
+  "SENSORS.VARIABLES" : "Variables",  
+  
   "RAW.MESSAGE" : "Nachricht",
+  "RAW.PAYLOAD" : "Payload",
+  "RAW.MESSAGE_TYPE_ID" : "Message Type Id",
+  "RAW.ACK" : "ack",
+  "RAW.SUB_TYPE" : "Sub Type",
 
+  "UID.UNIQUE_IDENTIFICATION_NUMBER" : "Unique Identification Number", 
+  "UID.UNIQUE_IDENTIFICATION_TAG" : "Unique Identification Tag for each sensor",
+  
   "SENSORS_ACTIONS.NEVER_REFRESH" : "Kein Refresh",
   "SENSORS_ACTIONS.5S" : "Alle 5 Sekunden",
   "SENSORS_ACTIONS.15S" : "Alle 15 Sekunden",
@@ -144,7 +168,28 @@
   "SENSORS_ACTIONS.1M" : "Jede Minute",		  
   "SENSORS_ACTIONS.5M" : "Alle 5 Minuten",
   "SENSORS_ACTIONS.10M" : "Alle 10 Minuten",
-
+  "SENSORS_ACTIONS.FIND_SENSOR" : "Find Sensor",
+  "SENSORS_ACTIONS.REFRESH" : "Refresh",
+  "SENSORS_ACTIONS.LAST_SEEN" : "Last seen",
+  "SENSORS_ACTIONS.ON" : "On",
+  "SENSORS_ACTIONS.OFF" : "Off",  
+  "SENSORS_ACTIONS.LOCK" : "Lock",  
+  "SENSORS_ACTIONS.UNLOCK" : "Unlock",  
+  "SENSORS_ACTIONS.BYPASS" : "Bypass",  
+  "SENSORS_ACTIONS.ARM" : "Arm",  
+  "SENSORS_ACTIONS.UNTRIP" : "Untrip",  
+  "SENSORS_ACTIONS.TRIP" : "Trip",  
+  "SENSORS_ACTIONS.UP" : "Up",  
+  "SENSORS_ACTIONS.DOWN" : "Down",  
+  "SENSORS_ACTIONS.STOP" : "Stop",  
+  "SENSORS_ACTIONS.DECREASE" : "Decrease",  
+  "SENSORS_ACTIONS.INCREASE" : "Increase",  
+  "SENSORS_ACTIONS.RGB" : "RGB",  
+  "SENSORS_ACTIONS.RGBA" : "RGBA",   
+  "SENSORS_ACTIONS.SEND_PEYLOAD" : "Send Payload",  
+  "SENSORS_ACTIONS.TIMER" : "Timer",  
+  "SENSORS_ACTIONS.LOGS" : "Logs",  
+  
   "SETTINGS.CHOOSE_FIRMWARE" : "Wähle Firmware",
   "SETTINGS.INTERPOLATE_TYPES" : ">Interpolierter Typ",
   "SETTINGS.CONFIG_TYPE" : "Configuration Typ",
@@ -163,6 +208,8 @@
   "TIMER.TIME" : "Zeit (HH:mm:ss)",
   "TIMER.VALIDATION_FROM" : "Gülig von",
   "TIMER.VALIDATION_TO" : "Gültig bis",  
+  "TIMER.NAME" : "Timer Name",  
+  "TIMER.VALIDITY" : "Validity",
   
   "SYSTEM.ADD" : "Hinzufügen",
   "SYSTEM.CANCEL" : "Abbrechen",
@@ -174,10 +221,16 @@
   "SYSTEM.REBOOT" : "Reboot",
   "SYSTEM.SEND" : "Senden",
   "SYSTEM.VALUE" : "Wert", 
+  "SYSTEM.EDIT" : "Edit",  
+  "SYSTEM.ENABLED" : "Enabled",
   
   "CHART.SELECT_VARIABLE_TYPE" : "Variable Typ auswählen", 
   "CHART.GRAPHICAL_REPORT" : "Graphischer Bericht",   
   "CHART.VARIABLE_TYPE_TEXT" : "Suchen Sie den <B>Variable Typ</B> oben rechts in der Ecke aus,um den graphischen Bericht zu laden...",   
+  
+  "LOG.TIME" : "Time",
+  "LOG.TYPE" : "Type",
+  "LOG.LOG" : "Log",  
   
   "DASHBOARD.TITLE" : "Anzeigetafel",
   "DASHBOARD.WELCOME_MSG" : "Herzlich Willkommen zu {{mcWebsite}} Wir fangen an größer zu werden {{mcWebsite}}. Die Anzeigetafel ist in der Entwicklung. Inzwischen kannst du andere Funktionen benutzen :)"
