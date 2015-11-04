@@ -146,6 +146,7 @@
   "NODE.SENSORS_WARNING" : "<B><I>Предупреждение: </I></B>При удалении переменной, связанные ресурсы будут удалены (метрики, и т.д.)",
   "NODE.BATTERY_LEVEL" : "Заряд батареи (%)",
   "NODE.GRAPHICAL_REPORT" : "Графический отчет",
+  "NODE.DISCOVER_NODES" : "Найти узлы", 
   
   "SENSORS.SENSOR" : "Сенсор",
   "SENSORS.TYPE" : "Тип",    
@@ -230,7 +231,7 @@
   "LOG.LOG" : "Лог",
   
   "CHART.SELECT_VARIABLE_TYPE" : "Выберите тип переменной", 
-  "CHART.GRAPHICAL_REPORT" : "Графический Отчет",   
+  "CHART.GRAPHICAL_REPORT" : "График",   
   "CHART.VARIABLE_TYPE_TEXT" : "Выбрать <B>Тип Переменной</B> в верхнеи правом углу, чтобы загрузить графический отчет ...",   
   
   "DASHBOARD.TITLE" : "Приборная панель",

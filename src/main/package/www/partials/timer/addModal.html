@@ -53,7 +53,7 @@
     
     <div class="form-group form-inline" ng-show="timer.type == 1">
       <label class="control-label col-sm-3" for="timer.cron">{{ 'TIMER.CRON_EXPRESSION' | translate }}:</label>
-      <input style="width:320px" type="text" uib-tooltip-html="htmlTooltipCron" tooltip-class="customClass450px" tooltip-placement="bottom" class="form-control" id="timer.cron" placeholder="Cron Expression" ng-model="timer.frequencyDataString">
+      <input style="width:320px" type="text" uib-tooltip-html="htmlTooltipCron" tooltip-class="customClass450px" tooltip-placement="bottom" class="form-control" id="timer.cron" placeholder="{{ 'TIMER.CRON_EXPRESSION' | translate }}" ng-model="timer.frequencyDataString">
     </div>
     
      <div class="form-group form-inline" ng-show="timer.type != 1">
