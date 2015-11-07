@@ -86,7 +86,8 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
 
         serialPort.openPort();//Open port
         if (!serialPort.isOpen()) {
-            _logger.error("Unable to open serial port:[{}]", ObjectFactory.getAppProperties().getGatewaySerialPortName());
+            _logger.error("Unable to open serial port:[{}]",
+                    ObjectFactory.getAppProperties().getGatewaySerialPortName());
             gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "ERROR: Unable to open!");
             return;
         }
