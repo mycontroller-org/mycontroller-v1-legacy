@@ -91,6 +91,7 @@ public class SerialPortJsscImpl implements IMySensorsGateway {
                     ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
             gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
             gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, true);
+            gatewayInfo.getData().put(SerialPortCommon.LAST_SUCCESSFUL_CONNECTION, System.currentTimeMillis());
         } catch (SerialPortException ex) {
             gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "ERROR: " + ex.getMessage());
             if (ex.getMessage().contains("Port not found")) {

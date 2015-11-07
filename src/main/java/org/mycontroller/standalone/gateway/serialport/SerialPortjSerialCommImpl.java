@@ -104,6 +104,7 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
                 ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
         gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
         gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, true);
+        gatewayInfo.getData().put(SerialPortCommon.LAST_SUCCESSFUL_CONNECTION, System.currentTimeMillis());
     }
 
     @Override

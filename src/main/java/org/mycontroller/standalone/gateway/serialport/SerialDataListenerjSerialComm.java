@@ -77,8 +77,8 @@ public class SerialDataListenerjSerialComm implements SerialPortDataListener {
             gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, ex.getMessage());
             message.setLength(0);
             if (ex.getMessage() != null) {
-                gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "NULL");
-                _logger.error("error, ", ex);
+                gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "null exception");
+                _logger.error("exception, ", ex);
             }
         }
 

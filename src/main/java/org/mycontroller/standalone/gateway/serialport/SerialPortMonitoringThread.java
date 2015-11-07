@@ -29,117 +29,118 @@ import org.slf4j.LoggerFactory;
  * @since 0.0.2
  */
 public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
-    private static final Logger _logger = LoggerFactory.getLogger(SerialPortMonitoringThread.class.getName());
+	private static final Logger _logger = LoggerFactory.getLogger(SerialPortMonitoringThread.class.getName());
 
-    private IMySensorsGateway serialGateway = null;
-    private boolean terminated = false;
-    private boolean terminate = false;
-    private long RETRY_WAIT_TIME;
+	private IMySensorsGateway serialGateway = null;
+	private boolean terminated = false;
+	private boolean terminate = false;
+	private long RETRY_WAIT_TIME;
 
-    public SerialPortMonitoringThread() {
-        RETRY_WAIT_TIME = ObjectFactory.getAppProperties().getGatewaySerialPortRetryFrequency() * 1000;
-        this.connect();
-    }
+	public SerialPortMonitoringThread() {
+		RETRY_WAIT_TIME = ObjectFactory.getAppProperties().getGatewaySerialPortRetryFrequency() * 1000;
+		this.connect();
+	}
 
-    private void connect() {
-        // - Start Serial port
-        String serialPortDriver = ObjectFactory.getAppProperties().getGatewaySerialPortDriver();
-        if (ObjectFactory.getAppProperties().getGatewaySerialPortDriver()
-                .equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.AUTO.toString())) {
-            if (AppProperties.getOsArch().startsWith("arm")) {
-                serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.PI4J.toString();
-            } else {
-                serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString();
-            }
-        }
-        //Open Serial Port
-        if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSSC.toString())) {
-            serialGateway = new SerialPortJsscImpl();
-        } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.PI4J.toString())) {
-            serialGateway = new SerialPortPi4jImpl();
-        } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString())) {
-            serialGateway = new SerialPortjSerialCommImpl();
-        } else {
-            _logger.warn("Unkown serial port driver[{}] specified",
-                    ObjectFactory.getAppProperties().getGatewaySerialPortDriver());
-            throw new RuntimeException("Unkown serial port driver["
-                    + ObjectFactory.getAppProperties().getGatewaySerialPortDriver() + "] specified");
-        }
+	private void connect() {
+		// - Start Serial port
+		String serialPortDriver = ObjectFactory.getAppProperties().getGatewaySerialPortDriver();
+		if (ObjectFactory.getAppProperties().getGatewaySerialPortDriver()
+				.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.AUTO.toString())) {
+			if (AppProperties.getOsArch().startsWith("arm")) {
+				serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.PI4J.toString();
+			} else {
+				serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString();
+			}
+		}
+		// Open Serial Port
+		if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSSC.toString())) {
+			serialGateway = new SerialPortJsscImpl();
+		} else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.PI4J.toString())) {
+			serialGateway = new SerialPortPi4jImpl();
+		} else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString())) {
+			serialGateway = new SerialPortjSerialCommImpl();
+		} else {
+			_logger.warn("Unkown serial port driver[{}] specified",
+					ObjectFactory.getAppProperties().getGatewaySerialPortDriver());
+			throw new RuntimeException("Unkown serial port driver["
+					+ ObjectFactory.getAppProperties().getGatewaySerialPortDriver() + "] specified");
+		}
 
-    }
+	}
 
-    private void reconnect() {
-        //Close serial port
-        this.close();
-        serialGateway = null;
-        //Reconnect serial port
-        connect();
-        if ((boolean) serialGateway.getGatewayInfo().getData().get(SerialPortCommon.IS_CONNECTED)) {
-            _logger.info("Serial Port[Name:{}, Driver{}], Successfully reconnected!",
-                    serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
-                    serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE));
-        } else {
-            _logger.warn("Serial Port[Name:{}, Driver{}], Unable to reconnected! Will do next try after {} second(s)",
-                    serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
-                    serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE),
-                    RETRY_WAIT_TIME / 1000);
-        }
-    }
+	private void reconnect() {
+		// Close serial port
+		this.close();
+		serialGateway = null;
+		// Reconnect serial port
+		connect();
+		if ((boolean) serialGateway.getGatewayInfo().getData().get(SerialPortCommon.IS_CONNECTED)) {
+			_logger.info("Serial Port[Name:{}, Driver{}], Successfully reconnected!",
+					serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
+					serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE));
+		} else {
+			_logger.warn("Serial Port[Name:{}, Driver{}], Unable to reconnected! Will do next try after {} second(s)",
+					serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
+					serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE),
+					RETRY_WAIT_TIME / 1000);
+		}
+	}
 
-    @Override
-    public void run() {
-        while (!isTerminate()) {
-            long waitTime = RETRY_WAIT_TIME;
-            while (!isTerminate() && waitTime > 0) {
-                try {
-                    Thread.sleep(100);
-                    waitTime -= 100;
-                } catch (InterruptedException ex) {
-                    _logger.error("Error,", ex);
-                }
-            }
-            if (!isTerminate()
-                    && !(boolean) serialGateway.getGatewayInfo().getData().get(SerialPortCommon.IS_CONNECTED)) {
-                _logger.info("Serial Port[Name:{}, Driver{}] not connected, Reconnect initiated...",
-                        serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
-                        serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE));
-                reconnect();
-            }
-        }
-        this.terminated = true;
-    }
+	@Override
+	public void run() {
+		while (!isTerminate()) {
+			long waitTime = RETRY_WAIT_TIME;
+			while (!isTerminate() && waitTime > 0) {
+				try {
+					Thread.sleep(100);
+					waitTime -= 100;
+				} catch (InterruptedException ex) {
+					_logger.error("Error,", ex);
+				}
+			}
+			_logger.debug("Serial Port Connection Status:[{}]", serialGateway.getGatewayInfo().getData());
+			if (!isTerminate()
+					&& !(boolean) serialGateway.getGatewayInfo().getData().get(SerialPortCommon.IS_CONNECTED)) {
+				_logger.info("Serial Port[Name:{}, Driver:{}] not connected, Reconnect initiated...",
+						serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
+						serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE));
+				reconnect();
+			}
+		}
+		this.terminated = true;
+	}
 
-    public boolean isTerminated() {
-        return terminated;
-    }
+	public boolean isTerminated() {
+		return terminated;
+	}
 
-    public boolean isTerminate() {
-        return terminate;
-    }
+	public boolean isTerminate() {
+		return terminate;
+	}
 
-    public void setTerminate(boolean terminate) {
-        this.terminate = terminate;
-    }
+	public void setTerminate(boolean terminate) {
+		this.terminate = terminate;
+	}
 
-    @Override
-    public synchronized void write(RawMessage rawMessage) throws MySensorsGatewayException {
-        serialGateway.write(rawMessage);
-    }
+	@Override
+	public synchronized void write(RawMessage rawMessage) throws MySensorsGatewayException {
+		serialGateway.write(rawMessage);
+	}
 
-    @Override
-    public synchronized void close() {
-        try {
-            serialGateway.close();
-        } catch (Exception ex) {
-            _logger.error("Error closing serial port Serial Port[Name:{}, Driver{}], Successfully reconnected!",
-                    serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
-                    serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE), ex);
-        }
-    }
+	@Override
+	public synchronized void close() {
+		try {
+			serialGateway.close();
+		} catch (Exception ex) {
+			_logger.error("Error closing serial port Serial Port[Name:{}, Driver{}], Successfully reconnected!",
+					serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
+					serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE), ex);
+		}
+	}
 
-    @Override
-    public synchronized GatewayInfo getGatewayInfo() {
-        return serialGateway.getGatewayInfo();
-    }
+	@Override
+	public synchronized GatewayInfo getGatewayInfo() {
+		return serialGateway.getGatewayInfo();
+	}
 
 }

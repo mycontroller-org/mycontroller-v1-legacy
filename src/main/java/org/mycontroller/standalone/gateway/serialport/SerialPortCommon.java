@@ -26,6 +26,7 @@ public class SerialPortCommon {
     public static final String BAUD_RATE = "baudRate";
     public static final String CONNECTION_STATUS = "connectionStatus";
     public static final String IS_CONNECTED = "isConnected";
+    public static final String LAST_SUCCESSFUL_CONNECTION = "lastSuccessfulConnection";
 
     public static final byte MESSAGE_SPLITTER = '\n';   // Message splitter char for serial message
 }
