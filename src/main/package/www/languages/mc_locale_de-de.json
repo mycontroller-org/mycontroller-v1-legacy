@@ -22,7 +22,7 @@
   "CHART.VARIABLE_TYPE_TEXT" : "Suchen Sie den <B>Variable Typ</B> oben rechts in der Ecke aus,um den graphischen Bericht zu laden...",
 
   "DASHBOARD.TITLE" : "Anzeigetafel",
-  "DASHBOARD.WELCOME_MSG" : "Herzlich Willkommen zu {{mcWebsite}} Wir fangen an größer zu werden {{mcWebsite}}. Die Anzeigetafel ist in der Entwicklung. Inzwischen kannst du andere Funktionen benutzen :)"
+  "DASHBOARD.WELCOME_MSG" : "Herzlich Willkommen zu {{mcWebsite}} Wir fangen an größer zu werden {{mcWebsite}}. Die Anzeigetafel ist in der Entwicklung. Inzwischen kannst du andere Funktionen benutzen :)",
 
   "FIREWARE.AUTO_GENERATE" : "Automatisch Generieren",
   "FIRMWARE.HEX_FILE" : "Hex Datei",
@@ -233,6 +233,6 @@
   "USERS.FULL_NAME" : "Voller Name",
   "USERS.PASSWORD" : "Passwort",
   "USERS.ROLE" : "Rolle",
-  "USERS.USERNAME" : "Benutzername",
+  "USERS.USERNAME" : "Benutzername"
 
 }

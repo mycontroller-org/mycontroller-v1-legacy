@@ -22,7 +22,7 @@
   "CHART.VARIABLE_TYPE_TEXT" : "Select <B>Variable Type</B> on top side right corner to load Graphical Report...",
 
   "DASHBOARD.TITLE" : "Dashboard", 
-  "DASHBOARD.WELCOME_MSG" : "{{mcWebsite}}-க்கு தங்களை அன்புடன் வரவேற்கிறோம்!!"
+  "DASHBOARD.WELCOME_MSG" : "{{mcWebsite}}-க்கு தங்களை அன்புடன் வரவேற்கிறோம்!!",
  
   "FIRMWARE.AUTO_GENERATE" : "Auto Generate",
   "FIRMWARE.HEX_FILE" : "Hex File",
@@ -233,6 +233,6 @@
   "USERS.FULL_NAME" : "Full Name",
   "USERS.PASSWORD" : "Password",
   "USERS.ROLE" : "Role",
-  "USERS.USERNAME" : "Username",
+  "USERS.USERNAME" : "Username"
 
 }

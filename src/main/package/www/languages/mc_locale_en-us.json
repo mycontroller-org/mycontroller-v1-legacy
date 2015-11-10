@@ -21,7 +21,7 @@
   "CHART.VARIABLE_TYPE_TEXT" : "Select <B>Variable Type</B> on top side right corner to load Graphical Report...",
   
   "DASHBOARD.TITLE" : "Dashboard",
-  "DASHBOARD.WELCOME_MSG" : "Welcome to {{mcWebsite}} Just started growing {{mcWebsite}}. Dashboard is under development. Meanwhile you can try other features :)"
+  "DASHBOARD.WELCOME_MSG" : "Welcome to {{mcWebsite}} Just started growing {{mcWebsite}}. Dashboard is under development. Meanwhile you can try other features :)",
   
   "FIREWARE.AUTO_GENERATE" : "Auto Generate",
   "FIRMWARE.HEX_FILE" : "Hex File",
@@ -233,5 +233,5 @@
   "USERS.FULL_NAME" : "Full Name",
   "USERS.PASSWORD" : "Password",
   "USERS.ROLE" : "Role",
-  "USERS.USERNAME" : "Username",
+  "USERS.USERNAME" : "Username"
 }
