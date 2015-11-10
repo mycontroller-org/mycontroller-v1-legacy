@@ -41,4 +41,6 @@ public interface SettingsDao {
     Settings get(Settings settings);
 
     List<Settings> get(List<String> keys);
+
+    List<Settings> getLike(String key);
 }

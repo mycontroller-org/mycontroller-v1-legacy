@@ -15,23 +15,32 @@
  */
 package org.mycontroller.standalone.db.alarm;
 
+import java.text.DecimalFormat;
+
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.PayloadSpecialOperation;
+import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.mysensors.MyMessages;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 public class SendPayLoad {
+    public DecimalFormat decimalFormat = new DecimalFormat("#.####");
     private Integer sensorRefId;
+    private Integer variableType;
     private String payLoad;
 
     public SendPayLoad() {
 
     }
 
-    public SendPayLoad(String sensorRefId, String payLoad) {
+    public SendPayLoad(String sensorRefId, String variableType, String payLoad) {
         this.sensorRefId = Integer.valueOf(sensorRefId);
+        this.variableType = Integer.valueOf(variableType);
         this.payLoad = payLoad;
     }
 
@@ -51,14 +60,45 @@ public class SendPayLoad {
         this.payLoad = payLoad;
     }
 
-    public String toString() {
-        Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("Node: ").append(sensor.getNameWithNode());
-        buffer.append("[Nid:").append(sensor.getNode().getId())
-                .append(",Sid:").append(sensor.getSensorId()).append("], ");
-        buffer.append("PayLoad:").append(this.payLoad);
-        return buffer.toString();
+    public void setPayLoad(Double payLoad) {
+        this.payLoad = decimalFormat.format(payLoad);
     }
 
+    public String toString() {
+        Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
+        StringBuilder builder = new StringBuilder();
+        builder.append("Node: ").append(sensor.getNameWithNode());
+        builder.append("[Nid:").append(sensor.getNode().getId())
+                .append(",Sid:").append(sensor.getSensorId()).append("]");
+        builder.append(", Variable Type:").append(MyMessages.MESSAGE_TYPE_SET_REQ.get(this.variableType));
+        builder.append(", PayLoad:");
+        PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(this.payLoad);
+        if (specialOperation.getOperationType() != null) {
+            if (specialOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.REBOOT) {
+                builder.append(" ").append(specialOperation.getOperationType().value());
+            } else {
+                if (specialOperation.getValue() != null) {
+                    builder.append(" {sen.value} ")
+                            .append(specialOperation.getOperationType().value())
+                            .append(" ")
+                            .append(NumericUtils.getDoubleAsString(specialOperation.getValue()));
+                } else {
+                    builder.append(" ")
+                            .append(specialOperation.getOperationType().value())
+                            .append(" {sen.value}");
+                }
+            }
+        } else {
+            builder.append(this.payLoad);
+        }
+        return builder.toString();
+    }
+
+    public Integer getVariableType() {
+        return variableType;
+    }
+
+    public void setVariableType(Integer variableType) {
+        this.variableType = variableType;
+    }
 }

@@ -40,20 +40,21 @@
   </appender>
 
   <logger level="INFO" name="org.apache.http"/>
-  <logger level="INFO" name="org.mycontroller.standalone.mysensors"/>
+  <logger level="INFO" name="org.jboss.resteasy.core"/>
   <logger level="INFO" name="com.j256.ormlite"/>
-  <logger level="INFO" name="org.mycontroller.standalone"/>
-  <logger level="INFO" name="org.mycontroller.standalone.scheduler.jobs"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db.alarm"/>
-  <logger level="INFO" name="org.mycontroller.standalone.scheduler"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db.TimerUtils"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db.fwpayload.ExecuteForwardPayload"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db.dao.ForwardPayloadDaoImpl"/>
   <logger level="WARN" name="com.j256.ormlite.table.TableUtils"/>
   <logger level="WARN" name="org.quartz"/>
-  <logger level="WARN" name="com.xeiam.sundial"/>
-  <logger level="INFO" name="org.mycontroller.standalone.serialport"/>
+  <logger level="WARN" name="com.xeiam.sundial"/>  
+  
+  <logger level="INFO" name="org.mycontroller.standalone"/>
+  <logger level="INFO" name="org.mycontroller.standalone.mysensors"/>
+  <logger level="INFO" name="org.mycontroller.standalone.scheduler"/>
+  <logger level="INFO" name="org.mycontroller.standalone.jobs"/>
+  <logger level="INFO" name="org.mycontroller.standalone.db"/>
+  <logger level="INFO" name="org.mycontroller.standalone.db.alarm"/>
+  <logger level="INFO" name="org.mycontroller.standalone.db.TimerUtils"/>
+  <logger level="INFO" name="org.mycontroller.standalone.db.dao"/>
+  <logger level="INFO" name="org.mycontroller.standalone.gateway"/>
 
   <root level="WARN">
     <appender-ref ref="FILE" />

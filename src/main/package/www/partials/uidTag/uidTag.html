@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-tags"></i> UidTag </b><small>Unique Identification Tag for each sensor</small></h3>
+    <h3><b><i class="fa fa-tags"></i> {{ 'TITLE.UID_TAG' | translate }} </b><small>{{ 'UID.UNIQUE_IDENTIFICATION_TAG' | translate }}</small></h3>
 </div>
 
 	<div class="panel panel-default">
@@ -24,12 +24,12 @@
 	  <div class="panel-heading">
 		<form class="form-inline">
 			<div class="form-group">
-				<label class="sr-only" for="search">Search</label>
+				<label class="sr-only" for="search">{{ 'SYSTEM.SEARCH' | translate }}</label>
 				<input type="text" class="form-control ng-pristine ng-valid input-sm ng-valid" 
-				ng-model="query" id="search" placeholder="Search" ng-model="query" 
+				ng-model="query" id="search" placeholder="{{ 'SYSTEM.SEARCH' | translate }}" ng-model="query" 
 				ng-change="updateFilteredList()"/>
 			</div>
-			<a href='' class="text-default pull-right" ng-click="add()" tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
+			<a href='' class="text-default pull-right" ng-click="add()" uib-tooltip="{{ 'SYSTEM.ADD' | translate }}"><i class="fa fa-lg fa-plus-square-o"></i></a>
 		</form>
 	 </div>
 	
@@ -40,11 +40,10 @@
 			<tbody>
 	      <tr>
           <td at-implicit at-sortable at-attribute="uid" at-title="UID"></td>
-          <td at-implicit at-sortable at-attribute="sensor.nameWithNode" at-title="Name"></td>
-					<td at-implicit at-sortable at-attribute="sensor.node.id" at-title="Node Id"></td>
-          <td at-implicit at-sortable at-attribute="sensor.sensorId" at-title="Sensor Id"></td>
+          <td at-sortable at-title="{{ 'SENSORS.SENSOR' | translate }}">Name:[{{item.sensor.nameWithNode}}], Id:[Node:{{item.sensor.node.id}}, Sensor:{{item.sensor.sensorId}}]</td>
+          <td at-implicit at-sortable at-attribute="variableTypeString" at-title="{{ 'SENSORS.TYPE' | translate }}"></td>
 					<td class="text-center">
-						<a href='' ng-click="delete(item)" class="text-danger" tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
+						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
 					</td>
 				</tr>
 			</tbody>

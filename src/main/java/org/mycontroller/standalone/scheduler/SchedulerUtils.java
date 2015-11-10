@@ -28,7 +28,7 @@ import org.mycontroller.standalone.db.TimerUtils.TYPE;
 import org.mycontroller.standalone.db.TimerUtils.WEEK_DAY;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.scheduler.jobs.TimerJob;
+import org.mycontroller.standalone.jobs.timer.TimerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,11 @@ public class SchedulerUtils {
         //Load Timer jobs
         List<Timer> timers = DaoUtils.getTimerDao().getAllEnabled();
         for (Timer timer : timers) {
-            loadTimerJob(timer);
+            try {
+                loadTimerJob(timer);
+            } catch (Exception ex) {
+                _logger.error("Unable to load timer[{}]", timer, ex);
+            }
         }
     }
 
@@ -109,6 +113,20 @@ public class SchedulerUtils {
     }
 
     public static synchronized void loadTimerJob(Timer timer) {
+        //Check is it enabled or disabled
+        if (!timer.getEnabled()) {
+            _logger.debug("Timer[{}] disabled. No action needed", timer);
+            return;
+        }
+
+        //Check Valid To, if available 
+        if (timer.getValidTo() != null) {
+            if (timer.getValidTo() <= System.currentTimeMillis()) {
+                _logger.warn("This timer job expired! Timer:[{}]", timer);
+                return;
+            }
+        }
+
         Map<String, Object> jobData = new HashMap<String, Object>();
         jobData.put(TimerJob.TIMER_REF, timer);
         String jobName = getTimerJobName(timer);
@@ -170,6 +188,15 @@ public class SchedulerUtils {
                     timeCal.get(Calendar.HOUR_OF_DAY),
                     timer);
         }
+
+        //Check Valid from, if available and active,
+        //Change valid from as future seconds to avoid immediate trigger
+        if (timer.getValidFrom() != null) {
+            if (timer.getValidFrom() <= System.currentTimeMillis()) {
+                timer.setValidFrom(System.currentTimeMillis() + (1000 * 5));
+            }
+        }
+
         SundialJobScheduler.addCronTrigger(
                 getCronTriggerName(jobName),
                 jobName,

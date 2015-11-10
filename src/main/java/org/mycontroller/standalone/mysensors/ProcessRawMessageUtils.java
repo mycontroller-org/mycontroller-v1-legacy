@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.mysensors;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.gateway.MySensorsGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,22 +31,17 @@ public class ProcessRawMessageUtils {
 
     }
 
-    public synchronized static void sendMessage(String rawMessage) {
-        if (rawMessage.endsWith("\n")) {
-            sendMessage(rawMessage.getBytes());
-        } else {
-            sendMessage((rawMessage+"\n").getBytes());
+    public synchronized static void sendMessage(String rawMessage) throws MySensorsGatewayException {
+        try {
+            sendMessage(new RawMessage(rawMessage));
+        } catch (RawMessageException ex) {
+            _logger.error("Error, ", ex);
         }
         _logger.debug("Message sent to gateway:[{}]", rawMessage);
     }
 
-    public synchronized static void sendMessage(RawMessage rawMessage) {
-        sendMessage(rawMessage.getGWBytes());
-        _logger.debug("Message sent to gateway:[{}]", rawMessage.getGWString());
-    }
-
-    public synchronized static void sendMessage(byte[] rawMessage) {
-        ObjectFactory.getiSerialPort().writeBytes(rawMessage);
+    public synchronized static void sendMessage(RawMessage rawMessage) throws MySensorsGatewayException {
+        ObjectFactory.getMySensorsGateway().write(rawMessage);
         try {
             Thread.sleep(3);//3ms sleep
         } catch (InterruptedException ex) {

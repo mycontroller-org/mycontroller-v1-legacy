@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -22,7 +23,8 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable
+@DatabaseTable(tableName = "firmware_version")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FirmwareVersion {
 
     public FirmwareVersion() {
@@ -33,7 +35,7 @@ public class FirmwareVersion {
         this.id = id;
     }
 
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
     private Integer id;
 
     @DatabaseField(canBeNull = false, unique = true)
@@ -53,5 +55,12 @@ public class FirmwareVersion {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id:").append(this.id);
+        builder.append(", Name:").append(this.name);
+        return builder.toString();
     }
 }

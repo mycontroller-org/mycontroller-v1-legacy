@@ -16,15 +16,19 @@
 
 -->
 <div>
+  
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
-  <div class="modal-body">
-   
-    <div ng-bind-html="deleteMsg"></div>
+  
+  <div class="modal-body modal-body-text-only">
+    <small ng-bind-html="deleteMsg"></small>
   </div>
+  
   <div class="modal-footer">
-    <button class="btn btn-danger" ng-click="remove(sensor)"><i class="fa fa-trash"> Delete</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <small><b><p ng-bind-html="'MODELS.WARNING' | translate" class="text-danger pull-left"></p><b></small>
+    <button class="btn btn-danger btn-xs" ng-click="remove(sensor)"><i class="fa fa-trash"> {{ 'SYSTEM.DELETE' | translate }}</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
+  
 </div>

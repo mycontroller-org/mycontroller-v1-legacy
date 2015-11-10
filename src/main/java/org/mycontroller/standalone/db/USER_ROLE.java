@@ -20,7 +20,8 @@ package org.mycontroller.standalone.db;
  * @since 0.0.1
  */
 public enum USER_ROLE {
-    ADMIN;
+    ADMIN,
+    MQTT;
     public static USER_ROLE get(int id) {
         for (USER_ROLE type : values()) {
             if (type.ordinal() == id) {

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsController', function(alertService,
-$scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestError) {
+$scope, $filter, SettingsFactory, $location, $uibModal, $stateParams, displayRestError, about, TypesFactory) {
   
   $scope.config = {
     itemsPerPage: 100,
     maxPages:1,
     fillLastPage: false
   }
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //settings SunriseSunset List
    $scope.settingsSunriseSunsetList = SettingsFactory.getSunriseSunset(function(response) {
@@ -58,10 +61,17 @@ $scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestEr
                     },function(error){
                       displayRestError.display(error);            
                     });
-  
+
+  //settings Graph List
+   $scope.settingsGraphList = SettingsFactory.getGraph(function(response) {
+                    },function(error){
+                      displayRestError.display(error);            
+                    });                    
+                    
+ 
   //Update settings
   $scope.update = function (settings, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/settings/updateModal.html',
     controller: 'SSMupdateController',
     size: size,
@@ -71,11 +81,6 @@ $scope, $filter, SettingsFactory, $location, $modal, $stateParams, displayRestEr
     editModalInstance.result.then(function (updateSettings) {
       SettingsFactory.update(updateSettings,function(response) {
         alertService.success("Updated ["+settings.frindlyName+"]");
-        //Update display table
-        $scope.orgList = SettingsFactory.getAll( function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
       $scope.filteredList = $scope.orgList;
       },function(error){
         displayRestError.display(error);            
@@ -92,7 +97,14 @@ myControllerModule.controller('SSMupdateController', function ($scope, $modalIns
   $scope.header = "Update Settings : "+settings.frindlyName;
   if(settings.key == 'default_firmware'){
     $scope.firmwares = FirmwaresFactory.getAllFirmwares();
+  }else if(settings.key == 'graph_interpolate_type'){
+    //GraphInterpolateTypes
+    $scope.graphInterpolateTypes = TypesFactory.getGraphInterpolateTypes();
+  } else if(settings.key == 'mys_config'){
+    //MySensors Config Types
+    $scope.mysConfigTypes = TypesFactory.getMysConfigTypes();
   }
+  
   $scope.update = function() {$modalInstance.close(settings);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

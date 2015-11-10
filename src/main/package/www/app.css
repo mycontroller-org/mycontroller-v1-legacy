@@ -15,31 +15,73 @@
  */
 /* app css stylesheet */
 
-.menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
+/* Specify styling for uib-tooltip contents */
+.tooltip.customClass450px .tooltip-inner {
+  min-width: 450px;
+  text-align: left;
 }
 
-.menu:before {
-  content: "[";
+/* Specify styling for uib-tooltip contents */
+.tooltip.customClass350px .tooltip-inner {
+  min-width: 350px;
+  text-align: left;
 }
 
-.menu:after {
-  content: "]";
+.battery-modal-window .modal-dialog {
+  width: 95%;
 }
 
-.menu > li {
-  display: inline;
+body {
+  padding-top: 13px;
+  padding-bottom: 70px;
 }
 
-.menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
+.tick line {
+  display: none;
 }
 
-.menu > li:nth-child(1):before {
-  content: "";
-  padding: 0;
+.modal-body {
+  position: relative;
+  padding-top: 20px;
+  padding-right: 10px;
+  padding-bottom: 2px;
+  padding-left: 10px;
+}
+
+.modal-body-text-only {
+  position: relative;
+  padding: 5px 20px;
+}
+
+.modal-header {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+.modal-footer {
+  padding: 12px;
+}
+
+.mc-dialog {
+  /*border-style: solid;
+   border-width: 1px;
+   border-color: #D3D3D3;*/
+}
+
+.panel-body-action-board {
+  padding-top: 3px;
+}
+
+.multiSelect > button {
+  font-size: 12px;
+  min-height: 35px !important;
+  border-radius: 0px;
+}
+
+/* Specify styling for angular-bootstrap-colorpicker contents */
+.close-colorpicker {
+  color:gray;
+}
+
+.close-colorpicker:hover {
+  color:black;
 }

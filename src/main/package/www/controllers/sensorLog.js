@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorLogController', function(alertService,
-$scope, $filter, SensorLogFactory, $location, $modal, $stateParams) {
+$scope, $filter, SensorLogFactory, $location, $uibModal, $stateParams, about) {
   
   $scope.sensor = SensorLogFactory.getSensorData({"id":$stateParams.id},function(response) {
                     },function(error){
@@ -28,6 +28,9 @@ $scope, $filter, SensorLogFactory, $location, $modal, $stateParams) {
     maxPages:5,
     fillLastPage: false
   }
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //Filter
   $scope.updateFilteredList = function() {
@@ -41,7 +44,7 @@ $scope, $filter, SensorLogFactory, $location, $modal, $stateParams) {
 });
 
 myControllerModule.controller('LogsController', function(alertService,
-$scope, $filter, SensorLogFactory, $location, $modal, $stateParams) {
+$scope, $filter, SensorLogFactory, $location, $uibModal, $stateParams, about) {
       
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -50,6 +53,9 @@ $scope, $filter, SensorLogFactory, $location, $modal, $stateParams) {
     maxPages:5,
     fillLastPage: false
   }
+
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //Filter
   $scope.updateFilteredList = function() {

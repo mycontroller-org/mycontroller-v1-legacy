@@ -31,23 +31,52 @@ public class AppProperties {
     private static final Logger _logger = LoggerFactory.getLogger(AppProperties.class.getName());
 
     public static final String APPLICATION_NAME = "MyController.org";
-    private String serialPortName;
-    private String serialPortDriver;
-    private int serialPortBaudRate;
-    private String h2DbLocation;
-    private String wwwFileLocation;
-    private boolean isHttpsEnabled = false;
-    private int httpPort;
-    private String sslKeystoreFile;
-    private String sslKeystorePassword;
-    private String sslKeystoreType;
-    private String bindAddress;
+    public static final String EMAIL_TEMPLATE_ALARM = "../conf/templates/emailTemplateAlarm.html";
+
+    private String gatewayType;
+
+    private String gatewaySerialPortName;
+    private String gatewaySerialPortDriver;
+    private Integer gatewaySerialPortBaudRate;
+    private Integer gatewaySerialPortRetryFrequency;
+
+    private String gatewayEthernetHost;
+    private Integer gatewayEthernetPort;
+    private Integer gatewayEthernetKeepAliveFrequency;
+
+    private String gatewayMqttHost;
+    private Integer gatewayMqttPort;
+    private String gatewayMqttRootTopic;
+
+    private String dbH2DbLocation;
+    private String webFileLocation;
+    private boolean isWebHttpsEnabled = false;
+    private int webHttpPort;
+    private String webSslKeystoreFile;
+    private String webSslKeystorePassword;
+    private String webSslKeystoreType;
+    private String webBindAddress;
+
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
     public enum SERIAL_PORT_DRIVER {
         AUTO,
         PI4J,
         JSSC,
         JSERIALCOMM;
+    }
+
+    public enum GATEWAY_TYPES {
+        SERIAL,
+        ETHERNET,
+        MQTT;
+    }
+
+    public enum MYSENSORS_CONFIG {
+        METRIC,
+        IMPERIAL
     }
 
     public AppProperties() {
@@ -58,21 +87,43 @@ public class AppProperties {
     }
 
     public void loadProperties(Properties properties) {
-        this.serialPortName = getValue(properties, "mcc.serialport.name");
-        this.serialPortDriver = getValue(properties, "mcc.serialport.driver.type");
-        this.serialPortBaudRate = Integer.valueOf(getValue(properties, "mcc.serialport.baud.rate"));
-        this.h2DbLocation = getValue(properties, "mcc.h2db.location");
-        this.wwwFileLocation = getValue(properties, "www.file.location");
-        this.httpPort = Integer.valueOf(getValue(properties, "http.port"));
-        if (getValue(properties, "enable.https") != null) {
-            if (Boolean.valueOf(getValue(properties, "enable.https"))) {
-                this.isHttpsEnabled = true;
-                this.sslKeystoreFile = getValue(properties, "ssl.keystore.file");
-                this.sslKeystorePassword = getValue(properties, "ssl.keystore.password");
-                this.sslKeystoreType = getValue(properties, "ssl.keystore.type");
+        this.gatewayType = getValue(properties, "mcc.gateway.type");
+
+        if (this.gatewayType.equalsIgnoreCase(GATEWAY_TYPES.SERIAL.toString())) {
+            this.gatewaySerialPortName = getValue(properties, "mcc.gateway.serialport.name");
+            this.gatewaySerialPortDriver = getValue(properties, "mcc.gateway.serialport.driver.type");
+            this.gatewaySerialPortBaudRate = Integer.valueOf(getValue(properties, "mcc.gateway.serialport.baud.rate"));
+            this.gatewaySerialPortRetryFrequency = Integer.valueOf(getValue(properties,
+                    "mcc.gateway.serialport.retry.frequency"));
+
+        } else if (this.gatewayType.equalsIgnoreCase(GATEWAY_TYPES.ETHERNET.toString())) {
+            this.gatewayEthernetHost = getValue(properties, "mcc.gateway.ethernet.host");
+            this.gatewayEthernetPort = Integer.valueOf(getValue(properties, "mcc.gateway.ethernet.port"));
+            this.gatewayEthernetKeepAliveFrequency = Integer.valueOf(getValue(properties,
+                    "mcc.gateway.ethernet.keep.alive.frequency"));
+
+        } else if (this.gatewayType.equalsIgnoreCase(GATEWAY_TYPES.MQTT.toString())) {
+            this.gatewayMqttHost = getValue(properties, "mcc.gateway.mqtt.host");
+            this.gatewayMqttPort = Integer.valueOf(getValue(properties, "mcc.gateway.mqtt.port"));
+            this.gatewayMqttRootTopic = getValue(properties, "mcc.gateway.mqtt.root.topic");
+
+        } else {
+            throw new RuntimeException("Unknown gateway type defined! Type:" + this.gatewayType);
+        }
+
+        this.dbH2DbLocation = getValue(properties, "mcc.db.h2db.location");
+        this.webFileLocation = getValue(properties, "mcc.web.file.location");
+        this.webHttpPort = Integer.valueOf(getValue(properties, "mcc.web.http.port"));
+        if (getValue(properties, "mcc.web.enable.https") != null) {
+            if (Boolean.valueOf(getValue(properties, "mcc.web.enable.https"))) {
+                this.isWebHttpsEnabled = true;
+                this.webSslKeystoreFile = getValue(properties, "mcc.web.ssl.keystore.file");
+                this.webSslKeystorePassword = getValue(properties, "mcc.web.ssl.keystore.password");
+                this.webSslKeystoreType = getValue(properties, "mcc.web.ssl.keystore.type");
             }
         }
-        this.bindAddress = getValue(properties, "bind.address");
+        this.webBindAddress = getValue(properties, "mcc.web.bind.address");
+
     }
 
     private String getValue(Properties properties, String key) {
@@ -85,37 +136,20 @@ public class AppProperties {
         }
     }
 
-    public String getSerialPortName() {
-        return serialPortName;
-    }
-
-    public void setSerialPortName(String serialPortName) {
-        this.serialPortName = serialPortName;
-    }
-
-    public String getSerialPortDriver() {
-        return serialPortDriver;
-    }
-
-    public void setSerialPortDriver(String serialPortDriver) {
-        this.serialPortDriver = serialPortDriver;
-    }
-
-    public int getSerialPortBaudRate() {
-        return serialPortBaudRate;
-    }
-
-    public void setSerialPortBaudRate(int serialPortBaudRate) {
-        this.serialPortBaudRate = serialPortBaudRate;
-    }
-
     public int getNodeId() {
         Settings settings = DaoUtils.getSettingsDao().get(Settings.AUTO_NODE_ID);
         return Integer.valueOf(settings.getValue());
     }
 
-    //TODO: Get this one from database
     public String getMetricType() {
+        Settings settings = DaoUtils.getSettingsDao().get(Settings.MY_SENSORS_CONFIG);
+        if (settings != null && settings.getValue() != null) {
+            if (settings.getValue().equalsIgnoreCase(MYSENSORS_CONFIG.METRIC.toString())) {
+                return "M";
+            } else if (settings.getValue().equalsIgnoreCase(MYSENSORS_CONFIG.IMPERIAL.toString())) {
+                return "I";
+            }
+        }
         return "M";
     }
 
@@ -161,39 +195,79 @@ public class AppProperties {
         return System.getProperties().getProperty("os.version");
     }
 
-    public String getH2DbLocation() {
-        return h2DbLocation;
+    public String getGatewayType() {
+        return gatewayType;
     }
 
-    public String getWwwFileLocation() {
-        return wwwFileLocation;
+    public String getGatewaySerialPortName() {
+        return gatewaySerialPortName;
     }
 
-    public boolean isHttpsEnabled() {
-        return isHttpsEnabled;
+    public String getGatewaySerialPortDriver() {
+        return gatewaySerialPortDriver;
     }
 
-    public int getHttpPort() {
-        return httpPort;
+    public Integer getGatewaySerialPortBaudRate() {
+        return gatewaySerialPortBaudRate;
     }
 
-    public String getSslKeystoreFile() {
-        return sslKeystoreFile;
+    public Integer getGatewaySerialPortRetryFrequency() {
+        return gatewaySerialPortRetryFrequency;
     }
 
-    public String getSslKeystorePassword() {
-        return sslKeystorePassword;
+    public String getGatewayEthernetHost() {
+        return gatewayEthernetHost;
     }
 
-    public String getSslKeystoreType() {
-        return sslKeystoreType;
+    public Integer getGatewayEthernetPort() {
+        return gatewayEthernetPort;
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    public Integer getGatewayEthernetKeepAliveFrequency() {
+        return gatewayEthernetKeepAliveFrequency;
     }
 
-    public String getBindAddress() {
-        return bindAddress;
+    public String getGatewayMqttHost() {
+        return gatewayMqttHost;
+    }
+
+    public Integer getGatewayMqttPort() {
+        return gatewayMqttPort;
+    }
+
+    public String getGatewayMqttRootTopic() {
+        return gatewayMqttRootTopic;
+    }
+
+    public String getDbH2DbLocation() {
+        return dbH2DbLocation;
+    }
+
+    public String getWebFileLocation() {
+        return webFileLocation;
+    }
+
+    public boolean isWebHttpsEnabled() {
+        return isWebHttpsEnabled;
+    }
+
+    public int getWebHttpPort() {
+        return webHttpPort;
+    }
+
+    public String getWebSslKeystoreFile() {
+        return webSslKeystoreFile;
+    }
+
+    public String getWebSslKeystorePassword() {
+        return webSslKeystorePassword;
+    }
+
+    public String getWebSslKeystoreType() {
+        return webSslKeystoreType;
+    }
+
+    public String getWebBindAddress() {
+        return webBindAddress;
     }
 }

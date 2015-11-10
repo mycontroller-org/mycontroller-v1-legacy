@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsController', function(alertService,
-$scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestError) {
+$scope, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, about) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -23,6 +23,9 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     maxPages:10,
     fillLastPage: false
   }
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //Filter
   $scope.updateFilteredList = function() {
@@ -60,7 +63,7 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
   
   //Delete a Sensor
   $scope.delete = function (sensor, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'SMdeleteController',
     size: size,
@@ -89,7 +92,7 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     
   //Add a Sensor
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/sensors/addModal.html',
     controller: 'SMaddController',
     size: size,
@@ -115,7 +118,7 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
     
   //Update a Sensor
   $scope.update = function (sensor, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/sensors/updateModal.html',
     controller: 'SMupdateController',
     size: size,
@@ -145,10 +148,10 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
 myControllerModule.controller('SMdeleteController', function ($scope, $modalInstance, $sce, sensor) {
   $scope.sensor = sensor;
   $scope.header = "Delete Sensor";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete a Sensor"
-    +"<br>Deletion process will remove complete trace of this sensor!" 
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Sensor"
+    +"<br>Deletion process will remove complete trace of this resource!" 
     +"<br>Click 'Delete' to proceed."
-    +"<br><I>Sensor: "+sensor.nameWithNode+"[nodeId:"+sensor.node.id+",sensorId:"+sensor.sensorId +",type:"+sensor.typeString+"]</I>");
+    +"<br><I>Sensor:</I> "+sensor.nameWithNode+" [nodeId:"+sensor.node.id+",sensorId:"+sensor.sensorId +",type:"+sensor.typeString+"]");
   $scope.remove = function() {
     $modalInstance.close($scope.sensor);
   };
@@ -157,10 +160,25 @@ myControllerModule.controller('SMdeleteController', function ($scope, $modalInst
 
 myControllerModule.controller('SMaddController', function ($scope, $modalInstance, TypesFactory) {
   $scope.sensor = {};
-  $scope.header = "Add Sensor";
+  $scope.header = "New Sensor";
   $scope.sensorTypes = TypesFactory.getSensorTypes();
-  $scope.sensorValueTypes = TypesFactory.getSensorValueTypes();
+  $scope.sensorVariableTypes = {};
   $scope.nodes = TypesFactory.getNodes();
+  
+  $scope.refreshVariableTypes = function(sensorTypeId){
+    return TypesFactory.getSensorVariableTypes({id: sensorTypeId});
+  }
+  
+  $scope.updateVariableTypes= function(){
+    $scope.sensor.variableTypes = {};
+    var variableTypesArray=[];
+    if($scope.variableTypes.length >0){
+        angular.forEach($scope.variableTypes, function(key, value) {
+          variableTypesArray.push(key.displayName);
+        });
+      }
+      $scope.sensor.variableTypes = variableTypesArray.join(', ');//Refer Api
+  }
   $scope.add = function() {$modalInstance.close($scope.sensor); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
@@ -169,7 +187,23 @@ myControllerModule.controller('SMupdateController', function ($scope, $modalInst
   $scope.sensor = sensor;
   $scope.sensorTypes = TypesFactory.getSensorTypes();
   $scope.sensorValueTypes = TypesFactory.getSensorValueTypes();
-  $scope.header = "Update Sensor";
+  $scope.header = "Modify Sensor";
+  $scope.sensorVariableTypes = TypesFactory.getSensorVariableTypesBySensorRefId({id: sensor.id});
+  
+  $scope.refreshVariableTypes = function(sensorTypeId){
+    return TypesFactory.getSensorVariableTypes({id: sensorTypeId});
+  }
+  
+  $scope.updateVariableTypes= function(){
+    $scope.sensor.variableTypes = {};
+    var variableTypesArray=[];
+    if($scope.variableTypes.length >0){
+        angular.forEach($scope.variableTypes, function(key, value) {
+          variableTypesArray.push(key.displayName);
+        });
+      }
+      $scope.sensor.variableTypes = variableTypesArray.join(', ');
+  }
   $scope.update = function() {$modalInstance.close($scope.sensor);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

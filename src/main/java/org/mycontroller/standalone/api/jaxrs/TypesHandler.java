@@ -19,6 +19,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -26,9 +27,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
+import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.USER_ROLE;
+import org.mycontroller.standalone.db.tables.Sensor;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -49,6 +54,12 @@ public class TypesHandler {
     @Path("/sensorValueTypes")
     public Response getSensorValueTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getSensorValueTypes());
+    }
+
+    @GET
+    @Path("/nodeTypes")
+    public Response getNodeTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNodeTypes());
     }
 
     @GET
@@ -104,4 +115,72 @@ public class TypesHandler {
     public Response getSensors(@PathParam("nodeId") int nodeId) {
         return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(nodeId));
     }
+
+    @GET
+    @Path("/graphInterpolate")
+    public Response getGraphInterpolateTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGraphInterpolateTypes());
+    }
+    
+    @GET
+    @Path("/mysConfigTypes")
+    public Response getMysConfigTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMysConfigTypes());
+    }
+
+    @GET
+    @Path("/sensorVariableTypesAll/{sensorType}")
+    public Response getSensorVariableTypesAll(@PathParam("sensorType") int sensorType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypesAll(sensorType));
+    }
+
+    @GET
+    @Path("/sensorVariableTypes/{sensorType}")
+    public Response getSensorVariableTypes(@PathParam("sensorType") int sensorType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypes(sensorType, null));
+    }
+
+    @GET
+    @Path("/sensorVariableTypesBySenRef/{sensorRefId}")
+    public Response getSensorVariableTypesBySensorRefId(@PathParam("sensorRefId") int sensorRefId) {
+        Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
+        if (sensor != null && sensor.getType() != null) {
+            return RestUtils.getResponse(Status.OK,
+                    TypesUtils.getSensorVariableTypes(sensor.getType(), sensor.getVariableTypes()));
+        }
+        return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(
+                "Requested Sensor[" + sensor.getName() + "] type not available or Sensor not available"));
+    }
+
+    @GET
+    @Path("/graphSensorVariableTypes/{sensorRefId}")
+    public Response getGraphSensorVariableTypes(@PathParam("sensorRefId") int sensorRefId) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGraphSensorVariableTypes(sensorRefId));
+    }
+
+    @GET
+    @Path("/messageTypes")
+    public Response getMessageTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageTypes());
+    }
+
+    @GET
+    @Path("/messageSubTypes/{messageType}")
+    public Response getMessageSubTypes(@PathParam("messageType") int messageType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageSubTypes(messageType));
+    }
+
+    @GET
+    @Path("/sensorVariableMapper")
+    public Response getSensorVariableMapper() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
+    }
+
+    @PUT
+    @Path("/sensorVariableMapper")
+    public Response updateSensorVariableMapper(KeyValueJson keyValue) {
+        TypesUtils.updateVariableMap(keyValue);
+        return RestUtils.getResponse(Status.OK);
+    }
+
 }

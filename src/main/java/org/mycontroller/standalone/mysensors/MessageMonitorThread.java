@@ -16,6 +16,8 @@
 package org.mycontroller.standalone.mysensors;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.gateway.MySensorsGatewayException;
+import org.mycontroller.standalone.gateway.IMySensorsGateway.GATEWAY_STATUS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,14 +43,14 @@ public class MessageMonitorThread implements Runnable {
             try {
                 Thread.sleep(10);
                 if ((System.currentTimeMillis() - start) >= waitTime) {
-                    _logger.warn("Unable to stop AlarmMonitorThread on specied wait time[{}ms]", waitTime);
+                    _logger.warn("Unable to stop MessageMonitorThread on specied wait time[{}ms]", waitTime);
                     break;
                 }
             } catch (InterruptedException ex) {
                 _logger.debug("Exception in xsleep thread,", ex);
             }
         }
-        _logger.debug("AlarmMonitorThread terminated");
+        _logger.debug("MessageMonitorThread terminated");
     }
 
     private void processRawMessage() {
@@ -56,20 +58,25 @@ public class MessageMonitorThread implements Runnable {
             RawMessage rawMessage = ObjectFactory.getRawMessageQueue().getMessage();
             try {
                 processRawMessage.messageTypeSelector(rawMessage);
+            } catch (MySensorsGatewayException ex) {
+                if (ex.getMessage().contains(GATEWAY_STATUS.GATEWAY_ERROR.toString())) {
+                    _logger.error("Problem with Gateway!, RawMessage[{}], Error:[{}]", rawMessage, ex.getMessage());
+                } else {
+                    _logger.error("RawMessage[{}] throws exception while processing!, ", rawMessage, ex);
+                }
             } catch (Exception ex) {
                 _logger.error("RawMessage[{}] throws exception while processing!, ", rawMessage, ex);
             }
-
         }
         if (!ObjectFactory.getRawMessageQueue().isEmpty()) {
-            _logger.warn("AlarmMonitorThread terminating with {} message(s) in queue!", ObjectFactory
+            _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!", ObjectFactory
                     .getRawMessageQueue().getQueueSize());
         }
     }
 
     public void run() {
         try {
-            _logger.debug("AlarmMonitorThread new thread started.");
+            _logger.debug("MessageMonitorThread new thread started.");
             while (!isTerminationIssued()) {
                 try {
                     this.processRawMessage();
@@ -79,12 +86,12 @@ public class MessageMonitorThread implements Runnable {
                 }
             }
             if (isTerminationIssued()) {
-                _logger.debug("AlarmMonitorThread termination issues. Terminating.");
+                _logger.debug("MessageMonitorThread termination issues. Terminating.");
                 terminated = true;
             }
         } catch (Exception ex) {
             terminated = true;
-            _logger.error("AlarmMonitorThread terminated!, ", ex);
+            _logger.error("MessageMonitorThread terminated!, ", ex);
         }
     }
 

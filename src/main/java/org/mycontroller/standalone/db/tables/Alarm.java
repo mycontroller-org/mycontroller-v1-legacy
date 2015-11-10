@@ -16,7 +16,9 @@
 package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.AlarmUtils;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -24,12 +26,13 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-
 @DatabaseTable(tableName = "alarm")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Alarm {
     public static final String SENSOR_REF_ID = "sensor_ref_id";
     public static final String ENABLED = "enabled";
     public static final String TRIGGERED = "triggered";
+    public static final String VARIABLE_TYPE = "variable_type";
 
     public Alarm() {
         this.triggered = false;
@@ -47,6 +50,9 @@ public class Alarm {
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID,
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Sensor sensor;
+
+    @DatabaseField(canBeNull = false, columnName = VARIABLE_TYPE)
+    private Integer variableType;
 
     @DatabaseField(canBeNull = true)
     private Long timestamp;
@@ -318,6 +324,49 @@ public class Alarm {
 
     public void setIgnoreDuplicate(Boolean ignoreDuplicate) {
         this.ignoreDuplicate = ignoreDuplicate;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id:").append(this.id);
+        builder.append(", Enabled:").append(this.enabled);
+        builder.append(", Name:").append(this.name);
+        builder.append(", Sensor:[").append(this.sensor).append("]");
+        builder.append(", Variable Type:").append(this.getVariableTypeString());
+        builder.append(", timestamp:").append(this.timestamp);
+        builder.append(", ignoreDuplicate:").append(this.ignoreDuplicate);
+        builder.append(", lastTrigger:").append(this.lastTrigger);
+        builder.append(", lastNotification:").append(this.lastNotification);
+        builder.append(", triggered:").append(this.triggered);
+        builder.append(", occurrenceCount:").append(this.occurrenceCount);
+        builder.append(", evaluationCount:").append(this.evaluationCount);
+        builder.append(", type:").append(this.type);
+        builder.append(", trigger:").append(this.trigger);
+        builder.append(", thresholdValue:").append(this.thresholdValue);
+        builder.append(", dampeningType:").append(this.dampeningType);
+        builder.append(", dampeningVar1:").append(this.dampeningVar1);
+        builder.append(", dampeningVar2:").append(this.dampeningVar2);
+        builder.append(", variable1:").append(this.variable1);
+        builder.append(", variable2:").append(this.variable2);
+        builder.append(", variable3:").append(this.variable3);
+        builder.append(", variable4:").append(this.variable4);
+        builder.append(", variable5:").append(this.variable5);
+        return builder.toString();
+    }
+
+    public Integer getVariableType() {
+        return variableType;
+    }
+
+    public String getVariableTypeString() {
+        if (variableType != null) {
+            return MESSAGE_TYPE_SET_REQ.get(variableType).toString();
+        }
+        return "";
+    }
+
+    public void setVariableType(Integer variableType) {
+        this.variableType = variableType;
     }
 
 }

@@ -25,7 +25,11 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     update: { method: 'PUT' },
     delete: { method: 'DELETE', params: {sensorId: '@sensorId'} },
     getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
-    sendPayload: { method: 'POST', params: {sensorId: '@payload'} }
+    sendPayload: { method: 'POST'},
+    getSensorByRefId: { method: 'GET', params: {nodeId: 'sensorByRefId'}},
+    getOthers: { method: 'GET', isArray: true, params: {nodeId: 'getOthers'}},
+    updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}},
+    getSensorValue: { method: 'GET', params: {nodeId: 'sensorValue'}}
   })
 });
 
@@ -37,7 +41,9 @@ myControllerModule.factory('NodesFactory', function ($resource) {
     create: { method: 'POST'},
     update: { method: 'PUT' },
     delete: { method: 'DELETE' },
-    reboot: { method: 'POST', params: {nodeId: 'reboot'}}
+    reboot: { method: 'POST', params: {nodeId: 'reboot'}},
+    discover: { method: 'POST', params: {nodeId: 'nodeDiscover'}},
+    uploadFirmware: { method: 'POST', params: {nodeId: 'uploadFirmware'}},
   })
 });
 
@@ -65,6 +71,7 @@ myControllerModule.factory('FirmwaresFactory', function ($resource) {
 //Types Services
 myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
+    getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
     getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}  },
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },
     getAlarmTypes:  { method: 'GET', isArray: true, params: {type: 'alarmtypes'}  },
@@ -75,21 +82,30 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getSensors:  { method: 'GET', isArray: true, params: {type: 'sensors'} },
     getTimerTypes:  { method: 'GET', isArray: true, params: {type: 'timerTypes'}  },
     getTimerFrequencies:  { method: 'GET', isArray: true, params: {type: 'timerFrequencies'}  },
-    getTimerDays:  { method: 'GET', isArray: true, params: {type: 'timerDays'}  }
+    getTimerDays:  { method: 'GET', isArray: true, params: {type: 'timerDays'}  },
+    getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  },
+    getMysConfigTypes:  { method: 'GET', isArray: true, params: {type: 'mysConfigTypes'}  },
+    getSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypes'}  },
+    getSensorVariableTypesAll:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesAll'}  },    
+    getSensorVariableTypesBySensorRefId:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesBySenRef'}  },
+    getMessageTypes:  { method: 'GET', isArray: true, params: {type: 'messageTypes'}  },
+    getMessageSubTypes:  { method: 'GET', isArray: true, params: {type: 'messageSubTypes'} },
+    getSensorVariableMapper:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapper'} },
+    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} }, 
+    getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} }, 
   })
 });
 
 //Metrics Services
 myControllerModule.factory('MetricsFactory', function ($resource) {
-  return $resource('/mc/rest/metrics/:type/:sensorId', {sensorId: '@sensorId'}, {
-    lastMinute: { method: 'GET', isArray: true, params: {type: 'lastMinute'}},
-    last5Minutes: { method: 'GET', isArray: true, params: {type: 'last5Minutes'}},
-    lastOneHour: { method: 'GET', isArray: true, params: {type: 'lastOneHour'}},
-    last24Hours: { method: 'GET', isArray: true, params: {type: 'last24Hours'}},
-    last30Days: { method: 'GET', isArray: true, params: {type: 'last30Days'}},
-    lastYear: { method: 'GET', isArray: true, params: {type: 'lastYear'}},
-    allYears: { method: 'GET', isArray: true, params: {type: 'allYears'}},
-    sensorData: { method: 'GET', isArray: false, params: {type: 'sensorData'}}         
+  return $resource('/mc/rest/metrics/:type', {}, {
+    getRawData: { method: 'GET', isArray: true, params: {type: 'rawData'}},
+    getOneMinuteData: { method: 'GET', isArray: true, params: {type: 'oneMinuteData'}},
+    getFiveMinutesData: { method: 'GET', isArray: true, params: {type: 'fiveMinutesData'}},
+    getOneHourData: { method: 'GET', isArray: true, params: {type: 'oneHourData'}},
+    getOneDayData: { method: 'GET', isArray: true, params: {type: 'oneDayData'}},
+    getCsvFile: { method: 'GET', isArray: false, params: {type: 'csvFile'}},
+    batteryUsage: { method: 'GET', isArray: true, params: {type: 'batteryUsage'}},
   })
 });
 
@@ -208,13 +224,15 @@ myControllerModule.factory('SensorLogFactory', function ($resource) {
 
 //MyController Settings Services
 myControllerModule.factory('SettingsFactory', function ($resource) {
-  return $resource('/mc/rest/settings/:type', {}, {
+  return $resource('/mc/rest/settings/:type/:key_', {key_: '@key_'}, {
     getSunriseSunset: { method: 'GET', isArray: true, params: {type:'sunriseSunset'} },
     getNodeDefaults: { method: 'GET', isArray: true, params: {type:'nodeDefaults'} },
     getEmail: { method: 'GET', isArray: true, params: {type:'email'} },
     getSMS: { method: 'GET', isArray: true, params: {type:'sms'} },
     getVersion: { method: 'GET', isArray: true, params: {type:'version'} },
     getUnits: { method: 'GET', isArray: true, params: {type:'units'} },
+    getGraph: { method: 'GET', isArray: true, params: {type:'graph'} },
+    get: { method: 'GET', isArray: false, params: {type:'settings'} },
     update: { method: 'PUT'}
   })
 });
@@ -223,6 +241,9 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
 myControllerModule.factory('StatusFactory', function ($resource) {
   return $resource('/mc/rest/:type', {}, {
    getOsStatus: { method: 'GET', params: {type:'osStatus'} },
-   getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} }
+   getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
+   about: { method: 'GET', params: {type:'about'} },
+   getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
+   sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
   })
 });

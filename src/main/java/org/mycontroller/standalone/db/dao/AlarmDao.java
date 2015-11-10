@@ -25,14 +25,28 @@ import org.mycontroller.standalone.db.tables.Alarm;
  */
 public interface AlarmDao {
     void create(Alarm alarm);
+
     void createOrUpdate(Alarm alarm);
+
     void delete(Alarm alarm);
-    void delete(int id);
-    void deleteBySensorRefId(int sensorRefId);
+
+    void delete(Integer id);
+
+    void deleteBySensorRefId(Integer sensorRefId);
+
     void update(Alarm alarm);
+
     List<Alarm> getAll();
-    List<Alarm> getAll(int sensorRefId);
-    List<Alarm> getAll(int sensorRefId, Boolean enabled);
-    Alarm get(int id);
+
+    List<Alarm> getAll(Integer sensorRefId);
+
+    List<Alarm> getAll(Integer sensorRefId, Boolean enabled);
+
+    List<Alarm> getAll(Integer sensorRefId, Integer variableType, Boolean enabled);
+
+    List<Alarm> getAllEnabled(Integer sensorRefId, Integer variableType);
+
+    Alarm get(Integer id);
+
     void disableAllTriggered();
 }

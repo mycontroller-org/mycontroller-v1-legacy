@@ -16,9 +16,8 @@
 package org.mycontroller.standalone.email;
 
 import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.mail.HtmlEmail;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.alarm.SendEmail;
 import org.mycontroller.standalone.db.tables.Settings;
@@ -32,7 +31,9 @@ import org.slf4j.LoggerFactory;
 public class EmailUtils {
     private static final Logger _logger = LoggerFactory.getLogger(EmailUtils.class);
 
-    private static Email email = new SimpleEmail();
+    public static final String ALARM_INFO = "\\$alarmInfo";
+
+    private static HtmlEmail email = null;
 
     private EmailUtils() {
 
@@ -41,9 +42,10 @@ public class EmailUtils {
     public static void sendSimpleEmail(SendEmail sendEmail, String subject, String message) throws EmailException {
         initializeEmail();
         email.setSubject(subject);
-        email.setMsg(message);
+        email.setHtmlMsg(message);
         email.addTo(sendEmail.getToEmailAddress().split(","));
-        email.send();
+        String sendReturn = email.send();
+        _logger.debug("Send Status:[{}]", sendReturn);
         _logger.debug("Email successfully sent to [{}], Message:[{}]", sendEmail.getToEmailAddress(), message);
     }
 
@@ -56,7 +58,7 @@ public class EmailUtils {
     }
 
     public static void initializeEmail() throws EmailException {
-        email = new SimpleEmail();
+        email = new HtmlEmail();
         email.setHostName(getString(Settings.EMAIL_SMTP_HOST));
         email.setSmtpPort(Integer.valueOf(getString(Settings.EMAIL_SMTP_PORT)));
         if (DaoUtils.getSettingsDao().get(Settings.EMAIL_SMTP_USERNAME).getValue() != null

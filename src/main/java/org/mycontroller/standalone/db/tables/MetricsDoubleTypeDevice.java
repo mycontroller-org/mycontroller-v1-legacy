@@ -17,19 +17,23 @@ package org.mycontroller.standalone.db.tables;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@DatabaseTable(tableName = "metrics_double")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MetricsDoubleTypeDevice {
-    public static final String SENSOR_REF_ID = "sensor_ref_id";
+    public static final String SENSOR_VALUE_REF_ID = "sensor_value_ref_id";
     public static final String TIMESTAMP = "timestamp";
     public static final String AGGREGATION_TYPE = "aggregation_type";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID)
-    private Sensor sensor;
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_VALUE_REF_ID)
+    private SensorValue sensorValue;
 
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = TIMESTAMP)
     private Long timestamp;
@@ -52,23 +56,21 @@ public class MetricsDoubleTypeDevice {
     private Long timestampFrom;
     private Long timestampTo;
 
-    public MetricsDoubleTypeDevice(Sensor sensor, Integer aggregationType, Long timestamp) {
-        this.sensor = sensor;
-        this.aggregationType = aggregationType;
-        this.timestamp = timestamp;
+    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType) {
+        this(sensorValue, aggregationType, null, null, aggregationType);
     }
 
-    public MetricsDoubleTypeDevice(Sensor sensor, Integer aggregationType, Long timestamp, Double avg, Integer samples) {
-        this.sensor = sensor;
+    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType, Long timestamp) {
+        this(sensorValue, aggregationType, timestamp, null, aggregationType);
+    }
+
+    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType, Long timestamp, Double avg,
+            Integer samples) {
+        this.sensorValue = sensorValue;
         this.aggregationType = aggregationType;
         this.timestamp = timestamp;
         this.avg = avg;
         this.samples = samples;
-    }
-
-    public MetricsDoubleTypeDevice(Integer aggregationType, Long timestamp) {
-        this.aggregationType = aggregationType;
-        this.timestamp = timestamp;
     }
 
     public MetricsDoubleTypeDevice() {
@@ -79,12 +81,12 @@ public class MetricsDoubleTypeDevice {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public Sensor getSensor() {
-        return sensor;
+    public SensorValue getSensorValue() {
+        return this.sensorValue;
     }
 
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
+    public void setSensorValue(SensorValue sensorValue) {
+        this.sensorValue = sensorValue;
     }
 
     public Long getTimestamp() {

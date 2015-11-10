@@ -17,21 +17,22 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
-  <div class="modal-body">
-   
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.unit">Display Unit:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="sensor.unit" placeholder="Unit" ng-model="sensor.unit">
-      </div>
-    </div>
-  </form>
   
+  <div class="modal-body">
+    <form class="form-horizontal form-group-sm" role="form" name="form">
+    
+      <div class="form-group form-inline" ng-repeat="keyValue in keyValues">
+        <label class="control-label col-sm-3">{{keyValue.key}}</label>
+        <input style="width:320px" type="text" class="form-control" id="{{keyValue.key}}" placeholder="{{keyValue.type}}" ng-model="keyValue.value">
+      </div> 
+   
+    </form>
+    
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="edit()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> Update</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="edit()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> {{ 'SYSTEM.UPDATE' | translate }}</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
+  
 </div>

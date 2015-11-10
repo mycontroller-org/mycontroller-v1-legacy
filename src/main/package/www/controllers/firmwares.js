@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('FirmwareController', function(alertService,
-$scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
+$scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -24,6 +24,8 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     fillLastPage: false
   }
 
+  //about, Timezone, etc.,
+  $scope.about = about;
 
   //Filter
   $scope.updateFilteredList = function() {
@@ -39,7 +41,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
   
   //Delete a Firmware
   $scope.delete = function (firmware, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'FMdeleteController',
     size: size,
@@ -69,7 +71,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     
   //Add a Firmware
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/firmwares/firmwareAddModal.html',
     controller: 'FMaddController',
     size: size,
@@ -97,7 +99,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     
   //Update a Firmware
   $scope.update = function (firmware, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/firmwares/firmwareUpdateModal.html',
     controller: 'FMupdateController',
     size: size,
@@ -128,7 +130,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
 myControllerModule.controller('FMdeleteController', function ($scope, $modalInstance, $sce, firmware) {
   $scope.firmware = firmware;
   $scope.header = "Delete Firmware";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete a Firmware"
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Firmware"
     +"<br>Deletion process will remove complete trace of this firmware!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>Firmware: </I>[id:"+firmware.id+",Type:"+firmware.type.name +",Version:"+firmware.version.name+"]");

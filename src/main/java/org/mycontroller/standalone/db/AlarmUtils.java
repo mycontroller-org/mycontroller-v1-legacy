@@ -60,7 +60,7 @@ public class AlarmUtils {
         GREATER_THAN_EQUAL(">="),
         LESSER_THAN("<"),
         LESSER_THAN_EQUAL("<="),
-        EQUAL("="),
+        EQUAL("=="),
         NOT_EQUAL("!=");
 
         public static TRIGGER get(int id) {
@@ -107,47 +107,8 @@ public class AlarmUtils {
         }
     }
 
-    //http://www.tutorialspoint.com/cprogramming/c_operators.htm
-    public enum SEND_PAYLOAD_OPERATIONS {
-        INVERT("!"),
-        INCREMENT("++"),
-        DECREMENT("--"),
-        ADD("+"),
-        SUBTRACT("-"),
-        MULTIPLIE("*"),
-        DIVIDE("/"),
-        MODULUS("%");
-        public static SEND_PAYLOAD_OPERATIONS get(int id) {
-            for (SEND_PAYLOAD_OPERATIONS type : values()) {
-                if (type.ordinal() == id) {
-                    return type;
-                }
-            }
-            throw new IllegalArgumentException(String.valueOf(id));
-        }
-
-        private String value;
-
-        private SEND_PAYLOAD_OPERATIONS(String value) {
-            this.value = value;
-        }
-
-        public String value() {
-            return this.value;
-        }
-
-        public static SEND_PAYLOAD_OPERATIONS findByValue(String value) {
-            for (SEND_PAYLOAD_OPERATIONS type : values()) {
-                if (type.value().equals(value)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
-
     public static SendPayLoad getSendPayLoad(Alarm alarm) {
-        return new SendPayLoad(alarm.getVariable1(), alarm.getVariable2());
+        return new SendPayLoad(alarm.getVariable1(), alarm.getVariable2(), alarm.getVariable3());
     }
 
     public static void setSendPayLoad(Alarm alarm, SendPayLoad sendPayLoad) {

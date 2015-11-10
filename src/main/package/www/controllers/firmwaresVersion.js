@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('FirmwareVersionController', function(alertService,
-$scope, $filter, FirmwaresFactory, $modal, displayRestError) {
+$scope, $filter, FirmwaresFactory, $uibModal, displayRestError) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -38,7 +38,7 @@ $scope, $filter, FirmwaresFactory, $modal, displayRestError) {
   
   //Delete a Firmware Version
   $scope.delete = function (firmwareVersion, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'FVMdeleteController',
     size: size,
@@ -68,7 +68,7 @@ $scope, $filter, FirmwaresFactory, $modal, displayRestError) {
     
   //Add a Firmware Version
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/firmwares/firmwareVersionAddModal.html',
     controller: 'FVMaddController',
     size: size,
@@ -96,7 +96,7 @@ $scope, $filter, FirmwaresFactory, $modal, displayRestError) {
     
   //Update a Firmware Version
   $scope.update = function (firmwareVersion, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/firmwares/firmwareVersionUpdateModal.html',
     controller: 'FVMupdateController',
     size: size,
@@ -128,7 +128,7 @@ $scope, $filter, FirmwaresFactory, $modal, displayRestError) {
 myControllerModule.controller('FVMdeleteController', function ($scope, $modalInstance, $sce, firmwareVersion) {
   $scope.firmwareVersion = firmwareVersion;
   $scope.header = "Delete Firmware Version";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete a Firmware Version"
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Firmware Version"
     +"<br>Deletion process will remove complete trace of this firmwareVersion!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>FirmwareVersion: </I>[id:"+firmwareVersion.id+",name:"+firmwareVersion.name +"]");

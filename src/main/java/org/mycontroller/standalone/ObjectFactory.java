@@ -15,8 +15,8 @@
  */
 package org.mycontroller.standalone;
 
+import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.mysensors.RawMessageQueue;
-import org.mycontroller.standalone.serialport.ISerialPort;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -29,7 +29,7 @@ public class ObjectFactory {
 
     private static AppProperties appProperties;
     private static RawMessageQueue rawMessageQueue;
-    private static ISerialPort iSerialPort;
+    private static IMySensorsGateway mySensorsGateway;
 
     public static AppProperties getAppProperties() {
         return appProperties;
@@ -47,11 +47,11 @@ public class ObjectFactory {
         ObjectFactory.rawMessageQueue = rawMessageQueue;
     }
 
-    public synchronized static ISerialPort getiSerialPort() {
-        return iSerialPort;
+    public synchronized static IMySensorsGateway getMySensorsGateway() {
+        return mySensorsGateway;
     }
 
-    public synchronized static void setiSerialPort(ISerialPort iSerialPort) {
-        ObjectFactory.iSerialPort = iSerialPort;
+    public synchronized static void setMySensorsGateway(IMySensorsGateway iSerialPort) {
+        ObjectFactory.mySensorsGateway = iSerialPort;
     }
 }

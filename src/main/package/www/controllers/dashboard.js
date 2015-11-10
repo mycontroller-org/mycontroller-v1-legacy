@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('DashboardController', function(alertService,
-$scope, $filter, $location, $modal, $stateParams, displayRestError) {
+$scope, $filter, $location, $uibModal, $stateParams, displayRestError) {
   
  
 });

@@ -38,6 +38,8 @@ public class SettingsUtils {
         keys.add(Settings.AUTO_NODE_ID);
         keys.add(Settings.DEFAULT_FIRMWARE);
         keys.add(Settings.ENABLE_NOT_AVAILABLE_TO_DEFAULT_FIRMWARE);
+        keys.add(Settings.ENABLE_SEND_PAYLOAD);
+        keys.add(Settings.MY_SENSORS_CONFIG);
         List<Settings> settings = DaoUtils.getSettingsDao().get(keys);
         for (Settings setting : settings) {
             if (setting.getKey().equals(Settings.DEFAULT_FIRMWARE)) {
@@ -84,11 +86,7 @@ public class SettingsUtils {
     }
 
     public static List<Settings> getDisplayUnits() {
-        ArrayList<String> keys = new ArrayList<String>();
-        keys.add(Settings.DEFAULT_UNIT_DISTANCE);
-        keys.add(Settings.DEFAULT_UNIT_PERCENTAGE);
-        keys.add(Settings.DEFAULT_UNIT_TEMPERATURE);
-        return DaoUtils.getSettingsDao().get(keys);
+        return DaoUtils.getSettingsDao().getLike(Settings.DEFAULT_UNIT + "%");
     }
 
     public static List<Settings> getVersionInfo() {
@@ -110,6 +108,13 @@ public class SettingsUtils {
                 break;
             }
         }
+        return settings;
+    }
+
+    public static List<Settings> getGraphSettings() {
+        ArrayList<String> keys = new ArrayList<String>();
+        keys.add(Settings.GRAPH_INTERPOLATE_TYPE);
+        List<Settings> settings = DaoUtils.getSettingsDao().get(keys);
         return settings;
     }
 }

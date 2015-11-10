@@ -1,7 +1,10 @@
-= MyController.org - The Open Source Controller for mysensors.org
+image::logo-mycontroller.org_full.png[MyController.org, link="http://www.mycontroller.org"]
 :source-language: java, angularjs
 
-==== WIKI: https://sourceforge.net/p/mycontroller-org/wiki/MyController.org/
+---
+
+====== Project website: http://www.mycontroller.org
+====== http://demo.mycontroller.org[Demo Link] Authentication: demo/demo
 
 == About
 
@@ -15,7 +18,7 @@ MyController.org server is very lightweight, It required very less resource, bel
   * Memory(RAM) : 40 MB
   * Java        : 1.8 or later
 
-  NOTE: Tested up to 3 nodes and 10 sensors with the above configuration.
+  NOTE: Test done up to 5 nodes and 30 sensors with the above configuration.
 
 ===== Supported Platforms (tested)
 MyController.org is java based application server. We can run it in any platform which supports Java.
@@ -26,9 +29,9 @@ MyController.org is java based application server. We can run it in any platform
 
 == Available Features
 
-Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.2-alpha1[0.0.2-alpha1] version,
+Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.2-alpha5[0.0.2-alpha5] version,
 
-- Supports only http://www.mysensors.org/build/serial_gateway[Serial Gateway]
+- Supports http://www.mysensors.org/build/serial_gateway[Serial Gateway], http://www.mysensors.org/build/ethernet_gateway[Ethernet Gateway], http://www.mysensors.org/build/mqtt_gateway[MQTT Gateway] and NRF24L01+ gateway via PiGatewaySerial (https://github.com/mysensors/Raspberry) on Raspberry PI
 - Auto discover and update nodes(upon nodes restart or receive any data)
 - Timer - Help you schedule time based operations. You can control till the seconds. Types,
       * Normal (daily, weekly, monthly)
@@ -50,8 +53,8 @@ Features available in https://github.com/mycontroller-org/mycontroller/releases/
 
 ====== Download(executable bundle),
 
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha1/mycontroller-standalone-0.0.2-alpha1-bundle.zip[mycontroller-standalone-0.0.2-alpha1-bundle.zip]
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha1/mycontroller-standalone-0.0.2-alpha1-bundle.tar.gz[mycontroller-standalone-0.0.2-alpha1-bundle.tar.gz]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha5/mycontroller-standalone-0.0.2-alpha5-bundle.zip[mycontroller-standalone-0.0.2-alpha5-bundle.zip]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha5/mycontroller-standalone-0.0.2-alpha5-bundle.tar.gz[mycontroller-standalone-0.0.2-alpha5-bundle.tar.gz]
 
 ====== Configuration
 
@@ -59,7 +62,13 @@ Extract downloaded bundle where exactly do you want to run. Configuration files 
 
 File: `mycontroller.properties`
 
-*Serial Port Configuration*
+*Select your gateway*
+```
+mcc.ethernet.gateway.type=ethernet
+```
+- `mcc.ethernet.gateway.type`: Available gateway types: serial, ethernet, mqtt
+
+*Serial Port Gateway Configuration*
 ```
 mcc.serialport.driver.type=auto
 mcc.serialport.name=/dev/ttyUSB0
@@ -68,6 +77,26 @@ mcc.serialport.baud.rate=115200
 - `mcc.serialport.driver.type`: Available driver types: `pi4j, jssc, jserialcomm, auto`. It is recommended to keep in `auto`. *For now `jssc` driver is not stable with MyController.org*
 - `mcc.serialport.name` : will vary based on platform and number of ports. Find it on your computer and update
 - `mcc.serialport.baud.rate` : by default http://www.mysensors.org/build/serial_gateway[Serial Gateway] uses `115200`. If you changed on your setup you have to update your custom value here.
+
+*Ethernet Gateway Configuration*
+```
+mcc.ethernet.gateway.host=192.168.178.6
+mcc.ethernet.gateway.port=5003
+mcc.ethernet.gateway.keep.alive.frequency=60
+```
+- `mcc.ethernet.gateway.host`: Host name/ip of your Ethernet Gateway
+- `mcc.ethernet.gateway.port`: Ethernet Gateway port
+- `mcc.ethernet.gateway.keep.alive.frequency`: This field is used to monitor Ethernet Gateway. If Connection goes try to reconnect automatically. Value in seconds.
+
+*MQTT Gateway*
+```
+mcc.mqtt.gateway.broker.host=192.168.178.6
+mcc.mqtt.gateway.broker.port=1883
+mcc.mqtt.gateway.broker.root.topic=MyMQTT
+```
+- `mcc.mqtt.gateway.broker.host`: MQTT Gateway Hostname/IP
+- `mcc.mqtt.gateway.broker.port`: MQTT Gateway port
+- `mcc.mqtt.gateway.broker.root.topic`: Topic name, Should be same name that we used in MQTT Gateway(MQTT_BROKER_PREFIX)
 
 *Database Configuration*
 ```

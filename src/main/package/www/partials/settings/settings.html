@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-  <h3><b><i class="fa fa-cogs"></i> System Settings</b></h3>
+  <h3><b><i class="fa fa-cogs"></i> {{ 'TITLE.SYSTEM_SETTINGS' | translate }}</b></h3>
 </div>
 
 
@@ -27,7 +27,7 @@
 
 <div class="continer left">
   <div class="page-header">
-    <h4><i class="fa fa-sun-o"></i> Sunrise/Sunset:</h4>
+    <h4><i class="fa fa-sun-o"></i> {{ 'SETTINGS.SUNRISE_SUNSET' | translate }}:</h4>
   </div>
   <table class="table table-hover table-bordered table-striped" at-table at-paginated 
 	  at-list="settingsSunriseSunsetList" at-config="config">
@@ -36,7 +36,7 @@
 					<td at-implicit at-sortable at-attribute="frindlyName" at-title="Name" class="col-md-3"></td>
           <td at-implicit at-sortable at-attribute="value" class="col-md-7"></td>
 					<td class="text-center" ng-show="item.userEditable" class="col-md-2">
-						<a href='' ng-click="update(item)" class="text-primary" tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
+						<a href='' ng-click="update(item)" class="text-primary" uib-tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
 					</td>
           <td class="text-center" ng-hide="item.userEditable" class="col-md-2"></td>
 				</tr>
@@ -45,7 +45,7 @@
   
 
   <div class="page-header">
-    <h4><i class="fa fa-sitemap"></i>Node Defaults:</h4>
+    <h4><i class="fa fa-sitemap"></i>{{ 'SETTINGS.NODE_DEFAULTS' | translate }}:</h4>
   </div>
   <table class="table table-hover table-bordered table-striped" at-table at-paginated 
 	  at-list="settingsNodeDefaultsList" at-config="config">
@@ -54,14 +54,14 @@
 					<td at-implicit at-sortable at-attribute="frindlyName" at-title="Name" class="col-md-3"></td>
           <td at-implicit at-sortable at-attribute="value" class="col-md-7"></td>
 					<td class="text-center" ng-show="item.userEditable" class="col-md-2">
-						<a href='' ng-click="update(item)" class="text-primary" tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
+						<a href='' ng-click="update(item)" class="text-primary" uib-tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
 					</td>
 				</tr>
 			</tbody>
 		</table>
     
   <div class="page-header">
-    <h4><i class="fa fa-mobile"></i> Plivo SMS Gateway:</h4>
+    <h4><i class="fa fa-mobile"></i> {{ 'SETTINGS.PLIVO_SMS_GATEWAY' | translate }}:</h4>
   </div>
   <table class="table table-hover table-bordered table-striped" at-table at-paginated 
 	  at-list="settingsSMSList" at-config="config">
@@ -70,7 +70,7 @@
 					<td at-implicit at-sortable at-attribute="frindlyName" at-title="Name" class="col-md-3"></td>
           <td at-implicit at-sortable at-attribute="value" class="col-md-7"></td>
 					<td class="text-center" ng-show="item.userEditable" class="col-md-2">
-						<a href='' ng-click="update(item)" class="text-primary" tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
+						<a href='' ng-click="update(item)" class="text-primary" uib-tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
 					</td>
           <td class="text-center" ng-hide="item.userEditable" class="col-md-2"></td>
 				</tr>
@@ -78,7 +78,7 @@
 		</table>
     
   <div class="page-header">
-    <h4><i class="fa fa-envelope-o"></i> Email Gateway:</h4>
+    <h4><i class="fa fa-envelope-o"></i> {{ 'SETTINGS.EMAIL_GATEWAY' | translate }}:</h4>
   </div>
   <table class="table table-hover table-bordered table-striped" at-table at-paginated 
 	  at-list="settingsEmailList" at-config="config">
@@ -87,7 +87,24 @@
 					<td at-implicit at-sortable at-attribute="frindlyName" at-title="Name" class="col-md-3"></td>
           <td at-implicit at-sortable at-attribute="value" class="col-md-7"></td>
 					<td class="text-center" ng-show="item.userEditable" class="col-md-2">
-						<a href='' ng-click="update(item)" class="text-primary" tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
+						<a href='' ng-click="update(item)" class="text-primary" uib-tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
+					</td>
+          <td class="text-center" ng-hide="item.userEditable" class="col-md-2"></td>
+				</tr>
+			</tbody>
+		</table>   
+    
+  <div class="page-header">
+    <h4><i class="fa fa-line-chart"></i> {{ 'SETTINGS.GRAPHS' | translate }}:</h4>
+  </div>
+  <table class="table table-hover table-bordered table-striped" at-table at-paginated 
+	  at-list="settingsGraphList" at-config="config">
+			<tbody>
+	      <tr>
+					<td at-implicit at-sortable at-attribute="frindlyName" at-title="Name" class="col-md-3"></td>
+          <td at-implicit at-sortable at-attribute="value" class="col-md-7"></td>
+					<td class="text-center" ng-show="item.userEditable" class="col-md-2">
+						<a href='' ng-click="update(item)" class="text-primary" uib-tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
 					</td>
           <td class="text-center" ng-hide="item.userEditable" class="col-md-2"></td>
 				</tr>
@@ -95,7 +112,7 @@
 		</table>    
     
   <div class="page-header">
-    <h4><i class="fa fa-star-o"></i> Units:</h4>
+    <h4><i class="fa fa-star-o"></i> {{ 'SETTINGS.UNITS' | translate }}:</h4>
   </div>
   <table class="table table-hover table-bordered table-striped" at-table at-paginated 
 	  at-list="settingsUnitsList" at-config="config">
@@ -104,7 +121,7 @@
 					<td at-implicit at-sortable at-attribute="frindlyName" at-title="Name" class="col-md-3"></td>
           <td at-implicit at-sortable at-attribute="value" class="col-md-7"></td>
 					<td class="text-center" ng-show="item.userEditable" class="col-md-2">
-						<a href='' ng-click="update(item)" class="text-primary" tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
+						<a href='' ng-click="update(item)" class="text-primary" uib-tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
 					</td>
           <td class="text-center" ng-hide="item.userEditable" class="col-md-2"></td>
 				</tr>
@@ -112,7 +129,7 @@
 		</table>   
     
   <div class="page-header">
-    <h4><i class="fa fa-code-fork"></i> Version:</h4>
+    <h4><i class="fa fa-code-fork"></i> {{ 'FIRMWARE.VERSION' | translate }} :</h4>
   </div>
   <table class="table table-hover table-bordered table-striped" at-table at-paginated 
 	  at-list="settingsVersionList" at-config="config">
@@ -121,7 +138,7 @@
 					<td at-implicit at-sortable at-attribute="frindlyName" at-title="Name" class="col-md-3"></td>
           <td at-implicit at-sortable at-attribute="value" class="col-md-7"></td>
 					<td class="text-center" ng-show="item.userEditable" class="col-md-2">
-						<a href='' ng-click="update(item)" class="text-primary" tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
+						<a href='' ng-click="update(item)" class="text-primary" uib-tooltip="Update"><i class="fa fa-lg fa-pencil"></i></a>
 					</td>
           <td class="text-center" ng-hide="item.userEditable" class="col-md-2"></td>
 				</tr>

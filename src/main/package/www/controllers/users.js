@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('UsersController', function(alertService,
-$scope, $filter, UsersFactory, $location, $modal, displayRestError) {
+$scope, $filter, UsersFactory, $location, $uibModal, displayRestError) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -39,7 +39,7 @@ $scope, $filter, UsersFactory, $location, $modal, displayRestError) {
   
   //Delete
   $scope.delete = function (user, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'UdeleteController',
     size: size,
@@ -68,7 +68,7 @@ $scope, $filter, UsersFactory, $location, $modal, displayRestError) {
     
   //Add a User
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/users/addModal.html',
     controller: 'UaddController',
     size: size,
@@ -95,7 +95,7 @@ $scope, $filter, UsersFactory, $location, $modal, displayRestError) {
     
   //Update a User
   $scope.update = function (user, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/users/updateModal.html',
     controller: 'UupdateController',
     size: size,
@@ -126,7 +126,7 @@ $scope, $filter, UsersFactory, $location, $modal, displayRestError) {
 myControllerModule.controller('UdeleteController', function ($scope, $modalInstance, $sce, user) {
   $scope.user = user;
   $scope.header = "Delete User";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete a User"
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a User"
     +"<br>Deletion process will remove complete trace of this user!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>User: [id:"+user.id+",userId:"+user.name +",role:"+user.role+"]</I>");
@@ -144,9 +144,10 @@ myControllerModule.controller('UaddController', function ($scope, $modalInstance
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('UupdateController', function ($scope, $modalInstance, user) {
+myControllerModule.controller('UupdateController', function ($scope, $modalInstance, TypesFactory, user) {
   $scope.user = user;
   $scope.header = "Update User";
+  $scope.roles = TypesFactory.getUserRoles();
   $scope.update = function() {$modalInstance.close($scope.user);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

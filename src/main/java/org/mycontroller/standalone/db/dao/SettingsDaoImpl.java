@@ -108,6 +108,18 @@ public class SettingsDaoImpl extends BaseAbstractDao<Settings, Integer> implemen
         }
     }
 
+    public List<Settings> getLike(String key) {
+        try {
+            QueryBuilder<Settings, Integer> queryBuilder = getDao().queryBuilder();
+            queryBuilder.where().like("key", key);
+            return queryBuilder.orderBy("id", true).query();
+        } catch (SQLException ex) {
+            _logger.error("unable to get like:[{}]", key, ex);
+            return null;
+        }
+
+    }
+
     @Override
     public Settings get(Settings settings) {
         return this.get(settings.getKey());

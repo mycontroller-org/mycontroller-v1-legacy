@@ -18,9 +18,11 @@ package org.mycontroller.standalone.db;
 import org.mycontroller.standalone.db.tables.Alarm;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorLog;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.mysensors.RawMessage;
 
@@ -108,7 +110,7 @@ public class SensorLogUtils {
         DaoUtils.getSensorLogDao().add(sensorLog);
     }
 
-    public static void setSensorData(Sensor sensor, Boolean dataSent, String errorMsg) {
+    public static void setSensorData(Sensor sensor, Boolean dataSent, SensorValue sensorValue, String errorMsg) {
         SensorLog sensorLog = new SensorLog(
                 sensor.getId(),
                 System.currentTimeMillis(),
@@ -123,7 +125,8 @@ public class SensorLogUtils {
         }
         buffer.append("[NodeId:").append(sensor.getNode().getId())
                 .append(", SensorId:").append(sensor.getSensorId())
-                .append(", PayLoad: ").append(sensor.getStatus()).append("]");
+                .append(", Type:").append(MESSAGE_TYPE_SET_REQ.get(sensorValue.getVariableType()))
+                .append(", PayLoad:").append(sensorValue.getLastValue()).append("]");
         if (errorMsg != null) {
             buffer.append(", Error:").append(errorMsg);
         }
@@ -131,8 +134,8 @@ public class SensorLogUtils {
         DaoUtils.getSensorLogDao().add(sensorLog);
     }
 
-    public static void setSensorOtherData(LOG_TYPE logType, String subType, RawMessage rawMessage,
-            String errorMsg) {
+    public static void setSensorOtherData(LOG_TYPE logType, String subType, String extraInfo,
+            RawMessage rawMessage, String errorMsg) {
         Sensor sensor = DaoUtils.getSensorDao().get(rawMessage.getNodeId(), rawMessage.getChildSensorId());
         SensorLog sensorLog = new SensorLog(
                 sensor != null ? sensor.getId() : null,
@@ -145,7 +148,10 @@ public class SensorLogUtils {
         buffer.append("]");
         buffer.append(", [NodeId:").append(rawMessage.getNodeId()).append(", SensorId:")
                 .append(rawMessage.getChildSensorId())
-                .append(", PayLoad: ").append(rawMessage.getPayLoad()).append("]");
+                .append(", PayLoad: ").append(rawMessage.getPayload()).append("]");
+        if (extraInfo != null) {
+            buffer.append(", ").append(extraInfo);
+        }
         if (errorMsg != null) {
             buffer.append(", Error: ").append(errorMsg);
 
@@ -153,6 +159,10 @@ public class SensorLogUtils {
 
         sensorLog.setLog(buffer.toString());
         DaoUtils.getSensorLogDao().add(sensorLog);
+    }
+
+    public static void setSensorOtherData(LOG_TYPE logType, String subType, RawMessage rawMessage, String errorMsg) {
+        setSensorOtherData(logType, subType, null, rawMessage, errorMsg);
     }
 
     public static void setSensorInternalData(MESSAGE_TYPE_INTERNAL typeInternal, RawMessage rawMessage, String errorMsg) {
@@ -166,6 +176,11 @@ public class SensorLogUtils {
 
     public static void setSensorStreamData(MESSAGE_TYPE_STREAM typeStream, RawMessage rawMessage, String errorMsg) {
         setSensorOtherData(LOG_TYPE.SENSOR_STREAM, typeStream.toString(), rawMessage, errorMsg);
+    }
+
+    public static void setSensorStreamData(MESSAGE_TYPE_STREAM typeStream, String extraInfo, RawMessage rawMessage,
+            String errorMsg) {
+        setSensorOtherData(LOG_TYPE.SENSOR_STREAM, typeStream.toString(), extraInfo, rawMessage, errorMsg);
     }
 
 }

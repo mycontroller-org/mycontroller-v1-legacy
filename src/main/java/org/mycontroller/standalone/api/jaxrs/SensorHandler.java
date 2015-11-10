@@ -32,12 +32,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
+import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
+import org.mycontroller.standalone.api.jaxrs.mapper.PayloadJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
+import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
@@ -98,6 +103,8 @@ public class SensorHandler {
     @Path("/{nodeId}")
     public Response update(@PathParam("nodeId") int nodeId, Sensor sensor) {
         DaoUtils.getSensorDao().update(nodeId, sensor);
+        //Update Variable Types
+        SensorUtils.updateSensorValues(sensor);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
@@ -105,32 +112,121 @@ public class SensorHandler {
     @Path("/{nodeId}")
     public Response add(@PathParam("nodeId") Integer nodeId, Sensor sensor) {
         _logger.debug("NodeId:{}, Sensor:{}", nodeId, sensor);
-        DaoUtils.getSensorDao().create(nodeId, sensor);
-        return RestUtils.getResponse(Status.CREATED);
-    }
-
-    @POST
-    @Path("/{id}/{payload}")
-    public Response sendPayload(@PathParam("id") Integer id, @PathParam("payload") String payload) {
-        _logger.debug("Id:{}, Payload:{}", id, payload);
-        Sensor sensor = DaoUtils.getSensorDao().get(id);
-        if (sensor != null) {
-            if (sensor.getMessageType() == null) {
-                sensor.setMessageType(MESSAGE_TYPE_SET_REQ.V_VAR1.ordinal());
+        String variableTypes = sensor.getVariableTypes();
+        boolean status = DaoUtils.getSensorDao().create(nodeId, sensor);
+        if (status) {
+            sensor = DaoUtils.getSensorDao().get(nodeId, sensor.getSensorId());
+            for (String variableType : variableTypes.split(",")) {
+                DaoUtils.getSensorValueDao().create(
+                        new SensorValue(sensor, MESSAGE_TYPE_SET_REQ.valueOf(variableType.trim()).ordinal()));
             }
-            RawMessage rawMessage = new RawMessage(
-                    sensor.getNode().getId(),
-                    sensor.getSensorId(),
-                    MESSAGE_TYPE.C_SET.ordinal(), //messageType
-                    0, //ack
-                    sensor.getMessageType(),//subType
-                    payload,
-                    true);// isTxMessage
-            ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
-            return RestUtils.getResponse(Status.OK);
+            return RestUtils.getResponse(Status.CREATED);
         } else {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Sensor[" + id + "] not found!"));
+            return RestUtils.getResponse(Status.BAD_REQUEST);
         }
     }
 
+    @GET
+    @Path("/sensorByRefId")
+    public Response getSensorByRefId(@QueryParam("sensorRefId") Integer sensorRefId) {
+        if (sensorRefId != null) {
+            return RestUtils.getResponse(Status.OK, DaoUtils.getSensorDao().get(sensorRefId));
+        } else {
+            return RestUtils.getResponse(Status.OK, new ApiError("sensorRefId should not be null"));
+        }
+
+    }
+
+    @PUT
+    @Path("/updateOthers/{sensorRefId}")
+    public Response update(@PathParam("sensorRefId") int sensorRefId, List<KeyValueJson> keyValues) {
+        SensorUtils.updateOthers(sensorRefId, keyValues);
+        return RestUtils.getResponse(Status.NO_CONTENT);
+    }
+
+    @GET
+    @Path("/getOthers/{sensorRefId}")
+    public Response get(@PathParam("sensorRefId") int sensorRefId) {
+        return RestUtils.getResponse(Status.OK, SensorUtils.getOthers(sensorRefId));
+    }
+
+    @POST
+    @Path("/sendPayload")
+    public Response sendPayload(PayloadJson payload) {
+        _logger.debug("PayloadJson:{}", payload);
+        Sensor sensor = null;
+
+        if (payload.getButtonType() != null) {
+            sensor = DaoUtils.getSensorDao().get(payload.getSensorRefId());
+            switch (PayloadJson.BUTTON_TYPE.valueOf(payload.getButtonType().toUpperCase())) {
+                case ON_OFF:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_STATUS.ordinal());
+                    break;
+                case LOCK_UNLOCK:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_LOCK_STATUS.ordinal());
+                    break;
+                case ARMED:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_ARMED.ordinal());
+                    break;
+                case TRIPPED:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_TRIPPED.ordinal());
+                    break;
+                case INCREASE:
+                    SensorValue sensorValue = DaoUtils.getSensorValueDao().get(sensor.getId(),
+                            payload.getVariableType());
+                    if (sensorValue != null && sensorValue.getLastValue() != null) {
+                        payload.setPayload(String.valueOf(NumericUtils.getDouble(sensorValue.getLastValue()) + 1));
+                    } else {
+                        payload.setPayload("0");
+                    }
+                    break;
+                case DECREASE:
+                    sensorValue = DaoUtils.getSensorValueDao().get(sensor.getId(),
+                            payload.getVariableType());
+                    if (sensorValue != null && sensorValue.getLastValue() != null) {
+                        payload.setPayload(String.valueOf(NumericUtils.getDouble(sensorValue.getLastValue()) - 1));
+                    } else {
+                        payload.setPayload("0");
+                    }
+                    break;
+                case UP:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_UP.ordinal());
+                    break;
+                case DOWN:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_DOWN.ordinal());
+                    break;
+                case STOP:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_STOP.ordinal());
+                    break;
+                case RGB:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_RGB.ordinal());
+                    payload.setPayload(payload.getPayload().replace("#", ""));
+                    break;
+                case RGBW:
+                    payload.setVariableType(MESSAGE_TYPE_SET_REQ.V_RGBW.ordinal());
+                    payload.setPayload(SensorUtils.getHexFromRgba(payload.getPayload()));
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            sensor = DaoUtils.getSensorDao().get(payload.getNodeId(), payload.getSensorId());
+        }
+        RawMessage rawMessage = new RawMessage(
+                sensor.getNode().getId(),
+                sensor.getSensorId(),
+                MESSAGE_TYPE.C_SET.ordinal(), //messageType
+                0, //ack
+                payload.getVariableType(),//subType
+                payload.getPayload(),
+                true);// isTxMessage
+        ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("sensorValue/{sensorValueId}")
+    public Response getSensorValue(@PathParam("sensorValueId") int sensorValueId) {
+        return RestUtils.getResponse(Status.OK, DaoUtils.getSensorValueDao().get(sensorValueId));
+    }
 }

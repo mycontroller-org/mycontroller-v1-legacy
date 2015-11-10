@@ -17,63 +17,52 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
   <div class="modal-body">
    
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="node.id">Node Id:</label>
-      <div class="col-sm-6">          
-        <p class="form-control-static">{{node.id}}</p>
-      </div>
+  <form class="form-horizontal form-group-sm" role="form" name="form">
+    
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="node.id">{{ 'NODE.NODE_ID' | translate }}:</label>
+      <p style="width:320px" class="form-control-static">{{node.id}}</p>
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="node.name">Name:</label>
-      <div class="col-sm-6"> 
-        <input type="text" class="form-control" id="node.name" placeholder="Node Name" ng-model="node.name" required>
-      </div>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="node.name">{{ 'SYSTEM.NAME' | translate }}:</label>
+      <input style="width:320px" type="text" class="form-control" id="node.name" placeholder="{{ 'NODE.NAME' | translate }}" ng-model="node.name" required>
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="node.typeString">Node Type:</label>
-            <div class="col-sm-6">
-        <select class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes" ng-model="node.type" required></select>
-      </div>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="node.typeString">{{ 'NODE.NODE_TYPE' | translate }}:</label>
+      <select style="width:320px" class="form-control" ng-options="nodeTypes.id as nodeTypes.displayName for nodeTypes in nodeTypes | orderBy:'displayName'" ng-model="node.type" required></select>
     </div>
      
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="node.version">Version:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="node.version" placeholder="Version" ng-model="node.version">
-      </div>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="node.version">{{ 'NODE.VERSION' | translate }}:</label>
+      <input style="width:320px" type="text" class="form-control" id="node.version" placeholder="{{ 'NODE.VERSION' | translate }}" ng-model="node.version">
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="node.mySensorsVersion">MySensors Version:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="node.mySensorsVersion" placeholder="MySensors Version" ng-model="node.mySensorsVersion">
-      </div>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="node.mySensorsVersion">{{ 'NODE.MY_SENSORS_VERSION' | translate }}:</label>
+      <input style="width:320px" type="text" class="form-control" id="node.mySensorsVersion" placeholder="{{ 'NODE.MY_SENSORS_VERSION' | translate }}" ng-model="node.mySensorsVersion">
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" >Firmware:</label>
-            <div class="col-sm-6">
-        <select class="form-control" ng-options="firmware.id as firmware.firmwareName for firmware in firmwares" ng-model="node.firmware.id">
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" >{{ 'NODE.FIRMWARE' | translate }}:</label>
+      <select style="width:320px" class="form-control" ng-options="firmware.id as firmware.firmwareName for firmware in firmwares" ng-model="node.firmware.id">
         <option value="">-- Choose Firmware --</option>
-        </select>
-      </div>
+      </select>
     </div>
    
   </form>
-  <div><I>Note:</I> Node <I> data will be overwritten if node sends data mentioned above</I></div>
+  <small><p ng-bind-html="'NODE.NODE_NOTE' | translate"></p><small>
    
   </form>
   
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> Update</i> </button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> {{ 'SYSTEM.UPDATE' | translate }}</i> </button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
 </div>
 

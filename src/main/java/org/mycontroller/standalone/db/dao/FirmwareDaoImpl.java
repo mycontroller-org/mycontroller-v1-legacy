@@ -75,18 +75,6 @@ public class FirmwareDaoImpl extends BaseAbstractDao<Firmware, Integer> implemen
     }
 
     @Override
-    public List<Firmware> getAll() {
-        try {
-            QueryBuilder<Firmware, Integer> queryBuilder = getDao().queryBuilder();
-            queryBuilder.selectColumns("id", Firmware.TYPE_ID, Firmware.VERSION_ID, "timestamp", "blocks", "crc");
-            return queryBuilder.query();
-        } catch (SQLException ex) {
-            _logger.error("unable to get all Nodes", ex);
-            return null;
-        }
-    }
-
-    @Override
     public Firmware get(Firmware firmware) {
         return this.get(firmware.getId());
     }
@@ -136,4 +124,39 @@ public class FirmwareDaoImpl extends BaseAbstractDao<Firmware, Integer> implemen
             _logger.error("unable to delete Firmware:[typeId:{},versionId:{}]", typeId, versionId, ex);
         }
     }
+
+    @Override
+    public List<Firmware> getAll() {
+        return getAll(null, null);
+    }
+
+    @Override
+    public List<Firmware> getAllFirmwareByType(int typeId) {
+        return getAll(true, typeId);
+    }
+
+    @Override
+    public List<Firmware> getAllFirmwareByVersion(int versionId) {
+        return getAll(false, versionId);
+    }
+
+    private List<Firmware> getAll(Boolean isType, Integer id) {
+        try {
+            QueryBuilder<Firmware, Integer> queryBuilder = getDao().queryBuilder();
+            queryBuilder.selectColumns("id", Firmware.TYPE_ID, Firmware.VERSION_ID, "timestamp", "blocks", "crc");
+            if (isType == null) {
+                //Nothing to do, no filter, get all firmwares
+            } else if (isType) {
+                queryBuilder.where().eq(Firmware.TYPE_ID, id);
+            } else {
+                queryBuilder.where().eq(Firmware.VERSION_ID, id);
+            }
+            queryBuilder.orderBy(Firmware.TYPE_ID, true).orderBy(Firmware.VERSION_ID, true);
+            return queryBuilder.query();
+        } catch (SQLException ex) {
+            _logger.error("unable to get selected type[isType:{},id:{}]", isType, id, ex);
+            return null;
+        }
+    }
+
 }

@@ -17,6 +17,7 @@ package org.mycontroller.standalone.db.tables;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -25,16 +26,15 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since 0.0.1
  */
 @DatabaseTable(tableName = "settings")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Settings {
     public static final String AUTO_NODE_ID = "auto-node-key";
     public static final String MC_VERSION = "mc-version";
     public static final String MC_DB_VERSION = "mc-db-version";
     public static final String LAST_ONE_DAY_AGGREGATION = "last_one_day_aggregation";
-    public static final String DEFAULT_UNIT_TEMPERATURE = "du-temperature";
-    public static final String DEFAULT_UNIT_DISTANCE = "du-distance";
-    public static final String DEFAULT_UNIT_PERCENTAGE = "du-percentage";
     public static final String SUNRISE_TIME = "timer-sunrise";
     public static final String SUNSET_TIME = "timer-sunset";
+    public static final String CITY_NAME = "city_name";
     public static final String CITY_LATITUDE = "city_latitude";
     public static final String CITY_LONGITUDE = "city_longitude";
     public static final String DEFAULT_FIRMWARE = "default_firmware";
@@ -50,11 +50,18 @@ public class Settings {
     public static final String SMS_AUTH_ID = "sms_auth_id";
     public static final String SMS_AUTH_TOKEN = "sms_auth_token";
     public static final String SMS_FROM_PHONE_NUMBER = "sms_from_phone_number";
-    
+
     public static final String SERIALPORT_NAME = "serialport_name";
     public static final String SERIALPORT_BAUD_RATE = "serialport_baud_rate";
     public static final String SERIALPORT_DRIVER_TYPE = "serialport_driver_type";
-        
+
+    public static final String GRAPH_INTERPOLATE_TYPE = "graph_interpolate_type";
+
+    public static final String DEFAULT_UNIT = "du_";
+
+    public static final String ENABLE_SEND_PAYLOAD = "enable_send_payload";
+
+    public static final String MY_SENSORS_CONFIG = "mys_config";
 
     public Settings() {
 

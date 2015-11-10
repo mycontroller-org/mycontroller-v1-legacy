@@ -17,52 +17,47 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
+  
   <div class="modal-body">
    
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.node.id">Node Id:</label>
-      <div class="col-sm-6">          
-        <select class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-model="sensor.node.id" required></select>
-      </div>
+  <form class="form-horizontal form-group-sm" role="form" name="form">
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.node.id">{{ 'NODE.NODE' | translate }}:</label>
+      <select style="width:320px" class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-model="sensor.node.id" required></select>
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.sensorId">Sensor Id:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="sensor.sensorId" placeholder="Sensor Id" ng-model="sensor.sensorId" required>
-      </div>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.sensorId">{{ 'NODE.SENSOR_ID' | translate }}:</label>
+      <input style="width:320px" type="text" class="form-control" id="sensor.sensorId" placeholder="{{ 'NODE.SENSOR_ID' | translate }}" ng-model="sensor.sensorId" required>
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.name">Sensor Name:</label>
-      <div class="col-sm-6">          
-        <input type="text" class="form-control" id="sensor.name" placeholder="Sensor Name" ng-model="sensor.name" required>
-      </div>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.name">{{ 'NODE.SENSOR_NAME' | translate }}:</label>
+      <input style="width:320px" type="text" class="form-control" id="sensor.name" placeholder="{{ 'NODE.SENSOR_NAME' | translate }}" ng-model="sensor.name" required>
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.type">Sensor Type:</label>
-      <div class="col-sm-6">
-        <select class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes" ng-model="sensor.type" required></select>
-      </div>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.type">{{ 'NODE.SENSOR_TYPE' | translate }}:</label>
+      <select style="width:320px" class="form-control" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes | orderBy:'displayName'" 
+        ng-model="sensor.type" ng-change="sensorVariableTypes = refreshVariableTypes(sensor.type)" required></select>
     </div>
     
-    <div class="form-group">
-      <label class="control-label col-sm-3" for="sensor.messageType">Variable Type:</label>
-      <div class="col-sm-6">
-        <select class="form-control" ng-options="sensorValueType.id as sensorValueType.displayName for sensorValueType in sensorValueTypes" ng-model="sensor.messageType" required></select>
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.messageType">{{ 'NODE.VARIABLE_TYPE' | translate }}:</label>
+      <div isteven-multi-select input-model="sensorVariableTypes" output-model="variableTypes" button-label="displayName" item-label="displayName" 
+            tick-property="ticked" output-properties="displayName" max-labels="3" search-property="displayName" 
+            on-close="updateVariableTypes()" on-item-click="updateVariableTypes()">
       </div>
     </div>
    
   </form>
-  <div><I>Note:</I> Sensor <I> data will be overwritten if sensor sends data mentioned above</div>
+  <small><p ng-bind-html="'NODE.SENSORS_NOTE' | translate"></p></small>
   
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> Add</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid || variableTypes.length == 0"><i class="fa fa-plus"> {{ 'SYSTEM.ADD' | translate }}</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
 </div>
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('FirmwareTypeController', function(alertService,
-$scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
+$scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -38,7 +38,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
   
   //Delete a Firmware Type
   $scope.delete = function (firmwareType, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'FTMdeleteController',
     size: size,
@@ -50,7 +50,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     modalInstance.result.then(function (selectedFirmwareType) {
       $scope.selected = selectedFirmwareType;
       FirmwaresFactory.deleteFirmwareType({ id: selectedFirmwareType.id },function(response) {
-        alertService.success("Deleted a firmwareType["+selectedFirmwareType.firmwareTypeName+"]");
+        alertService.success("Deleted a firmwareType[id:"+selectedFirmwareType.id+", Name:"+selectedFirmwareType.name+"]");
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwareTypes(function(response) {
         },function(error){
@@ -68,7 +68,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     
   //Add a Firmware Type
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/firmwares/firmwareTypeAddModal.html',
     controller: 'FTMaddController',
     size: size,
@@ -96,7 +96,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
     
   //Update a Firmware Type
   $scope.update = function (firmwareType, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/firmwares/firmwareTypeUpdateModal.html',
     controller: 'FTMupdateController',
     size: size,
@@ -128,7 +128,7 @@ $scope, $filter, FirmwaresFactory, $location, $modal, displayRestError) {
 myControllerModule.controller('FTMdeleteController', function ($scope, $modalInstance, $sce, firmwareType) {
   $scope.firmwareType = firmwareType;
   $scope.header = "Delete Firmware Type";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete a Firmware Type"
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Firmware Type"
     +"<br>Deletion process will remove complete trace of this firmwareType!" 
     +"<br>Click 'Delete' to proceed."
     +"<br><I>Firmware Type: </I>[id:"+firmwareType.id+",name:"+firmwareType.name +"]");

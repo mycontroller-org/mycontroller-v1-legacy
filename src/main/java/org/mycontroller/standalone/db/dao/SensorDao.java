@@ -26,20 +26,37 @@ import com.j256.ormlite.dao.Dao;
  * @since 0.0.1
  */
 public interface SensorDao {
-    void create(Sensor sensor);
-    void create(Integer nodeId, Sensor sensor);
+    boolean create(Sensor sensor);
+
+    boolean create(Integer nodeId, Sensor sensor);
+
     void create(Integer nodeId, Integer sensorId);
+
     void createOrUpdate(Sensor sensor);
+
     void createOrUpdate(Integer nodeId, Sensor sensor);
+
     void delete(Sensor sensor);
+
     void delete(Integer nodeId, Integer sensorId);
+
+    void updateWithEnableSendPayload(Sensor sensor);
+
     void update(Sensor sensor);
+
     void update(Integer nodeId, Sensor sensor);
+
     List<Sensor> getAll(Integer nodeId);
+
     List<Sensor> getByType(String typeString);
+
     List<Sensor> getAll();
+
     Sensor get(Sensor sensor);
+
     Sensor get(Integer id);
+
     Sensor get(Integer nodeId, Integer sensorId);
+
     Dao<Sensor, Integer> getDao();
 }

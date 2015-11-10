@@ -28,9 +28,16 @@ var myControllerModule = angular.module('myController',[
   'isteven-multi-select',
   'ui.bootstrap.datetimepicker',
   'base64',
+  'colorpicker.module',
+  'ngFileSaver',
+  'pascalprecht.translate',
+  'ngSanitize',
   'angularModalService'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
+  //For any unmatched url, redirect to /dashboard
+  $urlRouterProvider.otherwise('/dashboard');
+  
 	$stateProvider
     .state('sensors', {
       url:"/sensors",
@@ -110,10 +117,24 @@ config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('variableMapper', {
+      url:"/variableMapper",
+      templateUrl: "partials/variableMapper/variableMapper.html",
+      controller: "VariableMapperController",
+       data: {
+        requireLogin: true
+      }
     }).state('uidtag', {
       url:"/uidtag",
       templateUrl: "partials/uidTag/uidTag.html",
       controller: "UidTagController",
+       data: {
+        requireLogin: true
+      }
+    }).state('sendRawMessage', {
+      url:"/sendRawMessage",
+      templateUrl: "partials/rawMessage/rawMessage.html",
+      controller: "RawMessageController",
        data: {
         requireLogin: true
       }
@@ -124,10 +145,17 @@ config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
-    }).state('status', {
-      url:"/status",
-      templateUrl: "partials/status/status.html",
-      controller: "StatusController",
+    }).state('systemstatus', {
+      url:"/systemstatus",
+      templateUrl: "partials/status/systemStatus.html",
+      controller: "SystemStatusController",
+       data: {
+        requireLogin: true
+      }
+    }).state('gatewaystatus', {
+      url:"/gatewaystatus",
+      templateUrl: "partials/status/gatewayStatus.html",
+      controller: "GatewayStatusController",
        data: {
         requireLogin: true
       }
@@ -160,24 +188,33 @@ config(function($stateProvider, $urlRouterProvider) {
         requireLogin: false
       }
     });
-    
-  //For any unmatched url, redirect to /dashboard
-  //$urlRouterProvider.otherwise({redirectTo: '/dashboard'});
 });
 
-//NavCtrl
-myControllerModule.controller('NavBarCtrl', ['$scope', '$location', function($scope, $location) {
+
+//McNavCtrl
+myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate) {
    $scope.isCollapsed = true;
     $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
     };
-}]);
+    
+    $scope.changeLanguage = function (langKey) {
+      $translate.use(langKey);
+    };
+});
 
-
-myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http) {
+myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about) {
   
   // keep user logged in after page refresh
   $rootScope.globals = $cookieStore.get('globals') || {};
+  var mcabout = $cookieStore.get('mcabout') || {};
+  about.timezone = mcabout.timezone;
+  about.timezoneMilliseconds = mcabout.timezoneMilliseconds;
+  about.timezoneString = mcabout.timezoneString;
+  about.systemDate = mcabout.systemDate;
+  about.appName = mcabout.appName;
+  about.appVersion = mcabout.appVersion;
+  
   if ($rootScope.globals.currentUser) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
   }
@@ -194,7 +231,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, alertService) {
+    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, displayRestError, about, $cookieStore) {
         // reset login status
         AuthenticationService.ClearCredentials();
  
@@ -203,6 +240,18 @@ myControllerModule.controller('LoginController',
             AuthenticationService.Login($scope.username, $scope.password, function(response) {
                 if(response.success) {
                     AuthenticationService.SetCredentials($scope.username, $scope.password);
+                    StatusFactory.about(function(response) {
+                        about.timezone = response.timezone;
+                        about.timezoneMilliseconds = response.timezoneMilliseconds;
+                        about.timezoneString = response.timezoneString;
+                        about.systemDate = response.systemDate;
+                        about.appName = response.appName;
+                        about.appVersion = response.appVersion;
+                        $cookieStore.put('mcabout', about);
+                    },function(error){
+                      displayRestError.display(error);            
+                    });
+                    
                     alertService.success("Login success!");
                     $state.go('dashboard'); 
                 } else {
@@ -244,5 +293,35 @@ myControllerModule.filter('byteToMBsizeConvertor', function() {
     }
     return Math.floor(sizeInByte /(1024 * 1024)) + " MB";
   }
-});    
+});
 
+myControllerModule.value("about", {
+    timezone: '-',
+    timezoneString: '-',
+    systemDate: '-',
+    appVersion:'-',
+    appName: '-'    
+});
+
+//FooterCtrl
+myControllerModule.controller('FooterCtrl', function($scope, about) {
+  //about, Timezone, etc.,
+  $scope.about = about;
+});
+
+/** 
+ * i18n Language support
+ * */
+ 
+myControllerModule.config(function($translateProvider) {
+  // Enable escaping of HTML
+  //$translateProvider.useSanitizeValueStrategy('sanitize');
+  $translateProvider.useSanitizeValueStrategy(null);
+  $translateProvider.useStaticFilesLoader({
+    prefix: 'languages/mc_locale_',
+    suffix: '.json'
+  });
+ 
+  $translateProvider.preferredLanguage('en-us');
+  
+});

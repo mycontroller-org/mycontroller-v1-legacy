@@ -16,15 +16,18 @@
 
 -->
 <div>
+  
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
-  <div class="modal-body">
-   
-    <div ng-bind-html="rebootMsg"></div>
+  
+  <div class="modal-body modal-body-text-only">   
+    <small ng-bind-html="rebootMsg"></small>
   </div>
+  
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="reboot(node)"><i class="fa fa-undo"> Reboot</i></button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="reboot(node)"><i class="fa fa-undo"> {{ 'SYSTEM.REBOOT' | translate }}</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
+  
 </div>

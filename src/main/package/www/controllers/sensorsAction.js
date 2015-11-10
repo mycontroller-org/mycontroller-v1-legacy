@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionController', function(alertService,
-$scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestError) {
+$scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, about) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
-  $scope.config = {
-    itemsPerPage: 5,
-    fillLastPage: false
-  }
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
   
   //Filter
   $scope.updateFilteredList = function() {
@@ -29,6 +28,7 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
   };
   
   //Send list of Sensors
+  $scope.orgList = {};
   $scope.orgList = SensorsFactory.query(function(response) {
                     },function(error){
                       displayRestError.display(error);            
@@ -48,46 +48,95 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
  
  //Refresh sensor data
   $scope.refresh = function (sensor) {
-    //SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId });
-    return SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId },function(response) {
-        //Nothing to do.
-    },function(error){
-        displayRestError.display(error);
-    });
+    $scope.updateSensor(sensor, false);
   }
   
-  //Update all sensors data
-  $scope.updateSensor = function (sensor) {
     /*
      * Update only one sensor data
      */
-    for (var sId=0; sId<$scope.orgList.length; sId++){
-       if($scope.orgList[sId].id == sensor.id){
-         SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId },function(response) {
-          $scope.orgList[sId] = response;
-        },function(error){
-          displayRestError.display(error);
-        });
-         break;
-       }
-     }    
-     
-     //Update all sensors data
-     /*
-     SensorsFactory.query(function(response) {
-       $scope.tmpList = response;
-       for (var sId=0; sId<$scope.orgList.length; sId++){
-        for (var tId=0; tId<$scope.tmpList.length; tId++){
-          if($scope.orgList[sId].id == $scope.tmpList[tId].id){
-            $scope.orgList[sId] = $scope.tmpList[tId];
-          }
+  $scope.updateSensor = function (sensor, updateOnlyStatus) {
+    SensorsFactory.get({ nodeId: sensor.node.id, sensorId: sensor.sensorId },function(response) {
+      sensor.status = response.status;
+      sensor.lastSeen = response.lastSeen;
+      if(!updateOnlyStatus){
+        //sensor = response;
+        sensor.guiButtons = response.guiButtons;
+        sensor.nameWithNode = response.nameWithNode;
+        sensor.typeString = response.typeString;
+        sensor.variableTypes = response.variableTypes;
+        sensor.enableSendPayload = response.enableSendPayload;
+        sensor.updateTime = response.updateTime;
+      }
+    },function(error){
+      displayRestError.display(error);
+    });
+  }
+    
+    
+  //Update all sensors data
+  $scope.updateAllSensors = function () {  
+   SensorsFactory.query(function(response) {
+     $scope.tmpList = response;
+     for (var sId=0; sId<$scope.orgList.length; sId++){
+      for (var tId=0; tId<$scope.tmpList.length; tId++){
+        if($scope.orgList[sId].id == $scope.tmpList[tId].id){
+          $scope.orgList[sId] = $scope.tmpList[tId];
         }
-       }
-      },function(error){
-        displayRestError.display(error);            
-      });
-      */
+      }
+     }
+    },function(error){
+      displayRestError.display(error);            
+    });
+  }
+  
+  //Initiate the Refresh Timer object.
+  $scope.refreshTimer = null;
+  $scope.refreshTime = 0;
+  
+  $scope.refreshTimeChange = function (){
+    $scope.StopRefreshTimer();
+    if($scope.refreshTime == 0){
+      return;
     }
+    $scope.StartRefreshTimer();
+  }
+  
+  //Start Refresh Timer function.
+  $scope.StartRefreshTimer = function () {
+    // Don't start a new timer, if one running already
+     if ( angular.isDefined($scope.refreshTimer) ) return;
+    //Initialize the Timer to run every milliseconds defined in $scope.refreshTime
+    $scope.refreshTimer = $interval($scope.updateAllSensors, $scope.refreshTime);
+  };
+  
+  //Stop and distroy function.
+  $scope.StopRefreshTimer = function () {
+    //Cancel the Refresh Timer.
+    if (angular.isDefined($scope.refreshTimer)) {
+      $interval.cancel($scope.refreshTimer);
+      $scope.refreshTimer = undefined;
+    }
+  };
+  
+  $scope.$on('$destroy', function() {
+    // Make sure that the interval is destroyed too
+    $scope.StopRefreshTimer();
+  });
+    
+    
+  //Send payload by button
+  $scope.sendPL = function (sensor, payloadJson, singleCall) {
+    SensorsFactory.sendPayload({nodeId: "sendPayload"}, payloadJson,function(response) {
+        if(singleCall){
+          alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+payloadJson.payload);
+          $scope.updateSensor(sensor, false); 
+        }else{
+          $scope.updateSensor(sensor, true); 
+        }
+    },function(error){
+        displayRestError.display(error);            
+    });
+  }
   
   //ON/OFF Sensor
   $scope.onOff = function (sensor) {
@@ -106,17 +155,17 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
  
   //Update payload model
   $scope.sendPayload = function (sensor, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/sensorsAction/sendPayloadModal.html',
     controller: 'SAsendPayloadController',
     size: size,
     resolve: {sensor: function () {return sensor;}}
     });
 
-    editModalInstance.result.then(function (sensor) {
-      SensorsFactory.sendPayload({nodeId: sensor.id, payload: sensor.newPayload},function(response) {
+    editModalInstance.result.then(function (payloadJson) {
+      SensorsFactory.sendPayload({nodeId: "sendPayload"},payloadJson,function(response) {
         //displayRestError.display(response, 201, "Payload sent to ["+sensor.nameWithNode+"]");   
-        alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+sensor.newPayload);
+        alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+payloadJson.payload);
         $scope.updateSensor(sensor);
       },function(error){
         displayRestError.display(error);            
@@ -129,16 +178,17 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
   
   //Update sensor model
   $scope.editSensor = function (sensor, size) {
-    var editModalInstance = $modal.open({
+    var editModalInstance = $uibModal.open({
     templateUrl: 'partials/sensorsAction/editModal.html',
     controller: 'SAeditController',
     size: size,
     resolve: {sensor: function () {return sensor;}}
     });
 
-    editModalInstance.result.then(function (sensor) {
-      SensorsFactory.update({nodeId: sensor.node.id}, sensor,function(response) {
+    editModalInstance.result.then(function (keyValues) {
+      SensorsFactory.updateOthers({sensorId: sensor.id}, keyValues,function(response) {
         alertService.success("Updat success ["+sensor.nameWithNode+"]");
+        $scope.updateSensor(sensor, false);
       },function(error){
         displayRestError.display(error);            
       });        
@@ -151,10 +201,13 @@ $scope, $filter, SensorsFactory, TypesFactory, $location, $modal, displayRestErr
 
 });
 
-myControllerModule.controller('SAsendPayloadController', function ($scope, $modalInstance, sensor, SensorsFactory) {
+myControllerModule.controller('SAsendPayloadController', function ($scope, $modalInstance, sensor, SensorsFactory, TypesFactory) {
   $scope.sensor = sensor;
-  $scope.header = "Send Payload to "+$scope.sensor.nameWithNode;  
+  $scope.header = "Send Payload to '"+$scope.sensor.nameWithNode+"'";  
   $scope.sensor.sliderPayload=sensor.lastValue;
+  $scope.payloadJson={};
+  $scope.payloadJson.nodeId=sensor.node.id;
+  $scope.payloadJson.sensorId=sensor.sensorId;
   $scope.$watch('sensor.sliderPayload', function() {
      $scope.sliderOnChange();
   });
@@ -167,13 +220,17 @@ myControllerModule.controller('SAsendPayloadController', function ($scope, $moda
   $scope.sliderOnChange = function() {
         $scope.sensor.newPayload = $scope.sensor.sliderPayload;  
   };
-  $scope.send = function() {$modalInstance.close($scope.sensor);}
+  
+  $scope.variableTypes = TypesFactory.getSensorVariableTypes({id: sensor.type});
+  
+  $scope.send = function() {$modalInstance.close($scope.payloadJson);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('SAeditController', function ($scope, $modalInstance, sensor) {
+myControllerModule.controller('SAeditController', function ($scope, $modalInstance, sensor, SensorsFactory) {
   $scope.sensor = sensor;
-  $scope.header = "Update "+$scope.sensor.nameWithNode;
-  $scope.edit = function() {$modalInstance.close($scope.sensor);}
+  $scope.keyValues = SensorsFactory.getOthers({sensorId : sensor.id});
+  $scope.header = "Update '"+$scope.sensor.nameWithNode+"'";
+  $scope.edit = function() {$modalInstance.close($scope.keyValues);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

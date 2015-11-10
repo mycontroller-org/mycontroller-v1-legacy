@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('UidTagController', function(alertService,
-$scope, $filter, TimersFactory, UidTagFactory, $modal, $stateParams, displayRestError) {
+$scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayRestError) {
   
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -38,7 +38,7 @@ $scope, $filter, TimersFactory, UidTagFactory, $modal, $stateParams, displayRest
   
   //Add new
   $scope.add = function (size) {
-    var addModalInstance = $modal.open({
+    var addModalInstance = $uibModal.open({
     templateUrl: 'partials/uidTag/addModal.html',
     controller: 'UTMaddController',
     size: size,
@@ -65,7 +65,7 @@ $scope, $filter, TimersFactory, UidTagFactory, $modal, $stateParams, displayRest
     
   //Delete timer
   $scope.delete = function (uidTag, size) {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
     templateUrl: 'partials/models/deleteModal.html',
     controller: 'UTMdeleteController',
     size: size,
@@ -100,6 +100,11 @@ myControllerModule.controller('UTMaddController', function ($scope, $modalInstan
   $scope.refreshSensors = function(nodeId){
       return TypesFactory.getSensors({id: nodeId});
   };
+  
+  $scope.refreshVariableTypes = function(sensorRefId){
+      return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
+  };
+  
   $scope.header = "Add new UID entry";
   $scope.add = function() {$modalInstance.close($scope.uidTag); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }

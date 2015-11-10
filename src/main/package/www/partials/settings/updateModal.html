@@ -17,38 +17,43 @@
 -->
 <div>
   <div class="modal-header">
-    <h4>{{header}}</h4>
+    <div class="modal-title"><b>{{header}}</b></div>
   </div>
   <div class="modal-body">
    
-  <form class="form-horizontal" role="form" name="form">
-    <div class="form-group">
-      <label class="control-label col-sm-3">Name:</label>
-      <div class="col-sm-6">
-        <p class="form-control-static">{{settings.frindlyName}}</p>   
-      </div>
+  <form class="form-horizontal form-group-sm" role="form" name="form">
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3">{{ 'SYSTEM.NAME' | translate }}:</label>
+      <p class="form-control-static">{{settings.frindlyName}}</p>   
     </div>
     
-    <div class="form-group" ng-hide="settings.key == 'default_firmware'">
-      <label class="control-label col-sm-3" for="settings.value">Value:</label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" id="settings.value" placeholder="Value" ng-model="settings.value" required>
-      </div>
+    <div class="form-group form-inline" ng-hide="settings.key == 'default_firmware' || settings.key == 'graph_interpolate_type' || settings.key == 'mys_config'">
+      <label class="control-label col-sm-3" for="settings.value">{{ 'SYSTEM.VALUE' | translate }}:</label>
+      <input style="width:320px" type="text" class="form-control" id="settings.value" placeholder="Value" ng-model="settings.value" required>
     </div>   
     
-    <div class="form-group" ng-show="settings.key == 'default_firmware'">
-      <label class="control-label col-sm-3" >Firmware:</label>
-            <div class="col-sm-6">
-        <select class="form-control" ng-options="firmware.id as firmware.firmwareName for firmware in firmwares" ng-model="settings.value" required>
-          <option value="">-- Choose Firmware --</option>
-        </select>
-      </div>
+    <div class="form-group form-inline" ng-show="settings.key == 'default_firmware'">
+      <label class="control-label col-sm-3" >{{ 'TITLE.FIRMWARE' | translate }}:</label>
+      <select style="width:320px" class="form-control" ng-options="firmware.id as firmware.firmwareName for firmware in firmwares" ng-model="settings.value" required>
+        <option value="">-- {{ 'SETTINGS.CHOOSE_FIRMWARE' | translate }} --</option>
+      </select>
     </div>
+    
+    <div class="form-group form-inline" ng-show="settings.key == 'graph_interpolate_type'">
+      <label class="control-label col-sm-3" >{{ 'SETTINGS.INTERPOLATE_TYPES' | translate }}:</label>
+      <select style="width:320px" class="form-control" ng-options="graphInterpolateType for graphInterpolateType in graphInterpolateTypes" ng-model="settings.value" required></select>
+    </div>
+    
+    <div class="form-group form-inline" ng-show="settings.key == 'mys_config'">
+      <label class="control-label col-sm-3" >{{ 'SETTINGS.CONFIG_TYPE' | translate }}:</label>
+      <select style="width:320px" class="form-control" ng-options="mysConfigType for mysConfigType in mysConfigTypes" ng-model="settings.value" required></select>
+    </div>
+    
   </form>
   
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> Update</i> </button>
-    <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> Cancel</i></button>
+    <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> {{ 'SYSTEM.UPDATE' | translate }}</i> </button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
 </div>
 

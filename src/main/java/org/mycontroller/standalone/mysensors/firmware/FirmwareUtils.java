@@ -22,7 +22,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,5 +135,31 @@ public class FirmwareUtils {
                 c = (c >> 1);
         }
         return c;
+    }
+
+    public static synchronized void deleteFirmwareType(int id) {
+        List<Firmware> firmwares = DaoUtils.getFirmwareDao().getAllFirmwareByType(id);
+        for (Firmware firmware : firmwares) {
+            DaoUtils.getFirmwareDao().delete(firmware);
+        }
+        DaoUtils.getFirmwareTypeDao().delete(id);
+    }
+
+    public static synchronized void deleteFirmwareVersion(int id) {
+        List<Firmware> firmwares = DaoUtils.getFirmwareDao().getAllFirmwareByVersion(id);
+        for (Firmware firmware : firmwares) {
+            DaoUtils.getFirmwareDao().delete(firmware);
+        }
+        DaoUtils.getFirmwareVersionDao().delete(id);
+    }
+
+    public static synchronized void deleteFirmware(int id) {
+        DaoUtils.getFirmwareDao().delete(id);
+    }
+
+    public static synchronized void createFirmware(Firmware firmware) {
+        FirmwareUtils.updateFirmwareFromHexString(firmware);
+        firmware.setTimestamp(System.currentTimeMillis());
+        DaoUtils.getFirmwareDao().create(firmware);
     }
 }

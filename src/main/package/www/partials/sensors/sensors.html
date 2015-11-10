@@ -17,25 +17,28 @@
 -->
 <div class="page-header">
   <h3>
-    <div class="form-group pull-right col-xs-3">          
-      <select class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-change="nodeChange(nodeId)" ng-model="nodeId">
-        <option value="">-- All Nodes --</option>
-      </select>
-    </div>
-    <b><i class="fa fa-eye"></i> Sensors </b></h3>
-  </div>
+      <div class="form-horizontal form-group-sm pull-right col-xs-2">
+        <div class="form-group form-inline">
+          <select style="width:220px" class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-change="nodeChange(nodeId)" ng-model="nodeId">
+            <option value="">-- {{ 'NODE.ALL_NODES' | translate }} --</option>
+          </select>
+        </div>
+      </div>
+
+    <b><i class="fa fa-eye"></i> {{ 'TITLE.SENSORS' | translate }} </b></h3>
+</div>
 	
   <div class="panel panel-default">
 	  <!-- Default panel contents --TOP -->
 	  <div class="panel-heading">
 		<form class="form-inline">
 			<div class="form-group">
-				<label class="sr-only" for="search">Search</label>
+				<label class="sr-only" for="search">{{ 'SYSTEM.SEARCH' | translate }}</label>
 				<input type="text" class="form-control ng-pristine ng-valid input-sm ng-valid" 
-				ng-model="query" id="search" placeholder="Search" ng-model="query" 
+				ng-model="query" id="search" placeholder="{{ 'SYSTEM.SEARCH' | translate }}" ng-model="query" 
 				ng-change="updateFilteredList()"/>
 			</div>
-			<a href='' class="text-default pull-right" ng-click="add()" tooltip="Add"><i class="fa fa-lg fa-plus-square-o"></i></a>
+			<a href='' class="text-default pull-right" ng-click="add()" uib-tooltip="{{ 'SYSTEM.ADD' | translate }}"><i class="fa fa-lg fa-plus-square-o"></i></a>
 		</form>
 	 </div>
 	
@@ -45,16 +48,16 @@
 			<thead></thead>
 			<tbody>
 	      <tr>
-					<td at-implicit at-sortable at-attribute="node.id" at-title="NodeId"></td>
-					<td at-implicit at-sortable at-attribute="sensorId"></td>
-	        <td at-implicit at-sortable at-attribute="name"></td>
-					<td at-implicit at-sortable at-attribute="typeString" at-title="Type"></td>
-          <td at-implicit at-sortable at-attribute="messageTypeString" at-title="Variable Type"></td>
-          <td at-sortable at-title="Last Seen">{{item.updateTime | date:'medium'}}</td>
+					<td at-implicit at-sortable at-attribute="node.id" at-title="{{ 'NODE.NODE_ID' | translate }}"></td>
+					<td at-implicit at-sortable at-attribute="sensorId" at-title="{{ 'NODE.SENSOR_ID' | translate }}"></td>
+	        <td at-implicit at-sortable at-attribute="name" at-title="{{ 'SYSTEM.NAME' | translate }}"></td>
+					<td at-implicit at-sortable at-attribute="typeString" at-title="{{ 'LOG.TYPE' | translate }}"></td>
+          <td at-implicit at-sortable at-attribute="variableTypes" at-title="{{ 'NODE.VARIABLE_TYPE' | translate }}"></td>
+          <td at-sortable at-title="{{ 'SENSORS_ACTIONS.LAST_SEEN' | translate }}">{{item.updateTime | date:'medium':about.timezone}}</td>
 					<td class="text-center">
-						<a href='' ng-click="update(item)" class="text-default"  tooltip="Edit">
+						<a href='' ng-click="update(item)" class="text-default"  uib-tooltip="{{ 'SYSTEM.EDIT' | translate }}">
 						<i class="fa fa-lg fa-edit"></i></a>&nbsp;
-						<a href='' ng-click="delete(item)" class="text-danger" tooltip="Delete"><i class="fa fa-lg fa-trash"></i></a>
+						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="{{ 'SYSTEM.DELETE' | translate }}"><i class="fa fa-lg fa-trash"></i></a>
 					</td>
 				</tr>
 			</tbody>

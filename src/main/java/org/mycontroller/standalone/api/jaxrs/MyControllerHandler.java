@@ -28,13 +28,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.api.jaxrs.mapper.IdJson;
-import org.mycontroller.standalone.api.jaxrs.mapper.SerialPortJson;
-import org.mycontroller.standalone.api.jaxrs.mapper.StringValueJson;
+import org.mycontroller.standalone.api.jaxrs.mapper.About;
+import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
-import org.mycontroller.standalone.mysensors.ProcessRawMessageUtils;
 import org.mycontroller.standalone.mysensors.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,49 +63,43 @@ public class MyControllerHandler {
     @GET
     @Path("/ping")
     public Response ping() {
-        return RestUtils.getResponse(Status.OK, new StringValueJson("Hello Controller"));
+        return RestUtils.getResponse(Status.OK, "Hello!");
     }
 
     @GET
     @Path("/timestamp")
     public Response timestamp() {
-        return RestUtils.getResponse(Status.OK, new StringValueJson(String.valueOf(System.currentTimeMillis())));
+        return RestUtils.getResponse(Status.OK, System.currentTimeMillis());
     }
 
     @GET
     @Path("/time")
     public Response time() {
-        return RestUtils.getResponse(Status.OK, new StringValueJson(new Date().toString()));
+        return RestUtils.getResponse(Status.OK, new Date().toString());
     }
 
     @GET
-    @Path("/nodeid")
-    public Response nodeId() {
-        return RestUtils.getResponse(Status.OK,
-                new IdJson(String.valueOf(ObjectFactory.getAppProperties().getNodeId())));
+    @Path("/about")
+    public Response about() {
+        return RestUtils.getResponse(Status.OK, new About());
     }
 
     @GET
-    @Path("/serialport/info")
+    @Path("/gatewayInfo")
     public Response serialport() {
-        return RestUtils.getResponse(Status.OK, new SerialPortJson(ObjectFactory.getAppProperties()
-                .getSerialPortName(),
-                ObjectFactory.getAppProperties().getSerialPortDriver(),
-                ObjectFactory.getAppProperties().getSerialPortBaudRate()));
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getMySensorsGateway().getGatewayInfo());
     }
 
     @POST
-    @Path("/serialport/send/raw")
-    public Response postInSerialportRaw(StringValueJson mySensorsRawMessage) {
-        ProcessRawMessageUtils.sendMessage(mySensorsRawMessage.getValue());
-        return RestUtils.getResponse(Status.OK);
-    }
-
-    @POST
-    @Path("/serialport/send/")
-    public Response postInSerialport(RawMessage rawMessage) {
-        ProcessRawMessageUtils.sendMessage(rawMessage);
-        return RestUtils.getResponse(Status.OK);
+    @Path("/sendRawMessage")
+    public Response sendRawMessage(RawMessage rawMessage) {
+        try {
+            rawMessage.setTxMessage(true);
+            ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
     }
 
     @GET
@@ -115,7 +107,7 @@ public class MyControllerHandler {
     public Response getOsStatus() {
         return RestUtils.getResponse(Status.OK, new StatusOS());
     }
-    
+
     @GET
     @Path("/jvmStatus")
     public Response getJvmStatus() {
