@@ -159,6 +159,7 @@
 
   "SYSTEM.ADD" : "Hinzufügen",
   "SYSTEM.CANCEL" : "Abbrechen",
+  "SYSTEM.DELETE" : "Löschen",
   "SYSTEM.DISCOVER" : "Entdecken",
   "SYSTEM.EDIT" : "Bearbeiten",
   "SYSTEM.ENABLED" : "Aktiviert",
