@@ -38,9 +38,12 @@
       <tr ng-show="gatewayInfo.type == 'ethernet'"><td class="col-md-2">{{ 'GATEWAY_STATUS.ETHERNET_KEEP_ALIVE_TIME' | translate }}</td><td>{{gatewayInfo.data.aliveFrequency}} Seconds</td></tr>
       <tr ng-show="gatewayInfo.type == 'ethernet'"><td class="col-md-2">{{ 'GATEWAY_STATUS.ETHERNET_CONNECTION_STATUS' | translate }}</td><td>{{gatewayInfo.data.connectionStatus}}</td></tr>
       <!-- MQTT Gateway -->
-      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_HOST_IP' | translate }}</td><td>{{gatewayInfo.data.ip}}</td></tr>
-      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_PORT' | translate }}</td><td>{{gatewayInfo.data.port}}</td></tr>
-      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_TOPIC' | translate }}</td><td>{{gatewayInfo.data.topic}}</td></tr>
+      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_BROKER_HOST' | translate }}</td><td>{{gatewayInfo.data.brokerHost}}</td></tr>
+      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_CLIENT_ID' | translate }}</td><td>{{gatewayInfo.data.clientId}}</td></tr>
+      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_USER' | translate }}</td><td>{{gatewayInfo.data.user}}</td></tr>
+      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_TOPIC_SUBSCRIBE' | translate }}</td><td>{{gatewayInfo.data.topicSubscribe}}</td></tr>
+      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_TOPIC_PUBLISH' | translate }}</td><td>{{gatewayInfo.data.topicPublish}}</td></tr>
+      <tr ng-show="gatewayInfo.type == 'mqtt'"><td class="col-md-2">{{ 'GATEWAY_STATUS.MQTT_CONNECTION_STATUS' | translate }}</td><td>{{gatewayInfo.data.connectionStatus}}</td></tr>
 		</tbody>
 	</table>
 

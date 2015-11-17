@@ -92,7 +92,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getMessageSubTypes:  { method: 'GET', isArray: true, params: {type: 'messageSubTypes'} },
     getSensorVariableMapper:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapper'} },
     updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} }, 
-    getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} }, 
+    getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} },
+    getLanguages:  { method: 'GET', isArray: true, params: {type: 'languages'} }, 
   })
 });
 

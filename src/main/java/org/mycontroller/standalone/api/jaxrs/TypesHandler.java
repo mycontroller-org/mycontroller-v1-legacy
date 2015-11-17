@@ -44,143 +44,149 @@ import org.mycontroller.standalone.db.tables.Sensor;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 public class TypesHandler {
-    @GET
-    @Path("/sensorTypes")
-    public Response getSensorTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorTypes());
-    }
+	@GET
+	@Path("/sensorTypes")
+	public Response getSensorTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getSensorTypes());
+	}
 
-    @GET
-    @Path("/sensorValueTypes")
-    public Response getSensorValueTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorValueTypes());
-    }
+	@GET
+	@Path("/sensorValueTypes")
+	public Response getSensorValueTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getSensorValueTypes());
+	}
 
-    @GET
-    @Path("/nodeTypes")
-    public Response getNodeTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getNodeTypes());
-    }
+	@GET
+	@Path("/nodeTypes")
+	public Response getNodeTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getNodeTypes());
+	}
 
-    @GET
-    @Path("/roles")
-    public Response getUserRoles() {
-        return RestUtils.getResponse(Status.OK, USER_ROLE.values());
-    }
+	@GET
+	@Path("/roles")
+	public Response getUserRoles() {
+		return RestUtils.getResponse(Status.OK, USER_ROLE.values());
+	}
 
-    @GET
-    @Path("/alarmtriggers")
-    public Response getAlarmTriggers() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTriggerTypes());
-    }
+	@GET
+	@Path("/alarmtriggers")
+	public Response getAlarmTriggers() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTriggerTypes());
+	}
 
-    @GET
-    @Path("/alarmtypes")
-    public Response getAlarmTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTypes());
-    }
+	@GET
+	@Path("/alarmtypes")
+	public Response getAlarmTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTypes());
+	}
 
-    @GET
-    @Path("/alarmDampeningTypes")
-    public Response getAlarmDampeningTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDampeningTypes());
-    }
+	@GET
+	@Path("/alarmDampeningTypes")
+	public Response getAlarmDampeningTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDampeningTypes());
+	}
 
-    @GET
-    @Path("/timerTypes")
-    public Response getTimerTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerTypes());
-    }
+	@GET
+	@Path("/timerTypes")
+	public Response getTimerTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getTimerTypes());
+	}
 
-    @GET
-    @Path("/timerFrequencies")
-    public Response getTimerFrequencies() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerFrequencies());
-    }
+	@GET
+	@Path("/timerFrequencies")
+	public Response getTimerFrequencies() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getTimerFrequencies());
+	}
 
-    @GET
-    @Path("/timerDays")
-    public Response getTimerDays(@QueryParam("allDays") Boolean allDays) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerDays(allDays != null ? true : false));
-    }
+	@GET
+	@Path("/timerDays")
+	public Response getTimerDays(@QueryParam("allDays") Boolean allDays) {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getTimerDays(allDays != null ? true : false));
+	}
 
-    @GET
-    @Path("/nodes")
-    public Response getNodes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getNodes());
-    }
+	@GET
+	@Path("/nodes")
+	public Response getNodes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getNodes());
+	}
 
-    @GET
-    @Path("/sensors/{nodeId}")
-    public Response getSensors(@PathParam("nodeId") int nodeId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(nodeId));
-    }
+	@GET
+	@Path("/sensors/{nodeId}")
+	public Response getSensors(@PathParam("nodeId") int nodeId) {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(nodeId));
+	}
 
-    @GET
-    @Path("/graphInterpolate")
-    public Response getGraphInterpolateTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getGraphInterpolateTypes());
-    }
-    
-    @GET
-    @Path("/mysConfigTypes")
-    public Response getMysConfigTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMysConfigTypes());
-    }
+	@GET
+	@Path("/graphInterpolate")
+	public Response getGraphInterpolateTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getGraphInterpolateTypes());
+	}
 
-    @GET
-    @Path("/sensorVariableTypesAll/{sensorType}")
-    public Response getSensorVariableTypesAll(@PathParam("sensorType") int sensorType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypesAll(sensorType));
-    }
+	@GET
+	@Path("/mysConfigTypes")
+	public Response getMysConfigTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getMysConfigTypes());
+	}
 
-    @GET
-    @Path("/sensorVariableTypes/{sensorType}")
-    public Response getSensorVariableTypes(@PathParam("sensorType") int sensorType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypes(sensorType, null));
-    }
+	@GET
+	@Path("/sensorVariableTypesAll/{sensorType}")
+	public Response getSensorVariableTypesAll(@PathParam("sensorType") int sensorType) {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypesAll(sensorType));
+	}
 
-    @GET
-    @Path("/sensorVariableTypesBySenRef/{sensorRefId}")
-    public Response getSensorVariableTypesBySensorRefId(@PathParam("sensorRefId") int sensorRefId) {
-        Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
-        if (sensor != null && sensor.getType() != null) {
-            return RestUtils.getResponse(Status.OK,
-                    TypesUtils.getSensorVariableTypes(sensor.getType(), sensor.getVariableTypes()));
-        }
-        return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(
-                "Requested Sensor[" + sensor.getName() + "] type not available or Sensor not available"));
-    }
+	@GET
+	@Path("/sensorVariableTypes/{sensorType}")
+	public Response getSensorVariableTypes(@PathParam("sensorType") int sensorType) {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypes(sensorType, null));
+	}
 
-    @GET
-    @Path("/graphSensorVariableTypes/{sensorRefId}")
-    public Response getGraphSensorVariableTypes(@PathParam("sensorRefId") int sensorRefId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getGraphSensorVariableTypes(sensorRefId));
-    }
+	@GET
+	@Path("/sensorVariableTypesBySenRef/{sensorRefId}")
+	public Response getSensorVariableTypesBySensorRefId(@PathParam("sensorRefId") int sensorRefId) {
+		Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
+		if (sensor != null && sensor.getType() != null) {
+			return RestUtils.getResponse(Status.OK,
+					TypesUtils.getSensorVariableTypes(sensor.getType(), sensor.getVariableTypes()));
+		}
+		return RestUtils.getResponse(Status.BAD_REQUEST,
+				new ApiError("Requested Sensor[" + sensor.getName() + "] type not available or Sensor not available"));
+	}
 
-    @GET
-    @Path("/messageTypes")
-    public Response getMessageTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageTypes());
-    }
+	@GET
+	@Path("/graphSensorVariableTypes/{sensorRefId}")
+	public Response getGraphSensorVariableTypes(@PathParam("sensorRefId") int sensorRefId) {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getGraphSensorVariableTypes(sensorRefId));
+	}
 
-    @GET
-    @Path("/messageSubTypes/{messageType}")
-    public Response getMessageSubTypes(@PathParam("messageType") int messageType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageSubTypes(messageType));
-    }
+	@GET
+	@Path("/messageTypes")
+	public Response getMessageTypes() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getMessageTypes());
+	}
 
-    @GET
-    @Path("/sensorVariableMapper")
-    public Response getSensorVariableMapper() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
-    }
+	@GET
+	@Path("/messageSubTypes/{messageType}")
+	public Response getMessageSubTypes(@PathParam("messageType") int messageType) {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getMessageSubTypes(messageType));
+	}
 
-    @PUT
-    @Path("/sensorVariableMapper")
-    public Response updateSensorVariableMapper(KeyValueJson keyValue) {
-        TypesUtils.updateVariableMap(keyValue);
-        return RestUtils.getResponse(Status.OK);
-    }
+	@GET
+	@Path("/sensorVariableMapper")
+	public Response getSensorVariableMapper() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
+	}
+
+	@GET
+	@Path("/languages")
+	public Response getLanguages() {
+		return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
+	}
+
+	@PUT
+	@Path("/sensorVariableMapper")
+	public Response updateSensorVariableMapper(KeyValueJson keyValue) {
+		TypesUtils.updateVariableMap(keyValue);
+		return RestUtils.getResponse(Status.OK);
+	}
 
 }

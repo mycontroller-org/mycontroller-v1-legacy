@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsController', function(alertService,
-$scope, $filter, SettingsFactory, $location, $uibModal, $stateParams, displayRestError, about, TypesFactory) {
+$scope, $filter, SettingsFactory, $location, $uibModal, $stateParams, displayRestError, about) {
   
   $scope.config = {
     itemsPerPage: 100,
@@ -68,7 +68,6 @@ $scope, $filter, SettingsFactory, $location, $uibModal, $stateParams, displayRes
                       displayRestError.display(error);            
                     });                    
                     
- 
   //Update settings
   $scope.update = function (settings, size) {
     var editModalInstance = $uibModal.open({
@@ -103,6 +102,8 @@ myControllerModule.controller('SSMupdateController', function ($scope, $modalIns
   } else if(settings.key == 'mys_config'){
     //MySensors Config Types
     $scope.mysConfigTypes = TypesFactory.getMysConfigTypes();
+  } else if(settings.key == 'mc_language'){
+    $scope.languages = TypesFactory.getLanguages();
   }
   
   $scope.update = function() {$modalInstance.close(settings);}

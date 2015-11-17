@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone;
+package org.mycontroller.standalone.mqttbroker;
 
+import org.eclipse.moquette.spi.impl.security.IAuthorizator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 0.0.2
  */
-public class AppShutdownHook {
-    private static final Logger _logger = LoggerFactory.getLogger(AppShutdownHook.class);
+public class MqttAuthorizatorImpl implements IAuthorizator {
+    private static final Logger _logger = LoggerFactory.getLogger(MqttAuthorizatorImpl.class.getName());
 
-    public void attachShutDownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                this.setName(AppProperties.APPLICATION_NAME + " Shutdown-Hook");
-                _logger.debug("Shutdown hook called. Running stop services...");
-                StartApp.stopServices();
-            }
-        });
-        _logger.debug("Shutdown hook attached...");
+    @Override
+    public boolean canRead(String topic, String user, String client) {
+        _logger.debug("Can read check for Topic:{}, User:{}, Client:{}", topic, user, client);
+        return true;
     }
+
+    @Override
+    public boolean canWrite(String topic, String user, String client) {
+        _logger.debug("Can write check for Topic:{}, User:{}, Client:{}", topic, user, client);
+        return true;
+    }
+
 }

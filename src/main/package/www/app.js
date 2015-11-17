@@ -231,7 +231,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, displayRestError, about, $cookieStore) {
+    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, displayRestError, about, $cookieStore, $translate) {
         // reset login status
         AuthenticationService.ClearCredentials();
  
@@ -247,7 +247,9 @@ myControllerModule.controller('LoginController',
                         about.systemDate = response.systemDate;
                         about.appName = response.appName;
                         about.appVersion = response.appVersion;
+                        about.language = response.language;
                         $cookieStore.put('mcabout', about);
+                        $translate.use(about.language);
                     },function(error){
                       displayRestError.display(error);            
                     });
@@ -300,7 +302,8 @@ myControllerModule.value("about", {
     timezoneString: '-',
     systemDate: '-',
     appVersion:'-',
-    appName: '-'    
+    appName: '-',
+    language: 'en-us'    
 });
 
 //FooterCtrl

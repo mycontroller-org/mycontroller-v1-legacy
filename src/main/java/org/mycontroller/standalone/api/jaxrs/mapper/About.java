@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 
@@ -29,44 +30,50 @@ import org.mycontroller.standalone.db.tables.Settings;
  */
 
 public class About {
-    private String timezone;
-    private int timezoneMilliseconds;
-    private String timezoneString;
-    private String appVersion;
-    private Date systemDate;
-    private String appName;
+	private String timezone;
+	private int timezoneMilliseconds;
+	private String timezoneString;
+	private String appVersion;
+	private Date systemDate;
+	private String appName;
+	private String language;
 
-    public About() {
-        Date date = new Date();
-        this.appName = AppProperties.APPLICATION_NAME;
-        this.timezoneMilliseconds = TimeZone.getDefault().getOffset(System.currentTimeMillis());
-        this.systemDate = date;
-        this.timezone = new SimpleDateFormat("Z").format(date);
-        this.timezoneString = new SimpleDateFormat("z").format(date);
-        this.appVersion = DaoUtils.getSettingsDao().get(Settings.MC_VERSION).getValue();
-    }
+	public About() {
+		Date date = new Date();
+		this.appName = AppProperties.APPLICATION_NAME;
+		this.timezoneMilliseconds = TimeZone.getDefault().getOffset(System.currentTimeMillis());
+		this.systemDate = date;
+		this.timezone = new SimpleDateFormat("Z").format(date);
+		this.timezoneString = new SimpleDateFormat("z").format(date);
+		this.appVersion = DaoUtils.getSettingsDao().get(Settings.MC_VERSION).getValue();
+		this.language = ObjectFactory.getAppProperties().getLanguage().toString().replaceAll("_", "-").toLowerCase();
+	}
 
-    public String getAppVersion() {
-        return appVersion;
-    }
+	public String getAppVersion() {
+		return appVersion;
+	}
 
-    public String getTimezone() {
-        return timezone;
-    }
+	public String getTimezone() {
+		return timezone;
+	}
 
-    public String getTimezoneString() {
-        return timezoneString;
-    }
+	public String getTimezoneString() {
+		return timezoneString;
+	}
 
-    public Date getSystemDate() {
-        return systemDate;
-    }
+	public Date getSystemDate() {
+		return systemDate;
+	}
 
-    public String getAppName() {
-        return appName;
-    }
+	public String getAppName() {
+		return appName;
+	}
 
-    public int getTimezoneMilliseconds() {
-        return timezoneMilliseconds;
-    }
+	public int getTimezoneMilliseconds() {
+		return timezoneMilliseconds;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
 }

@@ -28,117 +28,119 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "settings")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Settings {
-    public static final String AUTO_NODE_ID = "auto-node-key";
-    public static final String MC_VERSION = "mc-version";
-    public static final String MC_DB_VERSION = "mc-db-version";
-    public static final String LAST_ONE_DAY_AGGREGATION = "last_one_day_aggregation";
-    public static final String SUNRISE_TIME = "timer-sunrise";
-    public static final String SUNSET_TIME = "timer-sunset";
-    public static final String CITY_NAME = "city_name";
-    public static final String CITY_LATITUDE = "city_latitude";
-    public static final String CITY_LONGITUDE = "city_longitude";
-    public static final String DEFAULT_FIRMWARE = "default_firmware";
-    public static final String ENABLE_NOT_AVAILABLE_TO_DEFAULT_FIRMWARE = "not_available_to_default_firmware";
+	public static final String AUTO_NODE_ID = "auto-node-key";
+	public static final String MC_VERSION = "mc-version";
+	public static final String MC_DB_VERSION = "mc-db-version";
+	public static final String LAST_ONE_DAY_AGGREGATION = "last_one_day_aggregation";
+	public static final String SUNRISE_TIME = "timer-sunrise";
+	public static final String SUNSET_TIME = "timer-sunset";
+	public static final String CITY_NAME = "city_name";
+	public static final String CITY_LATITUDE = "city_latitude";
+	public static final String CITY_LONGITUDE = "city_longitude";
+	public static final String DEFAULT_FIRMWARE = "default_firmware";
+	public static final String ENABLE_NOT_AVAILABLE_TO_DEFAULT_FIRMWARE = "not_available_to_default_firmware";
 
-    public static final String EMAIL_SMTP_HOST = "email_smtp_host";
-    public static final String EMAIL_SMTP_PORT = "email_smtp_port";
-    public static final String EMAIL_SMTP_USERNAME = "email_smtp_username";
-    public static final String EMAIL_SMTP_PASSWORD = "email_smtp_password";
-    public static final String EMAIL_ENABLE_SSL = "email_enable_ssl";
-    public static final String EMAIL_FROM = "email_from";
+	public static final String EMAIL_SMTP_HOST = "email_smtp_host";
+	public static final String EMAIL_SMTP_PORT = "email_smtp_port";
+	public static final String EMAIL_SMTP_USERNAME = "email_smtp_username";
+	public static final String EMAIL_SMTP_PASSWORD = "email_smtp_password";
+	public static final String EMAIL_ENABLE_SSL = "email_enable_ssl";
+	public static final String EMAIL_FROM = "email_from";
 
-    public static final String SMS_AUTH_ID = "sms_auth_id";
-    public static final String SMS_AUTH_TOKEN = "sms_auth_token";
-    public static final String SMS_FROM_PHONE_NUMBER = "sms_from_phone_number";
+	public static final String SMS_AUTH_ID = "sms_auth_id";
+	public static final String SMS_AUTH_TOKEN = "sms_auth_token";
+	public static final String SMS_FROM_PHONE_NUMBER = "sms_from_phone_number";
 
-    public static final String SERIALPORT_NAME = "serialport_name";
-    public static final String SERIALPORT_BAUD_RATE = "serialport_baud_rate";
-    public static final String SERIALPORT_DRIVER_TYPE = "serialport_driver_type";
+	public static final String SERIALPORT_NAME = "serialport_name";
+	public static final String SERIALPORT_BAUD_RATE = "serialport_baud_rate";
+	public static final String SERIALPORT_DRIVER_TYPE = "serialport_driver_type";
 
-    public static final String GRAPH_INTERPOLATE_TYPE = "graph_interpolate_type";
+	public static final String GRAPH_INTERPOLATE_TYPE = "graph_interpolate_type";
 
-    public static final String DEFAULT_UNIT = "du_";
+	public static final String DEFAULT_UNIT = "du_";
 
-    public static final String ENABLE_SEND_PAYLOAD = "enable_send_payload";
+	public static final String ENABLE_SEND_PAYLOAD = "enable_send_payload";
 
-    public static final String MY_SENSORS_CONFIG = "mys_config";
+	public static final String MY_SENSORS_CONFIG = "mys_config";
 
-    public Settings() {
+	public static final String MC_LANGUAGE = "mc_language";
 
-    }
+	public Settings() {
 
-    public Settings(String key, String value, String frindlyName) {
-        this(key, value, frindlyName, null);
-    }
+	}
 
-    public Settings(String key, String value, String frindlyName, Boolean userEditable) {
-        this.key = key;
-        this.value = value;
-        this.frindlyName = frindlyName;
-        if (userEditable == null) {
-            this.userEditable = false;
-        } else {
-            this.userEditable = userEditable;
-        }
+	public Settings(String key, String value, String frindlyName) {
+		this(key, value, frindlyName, null);
+	}
 
-    }
+	public Settings(String key, String value, String frindlyName, Boolean userEditable) {
+		this.key = key;
+		this.value = value;
+		this.frindlyName = frindlyName;
+		if (userEditable == null) {
+			this.userEditable = false;
+		} else {
+			this.userEditable = userEditable;
+		}
 
-    public Settings(String key) {
-        this.key = key;
-    }
+	}
 
-    @DatabaseField(generatedId = true)
-    private Integer id;
-    @DatabaseField(canBeNull = false, unique = true)
-    private String key;
-    @DatabaseField(canBeNull = false)
-    private String frindlyName;
-    @DatabaseField(canBeNull = true)
-    private String value;
-    @DatabaseField(canBeNull = true)
-    private Boolean userEditable = false;
+	public Settings(String key) {
+		this.key = key;
+	}
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
+	@DatabaseField(generatedId = true)
+	private Integer id;
+	@DatabaseField(canBeNull = false, unique = true)
+	private String key;
+	@DatabaseField(canBeNull = false)
+	private String frindlyName;
+	@DatabaseField(canBeNull = true)
+	private String value;
+	@DatabaseField(canBeNull = true)
+	private Boolean userEditable = false;
 
-    public String getKey() {
-        return key;
-    }
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 
-    public void setKey(String id) {
-        this.key = id;
-    }
+	public String getKey() {
+		return key;
+	}
 
-    public String getValue() {
-        return value;
-    }
+	public void setKey(String id) {
+		this.key = id;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public String getValue() {
+		return value;
+	}
 
-    public String getFrindlyName() {
-        return frindlyName;
-    }
+	public void setValue(String value) {
+		this.value = value;
+	}
 
-    public void setFrindlyName(String frindlyName) {
-        this.frindlyName = frindlyName;
-    }
+	public String getFrindlyName() {
+		return frindlyName;
+	}
 
-    public Boolean getUserEditable() {
-        return userEditable;
-    }
+	public void setFrindlyName(String frindlyName) {
+		this.frindlyName = frindlyName;
+	}
 
-    public void setUserEditable(Boolean userEditable) {
-        this.userEditable = userEditable;
-    }
+	public Boolean getUserEditable() {
+		return userEditable;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public void setUserEditable(Boolean userEditable) {
+		this.userEditable = userEditable;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }
