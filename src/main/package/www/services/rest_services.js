@@ -94,6 +94,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} }, 
     getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} },
     getLanguages:  { method: 'GET', isArray: true, params: {type: 'languages'} }, 
+    getTime12h24hformats:  { method: 'GET', isArray: true, params: {type: 'time12h24hformats'} }, 
   })
 });
 

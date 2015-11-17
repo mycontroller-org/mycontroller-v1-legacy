@@ -95,6 +95,7 @@ public class SettingsUtils {
         keys.add(Settings.MC_VERSION);
         keys.add(Settings.MC_DB_VERSION);
         keys.add(Settings.MC_LANGUAGE);
+        keys.add(Settings.MC_TIME_12_24_FORMAT);
         List<Settings> settings = DaoUtils.getSettingsDao().get(keys);
         for (Settings setting : settings) {
             if (setting.getKey().equals(Settings.MC_LANGUAGE)) {

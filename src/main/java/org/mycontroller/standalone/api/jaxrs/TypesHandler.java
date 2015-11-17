@@ -182,6 +182,12 @@ public class TypesHandler {
         return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
     }
 
+    @GET
+    @Path("/time12h24hformats")
+    public Response getTime12h24hformats() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTime12h24hFormats());
+    }
+
     @PUT
     @Path("/sensorVariableMapper")
     public Response updateSensorVariableMapper(KeyValueJson keyValue) {

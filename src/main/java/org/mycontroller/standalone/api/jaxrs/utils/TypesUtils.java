@@ -37,6 +37,7 @@ import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
+import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
@@ -330,6 +331,19 @@ public class TypesUtils {
                 typesIdNameMappers.add(new TypesIdNameMapper(language.ordinal(), language.getName()));
             }
 
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getTime12h24hFormats() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_TIME_12_24_FORMAT);
+        if (settings.getValue().equalsIgnoreCase("12")) {
+            typesIdNameMappers.add(new TypesIdNameMapper(12, "12 Hours", true));
+            typesIdNameMappers.add(new TypesIdNameMapper(24, "24 Hours", false));
+        } else {
+            typesIdNameMappers.add(new TypesIdNameMapper(12, "12 Hours", false));
+            typesIdNameMappers.add(new TypesIdNameMapper(24, "24 Hours", true));
         }
         return typesIdNameMappers;
     }

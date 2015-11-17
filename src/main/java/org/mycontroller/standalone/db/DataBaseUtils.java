@@ -360,6 +360,7 @@ public class DataBaseUtils {
 
 		if (dbVersion == 6) {
 			createSettings(Settings.MC_LANGUAGE, String.valueOf(MC_LANGUAGE.EN_US.ordinal()), "Language", true);
+			createSettings(Settings.MC_TIME_12_24_FORMAT, "12", "Time Format", true);
 
 			upgradeVersion("0.0.2-alpha6-SNAPSHOT", dbVersion, dbVersion + 1);
 			dbVersion = 7;

@@ -104,6 +104,9 @@ myControllerModule.controller('SSMupdateController', function ($scope, $modalIns
     $scope.mysConfigTypes = TypesFactory.getMysConfigTypes();
   } else if(settings.key == 'mc_language'){
     $scope.languages = TypesFactory.getLanguages();
+  } else if(settings.key == 'mc_time_12_24_format'){
+    $scope.time12h24hFormats = TypesFactory.getTime12h24hformats();
+    $scope.settings.value = parseInt($scope.settings.value);
   }
   
   $scope.update = function() {$modalInstance.close(settings);}

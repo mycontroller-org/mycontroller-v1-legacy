@@ -30,8 +30,9 @@ public class MqttAuthenticatorImpl implements IAuthenticator {
 
     @Override
     public boolean checkValid(String username, byte[] passwordBytes) {
+        @SuppressWarnings("unused")
         String password = new String(passwordBytes, StandardCharsets.UTF_8);
-        _logger.debug("Authentication Request. User:{}, Password:{}", username, password);
+        _logger.debug("Authentication Request from User:{}", username);
         return true;
     }
 
