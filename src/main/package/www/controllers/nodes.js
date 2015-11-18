@@ -285,8 +285,19 @@ myControllerModule.controller('NMdiscoverController', function ($scope, $modalIn
 });
 
 //Discover Modal
-myControllerModule.controller('NMbatteryLevelController', function ($modalInstance, $scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, node) {
+myControllerModule.controller('NMbatteryLevelController', function ($modalInstance, $scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, node, displayRestError) {
   $scope.header = "Node Battery Level";
+  
+  $scope.hourFormat = 'hh';
+  $scope.hourFormatSufix = ' a';
+  SettingsFactory.get({key_:'mc_time_12_24_format'}, function(response) {
+      if(response.value == '24'){
+        $scope.hourFormat = 'HH';
+        $scope.hourFormatSufix = '';
+      }
+    },function(error){
+      displayRestError.display(error);            
+    });
   
   //http://krispo.github.io/angular-nvd3
   //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
@@ -341,7 +352,7 @@ myControllerModule.controller('NMbatteryLevelController', function ($modalInstan
   $scope.interpolateType.$promise.then(function (interpolateType) {
     $scope.interpolateType = interpolateType;
   
-    var chartDateFormat = 'medium'; //https://docs.angularjs.org/api/ng/filter/date
+    var chartDateFormat = 'MMM d, y ' + $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix; //https://docs.angularjs.org/api/ng/filter/date
     
     $scope.chartOptions.chart.type = 'lineChart'; //workaround to suppress 'type undefined error'
     $scope.chartOptions.chart.interpolate = $scope.interpolateType.value;//cardinal
