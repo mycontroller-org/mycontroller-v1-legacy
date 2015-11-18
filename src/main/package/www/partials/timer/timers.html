@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-clock-o"></i> Timer </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
+    <h3><b><i class="fa fa-clock-o"></i>{{ 'SENSORS_ACTIONS.TIMER' | translate }}</b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
 </div>
 
 	<div class="panel panel-default">
