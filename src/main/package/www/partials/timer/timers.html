@@ -50,6 +50,8 @@
           <td at-implicit at-sortable at-attribute="payloadFormatted" at-title="{{ 'RAW.PAYLOAD' | translate }}"></td>
           <td at-implicit at-attribute="validityString" at-sortable at-title="{{ 'TIMER.VALIDITY' | translate }}"></td>
 					<td class="text-center">
+            <a href='' ng-click="update(item)" class="text-default"  uib-tooltip="{{ 'SYSTEM.EDIT' | translate }}">
+            <i class="fa fa-lg fa-edit"></i></a>&nbsp;
 						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="{{ 'SYSTEM.DELETE' | translate }}"><i class="fa fa-lg fa-trash"></i></a>
 					</td>
 				</tr>

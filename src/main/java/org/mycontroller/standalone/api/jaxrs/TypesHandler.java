@@ -101,7 +101,7 @@ public class TypesHandler {
     @GET
     @Path("/timerDays")
     public Response getTimerDays(@QueryParam("allDays") Boolean allDays) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerDays(allDays != null ? true : false));
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerDays(allDays != null ? allDays : false));
     }
 
     @GET
