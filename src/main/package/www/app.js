@@ -203,7 +203,7 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
     };
 });
 
-myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about) {
+myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about, $translate) {
   
   // keep user logged in after page refresh
   $rootScope.globals = $cookieStore.get('globals') || {};
@@ -214,6 +214,8 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
   about.systemDate = mcabout.systemDate;
   about.appName = mcabout.appName;
   about.appVersion = mcabout.appVersion;
+  about.language = mcabout.language;
+  $translate.use(about.language);
   
   if ($rootScope.globals.currentUser) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
@@ -324,7 +326,6 @@ myControllerModule.config(function($translateProvider) {
     prefix: 'languages/mc_locale_',
     suffix: '.json'
   });
- 
   $translateProvider.preferredLanguage('en-us');
   
 });
