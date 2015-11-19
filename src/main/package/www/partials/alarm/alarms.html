@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-bell-o"></i> {{ 'ALARM.ALARM' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>Node Id: {{sensor.node.id}}, Sensor Id: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType(s): {{sensor.variableTypes}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}} ({{sensor.lastSeen}})</small></small></h3>
+    <h3><b><i class="fa fa-bell-o"></i> {{ 'ALARM.ALARM' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>Node Id: {{sensor.node.id}}, Sensor Id: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType(s): {{sensor.variableTypes}}, Last seen: {{sensor.updateTime | date:about.dateFormat:about.timezone}} ({{sensor.lastSeen}})</small></small></h3>
 </div>
 
 	<div class="panel panel-default">
@@ -48,7 +48,7 @@
           <td at-title="{{ 'ALARM.CONDITION' | translate }}">if { {{item.variableTypeString}} } {{item.triggerString}} {{item.thresholdValue}}</td>
           <td at-implicit at-sortable at-attribute="dampeningString" at-title="{{ 'SYSTEM.ENABLED' | translate }}"></td>
           <td at-title="{{ 'ALARM.NOTIFICATION' | translate }}">{{item.typeString}}: {{item.notificationString}}</td>
-          <td at-attribute="lastTrigger" at-sortable at-title="{{ 'ALARM.LAST_TRIGGER' | translate }}">{{item.lastTrigger | date:'medium':about.timezone}}</td>
+          <td at-attribute="lastTrigger" at-sortable at-title="{{ 'ALARM.LAST_TRIGGER' | translate }}">{{item.lastTrigger | date:about.dateFormat:about.timezone}}</td>
           <td class="text-center">
             <a href='' ng-click="update(item)" class="text-default"  uib-tooltip="{{ 'SYSTEM.EDIT' | translate }}">
             <i class="fa fa-lg fa-edit"></i></a>&nbsp;

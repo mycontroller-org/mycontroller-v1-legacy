@@ -24,7 +24,7 @@
           </select>
         </div>
       </div>
-      <b><i class="fa fa-line-chart"></i> {{ 'CHART.GRAPHICAL_REPORT' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{variableType.variableTypeString}}, Last seen: {{variableType.timestamp | date:'medium':about.timezone}}</small></small></h3>
+      <b><i class="fa fa-line-chart"></i> {{ 'CHART.GRAPHICAL_REPORT' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{variableType.variableTypeString}}, Last seen: {{variableType.timestamp | date:about.dateFormat:about.timezone}}</small></small></h3>
   </div>
   
   <div ng-show="variableType.id">

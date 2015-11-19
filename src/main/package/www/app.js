@@ -215,6 +215,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
   about.appName = mcabout.appName;
   about.appVersion = mcabout.appVersion;
   about.language = mcabout.language;
+  about.dateFormat = mcabout.dateFormat;
   $translate.use(about.language);
   
   if ($rootScope.globals.currentUser) {
@@ -250,6 +251,7 @@ myControllerModule.controller('LoginController',
                         about.appName = response.appName;
                         about.appVersion = response.appVersion;
                         about.language = response.language;
+                        about.dateFormat = response.dateFormat;
                         $cookieStore.put('mcabout', about);
                         $translate.use(about.language);
                     },function(error){
@@ -305,7 +307,8 @@ myControllerModule.value("about", {
     systemDate: '-',
     appVersion:'-',
     appName: '-',
-    language: 'en-us'    
+    language: 'en-us',
+    dateFormat: 'MMM d, y hh:mm:ss a'
 });
 
 //FooterCtrl
