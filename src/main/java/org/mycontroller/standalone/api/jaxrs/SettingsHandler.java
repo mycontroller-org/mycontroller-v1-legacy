@@ -29,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -61,6 +62,8 @@ public class SettingsHandler {
                 } catch (Exception ex) {
                     return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
                 }
+            } else if (settings.getKey().equals(Settings.MC_LANGUAGE)) {
+                ObjectFactory.getAppProperties().updatePropertiesFromDb();
             }
             return RestUtils.getResponse(Status.OK);
         } else {
@@ -77,7 +80,8 @@ public class SettingsHandler {
         for (Settings setting : settings) {
             if (setting.getKey().equals(Settings.SUNRISE_TIME) || setting.getKey().equals(Settings.SUNSET_TIME)) {
                 if (setting.getValue() != null) {
-                    setting.setValue(new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a").format(new Date(Long
+                    setting.setValue(new SimpleDateFormat(ObjectFactory.getAppProperties()
+                            .getJavaDateWithoutSecondsFormat()).format(new Date(Long
                             .valueOf(setting.getValue()))));
                 }
             } else if (setting.getKey().equals(Settings.DEFAULT_FIRMWARE)) {

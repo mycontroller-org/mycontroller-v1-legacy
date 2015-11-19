@@ -222,7 +222,7 @@ public class RawMessage {
         // Topic structure:
         // MY_MQTT_TOPIC_PREFIX/NODE-ID/SENSOR-ID/CMD-TYPE/ACK-FLAG/SUB-TYPE
         StringBuilder builder = new StringBuilder();
-        builder.append(ObjectFactory.getAppProperties().getGatewayMqttRootTopic());
+        builder.append(ObjectFactory.getAppProperties().getGatewayMqttTopicPublish());
         builder.append("/").append(this.getNodeId());
         builder.append("/").append(this.getChildSensorId());
         builder.append("/").append(this.getMessageType());

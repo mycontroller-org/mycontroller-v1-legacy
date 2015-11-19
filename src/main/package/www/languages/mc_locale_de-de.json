@@ -22,7 +22,7 @@
   "CHART.VARIABLE_TYPE_TEXT" : "Suchen Sie den <B>Variable Typ</B> oben rechts in der Ecke aus,um den graphischen Bericht zu laden...",
 
   "DASHBOARD.TITLE" : "Anzeigetafel",
-  "DASHBOARD.WELCOME_MSG" : "Herzlich Willkommen zu {{mcWebsite}} Wir fangen an größer zu werden {{mcWebsite}}. Die Anzeigetafel ist in der Entwicklung. Inzwischen kannst du andere Funktionen benutzen :)"
+  "DASHBOARD.WELCOME_MSG" : "Herzlich Willkommen zu {{mcWebsite}} Wir fangen an größer zu werden {{mcWebsite}}. Die Anzeigetafel ist in der Entwicklung. Inzwischen kannst du andere Funktionen benutzen :)",
 
   "FIREWARE.AUTO_GENERATE" : "Automatisch Generieren",
   "FIRMWARE.HEX_FILE" : "Hex Datei",
@@ -44,9 +44,12 @@
   "GATEWAY_STATUS.ETHERNET_KEEP_ALIVE_TIME" : "Keep Alive Zeit",
   "GATEWAY_STATUS.ETHERNET_PORT" : "Port",
   "GATEWAY_STATUS.GATEWAY_TYPE" : "Gateway Typ",
-  "GATEWAY_STATUS.MQTT_HOST_IP" : "Host/IP",
-  "GATEWAY_STATUS.MQTT_PORT" : "Port",
-  "GATEWAY_STATUS.MQTT_TOPIC" : "Thematik",
+  "GATEWAY_STATUS.MQTT_BROKER_HOST" : "Broker Host",
+  "GATEWAY_STATUS.MQTT_CLIENT_ID" : "Client Id",
+  "GATEWAY_STATUS.MQTT_CONNECTION_STATUS" : "Connection Status",
+  "GATEWAY_STATUS.MQTT_TOPIC_PUBLISH" : "Topic Publish",
+  "GATEWAY_STATUS.MQTT_TOPIC_SUBSCRIBE" : "Topic Subscribe",
+  "GATEWAY_STATUS.MQTT_USER" : "Username",
   "GATEWAY_STATUS.SERIAL_BAUD_RATE" : "Baud Rate",
   "GATEWAY_STATUS.SERIAL_CONNECTION_MESSAGE" : "Verbindung Nachricht",
   "GATEWAY_STATUS.SERIAL_DRIVER_TYPE" : "Treiber Typ",
@@ -94,6 +97,10 @@
   "NODE.DISCOVER_NODES" : "Knoten finden",
   "NODE.FIRMWARE" : "Firmware",
   "NODE.GRAPHICAL_REPORT" : "Graphischer Bericht",
+  "NODE.MESSAGE_DELETE" : "You are about to delete a Node<br>Deletion process will remove complete trace of this node!<br>Click 'Delete' to proceed.<br><I>Node: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
+  "NODE.MESSAGE_DISCOVER_UTILITY" : "You are about trigger Node Discover Utility<br>This action will send I_PRESENTATION message for all the nodes (id: 1 to 254)<br>I_PRESENTATION may cause huge trafic on your MySensors network<br>Click 'Discover' to proceed further",
+  "NODE.MESSAGE_ERASE_EEPROM" : "You are about to erase complete EEPROM of a Node<br>This action will remove complete configuration of the node including node Id!<br>Click 'Erase EEPROM' to proceed further.<br><I>Node: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
+  "NODE.MESSAGE_REBOOT" : "You are about to reboot a Node<br>Click 'Reboot' to proceed further.<br><I>Node: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
   "NODE.MY_SENSORS_VERSION" : "MySensors Version",
   "NODE.NAME" : "Knoten Name",
   "NODE.NODE" : "Knoten",
@@ -105,6 +112,14 @@
   "NODE.SENSOR_ID" : "Sensor Id",
   "NODE.SENSOR_NAME" : "Sensor Name",
   "NODE.SENSOR_TYPE" : "Sensor Typ",
+  "NODE.TITLE_BATTERY" : "Node Battery Level",
+  "NODE.TITLE_DELETE" : "Delete Node",
+  "NODE.TITLE_DISCOVER_UTILITY" : "Node Discover Utility",
+  "NODE.TITLE_EDIT" : "Modify Node '{{name}}'",
+  "NODE.TITLE_ERASE_EEPROM" : "Erase EEPROM of a Node",
+  "NODE.TITLE_NEW" : "New Node",
+  "NODE.TITLE_REBOOT" : "Reboot Node",
+  "NODE.TITLE2_BATTERY" : "Battery Status of '{{name}} (Id:{{id}})'",
   "NODE.VARIABLE_TYPE" : "Variable Typ(en)",		
   "NODE.VERSION" : "Version",
 
@@ -233,6 +248,6 @@
   "USERS.FULL_NAME" : "Voller Name",
   "USERS.PASSWORD" : "Passwort",
   "USERS.ROLE" : "Rolle",
-  "USERS.USERNAME" : "Benutzername",
+  "USERS.USERNAME" : "Benutzername"
 
 }

@@ -219,30 +219,27 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
 
 
 //Nodes Modal
-myControllerModule.controller('NMdeleteController', function ($scope, $modalInstance, $sce, node) {
+myControllerModule.controller('NMdeleteController', function ($scope, $modalInstance, node, $filter) {
   $scope.node = node;
-  $scope.header = "Delete Node";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Node"
-    +"<br>Deletion process will remove complete trace of this node!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>Node: </I>[id:"+node.id+",name:"+node.name +",type:"+node.typeString+"]");
+  $scope.header = $filter('translate')('NODE.TITLE_DELETE');
+  $scope.deleteMsg = $filter('translate')('NODE.MESSAGE_DELETE', node);
   $scope.remove = function() {
     $modalInstance.close($scope.node);
   };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('NMaddController', function ($scope, $modalInstance, TypesFactory, FirmwaresFactory) {
+myControllerModule.controller('NMaddController', function ($scope, $modalInstance, TypesFactory, FirmwaresFactory, $filter) {
   $scope.node = {};
-  $scope.header = "New Node";
+  $scope.header = $filter('translate')('NODE.TITLE_NEW');
   $scope.nodeTypes = TypesFactory.getNodeTypes();
   $scope.add = function() {$modalInstance.close($scope.node); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('NMupdateController', function ($scope, $modalInstance, node, TypesFactory, FirmwaresFactory) {
+myControllerModule.controller('NMupdateController', function ($scope, $modalInstance, node, TypesFactory, FirmwaresFactory, $filter) {
   $scope.node = node;
-  $scope.header = "Modify Node '"+node.name+"'";
+  $scope.header = $filter('translate')('NODE.TITLE_EDIT', node);
   $scope.nodeTypes = TypesFactory.getNodeTypes();
   $scope.firmwares = FirmwaresFactory.getAllFirmwares();
   $scope.update = function() {$modalInstance.close($scope.node);}
@@ -250,43 +247,45 @@ myControllerModule.controller('NMupdateController', function ($scope, $modalInst
 });
 
 //reboot Modal
-myControllerModule.controller('NMrebootController', function ($scope, $modalInstance, $sce, node) {
+myControllerModule.controller('NMrebootController', function ($scope, $modalInstance, node, $filter) {
   $scope.node = node;
-  $scope.header = "Reboot Node";
-  $scope.rebootMsg = $sce.trustAsHtml("You are about to reboot a Node"
-    +"<br>Click 'Reboot' to proceed further."
-    +"<br><I>Node: </I>[id:"+node.id+",name:"+node.name +",type:"+node.typeString+"]");
+  $scope.header = $filter('translate')('NODE.TITLE_REBOOT');
+  $scope.rebootMsg = $filter('translate')('NODE.MESSAGE_REBOOT', node);
   $scope.reboot = function() {$modalInstance.close($scope.node); };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
 
 //Erase Modal
-myControllerModule.controller('NMeraseEepromController', function ($scope, $modalInstance, $sce, node) {
+myControllerModule.controller('NMeraseEepromController', function ($scope, $modalInstance, node, $filter) {
   $scope.node = node;
-  $scope.header = "Erase EEPROM of a Node";
-  $scope.eraseMsg = $sce.trustAsHtml("You are about to erase complete EEPROM of a Node"
-    +"<br>This action will remove complete configuration of the node including node Id!"
-    +"<br>Click 'Erase EEPROM' to proceed further."
-    +"<br><I>Node: </I>[id:"+node.id+",name:"+node.name +",type:"+node.typeString+"]");
+  $scope.header = $filter('translate')('NODE.TITLE_ERASE_EEPROM');
+  $scope.eraseMsg = $filter('translate')('NODE.MESSAGE_ERASE_EEPROM', node);
   $scope.eraseEeprom = function() {$modalInstance.close($scope.node); };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
 //Discover Modal
-myControllerModule.controller('NMdiscoverController', function ($scope, $modalInstance, $sce) {
-  $scope.header = "Node Discover Utility";
-  $scope.discoverMsg = $sce.trustAsHtml("You are about trigger Node Discover Utility"
-    +"<br>This action will send I_PRESENTATION message for all the nodes (id: 1 to 254)"
-    +"<br>I_PRESENTATION may cause huge trafic on your MySensors network"
-    +"<br>Click 'Discover' to proceed further");
+myControllerModule.controller('NMdiscoverController', function ($scope, $modalInstance, $filter) {
+  $scope.header = $filter('translate')('NODE.TITLE_DISCOVER_UTILITY');
+  $scope.discoverMsg = $filter('translate')('NODE.MESSAGE_DISCOVER_UTILITY');
   $scope.discover = function() {$modalInstance.close(); };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-//Discover Modal
-myControllerModule.controller('NMbatteryLevelController', function ($modalInstance, $scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, node) {
-  $scope.header = "Node Battery Level";
+//Batter Level display Modal
+myControllerModule.controller('NMbatteryLevelController', function ($modalInstance, $scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, node, displayRestError, $filter) {
+  $scope.header = $filter('translate')('NODE.TITLE_BATTERY');
+  $scope.hourFormat = 'hh';
+  $scope.hourFormatSufix = ' a';
+  SettingsFactory.get({key_:'mc_time_12_24_format'}, function(response) {
+      if(response.value == '24'){
+        $scope.hourFormat = 'HH';
+        $scope.hourFormatSufix = '';
+      }
+    },function(error){
+      displayRestError.display(error);            
+    });
   
   //http://krispo.github.io/angular-nvd3
   //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
@@ -327,7 +326,7 @@ myControllerModule.controller('NMbatteryLevelController', function ($modalInstan
             },
               title: {
                 enable: false,
-                text: 'Battery Status ('+node.name+')'
+                text: 'Title 2'
             }
         };
         
@@ -341,7 +340,7 @@ myControllerModule.controller('NMbatteryLevelController', function ($modalInstan
   $scope.interpolateType.$promise.then(function (interpolateType) {
     $scope.interpolateType = interpolateType;
   
-    var chartDateFormat = 'medium'; //https://docs.angularjs.org/api/ng/filter/date
+    var chartDateFormat = 'MMM d, y ' + $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix; //https://docs.angularjs.org/api/ng/filter/date
     
     $scope.chartOptions.chart.type = 'lineChart'; //workaround to suppress 'type undefined error'
     $scope.chartOptions.chart.interpolate = $scope.interpolateType.value;//cardinal
@@ -349,7 +348,7 @@ myControllerModule.controller('NMbatteryLevelController', function ($modalInstan
     $scope.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(',.2f')(d);};
   
     $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, chartDateFormat, about.timezone)};
-    $scope.chartOptions.title.text = 'Battery Status of "'+node.name+'" (Id:'+node.id+')';
+    $scope.chartOptions.title.text = $filter('translate')('NODE.TITLE2_BATTERY', node);
   });
   
   $scope.getMetrics = function(){

@@ -18,6 +18,16 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
     
   //Get Chart Interpolate Type
   $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
+  $scope.hourFormat = 'hh';
+  $scope.hourFormatSufix = ' a';
+  SettingsFactory.get({key_:'mc_time_12_24_format'}, function(response) {
+      if(response.value == '24'){
+        $scope.hourFormat = 'HH';
+        $scope.hourFormatSufix = '';
+      }
+    },function(error){
+      displayRestError.display(error);            
+    });
   
   $scope.sensor = SensorsFactory.getSensorByRefId({"sensorRefId":$stateParams.sensorId}, function(response) {
     },function(error){
@@ -109,10 +119,10 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var yAxisD3Format=',.2f';
           var chartLineColor=["#2ca02c","#1f77b4", "#ff7f0e"];
           var chartInterpolate= $scope.interpolateType.value;//cardinal
-          var dateFormatRawData = 'hh:mm:ss a';
-          var dateFormatMinuteData = 'hh:mm a'; //https://docs.angularjs.org/api/ng/filter/date
-          var dateFormat5MinutesData = 'hh:mm a';
-          var dateFormatHourData = 'dd-MMM hh:mm a';
+          var dateFormatRawData = $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix;
+          var dateFormatMinuteData = $scope.hourFormat + ':mm' + $scope.hourFormatSufix; //https://docs.angularjs.org/api/ng/filter/date
+          var dateFormat5MinutesData = $scope.hourFormat + ':mm' + $scope.hourFormatSufix;
+          var dateFormatHourData = 'dd-MMM ' + $scope.hourFormat + ':mm' + $scope.hourFormatSufix;
           var dateFormatDayData = 'dd-MMM-yyyy';
           var textRawData = 'Last one hour (Raw Data)';
           var textMinuteData = 'Last 6 hours (1 minute interval)';
@@ -123,10 +133,10 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var yAxisD3Format='.0f';
           var chartLineColor=["#1f77b4"];
           var chartInterpolate='step-after';
-          var dateFormatMinuteData = 'hh:mm:ss a';
-          var dateFormat5MinutesData = 'hh:mm:ss a';
-          var dateFormatHourData = 'dd-MMM hh:mm:ss a';
-          var dateFormatDayData = 'dd-MMM-yyyy hh:mm:ss a';
+          var dateFormatMinuteData = $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix;
+          var dateFormat5MinutesData = $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix;
+          var dateFormatHourData = 'dd-MMM ' + $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix;
+          var dateFormatDayData = 'dd-MMM-yyyy ' + $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix;
           var textMinuteData = 'Last 6 hours';
           var text5MinutesData = 'Last 24 hours';
           var textHourData = 'Last 30 days';

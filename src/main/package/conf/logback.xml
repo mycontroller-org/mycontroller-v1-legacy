@@ -55,6 +55,7 @@
   <logger level="INFO" name="org.mycontroller.standalone.db.TimerUtils"/>
   <logger level="INFO" name="org.mycontroller.standalone.db.dao"/>
   <logger level="INFO" name="org.mycontroller.standalone.gateway"/>
+  <logger level="INFO" name="org.mycontroller.standalone.mqttbroker"/>
 
   <root level="WARN">
     <appender-ref ref="FILE" />

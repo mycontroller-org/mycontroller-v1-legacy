@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-clock-o"></i> Timer </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
+    <h3><b><i class="fa fa-clock-o"></i>{{ 'SENSORS_ACTIONS.TIMER' | translate }}</b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:about.dateFormat:about.timezone}}</small></small></h3>
 </div>
 
 	<div class="panel panel-default">
@@ -50,6 +50,8 @@
           <td at-implicit at-sortable at-attribute="payloadFormatted" at-title="{{ 'RAW.PAYLOAD' | translate }}"></td>
           <td at-implicit at-attribute="validityString" at-sortable at-title="{{ 'TIMER.VALIDITY' | translate }}"></td>
 					<td class="text-center">
+            <a href='' ng-click="update(item)" class="text-default"  uib-tooltip="{{ 'SYSTEM.EDIT' | translate }}">
+            <i class="fa fa-lg fa-edit"></i></a>&nbsp;
 						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="{{ 'SYSTEM.DELETE' | translate }}"><i class="fa fa-lg fa-trash"></i></a>
 					</td>
 				</tr>

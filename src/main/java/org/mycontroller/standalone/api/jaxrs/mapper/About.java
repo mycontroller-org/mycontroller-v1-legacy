@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 
@@ -35,6 +36,8 @@ public class About {
     private String appVersion;
     private Date systemDate;
     private String appName;
+    private String language;
+    private String dateFormat;
 
     public About() {
         Date date = new Date();
@@ -44,6 +47,8 @@ public class About {
         this.timezone = new SimpleDateFormat("Z").format(date);
         this.timezoneString = new SimpleDateFormat("z").format(date);
         this.appVersion = DaoUtils.getSettingsDao().get(Settings.MC_VERSION).getValue();
+        this.language = ObjectFactory.getAppProperties().getLanguage().toString().replaceAll("_", "-").toLowerCase();
+        this.dateFormat = ObjectFactory.getAppProperties().getAngularJsDateFormat();
     }
 
     public String getAppVersion() {
@@ -68,5 +73,13 @@ public class About {
 
     public int getTimezoneMilliseconds() {
         return timezoneMilliseconds;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
     }
 }

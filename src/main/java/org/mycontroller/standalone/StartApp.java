@@ -46,6 +46,7 @@ import org.mycontroller.standalone.db.TimerUtils;
 import org.mycontroller.standalone.gateway.ethernet.EthernetGatewayImpl;
 import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
 import org.mycontroller.standalone.gateway.serialport.MySensorsSerialPort;
+import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.mysensors.MessageMonitorThread;
 import org.mycontroller.standalone.mysensors.RawMessageQueue;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
@@ -172,9 +173,10 @@ public class StartApp {
         // - Add Shutdown hook
         // - Start DB service
         // - Start message Monitor Thread
-        // - Start Serial port
-        // - Start scheduler
         // - Load starting values
+        // - Start MQTT Broker
+        // - Start gateway listener
+        // - Start scheduler
         // - Start Web Server
 
         //Add Shutdown hook
@@ -191,6 +193,12 @@ public class StartApp {
         Thread thread = new Thread(messageMonitorThread);
         thread.start();
 
+        // - Load starting values
+        loadStartingValues();
+
+        // - Start MQTT Broker
+        MoquetteMqttBroker.start();
+
         _logger.debug("MySensors Gateway Type:{}", ObjectFactory.getAppProperties().getGatewayType());
         //Start communication with MySensors gateway
         if (ObjectFactory.getAppProperties().getGatewayType()
@@ -206,9 +214,6 @@ public class StartApp {
             ObjectFactory.setMySensorsGateway(new MqttGatewayImpl());
         }
 
-        // - Load starting values
-        loadStartingValues();
-
         // - Start scheduler
         SchedulerUtils.startScheduler();
 
@@ -221,12 +226,14 @@ public class StartApp {
     public static synchronized void stopServices() {
         //Stop order..
         // - Stop scheduler
-        // - Close Serial port
+        // - Stop Gateway Listener
+        // - Stop MQTT broker
         // - Stop message Monitor Thread
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
         SchedulerUtils.stop();
         ObjectFactory.getMySensorsGateway().close();
+        MoquetteMqttBroker.stop();
         MessageMonitorThread.setTerminationIssued(true);
         DataBaseUtils.stop();
         _logger.debug("All services stopped. Shutting down...");

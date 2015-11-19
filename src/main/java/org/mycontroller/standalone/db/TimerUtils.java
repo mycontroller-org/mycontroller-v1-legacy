@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.jobs.ManageSunRiseSetJobs;
@@ -37,9 +38,6 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
  */
 public class TimerUtils {
     private static final Logger _logger = LoggerFactory.getLogger(TimerUtils.class);
-    public static final String DATE_TIME_FORMAT = "dd-MMM-yyyy, HH:mm:ss";
-    public static final String TIME_FORMAT = "HH:mm:ss";
-    public static final String DATE_TIME_FORMAT_DISPLAY = "dd-MMM-yyyy, HH:mm";
 
     private TimerUtils() {
 
@@ -179,12 +177,14 @@ public class TimerUtils {
                 builder.delete(builder.lastIndexOf(","), builder.lastIndexOf(",") + 1);
                 break;
             case MONTHLY:
-                builder.append(": ").append(timer.getFrequencyData());
+                builder.append(timer.getFrequencyData());
                 break;
             default:
                 break;
         }
-        builder.append("], [Time: ").append(new SimpleDateFormat(TIME_FORMAT).format(new Date(timer.getTime())))
+        builder.append("], [Time: ")
+                .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getJavaTimeFormat()).format(new Date(
+                        timer.getTime())))
                 .append("]");
         return builder.toString();
     }
@@ -214,23 +214,28 @@ public class TimerUtils {
         StringBuilder stringBuilder = new StringBuilder();
         if (timer.getValidFrom() != null && timer.getValidTo() != null) {
             stringBuilder
-                    .append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidFrom())));
+                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getJavaDateWithoutSecondsFormat())
+                            .format(new Date(timer.getValidFrom())));
             stringBuilder.append(" ~ ");
-            stringBuilder.append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidTo())));
+            stringBuilder.append(new SimpleDateFormat(ObjectFactory.getAppProperties()
+                    .getJavaDateWithoutSecondsFormat()).format(new Date(timer.getValidTo())));
         } else if (timer.getValidFrom() != null) {
             stringBuilder.append("From ");
             stringBuilder
-                    .append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidFrom())));
+                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getJavaDateWithoutSecondsFormat())
+                            .format(new Date(timer.getValidFrom())));
         } else if (timer.getValidTo() != null) {
             stringBuilder.append("Till ");
-            stringBuilder.append(new SimpleDateFormat(DATE_TIME_FORMAT_DISPLAY).format(new Date(timer.getValidTo())));
+            stringBuilder.append(new SimpleDateFormat(ObjectFactory.getAppProperties()
+                    .getJavaDateWithoutSecondsFormat()).format(new Date(timer.getValidTo())));
         }
         return stringBuilder.toString();
     }
 
     public static Long getValidFromToTime(String date) {
         try {
-            return new SimpleDateFormat(DATE_TIME_FORMAT).parse(date).getTime();
+            return new SimpleDateFormat(ObjectFactory.getAppProperties().getAngularJsDateFormat()).parse(date)
+                    .getTime();
         } catch (ParseException ex) {
             _logger.error("exception, ", ex);
             return null;
@@ -239,7 +244,7 @@ public class TimerUtils {
 
     public static Long getTime(String time) {
         try {
-            return new SimpleDateFormat(TIME_FORMAT).parse(time).getTime();
+            return new SimpleDateFormat("HH:mm:ss").parse(time).getTime();
         } catch (ParseException ex) {
             _logger.error("exception, ", ex);
             return null;

@@ -186,11 +186,15 @@ public class Timer {
     }
 
     public void setValidFromString(String validFromString) {
-        this.validFrom = TimerUtils.getValidFromToTime(validFromString + ":00");
+        if (validFromString != null) {
+            this.validFrom = TimerUtils.getValidFromToTime(validFromString + ":00");
+        }
     }
 
     public void setValidToString(String validToString) {
-        this.validTo = TimerUtils.getValidFromToTime(validToString + ":59");
+        if (validToString != null) {
+            this.validTo = TimerUtils.getValidFromToTime(validToString + ":59");
+        }
     }
 
     public void setValidTo(Long validTo) {

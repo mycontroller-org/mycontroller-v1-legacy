@@ -44,9 +44,12 @@ public class AppProperties {
     private Integer gatewayEthernetPort;
     private Integer gatewayEthernetKeepAliveFrequency;
 
-    private String gatewayMqttHost;
-    private Integer gatewayMqttPort;
-    private String gatewayMqttRootTopic;
+    private String gatewayMqttBrokerHost;
+    private String gatewayMqttClientId;
+    private String gatewayMqttUser;
+    private String gatewayMqttPassword;
+    private String gatewayMqttTopicSubscribe;
+    private String gatewayMqttTopicPublish;
 
     private String dbH2DbLocation;
     private String webFileLocation;
@@ -57,26 +60,50 @@ public class AppProperties {
     private String webSslKeystoreType;
     private String webBindAddress;
 
+    private boolean mqttBrokerEnable;
+    private String mqttBrokerBindAddress;
+    private Integer mqttBrokerPort;
+
+    private MC_LANGUAGE mcLanguage;
+
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
 
     public enum SERIAL_PORT_DRIVER {
-        AUTO,
-        PI4J,
-        JSSC,
-        JSERIALCOMM;
+        AUTO, PI4J, JSSC, JSERIALCOMM;
     }
 
     public enum GATEWAY_TYPES {
-        SERIAL,
-        ETHERNET,
-        MQTT;
+        SERIAL, ETHERNET, MQTT;
     }
 
     public enum MYSENSORS_CONFIG {
-        METRIC,
-        IMPERIAL
+        METRIC, IMPERIAL
+    }
+
+    public enum MC_LANGUAGE {
+        EN_US("English (US)"), TA_IN("தமிழ் (IN)"), DE_DE("Deutsch (DE)"), RU_RU("Russian (RU)");
+
+        private final String name;
+
+        private MC_LANGUAGE(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public static MC_LANGUAGE get(int id) {
+            for (MC_LANGUAGE type : values()) {
+                if (type.ordinal() == id) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
+
     }
 
     public AppProperties() {
@@ -93,19 +120,22 @@ public class AppProperties {
             this.gatewaySerialPortName = getValue(properties, "mcc.gateway.serialport.name");
             this.gatewaySerialPortDriver = getValue(properties, "mcc.gateway.serialport.driver.type");
             this.gatewaySerialPortBaudRate = Integer.valueOf(getValue(properties, "mcc.gateway.serialport.baud.rate"));
-            this.gatewaySerialPortRetryFrequency = Integer.valueOf(getValue(properties,
-                    "mcc.gateway.serialport.retry.frequency"));
+            this.gatewaySerialPortRetryFrequency = Integer
+                    .valueOf(getValue(properties, "mcc.gateway.serialport.retry.frequency"));
 
         } else if (this.gatewayType.equalsIgnoreCase(GATEWAY_TYPES.ETHERNET.toString())) {
             this.gatewayEthernetHost = getValue(properties, "mcc.gateway.ethernet.host");
             this.gatewayEthernetPort = Integer.valueOf(getValue(properties, "mcc.gateway.ethernet.port"));
-            this.gatewayEthernetKeepAliveFrequency = Integer.valueOf(getValue(properties,
-                    "mcc.gateway.ethernet.keep.alive.frequency"));
+            this.gatewayEthernetKeepAliveFrequency = Integer
+                    .valueOf(getValue(properties, "mcc.gateway.ethernet.keep.alive.frequency"));
 
         } else if (this.gatewayType.equalsIgnoreCase(GATEWAY_TYPES.MQTT.toString())) {
-            this.gatewayMqttHost = getValue(properties, "mcc.gateway.mqtt.host");
-            this.gatewayMqttPort = Integer.valueOf(getValue(properties, "mcc.gateway.mqtt.port"));
-            this.gatewayMqttRootTopic = getValue(properties, "mcc.gateway.mqtt.root.topic");
+            this.gatewayMqttBrokerHost = getValue(properties, "mcc.gateway.mqtt.broker.host");
+            this.gatewayMqttClientId = getValue(properties, "mcc.gateway.mqtt.client.id");
+            this.gatewayMqttUser = getValue(properties, "mcc.gateway.mqtt.user");
+            this.gatewayMqttPassword = getValue(properties, "mcc.gateway.mqtt.password");
+            this.gatewayMqttTopicSubscribe = getValue(properties, "mcc.gateway.mqtt.topic.subscribe");
+            this.gatewayMqttTopicPublish = getValue(properties, "mcc.gateway.mqtt.topic.publish");
 
         } else {
             throw new RuntimeException("Unknown gateway type defined! Type:" + this.gatewayType);
@@ -124,6 +154,10 @@ public class AppProperties {
         }
         this.webBindAddress = getValue(properties, "mcc.web.bind.address");
 
+        //MQTT Broker
+        this.mqttBrokerEnable = Boolean.valueOf(getValue(properties, "mcc.mqtt.broker.enable"));
+        this.mqttBrokerBindAddress = getValue(properties, "mcc.mqtt.broker.bind.address");
+        this.mqttBrokerPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.port"));
     }
 
     private String getValue(Properties properties, String key) {
@@ -151,6 +185,61 @@ public class AppProperties {
             }
         }
         return "M";
+    }
+
+    public MC_LANGUAGE getLanguage() {
+        if (mcLanguage == null) {
+            mcLanguage = MC_LANGUAGE
+                    .get(Integer.valueOf(DaoUtils.getSettingsDao().get(Settings.MC_LANGUAGE).getValue()));
+        }
+        return mcLanguage;
+    }
+
+    public void updatePropertiesFromDb() {
+        Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_LANGUAGE);
+        if (settings != null && settings.getValue() != null) {
+            mcLanguage = MC_LANGUAGE.get(Integer.valueOf(settings.getValue()));
+        }
+    }
+
+    private boolean is12HoursSelected() {
+        Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_TIME_12_24_FORMAT);
+        if (settings.getValue().equalsIgnoreCase("12")) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getAngularJsDateFormat() {
+        if (is12HoursSelected()) {
+            return "MMM dd, yyyy hh:mm:ss a";
+        } else {
+            return "MMM dd, yyyy HH:mm:ss";
+        }
+    }
+
+    public String getJavaDateFormat() {
+        if (is12HoursSelected()) {
+            return "MMM dd, yyyy hh:mm:ss a";
+        } else {
+            return "MMM dd, yyyy HH:mm:ss";
+        }
+    }
+
+    public String getJavaDateWithoutSecondsFormat() {
+        if (is12HoursSelected()) {
+            return "MMM dd, yyyy hh:mm a";
+        } else {
+            return "MMM dd, yyyy HH:mm";
+        }
+    }
+
+    public String getJavaTimeFormat() {
+        if (is12HoursSelected()) {
+            return "hh:mm:ss a";
+        } else {
+            return "HH:mm:ss";
+        }
     }
 
     public int getNextNodeId() throws NodeIdException {
@@ -227,16 +316,28 @@ public class AppProperties {
         return gatewayEthernetKeepAliveFrequency;
     }
 
-    public String getGatewayMqttHost() {
-        return gatewayMqttHost;
+    public String getgatewayMqttBrokerHost() {
+        return gatewayMqttBrokerHost;
     }
 
-    public Integer getGatewayMqttPort() {
-        return gatewayMqttPort;
+    public String getGatewayMqttClientId() {
+        return gatewayMqttClientId;
     }
 
-    public String getGatewayMqttRootTopic() {
-        return gatewayMqttRootTopic;
+    public String getGatewayMqttUser() {
+        return gatewayMqttUser;
+    }
+
+    public String getGatewayMqttPassword() {
+        return gatewayMqttPassword;
+    }
+
+    public String getGatewayMqttTopicSubscribe() {
+        return gatewayMqttTopicSubscribe;
+    }
+
+    public String getGatewayMqttTopicPublish() {
+        return gatewayMqttTopicPublish;
     }
 
     public String getDbH2DbLocation() {
@@ -269,5 +370,17 @@ public class AppProperties {
 
     public String getWebBindAddress() {
         return webBindAddress;
+    }
+
+    public boolean isMqttBrokerEnabled() {
+        return mqttBrokerEnable;
+    }
+
+    public String getMqttBrokerBindAddress() {
+        return mqttBrokerBindAddress;
+    }
+
+    public Integer getMqttBrokerPort() {
+        return mqttBrokerPort;
     }
 }

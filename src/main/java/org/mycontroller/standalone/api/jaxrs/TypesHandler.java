@@ -101,7 +101,7 @@ public class TypesHandler {
     @GET
     @Path("/timerDays")
     public Response getTimerDays(@QueryParam("allDays") Boolean allDays) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerDays(allDays != null ? true : false));
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerDays(allDays != null ? allDays : false));
     }
 
     @GET
@@ -121,7 +121,7 @@ public class TypesHandler {
     public Response getGraphInterpolateTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGraphInterpolateTypes());
     }
-    
+
     @GET
     @Path("/mysConfigTypes")
     public Response getMysConfigTypes() {
@@ -148,8 +148,8 @@ public class TypesHandler {
             return RestUtils.getResponse(Status.OK,
                     TypesUtils.getSensorVariableTypes(sensor.getType(), sensor.getVariableTypes()));
         }
-        return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(
-                "Requested Sensor[" + sensor.getName() + "] type not available or Sensor not available"));
+        return RestUtils.getResponse(Status.BAD_REQUEST,
+                new ApiError("Requested Sensor[" + sensor.getName() + "] type not available or Sensor not available"));
     }
 
     @GET
@@ -174,6 +174,18 @@ public class TypesHandler {
     @Path("/sensorVariableMapper")
     public Response getSensorVariableMapper() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
+    }
+
+    @GET
+    @Path("/languages")
+    public Response getLanguages() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
+    }
+
+    @GET
+    @Path("/time12h24hformats")
+    public Response getTime12h24hformats() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTime12h24hFormats());
     }
 
     @PUT

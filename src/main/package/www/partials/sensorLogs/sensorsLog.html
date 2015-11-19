@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-list"></i> {{ 'TITLE.SENSOR_LOGS' | translate }} </b><small ng-show="sensor.node.id">{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:'medium':about.timezone}}</small></small></h3>
+    <h3><b><i class="fa fa-list"></i> {{ 'TITLE.SENSOR_LOGS' | translate }} </b><small ng-show="sensor.node.id">{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{sensor.messageTypeString}}, Last seen: {{sensor.updateTime | date:about.dateFormat:about.timezone}}</small></small></h3>
 </div>
 
 	<div class="panel panel-default">
@@ -38,7 +38,7 @@
 			<thead></thead>
 			<tbody>
 	      <tr>
-          <td at-attribute="timestamp" width="165px" at-sortable at-initial-sorting="desc" at-title="{{ 'LOG.TIME' | translate }}">{{item.timestamp | date:'medium':about.timezone}}</td>
+          <td at-attribute="timestamp" width="165px" at-sortable at-initial-sorting="desc" at-title="{{ 'LOG.TIME' | translate }}">{{item.timestamp | date:about.dateFormat:about.timezone}}</td>
           <td at-implicit at-sortable at-attribute="logTypeString" at-title="{{ 'LOG.TYPE' | translate }}"></td>
 					<td at-implicit at-sortable at-attribute="status" at-title="{{ 'MENU.STATUS' | translate }}"></td>
           <td at-implicit at-sortable at-attribute="log" at-title="{{ 'LOG.LOG' | translate }}"></td>

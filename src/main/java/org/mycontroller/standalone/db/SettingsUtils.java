@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.Settings;
 
@@ -93,7 +94,16 @@ public class SettingsUtils {
         ArrayList<String> keys = new ArrayList<String>();
         keys.add(Settings.MC_VERSION);
         keys.add(Settings.MC_DB_VERSION);
-        return DaoUtils.getSettingsDao().get(keys);
+        keys.add(Settings.MC_LANGUAGE);
+        keys.add(Settings.MC_TIME_12_24_FORMAT);
+        List<Settings> settings = DaoUtils.getSettingsDao().get(keys);
+        for (Settings setting : settings) {
+            if (setting.getKey().equals(Settings.MC_LANGUAGE)) {
+                setting.setValue(MC_LANGUAGE.get(Integer.valueOf(setting.getValue())).getName());
+                break;
+            }
+        }
+        return settings;
     }
 
     public static List<Settings> getSMSSettings() {

@@ -20,7 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.AppProperties.MYSENSORS_CONFIG;
+import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
@@ -35,6 +37,7 @@ import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
+import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
@@ -151,8 +154,8 @@ public class TypesUtils {
         List<Sensor> sensors = DaoUtils.getSensorDao().getAll(nodeId);
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (Sensor sensor : sensors) {
-            typesIdNameMappers.add(new TypesIdNameMapper(sensor.getId(), sensor.getSensorId(), "["
-                    + sensor.getSensorId() + "] " + sensor.getName()));
+            typesIdNameMappers.add(new TypesIdNameMapper(sensor.getId(), sensor.getSensorId(),
+                    "[" + sensor.getSensorId() + "] " + sensor.getName()));
         }
         return typesIdNameMappers;
     }
@@ -196,8 +199,8 @@ public class TypesUtils {
                     isTicked = true;
                 }
             }
-            typesIdNameMappers.add(new TypesIdNameMapper(
-                    variableType.getVariableType(), variableType.getVariableTypeString(), isTicked));
+            typesIdNameMappers.add(new TypesIdNameMapper(variableType.getVariableType(),
+                    variableType.getVariableTypeString(), isTicked));
         }
         return typesIdNameMappers;
     }
@@ -207,9 +210,7 @@ public class TypesUtils {
         List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAll(sensorRefId);
         for (SensorValue sensorValue : sensorValues) {
             if (sensorValue.getMetricType() != METRIC_TYPE.NONE.ordinal()) {
-                typesIdNameMappers.add(new TypesIdNameMapper(
-                        sensorValue.getId(),
-                        sensorValue.getSensor().getId(),
+                typesIdNameMappers.add(new TypesIdNameMapper(sensorValue.getId(), sensorValue.getSensor().getId(),
                         MESSAGE_TYPE_SET_REQ.get(sensorValue.getVariableType()).toString()));
             }
         }
@@ -230,9 +231,7 @@ public class TypesUtils {
 
         MESSAGE_TYPE_SET_REQ[] types = MESSAGE_TYPE_SET_REQ.values();
         for (MESSAGE_TYPE_SET_REQ type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(
-                    type.ordinal(),
-                    type.name(),
+            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.name(),
                     variables != null ? variables.contains(type.toString()) : false));
         }
         return typesIdNameMappers;
@@ -293,17 +292,14 @@ public class TypesUtils {
                 if (variablesMap != null) {
                     for (SensorsVariablesMap sensorsVariablesMap : variablesMap) {
                         if (builder.length() != 0) {
-                            builder.append(SensorUtils.VARIABLE_TYPE_SPLITER).append(
-                                    sensorsVariablesMap.getVariableTypeString());
+                            builder.append(SensorUtils.VARIABLE_TYPE_SPLITER)
+                                    .append(sensorsVariablesMap.getVariableTypeString());
                         } else {
                             builder.append(sensorsVariablesMap.getVariableTypeString());
                         }
                     }
                 }
-                keyValueJsons.add(new KeyValueJson(
-                        type.toString(),
-                        builder.toString(),
-                        type.ordinal(),
+                keyValueJsons.add(new KeyValueJson(type.toString(), builder.toString(), type.ordinal(),
                         org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson.TYPE.VARIABLE_MAPPER));
             }
         }
@@ -311,17 +307,44 @@ public class TypesUtils {
     }
 
     public static void updateVariableMap(KeyValueJson keyValue) {
-        //Delete existing map
+        // Delete existing map
         int sensorType = MESSAGE_TYPE_PRESENTATION.valueOf(keyValue.getKey()).ordinal();
         DaoUtils.getSensorsVariablesMapDao().delete(sensorType);
         if (keyValue.getValue() != null && keyValue.getValue().length() > 0) {
-            //Create New Map
+            // Create New Map
             String[] variables = keyValue.getValue().split(SensorUtils.VARIABLE_TYPE_SPLITER);
             for (String variable : variables) {
-                DaoUtils.getSensorsVariablesMapDao().create(
-                        sensorType,
+                DaoUtils.getSensorsVariablesMapDao().create(sensorType,
                         MESSAGE_TYPE_SET_REQ.valueOf(variable).ordinal());
             }
         }
+    }
+
+    public static ArrayList<TypesIdNameMapper> getLanguages() {
+        MC_LANGUAGE[] languages = MC_LANGUAGE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        MC_LANGUAGE selected = ObjectFactory.getAppProperties().getLanguage();
+        for (MC_LANGUAGE language : languages) {
+            if (selected.ordinal() == language.ordinal()) {
+                typesIdNameMappers.add(new TypesIdNameMapper(language.ordinal(), language.getName(), true));
+            } else {
+                typesIdNameMappers.add(new TypesIdNameMapper(language.ordinal(), language.getName()));
+            }
+
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getTime12h24hFormats() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_TIME_12_24_FORMAT);
+        if (settings.getValue().equalsIgnoreCase("12")) {
+            typesIdNameMappers.add(new TypesIdNameMapper(12, "12 Hours", true));
+            typesIdNameMappers.add(new TypesIdNameMapper(24, "24 Hours", false));
+        } else {
+            typesIdNameMappers.add(new TypesIdNameMapper(12, "12 Hours", false));
+            typesIdNameMappers.add(new TypesIdNameMapper(24, "24 Hours", true));
+        }
+        return typesIdNameMappers;
     }
 }

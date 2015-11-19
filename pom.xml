@@ -67,6 +67,7 @@
     <version.com.plivo>3.0.6</version.com.plivo>
     <version.commons-codec>1.10</version.commons-codec>
     <version.org.eclipse.paho>1.0.2</version.org.eclipse.paho>
+    <version.moquette-broker>0.8-SNAPSHOT</version.moquette-broker>
 
     <!-- plugins version -->
     <version.com.mycila.license-maven-plugin>2.11</version.com.mycila.license-maven-plugin>
@@ -201,6 +202,18 @@
       <version>${version.org.eclipse.paho}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.eclipse.moquette</groupId>
+      <artifactId>moquette-broker</artifactId>
+      <version>${version.moquette-broker}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
   </dependencies>
 
   <repositories>
@@ -216,6 +229,16 @@
     <repository>
       <id>Eclipse Paho Repo</id>
       <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+    </repository>
+    <repository>
+      <id>moquette-bintray</id>
+      <url>http://dl.bintray.com/andsel/maven/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
 
