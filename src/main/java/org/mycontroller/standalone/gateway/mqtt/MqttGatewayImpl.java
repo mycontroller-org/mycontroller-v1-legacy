@@ -42,7 +42,6 @@ public class MqttGatewayImpl implements IMySensorsGateway {
     public static final long DISCONNECT_TIME_OUT = 1000 * 1;
     public static final int CONNECTION_TIME_OUT = 1000 * 5;
     public static final int KEEP_ALIVE = 1000 * 5;
-    public static final String CLIENT_ID = "MC";
     public static final int MY_SENSORS_QOS = 0;
     private GatewayInfo gatewayInfo = new GatewayInfo();
 
@@ -55,23 +54,29 @@ public class MqttGatewayImpl implements IMySensorsGateway {
             gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
             gatewayInfo.setData(new HashMap<String, Object>());
 
-            gatewayInfo.getData().put(MqttGatewayCommon.IP,
-                    ObjectFactory.getAppProperties().getGatewayMqttHost());
-            gatewayInfo.getData().put(MqttGatewayCommon.PORT,
-                    ObjectFactory.getAppProperties().getGatewayMqttPort());
-            gatewayInfo.getData().put(MqttGatewayCommon.TOPIC,
-                    ObjectFactory.getAppProperties().getGatewayMqttRootTopic());
+            gatewayInfo.getData().put(MqttGatewayCommon.BROKER_HOST, ObjectFactory.getAppProperties().getgatewayMqttBrokerHost());
+            gatewayInfo.getData().put(MqttGatewayCommon.CLIENT_ID,
+                    ObjectFactory.getAppProperties().getGatewayMqttClientId());
+            gatewayInfo.getData().put(MqttGatewayCommon.USER, ObjectFactory.getAppProperties().getGatewayMqttUser());
+            gatewayInfo.getData().put(MqttGatewayCommon.TOPIC_SUBSCRIBE,
+                    ObjectFactory.getAppProperties().getGatewayMqttTopicSubscribe());
+            gatewayInfo.getData().put(MqttGatewayCommon.TOPIC_PUBLISH,
+                    ObjectFactory.getAppProperties().getGatewayMqttTopicPublish());
 
-            mqttClient = new MqttClient(
-                    "tcp://" + ObjectFactory.getAppProperties().getGatewayMqttHost() + ":"
-                            + ObjectFactory.getAppProperties().getGatewayMqttPort(), CLIENT_ID);
+            mqttClient = new MqttClient(ObjectFactory.getAppProperties().getgatewayMqttBrokerHost(), ObjectFactory
+                    .getAppProperties().getGatewayMqttClientId());
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setConnectionTimeout(CONNECTION_TIME_OUT);
             connectOptions.setKeepAliveInterval(KEEP_ALIVE);
+            if (ObjectFactory.getAppProperties().getGatewayMqttUser() != null
+                    && ObjectFactory.getAppProperties().getGatewayMqttUser().length() > 0) {
+                connectOptions.setUserName(ObjectFactory.getAppProperties().getGatewayMqttUser());
+                connectOptions.setPassword(ObjectFactory.getAppProperties().getGatewayMqttPassword().toCharArray());
+            }
             mqttClient.connect(connectOptions);
             mqttCallbackListener = new MqttCallbackListener(mqttClient);
             mqttClient.setCallback(mqttCallbackListener);
-            mqttClient.subscribe(ObjectFactory.getAppProperties().getGatewayMqttRootTopic() + "/#");
+            mqttClient.subscribe(ObjectFactory.getAppProperties().getGatewayMqttTopicSubscribe() + "/#");
             _logger.info("MQTT Gateway[{}] connected successfully..", mqttClient.getServerURI());
             gatewayInfo.getData().put(MqttGatewayCommon.CONNECTION_STATUS, "Connected Successfully");
         } catch (MqttException ex) {

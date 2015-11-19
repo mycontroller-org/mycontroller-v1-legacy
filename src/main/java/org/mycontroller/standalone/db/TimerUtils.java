@@ -179,7 +179,7 @@ public class TimerUtils {
                 builder.delete(builder.lastIndexOf(","), builder.lastIndexOf(",") + 1);
                 break;
             case MONTHLY:
-                builder.append(": ").append(timer.getFrequencyData());
+                builder.append(timer.getFrequencyData());
                 break;
             default:
                 break;

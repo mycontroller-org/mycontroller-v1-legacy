@@ -52,7 +52,7 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
                 serialPortDriver = AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString();
             }
         }
-        //Open Serial Port
+        // Open Serial Port
         if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.JSSC.toString())) {
             serialGateway = new SerialPortJsscImpl();
         } else if (serialPortDriver.equalsIgnoreCase(AppProperties.SERIAL_PORT_DRIVER.PI4J.toString())) {
@@ -69,10 +69,10 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
     }
 
     private void reconnect() {
-        //Close serial port
+        // Close serial port
         this.close();
         serialGateway = null;
-        //Reconnect serial port
+        // Reconnect serial port
         connect();
         if ((boolean) serialGateway.getGatewayInfo().getData().get(SerialPortCommon.IS_CONNECTED)) {
             _logger.info("Serial Port[Name:{}, Driver{}], Successfully reconnected!",
@@ -98,9 +98,10 @@ public class SerialPortMonitoringThread implements Runnable, IMySensorsGateway {
                     _logger.error("Error,", ex);
                 }
             }
+            _logger.debug("Serial Port Connection Status:[{}]", serialGateway.getGatewayInfo().getData());
             if (!isTerminate()
                     && !(boolean) serialGateway.getGatewayInfo().getData().get(SerialPortCommon.IS_CONNECTED)) {
-                _logger.info("Serial Port[Name:{}, Driver{}] not connected, Reconnect initiated...",
+                _logger.info("Serial Port[Name:{}, Driver:{}] not connected, Reconnect initiated...",
                         serialGateway.getGatewayInfo().getData().get(SerialPortCommon.PORT_NAME),
                         serialGateway.getGatewayInfo().getData().get(SerialPortCommon.SELECTED_DRIVER_TYPE));
                 reconnect();

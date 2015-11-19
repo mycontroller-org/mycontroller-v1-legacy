@@ -70,7 +70,7 @@ public class SerialDataListenerJssc implements SerialPortEventListener {
                 _logger.warn(rEx.getMessage());
                 message.setLength(0);
             } catch (Exception ex) {
-                _logger.error("Exception,", ex.getMessage());
+                _logger.error("Exception,", ex);
                 message.setLength(0);
             }
         }

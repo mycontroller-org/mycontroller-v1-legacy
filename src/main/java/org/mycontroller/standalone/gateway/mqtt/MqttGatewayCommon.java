@@ -20,8 +20,10 @@ package org.mycontroller.standalone.gateway.mqtt;
  * @since 0.0.2
  */
 public class MqttGatewayCommon {
-    public static final String IP = "ip";
-    public static final String PORT = "port";
-    public static final String TOPIC = "topic";
+    public static final String BROKER_HOST = "brokerHost";
+    public static final String CLIENT_ID = "clientId";
+    public static final String USER = "user";
+    public static final String TOPIC_SUBSCRIBE = "topicSubscribe";
+    public static final String TOPIC_PUBLISH = "topicPublish";
     public static final String CONNECTION_STATUS = "connectionStatus";
 }

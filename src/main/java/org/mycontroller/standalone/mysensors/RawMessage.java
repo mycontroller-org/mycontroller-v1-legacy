@@ -48,7 +48,8 @@ public class RawMessage {
         if (message.getPayload() != null) {
             this.payload = message.toString();
         }
-        // Topic structure: MY_MQTT_TOPIC_PREFIX/NODE-ID/SENSOR-ID/CMD-TYPE/ACK-FLAG/SUB-TYPE
+        // Topic structure:
+        // MY_MQTT_TOPIC_PREFIX/NODE-ID/SENSOR-ID/CMD-TYPE/ACK-FLAG/SUB-TYPE
         String[] msgArry = topic.split("/");
         if (msgArry.length == 6) {
             this.nodeId = Integer.valueOf(msgArry[1]);
@@ -94,8 +95,8 @@ public class RawMessage {
             this.subType = Integer.valueOf(msgArry[4]);
             _logger.debug("Message: {}", this.toString());
         } else {
-            _logger.debug("Unknown message format: {}", gateWayMessage);
-            throw new RawMessageException("Unknown message format:" + gateWayMessage);
+            _logger.debug("Unknown message format: [{}]", gateWayMessage);
+            throw new RawMessageException("Unknown message format:[" + gateWayMessage + "]");
         }
     }
 
@@ -218,9 +219,10 @@ public class RawMessage {
     }
 
     public String getMqttTopic() {
-        // Topic structure: MY_MQTT_TOPIC_PREFIX/NODE-ID/SENSOR-ID/CMD-TYPE/ACK-FLAG/SUB-TYPE
+        // Topic structure:
+        // MY_MQTT_TOPIC_PREFIX/NODE-ID/SENSOR-ID/CMD-TYPE/ACK-FLAG/SUB-TYPE
         StringBuilder builder = new StringBuilder();
-        builder.append(ObjectFactory.getAppProperties().getGatewayMqttRootTopic());
+        builder.append(ObjectFactory.getAppProperties().getGatewayMqttTopicPublish());
         builder.append("/").append(this.getNodeId());
         builder.append("/").append(this.getChildSensorId());
         builder.append("/").append(this.getMessageType());

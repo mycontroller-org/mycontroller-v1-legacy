@@ -33,7 +33,7 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
 
     @Override
     public Principal authenticate(String aUsername, String aPassword) throws SecurityException {
-        _logger.debug("User:{},Password:{}", aUsername, aPassword);
+        _logger.debug("HTTP authentication: User:{}", aUsername);
         User user = DaoUtils.getUserDao().get(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
