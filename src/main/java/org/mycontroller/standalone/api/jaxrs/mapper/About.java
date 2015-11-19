@@ -37,6 +37,7 @@ public class About {
     private Date systemDate;
     private String appName;
     private String language;
+    private String dateFormat;
 
     public About() {
         Date date = new Date();
@@ -47,6 +48,7 @@ public class About {
         this.timezoneString = new SimpleDateFormat("z").format(date);
         this.appVersion = DaoUtils.getSettingsDao().get(Settings.MC_VERSION).getValue();
         this.language = ObjectFactory.getAppProperties().getLanguage().toString().replaceAll("_", "-").toLowerCase();
+        this.dateFormat = ObjectFactory.getAppProperties().getAngularJsDateFormat();
     }
 
     public String getAppVersion() {
@@ -75,5 +77,9 @@ public class About {
 
     public String getLanguage() {
         return language;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
     }
 }

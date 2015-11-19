@@ -80,7 +80,8 @@ public class SettingsHandler {
         for (Settings setting : settings) {
             if (setting.getKey().equals(Settings.SUNRISE_TIME) || setting.getKey().equals(Settings.SUNSET_TIME)) {
                 if (setting.getValue() != null) {
-                    setting.setValue(new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a").format(new Date(Long
+                    setting.setValue(new SimpleDateFormat(ObjectFactory.getAppProperties()
+                            .getJavaDateWithoutSecondsFormat()).format(new Date(Long
                             .valueOf(setting.getValue()))));
                 }
             } else if (setting.getKey().equals(Settings.DEFAULT_FIRMWARE)) {

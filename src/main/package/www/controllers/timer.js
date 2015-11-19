@@ -155,7 +155,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
   };
 });
 
-myControllerModule.controller('TMaddController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor) {
+myControllerModule.controller('TMaddController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor, about) {
   $scope.timer = {};
   $scope.timer.enabled=true;
   $scope.timer.sensor = {};
@@ -191,7 +191,7 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
     
   $scope.timer.timeString = "0:0:0"; 
   $scope.validityOnTimeSet = function (newDate) {
-        return $filter('date')(newDate, "dd-MMM-yyyy, HH:mm");
+        return $filter('date')(newDate, about.dateFormat);
   };
   
   $scope.timeOnChange = function (hour,minute,second) {
@@ -218,7 +218,7 @@ myControllerModule.controller('TMdeleteController', function ($scope, $modalInst
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('TMupdateController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor, timer) {
+myControllerModule.controller('TMupdateController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor, timer, about) {
   $scope.timer = timer;
   $scope.header = "Modify Timer : '"+timer.name+"'";
   $scope.timerDays = TypesFactory.getTimerDays();
@@ -256,8 +256,8 @@ myControllerModule.controller('TMupdateController', function ($sce, $filter, $sc
     });
     
     //Update From/To validity  
-    $scope.timer.validFromString = $filter('date')($scope.timer.validFrom, "dd-MMM-yyyy, HH:mm");
-    $scope.timer.validToString = $filter('date')($scope.timer.validTo, "dd-MMM-yyyy, HH:mm");
+    $scope.timer.validFromString = $filter('date')($scope.timer.validFrom, about.dateFormat);
+    $scope.timer.validToString = $filter('date')($scope.timer.validTo, about.dateFormat);
     
     $scope.validFrom = $scope.timer.validFrom;
     $scope.validTo = $scope.timer.validTo;
@@ -292,7 +292,7 @@ myControllerModule.controller('TMupdateController', function ($sce, $filter, $sc
     }  
       
     $scope.validityOnTimeSet = function (newDate) {
-          return $filter('date')(newDate, "dd-MMM-yyyy, HH:mm");
+          return $filter('date')(newDate, about.dateFormat);
     };
     
     $scope.timeOnChange = function (hour,minute,second) {

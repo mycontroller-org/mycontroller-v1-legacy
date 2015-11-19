@@ -202,6 +202,46 @@ public class AppProperties {
         }
     }
 
+    private boolean is12HoursSelected() {
+        Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_TIME_12_24_FORMAT);
+        if (settings.getValue().equalsIgnoreCase("12")) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getAngularJsDateFormat() {
+        if (is12HoursSelected()) {
+            return "MMM dd, yyyy hh:mm:ss a";
+        } else {
+            return "MMM dd, yyyy HH:mm:ss";
+        }
+    }
+
+    public String getJavaDateFormat() {
+        if (is12HoursSelected()) {
+            return "MMM dd, yyyy hh:mm:ss a";
+        } else {
+            return "MMM dd, yyyy HH:mm:ss";
+        }
+    }
+
+    public String getJavaDateWithoutSecondsFormat() {
+        if (is12HoursSelected()) {
+            return "MMM dd, yyyy hh:mm a";
+        } else {
+            return "MMM dd, yyyy HH:mm";
+        }
+    }
+
+    public String getJavaTimeFormat() {
+        if (is12HoursSelected()) {
+            return "hh:mm:ss a";
+        } else {
+            return "HH:mm:ss";
+        }
+    }
+
     public int getNextNodeId() throws NodeIdException {
         int nodeId = this.getNodeId();
         nodeId++;
