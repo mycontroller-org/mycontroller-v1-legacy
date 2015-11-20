@@ -326,7 +326,7 @@ myControllerModule.config(function($translateProvider) {
   //$translateProvider.useSanitizeValueStrategy('sanitize');
   $translateProvider.useSanitizeValueStrategy(null);
   $translateProvider.useStaticFilesLoader({
-    prefix: 'languages/mc_locale_gui',
+    prefix: 'languages/mc_locale_gui_',
     suffix: '.json'
   });
   $translateProvider.preferredLanguage('en-us');
