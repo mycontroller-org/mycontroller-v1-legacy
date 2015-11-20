@@ -18,7 +18,9 @@
   "ALARM.TRIGGER_WHEN_VALUE" : "Trigger When Value",
   "ALARM.TYPE" : "Type / Payload",
   
+  "CHART.DOWNLOAD_CSV_FILE" : "Download CSV File",
   "CHART.GRAPHICAL_REPORT" : "Graphical Report",
+  "CHART.LAST_SEEN" : "Last seen:",
   "CHART.SELECT_VARIABLE_TYPE" : "Select Variable Type",
   "CHART.VARIABLE_TYPE_TEXT" : "Select <B>Variable Type</B> on top side right corner to load Graphical Report...",
   
