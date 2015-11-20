@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
+$scope, $filter, NodesFactory, $location, $uibModal, displayRestError, $filter) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -50,7 +50,7 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
     modalInstance.result.then(function (selectedNode) {
       $scope.selected = selectedNode;
       NodesFactory.delete({ nodeId: selectedNode.id },function(response) {
-        alertService.success("Deleted a node[id:"+selectedNode.id+",name:"+selectedNode.name+"]");
+        alertService.success($filter('translate')('NODE.NOTIFY_DELETE', selectedNode));
         //Update display table
         $scope.orgList = NodesFactory.getAll(function(response) {
         },function(error){
@@ -78,7 +78,7 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
     addModalInstance.result.then(function (newNode) {
       $scope.newNode = newNode;
       NodesFactory.create($scope.newNode,function(response) {
-        alertService.success("Added a node[id:"+newNode.id+",name:"+newNode.name+"]");
+        alertService.success($filter('translate')('NODE.NOTIFY_ADD', newNode));
         //Update display table
         $scope.orgList = NodesFactory.getAll(function(response) {
         },function(error){
@@ -97,7 +97,7 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
   // Upload Firmware
   $scope.uploadFirmware = function (node, size) {
     NodesFactory.uploadFirmware(node,function(response) {
-        alertService.success("Upload Firmware initiated for Node[id:"+node.id+",name:"+node.name+"]");
+        alertService.success($filter('translate')('NODE.NOTIFY_FIRMWARE_UPDATE', node));
       },function(error){
         displayRestError.display(error);            
       });      
@@ -114,7 +114,7 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
 
     addModalInstance.result.then(function (node) {
       NodesFactory.reboot(node,function(response) {
-        alertService.success("Reboot initiated for Node[id:"+node.id+",name:"+node.name+"]");
+        alertService.success($filter('translate')('NODE.NOTIFY_REBOOT', node));
       },function(error){
         displayRestError.display(error);            
       });      
@@ -136,10 +136,10 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
     addModalInstance.result.then(function (node) {
       node.eraseEEPROM = true;
       NodesFactory.update(node,function(response) {
-        alertService.success("Updated erase EEPROM for Node[id:"+node.id+",name:"+node.name+"]");
+        alertService.success($filter('translate')('NODE.NOTIFY_EEPROM_ERASE', node));
         //Trigger Reboot
         NodesFactory.reboot(node,function(response) {
-          alertService.success("Reboot initiated for Node[id:"+node.id+",name:"+node.name+"]");
+          alertService.success($filter('translate')('NODE.NOTIFY_REBOOT', node));
         },function(error){
           displayRestError.display(error);            
       });  
@@ -164,7 +164,7 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
       $scope.updateNode = updateNode;
       $scope.updateNode.updateTime = new Date().getTime();
       NodesFactory.update($scope.updateNode,function(response) {
-        alertService.success("Updated a node[id:"+updateNode.id+",name:"+updateNode.name+"]");
+        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', updateNode));
         //Update display table
         $scope.orgList = NodesFactory.getAll(function(response) {
         },function(error){
@@ -190,7 +190,7 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError) {
 
     addModalInstance.result.then(function () {
       NodesFactory.discover(function(response) {
-        alertService.success("Node Discover initiated successfully");
+        alertService.success($filter('translate')('NODE.NOTIFY_DISCOVER'));
       },function(error){
         displayRestError.display(error);            
       });      
