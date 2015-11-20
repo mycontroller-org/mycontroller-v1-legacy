@@ -24,7 +24,7 @@
           </select>
         </div>
       </div>
-      <b><i class="fa fa-line-chart"></i> {{ 'CHART.GRAPHICAL_REPORT' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>Node: {{sensor.node.id}}, Sensor: {{sensor.sensorId}}, Type: {{sensor.typeString}}, MessageType: {{variableType.variableTypeString}}, Last seen: {{variableType.timestamp | date:about.dateFormat:about.timezone}}</small></small></h3>
+      <b><i class="fa fa-line-chart"></i> {{ 'CHART.GRAPHICAL_REPORT' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>{{ 'CHART.NODE' | translate }} {{sensor.node.id}}, {{ 'CHART.SENSOR' | translate }} {{sensor.sensorId}}, {{ 'CHART.TYPE' | translate }} {{sensor.typeString}}, MessageType: {{variableType.variableTypeString}}, {{ 'CHART.LAST_SEEN' | translate }} {{variableType.timestamp | date:about.dateFormat:about.timezone}}</small></small></h3>
   </div>
   
   <div ng-show="variableType.id">
@@ -35,7 +35,7 @@
             <div>
               <p class="panel-title" >
                 {{chartRawDataOptions.title.text}}
-                <a class="pull-right text-default" href='' ng-click="downloadCSV(variableType.id, 0)" tooltip-placement="left" uib-tooltip="Download CSV File">
+                <a class="pull-right text-default" href='' ng-click="downloadCSV(variableType.id, 0)" tooltip-placement="left" uib-tooltip="{{ 'CHART.DOWNLOAD_CSV_FILE' | translate }}">
                   <i class="fa fa-download"></i>
                 </a>
               </p>
@@ -54,7 +54,7 @@
           <div>
             <p class="panel-title" >
               {{chartMinuteDataOptions.title.text}}
-              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 1)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 1)" class="text-default" tooltip-placement="left" uib-tooltip="{{ 'CHART.DOWNLOAD_CSV_FILE' | translate }}">
                 <i class="fa fa-download"></i>
               </a>
             </p>
@@ -72,7 +72,7 @@
           <div>
             <p class="panel-title" >
               {{chart5MinutesDataOptions.title.text}}
-              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 2)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 2)" class="text-default" tooltip-placement="left" uib-tooltip="{{ 'CHART.DOWNLOAD_CSV_FILE' | translate }}">
                 <i class="fa fa-download"></i>
               </a>
             </p>
@@ -90,7 +90,7 @@
           <div>
             <p class="panel-title" >
               {{chartHourDataOptions.title.text}}
-              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 3)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 3)" class="text-default" tooltip-placement="left" uib-tooltip="{{ 'CHART.DOWNLOAD_CSV_FILE' | translate }}">
                 <i class="fa fa-download"></i>
               </a>
             </p>
@@ -108,7 +108,7 @@
           <div>
             <p class="panel-title" >
               {{chartDayDataOptions.title.text}}
-              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 4)" class="text-default" tooltip-placement="left" uib-tooltip="Download CSV File">
+              <a class="pull-right" href='' ng-click="downloadCSV(variableType.id, 4)" class="text-default" tooltip-placement="left" uib-tooltip="{{ 'CHART.DOWNLOAD_CSV_FILE' | translate }}">
                 <i class="fa fa-download"></i>
               </a>
             </p>
@@ -121,4 +121,4 @@
     </div>  
   </div>
   
-  <div ng-hide="variableType.id" class="well" style="text-align:center;" ng-bind-html="'CHART.VARIABLE_TYPE_TEXT' | translate"></div>  
+  <div ng-hide="variableType.id" class="well" style="text-align:center;" ng-bind-html="{{ 'CHART.VARIABLE_TYPE_TEXT' | translate }}"></div>  
