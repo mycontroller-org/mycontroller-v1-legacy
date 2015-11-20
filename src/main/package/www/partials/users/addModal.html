@@ -46,7 +46,7 @@
       
       <div class="form-group form-inline">
         <label class="control-label col-sm-3" for="role">{{ 'USERS.ROLE' | translate }}:</label>
-        <select style="width:158px" class="form-control" ng-options="role for role in roles" placeholder="Select a role" ng-model="user.role" required></select>
+        <select style="width:158px" class="form-control" ng-options="role for role in roles" placeholder="{{ 'USERS.SELECT_ROLE' | translate }}" ng-model="user.role" required></select>
       </div>
     </form>  
   </div>
