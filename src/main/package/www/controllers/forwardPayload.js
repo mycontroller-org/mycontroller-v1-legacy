@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ForwardPayloadController', function(alertService,
-$scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, displayRestError) {
+$scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, displayRestError, about) {
   
   $scope.sensor = TimersFactory.getSensorData({"id":$stateParams.id});
     
@@ -26,6 +26,9 @@ $scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, 
     fillLastPage: false
   }
 
+  //about, Timezone, etc.,
+  $scope.about = about;
+  
   //Filter
   $scope.updateFilteredList = function() {
     $scope.filteredList = $filter("filter")($scope.orgList, $scope.query);
