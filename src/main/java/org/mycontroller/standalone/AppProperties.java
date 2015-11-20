@@ -83,7 +83,7 @@ public class AppProperties {
     }
 
     public enum MC_LANGUAGE {
-        EN_US("English (US)"), TA_IN("தமிழ் (IN)"), DE_DE("Deutsch (DE)"), RU_RU("Russian (RU)");
+        EN_US("English(US)"), TA_IN("தமிழ் (IN)"), DE_DE("Deutsch(DE)"), RU_RU("Russian(RU)"), HI_IN("हिंदी (IN)");
 
         private final String name;
 
