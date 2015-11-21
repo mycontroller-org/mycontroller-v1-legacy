@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('UsersController', function(alertService,
-$scope, $filter, UsersFactory, $location, $uibModal, displayRestError) {
+$scope, $filter, UsersFactory, $location, $uibModal, displayRestError, $filter) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -50,7 +50,7 @@ $scope, $filter, UsersFactory, $location, $uibModal, displayRestError) {
 
     modalInstance.result.then(function (selectedUser) {
       UsersFactory.delete({ userId: selectedUser.id},function(response) {
-        alertService.success("Deleted a user["+selectedUser.name+"]");
+		alertService.success($filter('translate')('USERS.NOTIFY_DELETE_USER', selectedUser));
         //Update display table
         $scope.orgList = UsersFactory.query(function(response) {
         },function(error){
@@ -77,7 +77,7 @@ $scope, $filter, UsersFactory, $location, $uibModal, displayRestError) {
 
     addModalInstance.result.then(function (newUser) {
       UsersFactory.create(newUser,function(response) {
-        alertService.success("Added a user["+newUser.name+"]");
+		alertService.success($filter('translate')('USERS.NOTIFY_ADDED_USER', newUser));
         //Update display table
         $scope.orgList = UsersFactory.query(function(response) {
         },function(error){
@@ -104,7 +104,7 @@ $scope, $filter, UsersFactory, $location, $uibModal, displayRestError) {
 
     editModalInstance.result.then(function (updateUser) {
       UsersFactory.update(updateUser,function(response) {
-        alertService.success("Updated a user["+updateUser.name+"]");
+ 		alertService.success($filter('translate')('USERS.NOTIFY_UPDATED_USER', updateUser));
         //Update display table
         $scope.orgList = UsersFactory.query(function(response) {
         },function(error){
@@ -123,30 +123,27 @@ $scope, $filter, UsersFactory, $location, $uibModal, displayRestError) {
 
 
 //Users Modal
-myControllerModule.controller('UdeleteController', function ($scope, $modalInstance, $sce, user) {
+myControllerModule.controller('UdeleteController', function ($scope, $modalInstance, $sce, user, $filter) {
   $scope.user = user;
-  $scope.header = "Delete User";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a User"
-    +"<br>Deletion process will remove complete trace of this user!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>User: [id:"+user.id+",userId:"+user.name +",role:"+user.role+"]</I>");
+  $scope.header = $filter('translate')('USERS.TITLE_DELETE_USER');
+  $scope.deleteMsg = $filter('translate')('USERS.MESSAGE_DELETE',user);
   $scope.remove = function() {
     $modalInstance.close($scope.user);
   };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('UaddController', function ($scope, $modalInstance, TypesFactory) {
+myControllerModule.controller('UaddController', function ($scope, $modalInstance, TypesFactory, $filter) {
   $scope.user = {};
-  $scope.header = "Add User";
+  $scope.header = $filter('translate')('USERS.TITLE_ADDED_USER')
   $scope.roles = TypesFactory.getUserRoles();
   $scope.add = function() {$modalInstance.close($scope.user); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('UupdateController', function ($scope, $modalInstance, TypesFactory, user) {
+myControllerModule.controller('UupdateController', function ($scope, $modalInstance, TypesFactory, user, $filter) {
   $scope.user = user;
-  $scope.header = "Update User";
+  $scope.header = $filter('translate')('USERS.TITLE_UPDATED_USER');
   $scope.roles = TypesFactory.getUserRoles();
   $scope.update = function() {$modalInstance.close($scope.user);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
