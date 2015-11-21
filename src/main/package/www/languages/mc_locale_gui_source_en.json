@@ -19,6 +19,7 @@
   "ALARM.TYPE" : "Type / Payload",
   
   "CHART.DOWNLOAD_CSV_FILE" : "Download CSV File",
+  "CHART.GRAPHICAL_REPORT"  : "Graphical Report",
   "CHART.VARIABLE_TYPE_TEXT" : "Select <B>Variable Type</B> on top side right corner to load Graphical Report...",
   
   "DASHBOARD.TITLE" : "Dashboard",
@@ -36,6 +37,7 @@
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Destination Node",
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Destination Sensor",
   "FORWARD_PAYLOAD.DESTINATION_VARIABLE" : "Destination Variable",
+  "FORWARD_PAYLOAD.FORWARD_PAYLOAD" : "Forward Payload",
   "FORWARD_PAYLOAD.ID"  : "Id",
   "FORWARD_PAYLOAD.NAME"  : "Name",
   "FORWARD_PAYLOAD.NODE" : "Node",
