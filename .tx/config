@@ -1,0 +1,9 @@
+[main]
+host = https://www.transifex.com
+
+[gui-angularjs.mc_locale_gui]
+source_file = src/main/package/www/languages/mc_locale_gui_source_en.json
+source_lang = en
+file_filter = src/main/package/www/languages/mc_locale_gui_<lang>.json
+lang_map = en_US:en-us, de_DE:de-de, ru_RU:ru-ru, ta_IN:ta-in, hi_IN:hi-in, pt_PT:pt-pt
+
