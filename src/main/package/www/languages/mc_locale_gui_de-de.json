@@ -237,7 +237,14 @@
     "UID.UNIQUE_IDENTIFICATION_TAG": "Universelles Identifikationslabel für jeden Sensor",
     "USERS.EMAIL": "Email",
     "USERS.FULL_NAME": "Voller Name",
+    "USERS.MESSAGE_DELETE": "You are about to delete a User<br>Deletion process will remove complete trace of this user!<br>Click 'Delete' to proceed.<br><I>User: [id:{{id}},userId:{{name}},role:{{role}}]</I>",
+    "USERS.NOTIFY_ADD": "Added a user [{{name}}]",
+    "USERS.NOTIFY_DELETE": "Deleted a user [{{name}}]",
+    "USERS.NOTIFY_UPDATE": "Updated a user [{{name}}]",
     "USERS.PASSWORD": "Passwort",
     "USERS.ROLE": "Rolle",
+    "USERS.TITLE_ADD": "Add User",
+    "USERS.TITLE_DELETE": "Delete User",
+    "USERS.TITLE_UPDATE": "Update User",
     "USERS.USERNAME": "Benutzername"
 }
