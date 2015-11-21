@@ -50,7 +50,7 @@ $scope, $filter, UsersFactory, $location, $uibModal, displayRestError, $filter) 
 
     modalInstance.result.then(function (selectedUser) {
       UsersFactory.delete({ userId: selectedUser.id},function(response) {
-		alertService.success($filter('translate')('USERS.NOTIFY_DELETE_USER', selectedUser));
+		alertService.success($filter('translate')('USERS.NOTIFY_DELETE', selectedUser));
         //Update display table
         $scope.orgList = UsersFactory.query(function(response) {
         },function(error){
@@ -77,7 +77,7 @@ $scope, $filter, UsersFactory, $location, $uibModal, displayRestError, $filter) 
 
     addModalInstance.result.then(function (newUser) {
       UsersFactory.create(newUser,function(response) {
-		alertService.success($filter('translate')('USERS.NOTIFY_ADDED_USER', newUser));
+		alertService.success($filter('translate')('USERS.NOTIFY_ADD', newUser));
         //Update display table
         $scope.orgList = UsersFactory.query(function(response) {
         },function(error){
@@ -104,7 +104,7 @@ $scope, $filter, UsersFactory, $location, $uibModal, displayRestError, $filter) 
 
     editModalInstance.result.then(function (updateUser) {
       UsersFactory.update(updateUser,function(response) {
- 		alertService.success($filter('translate')('USERS.NOTIFY_UPDATED_USER', updateUser));
+ 		alertService.success($filter('translate')('USERS.NOTIFY_UPDATE', updateUser));
         //Update display table
         $scope.orgList = UsersFactory.query(function(response) {
         },function(error){
@@ -125,7 +125,7 @@ $scope, $filter, UsersFactory, $location, $uibModal, displayRestError, $filter) 
 //Users Modal
 myControllerModule.controller('UdeleteController', function ($scope, $modalInstance, $sce, user, $filter) {
   $scope.user = user;
-  $scope.header = $filter('translate')('USERS.TITLE_DELETE_USER');
+  $scope.header = $filter('translate')('USERS.TITLE_DELETE');
   $scope.deleteMsg = $filter('translate')('USERS.MESSAGE_DELETE',user);
   $scope.remove = function() {
     $modalInstance.close($scope.user);
@@ -135,7 +135,7 @@ myControllerModule.controller('UdeleteController', function ($scope, $modalInsta
 
 myControllerModule.controller('UaddController', function ($scope, $modalInstance, TypesFactory, $filter) {
   $scope.user = {};
-  $scope.header = $filter('translate')('USERS.TITLE_ADDED_USER')
+  $scope.header = $filter('translate')('USERS.TITLE_ADD')
   $scope.roles = TypesFactory.getUserRoles();
   $scope.add = function() {$modalInstance.close($scope.user); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
@@ -143,7 +143,7 @@ myControllerModule.controller('UaddController', function ($scope, $modalInstance
 
 myControllerModule.controller('UupdateController', function ($scope, $modalInstance, TypesFactory, user, $filter) {
   $scope.user = user;
-  $scope.header = $filter('translate')('USERS.TITLE_UPDATED_USER');
+  $scope.header = $filter('translate')('USERS.TITLE_UPDATE');
   $scope.roles = TypesFactory.getUserRoles();
   $scope.update = function() {$modalInstance.close($scope.user);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
