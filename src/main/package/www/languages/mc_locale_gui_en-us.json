@@ -89,7 +89,11 @@
     "NODE.BATTERY_LEVEL": "Battery Level (%)",
     "NODE.DISCOVER_NODES": "Discover Nodes",
     "NODE.FIRMWARE": "Firmware",
+<<<<<<< HEAD
+    "NODE.GRAPHICAL_REPORT": "Graphical Report", 
+=======
     "NODE.GRAPHICAL_REPORT": "Graphical Report",
+>>>>>>> refs/remotes/mycontroller-org/master
     "NODE.MESSAGE_DELETE": "You are about to delete a Node<br>Deletion process will remove complete trace of this node!<br>Click 'Delete' to proceed.<br><I>Node: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
     "NODE.MESSAGE_DISCOVER_UTILITY": "You are about trigger Node Discover Utility<br>This action will send I_PRESENTATION message for all the nodes (id: 1 to 254)<br>I_PRESENTATION may cause huge trafic on your MySensors network<br>Click 'Discover' to proceed further",
     "NODE.MESSAGE_ERASE_EEPROM": "You are about to erase complete EEPROM of a Node<br>This action will remove complete configuration of the node including node Id!<br>Click 'Erase EEPROM' to proceed further.<br><I>Node: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
@@ -99,7 +103,11 @@
     "NODE.NODE": "Node",
     "NODE.NODE_ID": "Node Id",
     "NODE.NODE_NOTE": "<b><I>Note: </I></b>Node data will be overwritten if node sends data mentioned above",
+<<<<<<< HEAD
+    "NODE.NODE_TYPE": "Node Type", 
+=======
     "NODE.NODE_TYPE": "Node Type",
+>>>>>>> refs/remotes/mycontroller-org/master
     "NODE.NOTIFY_ADD": "Added a node[id:{{id}},name:{{name}}]",
     "NODE.NOTIFY_DELETE": "Deleted a node[id:{{id}},name:{{name}}]",
     "NODE.NOTIFY_DISCOVER": "Node Discover initiated successfully",
@@ -239,5 +247,16 @@
     "USERS.FULL_NAME": "Full Name",
     "USERS.PASSWORD": "Password",
     "USERS.ROLE": "Role",
+<<<<<<< HEAD
+    "USERS.USERNAME": "Username",
+    "USERS.NOTIFY_DELETE_USER" : "Deleted a user [{{name}}]",
+    "USERS.NOTIFY_ADDED_USER" : "Added a user [{{name}}]",
+    "USERS.NOTIFY_UPDATED_USER" : "Updated a user [{{name}}]",
+    "USERS.TITLE_DELETE_USER" : "Delete User",
+    "USERS.TITLE_ADDED_USER" : "Add User",
+    "USERS.TITLE_UPDATED_USER" : "Update User", 
+    "USERS.MESSAGE_DELETE" : "You are about to delete a User<br>Deletion process will remove complete trace of this user!<br>Click 'Delete' to proceed.<br><I>User: [id:{{id}},userId:{{name}},role:{{role}}]</I>"	
+=======
     "USERS.USERNAME": "Username"
+>>>>>>> refs/remotes/mycontroller-org/master
 }

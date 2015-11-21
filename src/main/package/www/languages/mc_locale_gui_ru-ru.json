@@ -90,10 +90,17 @@
     "NODE.DISCOVER_NODES": "Найти Узлы",
     "NODE.FIRMWARE": "Прошивка",
     "NODE.GRAPHICAL_REPORT": "Графический Отчет",
+<<<<<<< HEAD
+    "NODE.MESSAGE_DELETE": "Вы собиратесь удалить узел<br>После удаления вы потеряете все настройки узла!<br>Нажмите 'Удалить', что бы начать.<br><I>Узел: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
+    "NODE.MESSAGE_DISCOVER_UTILITY": "Вы собираетесь включить поиск узлов<br>Будут отправляться I_PRESENTATION сообщения на все узлы (id: 1 to 254)<br>I_PRESENTATION может вызвать большой трафик в сети MySensors<br>Нажмите 'Найти узлы' что бы приступить",
+    "NODE.MESSAGE_ERASE_EEPROM": "Вы хотите полность очистить EEPROM узла<br>Вы полностью удалите идентификатор и конфигурацию узла!<br>Нажмите 'Стереть EEPROM', что бы начать.<br><I>Узел: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
+    "NODE.MESSAGE_REBOOT": "Вы собираетесь перезагрузить узел<br>Нажмите 'Reboot', что бы начать<br><I>Узел: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
+=======
     "NODE.MESSAGE_DELETE": "Вы собиратесь удалить узел<br>После удаления вы потеряете все настройки узла!<br>Нажмите 'Удалить', что бы приступить.<br><I>Узел: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
     "NODE.MESSAGE_DISCOVER_UTILITY": "Вы собираетесь включить поиск узлов<br>Будут отправляться I_PRESENTATION сообщения на все узлы (id: 1 to 254)<br>I_PRESENTATION может вызвать большой трафик в сети MySensors<br>Нажмите 'Найти узлы' что бы приступить",
     "NODE.MESSAGE_ERASE_EEPROM": "Вы хотите полность очистить EEPROM узла<br>Вы полностью удалите идентификатор и конфигурацию узла!<br>Нажмите 'Стереть EEPROM', что бы приступить.<br><I>Узел: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
     "NODE.MESSAGE_REBOOT": "Вы собираетесь перезагрузить узел<br>Нажмите 'Reboot', что бы приступить<br><I>Узел: </I>[id:{{id}},name:{{name}},type:{{typeString}}]",
+>>>>>>> refs/remotes/mycontroller-org/master
     "NODE.MY_SENSORS_VERSION": "Версия MySensors",
     "NODE.NAME": "Имя Узла",
     "NODE.NODE": "Узел",
@@ -239,5 +246,16 @@
     "USERS.FULL_NAME": "Полное Имя",
     "USERS.PASSWORD": "Пароль",
     "USERS.ROLE": "Роль",
+<<<<<<< HEAD
+    "USERS.USERNAME": "Имя Пользователя",
+    "USERS.NOTIFY_DELETE_USER" : "Пользователь {{name}} удален",
+    "USERS.NOTIFY_ADDED_USER" : "Пользователь {{name}} добавлен",
+    "USERS.NOTIFY_UPDATED_USER" : "Пользователь {{name}} обновлен",
+    "USERS.TITLE_DELETE_USER" : "Удалить Пользователя",
+    "USERS.TITLE_ADDED_USER" : "Добавить Пользователя",
+    "USERS.TITLE_UPDATED_USER" : "Редактировать Пользователя",
+    "USERS.MESSAGE_DELETE" : "Вы хотите удалить пользователя<br>После удаления будут удаленны все данные этого пользователя!<br>Нажмите кнопку 'Удалить', чтобы продолжить.<br><I>User: [id:{{id}},userId:{{name}},role:{{role}}]</I>"
+=======
     "USERS.USERNAME": "Имя Пользователя"
+>>>>>>> refs/remotes/mycontroller-org/master
 }
