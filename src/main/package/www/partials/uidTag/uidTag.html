@@ -40,7 +40,7 @@
 			<tbody>
 	      <tr>
           <td at-implicit at-sortable at-attribute="uid" at-title="{{ 'UID.UID' | translate }}"></td>
-          <td at-sortable at-title="{{ 'SENSORS.SENSOR' | translate }}">{{ 'UID.NAME' | translate }} [{{item.sensor.nameWithNode}}], {{ 'UID.NODE_ID' | translate }} [Node:{{item.sensor.node.id}}, {{ 'UID.SENSOR' | translate }} {{item.sensor.sensorId}}]</td>
+          <td at-sortable at-title="{{ 'SENSORS.SENSOR' | translate }}">{{ 'UID.NAME' | translate }}:[{{item.sensor.nameWithNode}}], {{ 'UID.ID' | translate }}:[{{ 'UID.NODE' | translate }}:{{item.sensor.node.id}}, {{ 'UID.SENSOR' | translate }}:{{item.sensor.sensorId}}]</td>
           <td at-implicit at-sortable at-attribute="variableTypeString" at-title="{{ 'SENSORS.TYPE' | translate }}"></td>
 					<td class="text-center">
 						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="{{ 'SYSTEM.DELETE' | translate }}"><i class="fa fa-lg fa-trash"></i></a>
