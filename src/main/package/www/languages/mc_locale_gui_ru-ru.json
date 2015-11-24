@@ -269,6 +269,11 @@
     "UID.NODE": "Узел",
     "UID.SENSOR": "Сенсор",
     "UID.UID": "UID",
+	"UID.NOTIFY_DELTED" : "Удалить UID[{{uid}}] запись",
+    "UID.NOTIFY_ADDED" : "Добавить UID запись",	
+	"UID.TITLE_ADDED" : "Добавлен UID {{uid}}",	
+	"UID.TITLE_DELETED" : "Удален UID [{{uid}}], сенсор[{{sensor.nameWithNode}}]",	
+	"UID.MESSAGE_DELETE" : "<b>Внимание!</b> Вы собираетесь удалить этот ресурс<br>При удалении связанные ресурсы будут удалены !<br>Нажмите кнопку 'Удалить', чтобы продолжить.<br><I>UID: [{{uid}}], Сенсор: [Имя:'{{sensor.nameWithNode}}']</I>",	
     "UID.UNIQUE_IDENTIFICATION_NUMBER": "Уникальный Идентификационный Номер",
     "UID.UNIQUE_IDENTIFICATION_TAG": "Уникальный идентификатор для каждого датчика",
     "USERS.EMAIL": "Электронная почта",
@@ -283,5 +288,7 @@
     "USERS.TITLE_ADD": "Добавить пользователя",
     "USERS.TITLE_DELETE": "Удалить пользователся",
     "USERS.TITLE_UPDATE": "Обновить пользователя",
-    "USERS.USERNAME": "Имя Пользователя"
+    "USERS.USERNAME": "Имя Пользователя",
+	"VARIABLEMAPPER.NOTIFY_UPDATED" : "Обновлено [{{key}}]",
+	"VARIABLEMAPPER.TITLE_UPDATED" : "Обновить {{key}}"	    
 }
