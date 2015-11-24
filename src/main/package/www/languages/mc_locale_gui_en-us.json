@@ -269,6 +269,11 @@
     "UID.NODE": "Node",
     "UID.SENSOR": "Sensor",
     "UID.UID": "UID",
+	"UID.NOTIFY_DELTED" : "Delete an UID[{{uid}}] entry",
+	"UID.NOTIFY_ADDED" : "Add new UID entry",
+	"UID.TITLE_ADDED" : "Added UID {{uid}}",	
+	"UID.TITLE_DELETED" : "Deleted an UID [{{uid}}], sensor[{{sensor.nameWithNode}}]",
+	"UID.MESSAGE_DELETE" : "<b>Warning!</b> You are about to delete this resource<br>Deletion process will remove complete trace of this resource!<br>Click 'Delete' to proceed.<br><I>UID: [{{uid}}], Sensor: [Name:'{{sensor.nameWithNode}}']</I>",
     "UID.UNIQUE_IDENTIFICATION_NUMBER": "Unique Identification Number",
     "UID.UNIQUE_IDENTIFICATION_TAG": "Unique Identification Tag for each sensor",
     "USERS.EMAIL": "Email",
@@ -283,5 +288,7 @@
     "USERS.TITLE_ADD": "Add User",
     "USERS.TITLE_DELETE": "Delete User",
     "USERS.TITLE_UPDATE": "Update User",
-    "USERS.USERNAME": "Username"
+    "USERS.USERNAME": "Username",
+	"VARIABLEMAPPER.NOTIFY_UPDATED" : "Updated {{key}}",
+	"VARIABLEMAPPER.TITLE_UPDATED" : "Update {{key}}"	    
 }
