@@ -194,6 +194,8 @@
     "SYSTEM.SEND": "Отправить",
     "SYSTEM.UPDATE": "Обновить",
     "SYSTEM.VALUE": "Значение",
+	"SYSTEM.LOGIN_NOTIFY_SUCCESS" : "Успешно вошли!",
+	"SYSTEM.LOGIN_NOTIFY_INCORRECT" : "Логин или пароль неверны!",	    
     "SYSTEM_STATUS.ARCHITECTURE": "Архитектура",
     "SYSTEM_STATUS.AVAILABLE_PROCESS": "Доступные процессы",
     "SYSTEM_STATUS.CLASS_LOADING_DETAILS": "Подробнее Загруженные Классы",
