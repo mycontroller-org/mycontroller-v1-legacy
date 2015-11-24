@@ -194,6 +194,8 @@
     "SYSTEM.SEND": "Send",
     "SYSTEM.UPDATE": "Update",
     "SYSTEM.VALUE": "Value",
+	"SYSTEM.LOGIN_NOTIFY_SUCCESS" : "Login success!",
+	"SYSTEM.LOGIN_NOTIFY_INCORRECT" : "Username or Password is incorrect!",	    
     "SYSTEM_STATUS.ARCHITECTURE": "Architecture",
     "SYSTEM_STATUS.AVAILABLE_PROCESS": "Available Process",
     "SYSTEM_STATUS.CLASS_LOADING_DETAILS": "Class Loading Details",
