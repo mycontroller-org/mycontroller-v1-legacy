@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('UidTagController', function(alertService,
-$scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayRestError) {
+$scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayRestError, $filter) {
   
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -47,7 +47,7 @@ $scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayR
 
     addModalInstance.result.then(function (uidTag) {
       UidTagFactory.create(uidTag, function(response) {
-        alertService.success("Added UID "+uidTag.uid);
+		alertService.success($filter('translate')('UID.TITLE_ADDED', uidTag));
         //Update display table
         $scope.orgList = UidTagFactory.getAll(function(response) {
         },function(error){
@@ -75,7 +75,7 @@ $scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayR
     });
     modalInstance.result.then(function (uidTag) {
       UidTagFactory.delete({id: uidTag.uid},function(response) {
-        alertService.success("Deleted an UID["+uidTag.uid+"], sensor["+uidTag.sensor.nameWithNode+"]");
+		alertService.success($filter('translate')('UID.TITLE_DELETED', uidTag));
         //Update display table
         $scope.orgList = UidTagFactory.getAll(function(response) {
         },function(error){
@@ -91,7 +91,7 @@ $scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayR
     }
   };
 });
-myControllerModule.controller('UTMaddController', function ($scope, $modalInstance, TypesFactory) {
+myControllerModule.controller('UTMaddController', function ($scope, $modalInstance, TypesFactory, $filter) {
   $scope.uidTag = {};
   $scope.uidTag.sensor = {};
   $scope.uidTag.sensor.node = {};
@@ -104,19 +104,15 @@ myControllerModule.controller('UTMaddController', function ($scope, $modalInstan
   $scope.refreshVariableTypes = function(sensorRefId){
       return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
   };
-  
-  $scope.header = "Add new UID entry";
+  $scope.header = $filter('translate')('UID.NOTIFY_ADDED');
   $scope.add = function() {$modalInstance.close($scope.uidTag); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
 //Delete Modal
-myControllerModule.controller('UTMdeleteController', function ($scope, $modalInstance, $sce, uidTag) {
-  $scope.header = "Delete an UID["+uidTag.uid+"] entry";
-  $scope.deleteMsg = $sce.trustAsHtml("<b>Warning!</b> You are about to delete this resource"
-    +"<br>Deletion process will remove complete trace of this resource!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>UID: ["+uidTag.uid+"], Sensor: [Name:"+uidTag.sensor.nameWithNode+"]</I>");
+myControllerModule.controller('UTMdeleteController', function ($scope, $modalInstance, $sce, uidTag, $filter) {
+  $scope.header = $filter('translate')('UID.NOTIFY_DELTED',uidTag);
+  $scope.deleteMsg = $filter('translate')('UID.MESSAGE_DELETE',uidTag);
   $scope.remove = function() {
     $modalInstance.close(uidTag);
   };
