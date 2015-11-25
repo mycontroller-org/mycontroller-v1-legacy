@@ -234,7 +234,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, displayRestError, about, $cookieStore, $translate) {
+    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, displayRestError, about, $cookieStore, $translate, $filter) {
         // reset login status
         AuthenticationService.ClearCredentials();
  
@@ -258,10 +258,10 @@ myControllerModule.controller('LoginController',
                       displayRestError.display(error);            
                     });
                     
-                    alertService.success("Login success!");
+					alertService.success($filter('translate')('SYSTEM.LOGIN_NOTIFY_SUCCESS'));
                     $state.go('dashboard'); 
                 } else {
-                    alertService.danger("Username or Password is incorrect!");
+					alertService.success($filter('translate')('SYSTEM.LOGIN_NOTIFY_INCORRECT'));
                     $scope.dataLoading = false;
                 }
             });
