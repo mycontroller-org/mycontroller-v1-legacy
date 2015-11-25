@@ -284,5 +284,6 @@
     "USERS.TITLE_DELETE": "Удалить пользователся",
     "USERS.TITLE_UPDATE": "Обновить пользователя",
     "USERS.USERNAME": "Имя Пользователя",
-    "VARIABLEMAPPER.NOTIFY_UPDATED": "Updated {{key}}"
+    "VARIABLEMAPPER.NOTIFY_UPDATED": "{{key}} обновлен",
+    "VARIABLEMAPPER.TITLE_UPDATED": "Update {{key}}"
 }

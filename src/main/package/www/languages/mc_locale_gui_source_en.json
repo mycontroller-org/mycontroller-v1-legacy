@@ -307,5 +307,6 @@
   "USERS.TITLE_DELETE" : "Delete User",
   "USERS.TITLE_UPDATE" : "Update User",
   "USERS.USERNAME" : "Username",
-  "VARIABLEMAPPER.NOTIFY_UPDATED" : "Updated {{key}}"
+  "VARIABLEMAPPER.NOTIFY_UPDATED" : "Updated {{key}}",
+  "VARIABLEMAPPER.TITLE_UPDATED" : "Update {{key}}"
 }
