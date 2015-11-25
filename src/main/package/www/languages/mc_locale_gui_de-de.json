@@ -283,5 +283,6 @@
     "USERS.TITLE_ADD": "Benutzer hinzufügen",
     "USERS.TITLE_DELETE": "Benutzer löschen",
     "USERS.TITLE_UPDATE": "Benutzer aktuallisieren",
-    "USERS.USERNAME": "Benutzername"
+    "USERS.USERNAME": "Benutzername",
+    "VARIABLEMAPPER.NOTIFY_UPDATED": "Updated {{key}}"
 }

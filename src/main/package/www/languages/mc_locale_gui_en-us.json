@@ -179,7 +179,7 @@
     "SUB_HEADER.NODE": "Node",
     "SUB_HEADER.SENSOR": "Sensor",
     "SUB_HEADER.SENSOR_TYPE": "Type",
-    "SUB_HEADER.LAST_SEEN": "Last Seen",
+    "SUB_HEADER.LAST_SEEN": "Last seen",
     "SUB_HEADER.VARIABLE_TYPE": "Variable Type",
     "SYSTEM.ADD": "Add",
     "SYSTEM.CANCEL": "Cancel",
@@ -284,5 +284,5 @@
     "USERS.TITLE_DELETE": "Delete User",
     "USERS.TITLE_UPDATE": "Update User",
     "USERS.USERNAME": "Username",
-    "VARIABLEMAPPER.NOTIFY_UPDATED" : "Updated {{key}}",
+    "VARIABLEMAPPER.NOTIFY_UPDATED": "Updated {{key}}"
 }
