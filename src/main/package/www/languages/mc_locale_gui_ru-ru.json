@@ -188,6 +188,8 @@
     "SYSTEM.EDIT": "Редактировать",
     "SYSTEM.ENABLED": "Включен",
     "SYSTEM.ERASE_EEPROM": "Стереть EEPROM",
+    "SYSTEM.LOGIN_NOTIFY_SUCCESS": "Login success!",
+    "SYSTEM.LOGIN_NOTIFY_INCORRECT": "Username or Password is incorrect!",
     "SYSTEM.NAME": "Имя",
     "SYSTEM.REBOOT": "Перезагрузка",
     "SYSTEM.SEARCH": "Поиск",
@@ -265,9 +267,14 @@
     "TITLE.USERS": "Пользователи",
     "TITLE.VARIABLE_MAPPER": "Карта Переменных",
     "UID.ID": "Id",
+    "UID.MESSAGE_DELETE": "You are about to delete this resource<br>Deletion process will remove complete trace of this resource!<br>Click 'Delete' to proceed.<br><I>UID: [{{uid}}], Sensor: [Name:'{{sensor.nameWithNode}}']</I>",
     "UID.NAME": "Имя",
     "UID.NODE": "Узел",
+    "UID.NOTIFY_ADDED": "Add new UID entry",
+    "UID.NOTIFY_DELTED": "Delete an UID[{{uid}}] entry",
     "UID.SENSOR": "Сенсор",
+    "UID.TITLE_ADDED": "Added UID {{uid}}",
+    "UID.TITLE_DELETED": "Deleted an UID [{{uid}}], sensor[{{sensor.nameWithNode}}]",
     "UID.UID": "UID",
     "UID.UNIQUE_IDENTIFICATION_NUMBER": "Уникальный Идентификационный Номер",
     "UID.UNIQUE_IDENTIFICATION_TAG": "Уникальный идентификатор для каждого датчика",
@@ -285,5 +292,5 @@
     "USERS.TITLE_UPDATE": "Обновить пользователя",
     "USERS.USERNAME": "Имя Пользователя",
     "VARIABLEMAPPER.NOTIFY_UPDATED": "{{key}} обновлен",
-    "VARIABLEMAPPER.TITLE_UPDATED": "Update {{key}}"
+    "VARIABLEMAPPER.TITLE_UPDATED": "Обновленно {{key}}"
 }
