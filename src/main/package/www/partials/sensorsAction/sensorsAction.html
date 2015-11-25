@@ -18,7 +18,7 @@
   <div class="page-header">
     <h3>
       <div class="form-horizontal form-group-sm pull-right col-xs-5">
-        <div class="form-group form-inline">
+        <div class="form-group form-inline pull-right">
           <select style="width:158px;" class="form-control form-inline" ng-change="refreshTimeChange()" ng-model="refreshTime" >
             <option value="0" ng-selected="true">-- {{ 'SENSORS_ACTIONS.NEVER_REFRESH' | translate }} --</option>
             <option value="5000">{{ 'SENSORS_ACTIONS.5S' | translate }}</option>
@@ -63,8 +63,8 @@
         
         
       <div class="pull-left">
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.onOff.show && sensor.guiButtons.onOff.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'on_off'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.ON' | translate }}"><i class="fa fa-toggle-off"></i></label>
-        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.onOff.show && sensor.guiButtons.onOff.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'on_off'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.OFF' | translate }}"><i class="fa fa-toggle-on"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.onOff.show && sensor.guiButtons.onOff.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'on_off'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.ON' | translate }}"><i class="fa fa-toggle-off fa-lg"></i></label>
+        <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.onOff.show && sensor.guiButtons.onOff.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'on_off'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.OFF' | translate }}"><i class="fa fa-toggle-on fa-lg"></i></label>
         
         <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.lockStatus.show && sensor.guiButtons.lockStatus.value == '0'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'1', buttonType:'lock_unlock'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.LOCK' | translate }}"><i class="fa fa-unlock"></i></label>
         <label class="btn btn-default btn-xs" ng-show="sensor.guiButtons.lockStatus.show && sensor.guiButtons.lockStatus.value == '1'" ng-model="radioModel" ng-click="sendPL(sensor, {sensorRefId:sensor.id, payload:'0', buttonType:'lock_unlock'}, true);" uib-tooltip="{{ 'SENSORS_ACTIONS.UNLOCK' | translate }}"><i class="fa fa-lock"></i></label>

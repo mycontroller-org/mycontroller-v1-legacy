@@ -25,6 +25,10 @@ myControllerModule.factory('alertService', function() {
             message: '<strong>'+msg+'</strong>'
           },{
             delay: 1000,
+            timer: 1000,
+            placement: {
+              from: "bottom"
+            },
             animate: {
               enter: 'animated lightSpeedIn',
               exit: 'animated lightSpeedOut'
@@ -38,6 +42,10 @@ myControllerModule.factory('alertService', function() {
           },{
             type: 'success',
             delay: 1000,
+            timer: 1000,
+            placement: {
+              from: "bottom"
+            },
             animate: {
               enter: 'animated lightSpeedIn',
               exit: 'animated lightSpeedOut'
@@ -51,6 +59,10 @@ myControllerModule.factory('alertService', function() {
           },{
             type: 'warning',
             delay: 1000,
+            timer: 1000,
+            placement: {
+              from: "bottom"
+            },
             animate: {
               enter: 'animated lightSpeedIn',
               exit: 'animated lightSpeedOut'
@@ -64,6 +76,10 @@ myControllerModule.factory('alertService', function() {
           },{
             type: 'danger',
             delay: 1000,
+            timer: 1000,
+            placement: {
+              from: "bottom"
+            },
             animate: {
               enter: 'animated lightSpeedIn',
               exit: 'animated lightSpeedOut'
