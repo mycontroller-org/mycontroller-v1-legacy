@@ -3,6 +3,8 @@ image::logo-mycontroller.org_full.png[MyController.org, link="http://www.mycontr
 
 ---
 
+image:https://badges.gitter.im/Join%20Chat.svg[link="https://gitter.im/mycontroller-org/mycontroller?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
+
 ====== Project website: http://www.mycontroller.org
 ====== http://demo.mycontroller.org[Demo Link] Authentication: demo/demo
 
