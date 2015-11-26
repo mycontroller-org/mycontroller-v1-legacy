@@ -16,7 +16,6 @@
 package org.mycontroller.standalone.api.jaxrs.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +27,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.SensorUtils;
+import org.mycontroller.standalone.db.AlarmUtils.THRESHOLD_TYPE;
 import org.mycontroller.standalone.db.AlarmUtils.TRIGGER;
 import org.mycontroller.standalone.db.AlarmUtils.TYPE;
 import org.mycontroller.standalone.db.TimerUtils.FREQUENCY;
@@ -99,6 +99,15 @@ public class TypesUtils {
         TYPE[] types = TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (TYPE type : types) {
+            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.value()));
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getAlarmThresholdTypes() {
+        THRESHOLD_TYPE[] types = THRESHOLD_TYPE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (THRESHOLD_TYPE type : types) {
             typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.value()));
         }
         return typesIdNameMappers;
@@ -185,22 +194,23 @@ public class TypesUtils {
         return types;
     }
 
-    public static ArrayList<TypesIdNameMapper> getSensorVariableTypes(int sensorType, String tickDisplayNames) {
+    public static ArrayList<TypesIdNameMapper> getSensorVariableTypes(int sensorType, Sensor sensor) {
         List<SensorsVariablesMap> variableTypes = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        List<String> tickNames = null;
-        if (tickDisplayNames != null) {
-            tickNames = Arrays.asList(tickDisplayNames.split(SensorUtils.VARIABLE_TYPE_SPLITER));
-        }
         for (SensorsVariablesMap variableType : variableTypes) {
-            boolean isTicked = false;
-            if (tickDisplayNames != null) {
-                if (tickNames.contains(variableType.getVariableTypeString())) {
-                    isTicked = true;
+            typesIdNameMappers.add(new TypesIdNameMapper(variableType.getVariableType(),
+                    variableType.getVariableTypeString(), false));
+        }
+        if (sensor != null) {
+            List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAll(sensor.getId());
+            for (SensorValue sensorValue : sensorValues) {
+                for (TypesIdNameMapper idNameMapper : typesIdNameMappers) {
+                    if (idNameMapper.getId() == sensorValue.getVariableType()) {
+                        idNameMapper.setSubId(sensorValue.getId());
+                        idNameMapper.setTicked(true);
+                    }
                 }
             }
-            typesIdNameMappers.add(new TypesIdNameMapper(variableType.getVariableType(),
-                    variableType.getVariableTypeString(), isTicked));
         }
         return typesIdNameMappers;
     }

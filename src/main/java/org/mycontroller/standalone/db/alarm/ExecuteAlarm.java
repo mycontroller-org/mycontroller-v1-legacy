@@ -25,9 +25,11 @@ import java.util.List;
 
 import org.apache.commons.mail.EmailException;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.AlarmUtils;
 import org.mycontroller.standalone.db.AlarmUtils.DAMPENING_TYPE;
+import org.mycontroller.standalone.db.AlarmUtils.THRESHOLD_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadSpecialOperation;
 import org.mycontroller.standalone.db.PayloadSpecialOperationUtils;
@@ -62,35 +64,53 @@ public class ExecuteAlarm implements Runnable {
 
     public void runAlarm(Alarm alarm) throws Exception {
         boolean triggerAlarm = false;
-        //Sensor sensor = DaoUtils.getSensorDao().get(alarm.getSensor().getId());
+        String thresholdValue = null;
+        switch (THRESHOLD_TYPE.get(alarm.getThresholdType())) {
+            case VALUE:
+                thresholdValue = alarm.getThresholdValue();
+                break;
+            case SENSOR:
+                SensorValue thresholdSensorValue = DaoUtils.getSensorValueDao().get(
+                        NumericUtils.getInteger(alarm.getThresholdValue()));
+                if (thresholdSensorValue != null) {
+                    thresholdValue = thresholdSensorValue.getLastValue();
+                }
+                break;
+            default:
+                break;
+
+        }
+        if (thresholdValue == null) {
+            //TODO: nothing to do, simply exit
+        }
         switch (AlarmUtils.TRIGGER.get(alarm.getTrigger())) {
             case EQUAL:
-                if (sensorValue.getLastValue().equals(alarm.getThresholdValue())) {
+                if (sensorValue.getLastValue().equals(thresholdValue)) {
                     triggerAlarm = true;
                 }
                 break;
             case GREATER_THAN:
-                if (Double.parseDouble(sensorValue.getLastValue()) > Double.parseDouble(alarm.getThresholdValue())) {
+                if (Double.parseDouble(sensorValue.getLastValue()) > Double.parseDouble(thresholdValue)) {
                     triggerAlarm = true;
                 }
                 break;
             case GREATER_THAN_EQUAL:
-                if (Double.parseDouble(sensorValue.getLastValue()) >= Double.parseDouble(alarm.getThresholdValue())) {
+                if (Double.parseDouble(sensorValue.getLastValue()) >= Double.parseDouble(thresholdValue)) {
                     triggerAlarm = true;
                 }
                 break;
             case LESSER_THAN:
-                if (Double.parseDouble(sensorValue.getLastValue()) < Double.parseDouble(alarm.getThresholdValue())) {
+                if (Double.parseDouble(sensorValue.getLastValue()) < Double.parseDouble(thresholdValue)) {
                     triggerAlarm = true;
                 }
                 break;
             case LESSER_THAN_EQUAL:
-                if (Double.parseDouble(sensorValue.getLastValue()) <= Double.parseDouble(alarm.getThresholdValue())) {
+                if (Double.parseDouble(sensorValue.getLastValue()) <= Double.parseDouble(thresholdValue)) {
                     triggerAlarm = true;
                 }
                 break;
             case NOT_EQUAL:
-                if (!sensorValue.getLastValue().equals(alarm.getThresholdValue())) {
+                if (!sensorValue.getLastValue().equals(thresholdValue)) {
                     triggerAlarm = true;
                 }
                 break;

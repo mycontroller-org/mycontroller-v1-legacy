@@ -30,11 +30,24 @@
     
     <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="alarm.trigger">{{ 'ALARM.TRIGGER_WHEN_VALUE' | translate }}:</label>
-      <select style="width:150px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
+      <select style="width:161px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
         ng-model="alarm.variableType" required></select>
-      <select style="width:65px" class="form-control" ng-options="alarmTrigger.id as alarmTrigger.displayName for alarmTrigger in alarmTriggers" ng-model="alarm.trigger" required></select>
-      <input style="width:95px" type="text" style="width:60px" class="form-control" id="alarm.thresholdValue" placeholder="{{ 'ALARM.TRESHOLD' | translate }}" ng-model="alarm.thresholdValue" required>
+      <select style="width:80px" class="form-control" ng-options="alarmTrigger.id as alarmTrigger.displayName for alarmTrigger in alarmTriggers" ng-model="alarm.trigger" required></select>
+      <select style="width:150px" class="form-control" ng-options="alarmThresholdType.id as alarmThresholdType.displayName for alarmThresholdType in alarmThresholdTypes" ng-model="alarm.thresholdType" required></select>
     </div>
+    
+    <div class="form-group form-inline" ng-show="alarm.thresholdType == 0">
+      <label class="control-label col-sm-3" for="alarm.trigger">Value:</label>
+      <input style="width:161px" type="text" style="width:60px" class="form-control" id="alarm.thresholdValue" placeholder="{{ 'ALARM.TRESHOLD' | translate }}" ng-model="alarm.thresholdValue" required>
+    </div>
+    
+    <div class="form-group form-inline"  ng-show="alarm.thresholdType == 1">
+      <label class="control-label col-sm-3">Sensor:</label>
+      <select style="width:128px" class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-model="thNodeId" ng-change="thSensors = refreshSensors(thNodeId)"></select>
+      <select style="width:132px" class="form-control" ng-options="sensor.id as sensor.displayName for sensor in thSensors" ng-model="thSensorId" ng-change="thVariableTypes = refreshVariableTypes(thSensorId)"></select>
+      <select style="width:132px" class="form-control" ng-options="variableType.subId as variableType.displayName for variableType in thVariableTypes | filter:{ ticked : true } | orderBy:'displayName'" 
+        ng-model="alarm.thresholdValue"></select>
+    </div>   
     
     <div class="form-group form-inline">
       <label class=" control-label col-sm-3 checkbox">{{ 'ALARM.IGNORE_DUPLICATE' | translate }}:</label>
@@ -45,9 +58,9 @@
     
     <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="alarm.dampeningType">{{ 'ALARM.DAMPENING' | translate }}:</label>
-      <select style="width:130px" class="form-control" ng-options="alarmDampeningType.id as alarmDampeningType.displayName for alarmDampeningType in alarmDampeningTypes" ng-model="alarm.dampeningType" required></select>
-      <input style="width:90px" ng-show="alarm.dampeningType > 0" type="text" class="form-control" id="alarm.dampeningVar1" placeholder="{{ 'ALARM.OCCURRENCES' | translate }}" ng-model="alarm.dampeningVar1" ng-required="alarm.dampeningType == 1 || alarm.dampeningType == 2">
-      <input style="width:90px" ng-show="alarm.dampeningType == 2" type="text" class="form-control" id="alarm.dampeningVar2" placeholder="{{ 'ALARM.EVALUATIONS' | translate }}" ng-model="alarm.dampeningVar2" ng-required="alarm.dampeningType == 2">
+      <select style="width:150px" class="form-control" ng-options="alarmDampeningType.id as alarmDampeningType.displayName for alarmDampeningType in alarmDampeningTypes" ng-model="alarm.dampeningType" required></select>
+      <input style="width:121px" ng-show="alarm.dampeningType > 0" type="text" class="form-control" id="alarm.dampeningVar1" placeholder="{{ 'ALARM.OCCURRENCES' | translate }}" ng-model="alarm.dampeningVar1" ng-required="alarm.dampeningType == 1 || alarm.dampeningType == 2">
+      <input style="width:121px" ng-show="alarm.dampeningType == 2" type="text" class="form-control" id="alarm.dampeningVar2" placeholder="{{ 'ALARM.EVALUATIONS' | translate }}" ng-model="alarm.dampeningVar2" ng-required="alarm.dampeningType == 2">
     </div>
     
     <legend></legend>
@@ -59,12 +72,12 @@
     
     <div class="form-group form-inline" ng-show="alarm.type == 2">
       <label class="control-label col-sm-3" for="alarm.variable1">{{ 'ALARM.EMAIL' | translate }}:</label>
-      <input style="width:320px" type="text" class="form-control" id="alarm.variable1" placeholder="{{ 'ALARM.EMAIL_NOTE' | translate }}" ng-model="alarm.variable1">
+      <input style="width:400px" type="text" class="form-control" id="alarm.variable1" placeholder="{{ 'ALARM.EMAIL_NOTE' | translate }}" ng-model="alarm.variable1">
     </div>
     
     <div class="form-group form-inline" ng-show="alarm.type == 1">
       <label class="control-label col-sm-3" for="alarm.variable1">{{ 'ALARM.PHONE_NUMBER' | translate }}:</label>
-      <input style="width:320px" type="text" class="form-control" id="alarm.variable1" placeholder="{{ 'ALARM.PHONE_NUMBER_NOTE' | translate }}" ng-model="alarm.variable1">
+      <input style="width:400px" type="text" class="form-control" id="alarm.variable1" placeholder="{{ 'ALARM.PHONE_NUMBER_NOTE' | translate }}" ng-model="alarm.variable1">
     </div>
 
     <div class="form-group form-inline" ng-show="alarm.type == 0">

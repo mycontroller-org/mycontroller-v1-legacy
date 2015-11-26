@@ -82,6 +82,9 @@ public class Alarm {
     private Integer trigger;
 
     @DatabaseField(canBeNull = false)
+    private Integer thresholdType;
+
+    @DatabaseField(canBeNull = false)
     private String thresholdValue;
 
     @DatabaseField(canBeNull = false)
@@ -128,16 +131,26 @@ public class Alarm {
         return type;
     }
 
+    public Integer getThresholdType() {
+        return thresholdType;
+    }
+
+    public void setThresholdType(Integer thresholdType) {
+        this.thresholdType = thresholdType;
+    }
+
+    public String getThresholdTypeString() {
+        if (thresholdType != null) {
+            return AlarmUtils.THRESHOLD_TYPE.get(thresholdType).value();
+        }
+        return null;
+    }
+
     public String getTypeString() {
         if (type != null) {
             return AlarmUtils.TYPE.get(type).value();
         }
         return null;
-    }
-
-    //To ignore json serialization
-    public void setTypeString(String typeString) {
-
     }
 
     public String getVariable1() {
@@ -215,11 +228,6 @@ public class Alarm {
         this.trigger = trigger;
     }
 
-    //Ignore, just for JSON
-    public void setTriggerString(String triggerString) {
-
-    }
-
     public String getThresholdValue() {
         return thresholdValue;
     }
@@ -238,11 +246,6 @@ public class Alarm {
 
     public String getNotificationString() {
         return AlarmUtils.getNotificationString(this);
-    }
-
-    //To ignore json serialization
-    public void setNotificationString(String notificationString) {
-
     }
 
     public Long getLastTrigger() {
@@ -342,6 +345,7 @@ public class Alarm {
         builder.append(", evaluationCount:").append(this.evaluationCount);
         builder.append(", type:").append(this.type);
         builder.append(", trigger:").append(this.trigger);
+        builder.append(", thresholdType:").append(this.thresholdType);
         builder.append(", thresholdValue:").append(this.thresholdValue);
         builder.append(", dampeningType:").append(this.dampeningType);
         builder.append(", dampeningVar1:").append(this.dampeningVar1);
@@ -363,6 +367,10 @@ public class Alarm {
             return MESSAGE_TYPE_SET_REQ.get(variableType).toString();
         }
         return "";
+    }
+
+    public String getConditionString() {
+        return AlarmUtils.getConditionString(this);
     }
 
     public void setVariableType(Integer variableType) {
