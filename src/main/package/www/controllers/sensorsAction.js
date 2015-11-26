@@ -147,7 +147,7 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
     }
     SensorsFactory.sendPayload({nodeId: sensor.id, payload: sensor.newPayload},function(response) {
         alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+sensor.newPayload);
-        $scope.updateSensor(sensor);
+        $scope.updateSensor(sensor, false);
     },function(error){
         displayRestError.display(error);            
     });

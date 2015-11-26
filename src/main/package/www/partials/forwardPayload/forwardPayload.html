@@ -16,7 +16,7 @@
 
 -->
 <div class="page-header">
-    <h3><b><i class="fa fa-forward"></i> {{ 'HEADER.FORWARD_PAYLOAD' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>{{ 'SUB_HEADER.NODE' | translate }}: {{sensor.node.id}}, {{ 'SUB_HEADER.SENSOR' | translate }}: {{sensor.sensorId}}, {{ 'SUB_HEADER.SENSOR_TYPE' | translate }}: {{sensor.typeString}}, {{ 'SUB_HEADER.VARIABLE_TYPE' | translate }}: {{variableType.variableTypeString}}, {{ 'SUB_HEADER.LAST_SEEN' | translate }}: {{variableType.timestamp | date:about.dateFormat:about.timezone}}</small></small></h3>
+    <h3><b><i class="fa fa-forward"></i> {{ 'HEADER.FORWARD_PAYLOAD' | translate }} </b><small>{{sensor.nameWithNode}}<br>{{ 'SUB_HEADER.NODE' | translate }}: {{sensor.node.id}}, {{ 'SUB_HEADER.SENSOR' | translate }}: {{sensor.sensorId}}, {{ 'SUB_HEADER.SENSOR_TYPE' | translate }}: {{sensor.typeString}}, {{ 'SUB_HEADER.VARIABLE_TYPE' | translate }}: [{{sensor.variableTypes }}], {{ 'SUB_HEADER.LAST_SEEN' | translate }}: {{sensor.updateTime | date:about.dateFormat:about.timezone}}</small></h3>
 </div>
 
 	<div class="panel panel-default">

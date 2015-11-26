@@ -15,16 +15,17 @@
     limitations under the License.
 
 -->
-<div class="page-header">
+  <div class="page-header">
     <h3>
+       <b><i class="fa fa-line-chart"></i> {{ 'HEADER.GRAPHICAL_REPORT' | translate }} </b><small>{{sensor.nameWithNode}}<br>{{ 'SUB_HEADER.NODE' | translate }}: {{sensor.node.id}}, {{ 'SUB_HEADER.SENSOR' | translate }}: {{sensor.sensorId}}, {{ 'SUB_HEADER.SENSOR_TYPE' | translate }}: {{sensor.typeString}}, {{ 'SUB_HEADER.VARIABLE_TYPE' | translate }}: {{variableType.variableTypeString }}, {{ 'SUB_HEADER.LAST_SEEN' | translate }}: {{variableType.timestamp | date:about.dateFormat:about.timezone}}</small>
        <div class="form-horizontal form-group-sm pull-right col-xs-2">
-        <div class="form-group form-inline">
+        <div class="form-group form-inline pull-right">
           <select style="width:220px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes" ng-change="updateSensorVariableType(variableTypeId)" ng-model="variableTypeId">
             <option value="">-- {{ 'SELECT.VARIABLE_TYPE' | translate }} --</option>
           </select>
         </div>
       </div>
-      <b><i class="fa fa-line-chart"></i> {{ 'HEADER.GRAPHICAL_REPORT' | translate }} </b><small>{{sensor.nameWithNode}}<br><small>{{ 'SUB_HEADER.NODE' | translate }}: {{sensor.node.id}}, {{ 'SUB_HEADER.SENSOR' | translate }}: {{sensor.sensorId}}, {{ 'SUB_HEADER.SENSOR_TYPE' | translate }}: {{sensor.typeString}}, {{ 'SUB_HEADER.VARIABLE_TYPE' | translate }}: {{variableType.variableTypeString}}, {{ 'SUB_HEADER.LAST_SEEN' | translate }}: {{variableType.timestamp | date:about.dateFormat:about.timezone}}</small></small></h3>
+    </h3>
   </div>
   
   <div ng-show="variableType.id">
