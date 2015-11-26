@@ -188,6 +188,8 @@
     "SYSTEM.EDIT": "Edit",
     "SYSTEM.ENABLED": "Enabled",
     "SYSTEM.ERASE_EEPROM": "Erase EEPROM",
+    "SYSTEM.LOGIN_NOTIFY_SUCCESS": "Login success!",
+    "SYSTEM.LOGIN_NOTIFY_INCORRECT": "Username or Password is incorrect!",
     "SYSTEM.NAME": "Name",
     "SYSTEM.REBOOT": "Reboot",
     "SYSTEM.SEARCH": "Search",
@@ -265,9 +267,14 @@
     "TITLE.USERS": "பயனர்கள்",
     "TITLE.VARIABLE_MAPPER": "மாறியின் வரைபடம்",
     "UID.ID": "Id",
+    "UID.MESSAGE_DELETE": "You are about to delete this resource<br>Deletion process will remove complete trace of this resource!<br>Click 'Delete' to proceed.<br><I>UID: [{{uid}}], Sensor: [Name:'{{sensor.nameWithNode}}']</I>",
     "UID.NAME": "Name",
     "UID.NODE": "Node",
+    "UID.NOTIFY_ADDED": "Add new UID entry",
+    "UID.NOTIFY_DELTED": "Delete an UID[{{uid}}] entry",
     "UID.SENSOR": "Sensor",
+    "UID.TITLE_ADDED": "Added UID {{uid}}",
+    "UID.TITLE_DELETED": "Deleted an UID [{{uid}}], sensor[{{sensor.nameWithNode}}]",
     "UID.UID": "UID",
     "UID.UNIQUE_IDENTIFICATION_NUMBER": "Unique Identification Number",
     "UID.UNIQUE_IDENTIFICATION_TAG": "Unique Identification Tag for each sensor",
@@ -283,5 +290,7 @@
     "USERS.TITLE_ADD": "Add User",
     "USERS.TITLE_DELETE": "Delete User",
     "USERS.TITLE_UPDATE": "Update User",
-    "USERS.USERNAME": "Username"
+    "USERS.USERNAME": "Username",
+    "VARIABLEMAPPER.NOTIFY_UPDATED": "Updated {{key}}",
+    "VARIABLEMAPPER.TITLE_UPDATED": "Update {{key}}"
 }

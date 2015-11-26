@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('VariableMapperController', function(alertService, $scope, $filter, $uibModal, displayRestError, TypesFactory) {
+myControllerModule.controller('VariableMapperController', function(alertService, $scope, $filter, $uibModal, displayRestError, TypesFactory, $filter) {
   
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -45,7 +45,8 @@ myControllerModule.controller('VariableMapperController', function(alertService,
 
     editModalInstance.result.then(function (keyValue) {
       TypesFactory.updateSensorVariableMapper(keyValue, function(response) {
-        alertService.success("Updated "+keyValue.key);
+      alertService.success($filter('translate')('VARIABLEMAPPER.NOTIFY_UPDATED', keyValue));
+
         //Update display table
         $scope.orgList = TypesFactory.getSensorVariableMapper(function(response) {
         },function(error){
@@ -62,7 +63,7 @@ myControllerModule.controller('VariableMapperController', function(alertService,
   };
     
 });
-myControllerModule.controller('VMPeditController', function ($scope, $modalInstance, keyValue, TypesFactory) {
+myControllerModule.controller('VMPeditController', function ($scope, $modalInstance, keyValue, TypesFactory, $filter) {
   $scope.keyValue = keyValue;
   //$scope.keyValue.id  = keyValueOrg.id;
   //$scope.keyValue.key = keyValueOrg.key;
@@ -78,8 +79,7 @@ myControllerModule.controller('VMPeditController', function ($scope, $modalInsta
       }
       $scope.keyValue.value = variableTypesArray.join(', ');
   }
-  
-  $scope.header = "Update '"+$scope.keyValue.key+"'";
+  $scope.header = $filter('translate')('VARIABLEMAPPER.TITLE_UPDATED',keyValue);
   $scope.update = function() {$modalInstance.close($scope.keyValue); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

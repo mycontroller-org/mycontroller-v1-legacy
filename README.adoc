@@ -3,12 +3,19 @@ image::logo-mycontroller.org_full.png[MyController.org, link="http://www.mycontr
 
 ---
 
+image:https://badges.gitter.im/Join%20Chat.svg[link="https://gitter.im/mycontroller-org/mycontroller?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
+
 ====== Project website: http://www.mycontroller.org
 ====== http://demo.mycontroller.org[Demo Link] Authentication: demo/demo
 
 == About
 
 *MyController.org* is a controller for the http://www.mysensors.org/[MySensors] project. Considered system resources in mind. Even we can run it on Raspberry PI (256 MB) very first model.
+
+== Localization
+====== For localization Contribute to the Transifex Project
+===== https://www.transifex.com/mycontrollerorg/gui-angularjs/[Web GUI Project]
+image:https://www.transifex.com/projects/p/gui-angularjs/resource/mc_locale_gui/chart/image_png[link="https://www.transifex.com/mycontrollerorg/gui-angularjs/"]
 
 == System Requirement
 

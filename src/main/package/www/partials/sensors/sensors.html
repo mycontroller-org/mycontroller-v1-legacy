@@ -18,7 +18,7 @@
 <div class="page-header">
   <h3>
       <div class="form-horizontal form-group-sm pull-right col-xs-2">
-        <div class="form-group form-inline">
+        <div class="form-group form-inline pull-right">
           <select style="width:220px" class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-change="nodeChange(nodeId)" ng-model="nodeId">
             <option value="">-- {{ 'NODE.ALL_NODES' | translate }} --</option>
           </select>
