@@ -85,3 +85,15 @@ body {
 .close-colorpicker:hover {
   color:black;
 }
+
+.text-color-red {
+  color:red;
+}
+
+.text-color-green {
+  color:green;
+}
+
+.text-color-gray {
+  color:gray;
+}
