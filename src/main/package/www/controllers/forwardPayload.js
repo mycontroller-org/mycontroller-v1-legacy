@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ForwardPayloadController', function(alertService,
-$scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, displayRestError, about) {
+$scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, displayRestError, about, $filter) {
   
   $scope.sensor = TimersFactory.getSensorData({"id":$stateParams.id});
     
@@ -55,7 +55,7 @@ $scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, 
 
     addModalInstance.result.then(function (plProxy) {
       ForwardPayloadFactory.create(plProxy, function(response) {
-        alertService.success("Added new entry");
+        alertService.success($filter('translate')('FORWARD_PAYLOAD.NOTIFY_ADDED'));
         //Update display table
         $scope.orgList = ForwardPayloadFactory.getAll({"id":$stateParams.id}, function(response) {
         },function(error){
@@ -83,7 +83,7 @@ $scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, 
     });
     modalInstance.result.then(function (plProxy) {
       ForwardPayloadFactory.delete({id: plProxy.id},function(response) {
-        alertService.success("Deleted an entry["+plProxy.sensorDestination.nameWithNode+"]");
+        alertService.success($filter('translate')('FORWARD_PAYLOAD.NOTIFY_DELETED', plProxy));
         //Update display table
         $scope.orgList = ForwardPayloadFactory.getAll({"id":$stateParams.id}, function(response) {
         },function(error){
@@ -99,7 +99,7 @@ $scope, $filter, TimersFactory, ForwardPayloadFactory, $uibModal, $stateParams, 
     }
   };
 });
-myControllerModule.controller('PPMaddController', function ($scope, $modalInstance, TypesFactory, sensor) {
+myControllerModule.controller('PPMaddController', function ($scope, $modalInstance, TypesFactory, sensor, $filter) {
   $scope.plProxy = {};
   $scope.plProxy.sensorSource = {};
   $scope.plProxy.sensorDestination = {};
@@ -118,17 +118,15 @@ myControllerModule.controller('PPMaddController', function ($scope, $modalInstan
       return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
   };
   
-  $scope.header = "New Forward Payload entry for '"+sensor.nameWithNode+"'";
+  $scope.header = $filter('translate')('FORWARD_PAYLOAD.TITLE_NEW_FORWARD',sensorRefId);
   $scope.add = function() {$modalInstance.close($scope.plProxy); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
 //Delete Modal
-myControllerModule.controller('PPMdeleteController', function ($scope, $modalInstance, $sce, plProxy) {
-  $scope.header = "Delete a Forward Payload entry";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a forward entry"
-    +"<br>Click 'Delete' to proceed."
-    +"<br>Sensor Name: ["+plProxy.sensorDestination.nameWithNode+"]");
+myControllerModule.controller('PPMdeleteController', function ($scope, $modalInstance, $sce, plProxy, $filter) {
+  $scope.header = $filter('translate')('FORWARD_PAYLOAD.TITLE_DELETE');
+  $scope.deleteMsg = $filter('translate')('FORWARD_PAYLOAD.MESSAGE_DELETE',nameWithNode);
   $scope.remove = function() {
     $modalInstance.close(plProxy);
   };
