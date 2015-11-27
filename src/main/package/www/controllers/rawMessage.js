@@ -32,7 +32,7 @@ myControllerModule.controller('RawMessageController', function(alertService, $sc
   
   $scope.sendRawMessage = function () {
     StatusFactory.sendRawMessage($scope.rawMessage,function(response) {
-      alertService.success($filter('translate')('RAW.NOTIFY_MESSAGE',messageTypeId));
+      alertService.success($filter('translate')('RAW.NOTIFY_MESSAGE', $scope));
     },function(error){
       displayRestError.display(error);            
     });
