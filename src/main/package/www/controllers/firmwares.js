@@ -183,7 +183,7 @@ myControllerModule.controller('FMaddController', function ($scope, $modalInstanc
 
 myControllerModule.controller('FMupdateController', function ($scope, $modalInstance, firmware, $filter) {
   $scope.firmware = firmware;
-  $scope.header = $filter('translate')('FIRMWARE.TITLE_UPDATE',firmwareName);
+  $scope.header = $filter('translate')('FIRMWARE.TITLE_UPDATE',firmware);
   //Read File and put it in textarea
   $scope.displayFileContents = function(contents) {
         $scope.firmware.hexFileString = contents;
