@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('FirmwareTypeController', function(alertService,
-$scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError) {
+$scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, $filter) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -50,7 +50,7 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError) {
     modalInstance.result.then(function (selectedFirmwareType) {
       $scope.selected = selectedFirmwareType;
       FirmwaresFactory.deleteFirmwareType({ id: selectedFirmwareType.id },function(response) {
-        alertService.success("Deleted a firmwareType[id:"+selectedFirmwareType.id+", Name:"+selectedFirmwareType.name+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_DELETE_FIRMWARE_TYPE', selectedFirmwareType));
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwareTypes(function(response) {
         },function(error){
@@ -78,7 +78,7 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError) {
     addModalInstance.result.then(function (newFirmwareType) {
       $scope.newFirmwareType = newFirmwareType;
       FirmwaresFactory.createFirmwareType($scope.newFirmwareType,function(response) {
-        alertService.success("Added new firmwareType[id:"+newFirmwareType.id+", Name:"+newFirmwareType.name+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_ADDED_FIRMWARE_TYPE', newFirmwareType));
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwareTypes(function(response) {
         },function(error){
@@ -106,7 +106,7 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError) {
     editModalInstance.result.then(function (updateFirmwareType) {
       $scope.updateFirmwareType = updateFirmwareType;
       FirmwaresFactory.updateFirmwareType($scope.updateFirmwareType,function(response) {
-        alertService.success("Updated a firmwareType[id:"+updateFirmwareType.id+", Name:"+updateFirmwareType.name+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_UPDATED_FIRMWARE_TYPE', updateFirmwareType));
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwareTypes(function(response) {
         },function(error){
@@ -125,13 +125,10 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError) {
 
 
 //Firmware Types Modal
-myControllerModule.controller('FTMdeleteController', function ($scope, $modalInstance, $sce, firmwareType) {
+myControllerModule.controller('FTMdeleteController', function ($scope, $modalInstance, $sce, firmwareType, $filter) {
   $scope.firmwareType = firmwareType;
-  $scope.header = "Delete Firmware Type";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Firmware Type"
-    +"<br>Deletion process will remove complete trace of this firmwareType!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>Firmware Type: </I>[id:"+firmwareType.id+",name:"+firmwareType.name +"]");
+   $scope.header = $filter('translate')('FIRMWARE.TITLE_DELETE_FIRMWARE_TYPE');
+  $scope.deleteMsg = $filter('translate')('FIRMWARE.MESSAGE_DELETE_FIRMWARE_TYPE',name);
   $scope.remove = function() {
     $modalInstance.close($scope.firmwareType);
   };
@@ -140,14 +137,14 @@ myControllerModule.controller('FTMdeleteController', function ($scope, $modalIns
 
 myControllerModule.controller('FTMaddController', function ($scope, $modalInstance) {
   $scope.firmwareType = {};
-  $scope.header = "Add Firmware Type";
+   $scope.header = $filter('translate')('FIRMWARE.TITLE_ADD_FIRMWARE_TYPE');
   $scope.add = function() {$modalInstance.close($scope.firmwareType); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
 myControllerModule.controller('FTMupdateController', function ($scope, $modalInstance, firmwareType) {
   $scope.firmwareType = firmwareType;
-  $scope.header = "Update Firmware Type";
+   $scope.header = $filter('translate')('FIRMWARE.TITLE_UPDATE_FIRMWARE_TYPE');
   $scope.update = function() {$modalInstance.close($scope.firmwareType);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
