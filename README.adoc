@@ -15,7 +15,6 @@ image:https://badges.gitter.im/Join%20Chat.svg[link="https://gitter.im/mycontrol
 == Localization
 ====== For localization Contribute to the Transifex Project
 ===== https://www.transifex.com/mycontrollerorg/gui-angularjs/[Web GUI Project]
-image:https://www.transifex.com/projects/p/gui-angularjs/resource/mc_locale_gui/chart/image_png[link="https://www.transifex.com/mycontrollerorg/gui-angularjs/"]
 
 == System Requirement
 
