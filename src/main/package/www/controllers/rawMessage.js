@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('RawMessageController', function(alertService, $scope, displayRestError, TypesFactory, StatusFactory) {
+myControllerModule.controller('RawMessageController', function(alertService, $scope, displayRestError, TypesFactory, StatusFactory, $filter) {
   
   $scope.nodes = TypesFactory.getNodes();
   $scope.messageTypes = TypesFactory.getMessageTypes();
@@ -32,7 +32,7 @@ myControllerModule.controller('RawMessageController', function(alertService, $sc
   
   $scope.sendRawMessage = function () {
     StatusFactory.sendRawMessage($scope.rawMessage,function(response) {
-      alertService.success("Message loaded in Queue["+$scope.rawMessage+"]");
+      alertService.success($filter('translate')('RAW.NOTIFY_MESSAGE',messageTypeId));
     },function(error){
       displayRestError.display(error);            
     });
