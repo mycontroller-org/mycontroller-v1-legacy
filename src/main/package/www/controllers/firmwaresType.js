@@ -127,8 +127,8 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, $filt
 //Firmware Types Modal
 myControllerModule.controller('FTMdeleteController', function ($scope, $modalInstance, $sce, firmwareType, $filter) {
   $scope.firmwareType = firmwareType;
-   $scope.header = $filter('translate')('FIRMWARE.TITLE_DELETE_FIRMWARE_TYPE');
-  $scope.deleteMsg = $filter('translate')('FIRMWARE.MESSAGE_DELETE_FIRMWARE_TYPE',name);
+  $scope.header = $filter('translate')('FIRMWARE.TITLE_DELETE_FIRMWARE_TYPE');
+  $scope.deleteMsg = $filter('translate')('FIRMWARE.MESSAGE_DELETE_FIRMWARE_TYPE', firmwareType);
   $scope.remove = function() {
     $modalInstance.close($scope.firmwareType);
   };
