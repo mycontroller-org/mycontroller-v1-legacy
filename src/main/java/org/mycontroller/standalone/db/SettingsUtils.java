@@ -41,6 +41,7 @@ public class SettingsUtils {
         keys.add(Settings.ENABLE_NOT_AVAILABLE_TO_DEFAULT_FIRMWARE);
         keys.add(Settings.ENABLE_SEND_PAYLOAD);
         keys.add(Settings.MY_SENSORS_CONFIG);
+        keys.add(Settings.MYS_HEARTBEAT_INTERVAL);
         List<Settings> settings = DaoUtils.getSettingsDao().get(keys);
         for (Settings setting : settings) {
             if (setting.getKey().equals(Settings.DEFAULT_FIRMWARE)) {

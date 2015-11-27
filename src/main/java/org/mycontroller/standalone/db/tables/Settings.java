@@ -66,6 +66,8 @@ public class Settings {
     public static final String MC_LANGUAGE = "mc_language";
     
     public static final String MC_TIME_12_24_FORMAT = "mc_time_12_24_format";
+    
+    public static final String MYS_HEARTBEAT_INTERVAL   = "mys_heartbeat_interval";
 
     public Settings() {
 

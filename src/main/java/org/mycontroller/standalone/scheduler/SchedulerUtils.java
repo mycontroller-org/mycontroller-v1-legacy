@@ -21,13 +21,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.TimerUtils;
 import org.mycontroller.standalone.db.TimerUtils.FREQUENCY;
 import org.mycontroller.standalone.db.TimerUtils.TYPE;
 import org.mycontroller.standalone.db.TimerUtils.WEEK_DAY;
+import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.jobs.mysensors.HeartbeatJob;
 import org.mycontroller.standalone.jobs.timer.TimerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +69,11 @@ public class SchedulerUtils {
                 _logger.error("Unable to load timer[{}]", timer, ex);
             }
         }
+
+        //Update all other jobs
+        //MySensors heartbeat job
+        startMySesnorHearbeatJob();
+
     }
 
     public static List<String> getJobs() {
@@ -244,6 +252,21 @@ public class SchedulerUtils {
     public static synchronized void reloadTimerJob(Timer timer) {
         unloadTimerJob(timer);
         loadTimerJob(timer);
+    }
 
+    public static void startMySesnorHearbeatJob() {
+        SundialJobScheduler.addJob(HeartbeatJob.NAME, HeartbeatJob.class.getName());
+        Settings hbInterval = DaoUtils.getSettingsDao().get(Settings.MYS_HEARTBEAT_INTERVAL);
+        SundialJobScheduler.addSimpleTrigger(HeartbeatJob.TRIGGER_NAME, HeartbeatJob.NAME, -1,
+                Long.valueOf(hbInterval.getValue()) * NumericUtils.MINUTE);
+    }
+
+    public static void stopMySesnorHearbeatJob() {
+        SundialJobScheduler.removeJob(HeartbeatJob.NAME);
+    }
+
+    public static void reloadMySesnorHearbeatJob() {
+        stopMySesnorHearbeatJob();
+        startMySesnorHearbeatJob();
     }
 }

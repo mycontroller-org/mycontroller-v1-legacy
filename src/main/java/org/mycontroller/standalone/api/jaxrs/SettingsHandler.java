@@ -36,6 +36,9 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.SettingsUtils;
 import org.mycontroller.standalone.db.TimerUtils;
 import org.mycontroller.standalone.db.tables.Settings;
+import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -49,21 +52,42 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "user" })
 public class SettingsHandler {
+    private static final Logger _logger = LoggerFactory.getLogger(SettingsHandler.class.getName());
 
     @PUT
     @Path("/")
     public Response updateSettings(Settings settings) {
         Settings settingsOld = DaoUtils.getSettingsDao().get(settings.getKey());
         if (settingsOld.getUserEditable()) {
-            DaoUtils.getSettingsDao().update(settings);
             if (settings.getKey().equals(Settings.CITY_LONGITUDE) || settings.getKey().equals(Settings.CITY_LATITUDE)) {
+                DaoUtils.getSettingsDao().update(settings);
                 try {
                     TimerUtils.updateSunriseSunset();
                 } catch (Exception ex) {
                     return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
                 }
             } else if (settings.getKey().equals(Settings.MC_LANGUAGE)) {
+                DaoUtils.getSettingsDao().update(settings);
                 ObjectFactory.getAppProperties().updatePropertiesFromDb();
+            } else if (settings.getKey().equals(Settings.MYS_HEARTBEAT_INTERVAL)) {
+                try {
+                    long interval = Long.valueOf(settings.getValue());
+                    if (interval > 0) {
+                        DaoUtils.getSettingsDao().update(settings);
+                        SchedulerUtils.reloadMySesnorHearbeatJob();
+                    } else {
+                        return RestUtils.getResponse(Status.NOT_ACCEPTABLE, new ApiError(
+                                "Heartbeat interval should not be <= zero"));
+                    }
+                } catch (Exception ex) {
+                    _logger.debug("Error,", ex);
+                    return RestUtils.getResponse(
+                            Status.NOT_ACCEPTABLE,
+                            new ApiError("Invalid Heartbeat interval! value:["
+                                    + settings.getValue() + "], Error:[" + ex.getMessage() + "]"));
+                }
+            } else {
+                DaoUtils.getSettingsDao().update(settings);
             }
             return RestUtils.getResponse(Status.OK);
         } else {

@@ -15,7 +15,9 @@
  */
 myControllerModule.controller('NodesController', function(alertService,
 $scope, $filter, NodesFactory, $location, $uibModal, displayRestError, $filter) {
-    
+  
+  $scope.filter = $filter;  
+  
   $scope.filteredList=[];
   $scope.orgList=[];
   $scope.config = {

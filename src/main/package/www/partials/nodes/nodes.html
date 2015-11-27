@@ -38,13 +38,17 @@
 			<thead></thead>
 			<tbody>
 	      <tr>
-					<td at-implicit at-sortable at-attribute="id" at-title="{{ 'NODE.NODE_ID' | translate }}"></td>
+					<td at-sortable at-title="{{ 'NODE.HEARTBEAT_COLUMN_NAME' | translate }}" class="text-center">
+            <i ng-show="item.reachable != null" class="fa fa-heartbeat fa-lg text-color-{{item.reachable ? 'green' : 'red'}}" uib-tooltip="{{item.reachable ? filter('translate')('NODE.HEARTBEAT_TOOLTIP_UP')  : filter('translate')('NODE.HEARTBEAT_TOOLTIP_DOWN') }}"></i>
+            <i ng-show="item.reachable == null" class="fa fa-heart-o fa-lg text-color-gray" uib-tooltip="{{ 'NODE.HEARTBEAT_TOOLTIP_UNKNOWN' | translate }}"></i>
+          </td>
+          <td at-implicit at-sortable at-attribute="id" at-title="{{ 'NODE.NODE_ID' | translate }}"></td>
 					<td at-implicit at-sortable at-attribute="name" at-title="{{ 'SYSTEM.NAME' | translate }}"></td>
 					<td at-implicit at-sortable at-attribute="typeString" at-title="{{ 'SENSORS.TYPE' | translate }}"></td>
           <td at-implicit at-sortable at-attribute="version" at-title="{{ 'NODE.VERSION' | translate }}"></td>
 					<td at-implicit at-sortable at-attribute="mySensorsVersion" at-title="{{ 'NODE.MY_SENSORS_VERSION' | translate }}"></td>
           <td at-sortable at-title="{{ 'NODE.BATTERY_LEVEL' | translate }}">
-            <i ng-hide="item.batteryLevel =='-'" class="fa fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}">
+            <i ng-hide="item.batteryLevel =='-'" class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}">
               {{item.batteryLevel}} %
               <a ng-click="displayBatteryLevel(item)" uib-tooltip="{{ 'NODE.GRAPHICAL_REPORT' | translate }}" href=''><i class="fa fa-line-chart"></i></a>
             </i>
