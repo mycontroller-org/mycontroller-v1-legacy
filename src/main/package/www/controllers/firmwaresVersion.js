@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('FirmwareVersionController', function(alertService,
-$scope, $filter, FirmwaresFactory, $uibModal, displayRestError) {
+$scope, $filter, FirmwaresFactory, $uibModal, displayRestError, $filter) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -50,7 +50,7 @@ $scope, $filter, FirmwaresFactory, $uibModal, displayRestError) {
     modalInstance.result.then(function (selectedFirmwareVersion) {
       $scope.selected = selectedFirmwareVersion;
       FirmwaresFactory.deleteFirmwareVersion({ id: selectedFirmwareVersion.id },function(response) {
-        alertService.success("Deleted a firmwareVersion[id:"+selectedFirmwareVersion.id+", Name:"+selectedFirmwareVersion.name+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_DELETED_FIRMWARE_VERSION', selectedFirmwareVersion));
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwareVersions(function(response) {
         },function(error){
@@ -78,7 +78,7 @@ $scope, $filter, FirmwaresFactory, $uibModal, displayRestError) {
     addModalInstance.result.then(function (newFirmwareVersion) {
       $scope.newFirmwareVersion = newFirmwareVersion;
       FirmwaresFactory.createFirmwareVersion($scope.newFirmwareVersion,function(response) {
-        alertService.success("Added new firmwareVersion[id:"+newFirmwareVersion.id+", Name:"+newFirmwareVersion.name+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_ADDED_FIRMWARE_VERSION', newFirmwareVersion));        
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwareVersions(function(response) {
         },function(error){
@@ -106,7 +106,7 @@ $scope, $filter, FirmwaresFactory, $uibModal, displayRestError) {
     editModalInstance.result.then(function (updateFirmwareType) {
       $scope.updateFirmwareType = updateFirmwareType;
       FirmwaresFactory.updateFirmwareVersion($scope.updateFirmwareType,function(response) {
-        alertService.success("Updated a firmwareVersion[id:"+updateFirmwareType.id+", Name:"+updateFirmwareType.name+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_UPDATED_FIRMWARE_VERSION', updateFirmwareType));        
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwareVersions(function(response) {
         },function(error){
@@ -125,13 +125,10 @@ $scope, $filter, FirmwaresFactory, $uibModal, displayRestError) {
 
 
 //Firmware Types Modal
-myControllerModule.controller('FVMdeleteController', function ($scope, $modalInstance, $sce, firmwareVersion) {
+myControllerModule.controller('FVMdeleteController', function ($scope, $modalInstance, $sce, firmwareVersion, $filter) {
   $scope.firmwareVersion = firmwareVersion;
-  $scope.header = "Delete Firmware Version";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Firmware Version"
-    +"<br>Deletion process will remove complete trace of this firmwareVersion!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>FirmwareVersion: </I>[id:"+firmwareVersion.id+",name:"+firmwareVersion.name +"]");
+  $scope.header = $filter('translate')('FIRMWARE.TITLE_DELETE_FIRMWARE_VERSION');  
+  $scope.deleteMsg = $filter('translate')('FIRMWARE.MESSAGE_DELETE_FIRMWARE_VERSION',name);
   $scope.remove = function() {
     $modalInstance.close($scope.firmwareVersion);
   };
@@ -140,14 +137,14 @@ myControllerModule.controller('FVMdeleteController', function ($scope, $modalIns
 
 myControllerModule.controller('FVMaddController', function ($scope, $modalInstance) {
   $scope.firmwareVersion = {};
-  $scope.header = "Add Firmware Version";
+  $scope.header = $filter('translate')('FIRMWARE.TITLE_ADD_FIRMWARE_VERSION');  
   $scope.add = function() {$modalInstance.close($scope.firmwareVersion); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('FVMupdateController', function ($scope, $modalInstance, firmwareVersion) {
+myControllerModule.controller('FVMupdateController', function ($scope, $modalInstance, firmwareVersion, $filter) {
   $scope.firmwareVersion = firmwareVersion;
-  $scope.header = "Update Firmware Version";
+  $scope.header = $filter('translate')('FIRMWARE.TITLE_UPDATE_FIRMWARE_VERSION');
   $scope.update = function() {$modalInstance.close($scope.firmwareVersion);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
