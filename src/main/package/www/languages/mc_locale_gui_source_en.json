@@ -41,6 +41,12 @@
   "FIRMWARE.UPLOAD_FIRMWARE" : "Upload Firmware",
   "FIRMWARE.VERSION" : "Version",
   "FIRMWARE.VERSION_ID" : "Version Id",
+  "FIRMWARE.TITLE_UPDATE" : "Update Firmware [{{firmwareName}}]",
+  "FIRMWARE.TITLE_DELETE" : "Delete Firmware",
+  "FIRMWARE.NOTIFY_DELETED" : "Deleted a firmware[{{firmwareName}}]",  
+  "FIRMWARE.NOTIFY_ADDED" : "Added new firmware[TypeId: {{type.id}},VersionId:{{version.id}}]", 
+  "FIRMWARE.NOTIFY_UPDATED" : "Updated a firmware[{{firmwareName}}]",     
+  "FIRMWARE.MESSAGE_DELETE" : "You are about to delete a Firmware<br>Deletion process will remove complete trace of this firmware!<br>Click 'Delete' to proceed.<br><I>Firmware: </I>[id:{{id}},Type:{{type.name}},Version:{{version.name}}]",     
   
   "FORWARD_PAYLOAD.DESTINATION_NODE" : "Destination Node",
   "FORWARD_PAYLOAD.DESTINATION_SENSOR" : "Destination Sensor",
