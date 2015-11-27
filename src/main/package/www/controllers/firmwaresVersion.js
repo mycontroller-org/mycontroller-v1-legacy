@@ -128,7 +128,7 @@ $scope, $filter, FirmwaresFactory, $uibModal, displayRestError, $filter) {
 myControllerModule.controller('FVMdeleteController', function ($scope, $modalInstance, $sce, firmwareVersion, $filter) {
   $scope.firmwareVersion = firmwareVersion;
   $scope.header = $filter('translate')('FIRMWARE.TITLE_DELETE_FIRMWARE_VERSION');  
-  $scope.deleteMsg = $filter('translate')('FIRMWARE.MESSAGE_DELETE_FIRMWARE_VERSION',name);
+  $scope.deleteMsg = $filter('translate')('FIRMWARE.MESSAGE_DELETE_FIRMWARE_VERSION',firmwareVersion);
   $scope.remove = function() {
     $modalInstance.close($scope.firmwareVersion);
   };
