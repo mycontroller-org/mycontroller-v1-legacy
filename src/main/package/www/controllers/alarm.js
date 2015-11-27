@@ -177,6 +177,11 @@ myControllerModule.controller('AMaddController', function ($sce, $scope, $modalI
       return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
   };
    
+  //Update threshold value
+  $scope.refreshThresholdValue = function(){
+    $scope.alarm.thresholdValue = null;
+  }
+   
   $scope.add = function() {$modalInstance.close($scope.alarm); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
@@ -265,6 +270,11 @@ myControllerModule.controller('AMupdateController', function ($sce, $scope, $mod
           }, (error) => {});
           }, (error) => {});    
     $scope.alarm.thresholdValue = parseInt($scope.alarm.thresholdValue);
+  }
+  
+  //Update threshold value
+  $scope.refreshThresholdValue = function(){
+    $scope.alarm.thresholdValue = null;
   }
   
   $scope.update = function() {$modalInstance.close(alarm);}

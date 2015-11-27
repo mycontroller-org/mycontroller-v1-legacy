@@ -33,7 +33,8 @@
       <select style="width:161px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'" 
         ng-model="alarm.variableType" required></select>
       <select style="width:80px" class="form-control" ng-options="alarmTrigger.id as alarmTrigger.displayName for alarmTrigger in alarmTriggers" ng-model="alarm.trigger" required></select>
-      <select style="width:150px" class="form-control" ng-options="alarmThresholdType.id as alarmThresholdType.displayName for alarmThresholdType in alarmThresholdTypes" ng-model="alarm.thresholdType" required></select>
+      <select style="width:150px" class="form-control" ng-options="alarmThresholdType.id as alarmThresholdType.displayName for alarmThresholdType in alarmThresholdTypes" ng-model="alarm.thresholdType" 
+      ng-change="refreshThresholdValue()" required></select>
     </div>
     
     <div class="form-group form-inline" ng-show="alarm.thresholdType == 0">
