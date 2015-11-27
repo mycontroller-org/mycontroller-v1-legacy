@@ -135,7 +135,7 @@ myControllerModule.controller('FVMdeleteController', function ($scope, $modalIns
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('FVMaddController', function ($scope, $modalInstance) {
+myControllerModule.controller('FVMaddController', function ($scope, $modalInstance, $filter) {
   $scope.firmwareVersion = {};
   $scope.header = $filter('translate')('FIRMWARE.TITLE_ADD_FIRMWARE_VERSION');  
   $scope.add = function() {$modalInstance.close($scope.firmwareVersion); }

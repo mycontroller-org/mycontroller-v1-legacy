@@ -135,16 +135,16 @@ myControllerModule.controller('FTMdeleteController', function ($scope, $modalIns
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('FTMaddController', function ($scope, $modalInstance) {
+myControllerModule.controller('FTMaddController', function ($scope, $modalInstance, $filter) {
   $scope.firmwareType = {};
    $scope.header = $filter('translate')('FIRMWARE.TITLE_ADD_FIRMWARE_TYPE');
   $scope.add = function() {$modalInstance.close($scope.firmwareType); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('FTMupdateController', function ($scope, $modalInstance, firmwareType) {
+myControllerModule.controller('FTMupdateController', function ($scope, $modalInstance, firmwareType, $filter) {
   $scope.firmwareType = firmwareType;
-   $scope.header = $filter('translate')('FIRMWARE.TITLE_UPDATE_FIRMWARE_TYPE');
+  $scope.header = $filter('translate')('FIRMWARE.TITLE_UPDATE_FIRMWARE_TYPE');
   $scope.update = function() {$modalInstance.close($scope.firmwareType);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
