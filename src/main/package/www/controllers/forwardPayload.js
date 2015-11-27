@@ -118,7 +118,7 @@ myControllerModule.controller('PPMaddController', function ($scope, $modalInstan
       return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
   };
   
-  $scope.header = $filter('translate')('FORWARD_PAYLOAD.TITLE_NEW_FORWARD',sensorRefId);
+  $scope.header = $filter('translate')('FORWARD_PAYLOAD.TITLE_NEW_FORWARD',sensor);
   $scope.add = function() {$modalInstance.close($scope.plProxy); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
@@ -126,7 +126,7 @@ myControllerModule.controller('PPMaddController', function ($scope, $modalInstan
 //Delete Modal
 myControllerModule.controller('PPMdeleteController', function ($scope, $modalInstance, $sce, plProxy, $filter) {
   $scope.header = $filter('translate')('FORWARD_PAYLOAD.TITLE_DELETE');
-  $scope.deleteMsg = $filter('translate')('FORWARD_PAYLOAD.MESSAGE_DELETE',nameWithNode);
+  $scope.deleteMsg = $filter('translate')('FORWARD_PAYLOAD.MESSAGE_DELETE', plProxy);
   $scope.remove = function() {
     $modalInstance.close(plProxy);
   };
