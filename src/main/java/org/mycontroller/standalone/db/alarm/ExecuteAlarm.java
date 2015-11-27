@@ -81,7 +81,8 @@ public class ExecuteAlarm implements Runnable {
 
         }
         if (thresholdValue == null) {
-            //TODO: nothing to do, simply exit
+            _logger.warn("Could not execute this alarm, it does not have threshold value! Alarm:[{}]", alarm);
+            return;
         }
         switch (AlarmUtils.TRIGGER.get(alarm.getTrigger())) {
             case EQUAL:
@@ -257,11 +258,6 @@ public class ExecuteAlarm implements Runnable {
 
         builder.setLength(0);
 
-        String unit = " ";
-        if (sensorValue.getUnit() != null && sensorValue.getUnit().length() > 0) {
-            unit += sensorValue.getUnit();
-        }
-
         builder.append("<table border='0'>");
 
         builder.append("<tr>");
@@ -271,9 +267,8 @@ public class ExecuteAlarm implements Runnable {
 
         builder.append("<tr>");
         builder.append("<td>").append("Condition").append("</td>");
-        builder.append("<td>")
-                .append(": if {").append(alarm.getVariableTypeString()).append("} ").append(alarm.getTriggerString())
-                .append(" ").append(alarm.getThresholdValue()).append(unit).append("</td>");
+        builder.append("<td>").append(": ").append(AlarmUtils.getConditionString(alarm)).append(this.getSensorUnit(alarm, true))
+                .append("</td>");
         builder.append("<tr>");
 
         builder.append("<tr>");
@@ -293,13 +288,14 @@ public class ExecuteAlarm implements Runnable {
         builder.append("<tr>");
         builder.append("<td>").append("Sensor Value").append("</td>");
         builder.append("<td>")
-                .append(": ").append(sensorValue.getLastValue()).append(unit).append("</td>");
+                .append(": ").append(sensorValue.getLastValue()).append(this.getSensorUnit(alarm, false))
+                .append("</td>");
         builder.append("<tr>");
 
         builder.append("<tr>");
         builder.append("<td>").append("Triggered at").append("</td>");
         builder.append("<td>")
-                .append(": ").append(new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a z").format(new Date()))
+                .append(": ").append(new SimpleDateFormat(ObjectFactory.getAppProperties().getJavaDateFormat()).format(new Date()))
                 .append("</td>");
         builder.append("<tr>");
 
@@ -320,16 +316,13 @@ public class ExecuteAlarm implements Runnable {
 
     private void alarmSendSMS(Alarm alarm) throws Exception {
         StringBuilder builder = new StringBuilder();
-        String unit = "";
-        if (sensorValue.getUnit() != null && sensorValue.getUnit().length() > 0) {
-            unit = " " + sensorValue.getUnit();
-        }
+
         builder.append("Alarm: [")
                 .append(alarm.getName())
-                .append("], Cond: if VAL ")
-                .append(alarm.getTriggerString())
-                .append(" ").append(alarm.getThresholdValue()).append(unit)
-                .append(", Present Value:").append(sensorValue.getLastValue()).append(unit)
+                .append("], Cond: ").append(AlarmUtils.getConditionString(alarm))
+                .append(this.getSensorUnit(alarm, true))
+                .append(", Present Value:").append(sensorValue.getLastValue())
+                .append(this.getSensorUnit(alarm, false))
                 .append(", Node:[")
                 .append(alarm.getSensor().getNameWithNode())
                 .append("],id[N:").append(alarm.getSensor().getNode().getId()).append(",S:")
@@ -337,6 +330,21 @@ public class ExecuteAlarm implements Runnable {
                 .append(", T:").append(MESSAGE_TYPE_SET_REQ.get(sensorValue.getVariableType()).toString()).append("]")
                 .append("\nwww.mycontroller.org");
         SMSUtils.sendSMS(AlarmUtils.getSendSMS(alarm).getToPhoneNumber(), builder.toString());
+    }
+
+    private String getSensorUnit(Alarm alarm, boolean isCondition) {
+        String unit = "";
+        if (isCondition) {
+            if (alarm.getThresholdType() != THRESHOLD_TYPE.VALUE.ordinal()) {
+                return unit;
+            }
+        }
+
+        if (sensorValue.getUnit() != null && sensorValue.getUnit().length() > 0) {
+            unit = " " + sensorValue.getUnit();
+        }
+
+        return unit;
     }
 
     @Override
