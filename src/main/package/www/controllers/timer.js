@@ -78,7 +78,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
   // Update timer
   $scope.updateTimer = function(updateTimer) {
     TimersFactory.update(updateTimer,function(response) {
-        alertService.success($filter('translate')('TIMER.NOTIFY_UPDATED', name));
+        alertService.success($filter('translate')('TIMER.NOTIFY_UPDATED', updateTimer));
         //Update display table
         $scope.updateDisplayTable();
       },function(error){
@@ -97,7 +97,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
 
     addModalInstance.result.then(function (newTimer) {
       TimersFactory.create(newTimer,function(response) {
-        alertService.success($filter('translate')('TIMER.NOTIFY_ADDED', name));
+        alertService.success($filter('translate')('TIMER.NOTIFY_ADDED', newTimer));
         //Update display table
         $scope.updateDisplayTable();
       },function(error){
@@ -121,7 +121,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
     });
     modalInstance.result.then(function (selectedTimer) {
       TimersFactory.delete({id: selectedTimer.id},function(response) {
-        alertService.success($filter('translate')('TIMER.NOTIFY_DELETED', name));
+        alertService.success($filter('translate')('TIMER.NOTIFY_DELETED', selectedTimer));
         //Update display table
         $scope.orgList = TimersFactory.getAll({"id":$stateParams.id}, function(response) {
         },function(error){
@@ -161,8 +161,7 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
   $scope.timer.sensor = {};
   $scope.timer.frequencyData = [];
   $scope.timer.sensor.id = sensor.id;
-  $scope.header = $filter('translate')('TIMER.TITLE_NEW_TIMER',nameWithNode);
-  $scope.header = "New Timer for '"+sensor.nameWithNode+"'";
+  $scope.header = $filter('translate')('TIMER.TITLE_NEW_TIMER', sensor);
   $scope.timerDays = TypesFactory.getTimerDays({allDays:true});
   $scope.timerFrequencies = TypesFactory.getTimerFrequencies();
   $scope.variableTypes = TypesFactory.getSensorVariableTypes({id:sensor.type});
@@ -199,7 +198,7 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
         $scope.timer.timeString = hour + ":" + minute + ":" + second;
   };
   $scope.htmlTooltipCron = $filter('translate')('TIMER.TOOLTIP_CRON');      
-  $scope.htmlTooltipCron = $filter('translate')('TIMER.TOOLTIP_SPL_OPER');
+  $scope.htmlTooltipSplOper = $filter('translate')('TIMER.TOOLTIP_SPL_OPER');
   
   $scope.add = function() {$modalInstance.close($scope.timer); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
@@ -207,8 +206,8 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
 
 //Delete Modal
 myControllerModule.controller('TMdeleteController', function ($scope, $modalInstance, $sce, timer, $filter) {
-  $scope.header = $filter('translate')('TIMER.TITLE_DELETE',name);
-  $scope.deleteMsg = $filter('translate')('TIMER.MESSAGE_DELETE', name);
+  $scope.header = $filter('translate')('TIMER.TITLE_DELETE', timer);
+  $scope.deleteMsg = $filter('translate')('TIMER.MESSAGE_DELETE', timer);
   $scope.remove = function() {
     $modalInstance.close(timer);
   };
@@ -217,8 +216,7 @@ myControllerModule.controller('TMdeleteController', function ($scope, $modalInst
 
 myControllerModule.controller('TMupdateController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor, timer, about, $filter) {
   $scope.timer = timer;
-  $scope.header = $filter('translate')('TIMER.TITLE_MODIFY',name);
-  $scope.header = "Modify Timer : '"+timer.name+"'";
+  $scope.header = $filter('translate')('TIMER.TITLE_MODIFY', timer);
   $scope.timerDays = TypesFactory.getTimerDays();
   $scope.timerFrequencies = TypesFactory.getTimerFrequencies();
   $scope.variableTypes = TypesFactory.getSensorVariableTypes({id:sensor.type});
@@ -298,7 +296,7 @@ myControllerModule.controller('TMupdateController', function ($sce, $filter, $sc
     };
         
     $scope.htmlTooltipCron = $filter('translate')('TIMER.TOOLTIP_CRON');
-    $scope.htmlTooltipCron = $filter('translate')('TIMER.TOOLTIP_SPL_OPER');
+    $scope.htmlTooltipSplOper = $filter('translate')('TIMER.TOOLTIP_SPL_OPER');
     
     $scope.update = function() {$modalInstance.close($scope.timer); }
     $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
