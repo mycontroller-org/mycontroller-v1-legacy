@@ -277,7 +277,19 @@ public class ProcessRawMessage {
             case I_ID_RESPONSE:
                 _logger.debug("Internal Message, Type:I_ID_RESPONSE[{}]", rawMessage);
                 return;
-
+            case I_HEARTBEAT:
+                if (rawMessage.isTxMessage()) {
+                    return;
+                }
+                node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
+                if (node == null) {
+                    DaoUtils.getNodeDao().create(new Node(rawMessage.getNodeId(), rawMessage.getPayload()));
+                    node = DaoUtils.getNodeDao().get(rawMessage.getNodeId());
+                }
+                node.setReachable(true);
+                node.setLastHeartbeat(System.currentTimeMillis());
+                DaoUtils.getNodeDao().update(node);
+                break;
             default:
                 _logger.warn(
                         "Internal Message[type:{},payload:{}], This type may not be supported (or) not implemented yet",

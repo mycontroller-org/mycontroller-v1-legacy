@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('AlarmController', function(alertService,
-$scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestError, about) {
+$scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestError, about, $filter) {
   
   $scope.sensor = AlarmsFactory.getSensorData({"id":$stateParams.id});
     
@@ -73,7 +73,7 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
   // Update Alarm
   $scope.updateAlarm = function(updateAlarm) {
     AlarmsFactory.update(updateAlarm,function(response) {
-      alertService.success("Updated an alarm["+updateAlarm.name+"]");
+      alertService.success($filter('translate')('ALARM.NOTIFY_UPDATE', updateAlarm));
         //Update display table
         $scope.updateDisplayTable();
       },function(error){
@@ -92,7 +92,7 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
 
     addModalInstance.result.then(function (newAlarm) {
       AlarmsFactory.create(newAlarm,function(response) {
-        alertService.success("Added an alarm[Name:"+newAlarm.name+"]");
+        alertService.success($filter('translate')('ALARM.NOTIFY_ADD', newAlarm));
         //Update display table
         $scope.updateDisplayTable();
       },function(error){
@@ -116,7 +116,7 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
     });
     modalInstance.result.then(function (selectedAlarm) {
       AlarmsFactory.delete({id: selectedAlarm.id},function(response) {
-        alertService.success("Deleted an Alarm["+selectedAlarm.name+"]");
+        alertService.success($filter('translate')('ALARM.NOTIFY_DELETE', selectedAlarm));
         //Update display table
         $scope.updateDisplayTable();
       },function(error){
@@ -146,16 +146,18 @@ $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestE
   };
 });
 
-myControllerModule.controller('AMaddController', function ($sce, $scope, $modalInstance, TypesFactory, sensor) {
-  $scope.htmlTooltipSplOper = $sce.trustAsHtml('<p align="left">For Special Operations:<br>All the operations done with last sensor value<br><table><thead><tr><th>Operation</th><th>Value</th><th>Example</th><th style="text-align: center;">Result</th></tr></thead><tbody><tr><td style="padding:0 5px 0 5px;">Invert</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Increment</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Decrement</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Addition</td><td style="padding:0 5px 0 5px;">+{user.value}</td><td style="padding:0 5px 0 5px;">+2</td><td style="padding:0 5px 0 5px;">{sensor.value}+2</td></tr><tr><td style="padding:0 5px 0 5px;">Subtraction</td><td style="padding:0 5px 0 5px;">-{user.value}</td><td style="padding:0 5px 0 5px;">-5</td><td style="padding:0 5px 0 5px;">{sensor.value}-5</td></tr><tr><td style="padding:0 5px 0 5px;">Multiplication</td><td style="padding:0 5px 0 5px;">*{user.value}</td><td style="padding:0 5px 0 5px;">*2</td><td style="padding:0 5px 0 5px;">{sensor.value}*2</td></tr><tr><td style="padding:0 5px 0 5px;">Division</td><td style="padding:0 5px 0 5px;">/{user.value}</td><td style="padding:0 5px 0 5px;">/9</td><td style="padding:0 5px 0 5px;">{sensor.value}/9</td></tr><tr><td style="padding:0 5px 0 5px;">Modulus</td><td style="padding:0 5px 0 5px;">%{user.value}</td><td style="padding:0 5px 0 5px;">%4</td><td style="padding:0 5px 0 5px;">{sensor.value}%4</td></tr><tr><td style="padding:0 5px 0 5px;">Reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">Reboot Node</td></tr></tbody></table><br><b><I>Note: Space not allowed</b></I><br></p>');
+myControllerModule.controller('AMaddController', function ($sce, $scope, $modalInstance, TypesFactory, sensor, $filter) {
+  //$scope.htmlTooltipSplOper = $sce.trustAsHtml('<p align="left">For Special Operations:<br>All the operations done with last sensor value<br><table><thead><tr><th>Operation</th><th>Value</th><th>Example</th><th style="text-align: center;">Result</th></tr></thead><tbody><tr><td style="padding:0 5px 0 5px;">Invert</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Increment</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Decrement</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Addition</td><td style="padding:0 5px 0 5px;">+{user.value}</td><td style="padding:0 5px 0 5px;">+2</td><td style="padding:0 5px 0 5px;">{sensor.value}+2</td></tr><tr><td style="padding:0 5px 0 5px;">Subtraction</td><td style="padding:0 5px 0 5px;">-{user.value}</td><td style="padding:0 5px 0 5px;">-5</td><td style="padding:0 5px 0 5px;">{sensor.value}-5</td></tr><tr><td style="padding:0 5px 0 5px;">Multiplication</td><td style="padding:0 5px 0 5px;">*{user.value}</td><td style="padding:0 5px 0 5px;">*2</td><td style="padding:0 5px 0 5px;">{sensor.value}*2</td></tr><tr><td style="padding:0 5px 0 5px;">Division</td><td style="padding:0 5px 0 5px;">/{user.value}</td><td style="padding:0 5px 0 5px;">/9</td><td style="padding:0 5px 0 5px;">{sensor.value}/9</td></tr><tr><td style="padding:0 5px 0 5px;">Modulus</td><td style="padding:0 5px 0 5px;">%{user.value}</td><td style="padding:0 5px 0 5px;">%4</td><td style="padding:0 5px 0 5px;">{sensor.value}%4</td></tr><tr><td style="padding:0 5px 0 5px;">Reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">Reboot Node</td></tr></tbody></table><br><b><I>Note: Space not allowed</b></I><br></p>');
+  $scope.htmlTooltipSplOper = $filter('translate')('ALARM.TOOLTIP_SPECIAL_OPERATION');
   $scope.alarm = {};
   $scope.alarm.enabled=true;
   $scope.alarm.sensor = {};
   $scope.alarm.sensor.node = {};
   $scope.alarm.sensor.id = sensor.id;
   $scope.alarm.ignoreDuplicate = true;
-  $scope.header = "New Alarm for '"+sensor.nameWithNode+"'";
+  $scope.header = $filter('translate')('ALARM.TITLE_ADD', sensor);
   $scope.alarmNotifications = TypesFactory.getAlarmTypes();
+  $scope.alarmThresholdTypes = TypesFactory.getAlarmThresholdTypes();
   $scope.sensorvalueTypes = TypesFactory.getSensorValueTypes();
   $scope.alarmTriggers = TypesFactory.getAlarmTriggers();
   $scope.alarmDampeningTypes = TypesFactory.getAlarmDampeningTypes();
@@ -175,28 +177,32 @@ myControllerModule.controller('AMaddController', function ($sce, $scope, $modalI
       return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
   };
    
+  //Update threshold value
+  $scope.refreshThresholdValue = function(){
+    $scope.alarm.thresholdValue = null;
+  }
+   
   $scope.add = function() {$modalInstance.close($scope.alarm); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
 //Delete Modal
-myControllerModule.controller('AMdeleteController', function ($scope, $modalInstance, $sce, alarm) {
-  $scope.header = "Delete an Alarm";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete an alarm"
-    +"<br>Deletion process will remove complete trace of this alarm!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>Alarm: [Name:"+alarm.name+"]</I>");
+myControllerModule.controller('AMdeleteController', function ($scope, $modalInstance, $sce, alarm, $filter) {
+  $scope.header = $filter('translate')('ALARM.TITLE_DELETE');
+  $scope.deleteMsg = $filter('translate')('ALARM.MESSAGE_DELETE', alarm);
   $scope.remove = function() {
     $modalInstance.close(alarm);
   };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('AMupdateController', function ($sce, $scope, $modalInstance, alarm, TypesFactory, SensorsFactory) {
-  $scope.htmlTooltipSplOper = $sce.trustAsHtml('<p align="left">For Special Operations:<br>All the operations done with last sensor value<br><table><thead><tr><th>Operation</th><th>Value</th><th>Example</th><th style="text-align: center;">Result</th></tr></thead><tbody><tr><td style="padding:0 5px 0 5px;">Invert</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Increment</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Decrement</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Addition</td><td style="padding:0 5px 0 5px;">+{user.value}</td><td style="padding:0 5px 0 5px;">+2</td><td style="padding:0 5px 0 5px;">{sensor.value}+2</td></tr><tr><td style="padding:0 5px 0 5px;">Subtraction</td><td style="padding:0 5px 0 5px;">-{user.value}</td><td style="padding:0 5px 0 5px;">-5</td><td style="padding:0 5px 0 5px;">{sensor.value}-5</td></tr><tr><td style="padding:0 5px 0 5px;">Multiplication</td><td style="padding:0 5px 0 5px;">*{user.value}</td><td style="padding:0 5px 0 5px;">*2</td><td style="padding:0 5px 0 5px;">{sensor.value}*2</td></tr><tr><td style="padding:0 5px 0 5px;">Division</td><td style="padding:0 5px 0 5px;">/{user.value}</td><td style="padding:0 5px 0 5px;">/9</td><td style="padding:0 5px 0 5px;">{sensor.value}/9</td></tr><tr><td style="padding:0 5px 0 5px;">Modulus</td><td style="padding:0 5px 0 5px;">%{user.value}</td><td style="padding:0 5px 0 5px;">%4</td><td style="padding:0 5px 0 5px;">{sensor.value}%4</td></tr><tr><td style="padding:0 5px 0 5px;">Reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">Reboot Node</td></tr></tbody></table><br><b><I>Note: Space not allowed</b></I><br></p>');
+myControllerModule.controller('AMupdateController', function ($sce, $scope, $modalInstance, alarm, TypesFactory, SensorsFactory, $filter) {
+  //$scope.htmlTooltipSplOper = $sce.trustAsHtml('<p align="left">For Special Operations:<br>All the operations done with last sensor value<br><table><thead><tr><th>Operation</th><th>Value</th><th>Example</th><th style="text-align: center;">Result</th></tr></thead><tbody><tr><td style="padding:0 5px 0 5px;">Invert</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Increment</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Decrement</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Addition</td><td style="padding:0 5px 0 5px;">+{user.value}</td><td style="padding:0 5px 0 5px;">+2</td><td style="padding:0 5px 0 5px;">{sensor.value}+2</td></tr><tr><td style="padding:0 5px 0 5px;">Subtraction</td><td style="padding:0 5px 0 5px;">-{user.value}</td><td style="padding:0 5px 0 5px;">-5</td><td style="padding:0 5px 0 5px;">{sensor.value}-5</td></tr><tr><td style="padding:0 5px 0 5px;">Multiplication</td><td style="padding:0 5px 0 5px;">*{user.value}</td><td style="padding:0 5px 0 5px;">*2</td><td style="padding:0 5px 0 5px;">{sensor.value}*2</td></tr><tr><td style="padding:0 5px 0 5px;">Division</td><td style="padding:0 5px 0 5px;">/{user.value}</td><td style="padding:0 5px 0 5px;">/9</td><td style="padding:0 5px 0 5px;">{sensor.value}/9</td></tr><tr><td style="padding:0 5px 0 5px;">Modulus</td><td style="padding:0 5px 0 5px;">%{user.value}</td><td style="padding:0 5px 0 5px;">%4</td><td style="padding:0 5px 0 5px;">{sensor.value}%4</td></tr><tr><td style="padding:0 5px 0 5px;">Reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">Reboot Node</td></tr></tbody></table><br><b><I>Note: Space not allowed</b></I><br></p>');
+  $scope.htmlTooltipSplOper = $filter('translate')('ALARM.TOOLTIP_SPECIAL_OPERATION');
   $scope.alarm = alarm;
-  $scope.header = "Modify Alarm : '"+alarm.name+"'";
+  $scope.header = $filter('translate')('ALARM.TITLE_UPDATE', alarm);
   $scope.alarmNotifications = TypesFactory.getAlarmTypes();
+  $scope.alarmThresholdTypes = TypesFactory.getAlarmThresholdTypes();
   $scope.alarmTriggers = TypesFactory.getAlarmTriggers();
   $scope.sensorvalueTypes = TypesFactory.getSensorValueTypes();
   $scope.alarmDampeningTypes = TypesFactory.getAlarmDampeningTypes();
@@ -215,6 +221,7 @@ myControllerModule.controller('AMupdateController', function ($sce, $scope, $mod
     $scope.sensors = TypesFactory.getSensors({id:alarm.sensor.node.id});
     $scope.sendPayloadVariableTypes = TypesFactory.getSensorVariableTypesBySensorRefId({id:alarm.variable1});
   } 
+  
   
   $scope.refreshVariableTypes = function(sensorRefId){
       return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
@@ -243,6 +250,32 @@ myControllerModule.controller('AMupdateController', function ($sce, $scope, $mod
       $scope.alarm.variable4 = null;
       $scope.alarm.variable5 = null;
   };
+  
+  //Update default variables for thresholdTypes
+  if(alarm.thresholdType == 1){
+    var variableType = {};
+    var thSensor = {};
+    SensorsFactory.getSensorValue({sensorId:alarm.thresholdValue})
+    .$promise
+          .then((response) => {
+            variableType = response;
+            $scope.thSensorId = variableType.sensor.id;
+            SensorsFactory.getSensorByRefId({sensorRefId:$scope.thSensorId})
+    .$promise
+          .then((response) => {
+            thSensor = response;
+            $scope.thNodeId = thSensor.node.id;
+            $scope.thSensors = $scope.refreshSensors(thSensor.node.id);
+            $scope.thVariableTypes = $scope.refreshVariableTypes(thSensor.id);
+          }, (error) => {});
+          }, (error) => {});    
+    $scope.alarm.thresholdValue = parseInt($scope.alarm.thresholdValue);
+  }
+  
+  //Update threshold value
+  $scope.refreshThresholdValue = function(){
+    $scope.alarm.thresholdValue = null;
+  }
   
   $scope.update = function() {$modalInstance.close(alarm);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }

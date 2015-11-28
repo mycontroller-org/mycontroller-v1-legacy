@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('TimerController', function(alertService,
-$scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestError, about) {
+$scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestError, about, $filter) {
   
   $scope.sensor = TimersFactory.getSensorData({"id":$stateParams.id});
     
@@ -78,7 +78,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
   // Update timer
   $scope.updateTimer = function(updateTimer) {
     TimersFactory.update(updateTimer,function(response) {
-        alertService.success("Updated a timer["+updateTimer.name+"]");
+        alertService.success($filter('translate')('TIMER.NOTIFY_UPDATED', updateTimer));
         //Update display table
         $scope.updateDisplayTable();
       },function(error){
@@ -97,7 +97,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
 
     addModalInstance.result.then(function (newTimer) {
       TimersFactory.create(newTimer,function(response) {
-        alertService.success("Added a timer[Name:"+newTimer.name+"]");
+        alertService.success($filter('translate')('TIMER.NOTIFY_ADDED', newTimer));
         //Update display table
         $scope.updateDisplayTable();
       },function(error){
@@ -121,7 +121,7 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
     });
     modalInstance.result.then(function (selectedTimer) {
       TimersFactory.delete({id: selectedTimer.id},function(response) {
-        alertService.success("Deleted a Timer["+selectedTimer.name+"]");
+        alertService.success($filter('translate')('TIMER.NOTIFY_DELETED', selectedTimer));
         //Update display table
         $scope.orgList = TimersFactory.getAll({"id":$stateParams.id}, function(response) {
         },function(error){
@@ -155,13 +155,13 @@ $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestE
   };
 });
 
-myControllerModule.controller('TMaddController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor, about) {
+myControllerModule.controller('TMaddController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor, about, $filter) {
   $scope.timer = {};
   $scope.timer.enabled=true;
   $scope.timer.sensor = {};
   $scope.timer.frequencyData = [];
   $scope.timer.sensor.id = sensor.id;
-  $scope.header = "New Timer for '"+sensor.nameWithNode+"'";
+  $scope.header = $filter('translate')('TIMER.TITLE_NEW_TIMER', sensor);
   $scope.timerDays = TypesFactory.getTimerDays({allDays:true});
   $scope.timerFrequencies = TypesFactory.getTimerFrequencies();
   $scope.variableTypes = TypesFactory.getSensorVariableTypes({id:sensor.type});
@@ -197,30 +197,26 @@ myControllerModule.controller('TMaddController', function ($sce, $filter, $scope
   $scope.timeOnChange = function (hour,minute,second) {
         $scope.timer.timeString = hour + ":" + minute + ":" + second;
   };
-      
-  $scope.htmlTooltipCron = $sce.trustAsHtml('<p align="left">Examples:<br>0 15 10 ? * 6#3 - Fire at 10:15am on the third Friday of every month<br>0 0/5 14 * * ? - Fire every 5 minutes starting at 2pm and ending at 2:55pm, every day<br><table><thead><tr><th>Field Name</th><th>Mandatory</th><th>Allowed Values</th><th>Allowed Special Characters</th></tr></thead><tbody><tr><td>Seconds</td><td>YES</td><td>0-59</td><td>, - * /</td></tr><tr><td>Minutes</td><td>YES</td><td>0-59</td><td>, - * /</td></tr><tr><td>Hours</td><td>YES</td><td>0-23</td><td>, - * /</td></tr><tr><td>Day of month</td><td>YES</td><td>1-31</td><td>, - * ? / L W<br clear="all"></td></tr><tr><td>Month</td><td>YES</td><td>1-12 or JAN-DEC</td><td>, - * /</td></tr><tr><td>Day of week</td><td>YES</td><td>1-7 or SUN-SAT</td><td>, - * ? / L #</td></tr><tr><td>Year</td><td>NO</td><td>empty, 1970-2099</td><td>, - * /</td></tr></tbody></table><br>*  - all values<br>?  - no specific value<br>-  - used to specify ranges<br>,  - used to specify additional values<br>/  - used to specify increments<br>L  - last - ex:the last day of the month<br>W  - weekday<br>#  - used to specify "the nth" XXX day of the month, ex: "6#3" - the third Friday of the month</p>');
-  $scope.htmlTooltipSplOper = $sce.trustAsHtml('<p align="left">For Special Operations:<br>All the operations done with last sensor value<br><table><thead><tr><th>Operation</th><th>Value</th><th>Example</th><th style="text-align: center;">Result</th></tr></thead><tbody><tr><td style="padding:0 5px 0 5px;">Invert</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Increment</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Decrement</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Addition</td><td style="padding:0 5px 0 5px;">+{user.value}</td><td style="padding:0 5px 0 5px;">+2</td><td style="padding:0 5px 0 5px;">{sensor.value}+2</td></tr><tr><td style="padding:0 5px 0 5px;">Subtraction</td><td style="padding:0 5px 0 5px;">-{user.value}</td><td style="padding:0 5px 0 5px;">-5</td><td style="padding:0 5px 0 5px;">{sensor.value}-5</td></tr><tr><td style="padding:0 5px 0 5px;">Multiplication</td><td style="padding:0 5px 0 5px;">*{user.value}</td><td style="padding:0 5px 0 5px;">*2</td><td style="padding:0 5px 0 5px;">{sensor.value}*2</td></tr><tr><td style="padding:0 5px 0 5px;">Division</td><td style="padding:0 5px 0 5px;">/{user.value}</td><td style="padding:0 5px 0 5px;">/9</td><td style="padding:0 5px 0 5px;">{sensor.value}/9</td></tr><tr><td style="padding:0 5px 0 5px;">Modulus</td><td style="padding:0 5px 0 5px;">%{user.value}</td><td style="padding:0 5px 0 5px;">%4</td><td style="padding:0 5px 0 5px;">{sensor.value}%4</td></tr><tr><td style="padding:0 5px 0 5px;">Reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">Reboot Node</td></tr></tbody></table><br><b><I>Note: Space not allowed</b></I><br></p>');
-        
+  $scope.htmlTooltipCron = $filter('translate')('TIMER.TOOLTIP_CRON');      
+  $scope.htmlTooltipSplOper = $filter('translate')('TIMER.TOOLTIP_SPL_OPER');
+  
   $scope.add = function() {$modalInstance.close($scope.timer); }
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
 //Delete Modal
-myControllerModule.controller('TMdeleteController', function ($scope, $modalInstance, $sce, timer) {
-  $scope.header = "Delete Timer: '"+timer.name+"'";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete an timer"
-    +"<br>Deletion process will remove complete trace of this timer!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>Timer: [Name:"+timer.name+"]</I>");
+myControllerModule.controller('TMdeleteController', function ($scope, $modalInstance, $sce, timer, $filter) {
+  $scope.header = $filter('translate')('TIMER.TITLE_DELETE', timer);
+  $scope.deleteMsg = $filter('translate')('TIMER.MESSAGE_DELETE', timer);
   $scope.remove = function() {
     $modalInstance.close(timer);
   };
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });
 
-myControllerModule.controller('TMupdateController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor, timer, about) {
+myControllerModule.controller('TMupdateController', function ($sce, $filter, $scope, $modalInstance, TypesFactory, sensor, timer, about, $filter) {
   $scope.timer = timer;
-  $scope.header = "Modify Timer : '"+timer.name+"'";
+  $scope.header = $filter('translate')('TIMER.TITLE_MODIFY', timer);
   $scope.timerDays = TypesFactory.getTimerDays();
   $scope.timerFrequencies = TypesFactory.getTimerFrequencies();
   $scope.variableTypes = TypesFactory.getSensorVariableTypes({id:sensor.type});
@@ -299,9 +295,9 @@ myControllerModule.controller('TMupdateController', function ($sce, $filter, $sc
           $scope.timer.timeString = hour + ":" + minute + ":" + second;
     };
         
-    $scope.htmlTooltipCron = $sce.trustAsHtml('<p align="left">Examples:<br>0 15 10 ? * 6#3 - Fire at 10:15am on the third Friday of every month<br>0 0/5 14 * * ? - Fire every 5 minutes starting at 2pm and ending at 2:55pm, every day<br><table><thead><tr><th>Field Name</th><th>Mandatory</th><th>Allowed Values</th><th>Allowed Special Characters</th></tr></thead><tbody><tr><td>Seconds</td><td>YES</td><td>0-59</td><td>, - * /</td></tr><tr><td>Minutes</td><td>YES</td><td>0-59</td><td>, - * /</td></tr><tr><td>Hours</td><td>YES</td><td>0-23</td><td>, - * /</td></tr><tr><td>Day of month</td><td>YES</td><td>1-31</td><td>, - * ? / L W<br clear="all"></td></tr><tr><td>Month</td><td>YES</td><td>1-12 or JAN-DEC</td><td>, - * /</td></tr><tr><td>Day of week</td><td>YES</td><td>1-7 or SUN-SAT</td><td>, - * ? / L #</td></tr><tr><td>Year</td><td>NO</td><td>empty, 1970-2099</td><td>, - * /</td></tr></tbody></table><br>*  - all values<br>?  - no specific value<br>-  - used to specify ranges<br>,  - used to specify additional values<br>/  - used to specify increments<br>L  - last - ex:the last day of the month<br>W  - weekday<br>#  - used to specify "the nth" XXX day of the month, ex: "6#3" - the third Friday of the month</p>');
-    $scope.htmlTooltipSplOper = $sce.trustAsHtml('<p align="left">For Special Operations:<br>All the operations done with last sensor value<br><table><thead><tr><th>Operation</th><th>Value</th><th>Example</th><th style="text-align: center;">Result</th></tr></thead><tbody><tr><td style="padding:0 5px 0 5px;">Invert</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!</td><td style="padding:0 5px 0 5px;">!{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Increment</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++</td><td style="padding:0 5px 0 5px;">++{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Decrement</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--</td><td style="padding:0 5px 0 5px;">--{sensor.value}</td></tr><tr><td style="padding:0 5px 0 5px;">Addition</td><td style="padding:0 5px 0 5px;">+{user.value}</td><td style="padding:0 5px 0 5px;">+2</td><td style="padding:0 5px 0 5px;">{sensor.value}+2</td></tr><tr><td style="padding:0 5px 0 5px;">Subtraction</td><td style="padding:0 5px 0 5px;">-{user.value}</td><td style="padding:0 5px 0 5px;">-5</td><td style="padding:0 5px 0 5px;">{sensor.value}-5</td></tr><tr><td style="padding:0 5px 0 5px;">Multiplication</td><td style="padding:0 5px 0 5px;">*{user.value}</td><td style="padding:0 5px 0 5px;">*2</td><td style="padding:0 5px 0 5px;">{sensor.value}*2</td></tr><tr><td style="padding:0 5px 0 5px;">Division</td><td style="padding:0 5px 0 5px;">/{user.value}</td><td style="padding:0 5px 0 5px;">/9</td><td style="padding:0 5px 0 5px;">{sensor.value}/9</td></tr><tr><td style="padding:0 5px 0 5px;">Modulus</td><td style="padding:0 5px 0 5px;">%{user.value}</td><td style="padding:0 5px 0 5px;">%4</td><td style="padding:0 5px 0 5px;">{sensor.value}%4</td></tr><tr><td style="padding:0 5px 0 5px;">Reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">reboot</td><td style="padding:0 5px 0 5px;">Reboot Node</td></tr></tbody></table><br><b><I>Note: Space not allowed</b></I><br></p>');
-          
+    $scope.htmlTooltipCron = $filter('translate')('TIMER.TOOLTIP_CRON');
+    $scope.htmlTooltipSplOper = $filter('translate')('TIMER.TOOLTIP_SPL_OPER');
+    
     $scope.update = function() {$modalInstance.close($scope.timer); }
     $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
   });

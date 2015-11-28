@@ -87,6 +87,12 @@ public class TypesHandler {
     }
 
     @GET
+    @Path("/alarmThresholdTypes")
+    public Response getAlarmThresholdTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmThresholdTypes());
+    }
+
+    @GET
     @Path("/timerTypes")
     public Response getTimerTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getTimerTypes());
@@ -145,8 +151,7 @@ public class TypesHandler {
     public Response getSensorVariableTypesBySensorRefId(@PathParam("sensorRefId") int sensorRefId) {
         Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
         if (sensor != null && sensor.getType() != null) {
-            return RestUtils.getResponse(Status.OK,
-                    TypesUtils.getSensorVariableTypes(sensor.getType(), sensor.getVariableTypes()));
+            return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypes(sensor.getType(), sensor));
         }
         return RestUtils.getResponse(Status.BAD_REQUEST,
                 new ApiError("Requested Sensor[" + sensor.getName() + "] type not available or Sensor not available"));

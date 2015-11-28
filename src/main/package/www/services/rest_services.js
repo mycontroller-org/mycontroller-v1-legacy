@@ -75,6 +75,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}  },
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },
     getAlarmTypes:  { method: 'GET', isArray: true, params: {type: 'alarmtypes'}  },
+    getAlarmThresholdTypes:  { method: 'GET', isArray: true, params: {type: 'alarmThresholdTypes'}  },
     getAlarmDampeningTypes:  { method: 'GET', isArray: true, params: {type: 'alarmDampeningTypes'}  },
     getAlarmTriggers:  { method: 'GET', isArray: true, params: {type: 'alarmtriggers'}  },
     getSensorValueTypes:  { method: 'GET', isArray: true, params: {type: 'sensorValueTypes'}  },

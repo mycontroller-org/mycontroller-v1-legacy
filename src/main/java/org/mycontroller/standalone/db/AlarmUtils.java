@@ -15,12 +15,15 @@
  */
 package org.mycontroller.standalone.db;
 
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.alarm.DampeningConsecutive;
 import org.mycontroller.standalone.db.alarm.DampeningLastNEvaluations;
 import org.mycontroller.standalone.db.alarm.SendEmail;
 import org.mycontroller.standalone.db.alarm.SendPayLoad;
 import org.mycontroller.standalone.db.alarm.SendSMS;
 import org.mycontroller.standalone.db.tables.Alarm;
+import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorValue;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -29,6 +32,29 @@ import org.mycontroller.standalone.db.tables.Alarm;
 public class AlarmUtils {
     private AlarmUtils() {
 
+    }
+
+    public enum THRESHOLD_TYPE {
+        VALUE("Value"),
+        SENSOR("Sensor");
+        public static THRESHOLD_TYPE get(int id) {
+            for (THRESHOLD_TYPE type : values()) {
+                if (type.ordinal() == id) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
+
+        private String value;
+
+        private THRESHOLD_TYPE(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return this.value;
+        }
     }
 
     public enum TYPE {
@@ -176,5 +202,28 @@ public class AlarmUtils {
             default:
                 return "-";
         }
+    }
+
+    public static String getConditionString(Alarm alarm) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("if {").append(alarm.getVariableTypeString()).append("} ");
+        builder.append(alarm.getTriggerString()).append(" ");
+        builder.append(alarm.getThresholdTypeString()).append(":");
+        switch (THRESHOLD_TYPE.get(alarm.getThresholdType())) {
+            case VALUE:
+                builder.append(alarm.getThresholdValue());
+                break;
+            case SENSOR:
+                SensorValue sensorValue = DaoUtils.getSensorValueDao().get(
+                        NumericUtils.getInteger(alarm.getThresholdValue()));
+                Sensor sensor = DaoUtils.getSensorDao().get(sensorValue.getSensor().getId());
+                builder.append("[").append(sensor.getNameWithNode()).append(":");
+                builder.append(sensorValue.getVariableTypeString()).append("]");
+                break;
+            default:
+                break;
+        }
+
+        return builder.toString();
     }
 }

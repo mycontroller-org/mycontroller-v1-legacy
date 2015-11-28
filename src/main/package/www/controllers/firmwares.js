@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('FirmwareController', function(alertService,
-$scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about) {
+$scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about, $filter) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
@@ -53,7 +53,7 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about
     modalInstance.result.then(function (selectedFirmware) {
       $scope.selected = selectedFirmware;
       FirmwaresFactory.deleteFirmware({ id: selectedFirmware.id },function(response) {
-        alertService.success("Deleted a firmware["+selectedFirmware.firmwareName+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_DELETED', selectedFirmware));
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwares(function(response) {
         },function(error){
@@ -81,7 +81,7 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about
     addModalInstance.result.then(function (newFirmware) {
       $scope.newFirmware = newFirmware;
       FirmwaresFactory.createFirmware($scope.newFirmware,function(response) {
-        alertService.success("Added new firmware[TypeId: "+newFirmware.type.id+", VersionId:"+newFirmware.version.id+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_ADDED', newFirmware));        
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwares(function(response) {
         },function(error){
@@ -108,7 +108,7 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about
 
     editModalInstance.result.then(function (updateFirmware) {
       FirmwaresFactory.updateFirmware(updateFirmware,function(response) {
-        alertService.success("Updated a firmware["+updateFirmware.firmwareName+"]");
+        alertService.success($filter('translate')('FIRMWARE.NOTIFY_UPDATED', updateFirmware));         
         //Update display table
         $scope.orgList = FirmwaresFactory.getAllFirmwares(function(response) {
         },function(error){
@@ -127,13 +127,10 @@ $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about
 
 
 //Firmwares Modal
-myControllerModule.controller('FMdeleteController', function ($scope, $modalInstance, $sce, firmware) {
+myControllerModule.controller('FMdeleteController', function ($scope, $modalInstance, $sce, firmware, $filter) {
   $scope.firmware = firmware;
-  $scope.header = "Delete Firmware";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Firmware"
-    +"<br>Deletion process will remove complete trace of this firmware!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>Firmware: </I>[id:"+firmware.id+",Type:"+firmware.type.name +",Version:"+firmware.version.name+"]");
+  $scope.header = $filter('translate')('FIRMWARE.TITLE_DELETE');
+  $scope.deleteMsg = $filter('translate')('FIRMWARE.MESSAGE_DELETE', firmware);  
   $scope.remove = function() {
     $modalInstance.close($scope.firmware);
   };
@@ -184,9 +181,9 @@ myControllerModule.controller('FMaddController', function ($scope, $modalInstanc
     };
 });
 
-myControllerModule.controller('FMupdateController', function ($scope, $modalInstance, firmware) {
+myControllerModule.controller('FMupdateController', function ($scope, $modalInstance, firmware, $filter) {
   $scope.firmware = firmware;
-  $scope.header = "Update Firmware ["+firmware.firmwareName+"]";
+  $scope.header = $filter('translate')('FIRMWARE.TITLE_UPDATE',firmware);
   //Read File and put it in textarea
   $scope.displayFileContents = function(contents) {
         $scope.firmware.hexFileString = contents;

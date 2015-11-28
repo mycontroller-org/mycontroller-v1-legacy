@@ -45,8 +45,8 @@
             </a>
           </td>
           <td at-implicit at-sortable at-attribute="name" at-title="{{ 'SYSTEM.NAME' | translate }}"></td>
-          <td at-title="{{ 'ALARM.CONDITION' | translate }}">if { {{item.variableTypeString}} } {{item.triggerString}} {{item.thresholdValue}}</td>
-          <td at-implicit at-sortable at-attribute="dampeningString" at-title="{{ 'SYSTEM.ENABLED' | translate }}"></td>
+          <td at-title="{{ 'ALARM.CONDITION' | translate }}">{{item.conditionString}}</td>
+          <td at-implicit at-sortable at-attribute="dampeningString" at-title="{{ 'ALARM.DAMPENING' | translate }}"></td>
           <td at-title="{{ 'ALARM.NOTIFICATION' | translate }}">{{item.typeString}}: {{item.notificationString}}</td>
           <td at-attribute="lastTrigger" at-sortable at-title="{{ 'ALARM.LAST_TRIGGER' | translate }}">{{item.lastTrigger | date:about.dateFormat:about.timezone}}</td>
           <td class="text-center">

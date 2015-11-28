@@ -68,6 +68,26 @@ public class Node {
     private Boolean eraseEEPROM;
     @DatabaseField(canBeNull = true, columnName = FIRMWARE_ID, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Firmware firmware;
+    @DatabaseField(canBeNull = true)
+    private Boolean reachable;
+    @DatabaseField(canBeNull = true)
+    private Long lastHeartbeat;
+
+    public Boolean getReachable() {
+        return reachable;
+    }
+
+    public void setReachable(Boolean reachable) {
+        this.reachable = reachable;
+    }
+
+    public Long getLastHeartbeat() {
+        return lastHeartbeat;
+    }
+
+    public void setLastHeartbeat(Long lastHeartbeat) {
+        this.lastHeartbeat = lastHeartbeat;
+    }
 
     public Integer getId() {
         return id;
@@ -167,6 +187,8 @@ public class Node {
         builder.append(", EraseEEPROM:").append(this.eraseEEPROM);
         builder.append(", Firmware:").append(this.firmware);
         builder.append(", UpdateTime:").append(this.updateTime);
+        builder.append(", IsReachable:").append(this.reachable);
+        builder.append(", LastHeartbeat:").append(this.lastHeartbeat);
         return builder.toString();
     }
 
