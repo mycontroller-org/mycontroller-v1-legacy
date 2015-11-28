@@ -60,8 +60,8 @@
     <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="alarm.dampeningType">{{ 'ALARM.DAMPENING' | translate }}:</label>
       <select style="width:150px" class="form-control" ng-options="alarmDampeningType.id as alarmDampeningType.displayName for alarmDampeningType in alarmDampeningTypes" ng-model="alarm.dampeningType" required></select>
-      <input style="width:121px" ng-show="alarm.dampeningType > 0" type="text" class="form-control" id="alarm.dampeningVar1" placeholder="Occurrences" ng-model="alarm.dampeningVar1" ng-required="alarm.dampeningType == 1 || alarm.dampeningType == 2">
-      <input style="width:121px" ng-show="alarm.dampeningType == 2" type="text" class="form-control" id="alarm.dampeningVar2" placeholder="Evaluations" ng-model="alarm.dampeningVar2" ng-required="alarm.dampeningType == 2">
+      <input style="width:121px" ng-show="alarm.dampeningType > 0" type="text" class="form-control" id="alarm.dampeningVar1" placeholder="{{ 'ALARM.OCCURRENCES' | translate }}" ng-model="alarm.dampeningVar1" ng-required="alarm.dampeningType == 1 || alarm.dampeningType == 2">
+      <input style="width:121px" ng-show="alarm.dampeningType == 2" type="text" class="form-control" id="alarm.dampeningVar2" placeholder="{{ 'ALARM.EVALUATIONS' | translate }}" ng-model="alarm.dampeningVar2" ng-required="alarm.dampeningType == 2">
     </div>
 
     <legend></legend>
