@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory,
-  about, $filter, SettingsFactory, TypesFactory, SensorsFactory, displayRestError, FileSaver, Blob) {
+  about, $filter, SettingsFactory, TypesFactory, SensorsFactory, displayRestError, FileSaver, Blob, $filter) {
     
   //Get Chart Interpolate Type
   $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
@@ -124,11 +124,11 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var dateFormat5MinutesData = $scope.hourFormat + ':mm' + $scope.hourFormatSufix;
           var dateFormatHourData = 'dd-MMM ' + $scope.hourFormat + ':mm' + $scope.hourFormatSufix;
           var dateFormatDayData = 'dd-MMM-yyyy';
-          var textRawData = 'Last one hour (Raw Data)';
-          var textMinuteData = 'Last 6 hours (1 minute interval)';
-          var text5MinutesData = 'Last 24 hours (5 minutes interval)';
-          var textHourData = 'Last 30 days (1 hour interval)';
-          var textDayData = 'All available data (1 day interval)';
+          var textRawData = $filter('translate')('CHART.TITLE_DOUBLE_RAW_DATA');
+          var textMinuteData = $filter('translate')('CHART.TITLE_DOUBLE_6_HOURS');
+          var text5MinutesData = $filter('translate')('CHART.TITLE_DOUBLE_24_HOURS');
+          var textHourData = $filter('translate')('CHART.TITLE_DOUBLE_30_DAYS');
+          var textDayData = $filter('translate')('CHART.TITLE_DOUBLE_ALL_DATA');
         }else if($scope.variableType.metricType == 2){
           var yAxisD3Format='.0f';
           var chartLineColor=["#1f77b4"];
@@ -137,10 +137,11 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var dateFormat5MinutesData = $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix;
           var dateFormatHourData = 'dd-MMM ' + $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix;
           var dateFormatDayData = 'dd-MMM-yyyy ' + $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix;
-          var textMinuteData = 'Last 6 hours';
-          var text5MinutesData = 'Last 24 hours';
-          var textHourData = 'Last 30 days';
-          var textDayData = 'All available data';
+          var textRawData = $filter('translate')('CHART.TITLE_BINARY_RAW_DATA');
+          var textMinuteData = $filter('translate')('CHART.TITLE_BINARY_6_HOURS');
+          var text5MinutesData = $filter('translate')('CHART.TITLE_BINARY_24_HOURS');
+          var textHourData = $filter('translate')('CHART.TITLE_BINARY_30_DAYS');
+          var textDayData = $filter('translate')('CHART.TITLE_BINARY_ALL_DATA');
         }
         //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
      
