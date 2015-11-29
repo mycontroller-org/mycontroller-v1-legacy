@@ -29,7 +29,7 @@
     
     <div class="form-group form-inline" ng-hide="settings.key == 'default_firmware' || settings.key == 'graph_interpolate_type' || settings.key == 'mys_config' || settings.key == 'mc_language' || settings.key == 'mc_time_12_24_format'">
       <label class="control-label col-sm-3" for="settings.value">{{ 'SYSTEM.VALUE' | translate }}:</label>
-      <input style="width:320px" type="text" class="form-control" id="settings.value" placeholder="Value" ng-model="settings.value" required>
+      <input style="width:320px" type="text" class="form-control" id="settings.value" placeholder="{{ 'SYSTEM.VALUE' | translate }}" ng-model="settings.value" required>
     </div>   
     
     <div class="form-group form-inline" ng-show="settings.key == 'default_firmware'">
