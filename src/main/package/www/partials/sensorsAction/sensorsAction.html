@@ -58,7 +58,7 @@
     </a>-->
           <p><small>{{ 'SENSORS_ACTIONS.NODE_ID' | translate }}:{{sensor.node.id}}, {{ 'SENSORS_ACTIONS.SENSOR_ID' | translate }}:{{sensor.sensorId}}, [{{sensor.typeString}}/ {{sensor.variableTypes}}]
             <br><span tooltip-placement="right" uib-tooltip="{{sensor.updateTime | date:about.dateFormat:about.timezone}}">{{ 'SENSORS_ACTIONS.LAST_SEEN' | translate }}: {{sensor.lastSeen}}</span></small>
-            <strong class="pull-right" tooltip-placement="top" uib-tooltip="Status"><b>{{sensor.status}}</b></strong>
+            <strong class="pull-right" tooltip-placement="top" uib-tooltip="Status{{ 'SENSORS_ACTIONS.STATUS' | translate }}"><b>{{sensor.status}}</b></strong>
           </p> 
         
         
