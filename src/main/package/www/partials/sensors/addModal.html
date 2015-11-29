@@ -53,7 +53,7 @@
     </div>
    
   </form>
-  <small><p ng-bind-html="'NODE.SENSORS_NOTE' | translate"></p></small>
+  <small><p ng-bind-html="{{ 'NODE.SENSORS_NOTE' | translate }}"></p></small>
   
   <div class="modal-footer">
     <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid || variableTypes.length == 0"><i class="fa fa-plus"> {{ 'SYSTEM.ADD' | translate }}</i></button>
