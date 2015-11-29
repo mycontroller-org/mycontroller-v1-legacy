@@ -16,6 +16,8 @@
 myControllerModule.controller('AlarmController', function(alertService,
 $scope, $filter, AlarmsFactory, $location, $uibModal, $stateParams, displayRestError, about, $filter) {
   
+  $scope.filter = $filter;  
+  
   $scope.sensor = AlarmsFactory.getSensorData({"id":$stateParams.id});
     
   $scope.filteredList=[];

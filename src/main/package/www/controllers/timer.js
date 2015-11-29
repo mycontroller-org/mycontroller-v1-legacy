@@ -16,6 +16,8 @@
 myControllerModule.controller('TimerController', function(alertService,
 $scope, $filter, TimersFactory, $location, $uibModal, $stateParams, displayRestError, about, $filter) {
   
+  $scope.filter = $filter;  
+  
   $scope.sensor = TimersFactory.getSensorData({"id":$stateParams.id});
     
   $scope.filteredList=[];
