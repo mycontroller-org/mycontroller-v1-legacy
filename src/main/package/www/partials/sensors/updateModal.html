@@ -25,7 +25,7 @@
   <form class="form-horizontal form-group-sm" role="form" name="form">
     <div class="form-group form-inline">
       <label class="control-label col-sm-3" for="sensor.node.id">{{ 'NODE.NODE' | translate }}:</label>
-      <p class="form-control-static">Id:{{sensor.node.id}} [{{sensor.node.name}}]</p>
+      <p class="form-control-static">{{ 'NODE.ID' | translate }}:{{sensor.node.id}} [{{sensor.node.name}}]</p>
     </div>
     
     <div class="form-group form-inline">
@@ -53,8 +53,8 @@
     </div>
    
   </form>
-  <small><p ng-bind-html="'NODE.SENSORS_WARNING' | translate"></p></small>
-  <small><p ng-bind-html="'NODE.SENSORS_NOTE' | translate"></p></small>
+  <small><p ng-bind-html="{{ 'NODE.SENSORS_WARNING' | translate }}"></p></small>
+  <small><p ng-bind-html="{{ 'NODE.SENSORS_NOTE' | translate }}"></p></small>
   
   <div class="modal-footer">
     <button class="btn btn-primary btn-xs" ng-click="update()" ng-disabled="form.$invalid || variableTypes.length == 0"><i class="fa fa-pencil"> {{ 'SYSTEM.UPDATE' | translate }}</i> </button>
