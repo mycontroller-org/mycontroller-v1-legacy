@@ -40,7 +40,7 @@
 			<tbody>
 	      <tr>
 					<td class="text-center" at-sortable at-title="{{ 'SYSTEM.ENABLED' | translate }}">
-            <a href='' ng-click="enableDisable(item);" class="text-{{item.enabled ? 'success' : 'danger'}}" uib-tooltip="{{item.enabled ? 'Disable' : 'Enable'}}">
+            <a href='' ng-click="enableDisable(item);" class="text-{{item.enabled ? 'success' : 'danger'}}" uib-tooltip="{{item.enabled ? filter('translate')('SYSTEM.DISABLE') : filter('translate')('SYSTEM.ENABLE')}}">
               <i class="fa fa-circle"></i>
             </a>
           </td>
