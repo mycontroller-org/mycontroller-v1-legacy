@@ -63,6 +63,8 @@ public class AppProperties {
     private boolean mqttBrokerEnable;
     private String mqttBrokerBindAddress;
     private Integer mqttBrokerPort;
+    private Integer mqttBrokerWebsocketPort;
+    private String mqttBrokerPersistentStore;
 
     private MC_LANGUAGE mcLanguage;
 
@@ -156,8 +158,12 @@ public class AppProperties {
 
         //MQTT Broker
         this.mqttBrokerEnable = Boolean.valueOf(getValue(properties, "mcc.mqtt.broker.enable"));
-        this.mqttBrokerBindAddress = getValue(properties, "mcc.mqtt.broker.bind.address");
-        this.mqttBrokerPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.port"));
+        if (this.mqttBrokerEnable) {
+            this.mqttBrokerBindAddress = getValue(properties, "mcc.mqtt.broker.bind.address");
+            this.mqttBrokerPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.port"));
+            this.mqttBrokerWebsocketPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.websocket.port"));
+            this.mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store");
+        }
     }
 
     private String getValue(Properties properties, String key) {
@@ -382,5 +388,13 @@ public class AppProperties {
 
     public Integer getMqttBrokerPort() {
         return mqttBrokerPort;
+    }
+
+    public Integer getMqttBrokerWebsocketPort() {
+        return mqttBrokerWebsocketPort;
+    }
+
+    public String getMqttBrokerPersistentStore() {
+        return mqttBrokerPersistentStore;
     }
 }

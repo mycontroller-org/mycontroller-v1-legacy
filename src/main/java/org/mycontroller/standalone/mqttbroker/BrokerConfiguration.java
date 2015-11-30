@@ -18,6 +18,7 @@ package org.mycontroller.standalone.mqttbroker;
 import java.util.Properties;
 
 import org.eclipse.moquette.server.config.IConfig;
+import org.h2.store.fs.FileUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +35,23 @@ public class BrokerConfiguration implements IConfig {
     private final Properties m_properties = new Properties();
 
     public BrokerConfiguration() {
+        createDefaultLocations();
         loadProperties();
+    }
+
+    private void createDefaultLocations() {
+        FileUtils.createDirectory(FileUtils.getParent(ObjectFactory.getAppProperties().getMqttBrokerPersistentStore()));
     }
 
     private void loadProperties() {
         m_properties.put(HOST_PROPERTY_NAME, ObjectFactory.getAppProperties().getMqttBrokerBindAddress());
         m_properties.put(PORT_PROPERTY_NAME, String.valueOf(ObjectFactory.getAppProperties().getMqttBrokerPort()));
+        m_properties.put(WEB_SOCKET_PORT_PROPERTY_NAME,
+                String.valueOf(ObjectFactory.getAppProperties().getMqttBrokerWebsocketPort()));
 
-        m_properties.put(WEB_SOCKET_PORT_PROPERTY_NAME, Integer.toString(WEBSOCKET_PORT));
         m_properties.put(PASSWORD_FILE_PROPERTY_NAME, "");
-        m_properties.put(PERSISTENT_STORE_PROPERTY_NAME, DEFAULT_PERSISTENT_PATH);
+        m_properties.put(PERSISTENT_STORE_PROPERTY_NAME, ObjectFactory.getAppProperties()
+                .getMqttBrokerPersistentStore());
         m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, true);
 
         m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
