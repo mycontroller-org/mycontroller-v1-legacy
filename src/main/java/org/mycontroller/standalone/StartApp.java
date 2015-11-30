@@ -73,6 +73,7 @@ public class StartApp {
             _logger.debug("Operating System detail:[os:{},arch:{},version:{}]",
                     AppProperties.getOsName(), AppProperties.getOsArch(), AppProperties.getOsVersion());
             startServices();
+            _logger.info("MyController.org server started in [{}] ms", System.currentTimeMillis() - start);
         } catch (Exception ex) {
             _logger.error("Unable to start application, refer error log,", ex);
             System.exit(0);
@@ -165,7 +166,6 @@ public class StartApp {
         _logger.info("TJWS server started successfully, HTTPS Enabled?:{}, HTTP(S) Port: [{}]",
                 ObjectFactory.getAppProperties().isWebHttpsEnabled(),
                 ObjectFactory.getAppProperties().getWebHttpPort());
-        _logger.info("MyController.org server started in [{}] ms", System.currentTimeMillis() - start);
     }
 
     private static boolean startServices() throws ClassNotFoundException, SQLException {
