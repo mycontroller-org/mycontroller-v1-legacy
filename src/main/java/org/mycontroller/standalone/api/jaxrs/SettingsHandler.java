@@ -74,7 +74,7 @@ public class SettingsHandler {
                     long interval = Long.valueOf(settings.getValue());
                     if (interval > 0) {
                         DaoUtils.getSettingsDao().update(settings);
-                        SchedulerUtils.reloadMySesnorHearbeatJob();
+                        SchedulerUtils.reloadMySensorHearbeatJob();
                     } else {
                         return RestUtils.getResponse(Status.NOT_ACCEPTABLE, new ApiError(
                                 "Heartbeat interval should not be <= zero"));

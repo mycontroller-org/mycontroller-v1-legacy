@@ -72,7 +72,7 @@ public class SchedulerUtils {
 
         //Update all other jobs
         //MySensors heartbeat job
-        startMySesnorHearbeatJob();
+        startMySensorHearbeatJob();
 
     }
 
@@ -254,19 +254,19 @@ public class SchedulerUtils {
         loadTimerJob(timer);
     }
 
-    public static void startMySesnorHearbeatJob() {
+    public static void startMySensorHearbeatJob() {
         SundialJobScheduler.addJob(HeartbeatJob.NAME, HeartbeatJob.class.getName());
         Settings hbInterval = DaoUtils.getSettingsDao().get(Settings.MYS_HEARTBEAT_INTERVAL);
         SundialJobScheduler.addSimpleTrigger(HeartbeatJob.TRIGGER_NAME, HeartbeatJob.NAME, -1,
                 Long.valueOf(hbInterval.getValue()) * NumericUtils.MINUTE);
     }
 
-    public static void stopMySesnorHearbeatJob() {
+    public static void stopMySensorHearbeatJob() {
         SundialJobScheduler.removeJob(HeartbeatJob.NAME);
     }
 
-    public static void reloadMySesnorHearbeatJob() {
-        stopMySesnorHearbeatJob();
-        startMySesnorHearbeatJob();
+    public static void reloadMySensorHearbeatJob() {
+        stopMySensorHearbeatJob();
+        startMySensorHearbeatJob();
     }
 }
