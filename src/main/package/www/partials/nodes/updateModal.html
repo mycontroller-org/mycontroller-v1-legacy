@@ -51,7 +51,7 @@
     <div class="form-group form-inline">
       <label class="control-label col-sm-3" >{{ 'NODE.FIRMWARE' | translate }}:</label>
       <select style="width:320px" class="form-control" ng-options="firmware.id as firmware.firmwareName for firmware in firmwares" ng-model="node.firmware.id">
-        <option value="">-- Choose Firmware --</option>
+        <option value="">{{ 'NODE.CHOOSE_FIRMWARE' | translate }}</option>
       </select>
     </div>
    

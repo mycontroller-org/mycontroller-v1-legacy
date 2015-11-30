@@ -28,8 +28,8 @@
       <select style="width:158px" class="form-control" ng-options="sensor.subId as sensor.displayName for sensor in sensors" ng-model="rawMessage.childSensorId" required></select>
       <select style="width:158px" class="form-control" ng-options="messageType.id as messageType.displayName for messageType in messageTypes" ng-model="rawMessage.messageType" ng-change="messageSubTypes = refreshMessageSubTypes(rawMessage.messageType)" required></select>
       <select style="width:85px" class="form-control" ng-model="rawMessage.ack" required>
-        <option value="0" default>no-ack</option>
-        <option value="1">ack</option>
+        <option value="0" default>{{ 'RAW.NO_ACK' | translate }}</option>
+        <option value="1">{{ 'RAW.ACK' | translate }}</option>
       </select>
       <select style="width:158px" class="form-control" ng-options="messageSubType.id as messageSubType.displayName for messageSubType in messageSubTypes" ng-model="rawMessage.subType" required></select>
       <input style="width:158px" type="text" class="form-control" placeholder="{{ 'RAW.PAYLOAD' | translate }}" ng-model="rawMessage.payload">
