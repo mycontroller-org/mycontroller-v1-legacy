@@ -41,6 +41,7 @@ public class HeartbeatJob extends Job {
     private static final Logger _logger = LoggerFactory.getLogger(HeartbeatJob.class);
     private static final long WAIT_TIME_TO_CHECK_ALIVE_STATUS = NumericUtils.SECOND * 30;
     public static final long DEFAULT_HEARTBEAT_INTERVAL = 30;
+    public static final long MYS_MSG_DELAY = 100; // in milliseconds
 
     @Override
     public void doRun() throws JobInterruptException {
@@ -65,7 +66,12 @@ public class HeartbeatJob extends Job {
             rawMessage.setNodeId(node.getId());
             rawMessage.setPayload(System.currentTimeMillis());
             ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
-            _logger.debug("Hearbeat message sent for node:[], rawMessage:[{}]", node, rawMessage);
+            _logger.debug("Hearbeat message sent for node:[{}], rawMessage:[{}]", node, rawMessage);
+            try {
+                Thread.sleep(MYS_MSG_DELAY);
+            } catch (InterruptedException ex) {
+                _logger.error("Error,", ex);
+            }
         }
     }
 
