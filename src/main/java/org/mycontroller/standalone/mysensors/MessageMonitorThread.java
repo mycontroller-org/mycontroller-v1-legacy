@@ -30,6 +30,7 @@ public class MessageMonitorThread implements Runnable {
     private static boolean terminationIssued = false;
     private static boolean terminated = false;
     private ProcessRawMessage processRawMessage = new ProcessRawMessage();
+    public static final long MYS_MSG_DELAY = 100; // delay time to avoid collisions in MySensor network, in milliseconds
 
     public static boolean isTerminationIssued() {
         return terminationIssued;
@@ -58,6 +59,7 @@ public class MessageMonitorThread implements Runnable {
             RawMessage rawMessage = ObjectFactory.getRawMessageQueue().getMessage();
             try {
                 processRawMessage.messageTypeSelector(rawMessage);
+                Thread.sleep(MYS_MSG_DELAY);//A delay to avoid collisions on MySensor networks on contnues messages                 
             } catch (MySensorsGatewayException ex) {
                 if (ex.getMessage().contains(GATEWAY_STATUS.GATEWAY_ERROR.toString())) {
                     _logger.error("Problem with Gateway!, RawMessage[{}], Error:[{}]", rawMessage, ex.getMessage());

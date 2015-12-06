@@ -57,11 +57,6 @@ public class NodeDiscover implements Runnable {
             while (nodeId <= NODE_ID_MAX) {
                 rawMessage.setNodeId(nodeId);
                 ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException ex) {
-                    _logger.error("Exception, ", ex);
-                }
                 nodeId++;
             }
             _logger.debug("Node discover util completed");
