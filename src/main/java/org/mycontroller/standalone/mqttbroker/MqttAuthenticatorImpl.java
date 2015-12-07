@@ -17,9 +17,10 @@ package org.mycontroller.standalone.mqttbroker;
 
 import java.nio.charset.StandardCharsets;
 
-import org.eclipse.moquette.spi.impl.security.IAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.moquette.spi.impl.security.IAuthenticator;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -30,10 +31,10 @@ public class MqttAuthenticatorImpl implements IAuthenticator {
 
     @Override
     public boolean checkValid(String username, byte[] passwordBytes) {
-        @SuppressWarnings("unused")
-        String password = new String(passwordBytes, StandardCharsets.UTF_8);
-        _logger.debug("Authentication Request from User:{}", username);
-        return true;
+	@SuppressWarnings("unused")
+	String password = new String(passwordBytes, StandardCharsets.UTF_8);
+	_logger.debug("Authentication Request from User:{}", username);
+	return true;
     }
 
 }

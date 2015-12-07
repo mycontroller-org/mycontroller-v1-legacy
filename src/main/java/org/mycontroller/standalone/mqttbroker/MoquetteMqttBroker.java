@@ -17,10 +17,11 @@ package org.mycontroller.standalone.mqttbroker;
 
 import java.io.IOException;
 
-import org.eclipse.moquette.server.Server;
 import org.mycontroller.standalone.ObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.moquette.server.Server;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -36,37 +37,37 @@ public class MoquetteMqttBroker {
     }
 
     public static synchronized void start() {
-        if (!ObjectFactory.getAppProperties().isMqttBrokerEnabled()) {
-            _logger.debug("InBuilt MQTT broker is not enabled... Skipping to start...");
-            return;
-        }
-        if (isRunning) {
-            _logger.info("MQTT Broker already running, nothing to do...");
-            return;
-        }
-        try {
-            mqttServer = new Server();
-            mqttServer.startServer(new BrokerConfiguration());
-            isRunning = true;
-            _logger.debug("MQTT Broker started successfully");
-        } catch (IOException ex) {
-            _logger.error("Unable to start MQTT Broker, Exception, ", ex);
-        }
+	if (!ObjectFactory.getAppProperties().isMqttBrokerEnabled()) {
+	    _logger.debug("InBuilt MQTT broker is not enabled... Skipping to start...");
+	    return;
+	}
+	if (isRunning) {
+	    _logger.info("MQTT Broker already running, nothing to do...");
+	    return;
+	}
+	try {
+	    mqttServer = new Server();
+	    mqttServer.startServer(new BrokerConfiguration());
+	    isRunning = true;
+	    _logger.debug("MQTT Broker started successfully");
+	} catch (IOException ex) {
+	    _logger.error("Unable to start MQTT Broker, Exception, ", ex);
+	}
     }
 
     public static synchronized void stop() {
-        if (!ObjectFactory.getAppProperties().isMqttBrokerEnabled()) {
-            _logger.debug("InBuilt MQTT broker is not enabled... Skipping to stop...");
-            return;
-        }
-        if (!isRunning) {
-            _logger.info("MQTT Broker is not running, nothing to do...");
-            return;
-        }
-        mqttServer.stopServer();
-        mqttServer = null;
-        isRunning = false;
-        _logger.debug("MQTT Broker has been stopped successfully");
+	if (!ObjectFactory.getAppProperties().isMqttBrokerEnabled()) {
+	    _logger.debug("InBuilt MQTT broker is not enabled... Skipping to stop...");
+	    return;
+	}
+	if (!isRunning) {
+	    _logger.info("MQTT Broker is not running, nothing to do...");
+	    return;
+	}
+	mqttServer.stopServer();
+	mqttServer = null;
+	isRunning = false;
+	_logger.debug("MQTT Broker has been stopped successfully");
     }
 
 }

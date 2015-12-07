@@ -15,15 +15,23 @@
  */
 package org.mycontroller.standalone.mqttbroker;
 
+import static io.moquette.commons.Constants.ALLOW_ANONYMOUS_PROPERTY_NAME;
+import static io.moquette.commons.Constants.AUTHENTICATOR_CLASS_NAME;
+import static io.moquette.commons.Constants.AUTHORIZATOR_CLASS_NAME;
+import static io.moquette.commons.Constants.HOST_PROPERTY_NAME;
+import static io.moquette.commons.Constants.PASSWORD_FILE_PROPERTY_NAME;
+import static io.moquette.commons.Constants.PERSISTENT_STORE_PROPERTY_NAME;
+import static io.moquette.commons.Constants.PORT_PROPERTY_NAME;
+import static io.moquette.commons.Constants.WEB_SOCKET_PORT_PROPERTY_NAME;
+
 import java.util.Properties;
 
-import org.eclipse.moquette.server.config.IConfig;
 import org.h2.store.fs.FileUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.eclipse.moquette.commons.Constants.*;
+import io.moquette.server.config.IConfig;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -35,43 +43,43 @@ public class BrokerConfiguration implements IConfig {
     private final Properties m_properties = new Properties();
 
     public BrokerConfiguration() {
-        createDefaultLocations();
-        loadProperties();
+	createDefaultLocations();
+	loadProperties();
     }
 
     private void createDefaultLocations() {
-        FileUtils.createDirectory(FileUtils.getParent(ObjectFactory.getAppProperties().getMqttBrokerPersistentStore()));
+	FileUtils.createDirectory(FileUtils.getParent(ObjectFactory.getAppProperties().getMqttBrokerPersistentStore()));
     }
 
     private void loadProperties() {
-        m_properties.put(HOST_PROPERTY_NAME, ObjectFactory.getAppProperties().getMqttBrokerBindAddress());
-        m_properties.put(PORT_PROPERTY_NAME, String.valueOf(ObjectFactory.getAppProperties().getMqttBrokerPort()));
-        m_properties.put(WEB_SOCKET_PORT_PROPERTY_NAME,
-                String.valueOf(ObjectFactory.getAppProperties().getMqttBrokerWebsocketPort()));
+	m_properties.put(HOST_PROPERTY_NAME, ObjectFactory.getAppProperties().getMqttBrokerBindAddress());
+	m_properties.put(PORT_PROPERTY_NAME, String.valueOf(ObjectFactory.getAppProperties().getMqttBrokerPort()));
+	m_properties.put(WEB_SOCKET_PORT_PROPERTY_NAME,
+		String.valueOf(ObjectFactory.getAppProperties().getMqttBrokerWebsocketPort()));
 
-        m_properties.put(PASSWORD_FILE_PROPERTY_NAME, "");
-        m_properties.put(PERSISTENT_STORE_PROPERTY_NAME, ObjectFactory.getAppProperties()
-                .getMqttBrokerPersistentStore());
-        m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, true);
+	m_properties.put(PASSWORD_FILE_PROPERTY_NAME, "");
+	m_properties.put(PERSISTENT_STORE_PROPERTY_NAME,
+		ObjectFactory.getAppProperties().getMqttBrokerPersistentStore());
+	m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, true);
 
-        m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
-        m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
-        _logger.debug("Properties:[{}]", m_properties);
+	m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
+	m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
+	_logger.debug("Properties:[{}]", m_properties);
     }
 
     @Override
     public void setProperty(String name, String value) {
-        m_properties.setProperty(name, value);
+	m_properties.setProperty(name, value);
     }
 
     @Override
     public String getProperty(String name) {
-        return m_properties.getProperty(name);
+	return m_properties.getProperty(name);
     }
 
     @Override
     public String getProperty(String name, String defaultValue) {
-        return m_properties.getProperty(name, defaultValue);
+	return m_properties.getProperty(name, defaultValue);
     }
 
 }
