@@ -55,15 +55,16 @@ public class HeartbeatJob extends Job {
 
     private void sendHearbeat() {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
-        RawMessage rawMessage = new RawMessage();
-        rawMessage.setAck(0);
-        rawMessage.setMessageType(MESSAGE_TYPE.C_INTERNAL.ordinal());
-        rawMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_HEARTBEAT.ordinal());
-        rawMessage.setTxMessage(true);
-        rawMessage.setChildSensorId(255);
         for (Node node : nodes) {
-            rawMessage.setNodeId(node.getId());
-            rawMessage.setPayload(System.currentTimeMillis());
+            RawMessage rawMessage = new RawMessage(
+                    node.getId(),   //Node Id
+                    255,    //Sensor Id
+                    MESSAGE_TYPE.C_INTERNAL.ordinal(), //Message Type
+                    0,  //Ack
+                    MESSAGE_TYPE_INTERNAL.I_HEARTBEAT.ordinal(), //Message Sub Type
+                    String.valueOf(System.currentTimeMillis()), //Payload
+                    true    //Is TX Message?
+            );
             ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
             _logger.debug("Hearbeat message sent for node:[{}], rawMessage:[{}]", node, rawMessage);
         }

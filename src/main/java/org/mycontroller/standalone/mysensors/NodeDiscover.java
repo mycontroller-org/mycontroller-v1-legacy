@@ -43,19 +43,19 @@ public class NodeDiscover implements Runnable {
             return;
         }
         NodeDiscover.discoverNodesRunning = true;
-        RawMessage rawMessage = new RawMessage();
-        rawMessage.setAck(0);
-        rawMessage.setChildSensorId(255);
-        rawMessage.setMessageType(MESSAGE_TYPE.C_INTERNAL.ordinal());
-        rawMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_PRESENTATION.ordinal());
-        rawMessage.setTxMessage(true);
-        rawMessage.setPayload("");
-
         try {
             int nodeId = NODE_ID_MIN;
             _logger.debug("Starting Node discover util");
             while (nodeId <= NODE_ID_MAX) {
-                rawMessage.setNodeId(nodeId);
+                RawMessage rawMessage = new RawMessage(
+                        nodeId,   //Node Id
+                        255,    //Sensor Id
+                        MESSAGE_TYPE.C_INTERNAL.ordinal(), //Message Type
+                        0,  //Ack
+                        MESSAGE_TYPE_INTERNAL.I_PRESENTATION.ordinal(), //Message Sub Type
+                        "", //Payload
+                        true    //Is TX Message?
+                );
                 ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
                 nodeId++;
             }
