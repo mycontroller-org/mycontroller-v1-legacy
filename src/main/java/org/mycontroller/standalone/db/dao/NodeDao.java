@@ -24,12 +24,22 @@ import org.mycontroller.standalone.db.tables.Node;
  * @since 0.0.1
  */
 public interface NodeDao {
+
     void create(Node node);
+
     void createOrUpdate(Node node);
+
     void delete(Node node);
+
     void delete(int nodeId);
+
     void update(Node node);
+
     List<Node> getAll();
+
     Node get(Node node);
+
     Node get(int nodeId);
+
+    List<Node> getByName(String name);
 }

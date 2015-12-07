@@ -17,9 +17,10 @@ package org.mycontroller.standalone.mqttbroker;
 
 import java.nio.charset.StandardCharsets;
 
-import org.eclipse.moquette.spi.impl.security.IAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.moquette.spi.impl.security.IAuthenticator;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

@@ -102,12 +102,22 @@ public class NodeDaoImpl extends BaseAbstractDao<Node, Integer> implements NodeD
     }
 
     @Override
+    public List<Node> getByName(String nodeName) {
+        try {
+
+            return this.getDao().queryForEq("name", nodeName);
+        } catch (SQLException ex) {
+            _logger.error("unable to get node by name", ex);
+            return null;
+        }
+    }
+
+    @Override
     public void createOrUpdate(Node node) {
         try {
             CreateOrUpdateStatus status = this.getDao().createOrUpdate(node);
-            _logger.debug("CreateOrUpdate Node:[{}],Create:{},Update:{},Lines Changed:{}",
-                    node, status.isCreated(), status.isUpdated(),
-                    status.getNumLinesChanged());
+            _logger.debug("CreateOrUpdate Node:[{}],Create:{},Update:{},Lines Changed:{}", node, status.isCreated(),
+                    status.isUpdated(), status.getNumLinesChanged());
         } catch (SQLException ex) {
             _logger.error("unable to CreateOrUpdate Node:[{}]", node, ex);
         }

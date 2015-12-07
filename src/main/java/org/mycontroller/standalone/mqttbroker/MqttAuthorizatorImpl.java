@@ -15,9 +15,10 @@
  */
 package org.mycontroller.standalone.mqttbroker;
 
-import org.eclipse.moquette.spi.impl.security.IAuthorizator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.moquette.spi.impl.security.IAuthorizator;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

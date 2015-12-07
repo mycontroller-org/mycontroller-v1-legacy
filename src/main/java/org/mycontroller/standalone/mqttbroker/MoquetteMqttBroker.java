@@ -17,10 +17,11 @@ package org.mycontroller.standalone.mqttbroker;
 
 import java.io.IOException;
 
-import org.eclipse.moquette.server.Server;
 import org.mycontroller.standalone.ObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.moquette.server.Server;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

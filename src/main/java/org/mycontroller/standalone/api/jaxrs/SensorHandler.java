@@ -17,6 +17,7 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -41,11 +42,12 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.SensorUtils;
+import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
+import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.mysensors.RawMessage;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +72,8 @@ public class SensorHandler {
 
     @GET
     @Path("/")
-    public Response getAllSensors(@QueryParam("typeString") String typeString,
+    public Response getAllSensors(@QueryParam("nodeName") String nodeName,
+            @QueryParam("typeString") String typeString,
             @QueryParam("sensorRefId") String sensorRefId) {
         List<Sensor> sensors = null;
         if (typeString != null) {
@@ -80,6 +83,14 @@ public class SensorHandler {
         } else {
 
             sensors = DaoUtils.getSensorDao().getAll();
+        }
+        if (nodeName != null) {
+            sensors = new ArrayList<>();
+            List<Node> nodes = DaoUtils.getNodeDao().getByName(nodeName);
+
+            for (Node node : nodes) {
+                sensors.addAll(DaoUtils.getSensorDao().getAll(node.getId()));
+            }
         }
         return RestUtils.getResponse(Status.OK, sensors);
     }
@@ -103,7 +114,7 @@ public class SensorHandler {
     @Path("/{nodeId}")
     public Response update(@PathParam("nodeId") int nodeId, Sensor sensor) {
         DaoUtils.getSensorDao().update(nodeId, sensor);
-        //Update Variable Types
+        // Update Variable Types
         SensorUtils.updateSensorValues(sensor);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -117,8 +128,8 @@ public class SensorHandler {
         if (status) {
             sensor = DaoUtils.getSensorDao().get(nodeId, sensor.getSensorId());
             for (String variableType : variableTypes.split(",")) {
-                DaoUtils.getSensorValueDao().create(
-                        new SensorValue(sensor, MESSAGE_TYPE_SET_REQ.valueOf(variableType.trim()).ordinal()));
+                DaoUtils.getSensorValueDao()
+                        .create(new SensorValue(sensor, MESSAGE_TYPE_SET_REQ.valueOf(variableType.trim()).ordinal()));
             }
             return RestUtils.getResponse(Status.CREATED);
         } else {
@@ -181,8 +192,7 @@ public class SensorHandler {
                     }
                     break;
                 case DECREASE:
-                    sensorValue = DaoUtils.getSensorValueDao().get(sensor.getId(),
-                            payload.getVariableType());
+                    sensorValue = DaoUtils.getSensorValueDao().get(sensor.getId(), payload.getVariableType());
                     if (sensorValue != null && sensorValue.getLastValue() != null) {
                         payload.setPayload(String.valueOf(NumericUtils.getDouble(sensorValue.getLastValue()) - 1));
                     } else {
@@ -212,14 +222,11 @@ public class SensorHandler {
         } else {
             sensor = DaoUtils.getSensorDao().get(payload.getNodeId(), payload.getSensorId());
         }
-        RawMessage rawMessage = new RawMessage(
-                sensor.getNode().getId(),
-                sensor.getSensorId(),
-                MESSAGE_TYPE.C_SET.ordinal(), //messageType
-                0, //ack
-                payload.getVariableType(),//subType
-                payload.getPayload(),
-                true);// isTxMessage
+        RawMessage rawMessage = new RawMessage(sensor.getNode().getId(), sensor.getSensorId(),
+                MESSAGE_TYPE.C_SET.ordinal(), // messageType
+                0, // ack
+                payload.getVariableType(), // subType
+                payload.getPayload(), true);// isTxMessage
         ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
         return RestUtils.getResponse(Status.OK);
     }
