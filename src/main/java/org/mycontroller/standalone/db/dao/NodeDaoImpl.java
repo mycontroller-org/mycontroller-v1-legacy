@@ -33,93 +33,93 @@ public class NodeDaoImpl extends BaseAbstractDao<Node, Integer> implements NodeD
     private static final Logger _logger = LoggerFactory.getLogger(NodeDaoImpl.class);
 
     public NodeDaoImpl(ConnectionSource connectionSource) throws SQLException {
-	super(connectionSource, Node.class);
+        super(connectionSource, Node.class);
     }
 
     @Override
     public void create(Node node) {
-	try {
-	    if (node.getId() < 255 && node.getId() >= 0) {
-		int count = this.getDao().create(node);
-		_logger.debug("Created Node:[{}], Create count:{}", node, count);
-	    } else {
-		_logger.warn("Node:[{}], Node Id should be in the range of 0~254", node);
-	    }
-	} catch (SQLException ex) {
-	    _logger.error("unable to add Node:[{}]", node, ex);
-	}
+        try {
+            if (node.getId() < 255 && node.getId() >= 0) {
+                int count = this.getDao().create(node);
+                _logger.debug("Created Node:[{}], Create count:{}", node, count);
+            } else {
+                _logger.warn("Node:[{}], Node Id should be in the range of 0~254", node);
+            }
+        } catch (SQLException ex) {
+            _logger.error("unable to add Node:[{}]", node, ex);
+        }
     }
 
     @Override
     public void delete(Node node) {
-	try {
-	    int count = this.getDao().delete(node);
-	    _logger.debug("Node:[{}] deleted, Delete count:{}", node, count);
-	} catch (SQLException ex) {
-	    _logger.error("unable to delete node:[{}]", node, ex);
-	}
+        try {
+            int count = this.getDao().delete(node);
+            _logger.debug("Node:[{}] deleted, Delete count:{}", node, count);
+        } catch (SQLException ex) {
+            _logger.error("unable to delete node:[{}]", node, ex);
+        }
     }
 
     @Override
     public void delete(int nodeId) {
-	Node node = new Node(nodeId);
-	this.delete(node);
+        Node node = new Node(nodeId);
+        this.delete(node);
     }
 
     @Override
     public void update(Node node) {
-	try {
-	    int count = this.getDao().update(node);
-	    _logger.debug("Updated Node:[{}], Update count:{}", node, count);
-	} catch (SQLException ex) {
-	    _logger.error("unable to update node:[{}]", node, ex);
-	}
+        try {
+            int count = this.getDao().update(node);
+            _logger.debug("Updated Node:[{}], Update count:{}", node, count);
+        } catch (SQLException ex) {
+            _logger.error("unable to update node:[{}]", node, ex);
+        }
     }
 
     @Override
     public List<Node> getAll() {
-	try {
-	    return this.getDao().queryForAll();
-	} catch (SQLException ex) {
-	    _logger.error("unable to get all Nodes", ex);
-	    return null;
-	}
+        try {
+            return this.getDao().queryForAll();
+        } catch (SQLException ex) {
+            _logger.error("unable to get all Nodes", ex);
+            return null;
+        }
     }
 
     @Override
     public Node get(Node node) {
-	return this.get(node.getId());
+        return this.get(node.getId());
     }
 
     @Override
     public Node get(int nodeId) {
-	try {
-	    return this.getDao().queryForId(nodeId);
-	} catch (SQLException ex) {
-	    _logger.error("unable to get Node", ex);
-	    return null;
-	}
+        try {
+            return this.getDao().queryForId(nodeId);
+        } catch (SQLException ex) {
+            _logger.error("unable to get Node", ex);
+            return null;
+        }
     }
 
     @Override
     public List<Node> getByName(String nodeName) {
-	try {
+        try {
 
-	    return this.getDao().queryForEq("name", nodeName);
-	} catch (SQLException ex) {
-	    _logger.error("unable to get node by name", ex);
-	    return null;
-	}
+            return this.getDao().queryForEq("name", nodeName);
+        } catch (SQLException ex) {
+            _logger.error("unable to get node by name", ex);
+            return null;
+        }
     }
 
     @Override
     public void createOrUpdate(Node node) {
-	try {
-	    CreateOrUpdateStatus status = this.getDao().createOrUpdate(node);
-	    _logger.debug("CreateOrUpdate Node:[{}],Create:{},Update:{},Lines Changed:{}", node, status.isCreated(),
-		    status.isUpdated(), status.getNumLinesChanged());
-	} catch (SQLException ex) {
-	    _logger.error("unable to CreateOrUpdate Node:[{}]", node, ex);
-	}
+        try {
+            CreateOrUpdateStatus status = this.getDao().createOrUpdate(node);
+            _logger.debug("CreateOrUpdate Node:[{}],Create:{},Update:{},Lines Changed:{}", node, status.isCreated(),
+                    status.isUpdated(), status.getNumLinesChanged());
+        } catch (SQLException ex) {
+            _logger.error("unable to CreateOrUpdate Node:[{}]", node, ex);
+        }
     }
 }

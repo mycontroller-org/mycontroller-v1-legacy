@@ -203,7 +203,7 @@
     </dependency>
 
     <dependency>
-      <groupId>io.moquette</groupId>
+      <groupId>org.eclipse.moquette</groupId>
       <artifactId>moquette-broker</artifactId>
       <version>${version.moquette-broker}</version>
       <exclusions>
@@ -237,7 +237,7 @@
         <enabled>true</enabled>
       </releases>
       <snapshots>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
   </repositories>
