@@ -21,6 +21,7 @@ import org.mycontroller.standalone.mysensors.MyMessages;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -91,6 +92,7 @@ public class SensorValue {
     @DatabaseField(columnName = TIMESTAMP, canBeNull = true)
     private Long timestamp;
 
+    @JsonProperty("value")
     @DatabaseField(columnName = LAST_VALUE, canBeNull = true)
     private String lastValue;
 

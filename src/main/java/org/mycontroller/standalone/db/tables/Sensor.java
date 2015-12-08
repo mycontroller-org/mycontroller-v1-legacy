@@ -15,6 +15,9 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import java.util.List;
+
+import org.mycontroller.standalone.api.jaxrs.mapper.SensorStatus;
 import org.mycontroller.standalone.api.jaxrs.mapper.SensorsGuiButton;
 import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
@@ -136,7 +139,7 @@ public class Sensor {
         this.name = name;
     }
 
-    public String getStatus() {
+    public List<SensorStatus> getStatus() {
         return SensorUtils.getStatus(this);
     }
 

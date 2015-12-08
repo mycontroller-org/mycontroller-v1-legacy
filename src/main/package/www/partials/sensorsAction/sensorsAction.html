@@ -46,20 +46,21 @@
         <a href="" class="text-default panel-title pull-right" ng-model="radioModel" ng-click="refresh(sensor)" tooltip-placement="left" uib-tooltip="{{ 'SENSORS_ACTIONS.REFRESH' | translate }}">
           <i class="fa fa-refresh"></i>
         </a>
-				<p class="panel-title" ng-init="status = false" tooltip-placement="bottom" uib-tooltip="{{sensor.nameWithNode}}">
+				<p class="panel-title" ng-init="status = false" tooltip-placement="bottom" tooltip-enable="sensor.nameWithNode.length > 30" uib-tooltip="{{sensor.nameWithNode}}">
 					{{sensor.nameWithNode ? sensor.nameWithNode : '-' | limitTo:30}}{{sensor.nameWithNode.length > 30 ? '...' : ''}}
         </p>
 			</div>
 
         </div>
         <div class="panel-body panel-body-action-board">
-    <!--<a href="#">
-      <img class="media-object" src="..." alt="...">
-    </a>-->
-          <p><small>{{ 'SENSORS_ACTIONS.NODE_ID' | translate }}:{{sensor.node.id}}, {{ 'SENSORS_ACTIONS.SENSOR_ID' | translate }}:{{sensor.sensorId}}, [{{sensor.typeString}}/ {{sensor.variableTypes}}]
-            <br><span tooltip-placement="right" uib-tooltip="{{sensor.updateTime | date:about.dateFormat:about.timezone}}">{{ 'SENSORS_ACTIONS.LAST_SEEN' | translate }}: {{sensor.lastSeen}}</span></small>
-            <strong class="pull-right" tooltip-placement="top" uib-tooltip="{{ 'SENSORS_ACTIONS.STATUS' | translate }}"><b>{{sensor.status}}</b></strong>
-          </p> 
+          
+        <p><small>{{ 'SENSORS_ACTIONS.NODE_ID' | translate }}:{{sensor.node.id}}, {{ 'SENSORS_ACTIONS.SENSOR_ID' | translate }}:{{sensor.sensorId}}, 
+          <span tooltip-placement="bottom" tooltip-enable="{{sensor.variableTypes.length > 21}}" uib-tooltip="{{sensor.variableTypes}}">[{{sensor.typeString}}/ {{sensor.variableTypes ? sensor.variableTypes : '-' | limitTo:21}}{{sensor.variableTypes.length > 21 ? '...' : ''}}]</span>
+          <br><span tooltip-placement="right" uib-tooltip="{{sensor.updateTime | date:about.dateFormat:about.timezone}}">{{ 'SENSORS_ACTIONS.LAST_SEEN' | translate }}: {{sensor.lastSeen}}</span></small>
+          <span class="pull-right" >
+            <strong ng-repeat="statz in sensor.status| filter:{value: ''}" tooltip-placement="left" uib-tooltip-html="'{{statz.variableType}}<br>{{statz.timestamp | date:about.dateFormat:about.timezone}}'"><b>{{$index > 0 ? ' | ' : '' }}{{statz.friendlyValue}}</b></strong>
+          </span>            
+        </p> 
         
         
       <div class="pull-left">

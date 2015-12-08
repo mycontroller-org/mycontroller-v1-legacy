@@ -23,6 +23,7 @@ import java.util.List;
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson.TYPE;
+import org.mycontroller.standalone.api.jaxrs.mapper.SensorStatus;
 import org.mycontroller.standalone.api.jaxrs.mapper.SensorsGuiButton;
 import org.mycontroller.standalone.db.TypeUtils.METRIC_TYPE;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -59,21 +60,16 @@ public class SensorUtils {
         return builder.toString();
     }
 
-    public static String getStatus(Sensor sensor) {
-        StringBuilder builder = new StringBuilder();
+    public static List<SensorStatus> getStatus(Sensor sensor) {
+        ArrayList<SensorStatus> statusList = new ArrayList<SensorStatus>();
         List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAll(sensor.getId());
         for (SensorValue sensorValue : sensorValues) {
-            if (sensorValue.getLastValue() != null) {
-                String value = getValue(sensorValue);
-                if (value != null && value.length() > 0) {
-                    if (builder.length() != 0) {
-                        builder.append(" | ");
-                    }
-                    builder.append(value);
-                }
-            }
+            SensorStatus sensorStatus = new SensorStatus(sensorValue.getVariableTypeString(),
+                    sensorValue.getLastValue(), sensorValue.getUnit(), getValue(sensorValue),
+                    sensorValue.getTimestamp());
+            statusList.add(sensorStatus);
         }
-        return builder.toString();
+        return statusList;
     }
 
     public static SensorsGuiButton getGuiButtonsStatus(Sensor sensor) {
