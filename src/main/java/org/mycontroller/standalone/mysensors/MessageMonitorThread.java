@@ -59,7 +59,10 @@ public class MessageMonitorThread implements Runnable {
             RawMessage rawMessage = ObjectFactory.getRawMessageQueue().getMessage();
             try {
                 processRawMessage.messageTypeSelector(rawMessage);
-                Thread.sleep(MYS_MSG_DELAY);//A delay to avoid collisions on MySensor networks on contnues messages                 
+                //A delay to avoid collisions on MySensor networks on continues messages
+                if (!ObjectFactory.getRawMessageQueue().isEmpty()) {
+                    Thread.sleep(MYS_MSG_DELAY);
+                }
             } catch (MySensorsGatewayException ex) {
                 if (ex.getMessage().contains(GATEWAY_STATUS.GATEWAY_ERROR.toString())) {
                     _logger.error("Problem with Gateway!, RawMessage[{}], Error:[{}]", rawMessage, ex.getMessage());
