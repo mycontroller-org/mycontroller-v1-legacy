@@ -1,0 +1,10 @@
+language: java
+jdk:
+- oraclejdk8
+branches:
+  only:
+    - master
+install:
+- mvn -version -B
+script:
+- mvn test
