@@ -3,8 +3,14 @@ image::logo-mycontroller.org_full.png[MyController.org, link="http://www.mycontr
 
 ---
 
-image:https://badges.gitter.im/Join%20Chat.svg[link="https://gitter.im/mycontroller-org/mycontroller?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
+ifdef::env-github[]
+[link=https://travis-ci.org/mycontroller-org/mycontroller]
+image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branch=master["Build Status", link="https://travis-ci.org/mycontroller-org/mycontroller"]{nbsp}
+image:https://badges.gitter.im/Join%20Chat.svg[link="https://gitter.im/mycontroller-org/mycontroller?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]{nbsp}
 image:https://www.paypalobjects.com/en_US/CH/i/btn/btn_donateCC_LG.gif[link="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHWAXCBVHTC64"]
+endif::[]
+
+
 
 ====== Project website: http://www.mycontroller.org
 ====== http://demo.mycontroller.org[Demo Link] Authentication: demo/demo
