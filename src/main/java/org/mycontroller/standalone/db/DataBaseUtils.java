@@ -365,7 +365,7 @@ public class DataBaseUtils {
             createSettings(Settings.MYS_HEARTBEAT_INTERVAL, String.valueOf(HeartbeatJob.DEFAULT_HEARTBEAT_INTERVAL),
                     "Heartbeat Interval(Minutes)", true);
 
-            upgradeVersion("0.0.2-alpha6-SNAPSHOT", dbVersion, dbVersion + 1);
+            upgradeVersion("0.0.2-alpha6", dbVersion, dbVersion + 1);
             dbVersion = 7;
         }
 

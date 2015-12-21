@@ -28,7 +28,7 @@ HEAP_MIN=-Xms8m
 HEAP_MAX=-Xmx40m
 
 JAVA_VERSION="1.7"
-MC_VERSION="0.0.2-alpha6-SNAPSHOT"
+MC_VERSION="0.0.2-alpha6"
 
 #configuration file location
 CONF_PROPERTIES_FILE=../conf/mycontroller.properties
