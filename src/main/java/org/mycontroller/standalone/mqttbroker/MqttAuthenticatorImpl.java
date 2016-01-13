@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.moquette.spi.impl.security.IAuthenticator;
+import io.moquette.spi.security.IAuthenticator;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

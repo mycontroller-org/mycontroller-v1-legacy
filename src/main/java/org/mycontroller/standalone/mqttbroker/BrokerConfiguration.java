@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.moquette.server.config.IConfig;
-import static io.moquette.commons.Constants.*;
+import static io.moquette.BrokerConstants.*;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
