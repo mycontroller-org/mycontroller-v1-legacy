@@ -18,6 +18,8 @@ package org.mycontroller.standalone;
 import org.mycontroller.standalone.gateway.IMySensorsGateway;
 import org.mycontroller.standalone.mysensors.RawMessageQueue;
 
+import com.pubnub.api.Pubnub;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
@@ -30,6 +32,7 @@ public class ObjectFactory {
     private static AppProperties appProperties;
     private static RawMessageQueue rawMessageQueue;
     private static IMySensorsGateway mySensorsGateway;
+    private static Pubnub pubNubClient;
 
     public static AppProperties getAppProperties() {
         return appProperties;
@@ -53,5 +56,13 @@ public class ObjectFactory {
 
     public synchronized static void setMySensorsGateway(IMySensorsGateway iSerialPort) {
         ObjectFactory.mySensorsGateway = iSerialPort;
+    }
+
+    public synchronized static void setPubNubClient(Pubnub pubNubClient) {
+        ObjectFactory.pubNubClient = pubNubClient;
+    }
+
+    public synchronized static Pubnub getPubNubClient() {
+        return pubNubClient;
     }
 }

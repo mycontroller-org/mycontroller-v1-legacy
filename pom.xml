@@ -68,6 +68,7 @@
     <version.commons-codec>1.10</version.commons-codec>
     <version.org.eclipse.paho>1.0.2</version.org.eclipse.paho>
     <version.moquette-broker>0.8-SNAPSHOT</version.moquette-broker>
+    <version.pubnub>3.7.5</version.pubnub>
 
     <!-- plugins version -->
     <version.com.mycila.license-maven-plugin>2.11</version.com.mycila.license-maven-plugin>
@@ -213,6 +214,12 @@
         </exclusion>
       </exclusions>
     </dependency>
+    
+     <dependency>
+		<groupId>com.pubnub</groupId>
+		<artifactId>pubnub</artifactId>
+		<version>${version.pubnub}</version>
+	</dependency>
 
   </dependencies>
 

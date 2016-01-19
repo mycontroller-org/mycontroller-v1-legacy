@@ -66,6 +66,11 @@ public class AppProperties {
     private Integer mqttBrokerWebsocketPort;
     private String mqttBrokerPersistentStore;
 
+    private boolean isPubNubEnable;
+    private String pubNubPublisherKey;
+    private String pubNubSubscriberKey;
+    private String pubNubSecretKey;
+
     private MC_LANGUAGE mcLanguage;
 
     public String toString() {
@@ -163,6 +168,14 @@ public class AppProperties {
             this.mqttBrokerPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.port"));
             this.mqttBrokerWebsocketPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.websocket.port"));
             this.mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store");
+        }
+
+        //PubNub API credentials
+        this.isPubNubEnable = Boolean.valueOf(getValue(properties, "pubnub.enabled"));
+        if (this.isPubNubEnable) {
+            this.pubNubPublisherKey = getValue(properties, "pubnub.publisherKey");
+            this.pubNubSubscriberKey = getValue(properties, "pubnub.subscriberKey");
+            this.pubNubSecretKey = getValue(properties, "pubnub.secretKey");
         }
     }
 
@@ -396,5 +409,21 @@ public class AppProperties {
 
     public String getMqttBrokerPersistentStore() {
         return mqttBrokerPersistentStore;
+    }
+
+    public boolean isPubNubEnabled() {
+        return isPubNubEnable;
+    }
+
+    public String getPubNubSecretKey() {
+        return pubNubSecretKey;
+    }
+
+    public String getPubNubPublisherKey() {
+        return pubNubPublisherKey;
+    }
+
+    public String getPubNubSubscriberKey() {
+        return pubNubSubscriberKey;
     }
 }
