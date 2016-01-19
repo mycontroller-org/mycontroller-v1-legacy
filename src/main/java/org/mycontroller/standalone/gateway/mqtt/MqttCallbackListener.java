@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,10 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
-import org.mycontroller.standalone.mysensors.RawMessage;
+import org.mycontroller.standalone.gateway.GatewayMQTT;
+import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +35,21 @@ import org.slf4j.LoggerFactory;
 public class MqttCallbackListener implements MqttCallback {
     private static final Logger _logger = LoggerFactory.getLogger(MqttCallbackListener.class.getName());
     private IMqttClient mqttClient;
+    private GatewayMQTT gateway;
     private boolean reconnect = true;
     public static final long RECONNECT_WAIT_TIME = 1000 * 5;
 
-    public MqttCallbackListener(IMqttClient mqttClient) {
+    public MqttCallbackListener(IMqttClient mqttClient, GatewayMQTT gateway) {
         this.mqttClient = mqttClient;
+        this.gateway = gateway;
     }
 
     @Override
     public void connectionLost(Throwable throwable) {
-        _logger.error("MQTT Gateway[{}] connection lost! Error:{}", mqttClient.getServerURI(), throwable.getMessage());
+        _logger.error("MQTT Gateway[id:{}, Name:{}, serverURI:{}] connection lost! Error:{}",
+                gateway.getId(), gateway.getName(), mqttClient.getServerURI(), throwable.getMessage());
+        gateway.setStatus(STATE.DOWN, "ERROR: Connection lost! [" + throwable.getMessage() + "]");
+        gateway.updateGateway();
         while (isReconnect()) {
             if (mqttClient.isConnected()) {
                 break;
@@ -51,6 +57,8 @@ public class MqttCallbackListener implements MqttCallback {
                 try {
                     mqttClient.connect();
                     _logger.info("MQTT Gateway[{}] Reconnected successfully...", mqttClient.getServerURI());
+                    gateway.setStatus(STATE.UP, "Reconnected successfully...");
+                    gateway.updateGateway();
                 } catch (MqttException ex) {
                     _logger.error("Exception, Reason Code:{}", ex.getReasonCode(), ex);
                 }
@@ -82,16 +90,11 @@ public class MqttCallbackListener implements MqttCallback {
     public void messageArrived(String topic, MqttMessage message) {
         try {
             _logger.debug("Message Received, Topic:[{}], PayLoad:[{}]", topic, message);
-            RawMessage rawMessage = new RawMessage(topic, message);
-            if (rawMessage.getChildSensorId() == 255 && rawMessage.getMessageType() == MESSAGE_TYPE.C_SET.ordinal()) {
-                _logger.warn("This type of message[{}] not supported yet in MQTT Gateway", rawMessage);
-                return;
-            }
+            RawMessage rawMessage = new RawMessage(gateway.getId(), message.toString(), topic);
             ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
         }
-
     }
 
     public boolean isReconnect() {

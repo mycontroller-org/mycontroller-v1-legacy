@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,51 +14,166 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, $filter, NodesFactory, $location, $uibModal, displayRestError, $filter) {
-  
-  $scope.filter = $filter;  
-  
+$scope, NodesFactory, $location, $uibModal, displayRestError, CommonServices, about, $filter) {
+
+  //GUI page settings
+  $scope.headerStringList = "Nodes detail";
+  $scope.noItemsSystemMsg = "No nodes set up.";
+  $scope.noItemsSystemIcon = "fa fa-sitemap";
+
+  //load empty, configuration, etc.,
+  $scope.about = about;
   $scope.filteredList=[];
-  $scope.orgList=[];
-  $scope.config = {
-    itemsPerPage: 10,
-    maxPages:10,
-    fillLastPage: false
+    
+  //data query details
+  $scope.currentPage = 1;
+  $scope.query = CommonServices.getQuery();
+  $scope.queryResponse = {};
+  
+  //Get min number
+  $scope.getMin = function(item1, item2){
+    return CommonServices.getMin(item1, item2);
+  };
+
+  //get all Nodes
+  $scope.getAllItems = function(){
+    NodesFactory.getAll($scope.query, function(response) {
+      $scope.queryResponse = response;
+      $scope.filteredList = $scope.queryResponse.data;
+      $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
+    },function(error){
+      displayRestError.display(error);            
+    });
   }
 
-  //Filter
-  $scope.updateFilteredList = function() {
-    $scope.filteredList = $filter("filter")($scope.orgList, $scope.query);
+  //Hold all the selected item ids
+  $scope.itemIds = [];
+
+  $scope.selectAllItems = function(){
+    CommonServices.selectAllItems($scope);
+  };
+
+  $scope.selectItem = function(item){
+    CommonServices.selectItem($scope, item);
   };
   
-  //Send list of Nodes
-  $scope.orgList = NodesFactory.getAll(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });
-  $scope.filteredList = $scope.orgList;
-  
-  //Delete a Node
-  $scope.delete = function (node, size) {
-    var modalInstance = $uibModal.open({
-    templateUrl: 'partials/models/deleteModal.html',
-    controller: 'NMdeleteController',
-    size: size,
-    resolve: {
-      node: function () {return node;}
+  //On page change
+  $scope.pageChanged = function(newPage){
+    CommonServices.updatePageChange($scope, newPage);
+  };
+
+  //Filter change method
+  var filterChange = function (filters) {
+    //Reset filter fields and update items
+    CommonServices.updateFiltersChange($scope, filters);
+  };
+
+  $scope.filterConfig = {
+    fields: [
+      {
+        id: 'name',
+        title:  'Name',
+        placeholder: 'Filter by Name',
+        filterType: 'text'
+      },
+      {
+        id: 'state',
+        title:  'Status',
+        placeholder: 'Filter by Status',
+        filterType: 'select',
+        filterValues: ['Up','Down','Unavailable'],
+      },
+      {
+        id: 'type',
+        title:  'Type',
+        placeholder: 'Filter by Type',
+        filterType: 'select',
+        filterValues: ['Node','Repeater node'],
+      },
+      {
+        id: 'eui',
+        title:  'EUI',
+        placeholder: 'Filter by EUI',
+        filterType: 'text',
+      },
+      {
+        id: 'version',
+        title:  'Version',
+        placeholder: 'Filter by Version',
+        filterType: 'text',
+      },
+      {
+        id: 'libVersion',
+        title:  'Library Version',
+        placeholder: 'Filter by Library Version',
+        filterType: 'text',
       }
+    ],
+    resultsCount: $scope.filteredList.length,
+    appliedFilters: [],
+    onFilterChange: filterChange
+    };
+
+
+  //Sort columns
+  var sortChange = function (sortId, isAscending) {
+    //Reset sort type and update items
+    CommonServices.updateSortChange($scope, sortId, isAscending);
+  };
+
+  $scope.sortConfig = {
+    fields: [
+      {
+        id: 'name',
+        title:  'Name',
+        sortType: 'text'
+      },
+      {
+        id: 'state',
+        title:  'Status',
+        sortType: 'text'
+      },
+      {
+        id: 'eui',
+        title:  'EUI',
+        sortType: 'text'
+      },
+      {
+        id: 'type',
+        title:  'Type',
+        sortType: 'text'
+      },
+      {
+        id: 'version',
+        title:  'Version',
+        sortType: 'text'
+      },
+      {
+        id: 'libVersion',
+        title:  'Library Version',
+        sortType: 'text'
+      }
+    ],
+    onSortChange: sortChange
+  };
+
+
+
+  //Delete Node(s)
+  $scope.delete = function (size) {
+    var modalInstance = $uibModal.open({
+    templateUrl: 'partials/common-html/delete-modal.html',
+    controller: 'ControllerDeleteModal',
+    size: size,
+    resolve: {}
     });
 
-    modalInstance.result.then(function (selectedNode) {
-      $scope.selected = selectedNode;
-      NodesFactory.delete({ nodeId: selectedNode.id },function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_DELETE', selectedNode));
+    modalInstance.result.then(function () {
+      NodesFactory.deleteIds($scope.itemIds, function(response) {
+        alertService.success('Deleted '+$scope.itemIds.length+' node(s).');
         //Update display table
-        $scope.orgList = NodesFactory.getAll(function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
+        getAllNodes();
+        $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
       }); 
@@ -67,28 +182,39 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError, $filter) 
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-    
-  //Add a Node
-  $scope.add = function (size) {
+
+  //Edit item
+  $scope.edit = function () {
+    if($scope.itemIds.length == 1){
+      $location.path(about.urlNodesAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+    }
+  };
+
+  //Upload Firmware
+  $scope.uploadFirmware = function (size) {
+    if($scope.itemIds.length > 0){
+      NodesFactory.uploadFirmware($scope.itemIds,function(response) {
+        alertService.success($filter('translate')('NODE.NOTIFY_FIRMWARE_UPDATE',  $scope.itemIds));
+      },function(error){
+        displayRestError.display(error);
+      });  
+    }
+  };
+
+  //Reboot a Node
+  $scope.reboot = function (size) {
     var addModalInstance = $uibModal.open({
-    templateUrl: 'partials/nodes/addModal.html',
-    controller: 'NMaddController',
+    templateUrl: 'partials/nodes/node-reboot-modal.html',
+    controller: 'NodesControllerReboot',
     size: size,
     resolve: {}
     });
 
-    addModalInstance.result.then(function (newNode) {
-      $scope.newNode = newNode;
-      NodesFactory.create($scope.newNode,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', newNode));
-        //Update display table
-        $scope.orgList = NodesFactory.getAll(function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
+    addModalInstance.result.then(function () {
+      NodesFactory.reboot($scope.itemIds, function(response) {
+        alertService.success($filter('translate')('NODE.NOTIFY_REBOOT', $scope.itemIds));
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       });      
     }), 
     function () {
@@ -96,269 +222,110 @@ $scope, $filter, NodesFactory, $location, $uibModal, displayRestError, $filter) 
     }
   };
   
-  // Upload Firmware
-  $scope.uploadFirmware = function (node, size) {
-    NodesFactory.uploadFirmware(node,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_FIRMWARE_UPDATE', node));
-      },function(error){
-        displayRestError.display(error);            
-      });      
-    };
-  
-  //Reboot a Node
-  $scope.reboot = function (node, size) {
+  //Erase Configuration of Nodes
+  $scope.eraseConfiguration = function (size) {
     var addModalInstance = $uibModal.open({
-    templateUrl: 'partials/nodes/rebootModal.html',
-    controller: 'NMrebootController',
+    templateUrl: 'partials/nodes/node-erase-configuration-modal.html',
+    controller: 'NodesControllerEraseConfiguration',
     size: size,
-    resolve: {node: function () {return node;}}
+    resolve: {}
     });
 
-    addModalInstance.result.then(function (node) {
-      NodesFactory.reboot(node,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_REBOOT', node));
-      },function(error){
-        displayRestError.display(error);            
-      });      
-    }), 
-    function () {
-      //console.log('Modal dismissed at: ' + new Date());
-    }
-  };
-  
-    //Erase EEPROM of a Node
-  $scope.eraseEeprom = function (node, size) {
-    var addModalInstance = $uibModal.open({
-    templateUrl: 'partials/nodes/eraseEepromModal.html',
-    controller: 'NMeraseEepromController',
-    size: size,
-    resolve: {node: function () {return node;}}
-    });
-
-    addModalInstance.result.then(function (node) {
-      node.eraseEEPROM = true;
-      NodesFactory.update(node,function(response) {
+    addModalInstance.result.then(function () {
+      NodesFactory.eraseConfiguration($scope.itemIds, function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_EEPROM_ERASE', node));
-        //Trigger Reboot
-        NodesFactory.reboot(node,function(response) {
-          alertService.success($filter('translate')('NODE.NOTIFY_REBOOT', node));
-        },function(error){
-          displayRestError.display(error);            
-      });  
-    }); 
+      },function(error){
+        displayRestError.display(error);            
+      });
     }), 
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-    
-    
-  //Update a Node
-  $scope.update = function (node, size) {
-    var editModalInstance = $uibModal.open({
-    templateUrl: 'partials/nodes/updateModal.html',
-    controller: 'NMupdateController',
-    size: size,
-    resolve: {node: function () {return node;}}
-    });
 
-    editModalInstance.result.then(function (updateNode) {
-      $scope.updateNode = updateNode;
-      $scope.updateNode.updateTime = new Date().getTime();
-      NodesFactory.update($scope.updateNode,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', updateNode));
-        //Update display table
-        $scope.orgList = NodesFactory.getAll(function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
-      },function(error){
-        displayRestError.display(error);            
-      });      
-    }), 
-    function () {
-      //console.log('Modal dismissed at: ' + new Date());
-    }
-  };
-  
-  //Node Discover
-  $scope.discover = function (size) {
-    var addModalInstance = $uibModal.open({
-    templateUrl: 'partials/nodes/discoverModal.html',
-    controller: 'NMdiscoverController',
-    size: size
-    });
-
-    addModalInstance.result.then(function () {
-      NodesFactory.discover(function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_DISCOVER'));
-      },function(error){
-        displayRestError.display(error);            
-      });      
-    }), 
-    function () {
-    }
-  };
-  
-  //Node Battery Level graph
-  $scope.displayBatteryLevel = function (node, size) {
-    var addModalInstance = $uibModal.open({
-    templateUrl: 'partials/nodes/batteryLevelChart.html',
-    controller: 'NMbatteryLevelController',
-    windowClass: 'battery-modal-window',
-    size: size,
-    resolve: {node: function () {return node;}}
-    });
-
-    addModalInstance.result.then(function () {
-    }), 
-    function () {
-    }
-  };
-  
 });
 
 
-//Nodes Modal
-myControllerModule.controller('NMdeleteController', function ($scope, $modalInstance, node, $filter) {
-  $scope.node = node;
-  $scope.header = $filter('translate')('NODE.TITLE_DELETE');
-  $scope.deleteMsg = $filter('translate')('NODE.MESSAGE_DELETE', node);
-  $scope.remove = function() {
-    $modalInstance.close($scope.node);
-  };
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
-});
+// Nodes other controllers
 
-myControllerModule.controller('NMaddController', function ($scope, $modalInstance, TypesFactory, FirmwaresFactory, $filter) {
+//Add/Edit Node
+myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, about, alertService, displayRestError, $filter) {
+  //Load about variables to this scope
+  $scope.about = about;
   $scope.node = {};
-  $scope.header = $filter('translate')('NODE.TITLE_NEW');
+  if($stateParams.id){
+    $scope.node = NodesFactory.get({"nodeId":$stateParams.id});
+  }
+  $scope.node.gateway = {};
+  $scope.gateways = TypesFactory.getGateways();
   $scope.nodeTypes = TypesFactory.getNodeTypes();
-  $scope.add = function() {$modalInstance.close($scope.node); }
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
+  $scope.firmwares = TypesFactory.getFirmwares();
+  
+  //GUI page settings
+  $scope.showHeaderUpdate = $stateParams.id;
+  $scope.headerStringAdd = "Add node";
+  $scope.headerStringUpdate = "Update node";
+  $scope.cancelButtonUrl = about.urlNodesList+'/'; //Cancel button url
+  $scope.saveProgress = false;
+  //$scope.isSettingChange = false;
+  
+  
+  $scope.save = function(){
+      $scope.saveProgress = true;
+    if($stateParams.id){
+      NodesFactory.update($scope.node,function(response) {
+        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+          $scope.saveProgress = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress = false;
+      });
+    }else{
+      NodesFactory.create($scope.node,function(response) {
+        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        $scope.saveProgress = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress = false;
+      });
+    }
+  }
 });
 
-myControllerModule.controller('NMupdateController', function ($scope, $modalInstance, node, TypesFactory, FirmwaresFactory, $filter) {
-  $scope.node = node;
-  $scope.header = $filter('translate')('NODE.TITLE_EDIT', node);
-  $scope.nodeTypes = TypesFactory.getNodeTypes();
-  $scope.firmwares = FirmwaresFactory.getAllFirmwares();
-  $scope.update = function() {$modalInstance.close($scope.node);}
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
+
+//Node Detail
+myControllerModule.controller('NodesControllerDetail', function ($scope, $stateParams, about, NodesFactory, MetricsFactory) {
+  //Load about variables to this scope
+  $scope.about = about;
+  $scope.node = {};
+  $scope.headerStringList = "Node details";
+  
+  $scope.node = NodesFactory.get({"nodeId":$stateParams.id});
+  $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"NODE", "resourceId":$stateParams.id});
+});
+
+//Nodes Modal - Delete
+myControllerModule.controller('NodesControllerDelete', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('NODE.TITLE_DELETE');
+  $scope.deleteMsg = $filter('translate')('NODE.MESSAGE_DELETE', $scope.nodeIds);
+  $scope.remove = function() {
+    $uibModalInstance.close();
+  };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
+});
+
+//Erase Configuration Modal
+myControllerModule.controller('NodesControllerEraseConfiguration', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('NODE.TITLE_ERASE_EEPROM');
+  $scope.eraseMsg = $filter('translate')('NODE.MESSAGE_ERASE_EEPROM', $scope);
+  $scope.eraseNodeConfiguration = function() {$uibModalInstance.close(); };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });
 
 //reboot Modal
-myControllerModule.controller('NMrebootController', function ($scope, $modalInstance, node, $filter) {
-  $scope.node = node;
+myControllerModule.controller('NodesControllerReboot', function ($scope, $uibModalInstance, $filter) {
   $scope.header = $filter('translate')('NODE.TITLE_REBOOT');
-  $scope.rebootMsg = $filter('translate')('NODE.MESSAGE_REBOOT', node);
-  $scope.reboot = function() {$modalInstance.close($scope.node); };
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
+  $scope.rebootMsg = $filter('translate')('NODE.MESSAGE_REBOOT', $scope);
+  $scope.reboot = function() {$uibModalInstance.close(); };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });
-
-
-//Erase Modal
-myControllerModule.controller('NMeraseEepromController', function ($scope, $modalInstance, node, $filter) {
-  $scope.node = node;
-  $scope.header = $filter('translate')('NODE.TITLE_ERASE_EEPROM');
-  $scope.eraseMsg = $filter('translate')('NODE.MESSAGE_ERASE_EEPROM', node);
-  $scope.eraseEeprom = function() {$modalInstance.close($scope.node); };
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
-});
-
-//Discover Modal
-myControllerModule.controller('NMdiscoverController', function ($scope, $modalInstance, $filter) {
-  $scope.header = $filter('translate')('NODE.TITLE_DISCOVER_UTILITY');
-  $scope.discoverMsg = $filter('translate')('NODE.MESSAGE_DISCOVER_UTILITY');
-  $scope.discover = function() {$modalInstance.close(); };
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
-});
-
-//Batter Level display Modal
-myControllerModule.controller('NMbatteryLevelController', function ($modalInstance, $scope, $stateParams, MetricsFactory, about, $filter, SettingsFactory, node, displayRestError, $filter) {
-  $scope.header = $filter('translate')('NODE.TITLE_BATTERY');
-  $scope.hourFormat = 'hh';
-  $scope.hourFormatSufix = ' a';
-  SettingsFactory.get({key_:'mc_time_12_24_format'}, function(response) {
-      if(response.value == '24'){
-        $scope.hourFormat = 'HH';
-        $scope.hourFormatSufix = '';
-      }
-    },function(error){
-      displayRestError.display(error);            
-    });
-  
-  //http://krispo.github.io/angular-nvd3
-  //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
-    $scope.chartOptions = {
-            chart: {
-                type: 'lineChart',
-                interpolate: 'linear',
-                noErrorCheck: true,
-                height: 270,
-                margin : {
-                    top: 0,
-                    right: 20,
-                    bottom: 60,
-                    left: 40
-                },
-                color: ["#1f77b4"],
-                
-                x: function(d){return d[0];},
-                y: function(d){return d[1];},
-                useVoronoi: false,
-                clipEdge: false,
-                transitionDuration: 500,
-                useInteractiveGuideline: true,
-                xAxis: {
-                    showMaxMin: false,
-                    tickFormat: function(d) {
-                        return d3.time.format('HH:mm')(new Date(d))
-                    },
-                    //axisLabel: 'Timestamp',
-                    rotateLabels: -20
-                },
-                yAxis: {
-                    tickFormat: function(d){
-                        return d3.format(',.2f')(d);
-                    },
-                    //axisLabel: ''
-                }
-            },
-              title: {
-                enable: false,
-                text: 'Title 2'
-            }
-        };
-        
-  
-  //Get Chart Interpolate Type
-  $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
-
-  //about, Timezone, etc.,
-  $scope.about = about;     
-  
-  $scope.interpolateType.$promise.then(function (interpolateType) {
-    $scope.interpolateType = interpolateType;
-  
-    var chartDateFormat = 'MMM d, y ' + $scope.hourFormat + ':mm:ss' + $scope.hourFormatSufix; //https://docs.angularjs.org/api/ng/filter/date
-    
-    $scope.chartOptions.chart.type = 'lineChart'; //workaround to suppress 'type undefined error'
-    $scope.chartOptions.chart.interpolate = $scope.interpolateType.value;//cardinal
-    $scope.chartOptions.chart.color = ["#1f77b4"];
-    $scope.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(',.2f')(d);};
-  
-    $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, chartDateFormat, about.timezone)};
-    $scope.chartOptions.title.text = $filter('translate')('NODE.TITLE2_BATTERY', node);
-  });
-  
-  $scope.getMetrics = function(){
-    $scope.batteryUsageChartMetrics = MetricsFactory.batteryUsage({"nodeId":node.id});
-  }
-  $scope.getMetrics();
-  
-  $scope.close = function() {$modalInstance.close(); };
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
-});
-

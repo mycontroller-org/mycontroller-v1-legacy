@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,17 @@ package org.mycontroller.standalone.db;
 
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.alarm.AlarmUtils;
+import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.Sensor;
-import org.mycontroller.standalone.db.tables.SensorValue;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.mycontroller.standalone.timer.TimerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,26 +42,31 @@ public class DeleteResourceUtils {
 
     }
 
+    public static void deleteSensor(Integer sensorId) {
+        deleteSensor(DaoUtils.getSensorDao().getById(sensorId));
+    }
+
     public static void deleteSensor(Sensor sensor) {
         //Delete from timer
-        List<Timer> timers = DaoUtils.getTimerDao().getAll(sensor.getId());
+        List<Timer> timers = DaoUtils.getTimerDao().getAll(RESOURCE_TYPE.SENSOR, sensor.getId());
         SchedulerUtils.unloadTimerJobs(timers);
-        DaoUtils.getTimerDao().deleteBySensorRefId(sensor.getId());
+        DaoUtils.getTimerDao().delete(RESOURCE_TYPE.SENSOR, sensor.getId());
 
-        //Delete Alarm list
-        DaoUtils.getAlarmDao().deleteBySensorRefId(sensor.getId());
+        //Delete AlarmDefinition list
+        DaoUtils.getAlarmDefinitionDao().delete(RESOURCE_TYPE.SENSOR, sensor.getId());
+        //TODO: Delete timer created by alarmDefinition
 
         //Delete all variable Types
-        List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAll(sensor.getId());
-        for (SensorValue sensorValue : sensorValues) {
-            deleteSensorValue(sensorValue);
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensor.getId());
+        for (SensorVariable sensorVariable : sensorVariables) {
+            deleteSensorValue(sensorVariable);
         }
 
         //Clear Forward Payload Table
-        DaoUtils.getForwardPayloadDao().deleteBySensorRefId(sensor.getId());
+        DaoUtils.getForwardPayloadDao().deleteBySensorId(sensor.getId());
 
         //Delete from sensor logs
-        DaoUtils.getSensorLogDao().deleteBySensorId(sensor.getId());
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.SENSOR, sensor.getId());
 
         //Delete UID tags
         DaoUtils.getUidTagDao().deleteBySensorRefId(sensor.getId());
@@ -66,13 +77,13 @@ public class DeleteResourceUtils {
 
     }
 
-    public static void deleteSensorValue(SensorValue sensorValue) {
+    public static void deleteSensorValue(SensorVariable sensorVariable) {
         //Delete from metrics table
-        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorValueRefId(sensorValue.getId());
-        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorValueRefId(sensorValue.getId());
+        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
+        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorValueRefId(sensorVariable.getId());
 
-        //Delete SensorValue entry
-        DaoUtils.getSensorValueDao().delete(sensorValue);
+        //Delete SensorVariable entry
+        DaoUtils.getSensorVariableDao().delete(sensorVariable);
     }
 
     public static void deleteNode(Node node) {
@@ -82,5 +93,108 @@ public class DeleteResourceUtils {
         }
         DaoUtils.getNodeDao().delete(node.getId());
         _logger.debug("Deleted node trace for node:[{}]", node);
+    }
+
+    public static void deleteNodes(List<Integer> nodeIds) {
+        List<Sensor> sensors = DaoUtils.getSensorDao().getAllByNodeIds(nodeIds);
+        for (Sensor sensor : sensors) {
+            deleteSensor(sensor);
+        }
+        DaoUtils.getNodeDao().delete(nodeIds);
+        _logger.debug("Deleted node trace for nodeIds:[{}]", nodeIds);
+    }
+
+    public static void deleteSensors(List<Integer> sensorIds) {
+        List<Sensor> sensors = DaoUtils.getSensorDao().getAllByIds(sensorIds);
+        for (Sensor sensor : sensors) {
+            deleteSensor(sensor);
+        }
+    }
+
+    public static void deleteGateway(Integer id) {
+        GatewayUtils.unloadGateway(id);
+        List<Node> nodes = DaoUtils.getNodeDao().getAll(id);
+        for (Node node : nodes) {
+            deleteNode(node);
+        }
+        DaoUtils.getGatewayDao().deleteById(id);
+    }
+
+    public static void deleteGateways(List<Integer> ids) {
+        for (Integer id : ids) {
+            deleteGateway(id);
+        }
+    }
+
+    public static void deleteAlarmDefinitions(List<Integer> ids) {
+        for (Integer id : ids) {
+            deleteAlarmDefinition(id);
+        }
+    }
+
+    public static synchronized void deleteAlarmDefinition(AlarmDefinition alarmDefinition) {
+        //Unload timer job if any
+        Timer timer = new Timer();
+        timer.setName(AlarmUtils.getAlarmTimerJobName(alarmDefinition));
+        SchedulerUtils.unloadTimerJob(timer);
+
+        //Remove log entries
+        //TODO: add code to remove logs
+
+        //TODO: remove timers loaded by alarm
+
+        //Delete alarm definition
+        DaoUtils.getAlarmDefinitionDao().deleteById(alarmDefinition.getId());
+    }
+
+    public static synchronized void deleteAlarmDefinition(Integer id) {
+        deleteAlarmDefinition(DaoUtils.getAlarmDefinitionDao().getById(id));
+
+    }
+
+    public static synchronized void deleteTimer(Timer timer) {
+        //Unload timer job if any
+        SchedulerUtils.unloadTimerJob(timer);
+
+        //Remove log entries
+        //TODO: add code to remove logs
+
+        //Delete alarm definition
+        DaoUtils.getTimerDao().delete(timer.getId());
+    }
+
+    public static synchronized void deleteTimer(Integer id) {
+        deleteTimer(DaoUtils.getTimerDao().get(id));
+    }
+
+    public static synchronized void deleteResourcesGroup(List<Integer> ids) {
+        for (Integer id : ids) {
+            deleteResourcesGroup(id);
+        }
+    }
+
+    public static synchronized void deleteResourcesGroup(Integer id) {
+        ResourcesGroup resourcesGroup = DaoUtils.getResourcesGroupDao().get(id);
+
+        //Delete all timers
+        List<Timer> timers = DaoUtils.getTimerDao().getAll(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId());
+        for (Timer timer : timers) {
+            TimerUtils.deleteTimer(timer);
+        }
+
+        //Delete all alarmDefinition references
+        List<AlarmDefinition> alarmDefinitions = DaoUtils.getAlarmDefinitionDao().getAll(
+                RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId());
+
+        for (AlarmDefinition alarmDefinition : alarmDefinitions) {
+            deleteAlarmDefinition(alarmDefinition);
+        }
+
+        //Remove log entries
+        //TODO: add code to remove logs
+
+        //Delete resourceGroupMap and resourcesGroup
+        DaoUtils.getResourcesGroupMapDao().delete(new ResourcesGroup(id));
+        DaoUtils.getResourcesGroupDao().delete(id);
     }
 }

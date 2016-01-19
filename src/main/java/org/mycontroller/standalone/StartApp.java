@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,32 +24,37 @@ import java.util.Properties;
 
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
-import org.mycontroller.standalone.AppProperties.GATEWAY_TYPES;
+import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
+import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
+import org.mycontroller.standalone.api.jaxrs.ResourcesGroupHandler;
 import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
 import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
 import org.mycontroller.standalone.api.jaxrs.NodeHandler;
 import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
 import org.mycontroller.standalone.api.jaxrs.SensorHandler;
-import org.mycontroller.standalone.api.jaxrs.SensorLogHandler;
+import org.mycontroller.standalone.api.jaxrs.ResourcesLogsHandler;
 import org.mycontroller.standalone.api.jaxrs.SettingsHandler;
 import org.mycontroller.standalone.api.jaxrs.TimerHandler;
 import org.mycontroller.standalone.api.jaxrs.TypesHandler;
 import org.mycontroller.standalone.api.jaxrs.UidTagHandler;
 import org.mycontroller.standalone.api.jaxrs.UserHandler;
+import org.mycontroller.standalone.api.jaxrs.UserSettingsHandler;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
+import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DataBaseUtils;
-import org.mycontroller.standalone.db.TimerUtils;
-import org.mycontroller.standalone.gateway.ethernet.EthernetGatewayImpl;
-import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
-import org.mycontroller.standalone.gateway.serialport.MySensorsSerialPort;
+import org.mycontroller.standalone.gateway.GatewaySerial;
+import org.mycontroller.standalone.gateway.GatewayUtils;
+import org.mycontroller.standalone.message.MessageMonitorThread;
+import org.mycontroller.standalone.message.RawMessageQueue;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
-import org.mycontroller.standalone.mysensors.MessageMonitorThread;
-import org.mycontroller.standalone.mysensors.RawMessageQueue;
+import org.mycontroller.standalone.mysensors.MySensorsIActionEngine;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.mycontroller.standalone.timer.TimerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +85,22 @@ public class StartApp {
         }
     }
 
+    private static void addGateway() {
+        if (DaoUtils.getGatewayDao().getAll().isEmpty()) {
+            GatewaySerial gateway = new GatewaySerial();
+            gateway.setEnabled(true);
+            gateway.setType(GatewayUtils.TYPE.SERIAL);
+            gateway.setNetworkType(NETWORK_TYPE.MY_SENSORS);
+            gateway.setName("Serial-gateway");
+            gateway.setPortName("/dev/ttyUSB0");
+            gateway.setBaudRate(115200);
+            gateway.setDriver(GatewayUtils.SERIAL_PORT_DRIVER.AUTO);
+            gateway.setRetryFrequency(60);
+            DaoUtils.getGatewayDao().create(gateway.getGateway());
+        }
+
+    }
+
     private static void loadStartingValues() {
         //Update sunrise/sunset time
         try {
@@ -88,6 +109,10 @@ public class StartApp {
                     TimerUtils.getSunsetTime());
             //Disable all alram triggeres
             //DaoUtils.getAlarmDao().disableAllTriggered();
+
+            //Load IActionEngines
+            ObjectFactory.addIActionEngine(NETWORK_TYPE.MY_SENSORS, new MySensorsIActionEngine());
+
         } catch (Exception ex) {
             _logger.error("Failed to update sunrise/sunset time", ex);
         }
@@ -107,12 +132,15 @@ public class StartApp {
         resources.add(AuthenticationHandler.class.getName());
         resources.add(UserHandler.class.getName());
         resources.add(AlarmHandler.class.getName());
-        resources.add(SensorLogHandler.class.getName());
+        resources.add(ResourcesLogsHandler.class.getName());
         resources.add(TimerHandler.class.getName());
         resources.add(ForwardPayloadHandler.class.getName());
         resources.add(UidTagHandler.class.getName());
         resources.add(FirmwareHandler.class.getName());
         resources.add(SettingsHandler.class.getName());
+        resources.add(GatewayHandler.class.getName());
+        resources.add(ResourcesGroupHandler.class.getName());
+        resources.add(UserSettingsHandler.class.getName());
 
         //Add PreFlight handler
         //resources.add(OptionsHandler.class.getName());
@@ -126,6 +154,8 @@ public class StartApp {
         providers.add(new NotSupportedExceptionMapper());
         providers.add(new DefaultOptionsMethodExceptionMapper());
         providers.add(new ForbiddenExceptionMapper());
+        providers.add(new ApplicationExceptionMapper());
+        providers.add(new McJacksonJson2Provider()); //Mixin provider
 
         //Add all resourceClasses
         deployment.setResourceClasses(resources);
@@ -199,20 +229,12 @@ public class StartApp {
         // - Start MQTT Broker
         MoquetteMqttBroker.start();
 
-        _logger.debug("MySensors Gateway Type:{}", ObjectFactory.getAppProperties().getGatewayType());
-        //Start communication with MySensors gateway
-        if (ObjectFactory.getAppProperties().getGatewayType()
-                .equalsIgnoreCase(GATEWAY_TYPES.SERIAL.toString())) {
-            ObjectFactory.setMySensorsGateway(new MySensorsSerialPort());
+        //TODO: ------------------REMOVE BELOW LINE----------------------
+        addGateway();
+        //------------------------REMOVE ABOVE LINE----------------------
 
-        } else if (ObjectFactory.getAppProperties().getGatewayType()
-                .equalsIgnoreCase(GATEWAY_TYPES.ETHERNET.toString())) {
-            ObjectFactory.setMySensorsGateway(new EthernetGatewayImpl());
-
-        } else if (ObjectFactory.getAppProperties().getGatewayType()
-                .equalsIgnoreCase(GATEWAY_TYPES.MQTT.toString())) {
-            ObjectFactory.setMySensorsGateway(new MqttGatewayImpl());
-        }
+        //Start all the gateways
+        GatewayUtils.loadAllGateways();
 
         // - Start scheduler
         SchedulerUtils.startScheduler();
@@ -232,7 +254,7 @@ public class StartApp {
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
         SchedulerUtils.stop();
-        ObjectFactory.getMySensorsGateway().close();
+        GatewayUtils.unloadAllGateways();
         MoquetteMqttBroker.stop();
         MessageMonitorThread.setTerminationIssued(true);
         DataBaseUtils.stop();

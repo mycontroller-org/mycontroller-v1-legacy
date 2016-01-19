@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 package org.mycontroller.standalone.jobs;
 
 import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.SensorLogUtils.LOG_TYPE;
-import org.mycontroller.standalone.db.tables.SensorLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,49 +37,32 @@ public class SensorLogAggregationJob extends Job {
     private static final long TRUNCATE_ALL_OTHERS = NumericUtils.DAY * 3;
 
     private void truncateSensorLogs() {
-        SensorLog sensorLog = new SensorLog();
 
         //Truncate Sensor related logs
-        sensorLog.setLogType(LOG_TYPE.SENSOR_INTERNAL.ordinal());
-        sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_SENSOR_LOG_OTHERS_BEFORE);
-        DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.SENSOR,
+                System.currentTimeMillis() - TRUNCATE_SENSOR_LOG_BEFORE);
 
         //Truncate Sensor related logs
-        sensorLog.setLogType(LOG_TYPE.SENSOR_PRESENTATION.ordinal());
-        sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_SENSOR_LOG_OTHERS_BEFORE);
-        DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.SENSOR_VARIABLE,
+                System.currentTimeMillis() - TRUNCATE_SENSOR_LOG_OTHERS_BEFORE);
 
-        //Truncate Sensor related logs
-        sensorLog.setLogType(LOG_TYPE.SENSOR_STREAM.ordinal());
-        sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_SENSOR_LOG_OTHERS_BEFORE);
-        DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
-
-        //Truncate Sensor related logs
-        sensorLog.setLogType(LOG_TYPE.SENSOR.ordinal());
-        sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_SENSOR_LOG_BEFORE);
-        DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
-
-        //Truncate Alarm related logs
-        sensorLog.setLogType(LOG_TYPE.ALARM.ordinal());
-        sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_ALARM_LOG_BEFORE);
-        DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
+        //Truncate AlarmDefinition related logs
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.ALARM_DEFINITION,
+                System.currentTimeMillis() - TRUNCATE_ALARM_LOG_BEFORE);
 
         //Truncate Scheduler related logs
-        sensorLog.setLogType(LOG_TYPE.TIMER.ordinal());
-        sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_TIMER_LOG_BEFORE);
-        DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.TIMER,
+                System.currentTimeMillis() - TRUNCATE_TIMER_LOG_BEFORE);
 
         //Remove other logs which is not listed here
-        sensorLog.setLogType(null);
-        sensorLog.setTimestamp(System.currentTimeMillis() - TRUNCATE_ALL_OTHERS);
-        DaoUtils.getSensorLogDao().deleteAllBefore(sensorLog);
+        DaoUtils.getResourcesLogsDao().deleteAll(null, System.currentTimeMillis() - TRUNCATE_ALL_OTHERS);
     }
 
     @Override
     public void doRun() throws JobInterruptException {
-        _logger.debug("Truncate SensorLog job triggered...");
+        _logger.debug("Truncate ResourcesLogs job triggered...");
         truncateSensorLogs();
-        _logger.debug("Truncate SensorLog job completed...");
+        _logger.debug("Truncate ResourcesLogs job completed...");
     }
 
 }

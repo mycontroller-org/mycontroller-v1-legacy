@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ package org.mycontroller.standalone.db.tables;
 import java.security.Principal;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.mycontroller.standalone.db.USER_ROLE;
+import org.mycontroller.standalone.auth.USER_ROLE;
+import org.mycontroller.standalone.db.DB_TABLES;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
@@ -28,7 +29,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "user")
+@DatabaseTable(tableName = DB_TABLES.USER)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Principal {
     public static final String NAME = "name";

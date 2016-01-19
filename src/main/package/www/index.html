@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,157 +16,136 @@
 
 -->
 <!DOCTYPE html>
-<html lang="en" ng-app="myController" class="no-js">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-
-    <title>MyController.org - The Open Source Controller</title>
-    
-    <!-- GUI theams -->
-    <link rel="stylesheet" type="text/css" href="libs/bootswatch/yeti/bootstrap.min.css">
-    <!-- <link rel="stylesheet" ype="text/css" href="https://bootswatch.com/yeti/bootstrap.min.css"> -->
-
-    <!-- favicon.ico icon -->
-    <link rel="icon" type="image/ico" href="images/favicon.ico"/>
-
-    <!-- https://github.com/danielcrisp/angular-rangeslider -->
-    <link rel="stylesheet" type="text/css" href="libs/angular-rangeslider/angular.rangeSlider.css">
-
-    <!-- https://github.com/isteven/angular-multi-select -->
-    <link rel="stylesheet" type="text/css" href="libs/angular-multi-select/isteven-multi-select.css">
-
-    <!-- https://github.com/dalelotts/angular-bootstrap-datetimepicker -->
-    <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-datetimepicker/css/datetimepicker.css"/>
+<html lang="en" ng-app="myController" class="no-js" id="rootId">
   
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>MyController.org - The Open Source Controller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    
+    <!-- CSS Files -->
+    <!-- ********************************************************** -->
+    <!-- PatternFly Styles -->
+    <!-- Note: No other CSS files are needed regardless of what other JS packages located in patternfly/components that you decide to pull in -->
+    <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly.min.css" />
+    <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly-additions.min.css" />
+    
+    <!-- Angular-PatternFly Styles -->
+    <link rel="stylesheet" href="libs/angular-patternfly/dist/styles/angular-patternfly.min.css" />
+    
     <!-- Font awesome icons-->
-    <link rel="stylesheet" type="text/css" href="libs/font-awesome-4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="libs/font-mfizz-1.2/font-mfizz.css">
-
-    <!-- nvd3 chart -->
-    <link rel="stylesheet" type="text/css" href="libs/nvd3/nv.d3.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/font-awesome-4.5.0/css/font-awesome.min.css">
+    
+    <!-- weather icons -->
+    <link rel="stylesheet" type="text/css" href="libs/weather-icons/css/weather-icons.min.css">
+    
+    <!-- angular-xeditable -->
+    <link rel="stylesheet" type="text/css" href="libs/angular-xeditable/css/xeditable.css">
     
     <!-- https://github.com/buberdds/angular-bootstrap-colorpicker -->
     <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-colorpicker/colorpicker.min.css"/>
     
+    <!-- https://github.com/dalelotts/angular-bootstrap-datetimepicker -->
+    <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-datetimepicker/css/datetimepicker.css"/>
+    
     <!-- Application specific css -->
     <link rel="stylesheet" type="text/css" href="app.css">
     
-  </head>
-  <body>
-    <nav class="navbar navbar-default navbar-fixed-top" ng-controller="McNavBarCtrl">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mcMainMenu">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="http://www.mycontroller.org"><b><img src="images/mc_logo.png"  height="25" width="24"</img> MyController.org</b></a>
-        </div>
+    
+    <!-- JS Files -->
+    <!-- ********************************************************** -->
+  
+    <!-- jQuery -->
+    <script src="libs/patternfly/components/jquery/dist/jquery.js"></script>
+    
+    <!-- Bootstrap JS --> <!-- If I remove this, main menu drop down is not working as expected! -->
+    <script src="libs/patternfly/components/bootstrap/dist/js/bootstrap.js"></script>
+    
+    
+    
+    <!-- C3, D3 - Charting Libraries -->
+    <script src="libs/patternfly/components/c3/c3.min.js"></script>
+    <script src="libs/patternfly/components/d3/d3.min.js"></script>
+    
+    <!-- Datatables, jQuery Grid Component -->
+    <!-- Note: jquery.dataTables.js must occur in the html source before patternfly*.js.-->
+    <!-- <script src="libs/patternfly/components/datatables/media/js/jquery.dataTables.js"></script> -->
+    <!-- <script src="libs/patternfly/components/datatables-colvis/js/dataTables.colVis.js"></script> -->
+    <!-- <script src="libs/patternfly/components/datatables-colreorder/js/dataTables.colReorder.js"></script> -->
+    
+    <!-- PatternFly Custom Componets -  Sidebar, Popovers and Datatables Customizations -->
+    <!-- Note: jquery.dataTables.js must occur in the html source before patternfly*.js.-->
+    <script src="libs/patternfly/dist/js/patternfly.js"></script>
+    
+    <!-- Bootstrap Combobox -->
+    <script src="libs/patternfly/components/bootstrap-combobox/js/bootstrap-combobox.js"></script>
+    
+    <!-- Bootstrap Date Picker -->
+    <script src="libs/patternfly/components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    
+    <!-- Bootstrap Select -->
+    <script src="libs/patternfly/components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    
+    <!-- Bootstrap Switch -->
+    <script src="libs/patternfly/components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+    
+    <!-- Bootstrap Touchspin -->
+    <script src="libs/patternfly/components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
+    
+    <!-- Bootstrap Tree View -->
+    <script src="libs/patternfly/components/bootstrap-treeview/dist/bootstrap-treeview.min.js"></script>
+    
+    <!-- Google Code Prettify - Syntax highlighting of code snippets -->
+    <script src="libs/patternfly/components/google-code-prettify/bin/prettify.min.js"></script>
+    
+    <!-- MatchHeight - Used to make sure dashboard cards are the same height -->
+    <script src="libs/patternfly/components/matchHeight/jquery.matchHeight.js"></script>
+    
+    <!-- Angular Application? You May Want to Consider Pulling Angular-PatternFly And Angular-UI Bootstrap instead of bootstrap.js -->
+    <!-- See https://github.com/patternfly/angular-patternfly for more information -->
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="mcMainMenu">
-          <ul class="nav navbar-nav">
-            <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-bolt fa-lg"></i> {{ 'MENU.DASHBOARD' | translate }}</a></li>
-            <li ng-class="{ active: isActive('/nodes')}"><a data-toggle="collapse" data-target="#mcMainMenu.in" href="#/nodes" ><i class="fa fa-sitemap fa-lg"></i> {{ 'MENU.NODES' | translate }}</a></li>
-            <li ng-class="{ active: isActive('/sensors')}"><a href="#/sensors" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-eye fa-lg"></i> {{ 'MENU.SENSORS' | translate }}</a></li>
-            <li ng-class="{ active: isActive('/sensorsaction')}"><a href="#/sensorsaction" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-magic fa-lg"></i> {{ 'MENU.ACTION_BOARD' | translate }}</a></li>
-            
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-cube fa-lg"></i> {{ 'MENU.UTILS' | translate }} <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li ng-class="{ active: isActive('/sendRawMessage')}"><a href="#/sendRawMessage" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-barcode fa-lg"></i> {{ 'MENU.SEND_RAW_MESSAGE' | translate }}</a></li>
-                <li ng-class="{ active: isActive('/uidtag')}"><a href="#/uidtag" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-tags fa-lg"></i> {{ 'MENU.UID_TAG' | translate }}</a></li>
-                <li ng-class="{ active: isActive('/variableMapper')}"><a href="#/variableMapper" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-clone fa-lg"></i> {{ 'MENU.VARIABLE_MAPPER' | translate }}</a></li>
-                <li class="divider"></li>
-                <li ng-class="{ active: isActive('/firmwareType')}"><a href="#/firmwareType" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> {{ 'MENU.FIRMWARE_TYPE' | translate }}</a></li>
-                <li ng-class="{ active: isActive('/firmwareVersion')}"><a href="#/firmwareVersion" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> {{ 'MENU.FIRMWARE_VERSION' | translate }}</a></li>
-                <li ng-class="{ active: isActive('/firmware')}"><a href="#/firmware" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-flask fa-lg"></i> {{ 'MENU.FIRMWARE' | translate }}</a></li>
-                <li class="divider"></li>
-                <li ng-class="{ active: isActive('/users')}"><a href="#/users" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-users fa-lg"></i> {{ 'MENU.USERS' | translate }}</a></li>
-                <li ng-class="{ active: isActive('/settings')}"><a href="#/settings" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-cogs fa-lg"></i> {{ 'MENU.SYSTEM_SETTINGS' | translate }}</a></li>
-              </ul>
-            </li>
-                        
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-file-text-o fa-lg"></i> {{ 'MENU.STATUS' | translate }} <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li ng-class="{ active: isActive('/gatewaystatus')}"><a href="#/gatewaystatus" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-plug fa-lg"></i> {{ 'MENU.GATEWAY' | translate }}</a></li>
-                <li ng-class="{ active: isActive('/systemstatus')}"><a href="#/systemstatus" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-heartbeat fa-lg"></i> {{ 'MENU.SYSTEM_STATUS' | translate }}</a></li>
-                <li ng-class="{ active: isActive('/logs')}"><a href="#/logs" data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-list fa-lg"></i> {{ 'MENU.SENSOR_LOGS' | translate }}</a></li>
-              </ul>
-            </li>
-            
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="">{{ 'MENU.LANGUAGE_NAME' | translate }} <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="" ng-click="changeLanguage('en-us')"> English(US)</a></li>
-                <li><a href="" ng-click="changeLanguage('ta-in')">  தமிழ் (IN)</a></li>
-                <li><a href="" ng-click="changeLanguage('de-de')"> Deutsch(DE)</a></li>
-                <li><a href="" ng-click="changeLanguage('ru-ru')"> Russian(RU)</a></li>
-                <li><a href="" ng-click="changeLanguage('hi-in')">  हिंदी (IN)</a></li>
-              </ul>
-            </li>
-            
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-life-ring fa-lg"></i> {{ 'MENU.SUPPORT' | translate }} <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="https://github.com/mycontroller-org/mycontroller/releases"><i class="fa fa-file-archive-o fa-lg"></i> {{ 'MENU.RELEASES' | translate }}</a></li>
-                <li><a href="http://www.mycontroller.org"><i class="fa fa-book fa-lg"></i> {{ 'MENU.DOCUMENTS' | translate }}</a></li>
-                <li><a href="https://github.com/mycontroller-org/mycontroller"><i class="fa fa-github fa-lg"></i> {{ 'MENU.SOURCE_CODE' | translate }}</a></li>
-              </ul>
-            </li>
-            
-            <li ng-class="{ active: isActive('/login')}">
-              <a ng-hide="isActive('/login')" href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-out fa-lg"></i> {{ 'MENU.LOG_OUT' | translate }}</a>
-              <a ng-show="isActive('/login')" href="#/login"  data-toggle="collapse" data-target="#mcMainMenu.in"><i class="fa fa-sign-in fa-lg"></i> {{ 'MENU.LOG_IN' | translate }}</a>
-            </li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-    </nav>
+    <!-- AngularJS -->
+    <script src="libs/angular/angular.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="libs/angular-bootstrap/ui-bootstrap-tpls-1.0.3.min.js"></script>
+    
+    <script src="libs/lodash/lodash.min.js"></script>
 
-    <div class="container-fluid">
-      <div ui-view ></div> 
-    </div>
+    
+    <!-- Angular-PatternFly  -->
+    <script src="libs/angular-patternfly/dist/angular-patternfly.min.js"></script>
+    
+    
+    <!-- xeditable JS -->
+    <script src="libs/angular-xeditable/js/xeditable.min.js"></script>
+    
+    <!-- pagination -->
+    <script src="libs/angularUtils-pagination/dirPagination.js"></script>
+    
+    
+    <!--- my LIB -->
+    
 
-    <!-- Footer -->
-    <nav class="navbar navbar-default navbar-fixed-bottom">
-      <div class="container-fluid" ng-controller="FooterCtrl">
-        <div class="pull-left hidden-xs" ng-show="about.appVersion">
-          <p class="navbar-text">Version: {{about.appVersion}}, Timezone:  {{about.timezoneString}}({{about.timezone}}, Language:  {{about.language}})</p>
-        </div>
-        <div class="pull-right">
-          <p class="navbar-text">Copyright ©2015, All Rights Reserved</p>
-        </div>
-      </div>
-    </nav>
+    
+    
+    <!-- my lib stop -->
+  
   
     <!-- Third party js-->
-    <script src="libs/jquery/jquery.min.js"></script>
-    <script src="libs/bootstrap/bootstrap.min.js"></script>
-    <script src="libs/angular/angular.min.js"></script>
-    <script src="libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="libs/angular-ui-router/angular-ui-router.min.js"></script>
     <script src="libs/at-table/angular-table.min.js"></script>
     <script src="libs/angular-resource/angular-resource.min.js"></script>
     <script src="libs/angular-ui-confirm/angular-ui-confirm.min.js"></script>
-    <script src="libs/angular-modal-service/angular-modal-service.min.js"></script>
     <script src="libs/angular-base64/angular-base64.min.js"></script>
     <script src="libs/remarkable-bootstrap-notify/bootstrap-notify.min.js"></script> 
     <script src="libs/angular-cookies/angular-cookies.min.js"></script> 
     <script src="libs/angular-rangeslider/angular.rangeSlider.js"></script> 
-    <script src="libs/angular-multi-select/isteven-multi-select.js"></script>  
     <script src="libs/moment/moment.min.js"></script>
     <script src="libs/angular-bootstrap-datetimepicker/js/datetimepicker.js"></script>
-    <script src="libs/d3/d3.min.js"></script>
+    <!-- <script src="libs/d3/d3.min.js"></script>
     <script src="libs/nvd3/nv.d3.min.js"></script> <!-- or use another assembly -->
     <script src="libs/angular-nvd3/angular-nvd3.min.js"></script>
     <script src="libs/angular-bootstrap-colorpicker/bootstrap-colorpicker-module.min.js"></script>
@@ -177,28 +156,153 @@
     <script src="libs/angular-translate-loader-url/atlu.min.js"></script>
     <script src="libs/angular-translate-loader-static-files/atlsf.min.js"></script>
   
+    <script src="libs/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
+    
+    
     <!-- Application js-->
     <script src="app.js"></script>
     <script src="services/alert_services.js"></script>
     <script src="services/rest_services.js"></script>
+    <script src="services/common_services.js"></script>
+    <script src="services/validation_services.js"></script>
     <script src="controllers/dashboard.js"></script>
     <script src="controllers/sensors.js"></script>
     <script src="controllers/nodes.js"></script>
     <script src="controllers/sensorsAction.js"></script>
     <script src="controllers/charts.js"></script>
     <script src="controllers/users.js"></script>
-    <script src="controllers/alarm.js"></script>
-    <script src="controllers/timer.js"></script>
+    <script src="controllers/alarms.js"></script>
+    <script src="controllers/timers.js"></script>
     <script src="controllers/settings.js"></script>
-    <script src="controllers/sensorLog.js"></script>
-    <script src="controllers/forwardPayload.js"></script>
+    <script src="controllers/resources-logs.js"></script>
+    <script src="controllers/forward-payload.js"></script>
     <script src="controllers/uidTag.js"></script>
     <script src="controllers/firmwares.js"></script>
-    <script src="controllers/firmwaresType.js"></script>
-    <script src="controllers/firmwaresVersion.js"></script>
     <script src="controllers/status.js"></script>
     <script src="controllers/rawMessage.js"></script>
     <script src="controllers/variableMapper.js"></script>
+    <script src="controllers/gateways.js"></script>
+    <script src="controllers/resources-group.js"></script>
+    <script src="controllers/sensors-action.js"></script>
+    
+  </head>
   
+  <body ng-controller="McNavBarCtrl">
+    <nav ng-show="isAuthenticated()" class="navbar navbar-default navbar-fixed-top navbar-pf" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a tabindex="-1" class="navbar-brand" href="http://www.mycontroller.org">
+          <strong>MYCONTROLLER.ORG</strong> <small>The Open Source Controller</small>
+        </a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-collapse-1">
+        
+        <!-- Top right side corner menus -->
+        <ul class="nav navbar-nav navbar-utility">
+          <!-- Language selection -->
+          <li class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-language fa-lg"></i> {{ languageId }} <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li ng-repeat="language in languages" ng-class="{ active: isLangActive(language.id)}"><a href="" ng-click="changeLanguage(language.id)"> {{language.displayName}}</a></li>
+            </ul>
+          </li>
+          <!-- Support Options -->
+          <li class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-life-ring fa-lg"></i> {{ 'MENU.SUPPORT' | translate }} <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="https://github.com/mycontroller-org/mycontroller/releases"><i class="fa fa-file-archive-o fa-lg"></i> {{ 'MENU.RELEASES' | translate }}</a></li>
+              <li><a href="http://www.mycontroller.org"><i class="fa fa-book fa-lg"></i> {{ 'MENU.DOCUMENTS' | translate }}</a></li>
+              <li><a href="https://github.com/mycontroller-org/mycontroller"><i class="fa fa-github fa-lg"></i> {{ 'MENU.SOURCE_CODE' | translate }}</a></li>
+            </ul>
+          </li>
+          
+          <!-- user information, logout -->
+          <li class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="pficon pficon-user"></span>
+              Jeeva <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href=""><i class="pficon pficon-user"> Profile</i></a>
+              </li>
+              <li>
+                <a ng-hide="isActive('/login')" href="#/login"><i class="fa fa-sign-out fa-lg"></i> Log Out</a><!-- Logout Link -->
+              </li>
+            </ul>
+          </li>
+        </ul>
+        
+        <!-- Main Menu (header type)-->
+        <ul class="nav navbar-nav navbar-primary persistent-secondary">
+          <!-- Dashboard -->
+          <li ng-class="{ active: isStartsWith('/dashboard')}">
+            <a href="#/dashboard"><i class="fa fa-tachometer fa-lg"></i> {{ 'MENU.DASHBOARD' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard">Default</a></li>
+            </ul>
+          </li>
+          <!-- Nodes -->
+          <li ng-class="{ active: isStartsWith('/resources')}">
+            <a ng-href="{{about.urlGatewaysList}}"><i class="fa  fa-cubes fa-lg"></i> Resources</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: isStartsWith('/resources/gateway')}"><a ng-href="{{about.urlGatewaysList}}"><i class="fa fa-plug fa-lg"></i> Gateways</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/nodes')}"  ><a ng-href="{{about.urlNodesList}}/"><i class="fa fa-sitemap fa-lg"></i> {{ 'MENU.NODES' | translate }}</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/sensors')}"><a ng-href="{{about.urlSensorsList}}/"><i class="fa fa-eye fa-lg"></i> {{ 'MENU.SENSORS' | translate }}</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/alarms')}"><a ng-href="{{about.urlAlarmsList}}//"><i class="fa fa-bell-o fa-lg"></i> Alarms</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/timers')}"><a ng-href="{{about.urlTimersList}}//"><i class="fa fa-clock-o fa-lg"></i> Timers</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/forwardpayload')}"><a ng-href="{{about.urlForwardPayloadList}}/"><i class="fa fa-forward fa-lg"></i> Forward payload</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/groups')}"><a ng-href="{{about.urlResourcesGroupList}}//"><i class="pficon pficon-replicator fa-lg"></i> Groups</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/firmwares')}"><a ng-href="{{about.urlFirmwaresList}}"><i class="fa fa-file-code-o fa-lg"></i> Firmwares</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/logs')}"><a ng-href="{{about.urlResourcesLogsList}}//"><i class="fa fa-list fa-lg"></i> Logs</a></li>
+            </ul>
+          </li>
+          <!-- Action Board -->
+          <li ng-class="{ active: isStartsWith('/actionboard')}">
+            <a href="#/actionboard/sensorsaction/list"><i class="fa fa-magic fa-lg"></i> {{ 'MENU.ACTION_BOARD' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: isStartsWith('/actionboard/sensorsaction')}"><a href="#/actionboard/sensorsaction/list"><i class="fa fa-eye fa-lg"></i> Sensors action</a></li>
+            </ul>
+          </li>
+          <!-- Status -->
+          <li ng-class="{ active: isStartsWith('/status')}">
+            <a ng-href="{{about.urlStatusSystem}}"><i class="fa fa-file-text-o fa-lg"></i> {{ 'MENU.STATUS' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: isStartsWith('/status/system')}"><a ng-href="{{about.urlStatusSystem}}"><i class="fa fa-heartbeat fa-lg"></i> {{ 'MENU.SYSTEM_STATUS' | translate }}</a></li>
+            </ul>
+          </li>
+          <!-- Settings -->
+          <li ng-class="{ active: isStartsWith('/settings')}">
+            <a ng-href="{{about.urlSettingsSystem}}"><i class="fa fa-cog fa-lg"></i> Settings</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: isStartsWith('/settings/system')}"><a ng-href="{{about.urlSettingsSystem}}"><i class="fa fa-cogs fa-lg"></i> System</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/units')}"><a ng-href="{{about.urlSettingsUnits}}"><i class="fa fa-star-o fa-lg"></i> Units</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/notifications')}"><a ng-href="{{about.urlSettingsNotifications}}"><i class="fa fa-flag-o fa-lg"></i> Notifications</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/mysensors')}"><a ng-href="{{about.urlSettingsMySensors}}"><i class="fa fa-star-o fa-lg"></i> MySensors</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/variablemapper')}"><a ng-href="{{about.urlSettingsVariableMapper}}"><i class="fa fa-clone fa-lg"></i> Variables mapper</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/users')}"><a href="#/settings/users"><i class="fa fa-users fa-lg"></i> {{ 'MENU.USERS' | translate }}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </nav>
+
+    <div class="container-fluid top-buffer" id="rootView">
+      <div ui-view></div> 
+    </div>
+    
+    
   </body>
 </html>

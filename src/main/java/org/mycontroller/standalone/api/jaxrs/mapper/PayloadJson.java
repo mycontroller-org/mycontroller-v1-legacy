@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
@@ -23,7 +25,7 @@ public class PayloadJson {
     private Integer nodeId;
     private Integer sensorId;
     private Integer sensorRefId;
-    private Integer variableType;
+    private MESSAGE_TYPE_SET_REQ variableType;
     private String payload;
     private String buttonType;
 
@@ -73,7 +75,7 @@ public class PayloadJson {
         return sensorId;
     }
 
-    public Integer getVariableType() {
+    public MESSAGE_TYPE_SET_REQ getVariableType() {
         return variableType;
     }
 
@@ -89,7 +91,7 @@ public class PayloadJson {
         this.sensorId = sensorId;
     }
 
-    public void setVariableType(Integer variableType) {
+    public void setVariableType(MESSAGE_TYPE_SET_REQ variableType) {
         this.variableType = variableType;
     }
 

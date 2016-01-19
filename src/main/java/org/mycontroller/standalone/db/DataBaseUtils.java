@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,33 @@
 package org.mycontroller.standalone.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.AppProperties.MC_TIME_FORMAT;
+import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
-import org.mycontroller.standalone.db.tables.Settings;
+import org.mycontroller.standalone.auth.USER_ROLE;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.jobs.MidNightJob;
+import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
 import org.mycontroller.standalone.jobs.SensorLogAggregationJob;
-import org.mycontroller.standalone.jobs.metrics.MetricsFiveMinutesAggregationJob;
-import org.mycontroller.standalone.jobs.metrics.MetricsOneDayAggregationJob;
-import org.mycontroller.standalone.jobs.metrics.MetricsOneHourAggregationJob;
-import org.mycontroller.standalone.jobs.metrics.MetricsOneMinuteAggregationJob;
-import org.mycontroller.standalone.jobs.mysensors.HeartbeatJob;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.metrics.jobs.MetricsFiveMinutesAggregationJob;
+import org.mycontroller.standalone.metrics.jobs.MetricsOneDayAggregationJob;
+import org.mycontroller.standalone.metrics.jobs.MetricsOneHourAggregationJob;
+import org.mycontroller.standalone.metrics.jobs.MetricsOneMinuteAggregationJob;
+import org.mycontroller.standalone.settings.EmailSettings;
+import org.mycontroller.standalone.settings.LocationSettings;
+import org.mycontroller.standalone.settings.MyControllerSettings;
+import org.mycontroller.standalone.settings.MySensorsSettings;
+import org.mycontroller.standalone.settings.SmsSettings;
+import org.mycontroller.standalone.settings.Unit;
+import org.mycontroller.standalone.settings.UnitsSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +101,10 @@ public class DataBaseUtils {
             isDbLoaded = true;
             _logger.debug("Database ConnectionSource loaded. Database Url:[{}]", databaseUrl);
             DaoUtils.loadAllDao();
+            ObjectFactory.getAppProperties().loadPropertiesFromDb();
             upgradeSchema();
+            //After update schema, reload settings again
+            ObjectFactory.getAppProperties().loadPropertiesFromDb();
         } else {
             _logger.info("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", databaseUrl);
         }
@@ -111,10 +125,10 @@ public class DataBaseUtils {
     }
 
     public static void upgradeSchema() {
-        Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_DB_VERSION);
+        MyControllerSettings controllerSettings = ObjectFactory.getAppProperties().getControllerSettings();
         int dbVersion = 0;
-        if (settings != null) {
-            dbVersion = Integer.valueOf(settings.getValue());
+        if (controllerSettings.getDbVersion() != null) {
+            dbVersion = controllerSettings.getDbVersion();
         }
         _logger.debug("MC DB Version:{}", dbVersion);
 
@@ -124,58 +138,72 @@ public class DataBaseUtils {
                     + " server, delete existing database, start " + AppProperties.APPLICATION_NAME + " server.");
         }
         if (dbVersion == 0) { // Update version 1 schema
-            // System Settings
-            DaoUtils.getSettingsDao().create(new Settings(Settings.MC_VERSION, "0.0.2-alpha5", "MC Version"));
-
             // Metric or Imperial to sensors
-            DaoUtils.getSettingsDao()
-                    .create(new Settings(Settings.MY_SENSORS_CONFIG, "Metric", "MySensors Config", true));
+            ArrayList<Unit> unitVariables = new ArrayList<Unit>();
 
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_TEMP, "°C", "Temperature", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_HUM, "%", "Humidity", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_PERCENTAGE, "%", "Percentage", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_PRESSURE, "psi", "Pressure", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_RAIN, "mm", "Rain", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_RAINRATE, "mm/hr", "Rain Rate", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_WIND, "mph", "Wind", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_GUST, "mph", "Gust", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_DIRECTION, "°", "Direction", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_UV, "mj/cm2", "UV", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_WEIGHT, "kg", "Weight", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_DISTANCE, "cm", "Distance", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_IMPEDANCE, "Ω", "Impedance", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_WATT, "W", "Watt", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_KWH, "kWh", "KWH", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL, "%", "Light Level", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_LEVEL, "%", "Level", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_VOLTAGE, "V", "Voltage", true);
-            createSettings(Settings.DEFAULT_UNIT + MESSAGE_TYPE_SET_REQ.V_CURRENT, "A", "Current", true);
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_CURRENT.getText(), "A", "A"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_CUSTOM.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_DIRECTION.getText(), "°", "°"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_DISTANCE.getText(), "cm", "cm"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_FLOW.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_GUST.getText(), "mph", "mph"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_HUM.getText(), "%", "%"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_HVAC_SETPOINT_COOL.getText(), "°C", "°F"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_HVAC_SETPOINT_HEAT.getText(), "°C", "°F"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_IMPEDANCE.getText(), "Ω", "Ω"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_KWH.getText(), "kWh", "kWh"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_LEVEL.getText(), "%", "%"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL.getText(), "%", "%"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_PERCENTAGE.getText(), "%", "%"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_POSITION.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_PRESSURE.getText(), "psi", "psi"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_RAIN.getText(), "mm", "mm"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_RAINRATE.getText(), "mm/hr", "mm/hr"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_TEMP.getText(), "°C", "°F"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_UV.getText(), "mj/cm2", "mj/cm2"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR1.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR2.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR3.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR4.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR5.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VOLTAGE.getText(), "V", "V"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VOLUME.getText(), "", ""));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_WATT.getText(), "W", "W"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_WEIGHT.getText(), "kg", "kg"));
+            unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_WIND.getText(), "mph", "mph"));
 
-            createSettings(Settings.CITY_NAME, "Namakkal", "City Name", true);
-            createSettings(Settings.CITY_LATITUDE, "11.2333", "City Latitude", true);
-            createSettings(Settings.CITY_LONGITUDE, "78.1667", "City Longitude", true);
-            createSettings(Settings.SUNRISE_TIME, "0", "Sunrise Time");
-            createSettings(Settings.SUNSET_TIME, "0", "Sunset Time");
+            //Update unit values into table
+            UnitsSettings.builder().variables(unitVariables).build().save();
 
-            createSettings(Settings.AUTO_NODE_ID, "0", "Auto Node Id (MySensors)", true);
-            createSettings(Settings.DEFAULT_FIRMWARE, null, "Default Firmware", true);
-            createSettings(Settings.ENABLE_NOT_AVAILABLE_TO_DEFAULT_FIRMWARE, "false",
-                    "If requested firmware is not available, redirect to default", true);
-            createSettings(Settings.ENABLE_SEND_PAYLOAD, "false", "Enable Send Payload", true);
+            //Update location settings
+            LocationSettings.builder()
+                    .name("Namakkal")
+                    .latitude("11.2333")
+                    .longitude("78.1667").build().save();
 
-            createSettings(Settings.EMAIL_SMTP_HOST, null, "SMTP Host", true);
-            createSettings(Settings.EMAIL_SMTP_PORT, null, "SMTP Port", true);
-            createSettings(Settings.EMAIL_FROM, null, "From address", true);
-            createSettings(Settings.EMAIL_SMTP_USERNAME, null, "Username", true);
-            createSettings(Settings.EMAIL_SMTP_PASSWORD, null, "Password", true);
-            createSettings(Settings.EMAIL_ENABLE_SSL, null, "Enable SSL", true);
+            LocationSettings.builder()
+                    .sunriseTime(0l)
+                    .sunsetTime(0l).build().updateInternal();
 
-            createSettings(Settings.SMS_AUTH_ID, null, "Auth Id", true);
-            createSettings(Settings.SMS_AUTH_TOKEN, null, "Auth Token", true);
-            createSettings(Settings.SMS_FROM_PHONE_NUMBER, null, "From phone number", true);
+            //Update MySensors settings
+            MySensorsSettings.builder()
+                    .defaultFirmware(null)
+                    .enbaledDefaultOnNoFirmware(false).build().save();
 
-            // Graph type
-            createSettings(Settings.GRAPH_INTERPOLATE_TYPE, "linear", "Interpolate Type", true);
+            //Update email settings
+            EmailSettings.builder()
+                    .smtpHost(null)
+                    .smtpPort(null)
+                    .enableSsl(false)
+                    .fromAddress(null)
+                    .smtpUsername(null)
+                    .smtpPassword(null).build().save();
+
+            //Update SMS settings
+            SmsSettings.builder()
+                    .authId(null)
+                    .authToken(null)
+                    .fromNumber(null).build().save();
 
             // Add System Jobs
             createSystemJob("Aggregate One Minute Data", "58 * * * * ? *", true, MetricsOneMinuteAggregationJob.class);
@@ -185,7 +213,7 @@ public class DataBaseUtils {
             // One day aggregation table takes previous date, if you change here
             // change there also
             createSystemJob("Aggregate One Day Data", "5 0 0 * * ? *", true, MetricsOneDayAggregationJob.class);
-            createSystemJob("SensorLog Aggregation Job", "45 * * * * ? *", true, SensorLogAggregationJob.class);
+            createSystemJob("ResourcesLogs Aggregation Job", "45 * * * * ? *", true, SensorLogAggregationJob.class);
             createSystemJob("Daily once job", "30 3 0 * * ? *", true, MidNightJob.class);
 
             // Add default User
@@ -316,6 +344,7 @@ public class DataBaseUtils {
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HVAC, MESSAGE_TYPE_SET_REQ.V_HVAC_SETPOINT_COOL);
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HVAC, MESSAGE_TYPE_SET_REQ.V_HVAC_FLOW_STATE);
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HVAC, MESSAGE_TYPE_SET_REQ.V_HVAC_FLOW_MODE);
+            createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HVAC, MESSAGE_TYPE_SET_REQ.V_HVAC_SPEED);
             // Multimeter device, V_VOLTAGE, V_CURRENT, V_IMPEDANCE
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_MULTIMETER, MESSAGE_TYPE_SET_REQ.V_VOLTAGE);
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_MULTIMETER, MESSAGE_TYPE_SET_REQ.V_CURRENT);
@@ -353,51 +382,33 @@ public class DataBaseUtils {
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_GAS, MESSAGE_TYPE_SET_REQ.V_FLOW);
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_GAS, MESSAGE_TYPE_SET_REQ.V_VOLUME);
 
-            dbVersion = 6;
-            createSettings(Settings.MC_DB_VERSION, String.valueOf(dbVersion), "Database Schema Revision");
+            //Update controller default settings
+            MyControllerSettings.builder()
+                    .language(MC_LANGUAGE.EN_US.getText())
+                    .aliveCheckInterval(NodeAliveStatusJob.DEFAULT_ALIVE_CHECK_INTERVAL)
+                    .timeFormat(MC_TIME_FORMAT.HOURS_12.getText())
+                    .unitConfig(UNIT_CONFIG.METRIC.getText())
+                    .build().save();
+
+            dbVersion = 8;
+            // update version information
+            MyControllerSettings.builder()
+                    .version("0.0.2-alpha7-SNAPSHOT")
+                    .dbVersion(dbVersion)
+                    .build().updateInternal();
             _logger.info("MC DB version[{}]", dbVersion);
 
-        }
-
-        if (dbVersion == 6) {
-            createSettings(Settings.MC_LANGUAGE, String.valueOf(MC_LANGUAGE.EN_US.ordinal()), "Language", true);
-            createSettings(Settings.MC_TIME_12_24_FORMAT, "12", "Time Format", true);
-            createSettings(Settings.MYS_HEARTBEAT_INTERVAL, String.valueOf(HeartbeatJob.DEFAULT_HEARTBEAT_INTERVAL),
-                    "Heartbeat Interval(Minutes)", true);
-
-            upgradeVersion("0.0.2-alpha6", dbVersion, dbVersion + 1);
-            dbVersion = 7;
         }
 
     }
 
     private static void createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION sensorType,
             MESSAGE_TYPE_SET_REQ variableType) {
-        DaoUtils.getSensorsVariablesMapDao().create(sensorType.ordinal(), variableType.ordinal());
-    }
-
-    private static void createSettings(String key, String value, String friendlyName) {
-        createSettings(key, value, friendlyName, false);
-    }
-
-    private static void createSettings(String key, String value, String friendlyName, boolean isEditable) {
-        DaoUtils.getSettingsDao().create(new Settings(key, value, friendlyName, isEditable));
+        DaoUtils.getSensorsVariablesMapDao().create(sensorType, variableType);
     }
 
     private static void createSystemJob(String name, String cronExpression, boolean isEnabled, Class<?> clazz) {
         DaoUtils.getSystemJobDao().create(new SystemJob(name, cronExpression, isEnabled, clazz.getName()));
-    }
-
-    private static void upgradeVersion(String appVersion, int dbVersionOld, int dbVersionNew) {
-        Settings settings = DaoUtils.getSettingsDao().get(Settings.MC_VERSION);
-        settings.setValue(appVersion);
-        DaoUtils.getSettingsDao().update(settings);
-
-        settings = DaoUtils.getSettingsDao().get(Settings.MC_DB_VERSION);
-        settings.setValue(String.valueOf(dbVersionNew));
-        DaoUtils.getSettingsDao().update(settings);
-        _logger.info("MC DB version[{}] upgraded to version[{}], Application version:{}", dbVersionOld, dbVersionNew,
-                appVersion);
     }
 
     // http://www.h2database.com/html/tutorial.html#upgrade_backup_restore

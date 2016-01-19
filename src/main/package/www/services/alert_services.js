@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ myControllerModule.factory('alertService', function() {
       default: function(msg) {
           $.notify({
             icon: 'fa fa-info-circle fa-lg',
-            message: '<strong>'+msg+'</strong>'
+            message: msg
           },{
             delay: 1000,
             timer: 1000,
@@ -38,7 +38,7 @@ myControllerModule.factory('alertService', function() {
     success: function(msg){
         $.notify({
             icon: 'fa fa-thumbs-o-up fa-lg',
-            message: '<strong>'+msg+'</strong>'
+            message: msg
           },{
             type: 'success',
             delay: 1000,
@@ -55,7 +55,7 @@ myControllerModule.factory('alertService', function() {
     warning: function(msg){
         $.notify({
             icon: 'fa fa-warning fa-lg',
-            message: '<strong>'+msg+'</strong>'
+            message: msg
           },{
             type: 'warning',
             delay: 1000,
@@ -72,7 +72,7 @@ myControllerModule.factory('alertService', function() {
     danger: function(msg){
         $.notify({
             icon: 'fa fa-ban fa-lg',
-            message: '<strong>'+msg+'</strong>'
+            message: msg
           },{
             type: 'danger',
             delay: 1000,

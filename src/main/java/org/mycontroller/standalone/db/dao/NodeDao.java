@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.Node;
 
 /**
@@ -31,15 +33,29 @@ public interface NodeDao {
 
     void delete(Node node);
 
-    void delete(int nodeId);
+    void delete(Integer gatewayId, String nodeEui);
+
+    void delete(Integer id);
+
+    void delete(List<Integer> ids);
 
     void update(Node node);
 
     List<Node> getAll();
 
+    List<Node> getAll(Integer gatewayId);
+
+    List<Node> get(List<Integer> ids);
+
     Node get(Node node);
 
-    Node get(int nodeId);
+    Node get(Integer gatewayId, String nodeEui);
+
+    Node get(Integer id);
 
     List<Node> getByName(String name);
+
+    QueryResponse getAll(Query query);
+
+    long countOf(Integer gatewayId);
 }

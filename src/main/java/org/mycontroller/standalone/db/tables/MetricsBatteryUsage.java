@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import org.mycontroller.standalone.db.DB_TABLES;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -23,22 +25,24 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@DatabaseTable(tableName = "metrics_battery")
+@DatabaseTable(tableName = DB_TABLES.METRICS_BATTERY_USAGE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetricsBatteryUsage {
-    public static final String NODE_REF_ID = "node_ref_id";
-    public static final String TIMESTAMP = "timestamp";
+    public static final String KEY_ID = "id";
+    public static final String KEY_NODE_ID = "nodeId";
+    public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_VALUE = "value";
 
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = NODE_REF_ID)
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_NODE_ID)
     private Node node;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = TIMESTAMP)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_VALUE)
     private Double value;
 
     public MetricsBatteryUsage(Node node, Long timestamp, Double value) {

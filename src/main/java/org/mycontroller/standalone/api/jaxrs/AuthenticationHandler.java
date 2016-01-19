@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,12 @@ import org.slf4j.LoggerFactory;
 @PermitAll
 public class AuthenticationHandler {
     private static final Logger _logger = LoggerFactory.getLogger(AuthenticationHandler.class);
-    @Context HttpRequest request;
-    
+    @Context
+    HttpRequest request;
+
     @POST
     @Path("/login")
-    public Response login(UserCredential userCredential) {
+    public Response login(UserCredential userCredential) throws InterruptedException {
         _logger.debug("User Detail:{}", RestUtils.getUser(request));
         _logger.debug("Login user: " + userCredential.getUsername());
         if (BasicAthenticationSecurityDomain.login(userCredential.getUsername(), userCredential.getPassword())) {

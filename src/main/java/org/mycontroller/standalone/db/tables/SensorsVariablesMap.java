@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,12 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.db.DB_TABLES;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -26,28 +28,29 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@DatabaseTable(tableName = "sensors_variables_map")
+@DatabaseTable(tableName = DB_TABLES.SENSOR_VARIABLES_MAP)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SensorsVariablesMap {
-    public static final String SENSOR_TYPE = "sensor_type";
-    public static final String VARIABLE_TYPE = "variable_type";
+    public static final String KEY_ID = "id";
+    public static final String KEY_SENSOR_TYPE = "sensorType";
+    public static final String KEY_VARIABLE_TYPE = "variableType";
 
     public SensorsVariablesMap() {
     }
 
-    public SensorsVariablesMap(Integer sensorType, Integer variableType) {
+    public SensorsVariablesMap(MESSAGE_TYPE_PRESENTATION sensorType, MESSAGE_TYPE_SET_REQ variableType) {
         this.sensorType = sensorType;
         this.variableType = variableType;
     }
 
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, index = true, uniqueCombo = true, columnName = SENSOR_TYPE)
-    private Integer sensorType;
+    @DatabaseField(canBeNull = false, index = true, uniqueCombo = true, columnName = KEY_SENSOR_TYPE, dataType = DataType.ENUM_STRING)
+    private MESSAGE_TYPE_PRESENTATION sensorType;
 
-    @DatabaseField(canBeNull = false, index = true, uniqueCombo = true, columnName = VARIABLE_TYPE)
-    private Integer variableType;
+    @DatabaseField(canBeNull = false, index = true, uniqueCombo = true, columnName = KEY_VARIABLE_TYPE, dataType = DataType.ENUM_STRING)
+    private MESSAGE_TYPE_SET_REQ variableType;
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -61,31 +64,23 @@ public class SensorsVariablesMap {
         return id;
     }
 
-    public Integer getSensorType() {
-        return sensorType;
-    }
-
-    public Integer getVariableType() {
-        return variableType;
-    }
-
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public void setSensorType(Integer sensorType) {
+    public MESSAGE_TYPE_PRESENTATION getSensorType() {
+        return sensorType;
+    }
+
+    public void setSensorType(MESSAGE_TYPE_PRESENTATION sensorType) {
         this.sensorType = sensorType;
     }
 
-    public void setVariableType(Integer variableType) {
+    public MESSAGE_TYPE_SET_REQ getVariableType() {
+        return variableType;
+    }
+
+    public void setVariableType(MESSAGE_TYPE_SET_REQ variableType) {
         this.variableType = variableType;
-    }
-
-    public String getSensorTypeString() {
-        return MESSAGE_TYPE_PRESENTATION.get(this.sensorType).toString();
-    }
-
-    public String getVariableTypeString() {
-        return MESSAGE_TYPE_SET_REQ.get(this.variableType).toString();
     }
 }

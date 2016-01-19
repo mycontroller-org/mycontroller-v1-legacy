@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,22 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Firmware;
@@ -44,62 +49,41 @@ import org.mycontroller.standalone.mysensors.firmware.FirmwareUtils;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 public class FirmwareHandler {
+
+    //Firmware type handler
     @GET
     @Path("/types")
-    public Response getAllFirmwareTypes() {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareTypeDao().getAll());
-    }
+    public Response getAllFirmwareTypes(
+            @QueryParam(FirmwareType.KEY_NAME) List<String> name,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) Long page,
+            @QueryParam(Query.ORDER_BY) String orderBy,
+            @QueryParam(Query.ORDER) String order) {
+        HashMap<String, Object> filters = new HashMap<String, Object>();
 
-    @GET
-    @Path("/versions")
-    public Response getAllFirmwareVersions() {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareVersionDao().getAll());
-    }
+        filters.put(FirmwareType.KEY_NAME, name);
 
-    @GET
-    @Path("/")
-    public Response getAllFirmwares() {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareDao().getAll());
+        QueryResponse queryResponse = DaoUtils.getFirmwareTypeDao().getAll(
+                Query.builder()
+                        .order(order != null ? order : Query.ORDER_ASC)
+                        .orderBy(orderBy != null ? orderBy : FirmwareType.KEY_ID)
+                        .filters(filters)
+                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
+                        .page(page != null ? page : 1l)
+                        .build());
+        return RestUtils.getResponse(Status.OK, queryResponse);
     }
 
     @GET
     @Path("/types/{id}")
     public Response getFirmwareType(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareTypeDao().get(id));
-    }
-
-    @GET
-    @Path("/versions/{id}")
-    public Response getFirmwareVersion(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareVersionDao().get(id));
-    }
-
-    @GET
-    @Path("/{id}")
-    public Response getFirmware(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareDao().get(id));
+        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareTypeDao().getById(id));
     }
 
     @PUT
     @Path("/types")
     public Response updateFirmwareType(FirmwareType firmwareType) {
         DaoUtils.getFirmwareTypeDao().update(firmwareType);
-        return RestUtils.getResponse(Status.OK);
-    }
-
-    @PUT
-    @Path("/versions")
-    public Response updateFirmwareVersion(FirmwareVersion firmwareVersion) {
-        DaoUtils.getFirmwareVersionDao().update(firmwareVersion);
-        return RestUtils.getResponse(Status.OK);
-    }
-
-    @PUT
-    @Path("/")
-    public Response updateFirmware(Firmware firmware) {
-        FirmwareUtils.updateFirmwareFromHexString(firmware);
-        firmware.setTimestamp(System.currentTimeMillis());
-        DaoUtils.getFirmwareDao().update(firmware);
         return RestUtils.getResponse(Status.OK);
     }
 
@@ -111,6 +95,53 @@ public class FirmwareHandler {
     }
 
     @POST
+    @Path("/types/delete")
+    public Response deleteFirmwareType(List<Integer> ids) {
+        for (Integer id : ids) {
+            FirmwareUtils.deleteFirmwareType(id);
+        }
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    //Firmware version handler
+
+    @GET
+    @Path("/versions")
+    public Response getAllFirmwareVersions(
+            @QueryParam(FirmwareVersion.KEY_VERSION) List<String> version,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) Long page,
+            @QueryParam(Query.ORDER_BY) String orderBy,
+            @QueryParam(Query.ORDER) String order) {
+        HashMap<String, Object> filters = new HashMap<String, Object>();
+
+        filters.put(FirmwareVersion.KEY_VERSION, version);
+
+        QueryResponse queryResponse = DaoUtils.getFirmwareVersionDao().getAll(
+                Query.builder()
+                        .order(order != null ? order : Query.ORDER_ASC)
+                        .orderBy(orderBy != null ? orderBy : FirmwareVersion.KEY_ID)
+                        .filters(filters)
+                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
+                        .page(page != null ? page : 1l)
+                        .build());
+        return RestUtils.getResponse(Status.OK, queryResponse);
+    }
+
+    @GET
+    @Path("/versions/{id}")
+    public Response getFirmwareVersion(@PathParam("id") int id) {
+        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareVersionDao().getById(id));
+    }
+
+    @PUT
+    @Path("/versions")
+    public Response updateFirmwareVersion(FirmwareVersion firmwareVersion) {
+        DaoUtils.getFirmwareVersionDao().update(firmwareVersion);
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @POST
     @Path("/versions")
     public Response createFirmwareVersion(FirmwareVersion firmwareVersion) {
         DaoUtils.getFirmwareVersionDao().create(firmwareVersion);
@@ -118,30 +149,69 @@ public class FirmwareHandler {
     }
 
     @POST
-    @Path("/")
+    @Path("/versions/delete")
+    public Response deleteFirmwareVersion(List<Integer> ids) {
+        for (Integer id : ids) {
+            FirmwareUtils.deleteFirmwareVersion(id);
+        }
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    //Firmware handler
+
+    @GET
+    @Path("/firmwares")
+    public Response getAllFirmwares(
+            @QueryParam(Firmware.KEY_TYPE_ID) Integer typeId,
+            @QueryParam(Firmware.KEY_VERSION_ID) Integer versionId,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) Long page,
+            @QueryParam(Query.ORDER_BY) String orderBy,
+            @QueryParam(Query.ORDER) String order) {
+        HashMap<String, Object> filters = new HashMap<String, Object>();
+
+        filters.put(Firmware.KEY_TYPE_ID, typeId);
+        filters.put(Firmware.KEY_VERSION_ID, versionId);
+
+        QueryResponse queryResponse = DaoUtils.getFirmwareDao().getAll(
+                Query.builder()
+                        .order(order != null ? order : Query.ORDER_ASC)
+                        .orderBy(orderBy != null ? orderBy : FirmwareVersion.KEY_ID)
+                        .filters(filters)
+                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
+                        .page(page != null ? page : 1l)
+                        .build());
+        return RestUtils.getResponse(Status.OK, queryResponse);
+    }
+
+    @GET
+    @Path("/firmwares/{id}")
+    public Response getFirmware(@PathParam("id") int id) {
+        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareDao().getById(id));
+    }
+
+    @PUT
+    @Path("/firmwares")
+    public Response updateFirmware(Firmware firmware) {
+        FirmwareUtils.updateFirmwareFromHexString(firmware);
+        firmware.setTimestamp(System.currentTimeMillis());
+        DaoUtils.getFirmwareDao().update(firmware);
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @POST
+    @Path("/firmwares")
     public Response createFirmware(Firmware firmware) {
         FirmwareUtils.createFirmware(firmware);
         return RestUtils.getResponse(Status.CREATED);
     }
 
-    @DELETE
-    @Path("/types/{id}")
-    public Response deleteFirmwareType(@PathParam("id") int id) {
-        FirmwareUtils.deleteFirmwareType(id);
-        return RestUtils.getResponse(Status.OK);
-    }
-
-    @DELETE
-    @Path("/versions/{id}")
-    public Response deleteFirmwareVersion(@PathParam("id") int id) {
-        FirmwareUtils.deleteFirmwareVersion(id);
-        return RestUtils.getResponse(Status.OK);
-    }
-
-    @DELETE
-    @Path("/{id}")
-    public Response deleteFirmware(@PathParam("id") int id) {
-        FirmwareUtils.deleteFirmware(id);
+    @POST
+    @Path("/firmwares/delete")
+    public Response deleteFirmware(List<Integer> ids) {
+        for (Integer id : ids) {
+            FirmwareUtils.deleteFirmware(id);
+        }
         return RestUtils.getResponse(Status.OK);
     }
 

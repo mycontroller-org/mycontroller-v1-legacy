@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
     limitations under the License.
 
 -->
-  <div class="page-header">
-    <h3>
-      <div class="form-horizontal form-group-sm pull-right col-xs-5">
+<div class="container-fluid">
+  <div class="row mc-top-space">
         <div class="form-group form-inline pull-right">
           <select style="width:158px;" class="form-control form-inline" ng-change="refreshTimeChange()" ng-model="refreshTime" >
             <option value="0" ng-selected="true">-- {{ 'SENSORS_ACTIONS.NEVER_REFRESH' | translate }} --</option>
@@ -33,23 +32,25 @@
           </select>
           <input style="width:170px" type="text" class="form-control ng-pristine ng-valid" ng-model="query" id="search" placeholder="{{ 'SENSORS_ACTIONS.FIND_SENSOR' | translate }}" ng-model="query" 
           ng-change="updateFilteredList()"/>
-			  </div>
-      </div>         
-      <b><i class="fa fa-magic"></i> {{ 'TITLE.ACTION_BOARD' | translate }} </b></h3> 
+        </div>
+      </div>
     
   </div>
+
+</div>
+
   <div class="continer center">
     <div ng-repeat="sensor in filteredList" class="col-xs-12 col-sm-6 col-md-5 col-lg-3">
       <div class="panel panel-default">
         <div class="panel-heading">
-			<div>
+      <div>
         <a href="" class="text-default panel-title pull-right" ng-model="radioModel" ng-click="refresh(sensor)" tooltip-placement="left" uib-tooltip="{{ 'SENSORS_ACTIONS.REFRESH' | translate }}">
           <i class="fa fa-refresh"></i>
         </a>
-				<p class="panel-title" ng-init="status = false" tooltip-placement="bottom" tooltip-enable="sensor.nameWithNode.length > 30" uib-tooltip="{{sensor.nameWithNode}}">
-					{{sensor.nameWithNode ? sensor.nameWithNode : '-' | limitTo:30}}{{sensor.nameWithNode.length > 30 ? '...' : ''}}
+        <p class="panel-title" ng-init="status = false" tooltip-placement="bottom" tooltip-enable="sensor.nameWithNode.length > 30" uib-tooltip="{{sensor.nameWithNode}}">
+          {{sensor.nameWithNode ? sensor.nameWithNode : '-' | limitTo:30}}{{sensor.nameWithNode.length > 30 ? '...' : ''}}
         </p>
-			</div>
+      </div>
 
         </div>
         <div class="panel-body panel-body-action-board">

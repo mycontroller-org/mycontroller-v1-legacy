@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.db.tables;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.mycontroller.standalone.db.DB_TABLES;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
@@ -25,17 +26,17 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "metrics_double")
+@DatabaseTable(tableName = DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetricsDoubleTypeDevice {
-    public static final String SENSOR_VALUE_REF_ID = "sensor_value_ref_id";
-    public static final String TIMESTAMP = "timestamp";
-    public static final String AGGREGATION_TYPE = "aggregation_type";
+    public static final String KEY_SENSOR_VARIABLE_ID = "sensorVariableId";
+    public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_AGGREGATION_TYPE = "aggregationType";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_VALUE_REF_ID)
-    private SensorValue sensorValue;
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID)
+    private SensorVariable sensorVariable;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = TIMESTAMP)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
     @DatabaseField(canBeNull = false)
@@ -50,23 +51,23 @@ public class MetricsDoubleTypeDevice {
     @DatabaseField(canBeNull = false)
     private Double avg;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = AGGREGATION_TYPE)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_AGGREGATION_TYPE)
     private Integer aggregationType;
 
     private Long timestampFrom;
     private Long timestampTo;
 
-    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType) {
-        this(sensorValue, aggregationType, null, null, aggregationType);
+    public MetricsDoubleTypeDevice(SensorVariable sensorVariable, Integer aggregationType) {
+        this(sensorVariable, aggregationType, null, null, aggregationType);
     }
 
-    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType, Long timestamp) {
-        this(sensorValue, aggregationType, timestamp, null, aggregationType);
+    public MetricsDoubleTypeDevice(SensorVariable sensorVariable, Integer aggregationType, Long timestamp) {
+        this(sensorVariable, aggregationType, timestamp, null, aggregationType);
     }
 
-    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType, Long timestamp, Double avg,
+    public MetricsDoubleTypeDevice(SensorVariable sensorVariable, Integer aggregationType, Long timestamp, Double avg,
             Integer samples) {
-        this.sensorValue = sensorValue;
+        this.sensorVariable = sensorVariable;
         this.aggregationType = aggregationType;
         this.timestamp = timestamp;
         this.avg = avg;
@@ -81,12 +82,12 @@ public class MetricsDoubleTypeDevice {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public SensorValue getSensorValue() {
-        return this.sensorValue;
+    public SensorVariable getSensorValue() {
+        return this.sensorVariable;
     }
 
-    public void setSensorValue(SensorValue sensorValue) {
-        this.sensorValue = sensorValue;
+    public void setSensorValue(SensorVariable sensorVariable) {
+        this.sensorVariable = sensorVariable;
     }
 
     public Long getTimestamp() {

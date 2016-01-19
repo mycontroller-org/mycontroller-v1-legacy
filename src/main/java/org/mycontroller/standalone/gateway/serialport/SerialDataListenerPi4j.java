@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package org.mycontroller.standalone.gateway.serialport;
 import java.io.IOException;
 
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
-import org.mycontroller.standalone.mysensors.RawMessage;
-import org.mycontroller.standalone.mysensors.RawMessageException;
+import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.gateway.GatewaySerial;
+import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +34,10 @@ import com.pi4j.io.serial.SerialDataEventListener;
 public class SerialDataListenerPi4j implements SerialDataEventListener {
     private static Logger _logger = LoggerFactory.getLogger(SerialDataListenerPi4j.class.getName());
     StringBuilder message = new StringBuilder();
-    private GatewayInfo gatewayInfo;
+    private GatewaySerial gateway;
 
-    public SerialDataListenerPi4j(GatewayInfo gatewayInfo) {
-        this.gatewayInfo = gatewayInfo;
+    public SerialDataListenerPi4j(GatewaySerial gateway) {
+        this.gateway = gateway;
 
     }
 
@@ -49,22 +49,24 @@ public class SerialDataListenerPi4j implements SerialDataEventListener {
                     String toProcess = message.toString();
                     _logger.debug("Received a message:[{}]", toProcess);
                     //Send Message to message factory
-                    ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(toProcess));
+                    ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(gateway.getId(), toProcess));
                     message.setLength(0);
                 } else if (b != SerialPortCommon.MESSAGE_SPLITTER) {
                     _logger.trace("Received a char:[{}]", ((char) b));
                     message.append((char) b);
+                } else if (message.length() >= MYCSerialPort.SERIAL_DATA_MAX_SIZE) {
+                    _logger.warn(
+                            "Serial receive buffer size reached to MAX level[{} chars], Now clearing the buffer. Existing data:[{}]",
+                            MYCSerialPort.SERIAL_DATA_MAX_SIZE, message.toString());
+                    message.setLength(0);
                 } else {
                     _logger.debug("Received MESSAGE_SPLITTER and current message length is ZERO! Nothing to do");
                 }
             }
         } catch (IOException ex) {
             _logger.error("exception on pi4j data event, ", ex);
-            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
-            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, ex.getMessage());
-            message.setLength(0);
-        } catch (RawMessageException rEx) {
-            _logger.warn("RawMessage Exception,", rEx.getMessage());
+            gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+            gateway.updateGateway();
             message.setLength(0);
         } catch (Exception ex) {
             _logger.error("Exception,", ex.getMessage());

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@ package org.mycontroller.standalone.gateway.ethernet;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
-import org.mycontroller.standalone.gateway.MySensorsGatewayException;
-import org.mycontroller.standalone.gateway.IMySensorsGateway.GATEWAY_STATUS;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
-import org.mycontroller.standalone.mysensors.RawMessage;
+import org.mycontroller.standalone.TIME_REF;
+import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.gateway.GatewayEthernet;
+import org.mycontroller.standalone.gateway.GatewayException;
+import org.mycontroller.standalone.gateway.IGateway.GATEWAY_STATUS;
+import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,38 +40,27 @@ public class EthernetGatewayActionThread implements Runnable {
     private boolean terminate = false;
     private boolean reconnect = false;
     private Thread ethernetGatewayListenerThread = null;
-    public static final long RETRY_WAIT_TIME = 1000 * 5;
-    public static final long THREAD_TERMINATION_WAIT_TIME = 1000 * 5;
-    private GatewayInfo gatewayInfo = new GatewayInfo();
+    public static final long RETRY_WAIT_TIME = TIME_REF.ONE_SECOND * 5;
+    public static final long THREAD_TERMINATION_WAIT_TIME = TIME_REF.ONE_SECOND * 5;
+    private GatewayEthernet gateway = null;
 
-    public EthernetGatewayActionThread() {
+    public EthernetGatewayActionThread(GatewayEthernet gateway) {
+        this.gateway = gateway;
         try {
             //Update Gateway Info
-            gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
-            gatewayInfo.setData(new HashMap<String, Object>());
-
-            gatewayInfo.getData().put(EthernetGatewayCommon.IP,
-                    ObjectFactory.getAppProperties().getGatewayEthernetHost());
-            gatewayInfo.getData().put(EthernetGatewayCommon.PORT,
-                    ObjectFactory.getAppProperties().getGatewayEthernetPort());
-            gatewayInfo.getData().put(EthernetGatewayCommon.ALIVE_FREQUENCY,
-                    ObjectFactory.getAppProperties().getGatewayEthernetKeepAliveFrequency());
-
-            socket = new Socket(
-                    ObjectFactory.getAppProperties().getGatewayEthernetHost(),
-                    ObjectFactory.getAppProperties().getGatewayEthernetPort());
+            socket = new Socket(this.gateway.getHost(), this.gateway.getPort());
             socket.setKeepAlive(true);
-            ethernetGatewayListener = new EthernetGatewayListener(socket);
+            ethernetGatewayListener = new EthernetGatewayListener(socket, this.gateway);
             ethernetGatewayListenerThread = new Thread(ethernetGatewayListener);
             ethernetGatewayListenerThread.start();
             _logger.info("Connected successfully with EthernetGateway[{}:{}]",
-                    ObjectFactory.getAppProperties().getGatewayEthernetHost(),
-                    ObjectFactory.getAppProperties().getGatewayEthernetPort());
-            gatewayInfo.getData().put(EthernetGatewayCommon.CONNECTION_STATUS, "Connected Successfully");
-
+                    gateway.getHost(), gateway.getPort());
+            this.gateway.setStatus(STATE.UP, "Connected Successfully");
+            this.gateway.updateGateway();
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
-            gatewayInfo.getData().put(EthernetGatewayCommon.CONNECTION_STATUS, "ERROR: " + ex.getMessage());
+            this.gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+            this.gateway.updateGateway();
             reconnect = true;
         }
     }
@@ -97,23 +85,22 @@ public class EthernetGatewayActionThread implements Runnable {
         }
         try {
             socket.close();
-            _logger.info("EthernetGateway[{}:{}] closed",
-                    ObjectFactory.getAppProperties().getGatewayEthernetHost(),
-                    ObjectFactory.getAppProperties().getGatewayEthernetPort());
+            _logger.info("EthernetGateway[{}:{}] closed", this.gateway.getHost(), this.gateway.getPort());
         } catch (Exception ex) {
             _logger.error("Exception,", ex);
         }
     }
 
-    public synchronized void write(RawMessage rawMessage) throws MySensorsGatewayException {
+    public synchronized void write(RawMessage rawMessage) throws GatewayException {
         try {
             socket.getOutputStream().write(rawMessage.getGWBytes());
             socket.getOutputStream().flush();
         } catch (IOException ex) {
             _logger.error("Exception,", ex);
             reconnect = true;
-            gatewayInfo.getData().put(EthernetGatewayCommon.CONNECTION_STATUS, "ERROR: " + ex.getMessage());
-            throw new MySensorsGatewayException(GATEWAY_STATUS.GATEWAY_ERROR.toString()
+            this.gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+            this.gateway.updateGateway();
+            throw new GatewayException(GATEWAY_STATUS.GATEWAY_ERROR.toString()
                     + ": There is no connection with EthernetGateway!");
         }
     }
@@ -147,15 +134,14 @@ public class EthernetGatewayActionThread implements Runnable {
                 socket.close();
                 socket = null;
             }
-            socket = new Socket(
-                    ObjectFactory.getAppProperties().getGatewayEthernetHost(),
-                    ObjectFactory.getAppProperties().getGatewayEthernetPort());
+            socket = new Socket(gateway.getHost(), gateway.getPort());
             socket.setKeepAlive(true);
-            ethernetGatewayListener = new EthernetGatewayListener(socket);
+            ethernetGatewayListener = new EthernetGatewayListener(socket, this.gateway);
             ethernetGatewayListenerThread = new Thread(ethernetGatewayListener);
             ethernetGatewayListenerThread.start();
             reconnect = false;
-            gatewayInfo.getData().put(EthernetGatewayCommon.CONNECTION_STATUS, "Reconnected Successfully");
+            this.gateway.setStatus(STATE.UP, "Reconnected Successfully");
+            this.gateway.updateGateway();
             _logger.info("Reconnected gateway successfully...");
         } catch (IOException ex) {
             _logger.error("Gateway Exception: {}", ex.getMessage());
@@ -164,20 +150,8 @@ public class EthernetGatewayActionThread implements Runnable {
     }
 
     private boolean checkAliveState() {
-        RawMessage rawMessage = new RawMessage(
-                0,
-                255,
-                MESSAGE_TYPE.C_INTERNAL.ordinal(),
-                0,
-                MESSAGE_TYPE_INTERNAL.I_VERSION.ordinal(),
-                "");
-        try {
-            this.write(rawMessage);
-            return true;
-        } catch (MySensorsGatewayException ex) {
-            _logger.error("Exception while checking gateway connection status: {}", ex.getMessage());
-            return false;
-        }
+        return ObjectFactory.getIActionEngine(this.gateway.getNetworkType()).checkEthernetGatewayAliveState(
+                this.gateway);
     }
 
     @Override
@@ -194,7 +168,7 @@ public class EthernetGatewayActionThread implements Runnable {
                         reconnect();
                     }
                 } else {
-                    long aliveInterval = ObjectFactory.getAppProperties().getGatewayEthernetKeepAliveFrequency() * 1000;
+                    long aliveInterval = this.gateway.getAliveFrequency() * 1000;
                     while (aliveInterval > 0 && !isTerminate() && !reconnect) {
                         Thread.sleep(100);
                         aliveInterval -= 100;
@@ -230,8 +204,8 @@ public class EthernetGatewayActionThread implements Runnable {
         this.terminate = terminate;
     }
 
-    public GatewayInfo getGatewayInfo() {
-        return gatewayInfo;
+    public GatewayEthernet getGateway() {
+        return this.gateway;
     }
 
 }

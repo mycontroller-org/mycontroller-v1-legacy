@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,18 @@
  */
 package org.mycontroller.standalone.db.dao;
 
-import java.util.List;
-
 import org.mycontroller.standalone.db.tables.Settings;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface SettingsDao {
-    void create(Settings settings);
+public interface SettingsDao extends BaseDao<Settings, Integer> {
 
-    void createOrUpdate(Settings settings);
+    Settings get(String key, String subKey);
 
-    void delete(Settings settings);
+    void update(String key, String subKey, String value);
 
-    void delete(String key);
+    void update(String key, String subKey, String value, String altValue);
 
-    void update(Settings settings);
-
-    List<Settings> getAll();
-
-    Settings get(String key);
-
-    Settings get(Settings settings);
-
-    List<Settings> get(List<String> keys);
-
-    List<Settings> getLike(String key);
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,16 @@ package org.mycontroller.standalone.db;
 
 import java.sql.SQLException;
 
-import org.mycontroller.standalone.db.dao.AlarmDao;
-import org.mycontroller.standalone.db.dao.AlarmDaoImpl;
+import org.mycontroller.standalone.db.dao.AlarmDefinitionDao;
+import org.mycontroller.standalone.db.dao.AlarmDefinitionDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareDao;
 import org.mycontroller.standalone.db.dao.FirmwareDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareTypeDao;
 import org.mycontroller.standalone.db.dao.FirmwareTypeDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareVersionDao;
 import org.mycontroller.standalone.db.dao.FirmwareVersionDaoImpl;
+import org.mycontroller.standalone.db.dao.GatewayDao;
+import org.mycontroller.standalone.db.dao.GatewayDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDao;
 import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDao;
@@ -37,10 +39,14 @@ import org.mycontroller.standalone.db.dao.ForwardPayloadDao;
 import org.mycontroller.standalone.db.dao.ForwardPayloadDaoImpl;
 import org.mycontroller.standalone.db.dao.SensorDao;
 import org.mycontroller.standalone.db.dao.SensorDaoImpl;
-import org.mycontroller.standalone.db.dao.SensorLogDao;
-import org.mycontroller.standalone.db.dao.SensorLogDaoImpl;
-import org.mycontroller.standalone.db.dao.SensorValueDao;
-import org.mycontroller.standalone.db.dao.SensorValueDaoImpl;
+import org.mycontroller.standalone.db.dao.ResourcesLogsDao;
+import org.mycontroller.standalone.db.dao.ResourcesLogsDaoImpl;
+import org.mycontroller.standalone.db.dao.SensorVariableDao;
+import org.mycontroller.standalone.db.dao.SensorVariableDaoImpl;
+import org.mycontroller.standalone.db.dao.ResourcesGroupDao;
+import org.mycontroller.standalone.db.dao.ResourcesGroupDaoImpl;
+import org.mycontroller.standalone.db.dao.ResourcesGroupMapDao;
+import org.mycontroller.standalone.db.dao.ResourcesGroupMapDaoImpl;
 import org.mycontroller.standalone.db.dao.SensorsVariablesMapDao;
 import org.mycontroller.standalone.db.dao.SensorsVariablesMapDaoImpl;
 import org.mycontroller.standalone.db.dao.SettingsDao;
@@ -53,6 +59,8 @@ import org.mycontroller.standalone.db.dao.UidTagDao;
 import org.mycontroller.standalone.db.dao.UidTagDaoImpl;
 import org.mycontroller.standalone.db.dao.UserDao;
 import org.mycontroller.standalone.db.dao.UserDaoImpl;
+import org.mycontroller.standalone.db.dao.UserSettingsDao;
+import org.mycontroller.standalone.db.dao.UserSettingsDaoImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,37 +74,42 @@ public class DaoUtils {
     }
 
     private static final Logger _logger = LoggerFactory.getLogger(DaoUtils.class);
+
     private static NodeDao nodeDao = null;
     private static SensorDao sensorDao = null;
-    private static SensorValueDao sensorValueDao = null;
+    private static SensorVariableDao sensorVariableDao = null;
     private static SettingsDao settingsDao = null;
+    private static UserSettingsDao userSettingsDao = null;
     private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
     private static MetricsBinaryTypeDeviceDao metricsBinaryTypeDeviceDao = null;
     private static SystemJobDao systemJobDao = null;
     private static UserDao userDao = null;
-    private static AlarmDao alarmDao = null;
-    private static SensorLogDao sensorLogDao = null;
+    private static AlarmDefinitionDao alarmDefinitionDao = null;
+    private static ResourcesLogsDao resourcesLogsDao = null;
     private static TimerDao timerDao = null;
     private static ForwardPayloadDao forwardPayloadDao = null;
     private static UidTagDao uidTagDao = null;
+    private static FirmwareDao firmwareDao = null;
     private static FirmwareTypeDao firmwareTypeDao = null;
     private static FirmwareVersionDao firmwareVersionDao = null;
-    private static FirmwareDao firmwareDao = null;
     private static MetricsBatteryUsageDao metricsBatteryUsageDao = null;
     private static SensorsVariablesMapDao sensorsVariablesMapDao = null;
+    private static GatewayDao gatewayDao = null;
+    private static ResourcesGroupDao resourcesGroupDao = null;
+    private static ResourcesGroupMapDao resourcesGroupMapDao = null;
 
     public static void loadAllDao() {
         try {
             nodeDao = new NodeDaoImpl(DataBaseUtils.getConnectionSource());
             sensorDao = new SensorDaoImpl(DataBaseUtils.getConnectionSource());
-            sensorValueDao = new SensorValueDaoImpl(DataBaseUtils.getConnectionSource());
+            sensorVariableDao = new SensorVariableDaoImpl(DataBaseUtils.getConnectionSource());
             settingsDao = new SettingsDaoImpl(DataBaseUtils.getConnectionSource());
             metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             metricsBinaryTypeDeviceDao = new MetricsBinaryTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             systemJobDao = new SystemJobDaoImpl(DataBaseUtils.getConnectionSource());
             userDao = new UserDaoImpl(DataBaseUtils.getConnectionSource());
-            alarmDao = new AlarmDaoImpl(DataBaseUtils.getConnectionSource());
-            sensorLogDao = new SensorLogDaoImpl(DataBaseUtils.getConnectionSource());
+            alarmDefinitionDao = new AlarmDefinitionDaoImpl(DataBaseUtils.getConnectionSource());
+            resourcesLogsDao = new ResourcesLogsDaoImpl(DataBaseUtils.getConnectionSource());
             timerDao = new TimerDaoImpl(DataBaseUtils.getConnectionSource());
             forwardPayloadDao = new ForwardPayloadDaoImpl(DataBaseUtils.getConnectionSource());
             uidTagDao = new UidTagDaoImpl(DataBaseUtils.getConnectionSource());
@@ -105,6 +118,10 @@ public class DaoUtils {
             firmwareDao = new FirmwareDaoImpl(DataBaseUtils.getConnectionSource());
             metricsBatteryUsageDao = new MetricsBatteryUsageDaoImpl(DataBaseUtils.getConnectionSource());
             sensorsVariablesMapDao = new SensorsVariablesMapDaoImpl(DataBaseUtils.getConnectionSource());
+            gatewayDao = new GatewayDaoImpl(DataBaseUtils.getConnectionSource());
+            resourcesGroupDao = new ResourcesGroupDaoImpl(DataBaseUtils.getConnectionSource());
+            resourcesGroupMapDao = new ResourcesGroupMapDaoImpl(DataBaseUtils.getConnectionSource());
+            userSettingsDao = new UserSettingsDaoImpl(DataBaseUtils.getConnectionSource());
         } catch (SQLException sqlEx) {
             _logger.error("Unable to load Dao,", sqlEx);
         } catch (DbException dbEx) {
@@ -140,12 +157,12 @@ public class DaoUtils {
         return metricsBinaryTypeDeviceDao;
     }
 
-    public static AlarmDao getAlarmDao() {
-        return alarmDao;
+    public static AlarmDefinitionDao getAlarmDefinitionDao() {
+        return alarmDefinitionDao;
     }
 
-    public static SensorLogDao getSensorLogDao() {
-        return sensorLogDao;
+    public static ResourcesLogsDao getResourcesLogsDao() {
+        return resourcesLogsDao;
     }
 
     public static TimerDao getTimerDao() {
@@ -176,12 +193,28 @@ public class DaoUtils {
         return metricsBatteryUsageDao;
     }
 
-    public static SensorValueDao getSensorValueDao() {
-        return sensorValueDao;
+    public static SensorVariableDao getSensorVariableDao() {
+        return sensorVariableDao;
     }
 
     public static SensorsVariablesMapDao getSensorsVariablesMapDao() {
         return sensorsVariablesMapDao;
+    }
+
+    public static GatewayDao getGatewayDao() {
+        return gatewayDao;
+    }
+
+    public static ResourcesGroupDao getResourcesGroupDao() {
+        return resourcesGroupDao;
+    }
+
+    public static ResourcesGroupMapDao getResourcesGroupMapDao() {
+        return resourcesGroupMapDao;
+    }
+
+    public static UserSettingsDao getUserSettingsDao() {
+        return userSettingsDao;
     }
 
 }

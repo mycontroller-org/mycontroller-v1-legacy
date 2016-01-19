@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,41 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('SystemStatusController', function(alertService,
+myControllerModule.controller('StatusSystemController', function(alertService,
 $scope, $filter, StatusFactory, $location, $uibModal, $stateParams, displayRestError) {
   
-  $scope.config = {
-    itemsPerPage: 100,
-    maxPages:1,
-    fillLastPage: false
-  }
+  //GUI page settings
+  $scope.headerStringList = "System status";
 
   //OS Status
-   $scope.osStatus = StatusFactory.getOsStatus(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });  
+   $scope.osStatus = StatusFactory.getOsStatus();  
   //JVM Status
-   $scope.jvmStatus = StatusFactory.getJvmStatus(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });  
-  
-});
-
-myControllerModule.controller('GatewayStatusController', function(alertService,
-$scope, $filter, StatusFactory, $location, $uibModal, $stateParams, displayRestError) {
-  
-  $scope.config = {
-    itemsPerPage: 100,
-    maxPages:1,
-    fillLastPage: false
-  }
-
-  //Gateway Information
-   $scope.gatewayInfo = StatusFactory.getGatewayInfo(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    }); 
+   $scope.jvmStatus = StatusFactory.getJvmStatus();  
   
 });

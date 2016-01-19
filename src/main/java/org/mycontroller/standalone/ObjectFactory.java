@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,13 @@
  */
 package org.mycontroller.standalone;
 
-import org.mycontroller.standalone.gateway.IMySensorsGateway;
-import org.mycontroller.standalone.mysensors.RawMessageQueue;
+import java.util.HashMap;
+import java.util.Set;
+
+import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
+import org.mycontroller.standalone.gateway.IGateway;
+import org.mycontroller.standalone.interfaces.IActionEngine;
+import org.mycontroller.standalone.message.RawMessageQueue;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -29,7 +34,8 @@ public class ObjectFactory {
 
     private static AppProperties appProperties;
     private static RawMessageQueue rawMessageQueue;
-    private static IMySensorsGateway mySensorsGateway;
+    private static HashMap<Integer, IGateway> gateways = new HashMap<Integer, IGateway>();
+    private static HashMap<NETWORK_TYPE, IActionEngine> iActionEngine = new HashMap<NETWORK_TYPE, IActionEngine>();
 
     public static AppProperties getAppProperties() {
         return appProperties;
@@ -47,11 +53,27 @@ public class ObjectFactory {
         ObjectFactory.rawMessageQueue = rawMessageQueue;
     }
 
-    public synchronized static IMySensorsGateway getMySensorsGateway() {
-        return mySensorsGateway;
+    public synchronized static IGateway getGateway(Integer gatewayId) {
+        return gateways.get(gatewayId);
     }
 
-    public synchronized static void setMySensorsGateway(IMySensorsGateway iSerialPort) {
-        ObjectFactory.mySensorsGateway = iSerialPort;
+    public synchronized static void addGateway(IGateway iGateway) {
+        gateways.put(iGateway.getGateway().getId(), iGateway);
+    }
+
+    public synchronized static void removeGateway(Integer gatewayId) {
+        gateways.remove(gatewayId);
+    }
+
+    public synchronized static Set<Integer> getGatewayIds() {
+        return gateways.keySet();
+    }
+
+    public synchronized static IActionEngine getIActionEngine(NETWORK_TYPE networktype) {
+        return iActionEngine.get(networktype);
+    }
+
+    public synchronized static void addIActionEngine(NETWORK_TYPE networktype, IActionEngine actionEngine) {
+        iActionEngine.put(networktype, actionEngine);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,21 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import java.util.List;
-
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.NumericUtils;
-import org.mycontroller.standalone.db.PayloadSpecialOperation;
-import org.mycontroller.standalone.db.TimerUtils;
-import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.db.PayloadOperation;
+import org.mycontroller.standalone.db.PayloadOperationUtils.SEND_PAYLOAD_OPERATIONS;
+import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY;
+import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -31,52 +37,90 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "timer")
+@DatabaseTable(tableName = DB_TABLES.TIMER)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Timer {
-    public static final String SENSOR_REF_ID = "sensor_ref_id";
-    public static final String SENSOR_VARIABLE_TYPE = "sensor_var_type";
-    public static final String ENABLED = "enabled";
+    public static final String KEY_ID = "id";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_ENABLED = "enabled";
+    public static final String KEY_RESOURCE_TYPE = "resourceType";
+    public static final String KEY_RESOURCE_ID = "resourceId";
+    public static final String KEY_TIMER_TYPE = "timerType";
+    public static final String KEY_FREQUENCY = "frequency";
+    public static final String KEY_LAST_FIRED = "lastFired";
 
     @DatabaseField(generatedId = true)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, columnName = ENABLED)
+    @DatabaseField(canBeNull = false, columnName = KEY_ENABLED)
     private Boolean enabled;
 
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_NAME)
     private String name;
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID)
-    private Sensor sensor;
+    @DatabaseField(dataType = DataType.ENUM_INTEGER, canBeNull = false, columnName = KEY_RESOURCE_TYPE)
+    private RESOURCE_TYPE resourceType;
 
-    @DatabaseField(canBeNull = false, columnName = SENSOR_VARIABLE_TYPE)
-    private Integer sensorVariableType;
+    @DatabaseField(canBeNull = false, columnName = KEY_RESOURCE_ID)
+    private Integer resourceId;
 
-    @DatabaseField(canBeNull = false)
-    private Integer type;
+    @DatabaseField(dataType = DataType.ENUM_STRING, canBeNull = false, columnName = KEY_TIMER_TYPE)
+    private TIMER_TYPE timerType;
 
-    @DatabaseField(canBeNull = true)
-    private Integer frequency;
+    @DatabaseField(dataType = DataType.ENUM_STRING, canBeNull = true, columnName = KEY_FREQUENCY)
+    private FREQUENCY frequency;
 
     @DatabaseField(canBeNull = true)
     private String frequencyData;
 
     @DatabaseField(canBeNull = true)
-    private Long time;
+    private Long triggerTime;
 
     @DatabaseField(canBeNull = true)
-    private Long validFrom;
+    private Long validityFrom;
 
     @DatabaseField(canBeNull = true)
-    private Long validTo;
+    private Long validityTo;
 
     @DatabaseField(canBeNull = false)
     private String payload;
 
-    @DatabaseField(canBeNull = true)
-    private Long timestamp;
+    @DatabaseField(canBeNull = true, columnName = KEY_LAST_FIRED)
+    private Long lastFired;
 
+    @DatabaseField(canBeNull = true)
+    private String internalVariable1;
+
+    public Timer() {
+
+    }
+
+    public Timer(boolean enabled, String name, RESOURCE_TYPE resourceType, Integer resourceId, TIMER_TYPE timerType) {
+        this.enabled = enabled;
+        this.name = name;
+        this.resourceType = resourceType;
+        this.resourceId = resourceId;
+        this.timerType = timerType;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id:").append(this.id);
+        builder.append(", Enabled:").append(this.enabled);
+        builder.append(", Name:").append(this.name);
+        builder.append(", ResourceType:").append(this.resourceType);
+        builder.append(", ResourceId:").append(this.resourceId);
+        builder.append(", TriggerType:").append(this.timerType.getText());
+        builder.append(", Frequency:").append(this.frequency != null ? this.frequency.getText() : "-");
+        builder.append(", TriggerTime:").append(this.triggerTime);
+        builder.append(", ValidFrom:").append(this.validityFrom);
+        builder.append(", ValidTo:").append(this.validityTo);
+        builder.append(", Payload:").append(this.payload);
+        builder.append(", Timestamp:").append(this.lastFired);
+        return builder.toString();
+    }
+
+    @JsonGetter(value = "id")
     public Integer getId() {
         return id;
     }
@@ -89,14 +133,6 @@ public class Timer {
         return name;
     }
 
-    public Sensor getSensor() {
-        return sensor;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
     public String getTimerDataString() {
         return TimerUtils.getTimerDataString(this);
     }
@@ -105,26 +141,23 @@ public class Timer {
         return TimerUtils.getValidityString(this);
     }
 
-    public Integer getFrequency() {
-        return frequency;
-    }
-
     public String getFrequencyData() {
         return frequencyData;
     }
 
-    public Long getTime() {
-        return time;
+    public Long getTriggerTime() {
+        return triggerTime;
     }
 
-    public Long getValidFrom() {
-        return validFrom;
+    public Long getValidityFrom() {
+        return validityFrom;
     }
 
-    public Long getValidTo() {
-        return validTo;
+    public Long getValidityTo() {
+        return validityTo;
     }
 
+    @JsonIgnore
     public void setId(Integer id) {
         this.id = id;
     }
@@ -137,76 +170,50 @@ public class Timer {
         this.name = name;
     }
 
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public void setTypeString() {
-        // To ignore JSON serialization
-    }
-
-    public void setFrequency(Integer frequency) {
-        this.frequency = frequency;
-    }
-
-    public void setFrequencyDataString(String frequencyDataString) {
-        if (frequencyDataString != null && frequencyDataString.length() > 0) {
-            this.frequencyData = frequencyDataString;
+    public void setFrequencyData(String frequencyData) {
+        if (frequencyData != null && frequencyData.length() > 0) {
+            this.frequencyData = frequencyData;
         }
     }
 
-    public void setFrequencyData(List<Integer> frequencyData) {
-        if (frequencyData != null && !frequencyData.isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            for (Integer frequencyD : frequencyData) {
-                if (builder.length() > 0) {
-                    builder.append(",").append(frequencyD);
-                } else {
-                    builder.append(frequencyD);
-                }
+    //@JsonIgnore
+    public void setTriggerTime(Long time) {
+        this.triggerTime = time;
+    }
+
+    /*    @JsonSetter(value = "triggerTime")
+        private void setTriggerTime(String time) {
+            if (time != null) {
+                this.triggerTime = TimerUtils.getTime(time);
             }
-            this.frequencyData = builder.toString();
-        }
-    }
+        }*/
 
-    public void setTime(Long time) {
-        this.time = time;
-    }
-
-    public void setTimeString(String time) {
-        this.time = TimerUtils.getTime(time);
-    }
-
-    public void setValidFrom(Long validFrom) {
-        this.validFrom = validFrom;
+    public void setValidityFrom(Long validFrom) {
+        this.validityFrom = validFrom;
     }
 
     public void setValidFromString(String validFromString) {
         if (validFromString != null) {
-            this.validFrom = TimerUtils.getValidFromToTime(validFromString + ":00");
+            this.validityFrom = TimerUtils.getValidFromToTime(validFromString + ":00");
         }
     }
 
     public void setValidToString(String validToString) {
         if (validToString != null) {
-            this.validTo = TimerUtils.getValidFromToTime(validToString + ":59");
+            this.validityTo = TimerUtils.getValidFromToTime(validToString + ":59");
         }
     }
 
-    public void setValidTo(Long validTo) {
-        this.validTo = validTo;
+    public void setValidityTo(Long validTo) {
+        this.validityTo = validTo;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
+    public Long getLastFired() {
+        return lastFired;
     }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setLastFired(Long timestamp) {
+        this.lastFired = timestamp;
     }
 
     public String getPayload() {
@@ -219,20 +226,18 @@ public class Timer {
 
     public String getPayloadFormatted() {
         StringBuilder builder = new StringBuilder();
-        PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(this.payload);
+        PayloadOperation specialOperation = new PayloadOperation(this.payload);
         if (specialOperation.getOperationType() != null) {
             if (specialOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.REBOOT) {
-                builder.append(" ").append(specialOperation.getOperationType().value());
+                builder.append(" ").append(specialOperation.getOperationType().getText());
             } else {
                 if (specialOperation.getValue() != null) {
-                    builder.append(" {sen.value} ")
-                            .append(specialOperation.getOperationType().value())
+                    builder.append(" {resource.value} ")
+                            .append(specialOperation.getOperationType().getText())
                             .append(" ")
                             .append(NumericUtils.getDoubleAsString(specialOperation.getValue()));
                 } else {
-                    builder.append(" ")
-                            .append(specialOperation.getOperationType().value())
-                            .append(" {sen.value}");
+                    builder.append(specialOperation.getOperationType().getText());
                 }
             }
         } else {
@@ -241,32 +246,103 @@ public class Timer {
         return builder.toString();
     }
 
-    public void setPayloadFormatted(String payload) {
-        // To ignore JSON serialization
+    @JsonIgnore
+    public RESOURCE_TYPE getResourceType() {
+        return resourceType;
     }
 
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Name:").append(name)
-                .append(", Type:").append(getTimerDataString());
-        builder.append(", Variable Type:").append(this.getSensorVariableTypeString());
-        builder.append(", PayLoad:").append(this.getPayloadFormatted());
-        builder.append(", Validity:").append(getValidityString());
-        return builder.toString();
-    }
-
-    public Integer getSensorVariableType() {
-        return sensorVariableType;
-    }
-
-    public String getSensorVariableTypeString() {
-        if (sensorVariableType != null) {
-            return MESSAGE_TYPE_SET_REQ.get(sensorVariableType).toString();
+    @JsonGetter(value = "resourceType")
+    private String getResourceTypeString() {
+        if (resourceType != null) {
+            return resourceType.getText();
         }
-        return "";
+        return null;
     }
 
-    public void setSensorVariableType(Integer sensorVariableType) {
-        this.sensorVariableType = sensorVariableType;
+    @JsonIgnore
+    public void setResourceType(RESOURCE_TYPE resourceType) {
+        this.resourceType = resourceType;
     }
+
+    @JsonSetter(value = "resourceType")
+    private void setResourceType(String resourceType) {
+        if (resourceType != null) {
+            this.resourceType = org.mycontroller.standalone.AppProperties.RESOURCE_TYPE.fromString(resourceType);
+        }
+    }
+
+    public Integer getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(Integer resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    @JsonIgnore
+    public TIMER_TYPE getTimerType() {
+        return timerType;
+    }
+
+    @JsonIgnore
+    public void setTimerType(TIMER_TYPE timerType) {
+        this.timerType = timerType;
+    }
+
+    @JsonGetter(value = "timerType")
+    private String getTimerTypeString() {
+        if (timerType != null) {
+            return timerType.getText();
+        }
+        return null;
+    }
+
+    @JsonSetter(value = "timerType")
+    private void setTimerType(String timerType) {
+        if (timerType != null) {
+            this.timerType = TIMER_TYPE.fromString(timerType);
+        }
+    }
+
+    @JsonIgnore
+    public FREQUENCY getFrequency() {
+        return frequency;
+    }
+
+    @JsonIgnore
+    public void setFrequency(FREQUENCY frequency) {
+        this.frequency = frequency;
+    }
+
+    @JsonGetter(value = "frequency")
+    private String getFrequencyString() {
+        if (frequency != null) {
+            return frequency.getText();
+        }
+        return null;
+    }
+
+    @JsonSetter(value = "frequency")
+    private void setFrequency(String frequency) {
+        if (frequency != null) {
+            this.frequency = FREQUENCY.fromString(frequency);
+        }
+    }
+
+    @JsonIgnore
+    public String getInternalVariable1() {
+        return internalVariable1;
+    }
+
+    @JsonIgnore
+    public void setInternalVariable1(String internalVariable1) {
+        this.internalVariable1 = internalVariable1;
+    }
+
+    @JsonGetter(value = "resource")
+    private String getResource() {
+        ResourceModel resourceModel = new ResourceModel(resourceType, resourceId);
+        return resourceModel.getResourceLessDetails();
+    }
+
 }

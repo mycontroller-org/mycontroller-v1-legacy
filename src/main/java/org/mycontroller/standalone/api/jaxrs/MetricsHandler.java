@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,20 +28,22 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.MYCMessages.PAYLOAD_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataKeyValuesJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.TypeUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
-import org.mycontroller.standalone.db.tables.SensorValue;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.metrics.MetricsAggregationBase;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
-import org.mycontroller.standalone.mysensors.MyMessages;
+import org.mycontroller.standalone.metrics.TypeUtils;
+import org.mycontroller.standalone.model.ResourceCountModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,14 @@ import org.slf4j.LoggerFactory;
 @Consumes(APPLICATION_JSON)
 public class MetricsHandler {
     private static final Logger _logger = LoggerFactory.getLogger(MetricsHandler.class.getName());
+
+    //Get count of resources
+    @GET
+    @Path("/resourceCount")
+    public Response getResourceCount(@QueryParam("resourceType") RESOURCE_TYPE resourceType,
+            @QueryParam("resourceId") Integer resourceId) {
+        return RestUtils.getResponse(Status.OK, new ResourceCountModel(resourceType, resourceId));
+    }
 
     @GET
     @Path("/rawData")
@@ -111,7 +121,7 @@ public class MetricsHandler {
 
     @GET
     @Path("/batteryUsage")
-    public Response getBatteryUsageDetails(@QueryParam("nodeId") int nodeId) {
+    public Response getBatteryUsageDetails(@QueryParam("nodeId") Integer nodeId) {
         return RestUtils.getResponse(Status.OK, this.getBatterUsage(nodeId));
     }
 
@@ -121,17 +131,17 @@ public class MetricsHandler {
 
         ArrayList<MetricsChartDataKeyValuesJson> finalData = new ArrayList<MetricsChartDataKeyValuesJson>();
 
-        SensorValue sensorValue = DaoUtils.getSensorValueDao().get(variableTypeId);
+        SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(variableTypeId);
 
-        if (sensorValue.getMetricType() == null) {
+        if (sensorVariable.getMetricType() == null) {
             //Sensor pay load type not up to date
             _logger.debug("Payload type not updated in sensor.");
             return null;
-        } else if (sensorValue.getMetricType() == TypeUtils.METRIC_TYPE.DOUBLE.ordinal()) {
-            _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_DOUBLE.toString());
+        } else if (sensorVariable.getMetricType() == TypeUtils.METRIC_TYPE.DOUBLE) {
+            _logger.debug("Payload type: {}", PAYLOAD_TYPE.PL_DOUBLE.toString());
 
             List<MetricsDoubleTypeDevice> metrics = metricsAggregationBase.getMetricsDoubleData(
-                    sensorValue,
+                    sensorVariable,
                     aggregationType,
                     lastNmilliSeconds != null ? System.currentTimeMillis() - lastNmilliSeconds : null);
 
@@ -141,8 +151,8 @@ public class MetricsHandler {
             }
 
             if (aggregationType == AGGREGATION_TYPE.RAW) {
-                MetricsChartDataKeyValuesJson rawChartData = new MetricsChartDataKeyValuesJson(
-                        sensorValue.getVariableTypeString());
+                MetricsChartDataKeyValuesJson rawChartData =
+                        new MetricsChartDataKeyValuesJson(sensorVariable.getVariableType().toString());
                 for (MetricsDoubleTypeDevice metric : metrics) {
                     rawChartData.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
                 }
@@ -162,17 +172,17 @@ public class MetricsHandler {
                 finalData.add(avgChartData);
                 finalData.add(maxChartData);
             }
-        } else if (sensorValue.getMetricType() == TypeUtils.METRIC_TYPE.BINARY.ordinal()) {
-            _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_BOOLEAN.toString());
+        } else if (sensorVariable.getMetricType() == TypeUtils.METRIC_TYPE.BINARY) {
+            _logger.debug("Payload type: {}", PAYLOAD_TYPE.PL_BOOLEAN.toString());
             List<MetricsBinaryTypeDevice> metrics = metricsAggregationBase.getMetricsBinaryData(
-                    sensorValue,
+                    sensorVariable,
                     lastNmilliSeconds != null ? System.currentTimeMillis() - lastNmilliSeconds : null);
             if (metrics == null) {
                 //throw new ApiError("No data available");
                 return null;
             }
 
-            Sensor sensor = DaoUtils.getSensorDao().get(sensorValue.getSensor().getId());
+            Sensor sensor = DaoUtils.getSensorDao().getById(sensorVariable.getSensor().getId());
 
             String name = sensor.getName() != null ? sensor.getName() : "State";
             MetricsChartDataKeyValuesJson minChartData = new MetricsChartDataKeyValuesJson(name);

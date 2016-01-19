@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.TimerUtils;
-import org.mycontroller.standalone.db.TimerUtils.FREQUENCY;
-import org.mycontroller.standalone.db.TimerUtils.TYPE;
-import org.mycontroller.standalone.db.TimerUtils.WEEK_DAY;
-import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.jobs.mysensors.HeartbeatJob;
-import org.mycontroller.standalone.jobs.timer.TimerJob;
+import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
+import org.mycontroller.standalone.timer.TimerSimple;
+import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
+import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
+import org.mycontroller.standalone.timer.jobs.TimerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +46,7 @@ public class SchedulerUtils {
     public static final String SYSTEM_JOB_REF = "SYS_";
     public static final String TIMER_JOB_REF = "TIMER_";
     public static final String CRON_TRIGGER_REF = "_Cron_Trigger";
+    private static final long FROM_TIME_DELAY = TIME_REF.ONE_SECOND;
     private static final Logger _logger = LoggerFactory.getLogger(SchedulerUtils.class);
 
     private SchedulerUtils() {
@@ -71,8 +72,8 @@ public class SchedulerUtils {
         }
 
         //Update all other jobs
-        //MySensors heartbeat job
-        startMySensorHearbeatJob();
+        //MySensorsSettings heartbeat job
+        startNodeAliveCheckJob();
 
     }
 
@@ -113,7 +114,11 @@ public class SchedulerUtils {
     }
 
     public static String getTimerJobName(Timer timer) {
-        return TIMER_JOB_REF + timer.getId() + "_" + timer.getName();
+        if (timer.getId() != null) {
+            return TIMER_JOB_REF + timer.getId() + "_" + timer.getName();
+        } else {
+            return TIMER_JOB_REF + "_" + timer.getName();
+        }
     }
 
     public static String getCronTriggerName(String jobName) {
@@ -128,8 +133,8 @@ public class SchedulerUtils {
         }
 
         //Check Valid To, if available 
-        if (timer.getValidTo() != null) {
-            if (timer.getValidTo() <= System.currentTimeMillis()) {
+        if (timer.getValidityTo() != null) {
+            if (timer.getValidityTo() <= System.currentTimeMillis()) {
                 _logger.warn("This timer job expired! Timer:[{}]", timer);
                 return;
             }
@@ -146,13 +151,15 @@ public class SchedulerUtils {
 
         Calendar timeCal = null;
         Calendar sunssCal = null;
-        if (TYPE.CRON.ordinal() != timer.getType()) {
+        if (TIMER_TYPE.CRON != timer.getTimerType() && TIMER_TYPE.SIMPLE != timer.getTimerType()) {
             timeCal = Calendar.getInstance();
-            timeCal.setTimeInMillis(timer.getTime());
+            timeCal.setTimeInMillis(timer.getTriggerTime());
             sunssCal = Calendar.getInstance();
         }
 
-        switch (TYPE.get(timer.getType())) {
+        switch (timer.getTimerType()) {
+            case CRON:
+            case SIMPLE:
             case NORMAL:
                 break;
             case BEFORE_SUNRISE:
@@ -186,10 +193,10 @@ public class SchedulerUtils {
             default:
                 break;
         }
-        String cronExpression;
-        if (TYPE.CRON.ordinal() == timer.getType()) {
+        String cronExpression = null;
+        if (TIMER_TYPE.CRON == timer.getTimerType()) {
             cronExpression = timer.getFrequencyData();
-        } else {
+        } else if (TIMER_TYPE.SIMPLE != timer.getTimerType()) {
             cronExpression = getCronExpression(
                     timeCal.get(Calendar.SECOND),
                     timeCal.get(Calendar.MINUTE),
@@ -199,19 +206,35 @@ public class SchedulerUtils {
 
         //Check Valid from, if available and active,
         //Change valid from as future seconds to avoid immediate trigger
-        if (timer.getValidFrom() != null) {
-            if (timer.getValidFrom() <= System.currentTimeMillis()) {
-                timer.setValidFrom(System.currentTimeMillis() + (1000 * 5));
+        if (timer.getValidityFrom() != null) {
+            if (timer.getValidityFrom() <= System.currentTimeMillis()) {
+                timer.setValidityFrom(System.currentTimeMillis() + FROM_TIME_DELAY);
             }
         }
+        if (TIMER_TYPE.SIMPLE == timer.getTimerType()) {
+            TimerSimple timerSimple = new TimerSimple(timer);
+            if (timerSimple.isValid()) {
+                SundialJobScheduler.addSimpleTrigger(
+                        getCronTriggerName(jobName),
+                        jobName,
+                        timerSimple.getRepeatCount(), //repeatCount
+                        timerSimple.getRepeatInterval(), //repeatInterval
+                        timer.getValidityFrom() != null ? new Date(timer.getValidityFrom()) : null,
+                        timer.getValidityTo() != null ? new Date(timer.getValidityTo()) : null);
+                _logger.debug("New simple timer job added:[{}], CornExpression:[{}]", timer, cronExpression);
+            } else {
+                _logger.warn("Invalid timer job:[{}]", timer);
+            }
+        } else {
+            SundialJobScheduler.addCronTrigger(
+                    getCronTriggerName(jobName),
+                    jobName,
+                    cronExpression,
+                    timer.getValidityFrom() != null ? new Date(timer.getValidityFrom()) : null,
+                    timer.getValidityTo() != null ? new Date(timer.getValidityTo()) : null);
+            _logger.debug("New timer job added:[{}], CornExpression:[{}]", timer, cronExpression);
+        }
 
-        SundialJobScheduler.addCronTrigger(
-                getCronTriggerName(jobName),
-                jobName,
-                cronExpression,
-                timer.getValidFrom() != null ? new Date(timer.getValidFrom()) : null,
-                timer.getValidTo() != null ? new Date(timer.getValidTo()) : null);
-        _logger.debug("New Timer job added:[{}], CornExpression:[{}]", timer, cronExpression);
     }
 
     public static String getCronExpression(int sec, int min, int hour, Timer timer) {
@@ -219,13 +242,13 @@ public class SchedulerUtils {
         stringBuilder.append(sec).append(" ") // Seconds
                 .append(min).append(" ")      // Minutes
                 .append(hour).append(" ");    // Hours
-        switch (FREQUENCY.get(timer.getFrequency())) {
+        switch (timer.getFrequency()) {
             case DAILY:
             case WEEKLY:
                 stringBuilder.append("? * ");
                 String[] days = timer.getFrequencyData().split(",");
                 for (String day : days) {
-                    stringBuilder.append(WEEK_DAY.get(Integer.valueOf(day)).value()).append(",");
+                    stringBuilder.append(WEEK_DAY.fromString(day).getText()).append(",");
                 }
                 stringBuilder.delete(stringBuilder.lastIndexOf(","), stringBuilder.lastIndexOf(",") + 1);
                 break;
@@ -254,19 +277,18 @@ public class SchedulerUtils {
         loadTimerJob(timer);
     }
 
-    public static void startMySensorHearbeatJob() {
-        SundialJobScheduler.addJob(HeartbeatJob.NAME, HeartbeatJob.class.getName());
-        Settings hbInterval = DaoUtils.getSettingsDao().get(Settings.MYS_HEARTBEAT_INTERVAL);
-        SundialJobScheduler.addSimpleTrigger(HeartbeatJob.TRIGGER_NAME, HeartbeatJob.NAME, -1,
-                Long.valueOf(hbInterval.getValue()) * NumericUtils.MINUTE);
+    public static void startNodeAliveCheckJob() {
+        SundialJobScheduler.addJob(NodeAliveStatusJob.NAME, NodeAliveStatusJob.class.getName());
+        SundialJobScheduler.addSimpleTrigger(NodeAliveStatusJob.TRIGGER_NAME, NodeAliveStatusJob.NAME, -1,
+                ObjectFactory.getAppProperties().getControllerSettings().getAliveCheckInterval());
     }
 
-    public static void stopMySensorHearbeatJob() {
-        SundialJobScheduler.removeJob(HeartbeatJob.NAME);
+    public static void stopNodeAliveCheckJob() {
+        SundialJobScheduler.removeJob(NodeAliveStatusJob.NAME);
     }
 
     public static void reloadMySensorHearbeatJob() {
-        stopMySensorHearbeatJob();
-        startMySensorHearbeatJob();
+        stopNodeAliveCheckJob();
+        startNodeAliveCheckJob();
     }
 }

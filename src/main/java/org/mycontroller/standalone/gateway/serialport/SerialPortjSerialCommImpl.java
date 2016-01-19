@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,10 @@
  */
 package org.mycontroller.standalone.gateway.serialport;
 
-import java.util.HashMap;
-
-import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
-import org.mycontroller.standalone.gateway.IMySensorsGateway;
-import org.mycontroller.standalone.mysensors.RawMessage;
+import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.gateway.GatewaySerial;
+import org.mycontroller.standalone.gateway.IGateway;
+import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +28,13 @@ import com.fazecast.jSerialComm.SerialPort;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class SerialPortjSerialCommImpl implements IMySensorsGateway {
+public class SerialPortjSerialCommImpl implements IGateway {
     private static final Logger _logger = LoggerFactory.getLogger(SerialPortjSerialCommImpl.class.getName());
     private SerialPort serialPort;
-    private GatewayInfo gatewayInfo = new GatewayInfo();
+    private GatewaySerial gateway = null;
 
-    public SerialPortjSerialCommImpl() {
+    public SerialPortjSerialCommImpl(GatewaySerial gateway) {
+        this.gateway = gateway;
         initialize();
     }
 
@@ -45,7 +43,8 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
         try {
             serialPort.writeBytes(rawMessage.getGWBytes(), rawMessage.getGWBytes().length);
         } catch (Exception ex) {
-            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
+            gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+            gateway.updateGateway();
             _logger.error("Error,", ex);
         }
     }
@@ -67,50 +66,32 @@ public class SerialPortjSerialCommImpl implements IMySensorsGateway {
                     serialPorts[portNo].getDescriptivePortName());
         }
 
-        //Update Gateway Info
-        gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
-        gatewayInfo.setData(new HashMap<String, Object>());
-
-        gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
-        gatewayInfo.getData().put(SerialPortCommon.DRIVER_TYPE,
-                ObjectFactory.getAppProperties().getGatewaySerialPortDriver());
-        gatewayInfo.getData().put(SerialPortCommon.SELECTED_DRIVER_TYPE,
-                AppProperties.SERIAL_PORT_DRIVER.JSERIALCOMM.toString());
-        gatewayInfo.getData().put(SerialPortCommon.PORT_NAME,
-                ObjectFactory.getAppProperties().getGatewaySerialPortName());
-        gatewayInfo.getData().put(SerialPortCommon.BAUD_RATE,
-                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
-
         // create an instance of the serial communications class
-        serialPort = SerialPort.getCommPort(ObjectFactory.getAppProperties().getGatewaySerialPortName());
+        serialPort = SerialPort.getCommPort(gateway.getPortName());
 
         serialPort.openPort();//Open port
         if (!serialPort.isOpen()) {
-            _logger.error("Unable to open serial port:[{}]",
-                    ObjectFactory.getAppProperties().getGatewaySerialPortName());
-            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "ERROR: Unable to open!");
+            _logger.error("Unable to open serial port:[{}]", gateway.getPortName());
+            gateway.setStatus(STATE.DOWN, "ERROR: Unable to open!");
+            gateway.updateGateway();
             return;
         }
         serialPort.setComPortParameters(
-                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate(),
+                gateway.getBaudRate(),
                 8,  // data bits
                 SerialPort.ONE_STOP_BIT,
                 SerialPort.NO_PARITY);
 
         // create and register the serial data listener
-        serialPort.addDataListener(new SerialDataListenerjSerialComm(serialPort, gatewayInfo));
-        _logger.debug("Serial port initialized with the driver:{}, PortName:{}, BaudRate:{}",
-                ObjectFactory.getAppProperties().getGatewaySerialPortDriver(),
-                ObjectFactory.getAppProperties().getGatewaySerialPortName(),
-                ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
-        gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
-        gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, true);
-        gatewayInfo.getData().put(SerialPortCommon.LAST_SUCCESSFUL_CONNECTION, System.currentTimeMillis());
+        serialPort.addDataListener(new SerialDataListenerjSerialComm(serialPort, gateway));
+        _logger.debug("Serial port initialized with {}", gateway.getConnectionDetails());
+        gateway.setStatus(STATE.UP, "Connected Successfully");
+        gateway.updateGateway();
     }
 
     @Override
-    public GatewayInfo getGatewayInfo() {
-        return gatewayInfo;
+    public GatewaySerial getGateway() {
+        return gateway;
     }
 
 }

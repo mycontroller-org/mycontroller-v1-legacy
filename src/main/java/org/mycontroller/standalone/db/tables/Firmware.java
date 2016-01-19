@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package org.mycontroller.standalone.db.tables;
 
 import java.util.ArrayList;
 
+import org.mycontroller.standalone.db.DB_TABLES;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -26,12 +28,13 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "firmware")
+@DatabaseTable(tableName = DB_TABLES.FIRMWARE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Firmware {
 
-    public static final String TYPE_ID = "type_id";
-    public static final String VERSION_ID = "version_id";
+    public static final String KEY_ID = "id";
+    public static final String KEY_TYPE_ID = "typeId";
+    public static final String KEY_VERSION_ID = "versionId";
 
     public Firmware() {
 
@@ -46,14 +49,14 @@ public class Firmware {
         this.version.setId(versionId);
     }
 
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = TYPE_ID,
+    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_TYPE_ID,
             foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private FirmwareType type;
 
-    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = VERSION_ID,
+    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_VERSION_ID,
             foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private FirmwareVersion version;
 
@@ -133,7 +136,7 @@ public class Firmware {
 
     public String getFirmwareName() {
         if (type != null && version != null) {
-            return type.getName() + ":" + version.getName();
+            return type.getName() + ":" + version.getVersion();
         }
         return "-";
     }

@@ -1,0 +1,112 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-2x">
+
+  <!-- Loading icon disaplay --> 
+  <div ng-hide="jvmStatus.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="jvmStatus.$resolved"> <!-- Main Message -->
+
+    <div class="col-lg-12">
+      <div class="card-pf card-pf-utilization">
+        <div class="card-pf-heading"><h2 class="card-pf-title">{{ 'SYSTEM_STATUS.JAVA_JAVA_VIRTUAL_MACHINE_SPECIFICATION' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <dl class="dl-horizontal">
+            <dt>{{ 'SYSTEM_STATUS.JAVA_HOME' | translate }}</dt> <dd>{{osStatus.javaHome}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.JAVA_VENDOR_URL' | translate }}</dt> <dd>{{osStatus.javaVendorUrl}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.VM_NAME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmName}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.VM_VENDOR' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmVendor}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.VM_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmVersion}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.SPECIFICATION_VENDOR' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.specVendor}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.SPECIFICATION_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.specVersion}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.MANAGEMENT_SPECIFICATION_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.managementSpecVersion}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.UP_TIME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.uptime | millSecondsToTimeString}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.HEAP_MEMORY' | translate }}</dt>
+                <dd>
+                  {{ 'SYSTEM_STATUS.USED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.used | byteToMBsizeConvertor}}, 
+                  {{ 'SYSTEM_STATUS.COMMITTED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.committed | byteToMBsizeConvertor}}, 
+                  {{ 'SYSTEM_STATUS.INIT' | translate }}: {{jvmStatus.memory.heapMemoryUsage.init | byteToMBsizeConvertor}}, 
+                  {{ 'SYSTEM_STATUS.MAX' | translate }}: {{jvmStatus.memory.heapMemoryUsage.max | byteToMBsizeConvertor}}
+                </dd>
+            <dt>{{ 'SYSTEM_STATUS.NON_HEAP_MEMORY' | translate }}</dt>
+                <dd>
+                  {{ 'SYSTEM_STATUS.USED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.used | byteToMBsizeConvertor}}, 
+                  {{ 'SYSTEM_STATUS.COMMITTED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.committed | byteToMBsizeConvertor}}, 
+                  {{ 'SYSTEM_STATUS.INIT' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.init | byteToMBsizeConvertor}}, 
+                  {{ 'SYSTEM_STATUS.MAX' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.max | byteToMBsizeConvertor}}
+                </dd>
+            <dt>{{ 'SYSTEM_STATUS.THREADS_COUNT' | translate }}</dt>
+                <dd>
+                  {{ 'SYSTEM_STATUS.CURRENT' | translate }}: {{jvmStatus.thread.threadCount}}, 
+                  {{ 'SYSTEM_STATUS.PEAK' | translate }}: {{jvmStatus.thread.peakThreadCount}}, 
+                  {{ 'SYSTEM_STATUS.TOTAL_STARTED' | translate }}: {{jvmStatus.thread.totalStartedThreadCount}}, 
+                  {{ 'SYSTEM_STATUS.DAEMON' | translate }}: {{jvmStatus.thread.daemonThreadCount}}
+                </dd>
+            <dt>{{ 'SYSTEM_STATUS.CLASS_LOADING_DETAILS' | translate }}</dt>
+                <dd>
+                  {{ 'SYSTEM_STATUS.LOADED' | translate }}: {{jvmStatus.classLoadingDetail.loadedClassCount}}, 
+                  {{ 'SYSTEM_STATUS.UNLOADED' | translate }}: {{jvmStatus.classLoadingDetail.unloadedClassCount}}, 
+                  {{ 'SYSTEM_STATUS.TOTAL_LOADED' | translate }}: {{jvmStatus.classLoadingDetail.totalLoadedClassCount}}
+                </dd>
+            <span ng-repeat="garbageCollector in jvmStatus.garbageCollectors">
+              <dt>{{ 'SYSTEM_STATUS.GARBAGE_COLLECTOR' | translate }} - {{garbageCollector.name}}</dt>
+                <dd>
+                  {{ 'SYSTEM_STATUS.COLLECTION_TIME' | translate }}: {{garbageCollector.collectionTime}}, 
+                  {{ 'SYSTEM_STATUS.COLLECTION_COUNT' | translate }}: {{garbageCollector.collectionCount}}, 
+                  {{ 'SYSTEM_STATUS.LAST_GARBAGECOLLECTOR_DURATION' | translate }}: {{garbageCollector.lastGcDuration}}
+                </dd>
+            </span>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="card-pf card-pf-utilization">
+        <div class="card-pf-heading"><h2 class="card-pf-title">{{ 'SYSTEM_STATUS.OPERATING_SYSTEM' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <dl class="dl-horizontal">
+            <dt>{{ 'SYSTEM_STATUS.OPERATING_SYSTEM' | translate }}</dt> <dd>{{osStatus.name}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.ARCHITECTURE' | translate }}</dt> <dd>{{osStatus.arch}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.VERSION_KERNEL' | translate }}</dt> <dd>{{osStatus.version}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.AVAILABLE_PROCESS' | translate }}</dt> <dd>{{osStatus.availableProcess}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.SYSTEM_LOAD_AVERAGE' | translate }}</dt> <dd>{{osStatus.systemLoadAverage}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.SYSTEM_CPU_LOAD' | translate }}</dt> <dd>{{osStatus.systemCpuLoad}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.PROCESS_CPU' | translate }}</dt> <dd>{{ 'SYSTEM_STATUS.LOAD' | translate }}: {{osStatus.processCpuLoad}}, {{ 'SYSTEM_STATUS.TIME' | translate }}: {{osStatus.processCpuTime}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.PHYSICAL_MEMORY' | translate }}</dt>
+              <dd>
+                {{ 'SYSTEM_STATUS.FREE' | translate }}: {{osStatus.freePhysicalMemorySize | byteToMBsizeConvertor}}, 
+                {{ 'SYSTEM_STATUS.TOTAL' | translate }}: {{osStatus.totalPhysicalMemorySize | byteToMBsizeConvertor}}
+              </dd>
+            <dt>{{ 'SYSTEM_STATUS.SWAP_SPACE' | translate }}</dt>
+              <dd>
+                {{ 'SYSTEM_STATUS.FREE' | translate }}: {{osStatus.freeSwapSpaceSize | byteToMBsizeConvertor}}, 
+                {{ 'SYSTEM_STATUS.TOTAL' | translate }}: {{osStatus.totalSwapSpaceSize | byteToMBsizeConvertor}}
+              </dd>
+            <dt>{{ 'SYSTEM_STATUS.COMMITTED_VIRTUAL_MEMORY_SIZE' | translate }}</dt> <dd>{{osStatus.committedVirtualMemorySize | byteToMBsizeConvertor}}</dd>
+            <dt>{{ 'SYSTEM_STATUS.USER_WORKING_DIRECTORY' | translate }}</dt> <dd>{{osStatus.userWorkingDir}}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,23 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class ForwardPayloadDaoImpl extends BaseAbstractDao<ForwardPayload, Integer> implements ForwardPayloadDao {
+public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, Integer> implements ForwardPayloadDao {
     private static final Logger _logger = LoggerFactory.getLogger(ForwardPayloadDaoImpl.class);
 
     public ForwardPayloadDaoImpl(ConnectionSource connectionSource) throws SQLException {
@@ -38,43 +42,17 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDao<ForwardPayload, Integ
     }
 
     @Override
-    public void create(ForwardPayload forwardPayload) {
+    public List<ForwardPayload> getAllBySourceSensor(Integer sourceSensorId, Boolean enabled) {
+        List<Integer> ids = DaoUtils.getSensorVariableDao().getSensorVariableIds(sourceSensorId);
         try {
-            Integer count = this.getDao().create(forwardPayload);
-            _logger.debug("Created ForwardPayload:[{}], Create count:{}", forwardPayload, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to add ForwardPayload:[{}]", forwardPayload, ex);
-        }
-    }
-
-    @Override
-    public void delete(Integer id) {
-        ForwardPayload forwardPayload = new ForwardPayload(id);
-        try {
-            Integer count = this.getDao().delete(forwardPayload);
-            _logger.debug("ForwardPayload:[{}] deleted, Delete count:{}", forwardPayload, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to delete ForwardPayload:[{}]", forwardPayload, ex);
-        }
-    }
-
-    @Override
-    public void deleteBySensorRefId(Integer sensorRefId) {
-        try {
-            DeleteBuilder<ForwardPayload, Integer> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId).or()
-                    .eq(ForwardPayload.FORWARD_SENSOR_REF_ID, sensorRefId);
-            Integer deleteCount = deleteBuilder.delete();
-            _logger.debug("Deleted sensorRefId:[{}], delete count:{}", sensorRefId, deleteCount);
-        } catch (SQLException ex) {
-            _logger.error("unable to delete sensorRefId:{}", sensorRefId, ex);
-        }
-    }
-
-    @Override
-    public List<ForwardPayload> getAll() {
-        try {
-            return this.getDao().queryForAll();
+            QueryBuilder<ForwardPayload, Integer> queryBuilder = this.getDao().queryBuilder();
+            if (enabled != null) {
+                queryBuilder.where().in(ForwardPayload.KEY_SOURCE_ID, ids).and()
+                        .eq(ForwardPayload.KEY_ENABLED, enabled);
+            } else {
+                queryBuilder.where().in(ForwardPayload.KEY_SOURCE_ID, ids);
+            }
+            return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get all list", ex);
             return null;
@@ -82,25 +60,102 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDao<ForwardPayload, Integ
     }
 
     @Override
-    public List<ForwardPayload> getAll(Integer sensorRefId) {
-        return this.getAll(sensorRefId, null);
+    public List<ForwardPayload> getAllBySourceSensor(Integer sourceSensorId) {
+        return getAllBySourceSensor(sourceSensorId, null);
     }
 
     @Override
-    public List<ForwardPayload> getAll(Integer sensorRefId, Integer sourceType) {
+    public List<ForwardPayload> getAllByDestinationSensor(Integer destinationSensorId) {
+        List<Integer> ids = DaoUtils.getSensorVariableDao().getSensorVariableIds(destinationSensorId);
         try {
             QueryBuilder<ForwardPayload, Integer> queryBuilder = this.getDao().queryBuilder();
-            if (sourceType != null) {
-                queryBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId).and()
-                        .eq(ForwardPayload.SOURCE_TYPE, sourceType);
-            } else {
-                queryBuilder.where().eq(ForwardPayload.SENSOR_REF_ID, sensorRefId);
-            }
+            queryBuilder.where().in(ForwardPayload.KEY_DESTINATION_ID, ids);
             return queryBuilder.query();
         } catch (SQLException ex) {
-            _logger.error("unable to fetch sensorRefId{}, sourceType", sensorRefId, sourceType, ex);
+            _logger.error("unable to get all list", ex);
+            return null;
+        }
+    }
+
+    @Override
+    public void deleteBySensorId(Integer sensorId) {
+        try {
+            List<Integer> ids = DaoUtils.getSensorVariableDao().getSensorVariableIds(sensorId);
+            DeleteBuilder<ForwardPayload, Integer> deleteBuilder = this.getDao().deleteBuilder();
+            deleteBuilder.where().in(ForwardPayload.KEY_SOURCE_ID, ids).or()
+                    .in(ForwardPayload.KEY_DESTINATION_ID, ids);
+            Integer deleteCount = deleteBuilder.delete();
+            _logger.debug("Deleted SensorId:[{}], delete count:{}", sensorId, deleteCount);
+        } catch (SQLException ex) {
+            _logger.error("unable to delete SensorId:{}", sensorId, ex);
+        }
+    }
+
+    @Override
+    public void enable(List<Integer> ids) {
+        this.enableDisable(ids, true);
+    }
+
+    @Override
+    public void disable(List<Integer> ids) {
+        this.enableDisable(ids, false);
+    }
+
+    private void enableDisable(List<Integer> ids, boolean enabled) {
+        try {
+            UpdateBuilder<ForwardPayload, Integer> updateBuilder = this.getDao().updateBuilder();
+            updateBuilder.updateColumnValue(ForwardPayload.KEY_ENABLED, enabled).where()
+                    .in(ForwardPayload.KEY_ID, ids);
+            int updateCount = updateBuilder.update();
+            _logger.debug("Updated rows count:{}", updateCount);
+        } catch (SQLException ex) {
+            _logger.error("Failed to update, Ids:{}", ids, ex);
+        }
+
+    }
+
+    @Override
+    public List<ForwardPayload> getAll(Integer sensorVariableId) {
+        try {
+            return this.getDao().queryForEq(ForwardPayload.KEY_SOURCE_ID, sensorVariableId);
+        } catch (SQLException ex) {
+            _logger.error("unable to featch getAll for selected id, ", ex);
         }
         return null;
+    }
+
+    @Override
+    public List<ForwardPayload> getAllEnabled(Integer sensorVariableId) {
+        try {
+            QueryBuilder<ForwardPayload, Integer> queryBuilder = this.getDao().queryBuilder();
+
+            queryBuilder.where().eq(ForwardPayload.KEY_ENABLED, true).and()
+                    .eq(ForwardPayload.KEY_SOURCE_ID, sensorVariableId);
+            return queryBuilder.query();
+        } catch (SQLException ex) {
+            _logger.error("unable to featch getAll for selected id, ", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public QueryResponse getAll(Query query) {
+        try {
+            return this.getQueryResponse(query, ForwardPayload.KEY_ID);
+        } catch (SQLException ex) {
+            _logger.error("unable to run query:[{}]", query, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public ForwardPayload get(ForwardPayload tdao) {
+        return this.getById(tdao.getId());
+    }
+
+    @Override
+    public List<ForwardPayload> getAll(List<Integer> ids) {
+        return getAll(ForwardPayload.KEY_ID, ids);
     }
 
 }

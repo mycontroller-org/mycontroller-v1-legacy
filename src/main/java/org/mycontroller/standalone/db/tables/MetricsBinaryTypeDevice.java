@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import org.mycontroller.standalone.db.DB_TABLES;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -23,17 +25,18 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "metrics_binary")
+@DatabaseTable(tableName = DB_TABLES.METRICS_BINARY_TYPE_DEVICE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetricsBinaryTypeDevice {
-    public static final String SENSOR_VALUE_REF_ID = "sensor_value_ref_id";
-    public static final String TIMESTAMP = "timestamp";
+    public static final String KEY_SENSOR_VARIABLE_ID = "sensorVariableId";
+    public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_STATE = "state";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_VALUE_REF_ID)
-    private SensorValue sensorValue;
-    @DatabaseField(uniqueCombo = true, canBeNull = false)
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID)
+    private SensorVariable sensorVariable;
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_STATE)
     private Boolean state;
 
     private Long timestampFrom;
@@ -43,26 +46,26 @@ public class MetricsBinaryTypeDevice {
 
     }
 
-    public MetricsBinaryTypeDevice(SensorValue sensorValue) {
-        this(sensorValue, null, null);
+    public MetricsBinaryTypeDevice(SensorVariable sensorVariable) {
+        this(sensorVariable, null, null);
     }
 
-    public MetricsBinaryTypeDevice(SensorValue sensorValue, Long timestamp) {
-        this(sensorValue, timestamp, null);
+    public MetricsBinaryTypeDevice(SensorVariable sensorVariable, Long timestamp) {
+        this(sensorVariable, timestamp, null);
     }
 
-    public MetricsBinaryTypeDevice(SensorValue sensorValue, Long timestamp, Boolean state) {
-        this.sensorValue = sensorValue;
+    public MetricsBinaryTypeDevice(SensorVariable sensorVariable, Long timestamp, Boolean state) {
+        this.sensorVariable = sensorVariable;
         this.state = state;
         this.timestamp = timestamp;
     }
 
-    public SensorValue getSensorValue() {
-        return sensorValue;
+    public SensorVariable getSensorValue() {
+        return sensorVariable;
     }
 
-    public void setSensorValue(SensorValue sensorValue) {
-        this.sensorValue = sensorValue;
+    public void setSensorValue(SensorVariable sensorVariable) {
+        this.sensorVariable = sensorVariable;
     }
 
     public Boolean getState() {

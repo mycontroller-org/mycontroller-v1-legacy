@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,5 @@ package org.mycontroller.standalone.gateway.serialport;
  * @since 0.0.2
  */
 public class SerialPortCommon {
-    public static final String DRIVER_TYPE = "driverType";
-    public static final String SELECTED_DRIVER_TYPE = "selectedDriverType";
-    public static final String PORT_NAME = "portName";
-    public static final String BAUD_RATE = "baudRate";
-    public static final String CONNECTION_STATUS = "connectionStatus";
-    public static final String IS_CONNECTED = "isConnected";
-    public static final String LAST_SUCCESSFUL_CONNECTION = "lastSuccessfulConnection";
-
     public static final byte MESSAGE_SPLITTER = '\n';   // Message splitter char for serial message
 }

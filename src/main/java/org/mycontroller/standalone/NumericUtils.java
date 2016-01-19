@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class NumericUtils {
     public static final long MINUTE = SECOND * 60;
     public static final long HOUR = MINUTE * 60;
     public static final long DAY = HOUR * 24;
-    public static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    public static final DecimalFormat decimalFormat = new DecimalFormat("#.###");
 
     private NumericUtils() {
 
@@ -72,6 +72,22 @@ public class NumericUtils {
         }
     }
 
+    public static Long getLong(String value) {
+        if (value != null) {
+            return Long.valueOf(value);
+        } else {
+            return null;
+        }
+    }
+
+    public static Boolean getBoolean(String value) {
+        if (value != null) {
+            return Boolean.valueOf(value);
+        } else {
+            return null;
+        }
+    }
+
     public static String getStatusAsString(String value) {
         if (value != null) {
             return value.equalsIgnoreCase("0") ? "OFF" : "ON";
@@ -105,41 +121,86 @@ public class NumericUtils {
     }
 
     public static String getDifferenceFriendlyTime(long timestamp) {
-        StringBuilder builder = new StringBuilder();
         long diffMills = (System.currentTimeMillis() - timestamp);
+        String friendlyTime = getFriendlyTime(diffMills, false);
+        if (friendlyTime.contains("Now")) {
+            return friendlyTime;
+        } else {
+            return friendlyTime + " ago";
+        }
+    }
+
+    private static void updateFriendlyTime(StringBuilder builder, long milliseconds) {
+        long diffMills = milliseconds;
         long diffSeconds = diffMills / SECOND;
         long diffMinutes = diffMills / MINUTE;
         long diffHours = diffMills / HOUR;
         long diffDays = diffMills / DAY;
-        if (diffDays > 0) {
-            builder.append(diffDays);
-            if (diffDays == 1) {
-                builder.append(" Day ago");
-            } else {
-                builder.append(" Days ago");
+        if (milliseconds >= SECOND) {
+            if (builder.length() > 0) {
+                builder.append(" ");
             }
-        } else if (diffHours > 0) {
-            builder.append(diffHours);
-            if (diffHours == 1) {
-                builder.append(" Hour ago");
-            } else {
-                builder.append(" Hours ago");
+            if (diffDays > 0) {
+                builder.append(diffDays);
+                if (diffDays == 1) {
+                    builder.append(" Day");
+                } else {
+                    builder.append(" Days");
+                }
+            } else if (diffHours > 0) {
+                builder.append(diffHours);
+                if (diffHours == 1) {
+                    builder.append(" Hour");
+                } else {
+                    builder.append(" Hours");
+                }
+            } else if (diffMinutes > 0) {
+                builder.append(diffMinutes);
+                if (diffMinutes == 1) {
+                    builder.append(" Minute");
+                } else {
+                    builder.append(" Minutes");
+                }
+            } else if (diffSeconds > 0) {
+                builder.append(diffSeconds);
+                if (diffSeconds == 1) {
+                    builder.append(" Second");
+                } else {
+                    builder.append(" Seconds");
+                }
             }
-        } else if (diffMinutes > 0) {
-            builder.append(diffMinutes);
-            if (diffMinutes == 1) {
-                builder.append(" Minute ago");
-            } else {
-                builder.append(" Minutes ago");
-            }
-        } else if (diffSeconds > 0) {
-            builder.append(diffSeconds);
-            if (diffSeconds == 1) {
-                builder.append(" Second ago");
-            } else {
-                builder.append(" Seconds ago");
+        }
+    }
+
+    public static String getFriendlyTime(Long milliseconds, boolean strict) {
+        if (milliseconds == null) {
+            return "-";
+        }
+        StringBuilder builder = new StringBuilder();
+
+        if (strict) {
+            while (milliseconds >= SECOND) {
+                if (milliseconds >= DAY) {
+                    updateFriendlyTime(builder, milliseconds);
+                    milliseconds = milliseconds % DAY;
+                } else if (milliseconds >= HOUR) {
+                    updateFriendlyTime(builder, milliseconds);
+                    milliseconds = milliseconds % HOUR;
+                } else if (milliseconds >= MINUTE) {
+                    updateFriendlyTime(builder, milliseconds);
+                    milliseconds = milliseconds % MINUTE;
+                } else if (milliseconds >= SECOND) {
+                    updateFriendlyTime(builder, milliseconds);
+                    milliseconds = milliseconds % SECOND;
+                } else {
+                    break;
+                }
             }
         } else {
+            updateFriendlyTime(builder, milliseconds);
+        }
+
+        if (builder.length() == 0) {
             builder.append("Now");
         }
         return builder.toString();

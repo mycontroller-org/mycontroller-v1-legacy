@@ -1,0 +1,146 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-2x">
+
+  <!-- Loading icon disaplay --> 
+  <div ng-hide="smsSettings.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="smsSettings.$resolved"> <!-- Main Message -->
+
+    <!-- Email settings -->
+    <div class="col-md-12">
+      <div class="card-pf">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-envelope-o fa-lg"></i> Email</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal">
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">SMTP host</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpHost"/>
+                <span ng-hide="editEnable.email">{{emailSettings.smtpHost}}</span>
+              </div>
+            </div>
+            
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">SMTP port</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpPort"/>
+                <span ng-hide="editEnable.email">{{emailSettings.smtpPort}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">From address</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.fromAddress"/>
+                <span ng-hide="editEnable.email">{{emailSettings.fromAddress}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Enable ssl</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.enableSsl"/>
+                <span ng-hide="editEnable.email">{{emailSettings.enableSsl}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">SMTP username</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpUsername"/>
+                <span ng-hide="editEnable.email">{{emailSettings.smtpUsername}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">SMTP password</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpPassword"/>
+                <span ng-hide="editEnable.email">{{emailSettings.smtpPassword}}</span>
+              </div>
+            </div>
+            
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.email" ng-click="editEnable.email = true">Edit</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.email" ng-click="updateSettingsEmail();editEnable.email = false">Cancel</button>
+            <button type="button" class="btn btn-primary" ng-click="saveEmail()"  ng-show="editEnable.email" ng-disabled="saveProgress.email">
+              <div ng-show="saveProgress.email" class="spinner spinner-xs"></div>
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- SMS settings -->
+    <div class="col-md-12">
+      <div class="card-pf">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-mobile fa-lg"></i> SMS</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal">
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Auth id</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.authId"/>
+                <span ng-hide="editEnable.sms">{{smsSettings.authId}}</span>
+              </div>
+            </div>
+            
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Auth token</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.authToken"/>
+                <span ng-hide="editEnable.sms">{{smsSettings.authToken}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">From mobile number</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.fromNumber"/>
+                <span ng-hide="editEnable.sms">{{smsSettings.fromNumber}}</span>
+              </div>
+            </div>
+            
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.sms" ng-click="editEnable.sms = true">Edit</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.sms" ng-click="updateSettingsSms();editEnable.sms = false">Cancel</button>
+            <button type="button" class="btn btn-primary" ng-click="saveSms()"  ng-show="editEnable.sms" ng-disabled="saveProgress.sms">
+              <div ng-show="saveProgress.sms" class="spinner spinner-xs"></div>
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container -->

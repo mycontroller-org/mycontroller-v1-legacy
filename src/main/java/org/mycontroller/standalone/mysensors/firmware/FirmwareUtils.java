@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,7 +142,7 @@ public class FirmwareUtils {
         for (Firmware firmware : firmwares) {
             DaoUtils.getFirmwareDao().delete(firmware);
         }
-        DaoUtils.getFirmwareTypeDao().delete(id);
+        DaoUtils.getFirmwareTypeDao().deleteById(id);
     }
 
     public static synchronized void deleteFirmwareVersion(int id) {
@@ -150,11 +150,11 @@ public class FirmwareUtils {
         for (Firmware firmware : firmwares) {
             DaoUtils.getFirmwareDao().delete(firmware);
         }
-        DaoUtils.getFirmwareVersionDao().delete(id);
+        DaoUtils.getFirmwareVersionDao().deleteById(id);
     }
 
     public static synchronized void deleteFirmware(int id) {
-        DaoUtils.getFirmwareDao().delete(id);
+        DaoUtils.getFirmwareDao().deleteById(id);
     }
 
     public static synchronized void createFirmware(Firmware firmware) {

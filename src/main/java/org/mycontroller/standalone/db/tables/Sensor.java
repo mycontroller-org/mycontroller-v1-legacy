@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@ package org.mycontroller.standalone.db.tables;
 
 import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.mapper.SensorStatus;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.api.jaxrs.mapper.SensorsGuiButton;
+import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.SensorUtils;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -30,49 +31,58 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "sensor")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@DatabaseTable(tableName = DB_TABLES.SENSOR)
 public class Sensor {
-    public static final String SENSOR_ID = "sensor_id";
-    public static final String NODE_ID = "node_id";
+    public static final String KEY_ID = "id";
+    public static final String KEY_SENSOR_ID = "sensorId";
+    public static final String KEY_NODE_ID = "nodeId";
+    public static final String KEY_NODE_NAME = "nodeName";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_LAST_SEEN = "lastSeen";
+    public static final String KEY_TYPE = "type";
 
     public Sensor() {
     }
 
-    public Sensor(Integer sensorId, Integer type, String name) {
+    public Sensor(Integer sensorId, MESSAGE_TYPE_PRESENTATION type, String name) {
         this.sensorId = sensorId;
         this.type = type;
         this.name = name;
-        this.updateTime = System.currentTimeMillis();
+        this.lastSeen = System.currentTimeMillis();
     }
 
     public Sensor(Integer sensorId) {
         this.sensorId = sensorId;
     }
 
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, index = true, uniqueCombo = true, columnName = SENSOR_ID)
+    @DatabaseField(canBeNull = false, index = true, uniqueCombo = true, columnName = KEY_SENSOR_ID)
     private Integer sensorId;
 
-    @DatabaseField
-    private Integer type;
+    @DatabaseField(dataType = DataType.ENUM_STRING, columnName = KEY_TYPE)
+    private MESSAGE_TYPE_PRESENTATION type;
 
-    @DatabaseField
+    @DatabaseField(columnName = KEY_NAME)
     private String name;
 
-    @DatabaseField
-    private Long updateTime;
+    @DatabaseField(columnName = KEY_LAST_SEEN)
+    private Long lastSeen;
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = NODE_ID,
-            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_NODE_ID,
+            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Node node;
 
-    @DatabaseField(canBeNull = true)
-    private Boolean enableSendPayload;
+    private List<String> variableTypes;
 
-    private String variableTypes;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Integer getSensorId() {
         return sensorId;
@@ -82,11 +92,11 @@ public class Sensor {
         this.sensorId = sensorId;
     }
 
-    public Integer getType() {
+    public MESSAGE_TYPE_PRESENTATION getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(MESSAGE_TYPE_PRESENTATION type) {
         this.type = type;
     }
 
@@ -98,40 +108,7 @@ public class Sensor {
         this.node = node;
     }
 
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTypeString() {
-        if (this.type != null) {
-            return MESSAGE_TYPE_PRESENTATION.get(this.type).toString();
-        }
-        return null;
-    }
-
     public String getName() {
-        return name;
-    }
-
-    public String getNameWithNode() {
-        if (node != null && node.getName() != null) {
-            if (name == null) {
-                return node.getName() + ":-";
-            }
-            return node.getName() + ":" + name;
-        }
         return name;
     }
 
@@ -139,27 +116,35 @@ public class Sensor {
         this.name = name;
     }
 
-    public List<SensorStatus> getStatus() {
-        return SensorUtils.getStatus(this);
-    }
-
     public SensorsGuiButton getGuiButtons() {
         return SensorUtils.getGuiButtonsStatus(this);
     }
 
-    public String getVariableTypes() {
+    public List<String> getVariableTypes() {
         if (this.variableTypes == null) {
             this.variableTypes = SensorUtils.getVariableTypes(this);
         }
         return this.variableTypes;
     }
 
-    public void setVariableTypes(String variableTypes) {
+    public void setVariableTypes(List<String> variableTypes) {
         this.variableTypes = variableTypes;
     }
 
-    public String getLastSeen() {
-        return SensorUtils.getLastSeen(this.updateTime);
+    public Long getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(Long lastSeen) {
+        this.lastSeen = lastSeen;
+    }
+
+    //This method is used to create variables for this sensor,
+    //But in mixins(SensorMixin) we need id of this sensor, if we use we 'getId'cannot generate 'id'
+    //So added this ugly workaround.
+    @JsonGetter
+    private Integer getIdforVariables() {
+        return this.id;
     }
 
     public String toString() {
@@ -169,25 +154,8 @@ public class Sensor {
         builder.append(", Name:").append(this.name);
         builder.append(", SensorType:").append(this.type);
         builder.append(", VariableTypes:").append(getVariableTypes());
-        builder.append(", UpdateTime:").append(this.updateTime);
+        builder.append(", lastSeen:").append(this.lastSeen);
         builder.append(", Node:[").append(this.node).append("]");
-        builder.append(", Status:[").append(this.getStatus()).append("]");
-        builder.append(", IsSendPayloadEnabled?:").append(this.getEnableSendPayload());
         return builder.toString();
-    }
-
-    public Boolean getEnableSendPayload() {
-        if (this.enableSendPayload == null) {
-            return SensorUtils.getSendPayloadEnabled(this);
-        }
-        return enableSendPayload;
-    }
-
-    public Boolean getEnableSendPayloadRaw() {
-        return enableSendPayload;
-    }
-
-    public void setEnableSendPayload(Boolean enableSendPayload) {
-        this.enableSendPayload = enableSendPayload;
     }
 }

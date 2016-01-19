@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,22 @@
  */
 package org.mycontroller.standalone.gateway.ethernet;
 
-import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
-import org.mycontroller.standalone.gateway.IMySensorsGateway;
-import org.mycontroller.standalone.gateway.MySensorsGatewayException;
-import org.mycontroller.standalone.mysensors.RawMessage;
+import org.mycontroller.standalone.db.tables.Gateway;
+import org.mycontroller.standalone.gateway.GatewayEthernet;
+import org.mycontroller.standalone.gateway.IGateway;
+import org.mycontroller.standalone.gateway.GatewayException;
+import org.mycontroller.standalone.message.RawMessage;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-public class EthernetGatewayImpl implements IMySensorsGateway {
+public class EthernetGatewayImpl implements IGateway {
     private EthernetGatewayActionThread monitoringThread = null;
 
-    public EthernetGatewayImpl() {
+    public EthernetGatewayImpl(Gateway gateway) {
         if (monitoringThread == null) {
-            monitoringThread = new EthernetGatewayActionThread();
+            monitoringThread = new EthernetGatewayActionThread(new GatewayEthernet(gateway));
             new Thread(monitoringThread).start();
         }
     }
@@ -40,14 +41,14 @@ public class EthernetGatewayImpl implements IMySensorsGateway {
     }
 
     @Override
-    public synchronized void write(RawMessage rawMessage) throws MySensorsGatewayException {
+    public synchronized void write(RawMessage rawMessage) throws GatewayException {
         monitoringThread.write(rawMessage);
     }
 
     @Override
-    public GatewayInfo getGatewayInfo() {
+    public GatewayEthernet getGateway() {
         if (monitoringThread != null) {
-            return monitoringThread.getGatewayInfo();
+            return monitoringThread.getGateway();
         }
         return null;
     }

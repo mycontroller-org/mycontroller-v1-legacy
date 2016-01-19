@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import org.mycontroller.standalone.db.DB_TABLES;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -23,9 +25,11 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "firmware_version")
+@DatabaseTable(tableName = DB_TABLES.FIRMWARE_VERSION)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FirmwareVersion {
+    public static final String KEY_ID = "id";
+    public static final String KEY_VERSION = "version";
 
     public FirmwareVersion() {
 
@@ -35,32 +39,32 @@ public class FirmwareVersion {
         this.id = id;
     }
 
-    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, unique = true)
-    private String name;
+    @DatabaseField(canBeNull = false, unique = true, columnName = KEY_VERSION)
+    private String version;
 
     public Integer getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getVersion() {
+        return version;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVersion(String name) {
+        this.version = name;
     }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Id:").append(this.id);
-        builder.append(", Name:").append(this.name);
+        builder.append(", Name:").append(this.version);
         return builder.toString();
     }
 }

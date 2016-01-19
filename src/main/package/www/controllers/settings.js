@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,102 +13,179 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('SettingsController', function(alertService,
-$scope, $filter, SettingsFactory, $location, $uibModal, $stateParams, displayRestError, about) {
-  
-  $scope.config = {
-    itemsPerPage: 100,
-    maxPages:1,
-    fillLastPage: false
-  }
+myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, about) {
   
   //about, Timezone, etc.,
   $scope.about = about;
+  
+  //editable settings
+  $scope.editEnable = {};
+  $scope.saveProgress = {};
 
-  //settings SunriseSunset List
-   $scope.settingsSunriseSunsetList = SettingsFactory.getSunriseSunset(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });  
-
-  //settings NodeDefaults List
-   $scope.settingsNodeDefaultsList = SettingsFactory.getNodeDefaults(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });  
-                    
-  //settings SMS List
-   $scope.settingsSMSList = SettingsFactory.getSMS(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    }); 
-                    
-  //settings Email List
-   $scope.settingsEmailList = SettingsFactory.getEmail(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    }); 
-
-  //settings Units List
-   $scope.settingsUnitsList = SettingsFactory.getUnits(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });
-                    
-                    
-  //settings Version List
-   $scope.settingsVersionList = SettingsFactory.getVersion(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });
-
-  //settings Graph List
-   $scope.settingsGraphList = SettingsFactory.getGraph(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });                    
-                    
-  //Update settings
-  $scope.update = function (settings, size) {
-    var editModalInstance = $uibModal.open({
-    templateUrl: 'partials/settings/updateModal.html',
-    controller: 'SSMupdateController',
-    size: size,
-    resolve: {settings: function () {return settings;}}
-    });
-
-    editModalInstance.result.then(function (updateSettings) {
-      SettingsFactory.update(updateSettings,function(response) {
-        alertService.success("Updated ["+settings.frindlyName+"]");
-      $scope.filteredList = $scope.orgList;
-      },function(error){
-        displayRestError.display(error);            
-      });
-    }), 
-    function () {
-      //console.log('Modal dismissed at: ' + new Date());
-    }
+  //settings location details, sunrise, sunset
+  $scope.updateSettingsLocation = function(){
+    $scope.locationSettings = SettingsFactory.getLocation();
   };
+  
+  //settings MyController
+  $scope.updateSettingsController = function(){
+    $scope.controllerSettings = SettingsFactory.getController();
+  };
+  
+  //Pre-load
+  $scope.locationSettings = {};
+  $scope.controllerSettings = {};
+  $scope.updateSettingsLocation();
+  $scope.updateSettingsController();
+   
+   
+   
+  //Save functions
+  
+  //Save location
+  $scope.saveLocation = function(){
+    $scope.saveProgress.location = true;
+    SettingsFactory.saveLocation($scope.locationSettings,function(response) {
+        alertService.success('Update success...');
+        $scope.saveProgress.location = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.location = false;
+      });
+  };
+  
+  //Save controller
+  $scope.saveController = function(){
+    $scope.saveProgress.controller = true;
+    SettingsFactory.saveController($scope.controllerSettings,function(response) {
+        alertService.success('Update success...');
+        $scope.saveProgress.controller = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.controller = false;
+      });
+  }; 
+
 });
 
-myControllerModule.controller('SSMupdateController', function ($scope, $modalInstance, settings, TypesFactory, FirmwaresFactory) {
-  $scope.settings = settings;
-  $scope.header = "Update Settings : "+settings.frindlyName;
-  if(settings.key == 'default_firmware'){
-    $scope.firmwares = FirmwaresFactory.getAllFirmwares();
-  }else if(settings.key == 'graph_interpolate_type'){
-    //GraphInterpolateTypes
-    $scope.graphInterpolateTypes = TypesFactory.getGraphInterpolateTypes();
-  } else if(settings.key == 'mys_config'){
-    //MySensors Config Types
-    $scope.mysConfigTypes = TypesFactory.getMysConfigTypes();
-  } else if(settings.key == 'mc_language'){
-    $scope.languages = TypesFactory.getLanguages();
-  } else if(settings.key == 'mc_time_12_24_format'){
-    $scope.time12h24hFormats = TypesFactory.getTime12h24hformats();
-    $scope.settings.value = parseInt($scope.settings.value);
-  }
+myControllerModule.controller('SettingsUnitsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, about) {
   
-  $scope.update = function() {$modalInstance.close(settings);}
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
+  //about, Timezone, etc.,
+  $scope.about = about;
+  
+  //editable settings
+  $scope.editEnable = {};
+  $scope.saveProgress = {};
+  
+  //settings Units
+  $scope.updateSettingsUnits = function(){
+    $scope.unitsSettings = SettingsFactory.getUnits();
+  };
+  
+  
+  //Pre-load
+  $scope.unitsSettings = {};
+  $scope.updateSettingsUnits();
+
+  //Save units
+  $scope.saveUnits = function(){
+    $scope.saveProgress.units = true;
+    SettingsFactory.saveUnits($scope.unitsSettings,function(response) {
+        alertService.success('Update success...');
+        $scope.saveProgress.units = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.units = false;
+      });
+  }; 
+
+});
+
+myControllerModule.controller('SettingsNotificationsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, about) {
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
+  
+  //editable settings
+  $scope.editEnable = {};
+  $scope.saveProgress = {};
+  
+  //settings Email
+  $scope.updateSettingsEmail = function(){
+    $scope.emailSettings = SettingsFactory.getEmail();
+  };
+  
+  //settings SMS
+  $scope.updateSettingsSms = function(){
+    $scope.smsSettings = SettingsFactory.getSms();
+  };
+  
+  
+  
+  
+  //Pre-load
+  $scope.emailSettings = {};
+  $scope.smsSettings = {};
+  $scope.updateSettingsEmail();
+  $scope.updateSettingsSms();
+   
+  //Save email
+  $scope.saveEmail = function(){
+    $scope.saveProgress.email = true;
+    SettingsFactory.saveEmail($scope.emailSettings,function(response) {
+        alertService.success('Update success...');
+        $scope.saveProgress.email = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.email = false;
+      });
+  }; 
+   
+   
+  //Save sms
+  $scope.saveSms = function(){
+    $scope.saveProgress.sms = true;
+    SettingsFactory.saveSms($scope.smsSettings,function(response) {
+        alertService.success('Update success...');
+        $scope.saveProgress.sms = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.sms = false;
+      });
+  };
+
+});
+
+myControllerModule.controller('SettingsSystemMySensors', function(alertService, $scope, $filter, SettingsFactory, displayRestError, about) {
+  
+  //about, Timezone, etc.,
+  $scope.about = about;
+  
+  //editable settings
+  $scope.editEnable = {};
+  $scope.saveProgress = {};
+
+ 
+  //settings MySensors
+  $scope.updateSettingsMySensors = function(){
+    $scope.mySensorsSettings = SettingsFactory.getMySensors();
+  };
+ 
+  
+  //Pre-load
+  $scope.mySensorsSettings = {};
+  $scope.updateSettingsMySensors();
+
+  //Save mySensors
+  $scope.saveMySensors = function(){
+    $scope.saveProgress.mySensors = true;
+    SettingsFactory.saveMySensors($scope.mySensorsSettings,function(response) {
+        alertService.success('Update success...');
+        $scope.saveProgress.mySensors = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.mySensors = false;
+      });
+  };
+
 });

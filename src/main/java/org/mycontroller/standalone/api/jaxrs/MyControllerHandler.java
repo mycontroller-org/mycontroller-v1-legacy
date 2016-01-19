@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
-import org.mycontroller.standalone.mysensors.RawMessage;
+import org.mycontroller.standalone.mysensors.MySensorsRawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,18 +84,19 @@ public class MyControllerHandler {
         return RestUtils.getResponse(Status.OK, new About());
     }
 
+    //TODO: remove this method, no longer in use
     @GET
     @Path("/gatewayInfo")
     public Response serialport() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getMySensorsGateway().getGatewayInfo());
+        return RestUtils.getResponse(Status.OK, null);
     }
 
     @POST
     @Path("/sendRawMessage")
-    public Response sendRawMessage(RawMessage rawMessage) {
+    public Response sendRawMessage(MySensorsRawMessage mySensorsRawMessage) {
         try {
-            rawMessage.setTxMessage(true);
-            ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
+            mySensorsRawMessage.setTxMessage(true);
+            ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

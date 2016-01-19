@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,28 +20,28 @@ package org.mycontroller.standalone.api.jaxrs.mapper;
  * @since 0.0.1
  */
 public class TypesIdNameMapper {
-    private int id;
+    private Object id;
     private String displayName;
-    private Integer subId;
+    private Object subId;
     private boolean ticked = false;
 
     public TypesIdNameMapper() {
 
     }
 
-    public TypesIdNameMapper(int id, String name) {
+    public TypesIdNameMapper(Object id, String name) {
         this(id, null, name, false);
     }
 
-    public TypesIdNameMapper(int id, String name, boolean ticked) {
+    public TypesIdNameMapper(Object id, String name, boolean ticked) {
         this(id, null, name, ticked);
     }
 
-    public TypesIdNameMapper(int id, Integer subId, String name) {
+    public TypesIdNameMapper(Object id, Object subId, String name) {
         this(id, subId, name, false);
     }
 
-    public TypesIdNameMapper(int id, Integer subId, String name, boolean ticked) {
+    public TypesIdNameMapper(Object id, Object subId, String name, boolean ticked) {
         this.id = id;
         this.subId = subId;
         this.displayName = name;
@@ -56,19 +56,19 @@ public class TypesIdNameMapper {
         this.displayName = name;
     }
 
-    public int getId() {
+    public Object getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Object id) {
         this.id = id;
     }
 
-    public Integer getSubId() {
+    public Object getSubId() {
         return subId;
     }
 
-    public void setSubId(Integer subId) {
+    public void setSubId(Object subId) {
         this.subId = subId;
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.db.DB_TABLES;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
@@ -25,7 +26,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "uid_tag")
+@DatabaseTable(tableName = DB_TABLES.UID_TAG)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UidTag {
     public static final String SENSOR_REF_ID = "sensor_ref_id";
@@ -53,7 +54,7 @@ public class UidTag {
     private Sensor sensor;
 
     @DatabaseField(canBeNull = false, uniqueCombo = true)
-    private Integer variableType;
+    private MESSAGE_TYPE_SET_REQ variableType;
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -79,18 +80,12 @@ public class UidTag {
         this.sensor = sensor;
     }
 
-    public Integer getVariableType() {
+    public MESSAGE_TYPE_SET_REQ getVariableType() {
         return variableType;
     }
 
-    public String getVariableTypeString() {
-        if (this.variableType != null) {
-            return MESSAGE_TYPE_SET_REQ.get(this.variableType).toString();
-        }
-        return null;
-    }
-
-    public void setVariableType(Integer variableType) {
+    public void setVariableType(MESSAGE_TYPE_SET_REQ variableType) {
         this.variableType = variableType;
     }
+
 }

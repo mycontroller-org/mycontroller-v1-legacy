@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,425 @@
  */
 /* app css stylesheet */
 
+body {
+  background-color: #f6f6f6;
+  line-height: 1.4;
+  padding-bottom: 20px;
+}
+
+.top-buffer { margin-top:100px; }
+
+
+.fa-check-circle-o {
+  color: #3f9c35;
+}
+
+.mc-top-space{
+  margin-top: 20px;
+}
+
+.mc-top-space-header{
+  margin-top: 25px;
+}
+
+.mc-top-space-2x{
+  margin-top: 60px;
+}
+
+.mc-bottom-space{
+  margin-bottom: 40px;
+}
+
+.mc-text-red{
+  color: red;
+}
+/*
+.fa-arrow-down {
+  color: #c00;
+}
+*/
+.mc-single-row{
+  white-space: nowrap;
+}
+
+.mc-cards-offset {
+  margin-top: 30px;
+}
+
+.mc-align-center {
+    text-align: center; /* center checkbox horizontally */
+    vertical-align: middle; /* center checkbox vertically */
+}
+
+.mc-table {
+  background-color: #ffffff;
+}
+
+.mc-table > thead > tr > th {
+  background-color: #313131;
+  color: #d0d0d0;
+  font-weight: bold;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: middle;
+}
+
+.mc-table > tbody > tr > td {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: middle;
+}
+
+.mc-table > tbody > tr:hover > td {
+  cursor: pointer;
+  background-color:#a3c1db;
+}
+
+.mc-table > tbody > tr.mc-selected > td{
+  background-color: #4077a5;
+  color: white;
+}
+
+.mc-table > tbody > tr.mc-selected > td .pficon,
+.mc-table > tbody > tr.mc-selected > td .fa{
+  color: #ffffff;
+}
+
+.mc-form-actions-separator {
+  border-top: 1px solid #e5e5e5;
+  padding-top: 15px;
+  text-align: right;
+}
+
+/* Till now not used anywhere */
+.mc-graph .mc-spinner-container {
+  margin-bottom: 50px;
+  margin-top: 60px;
+}
+
+.mc-urls-list {
+  padding: 0 40px 0 10px;
+}
+
+/* END */
+
+.mc-side-space{
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.mc-spinner-container-alone {
+  margin-top: 220px;
+}
+
+
+.navbar-pf {
+  margin-bottom: 10px;
+}
+@media (min-width: 768px) {
+  .navbar-header {
+    padding: 0px 0;
+  }
+  .navbar-pf .navbar-utility > li > a {
+    padding: 12px 10px;
+  }
+  .navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user {
+    top: 12px;
+  }
+}
+@media (max-width: 767px) {
+  .navbar-pf {
+    padding-top: 1px;
+  }
+}
+.dropdown-menu li:not(.active) > a:hover:active {
+  background-color: #0099d3;
+}
+
+.mc-form-fixer-left {
+    padding-left:20px;
+    padding-right:5px;
+}
+
+.mc-form-fixer {
+    padding-left:5px;
+    padding-right:5px;
+}
+
+/* color-1 */
+.mc-color-teal {
+  color: #fff;
+  background-color: #008080;
+  border-color: #007070;
+}
+.mc-color-teal:focus,
+.mc-color-teal.focus {
+  color: #fff;
+  background-color: #006565;
+  border-color: #005050;
+}
+.mc-color-teal:hover {
+  color: #fff;
+  background-color: #006565;
+  border-color: #005050;
+}
+.mc-color-teal::-webkit-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+}
+input.mc-color-teal{
+  font-weight: 600;
+}
+
+
+/* color-2 */
+.mc-color-slate-gray  {
+  color: #fff;
+  background-color: #708090;
+  border-color: #607080;
+}
+.mc-color-slate-gray:focus,
+.mc-color-slate-gray.focus {
+  color: #fff;
+  background-color: #607080;
+  border-color: #506070;
+}
+.mc-color-slate-gray:hover {
+  color: #fff;
+  background-color: #607080;
+  border-color: #506070;
+}
+.mc-color-slate-gray::-webkit-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+}
+input.mc-color-slate-gray{
+  font-weight: 600;
+}
+
+/* color-3 */
+.mc-color-indian-red {
+  color: #fff;
+  background-color: #cd5c5c;
+  border-color: #bc4b4b;
+}
+.mc-color-indian-red:focus,
+.mc-color-indian-red.focus {
+  color: #fff;
+  background-color: #bc4b4b;
+  border-color: #ab3a3a;
+}
+.mc-color-indian-red:hover {
+  color: #fff;
+  background-color: #bc4b4b;
+  border-color: #ab3a3a;
+}
+.mc-color-indian-red::-webkit-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+}
+input.mc-color-indian-red{
+  font-weight: 600;
+}
+
+/* color-4*/
+.mc-color-rosy-brown {
+  color: #fff;
+  background-color: #9a6d6d;
+  border-color: #895c5c;
+}
+.mc-color-rosy-brown:focus,
+.mc-color-rosy-brown.focus {
+  color: #fff;
+  background-color: #895c5c;
+  border-color: #784b4b;
+}
+.mc-color-rosy-brown:hover {
+  color: #fff;
+  background-color: #895c5c;
+  border-color: #784b4b;
+}
+.mc-color-rosy-brown::-webkit-input-placeholder {
+    color: #eee;
+    font-weight: normal;
+}
+input.mc-color-rosy-brown{
+  font-weight: 600;
+}
+
+/* color-5 */
+.mc-color-tan {
+  color: #fff;
+  background-color: #af8159;
+  border-color: #9e7058;
+}
+.mc-color-tan:focus,
+.mc-color-tan.focus {
+  color: #fff;
+  background-color: #9e7058;
+  border-color: #8d6f47;
+}
+.mc-color-tan:hover {
+  color: #fff;
+  background-color: #9e7058;
+  border-color: #8d6f47;
+}
+.mc-color-tan::-webkit-input-placeholder {
+    color: #ddd;
+    font-weight: normal;
+}
+input.mc-color-tan{
+  font-weight: 600;
+}
+
+/* color-6 */
+.mc-color-steel-blue  {
+  color: #fff;
+  background-color: #2b4f6e;
+  border-color: #24425c;
+}
+.mc-color-steel-blue:focus,
+.mc-color-steel-blue.focus {
+  color: #fff;
+  background-color: #24425c;
+  border-color: #1d3549;
+}
+.mc-color-steel-blue:hover {
+  color: #fff;
+  background-color: #24425c;
+  border-color: #1d3549;
+}
+.mc-color-steel-blue::-webkit-input-placeholder {
+    color: #eee;
+    font-weight: normal;
+}
+input.mc-color-steel-blue{
+  font-weight: 600;
+}
+
+
+
+/* used in sensors action board list items */
+.mc-list-align {
+  display: flex;
+  border-bottom: 1px solid #f6f6f6;
+  border-top: 2px solid #f6f6f6;
+  line-height: 33px;
+}
+
+.mc-list-align:nth-child(odd) {
+  background-color: #ffffff;
+}
+.mc-list-align:nth-child(even) {
+  background-color: #fbfbfb;
+}
+
+
+
+/* Dropdown size in sensors action board(sab) */
+.mc-sab-dropdown {
+  width:117px !important;
+}
+
+
+.mc-top-space-5px{
+  margin-top: 5px;
+}
+
+
+.mc-icon{
+  font-size:15px; 
+  vertical-align: middle;
+  margin-right: 5%;
+}
+
+.mc-icon{
+  font-size:100%; 
+  vertical-align: middle;
+  margin-right: 5%;
+}
+
+.mc-icon-md-1{
+  font-size:110%; 
+  vertical-align: middle;
+  margin-right: 5%;
+}
+
+.mc-icon-md-3{
+  font-size:130%; 
+  vertical-align: middle;
+  margin-right: 5%;
+}
+
+.mc-icon-lg{
+  font-size:150%; 
+  vertical-align: middle;
+  margin-right: 5%;
+}
+
+.mc-icon-2x{
+  font-size:200%;
+  vertical-align: middle;
+  margin-right: 5%;
+}
+
+.mc-inline-editer-ab{
+  color: #000000;
+  cursor: pointer;
+  font-style:initial;
+  border-bottom: initial;
+}
+
+.mc-inline-editer-ab:hover{
+  color: #428bca;
+  font-style:initial;
+}
+
+.mc-style-ab{
+  font-weight: 500;
+  font-size: 130%;
+  color:initial;
+}
+
+.mc-show-disabled{
+  background-color: #ffffff !important;
+  color: #333 !important;
+}
+
+
+
+
+
+
+.mc-v-margin > div {
+  padding:0 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Specify styling for uib-tooltip contents */
 .tooltip.customClass450px .tooltip-inner {
   min-width: 450px;
@@ -29,11 +448,6 @@
 
 .battery-modal-window .modal-dialog {
   width: 95%;
-}
-
-body {
-  padding-top: 40px;
-  padding-bottom: 70px;
 }
 
 .tick line {

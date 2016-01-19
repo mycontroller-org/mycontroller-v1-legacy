@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.USER_ROLE;
-import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.auth.USER_ROLE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -44,16 +42,23 @@ import org.mycontroller.standalone.db.tables.Sensor;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 public class TypesHandler {
+
     @GET
-    @Path("/sensorTypes")
-    public Response getSensorTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorTypes());
+    @Path("/gatewayTypes")
+    public Response getGatewayTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayTypes());
     }
 
     @GET
-    @Path("/sensorValueTypes")
-    public Response getSensorValueTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorValueTypes());
+    @Path("/gatewayNetworkTypes")
+    public Response getGatewaySubTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayNetworkTypes());
+    }
+
+    @GET
+    @Path("/gatewaySerialDrivers")
+    public Response getGatewaySerialDrivers() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewaySerialDrivers());
     }
 
     @GET
@@ -63,27 +68,95 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/roles")
-    public Response getUserRoles() {
-        return RestUtils.getResponse(Status.OK, USER_ROLE.values());
+    @Path("/resourceTypes")
+    public Response getResourceTypes(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourceTypes(resourceType));
     }
 
     @GET
-    @Path("/alarmtriggers")
-    public Response getAlarmTriggers() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTriggerTypes());
+    @Path("/resources")
+    public Response getResources(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResources(resourceType));
     }
 
     @GET
-    @Path("/alarmtypes")
-    public Response getAlarmTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTypes());
+    @Path("/gateways")
+    public Response getGateways() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGateways());
     }
 
     @GET
-    @Path("/alarmDampeningTypes")
-    public Response getAlarmDampeningTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDampeningTypes());
+    @Path("/nodes")
+    public Response getNodes(@QueryParam("gatewayId") Integer gatewayId) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNodes(gatewayId));
+    }
+
+    @GET
+    @Path("/sensors")
+    public Response getSensors(@QueryParam("nodeId") Integer nodeId) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(nodeId));
+    }
+
+    @GET
+    @Path("/sensorVariables")
+    public Response getSensorVaribles(@QueryParam("sensorId") Integer sensorId) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariables(sensorId));
+    }
+
+    @GET
+    @Path("/resourcesGroups")
+    public Response getResourcesGroups() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourcesGroups());
+    }
+
+    @GET
+    @Path("/timers")
+    public Response getTimers() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimers());
+    }
+
+    @GET
+    @Path("/alarmDefinitions")
+    public Response getAlarmDefinitions() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDefinitions());
+    }
+
+    @GET
+    @Path("/firmwares")
+    public Response getFirmwares() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getFirmwares());
+    }
+
+    @GET
+    @Path("/firmwareTypes")
+    public Response getFirmwareTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getFirmwareTypes());
+    }
+
+    @GET
+    @Path("/firmwareVersions")
+    public Response getFirmwareVersions() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getFirmwareVersions());
+    }
+
+    @GET
+    @Path("/sensorTypes")
+    public Response getSensorTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorTypes());
+    }
+
+    @GET
+    @Path("/sensorVariableTypes")
+    public Response getSensorVariableTypes(@QueryParam("sensorType") String sensorType,
+            @QueryParam("sensorId") Integer sensorId) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getSensorVariableTypes(MESSAGE_TYPE_PRESENTATION.fromString(sensorType), sensorId));
+    }
+
+    @GET
+    @Path("/alarmTriggerTypes")
+    public Response getAlarmTriggers(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTriggerTypes(resourceType));
     }
 
     @GET
@@ -93,34 +166,64 @@ public class TypesHandler {
     }
 
     @GET
+    @Path("/alarmNotificationTypes")
+    public Response getAlarmTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmNotificationTypes());
+    }
+
+    @GET
+    @Path("/alarmDampeningTypes")
+    public Response getAlarmDampeningTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDampeningTypes());
+    }
+
+    @GET
+    @Path("/stateTypes")
+    public Response getStateTypes(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getStateTypes(resourceType));
+    }
+
+    //Timer stuff
+
+    @GET
     @Path("/timerTypes")
     public Response getTimerTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getTimerTypes());
     }
 
     @GET
-    @Path("/timerFrequencies")
+    @Path("/timerFrequencyTypes")
     public Response getTimerFrequencies() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerFrequencies());
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerFrequencyTypes());
     }
 
     @GET
-    @Path("/timerDays")
+    @Path("/timerWeekDays")
     public Response getTimerDays(@QueryParam("allDays") Boolean allDays) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerDays(allDays != null ? allDays : false));
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerWeekDays(allDays != null ? allDays : false));
+    }
+
+    //----------------- review required
+
+    @GET
+    @Path("/roles")
+    public Response getUserRoles() {
+        return RestUtils.getResponse(Status.OK, USER_ROLE.values());
     }
 
     @GET
-    @Path("/nodes")
-    public Response getNodes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getNodes());
+    @Path("/languages")
+    public Response getLanguages() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
     }
 
     @GET
-    @Path("/sensors/{nodeId}")
-    public Response getSensors(@PathParam("nodeId") int nodeId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(nodeId));
+    @Path("/configUnitTypes")
+    public Response getMysConfigTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getConfigUnitTypes());
     }
+
+    //TODO: after this change required
 
     @GET
     @Path("/graphInterpolate")
@@ -129,32 +232,16 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/mysConfigTypes")
-    public Response getMysConfigTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMysConfigTypes());
+    @Path("/sensorVariableTypes")
+    public Response getSensorValueTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorValueTypes());
     }
 
     @GET
     @Path("/sensorVariableTypesAll/{sensorType}")
-    public Response getSensorVariableTypesAll(@PathParam("sensorType") int sensorType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypesAll(sensorType));
-    }
-
-    @GET
-    @Path("/sensorVariableTypes/{sensorType}")
-    public Response getSensorVariableTypes(@PathParam("sensorType") int sensorType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypes(sensorType, null));
-    }
-
-    @GET
-    @Path("/sensorVariableTypesBySenRef/{sensorRefId}")
-    public Response getSensorVariableTypesBySensorRefId(@PathParam("sensorRefId") int sensorRefId) {
-        Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
-        if (sensor != null && sensor.getType() != null) {
-            return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypes(sensor.getType(), sensor));
-        }
-        return RestUtils.getResponse(Status.BAD_REQUEST,
-                new ApiError("Requested Sensor[" + sensor.getName() + "] type not available or Sensor not available"));
+    public Response getSensorVariableTypesAll(@PathParam("sensorType") String sensorType) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getSensorVariableTypesAll(MESSAGE_TYPE_PRESENTATION.fromString(sensorType)));
     }
 
     @GET
@@ -182,15 +269,9 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/languages")
-    public Response getLanguages() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
-    }
-
-    @GET
-    @Path("/time12h24hformats")
+    @Path("/timeFormats")
     public Response getTime12h24hformats() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTime12h24hFormats());
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimeFormats());
     }
 
     @PUT

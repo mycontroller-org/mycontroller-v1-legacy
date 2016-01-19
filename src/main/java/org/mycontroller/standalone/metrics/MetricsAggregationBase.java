@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.TIME_REF;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
-import org.mycontroller.standalone.db.tables.SensorValue;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,10 +56,10 @@ public class MetricsAggregationBase {
         _logger.debug("Sensors List:{}", sensors);
 
         for (Sensor sensor : sensors) {
-            List<SensorValue> sensorValues = DaoUtils.getSensorValueDao().getAllDoubleMetric(sensor.getId());
+            List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllDoubleMetric(sensor.getId());
 
-            for (SensorValue sensorValue : sensorValues) {
-                List<MetricsDoubleTypeDevice> metrics = this.getLowLevelData(sensorValue, aggregationType);
+            for (SensorVariable sensorVariable : sensorVariables) {
+                List<MetricsDoubleTypeDevice> metrics = this.getLowLevelData(sensorVariable, aggregationType);
                 //Calculate Metrics
                 if (metrics.size() > 0) {
                     int samples = 0;
@@ -95,7 +95,7 @@ public class MetricsAggregationBase {
                     Double avg = sum / samples;
                     MetricsDoubleTypeDevice metric = new MetricsDoubleTypeDevice();
                     metric.setAggregationType(this.aggregationType.ordinal());
-                    metric.setSensorValue(sensorValue);
+                    metric.setSensorValue(sensorVariable);
                     metric.setMin(NumericUtils.round(min, NumericUtils.DOUBLE_ROUND));
                     metric.setMax(NumericUtils.round(max, NumericUtils.DOUBLE_ROUND));
                     metric.setAvg(NumericUtils.round(avg, NumericUtils.DOUBLE_ROUND));
@@ -108,19 +108,19 @@ public class MetricsAggregationBase {
         this.purgeDB();
     }
 
-    private List<MetricsDoubleTypeDevice> getLowLevelData(SensorValue sensorValue, AGGREGATION_TYPE aggregationType) {
+    private List<MetricsDoubleTypeDevice> getLowLevelData(SensorVariable sensorVariable, AGGREGATION_TYPE aggregationType) {
         switch (aggregationType) {
             case ONE_MINUTE:
-                return this.getMetricsDoubleData(sensorValue, AGGREGATION_TYPE.RAW,
+                return this.getMetricsDoubleData(sensorVariable, AGGREGATION_TYPE.RAW,
                         this.getFromTime(aggregationType));
             case FIVE_MINUTES:
-                return this.getMetricsDoubleData(sensorValue, AGGREGATION_TYPE.ONE_MINUTE,
+                return this.getMetricsDoubleData(sensorVariable, AGGREGATION_TYPE.ONE_MINUTE,
                         this.getFromTime(aggregationType));
             case ONE_HOUR:
-                return this.getMetricsDoubleData(sensorValue, AGGREGATION_TYPE.FIVE_MINUTES,
+                return this.getMetricsDoubleData(sensorVariable, AGGREGATION_TYPE.FIVE_MINUTES,
                         this.getFromTime(aggregationType));
             case ONE_DAY:
-                return this.getMetricsDoubleData(sensorValue, AGGREGATION_TYPE.ONE_HOUR,
+                return this.getMetricsDoubleData(sensorVariable, AGGREGATION_TYPE.ONE_HOUR,
                         this.getFromTime(aggregationType));
             default:
                 return new ArrayList<MetricsDoubleTypeDevice>();
@@ -145,9 +145,9 @@ public class MetricsAggregationBase {
         }
     }
 
-    public List<MetricsDoubleTypeDevice> getMetricsDoubleData(SensorValue sensorValue, AGGREGATION_TYPE aggrType,
+    public List<MetricsDoubleTypeDevice> getMetricsDoubleData(SensorVariable sensorVariable, AGGREGATION_TYPE aggrType,
             Long fromTimestamp) {
-        MetricsDoubleTypeDevice metricsDoubleType = new MetricsDoubleTypeDevice(sensorValue, aggrType.ordinal());
+        MetricsDoubleTypeDevice metricsDoubleType = new MetricsDoubleTypeDevice(sensorVariable, aggrType.ordinal());
         if (fromTimestamp != null) {
             metricsDoubleType.setTimestampFrom(fromTimestamp);
         }
@@ -156,8 +156,8 @@ public class MetricsAggregationBase {
 
     /** Get metric data for boolean type */
 
-    public List<MetricsBinaryTypeDevice> getMetricsBinaryData(SensorValue sensorValue, Long fromTimestamp) {
-        MetricsBinaryTypeDevice binaryTypeDevice = new MetricsBinaryTypeDevice(sensorValue);
+    public List<MetricsBinaryTypeDevice> getMetricsBinaryData(SensorVariable sensorVariable, Long fromTimestamp) {
+        MetricsBinaryTypeDevice binaryTypeDevice = new MetricsBinaryTypeDevice(sensorVariable);
         if (fromTimestamp != null) {
             binaryTypeDevice.setTimestampFrom(fromTimestamp);
         }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,12 @@ import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface MetricsBinaryTypeDeviceDao {
-    void create(MetricsBinaryTypeDevice metric);
-    void createOrUpdate(MetricsBinaryTypeDevice metric);
-    void delete(MetricsBinaryTypeDevice metric);
+public interface MetricsBinaryTypeDeviceDao extends BaseDao<MetricsBinaryTypeDevice, Object> {
+
     void deleteBySensorValueRefId(int sensorRefId);
+
     void deletePrevious(MetricsBinaryTypeDevice metric);
-    void update(MetricsBinaryTypeDevice metric);
+
     List<MetricsBinaryTypeDevice> getAll(MetricsBinaryTypeDevice metric);
-    MetricsBinaryTypeDevice get(MetricsBinaryTypeDevice metric);
+
 }

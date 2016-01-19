@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.Sensor;
 
 import com.j256.ormlite.dao.Dao;
@@ -25,38 +27,44 @@ import com.j256.ormlite.dao.Dao;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface SensorDao {
-    boolean create(Sensor sensor);
+public interface SensorDao extends BaseDao<Sensor, Integer> {
 
-    boolean create(Integer nodeId, Sensor sensor);
+    void create(Integer gatewayId, String nodeEui, Sensor sensor);
 
-    void create(Integer nodeId, Integer sensorId);
+    void create(Integer nodeId, Sensor sensor);
 
-    void createOrUpdate(Sensor sensor);
+    void create(Integer gatewayId, String nodeEui, Integer sensorId);
+
+    void createOrUpdate(Integer gatewayId, String nodeEui, Sensor sensor);
 
     void createOrUpdate(Integer nodeId, Sensor sensor);
 
-    void delete(Sensor sensor);
-
-    void delete(Integer nodeId, Integer sensorId);
-
-    void updateWithEnableSendPayload(Sensor sensor);
-
-    void update(Sensor sensor);
+    void delete(Integer gatewayId, String nodeEui, Integer sensorId);
 
     void update(Integer nodeId, Sensor sensor);
 
+    void update(Integer gatewayId, String nodeEui, Sensor sensor);
+
+    List<Sensor> getAll(String nodeEui, Integer gatewayId);
+
     List<Sensor> getAll(Integer nodeId);
+
+    List<Sensor> getAllByNodeIds(List<Integer> nodeIds);
+
+    List<Sensor> getAllByIds(List<Integer> ids);
 
     List<Sensor> getByType(String typeString);
 
-    List<Sensor> getAll();
-
-    Sensor get(Sensor sensor);
-
-    Sensor get(Integer id);
+    QueryResponse getAll(Query query);
 
     Sensor get(Integer nodeId, Integer sensorId);
 
+    Sensor get(Integer gatewayId, String nodeEui, Integer sensorId);
+
     Dao<Sensor, Integer> getDao();
+
+    List<Integer> getSensorIds(String nodeEui, Integer gatewayId);
+
+    long countOf(Integer nodeId);
+
 }

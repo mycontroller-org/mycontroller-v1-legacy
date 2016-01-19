@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package org.mycontroller.standalone.sms;
 
 import java.util.LinkedHashMap;
 
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.Settings;
+import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.settings.SmsSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +60,11 @@ public class SMSUtils {
 
     public static void initialize(boolean reinitialize) {
         if (plivoApi == null || reinitialize) {
-            String authId = DaoUtils.getSettingsDao().get(Settings.SMS_AUTH_ID).getValue();
-            String authToken = DaoUtils.getSettingsDao().get(Settings.SMS_AUTH_TOKEN).getValue();
-            String fromNumber = DaoUtils.getSettingsDao().get(Settings.SMS_FROM_PHONE_NUMBER).getValue();
-            if (authId != null && authToken != null && fromNumber != null) {
-                plivoApi = new RestAPI(authId, authToken, "v1");
-                smsParameters.put("src", fromNumber);
+            SmsSettings smsSettings = ObjectFactory.getAppProperties().getSmsSettings();
+            if (smsSettings.getAuthId() != null && smsSettings.getAuthToken() != null
+                    && smsSettings.getFromNumber() != null) {
+                plivoApi = new RestAPI(smsSettings.getAuthId(), smsSettings.getAuthToken(), "v1");
+                smsParameters.put("src", smsSettings.getFromNumber());
             } else {
                 throw new IllegalArgumentException("Set SMS settings[authId, authToken, FromPhoneNumber]");
             }

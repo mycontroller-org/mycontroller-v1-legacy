@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,196 +14,233 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsController', function(alertService,
-$scope, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, about) {
-    
-  $scope.filteredList=[];
-  $scope.orgList=[];
-  $scope.config = {
-    itemsPerPage: 10,
-    maxPages:10,
-    fillLastPage: false
-  }
-  
-  //about, Timezone, etc.,
+$scope, SensorsFactory, TypesFactory, NodesFactory, $location, $uibModal, displayRestError, about, CommonServices, $stateParams) {
+
+  //GUI page settings
+  $scope.headerStringList = "Sesnors detail";
+  $scope.noItemsSystemMsg = "No sensors set up.";
+  $scope.noItemsSystemIcon = "fa fa-eye";
+
+  //load empty, configuration, etc.,
   $scope.about = about;
-
-  //Filter
-  $scope.updateFilteredList = function() {
-    $scope.filteredList = $filter("filter")($scope.orgList, $scope.query);
-  };
-  
-  //Get list of Sensors
-  $scope.getSensors = function(){
-     for (var sId=0; sId<$scope.filteredList.length; sId++){
-       $scope.filteredList[sId] = SensorsFactory.get({"nodeId":$scope.filteredList[sId].node.id,"sensorId":$scope.filteredList[sId].sensorId});
-       //$scope.filteredList[sId].status = tmpSensor.status;
-       //console.log("status:"+tmpSensor.status);
-     }
-  }
+  $scope.filteredList=[];
     
-  // Call and Run function every 30 second
-  $scope.orgList = SensorsFactory.query(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });
-  $scope.filteredList = $scope.orgList;
-  //setInterval($scope.getSensors, 1000*30);
+  //data query details
+  $scope.currentPage = 1;
+  $scope.query = CommonServices.getQuery();
+  $scope.queryResponse = {};
   
-  //Get all Nodes
-  $scope.nodes = TypesFactory.getNodes();
-  //
-  $scope.nodeChange = function(selectedNodeId){
-    $scope.orgList = SensorsFactory.query({nodeId: selectedNodeId}, function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });
-    $scope.filteredList = $scope.orgList;
+  //Get min number
+  $scope.getMin = function(item1, item2){
+    return CommonServices.getMin(item1, item2);
+  };
+  
+  if($stateParams.nodeId){
+    //$scope.nodeId = $stateParams.nodeId;
+    $scope.query.nodeId = $stateParams.nodeId;
+  }
+
+  //get all Sensors
+  $scope.getAllItems = function(){
+    SensorsFactory.getAll($scope.query, function(response) {
+      $scope.queryResponse = response;
+      $scope.filteredList = $scope.queryResponse.data;
+      $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
+    },function(error){
+      displayRestError.display(error);            
+    });
+  }
+
+  //Hold all the selected item ids
+  $scope.itemIds = [];
+
+  $scope.selectAllItems = function(){
+    CommonServices.selectAllItems($scope);
+  };
+
+  $scope.selectItem = function(item){
+    CommonServices.selectItem($scope, item);
+  };
+  
+  //On page change
+  $scope.pageChanged = function(newPage){
+    CommonServices.updatePageChange($scope, newPage);
+  };
+
+  //Filter change method
+  var filterChange = function (filters) {
+    //Reset filter fields and update items
+    CommonServices.updateFiltersChange($scope, filters);
+  };
+  
+  $scope.filterConfig = {
+    fields: [
+      {
+        id: 'name',
+        title:  'Name',
+        placeholder: 'Filter by Name',
+        filterType: 'text'
+      },
+      {
+        id: 'sensorId',
+        title:  'Id',
+        placeholder: 'Filter by Id',
+        filterType: 'integer',
+      },
+      {
+        id: 'type',
+        title:  'Type',
+        placeholder: 'Filter by Type',
+        filterType: 'text',
+      },
+      {
+        id: 'variableTypes',
+        title:  'Variable Types',
+        placeholder: 'Filter by Variable Types',
+        filterType: 'text',
+      }
+    ],
+    resultsCount: $scope.filteredList.length,
+    appliedFilters: [],
+    onFilterChange: filterChange
+  };
+  
+  //Sort columns
+  var sortChange = function (sortId, isAscending) {
+    //Reset sort type and update items
+    CommonServices.updateSortChange($scope, sortId, isAscending);
+  };
+
+  $scope.sortConfig = {
+    fields: [
+      {
+        id: 'name',
+        title:  'Name',
+        sortType: 'text'
+      },
+      {
+        id: 'nodeId',
+        title:  'Node Id',
+        sortType: 'text'
+      },
+      {
+        id: 'sensorId',
+        title:  'Sensor Id',
+        sortType: 'number'
+      },
+      {
+        id: 'type',
+        title:  'Type',
+        sortType: 'text'
+      }
+    ],
+    onSortChange: sortChange
   };
   
   
-  //Delete a Sensor
-  $scope.delete = function (sensor, size) {
-    var modalInstance = $uibModal.open({
-    templateUrl: 'partials/models/deleteModal.html',
-    controller: 'SMdeleteController',
-    size: size,
-    resolve: {
-      sensor: function () {return sensor;}
-      }
-    });
-
-    modalInstance.result.then(function (selectedSensor) {
-      SensorsFactory.delete({ nodeId: selectedSensor.node.id, sensorId: selectedSensor.sensorId },function(response) {
-        alertService.success("Deleted a sensor[id:"+selectedSensor.sensorId+", Name:"+selectedSensor.name+"]");
-        //Update display table
-        $scope.orgList = SensorsFactory.query({nodeId:$scope.nodeId},function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
-      },function(error){
-        displayRestError.display(error);            
-      });      
-    }), 
-    function () {
-      //console.log('Modal dismissed at: ' + new Date());
+  //Edit item
+  $scope.edit = function () {
+    if($scope.itemIds.length == 1){
+      $location.path(about.urlSensorsAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
     }
   };
-    
-  //Add a Sensor
-  $scope.add = function (size) {
-    var addModalInstance = $uibModal.open({
-    templateUrl: 'partials/sensors/addModal.html',
-    controller: 'SMaddController',
+  
+  
+  //Delete item(s)
+  $scope.delete = function (size) {
+    var modalInstance = $uibModal.open({
+    templateUrl: 'partials/common-html/delete-modal.html',
+    controller: 'ControllerDeleteModal',
     size: size,
     resolve: {}
     });
 
-    addModalInstance.result.then(function (newSensor) {
-      SensorsFactory.create({nodeId: newSensor.node.id}, newSensor, function(response) {
-        alertService.success("Added a sensor[id:"+newSensor.sensorId+", Name:"+newSensor.name+"]");
+    modalInstance.result.then(function () {
+      SensorsFactory.deleteIds($scope.itemIds, function(response) {
+        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
         //Update display table
-        $scope.nodeId = null; //Remove node selection
-        $scope.orgList = SensorsFactory.query(function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
-      });
+        $scope.getAllItems();
+        $scope.itemIds = [];
+      },function(error){
+        displayRestError.display(error);            
+      }); 
     }), 
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-    
-  //Update a Sensor
-  $scope.update = function (sensor, size) {
-    var editModalInstance = $uibModal.open({
-    templateUrl: 'partials/sensors/updateModal.html',
-    controller: 'SMupdateController',
-    size: size,
-    resolve: {sensor: function () {return sensor;}}
-    });
-
-    editModalInstance.result.then(function (updateSensor) {
-      updateSensor.unit = null;
-      SensorsFactory.update({nodeId: updateSensor.node.id}, updateSensor,function(response) {
-        alertService.success("Updated a sensor[id:"+updateSensor.sensorId+", Name:"+updateSensor.name+"]");
-        //Update display table
-        $scope.orgList = SensorsFactory.query({nodeId:$scope.nodeId},function(response) {
-        },function(error){
-          displayRestError.display(error);            
-        });
-      $scope.filteredList = $scope.orgList;
-      });
-    }), 
-    function () {
-      //console.log('Modal dismissed at: ' + new Date());
-    }
-  };
+  
 });
 
-
-//Sensors Modal
-myControllerModule.controller('SMdeleteController', function ($scope, $modalInstance, $sce, sensor) {
-  $scope.sensor = sensor;
-  $scope.header = "Delete Sensor";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Sensor"
-    +"<br>Deletion process will remove complete trace of this resource!" 
-    +"<br>Click 'Delete' to proceed."
-    +"<br><I>Sensor:</I> "+sensor.nameWithNode+" [nodeId:"+sensor.node.id+",sensorId:"+sensor.sensorId +",type:"+sensor.typeString+"]");
-  $scope.remove = function() {
-    $modalInstance.close($scope.sensor);
-  };
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
-});
-
-myControllerModule.controller('SMaddController', function ($scope, $modalInstance, TypesFactory) {
+//Add Edit sensor controller
+myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, about, alertService, displayRestError, $filter) {
+  $scope.about = about;
   $scope.sensor = {};
-  $scope.header = "New Sensor";
-  $scope.sensorTypes = TypesFactory.getSensorTypes();
+  $scope.sensor.node = {};
+  $scope.sensor.node.gateway = {};
+
+  $scope.nodes = {};
   $scope.sensorVariableTypes = {};
-  $scope.nodes = TypesFactory.getNodes();
+
   
-  $scope.refreshVariableTypes = function(sensorTypeId){
-    return TypesFactory.getSensorVariableTypes({id: sensorTypeId});
+  if($stateParams.id){
+    SensorsFactory.get({"sensorId":$stateParams.id},function(response) {
+        $scope.sensor = response;
+        $scope.nodes  = TypesFactory.getNodes({"gatewayId":$scope.sensor.node.gateway.id});
+        $scope.sensorVariableTypes = TypesFactory.getSensorVariableTypes({'sensorType': $scope.sensor.type, 'sensorId': $scope.sensor.id});
+      },function(error){
+        displayRestError.display(error);
+      });
+  }
+  $scope.sensorTypes = TypesFactory.getSensorTypes();
+  
+  $scope.gateways = TypesFactory.getGateways();
+  
+  $scope.updateNodes= function(gatewayId){
+    $scope.nodes = TypesFactory.getNodes({"gatewayId":gatewayId});
   }
   
-  $scope.updateVariableTypes= function(){
-    $scope.sensor.variableTypes = {};
-    var variableTypesArray=[];
-    if($scope.variableTypes.length >0){
-        angular.forEach($scope.variableTypes, function(key, value) {
-          variableTypesArray.push(key.displayName);
-        });
-      }
-      $scope.sensor.variableTypes = variableTypesArray.join(', ');//Refer Api
+  $scope.refreshVariableTypes = function(sensorType){
+    $scope.sensorVariableTypes = TypesFactory.getSensorVariableTypes({'sensorType': sensorType});
   }
-  $scope.add = function() {$modalInstance.close($scope.sensor); }
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
+  
+  //GUI page settings
+  $scope.showHeaderUpdate = $stateParams.id;
+  $scope.headerStringAdd = "Add sensor";
+  $scope.headerStringUpdate = "Update sensor";
+  $scope.cancelButtonUrl = about.urlSensorsList+'/'; //Cancel button url
+  $scope.saveProgress = false;
+  //$scope.isSettingChange = false;
+  
+  $scope.save = function(){
+    $scope.saveProgress = true;
+    //TODO: for now REST request fails if we send with 'lastSeen'. drop this here
+    $scope.sensor.lastSeen = null;
+    if($stateParams.id){
+      SensorsFactory.update($scope.sensor,function(response) {
+        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        $scope.saveProgress = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress = false;
+      });
+    }else{
+      SensorsFactory.create($scope.sensor,function(response) {
+        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        $scope.saveProgress = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress = false;
+      });
+    }
+  }
 });
 
-myControllerModule.controller('SMupdateController', function ($scope, $modalInstance, sensor, TypesFactory) {
-  $scope.sensor = sensor;
-  $scope.sensorTypes = TypesFactory.getSensorTypes();
-  $scope.sensorValueTypes = TypesFactory.getSensorValueTypes();
-  $scope.header = "Modify Sensor";
-  $scope.sensorVariableTypes = TypesFactory.getSensorVariableTypesBySensorRefId({id: sensor.id});
-  
-  $scope.refreshVariableTypes = function(sensorTypeId){
-    return TypesFactory.getSensorVariableTypes({id: sensorTypeId});
-  }
-  
-  $scope.updateVariableTypes= function(){
-    $scope.sensor.variableTypes = {};
-    var variableTypesArray=[];
-    if($scope.variableTypes.length >0){
-        angular.forEach($scope.variableTypes, function(key, value) {
-          variableTypesArray.push(key.displayName);
-        });
-      }
-      $scope.sensor.variableTypes = variableTypesArray.join(', ');
-  }
-  $scope.update = function() {$modalInstance.close($scope.sensor);}
-  $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
+
+//Item Detail
+myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, about, SensorsFactory, MetricsFactory) {
+  //Load about variables to this scope
+  $scope.about = about;
+  $scope.sensor = SensorsFactory.get({"id":$stateParams.id});
+  $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"Sensor", "resourceId":$stateParams.id});
 });

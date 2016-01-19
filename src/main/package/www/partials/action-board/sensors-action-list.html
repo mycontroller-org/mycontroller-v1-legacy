@@ -1,0 +1,304 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div>
+  
+  <!-- Loading icon disaplay --> 
+  <div ng-hide="queryResponse.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+  
+  <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
+
+    <!-- top tool bar -->
+    <div class="col-md-12 mc-top-space" ng-show="queryResponse.query.totalItems > 0">
+      <div pf-data-toolbar id="sensorsDataToolbar" config="sensorsToolbarConfig"></div>
+    </div>
+    
+    <!-- Display No Items on system -->
+    <div ng-include src="'partials/common-html/no-items-system.html'"></div>
+    
+    <!-- Display When no data on table -->
+    <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
+    
+    <!-- list view -->
+    <div ng-show="filteredList.length > 0">
+    
+      <div class="col-md-12" ng-if="viewType == 'listView'" > <!-- items container -->
+        <div class="data-list-pf"> <!-- data-list-pf -->
+          <div class="list-group-item mc-list-align" dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"> <!-- ng-repeat -->
+            <div class="list-row"><!-- list-row -->
+  
+              <!-- Sensor name -->
+              <div class="col-md-3">
+                <p><i class="fa fa-plug"></i> {{item.node.gateway.name}} <i class="fa fa-chevron-right"></i>
+                  <i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name}} <i class="fa fa-chevron-right"></i> <i class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name}}</strong></i></p>
+              </div>
+  
+              <!-- Sensor type -->
+              <div class="col-md-1">
+                <p><i class="mc-icon-2x" ng-class="getSensorIcon(item.type)"></i><span>{{item.type ? item.type : 'Undefined'}}</span></p>
+              </div>
+  
+              <!-- Last seen -->
+              <div class="col-md-1">
+                <p class="text-left"><i class="fa fa-clock-o mc-icon-lg"></i>{{item.lastSeen.inString?item.lastSeen.inString:'Never'}}</p>
+              </div>
+            
+              <!-- Variables, selects only one-->
+              <div ng-repeat="variable in item.variables | orderBy : 'type' | limitTo:6"> <!-- variables ng-repeat -->
+                <div class="col-md-1">
+  
+                  <!-- Status -->
+                  <div ng-if="variable.type === 'Status'">
+                    <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = getInteger(variable.value)" type="checkbox"
+                      switch-animate="{{mcbStyle.animate}}" switch-handle-width="{{mcbStyle.stateHandleWidth}}" switch-label-width="{{mcbStyle.labelWidth}}"
+                      switch-off-color="default" switch-on-color="primary" switch-size="{{mcbStyle.size}}"
+                      ng-true-value="1" ng-false-value="0" switch-on-text="ON" switch-off-text="OFF"
+                      >
+                  </div>
+  
+                  <!-- Temperature -->
+                  <div ng-if="variable.type === 'Temperature'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="wi wi-thermometer mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                
+                  <!-- Percentage -->
+                  <div ng-if="variable.type === 'Percentage'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="fa fa-percent mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}}</span></span>
+                    </p>
+                  </div>
+                
+                  <!-- Humidity -->
+                  <div ng-if="variable.type === 'Humidity'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="wi wi-humidity mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                
+                  <!-- Pressure -->
+                  <div ng-if="variable.type === 'Pressure'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="wi wi-barometer mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                
+                  <!-- Forecast -->
+                  <div ng-if="variable.type === 'Forecast'" uib-tooltip="Forecast" tooltip-placement="left">
+                    <!-- <p><i class="wi wi-{{getForecastValue(variable.value)}} mc-icon-2x"></i></p> -->
+                    <p><span class="mc-inline-editer-ab mc-style-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="wi wi-{{getForecastValue(variable.value)}} mc-icon-2x"></i></span>
+                    </p>
+                  </div>
+                
+                  <!-- Watt -->
+                  <div ng-if="variable.type === 'Watt'" uib-tooltip="Watt" tooltip-placement="left">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="fa fa-bolt mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                
+                  <!-- Weight -->
+                  <div ng-if="variable.type === 'Weight'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="fa fa-balance-scale mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                
+                  <!-- Stop -->
+                  <div ng-if="variable.type === 'Stop'">
+                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-stop mc-icon-2x" ng-click="updateVariable(variable)"></i></span></p>
+                  </div>
+                  
+                  <!-- Up -->
+                  <div ng-if="variable.type === 'Up'">
+                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-arrow-up mc-icon-2x" ng-click="updateVariable(variable)"></i></span></p>
+                  </div>
+                  
+                  <!-- Down -->
+                  <div ng-if="variable.type === 'Down'">
+                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-arrow-down mc-icon-2x" ng-click="updateVariable(variable)"></i></span></p>
+                  </div>
+                  
+                  <!-- Rain -->
+                  <div ng-if="variable.type === 'Rain'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="wi wi-raindrops mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                
+                  <!-- Rain rate-->
+                  <div ng-if="variable.type === 'Rain rate'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="wi wi-raindrops mc-icon-2x">r</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                  
+                  <!-- Distance-->
+                  <div ng-if="variable.type === 'Distance'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="fa fa-binoculars mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                  
+                  <!-- Current-->
+                  <div ng-if="variable.type === 'Current'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="fa mc-icon-2x">I</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                  
+                  <!-- Voltage-->
+                  <div ng-if="variable.type === 'Voltage'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="fa mc-icon-2x">V</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                  
+                  <!-- Impedance-->
+                  <div ng-if="variable.type === 'Impedance'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="fa mc-icon-2x">Ohm</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                
+                  <!-- Armed -->
+                  <div ng-if="variable.type === 'Armed'">
+                    <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = getInteger(variable.value)"type="checkbox"
+                      switch-animate="{{mcbStyle.animate}}" switch-handle-width="{{mcbStyle.handleWidth}}" switch-label-width="{{mcbStyle.labelWidth}}"
+                      switch-off-color="default" switch-on-color="primary" switch-size="{{mcbStyle.size}}"
+                      ng-true-value="1" ng-false-value="0" switch-on-text="Armed" switch-off-text="Bypassed">
+                  </div>
+                  
+                  <!-- Tripped -->
+                  <div ng-if="variable.type === 'Tripped'">
+                    <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = getInteger(variable.value)"type="checkbox"
+                      switch-animate="{{mcbStyle.animate}}" switch-handle-width="{{mcbStyle.handleWidth}}" switch-label-width="{{mcbStyle.labelWidth}}"
+                      switch-off-color="default" switch-on-color="primary" switch-size="{{mcbStyle.size}}"
+                      ng-true-value="1" ng-false-value="0" switch-on-text="Tripped" switch-off-text="Untripped">
+                  </div>
+                  
+                  <!-- Lock status -->
+                  <div ng-if="variable.type === 'Lock status'">
+                    <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = getInteger(variable.value)" type="checkbox" 
+                      switch-animate="{{mcbStyle.animate}}" switch-handle-width="{{mcbStyle.handleWidth}}" switch-label-width="{{mcbStyle.labelWidth}}"
+                      switch-off-color="danger" switch-on-color="primary" switch-size="{{mcbStyle.size}}"
+                      ng-true-value="1" ng-false-value="0" switch-on-text="Locked" switch-off-text="Unlocked">
+                  </div>
+                  
+                  <!-- HVAC flow mode -->
+                  <div ng-if="variable.type === 'HVAC flow mode'">
+                    <span class="mc-sab-dropdown mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)" buttons="no" editable-select="variable.value" e-ng-options="hvac.id as hvac.label for hvac in hvacOptionsFlowMode">
+                      <span class="mc-style-ab">{{variable.value || "not set"}}</span>
+                    </span>
+                  </div>
+                  
+                  <!-- HVAC flow state -->
+                  <div ng-if="variable.type === 'HVAC flow state'">
+                    <span class="mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)" buttons="no" editable-select="variable.value" e-ng-options="hvac.id as hvac.label for hvac in hvacOptionsFlowState">
+                      <span class="mc-style-ab">{{variable.value || "not set"}}</span>
+                    </span>
+                  </div>
+                  
+                  <!-- HVAC fan speed -->
+                  <div ng-if="variable.type === 'HVAC speed'">
+                    <span class="mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)" buttons="no" editable-select="variable.value" e-ng-options="hvac.id as hvac.label for hvac in hvacOptionsFanSpeed">
+                      <span class="mc-style-ab">{{variable.value || "not set"}}</span>
+                    </span>
+                  </div>
+                
+                  <!-- HVAC Heat set point -->
+                  <div ng-if="variable.type === 'HVAC setpoint heat'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="wi wi-thermometer mc-icon-2x">h</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                      </p>
+                  </div>
+                  
+                  <!-- HVAC Cool set point -->
+                  <div ng-if="variable.type === 'HVAC setpoint cool'">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <i class="wi wi-thermometer mc-icon-2x">c</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                  
+                  <!-- Variable 1,2,3,4,5 -->
+                  <div ng-if="variable.type.indexOf('Variable ') > -1" uib-tooltip="{{variable.type}}" tooltip-placement="left">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <span class="mc-style-ab">{{variable.type.replace('Variable ','V')}}: {{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                  
+                  <!-- RGB color picker -->
+                  <div ng-if="variable.type === 'RGB'">
+                    <button style="background-color:{{variable.value}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top"
+                      ng-change="updateVariable(variable)" ng-model="variable.value">{{variable.value || "-"}}</button>
+                  </div>
+                  
+                  <!-- RGBW color picker -->
+                  <div ng-if="variable.type === 'RGBW'">
+                    <button style="background-color:{{variable.rgba}};width:70px;color:white;" class="btn btn-sm" colorpicker="rgba" colorpicker-position="top"
+                      ng-init="variable.rgba = hex2rgba(variable.value)" ng-change="updateRgba(variable)" ng-model="variable.rgba">{{variable.value || "-"}}</button>
+                  </div>
+                
+                  <!-- Default, if non selected -->
+                  <div ng-if="definedVariableTypes.indexOf(variable.type) == -1">
+                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                      <span class="mc-style-ab">{{variable.type}}: {{variable.value ||"-"}} {{variable.unit}}</span></span>
+                    </p>
+                  </div>
+                  
+              </div>
+            </div><!-- variables ng-repeat -->
+  
+            <!-- fill empty space -->
+            <div ng-if="item.variables.length < 6" class="col-md-{{(6 -  item.variables.length)*1}}">
+              <p></p>
+            </div>
+  
+            <!-- Quick access buttons -->
+            <div class="col-md-1 pull-right">
+              <label class="text-default pull-right mc-inline-editer-ab" href="" ng-model="radioModel" ng-click="refreshSensor(item)" >
+                <i class="fa fa-refresh mc-icon-lg"></i>
+              </label>
+            </div>
+  
+          </div><!-- list-row -->
+        </div><!-- ng-repeat -->
+      </div><!-- data-list-pf -->
+      <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+    </div><!-- items container -->
+  
+  
+    <!-- box view -->
+    <div class="col-md-12 tiles-view-container" ng-if="viewType == 'tilesView'">
+      <legend></legend>
+      <div class="blank-slate-pf" >
+        <div class="blank-slate-pf-icon">
+          <i class="fa fa-exclamation-triangle"></i>
+        </div>
+        <h1>Tiles view not implemented.</h1>
+      </div>
+    </div>
+  
+  </div><!-- items display container -->
+
+  
+
+</div>
