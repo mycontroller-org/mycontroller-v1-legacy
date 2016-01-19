@@ -35,11 +35,11 @@ import org.mycontroller.standalone.db.alarm.ExecuteAlarm;
 import org.mycontroller.standalone.db.fwpayload.ExecuteForwardPayload;
 import org.mycontroller.standalone.db.tables.Alarm;
 import org.mycontroller.standalone.db.tables.Firmware;
-import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
-import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
+import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorValue;
 import org.mycontroller.standalone.db.tables.Settings;
@@ -56,6 +56,7 @@ import org.mycontroller.standalone.mysensors.structs.FirmwareConfigRequest;
 import org.mycontroller.standalone.mysensors.structs.FirmwareConfigResponse;
 import org.mycontroller.standalone.mysensors.structs.FirmwareRequest;
 import org.mycontroller.standalone.mysensors.structs.FirmwareResponse;
+import org.mycontroller.standalone.pubnub.PubNubClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -331,7 +332,8 @@ public class ProcessRawMessage {
         try {
             firmwareRequest.setByteBuffer(
                     ByteBuffer.wrap(Hex.decodeHex(rawMessage.getPayload().toCharArray())).order(
-                            ByteOrder.LITTLE_ENDIAN), 0);
+                            ByteOrder.LITTLE_ENDIAN),
+                    0);
             _logger.debug("Firmware Request:[Type:{},Version:{},Block:{}]", firmwareRequest.getType(),
                     firmwareRequest.getVersion(),
                     firmwareRequest.getBlock());
@@ -408,7 +410,8 @@ public class ProcessRawMessage {
         try {
             firmwareConfigRequest.setByteBuffer(
                     ByteBuffer.wrap(Hex.decodeHex(rawMessage.getPayload().toCharArray())).order(
-                            ByteOrder.LITTLE_ENDIAN), 0);
+                            ByteOrder.LITTLE_ENDIAN),
+                    0);
             boolean bootLoaderCommand = false;
             Firmware firmware = null;
 
@@ -448,7 +451,8 @@ public class ProcessRawMessage {
             } else if (firmware == null) {//Non bootloader command
                 if (DaoUtils.getSettingsDao().get(Settings.ENABLE_NOT_AVAILABLE_TO_DEFAULT_FIRMWARE).getValue()
                         .equalsIgnoreCase("true")) {
-                    _logger.debug("If requested firmware is not available, redirect to default firmware is set, Checking the default firmware");
+                    _logger.debug(
+                            "If requested firmware is not available, redirect to default firmware is set, Checking the default firmware");
                     Settings defailtFirmware = DaoUtils.getSettingsDao().get(Settings.DEFAULT_FIRMWARE);
                     if (defailtFirmware != null && defailtFirmware.getValue() != null) {
                         firmware = DaoUtils.getFirmwareDao().get(Integer.valueOf(defailtFirmware.getValue()));
@@ -550,6 +554,8 @@ public class ProcessRawMessage {
         Sensor sensor = this.getSensor(rawMessage);
         SensorValue sensorValue = this.updateSensorValue(rawMessage, sensor, payloadType);
 
+        new PubNubClient().publish(sensor, rawMessage);
+
         _logger.debug("Sensor:{}[NodeId:{},SesnorId:{},SubType({}):{}], PayLoad Type: {}",
                 sensor.getNameWithNode(),
                 sensor.getNode().getId(), sensor.getSensorId(),
@@ -620,8 +626,8 @@ public class ProcessRawMessage {
         List<ForwardPayload> forwardPayloads = DaoUtils.getForwardPayloadDao().getAll(sensor.getId(),
                 sensorValue.getVariableType());
         if (forwardPayloads != null && !forwardPayloads.isEmpty()) {
-            ExecuteForwardPayload executeForwardPayload =
-                    new ExecuteForwardPayload(forwardPayloads, sensor, sensorValue);
+            ExecuteForwardPayload executeForwardPayload = new ExecuteForwardPayload(forwardPayloads, sensor,
+                    sensorValue);
             new Thread(executeForwardPayload).run();
         }
 

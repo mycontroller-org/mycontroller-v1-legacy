@@ -28,10 +28,10 @@ import org.mycontroller.standalone.AppProperties.GATEWAY_TYPES;
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
-import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
-import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
-import org.mycontroller.standalone.api.jaxrs.NodeHandler;
 import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
+import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
+import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
+import org.mycontroller.standalone.api.jaxrs.NodeHandler;
 import org.mycontroller.standalone.api.jaxrs.SensorHandler;
 import org.mycontroller.standalone.api.jaxrs.SensorLogHandler;
 import org.mycontroller.standalone.api.jaxrs.SettingsHandler;
@@ -39,7 +39,13 @@ import org.mycontroller.standalone.api.jaxrs.TimerHandler;
 import org.mycontroller.standalone.api.jaxrs.TypesHandler;
 import org.mycontroller.standalone.api.jaxrs.UidTagHandler;
 import org.mycontroller.standalone.api.jaxrs.UserHandler;
-import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
+import org.mycontroller.standalone.api.jaxrs.exception.mappers.BadRequestExceptionMapper;
+import org.mycontroller.standalone.api.jaxrs.exception.mappers.DefaultOptionsMethodExceptionMapper;
+import org.mycontroller.standalone.api.jaxrs.exception.mappers.ForbiddenExceptionMapper;
+import org.mycontroller.standalone.api.jaxrs.exception.mappers.NotAcceptableExceptionMapper;
+import org.mycontroller.standalone.api.jaxrs.exception.mappers.NotAllowedExceptionMapper;
+import org.mycontroller.standalone.api.jaxrs.exception.mappers.NotFoundExceptionMapper;
+import org.mycontroller.standalone.api.jaxrs.exception.mappers.NotSupportedExceptionMapper;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.db.TimerUtils;
@@ -49,6 +55,7 @@ import org.mycontroller.standalone.gateway.serialport.MySensorsSerialPort;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.mysensors.MessageMonitorThread;
 import org.mycontroller.standalone.mysensors.RawMessageQueue;
+import org.mycontroller.standalone.pubnub.PubNubClient;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,6 +182,7 @@ public class StartApp {
         // - Start message Monitor Thread
         // - Load starting values
         // - Start MQTT Broker
+        // - Start PubNubClient
         // - Start gateway listener
         // - Start scheduler
         // - Start Web Server
@@ -198,6 +206,9 @@ public class StartApp {
 
         // - Start MQTT Broker
         MoquetteMqttBroker.start();
+
+        // - Start PubNub Client
+        PubNubClient.start();
 
         _logger.debug("MySensors Gateway Type:{}", ObjectFactory.getAppProperties().getGatewayType());
         //Start communication with MySensors gateway
@@ -229,12 +240,14 @@ public class StartApp {
         // - Stop Gateway Listener
         // - Stop MQTT broker
         // - Stop message Monitor Thread
+        // - Stop PubNubClient
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
         SchedulerUtils.stop();
         ObjectFactory.getMySensorsGateway().close();
         MoquetteMqttBroker.stop();
         MessageMonitorThread.setTerminationIssued(true);
+        PubNubClient.stop();
         DataBaseUtils.stop();
         _logger.debug("All services stopped. Shutting down...");
         _logger.info("Bye, Have a nice day! See you soon");
