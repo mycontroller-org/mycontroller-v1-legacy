@@ -28,7 +28,7 @@ public class PubNubClient {
             _logger.debug("PubNubClient is not enabled... Skipping start...");
             return;
         }
-        if (isRunning) {
+        if (isRunning()) {
             _logger.info("PubNubClient already running, nothing to do...");
             return;
         }
@@ -38,10 +38,8 @@ public class PubNubClient {
         final String SECRETKEY = ObjectFactory.getAppProperties().getPubNubSecretKey();
 
         pubnub = new Pubnub(PUBLISHKEY, SUBSCRIBERKEY, SECRETKEY, "", true);
-        String uuid = "MyController";
-        pubnub.setUUID(uuid);
 
-        isRunning = true;
+        setRunning(true);
         ObjectFactory.setPubNubClient(pubnub);
 
         _logger.debug("PubNubClient started successfully");
@@ -53,7 +51,7 @@ public class PubNubClient {
             _logger.debug("PubNubClient is not enabled.... Skipping stop...");
             return;
         }
-        if (!isRunning) {
+        if (!isRunning()) {
             _logger.info("PubNubClient is not running, nothing to do...");
             return;
         }
@@ -61,7 +59,7 @@ public class PubNubClient {
         pubnub.shutdown();
         pubnub = null;
 
-        isRunning = false;
+        setRunning(false);
         ObjectFactory.setPubNubClient(pubnub);
 
         _logger.debug("PubNubClient has been stopped successfully");
@@ -93,6 +91,14 @@ public class PubNubClient {
     public void unsubscribe(final String channelName) {
 
         pubnub.unsubscribe(channelName);
+    }
+
+    public static boolean isRunning() {
+        return isRunning;
+    }
+
+    private static void setRunning(boolean isRunning) {
+        PubNubClient.isRunning = isRunning;
     }
 
 }

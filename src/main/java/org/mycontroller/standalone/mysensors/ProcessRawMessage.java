@@ -554,7 +554,9 @@ public class ProcessRawMessage {
         Sensor sensor = this.getSensor(rawMessage);
         SensorValue sensorValue = this.updateSensorValue(rawMessage, sensor, payloadType);
 
-        new PubNubClient().publish(sensor, rawMessage);
+        if (PubNubClient.isRunning()) {
+            new PubNubClient().publish(sensor, rawMessage);
+        }
 
         _logger.debug("Sensor:{}[NodeId:{},SesnorId:{},SubType({}):{}], PayLoad Type: {}",
                 sensor.getNameWithNode(),
