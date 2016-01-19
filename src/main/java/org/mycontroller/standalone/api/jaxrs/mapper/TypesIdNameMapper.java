@@ -15,69 +15,27 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
+import lombok.ToString;
+
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@ToString(includeFieldNames = true)
 public class TypesIdNameMapper {
     private Object id;
     private String displayName;
+    private Object value;
     private Object subId;
     private boolean ticked = false;
-
-    public TypesIdNameMapper() {
-
-    }
-
-    public TypesIdNameMapper(Object id, String name) {
-        this(id, null, name, false);
-    }
-
-    public TypesIdNameMapper(Object id, String name, boolean ticked) {
-        this(id, null, name, ticked);
-    }
-
-    public TypesIdNameMapper(Object id, Object subId, String name) {
-        this(id, subId, name, false);
-    }
-
-    public TypesIdNameMapper(Object id, Object subId, String name, boolean ticked) {
-        this.id = id;
-        this.subId = subId;
-        this.displayName = name;
-        this.ticked = ticked;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String name) {
-        this.displayName = name;
-    }
-
-    public Object getId() {
-        return id;
-    }
-
-    public void setId(Object id) {
-        this.id = id;
-    }
-
-    public Object getSubId() {
-        return subId;
-    }
-
-    public void setSubId(Object subId) {
-        this.subId = subId;
-    }
-
-    public boolean isTicked() {
-        return ticked;
-    }
-
-    public void setTicked(boolean ticked) {
-        this.ticked = ticked;
-    }
 
 }

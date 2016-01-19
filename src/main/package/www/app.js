@@ -289,19 +289,26 @@ config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('urlSettingsVariablesMapperList', {
+      url:"/settings/variablesmapper/list",
+      templateUrl: "partials/variables-mapper/variables-mapper-list.html",
+      controller: "VariablesMapperListController",
+       data: {
+        requireLogin: true
+      }
+    }).state('urlSettingsVariablesMapperEdit', {
+      url:"/settings/variablesmapper/edit/:sensorType",
+      templateUrl: "partials/variables-mapper/variables-mapper-edit.html",
+      controller: "VariablesMapperEditController",
+       data: {
+        requireLogin: true
+      }
     })
     
     
     
     
-    .state('sensorsaction', {
-      url:"/actionboard/sensorsaction",
-      templateUrl: "partials/sensorsAction/sensorsAction.html",
-      controller: "SensorsActionController",
-       data: {
-        requireLogin: true
-      }
-    }).state('users', {
+    .state('users', {
       url:"/settings/users",
       templateUrl: "partials/users/users.html",
       controller: "UsersController",
@@ -326,13 +333,6 @@ config(function($stateProvider, $urlRouterProvider) {
       url:"/forwardPayload/:id",
       templateUrl: "partials/forwardPayload/forwardPayload.html",
       controller: "ForwardPayloadController",
-       data: {
-        requireLogin: true
-      }
-    }).state('variableMapper', {
-      url:"/settings/variableMapper",
-      templateUrl: "partials/variableMapper/variableMapper.html",
-      controller: "VariableMapperController",
        data: {
         requireLogin: true
       }
@@ -597,6 +597,8 @@ myControllerModule.value("about", {
     urlSettingsUnits: '#/settings/units',
     urlSettingsNotifications: '#/settings/notifications',
     urlSettingsMySensors: '#/settings/mysensors',
+    urlSettingsVariablesMapperList: '#/settings/variablesmapper/list',
+    urlSettingsVariablesMapperEdit: '#/settings/variablesmapper/edit',
 });
 
 //FooterCtrl

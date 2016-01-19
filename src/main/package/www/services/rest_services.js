@@ -100,6 +100,10 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getFirmwares:  { method: 'GET', isArray: true, params: {type: 'firmwares'}},
     getFirmwareTypes:  { method: 'GET', isArray: true, params: {type: 'firmwareTypes'}},
     getFirmwareVersions:  { method: 'GET', isArray: true, params: {type: 'firmwareVersions'}},
+    getSensorVariableMapper:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapper'} },
+    getSensorVariableMapperByType:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapperByType', id:null}  },
+    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} }, 
+
 
 
     getResources:  { method: 'GET', isArray: true, params: {type: 'resources'} },
@@ -108,12 +112,9 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },
     getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  },
     getMysConfigTypes:  { method: 'GET', isArray: true, params: {type: 'mysConfigTypes'}  },
-    getSensorVariableTypesAll:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesAll'}  },    
     getSensorVariableTypesBySensorRefId:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypesBySenRef'}  },
     getMessageTypes:  { method: 'GET', isArray: true, params: {type: 'messageTypes'}  },
     getMessageSubTypes:  { method: 'GET', isArray: true, params: {type: 'messageSubTypes'} },
-    getSensorVariableMapper:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapper'} },
-    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} }, 
     getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} },
     getLanguages:  { method: 'GET', isArray: true, params: {type: 'languages'} }, 
     getTime12h24hformats:  { method: 'GET', isArray: true, params: {type: 'time12h24hformats'} }, 

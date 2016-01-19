@@ -34,10 +34,8 @@ import org.mycontroller.standalone.alarm.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.THRESHOLD_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.TRIGGER_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.NOTIFICATION_TYPE;
-import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareType;
@@ -70,7 +68,7 @@ public class TypesUtils {
         MESSAGE_TYPE_SET_REQ[] types = MESSAGE_TYPE_SET_REQ.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (MESSAGE_TYPE_SET_REQ type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.name()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.name()).build());
         }
         return typesIdNameMappers;
     }
@@ -80,7 +78,8 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (MESSAGE_TYPE_PRESENTATION type : types) {
             if (!type.name().contains(NODE_IDENTIFIER)) {
-                typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
+                        .build());
             }
         }
         return typesIdNameMappers;
@@ -91,7 +90,8 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (MESSAGE_TYPE_PRESENTATION type : types) {
             if (type.name().contains(NODE_IDENTIFIER)) {
-                typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
+                        .build());
             }
         }
         return typesIdNameMappers;
@@ -110,11 +110,15 @@ public class TypesUtils {
                     case RESOURCES_GROUP:
                         if (triggerType == TRIGGER_TYPE.EQUAL || triggerType == TRIGGER_TYPE.NOT_EQUAL) {
                             typesIdNameMappers
-                                    .add(new TypesIdNameMapper(triggerType.ordinal(), triggerType.getText()));
+                                    .add(TypesIdNameMapper.builder().id(triggerType.ordinal())
+                                            .displayName(triggerType.getText())
+                                            .build());
                         }
                         break;
                     case SENSOR_VARIABLE:
-                        typesIdNameMappers.add(new TypesIdNameMapper(triggerType.ordinal(), triggerType.getText()));
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(triggerType.ordinal())
+                                .displayName(triggerType.getText())
+                                .build());
                         break;
 
                     case ALARM_DEFINITION:
@@ -125,7 +129,9 @@ public class TypesUtils {
                         break;
                 }
             } else {
-                typesIdNameMappers.add(new TypesIdNameMapper(triggerType.ordinal(), triggerType.getText()));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(triggerType.ordinal())
+                        .displayName(triggerType.getText())
+                        .build());
             }
         }
         return typesIdNameMappers;
@@ -134,8 +140,9 @@ public class TypesUtils {
     public static ArrayList<TypesIdNameMapper> getAlarmNotificationTypes() {
         NOTIFICATION_TYPE[] types = NOTIFICATION_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        for (NOTIFICATION_TYPE notification_type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(notification_type.ordinal(), notification_type.getText()));
+        for (NOTIFICATION_TYPE notificationType : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(notificationType.ordinal())
+                    .displayName(notificationType.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -144,7 +151,8 @@ public class TypesUtils {
         THRESHOLD_TYPE[] types = THRESHOLD_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (THRESHOLD_TYPE type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
+                    .build());
         }
         return typesIdNameMappers;
     }
@@ -153,7 +161,8 @@ public class TypesUtils {
         DAMPENING_TYPE[] types = DAMPENING_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (DAMPENING_TYPE type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
+                    .build());
         }
         return typesIdNameMappers;
     }
@@ -168,12 +177,14 @@ public class TypesUtils {
                     case GATEWAY:
                     case NODE:
                         if (type == STATE.UP || type == STATE.DOWN || type == STATE.UNAVAILABLE) {
-                            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                    .displayName(type.getText()).build());
                         }
                         break;
                     case RESOURCES_GROUP:
                         if (type == STATE.ON || type == STATE.OFF) {
-                            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                    .displayName(type.getText()).build());
                         }
                         break;
                     default:
@@ -181,7 +192,8 @@ public class TypesUtils {
                         break;
                 }
             } else {
-                typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
+                        .build());
             }
         }
         return typesIdNameMappers;
@@ -191,8 +203,9 @@ public class TypesUtils {
         org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE[] types = org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE
                 .values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        for (org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE timer_type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(timer_type.ordinal(), timer_type.getText()));
+        for (org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE timerType : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(timerType.ordinal())
+                    .displayName(timerType.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -201,7 +214,8 @@ public class TypesUtils {
         FREQUENCY[] types = FREQUENCY.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (FREQUENCY type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
+                    .build());
         }
         return typesIdNameMappers;
     }
@@ -210,7 +224,8 @@ public class TypesUtils {
         WEEK_DAY[] types = WEEK_DAY.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (WEEK_DAY type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText(), isAllDaysTicked));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
+                    .ticked(isAllDaysTicked).build());
         }
         return typesIdNameMappers;
     }
@@ -230,22 +245,26 @@ public class TypesUtils {
                     case TIMER:
                         if (type != RESOURCE_TYPE.ALARM_DEFINITION && type != RESOURCE_TYPE.TIMER
                                 && type != RESOURCE_TYPE.SENSOR) {
-                            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                    .displayName(type.getText()).build());
                         }
                         break;
                     case RESOURCES_GROUP:
                         if (type != RESOURCE_TYPE.ALARM_DEFINITION && type != RESOURCE_TYPE.TIMER
                                 && type != RESOURCE_TYPE.SENSOR
                                 && type != RESOURCE_TYPE.RESOURCES_GROUP) {
-                            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                    .displayName(type.getText()).build());
                         }
                         break;
                     default:
-                        typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                .displayName(type.getText()).build());
                         break;
                 }
             } else {
-                typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
+                        .build());
             }
         }
         return typesIdNameMappers;
@@ -262,7 +281,8 @@ public class TypesUtils {
             case GATEWAY:
                 List<Gateway> gateways = DaoUtils.getGatewayDao().getAll();
                 for (Gateway type : gateways) {
-                    typesIdNameMappers.add(new TypesIdNameMapper(type.getId(), type.getName()));
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getId()).displayName(type.getName())
+                            .build());
                 }
                 break;
             case NODE:
@@ -271,7 +291,8 @@ public class TypesUtils {
                     builder.setLength(0);
                     builder.append(type.getGateway().getName()).append(" -> ")
                             .append("[").append(type.getEui()).append("]").append(type.getName());
-                    typesIdNameMappers.add(new TypesIdNameMapper(type.getId(), builder.toString()));
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getId())
+                            .displayName(builder.toString()).build());
                 }
                 break;
             case SENSOR:
@@ -281,7 +302,8 @@ public class TypesUtils {
                     builder.append(type.getNode().getGateway().getName()).append(" -> ")
                             .append("[").append(type.getNode().getEui()).append("]").append(type.getNode().getName())
                             .append(" -> [").append(type.getSensorId()).append("]").append(type.getName());
-                    typesIdNameMappers.add(new TypesIdNameMapper(type.getId(), builder.toString()));
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getId())
+                            .displayName(builder.toString()).build());
                 }
                 break;
             case SENSOR_VARIABLE:
@@ -294,7 +316,8 @@ public class TypesUtils {
                             .append(" -> [").append(type.getSensor().getSensorId()).append("]")
                             .append(type.getSensor().getName())
                             .append(" -> ").append(type.getVariableType().getText());
-                    typesIdNameMappers.add(new TypesIdNameMapper(type.getId(), builder.toString()));
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getId())
+                            .displayName(builder.toString()).build());
                 }
                 break;
 
@@ -309,8 +332,8 @@ public class TypesUtils {
         List<Gateway> gateways = DaoUtils.getGatewayDao().getAll();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (Gateway gateway : gateways) {
-            typesIdNameMappers.add(new TypesIdNameMapper(gateway.getId(),
-                    new ResourceModel(RESOURCE_TYPE.GATEWAY, gateway).getResourceLessDetails()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(gateway.getId())
+                    .displayName(new ResourceModel(RESOURCE_TYPE.GATEWAY, gateway).getResourceLessDetails()).build());
         }
         return typesIdNameMappers;
     }
@@ -324,8 +347,8 @@ public class TypesUtils {
         }
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (Node node : nodes) {
-            typesIdNameMappers.add(new TypesIdNameMapper(node.getId(),
-                    new ResourceModel(RESOURCE_TYPE.NODE, node).getResourceLessDetails()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(node.getId())
+                    .displayName(new ResourceModel(RESOURCE_TYPE.NODE, node).getResourceLessDetails()).build());
         }
         return typesIdNameMappers;
     }
@@ -334,8 +357,10 @@ public class TypesUtils {
         List<ResourcesGroup> resourcesGroups = DaoUtils.getResourcesGroupDao().getAll();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (ResourcesGroup resourcesGroup : resourcesGroups) {
-            typesIdNameMappers.add(new TypesIdNameMapper(resourcesGroup.getId(),
-                    new ResourceModel(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup).getResourceLessDetails()));
+            typesIdNameMappers.add(TypesIdNameMapper
+                    .builder().id(resourcesGroup.getId()).displayName(
+                            new ResourceModel(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup)
+                                    .getResourceLessDetails()).build());
         }
         return typesIdNameMappers;
     }
@@ -344,8 +369,8 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<Timer> timers = DaoUtils.getTimerDao().getAll();
         for (Timer timer : timers) {
-            typesIdNameMappers.add(new TypesIdNameMapper(timer.getId(),
-                    new ResourceModel(RESOURCE_TYPE.TIMER, timer).getResourceLessDetails()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(timer.getId())
+                    .displayName(new ResourceModel(RESOURCE_TYPE.TIMER, timer).getResourceLessDetails()).build());
         }
         return typesIdNameMappers;
     }
@@ -354,7 +379,8 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<FirmwareType> firmwareTypes = DaoUtils.getFirmwareTypeDao().getAll();
         for (FirmwareType firmwareType : firmwareTypes) {
-            typesIdNameMappers.add(new TypesIdNameMapper(firmwareType.getId(), firmwareType.getName()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(firmwareType.getId())
+                    .displayName(firmwareType.getName()).build());
         }
         return typesIdNameMappers;
     }
@@ -363,7 +389,8 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<FirmwareVersion> firmwareVersions = DaoUtils.getFirmwareVersionDao().getAll();
         for (FirmwareVersion firmwareVersion : firmwareVersions) {
-            typesIdNameMappers.add(new TypesIdNameMapper(firmwareVersion.getId(), firmwareVersion.getVersion()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(firmwareVersion.getId())
+                    .displayName(firmwareVersion.getVersion()).build());
         }
         return typesIdNameMappers;
     }
@@ -372,8 +399,8 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<Firmware> firmwares = DaoUtils.getFirmwareDao().getAll();
         for (Firmware firmware : firmwares) {
-            typesIdNameMappers.add(new TypesIdNameMapper(firmware.getId(),
-                    firmware.getType().getName() + ":" + firmware.getVersion().getVersion()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(firmware.getId())
+                    .displayName(firmware.getType().getName() + ":" + firmware.getVersion().getVersion()).build());
         }
         return typesIdNameMappers;
     }
@@ -382,8 +409,9 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<AlarmDefinition> alarmDefinitions = DaoUtils.getAlarmDefinitionDao().getAll();
         for (AlarmDefinition alarmDefinition : alarmDefinitions) {
-            typesIdNameMappers.add(new TypesIdNameMapper(alarmDefinition.getId(),
-                    new ResourceModel(RESOURCE_TYPE.ALARM_DEFINITION, alarmDefinition).getResourceLessDetails()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(alarmDefinition.getId())
+                    .displayName(new ResourceModel(RESOURCE_TYPE.ALARM_DEFINITION, alarmDefinition)
+                            .getResourceLessDetails()).build());
         }
         return typesIdNameMappers;
     }
@@ -399,8 +427,10 @@ public class TypesUtils {
         for (Node node : nodes) {
             List<Sensor> sensors = DaoUtils.getSensorDao().getAll(node.getId());
             for (Sensor sensor : sensors) {
-                typesIdNameMappers.add(new TypesIdNameMapper(sensor.getId(), sensor.getSensorId(),
-                        new ResourceModel(RESOURCE_TYPE.SENSOR, sensor).getResourceLessDetails()));
+                typesIdNameMappers
+                        .add(TypesIdNameMapper.builder().id(sensor.getId()).subId(sensor.getSensorId())
+                                .displayName(new ResourceModel(RESOURCE_TYPE.SENSOR, sensor).getResourceLessDetails())
+                                .build());
             }
         }
 
@@ -421,9 +451,9 @@ public class TypesUtils {
         for (Sensor sensor : sensors) {
             List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensor.getId());
             for (SensorVariable sensorVariable : sensorVariables) {
-                typesIdNameMappers.add(new TypesIdNameMapper(sensorVariable.getId(),
-                        new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails()
-                        ));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(sensorVariable.getId()).displayName(
+                        new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
+                        .build());
             }
         }
 
@@ -463,8 +493,8 @@ public class TypesUtils {
         List<SensorsVariablesMap> variableTypes = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (SensorsVariablesMap variableType : variableTypes) {
-            typesIdNameMappers.add(new TypesIdNameMapper(variableType.getVariableType().getText(), variableType
-                    .getVariableType().getText(), false));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(variableType.getVariableType().getText())
+                    .displayName(variableType.getVariableType().getText()).ticked(false).build());
         }
         if (sensorId != null) {
             List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensorId);
@@ -485,30 +515,26 @@ public class TypesUtils {
         List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensorRefId);
         for (SensorVariable sensorVariable : sensorVariables) {
             if (sensorVariable.getMetricType() != METRIC_TYPE.NONE) {
-                typesIdNameMappers.add(new TypesIdNameMapper(sensorVariable.getId(), sensorVariable.getSensor()
-                        .getId(),
-                        sensorVariable.getVariableType().getText()));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(sensorVariable.getId())
+                        .subId(sensorVariable.getSensor().getId())
+                        .displayName(sensorVariable.getVariableType().getText()).build());
             }
         }
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getSensorVariableTypesAll(MESSAGE_TYPE_PRESENTATION sensorType) {
+    public static ArrayList<TypesIdNameMapper> getSensorVariableMapperByType(MESSAGE_TYPE_PRESENTATION sensorType) {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<SensorsVariablesMap> variablesMap = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
-        String variables = null;
+        ArrayList<String> variables = new ArrayList<String>();
         for (SensorsVariablesMap variableMap : variablesMap) {
-            if (variables != null) {
-                variables += SensorUtils.VARIABLE_TYPE_SPLITER + variableMap.getVariableType().getText();
-            } else {
-                variables = variableMap.getVariableType().getText();
-            }
+            variables.add(variableMap.getVariableType().getText());
         }
 
         MESSAGE_TYPE_SET_REQ[] types = MESSAGE_TYPE_SET_REQ.values();
         for (MESSAGE_TYPE_SET_REQ type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText(),
-                    variables != null ? variables.contains(type.getText()) : false));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
+                    .ticked(variables != null ? variables.contains(type.getText()) : false).build());
         }
         return typesIdNameMappers;
     }
@@ -517,7 +543,8 @@ public class TypesUtils {
         MESSAGE_TYPE[] types = MESSAGE_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (MESSAGE_TYPE type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+            typesIdNameMappers
+                    .add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.toString()).build());
         }
         return typesIdNameMappers;
     }
@@ -528,26 +555,30 @@ public class TypesUtils {
             case C_INTERNAL:
                 MESSAGE_TYPE_INTERNAL[] typesInt = MESSAGE_TYPE_INTERNAL.values();
                 for (MESSAGE_TYPE_INTERNAL type : typesInt) {
-                    typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.toString())
+                            .build());
                 }
                 break;
             case C_PRESENTATION:
                 MESSAGE_TYPE_PRESENTATION[] typesPre = MESSAGE_TYPE_PRESENTATION.values();
                 for (MESSAGE_TYPE_PRESENTATION type : typesPre) {
-                    typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.toString())
+                            .build());
                 }
                 break;
             case C_REQ:
             case C_SET:
                 MESSAGE_TYPE_SET_REQ[] typesSetReq = MESSAGE_TYPE_SET_REQ.values();
                 for (MESSAGE_TYPE_SET_REQ type : typesSetReq) {
-                    typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.toString())
+                            .build());
                 }
                 break;
             case C_STREAM:
                 MESSAGE_TYPE_STREAM[] typesStr = MESSAGE_TYPE_STREAM.values();
                 for (MESSAGE_TYPE_STREAM type : typesStr) {
-                    typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.toString()));
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.toString())
+                            .build());
                 }
                 break;
             default:
@@ -557,41 +588,38 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static List<KeyValueJson> getVariableMapperList() {
-        List<KeyValueJson> keyValueJsons = new ArrayList<KeyValueJson>();
-        StringBuilder builder = new StringBuilder();
+    public static List<TypesIdNameMapper> getVariableMapperList() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        ArrayList<String> variables = new ArrayList<String>();
         MESSAGE_TYPE_PRESENTATION[] types = MESSAGE_TYPE_PRESENTATION.values();
         for (MESSAGE_TYPE_PRESENTATION type : types) {
             if (!type.name().contains(NODE_IDENTIFIER)) {
-                builder.setLength(0);
+                variables.clear();
                 List<SensorsVariablesMap> variablesMap = DaoUtils.getSensorsVariablesMapDao().getAll(type);
                 if (variablesMap != null) {
                     for (SensorsVariablesMap sensorsVariablesMap : variablesMap) {
-                        if (builder.length() != 0) {
-                            builder.append(SensorUtils.VARIABLE_TYPE_SPLITER)
-                                    .append(sensorsVariablesMap.getVariableType().getText());
-                        } else {
-                            builder.append(sensorsVariablesMap.getVariableType().getText());
-                        }
+                        variables.add(sensorsVariablesMap.getVariableType().getText());
                     }
                 }
-                keyValueJsons.add(new KeyValueJson(type.toString(), builder.toString(), type.ordinal(),
-                        org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson.TYPE.VARIABLE_MAPPER));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
+                        .value(variables.clone()).build());
             }
         }
-        return keyValueJsons;
+        return typesIdNameMappers;
     }
 
-    public static void updateVariableMap(KeyValueJson keyValue) {
+    public static void updateVariableMap(TypesIdNameMapper idNameMapper) {
         // Delete existing map
-        MESSAGE_TYPE_PRESENTATION sensorType = MESSAGE_TYPE_PRESENTATION.valueOf(keyValue.getKey());
+        MESSAGE_TYPE_PRESENTATION sensorType = MESSAGE_TYPE_PRESENTATION.fromString(String.valueOf(idNameMapper
+                .getDisplayName()));
         DaoUtils.getSensorsVariablesMapDao().delete(sensorType);
-        if (keyValue.getValue() != null && keyValue.getValue().length() > 0) {
+        @SuppressWarnings("unchecked")
+        List<String> variables = (List<String>) idNameMapper.getValue();
+        if (variables != null && variables.size() > 0) {
             // Create New Map
-            String[] variables = keyValue.getValue().split(SensorUtils.VARIABLE_TYPE_SPLITER);
             for (String variable : variables) {
                 DaoUtils.getSensorsVariablesMapDao().create(sensorType,
-                        MESSAGE_TYPE_SET_REQ.valueOf(variable));
+                        MESSAGE_TYPE_SET_REQ.fromString(variable));
             }
         }
     }
@@ -601,10 +629,12 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         MC_LANGUAGE selected = ObjectFactory.getAppProperties().getLanguage();
         for (MC_LANGUAGE language : languages) {
-            if (selected.ordinal() == language.ordinal()) {
-                typesIdNameMappers.add(new TypesIdNameMapper(language.name().toLowerCase(), language.getText(), true));
+            if (selected == language) {
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(language.name().toLowerCase())
+                        .displayName(language.getText()).ticked(true).build());
             } else {
-                typesIdNameMappers.add(new TypesIdNameMapper(language.name().toLowerCase(), language.getText()));
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(language.name().toLowerCase())
+                        .displayName(language.getText()).build());
             }
 
         }
@@ -615,7 +645,8 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         MC_TIME_FORMAT[] formats = MC_TIME_FORMAT.values();
         for (MC_TIME_FORMAT format : formats) {
-            typesIdNameMappers.add(new TypesIdNameMapper(format.name(), format.getText()));
+            typesIdNameMappers
+                    .add(TypesIdNameMapper.builder().id(format.name()).displayName(format.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -624,7 +655,7 @@ public class TypesUtils {
         GatewayUtils.TYPE[] types = GatewayUtils.TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (GatewayUtils.TYPE type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -633,7 +664,7 @@ public class TypesUtils {
         NETWORK_TYPE[] types = NETWORK_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (NETWORK_TYPE type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -642,7 +673,7 @@ public class TypesUtils {
         GatewayUtils.SERIAL_PORT_DRIVER[] types = GatewayUtils.SERIAL_PORT_DRIVER.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (GatewayUtils.SERIAL_PORT_DRIVER type : types) {
-            typesIdNameMappers.add(new TypesIdNameMapper(type.ordinal(), type.getText()));
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;
     }

@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
-import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
+import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
 import org.mycontroller.standalone.auth.USER_ROLE;
@@ -203,6 +203,26 @@ public class TypesHandler {
         return RestUtils.getResponse(Status.OK, TypesUtils.getTimerWeekDays(allDays != null ? allDays : false));
     }
 
+    @GET
+    @Path("/sensorVariableMapper")
+    public Response getSensorVariableMapper() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
+    }
+
+    @GET
+    @Path("/sensorVariableMapperByType")
+    public Response getSensorVariableTypesAll(@QueryParam("sensorType") String sensorType) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getSensorVariableMapperByType(MESSAGE_TYPE_PRESENTATION.fromString(sensorType)));
+    }
+
+    @PUT
+    @Path("/sensorVariableMapper")
+    public Response updateSensorVariableMapper(TypesIdNameMapper idNameMapper) {
+        TypesUtils.updateVariableMap(idNameMapper);
+        return RestUtils.getResponse(Status.OK);
+    }
+
     //----------------- review required
 
     @GET
@@ -238,13 +258,6 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/sensorVariableTypesAll/{sensorType}")
-    public Response getSensorVariableTypesAll(@PathParam("sensorType") String sensorType) {
-        return RestUtils.getResponse(Status.OK,
-                TypesUtils.getSensorVariableTypesAll(MESSAGE_TYPE_PRESENTATION.fromString(sensorType)));
-    }
-
-    @GET
     @Path("/graphSensorVariableTypes/{sensorRefId}")
     public Response getGraphSensorVariableTypes(@PathParam("sensorRefId") int sensorRefId) {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGraphSensorVariableTypes(sensorRefId));
@@ -263,22 +276,9 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/sensorVariableMapper")
-    public Response getSensorVariableMapper() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
-    }
-
-    @GET
     @Path("/timeFormats")
     public Response getTime12h24hformats() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getTimeFormats());
-    }
-
-    @PUT
-    @Path("/sensorVariableMapper")
-    public Response updateSensorVariableMapper(KeyValueJson keyValue) {
-        TypesUtils.updateVariableMap(keyValue);
-        return RestUtils.getResponse(Status.OK);
     }
 
 }

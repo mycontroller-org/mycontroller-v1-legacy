@@ -89,7 +89,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory) {
   };
   
   // Common filter
-  commonService.filterChange = function (filters, configMap) {
+  commonService.filterChangeLocal = function (filters, configMap) {
   configMap.filtersText = "";
     filters.forEach(function (filter) {
       configMap.filtersText += filter.title + " : " + filter.value + "\n";
@@ -181,7 +181,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory) {
     //Update filters
     filters.forEach(function (filter) {
       //This is to fix sensors action page
-      console.log(''+angular.toJson(filter));
+      //console.log(''+angular.toJson(filter));
       if(filter.type === undefined){
         remoteScope.filterConfig.fields.forEach(function (orgFilter) {
           if(filter.id === orgFilter.id){
