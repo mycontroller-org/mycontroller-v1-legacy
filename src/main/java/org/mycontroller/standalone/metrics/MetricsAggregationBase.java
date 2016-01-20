@@ -52,26 +52,34 @@ public class MetricsAggregationBase {
 
         _logger.debug("Run Aggregation, type:{}", this.aggregationType);
 
+        //Change this, reading all sensors at a time is not good
         List<Sensor> sensors = DaoUtils.getSensorDao().getAll();
-        _logger.debug("Sensors List:{}", sensors);
+        _logger.debug("Number of sensors:{}", sensors != null ? sensors.size() : 0);
 
         for (Sensor sensor : sensors) {
             List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllDoubleMetric(sensor.getId());
 
+            //Calculate metrics one by one(variable)
             for (SensorVariable sensorVariable : sensorVariables) {
+                //Collect past data for last X seconds,minutes, etc., based on 'AGGREGATON_TYPE'
                 List<MetricsDoubleTypeDevice> metrics = this.getLowLevelData(sensorVariable, aggregationType);
                 //Calculate Metrics
                 if (metrics.size() > 0) {
                     int samples = 0;
-                    if (this.aggregationType.ordinal() == AGGREGATION_TYPE.ONE_MINUTE.ordinal()) {
+                    //If it's one minute aggregation type,
+                    //it's from RAW data, so size of metrics is a total number of samples
+                    //In raw metrics data 'average' data called real data
+                    if (this.aggregationType == AGGREGATION_TYPE.ONE_MINUTE) {
                         samples = metrics.size();
                     }
                     _logger.debug("Number of records:{}", metrics.size());
-                    Double min = Double.MAX_VALUE;
-                    Double max = Double.MIN_VALUE;
+                    Double min = Double.MAX_VALUE;  //Possible positive highest double value
+                    Double max = Double.NEGATIVE_INFINITY;//Take lowest double number, MIN_VALUE, doesn't work.
                     Double sum = 0D;
                     for (MetricsDoubleTypeDevice metric : metrics) {
-                        if (this.aggregationType.ordinal() == AGGREGATION_TYPE.ONE_MINUTE.ordinal()) {
+                        //for one minute data, taking from raw data.
+                        //final result: Min, Max, Avg and samples 
+                        if (this.aggregationType == AGGREGATION_TYPE.ONE_MINUTE) {
                             if (metric.getAvg() > max) {
                                 max = metric.getAvg();
                             }
@@ -81,6 +89,7 @@ public class MetricsAggregationBase {
                             }
                             sum = sum + metric.getAvg();
                         } else {
+                            //for other than one minute data, calculate with max, min, avg and previous samples
                             if (metric.getMax() > max) {
                                 max = metric.getMax();
                             }
@@ -108,7 +117,8 @@ public class MetricsAggregationBase {
         this.purgeDB();
     }
 
-    private List<MetricsDoubleTypeDevice> getLowLevelData(SensorVariable sensorVariable, AGGREGATION_TYPE aggregationType) {
+    private List<MetricsDoubleTypeDevice> getLowLevelData(SensorVariable sensorVariable,
+            AGGREGATION_TYPE aggregationType) {
         switch (aggregationType) {
             case ONE_MINUTE:
                 return this.getMetricsDoubleData(sensorVariable, AGGREGATION_TYPE.RAW,
@@ -145,7 +155,8 @@ public class MetricsAggregationBase {
         }
     }
 
-    public List<MetricsDoubleTypeDevice> getMetricsDoubleData(SensorVariable sensorVariable, AGGREGATION_TYPE aggrType,
+    public List<MetricsDoubleTypeDevice> getMetricsDoubleData(SensorVariable sensorVariable,
+            AGGREGATION_TYPE aggrType,
             Long fromTimestamp) {
         MetricsDoubleTypeDevice metricsDoubleType = new MetricsDoubleTypeDevice(sensorVariable, aggrType.ordinal());
         if (fromTimestamp != null) {
