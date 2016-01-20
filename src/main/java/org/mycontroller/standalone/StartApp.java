@@ -81,7 +81,7 @@ public class StartApp {
             _logger.info("MyController.org server started in [{}] ms", System.currentTimeMillis() - start);
         } catch (Exception ex) {
             _logger.error("Unable to start application, refer error log,", ex);
-            System.exit(0);
+            System.exit(1);//Terminate jvm, with non zero
         }
     }
 
