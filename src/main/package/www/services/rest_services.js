@@ -58,7 +58,7 @@ myControllerModule.factory('FirmwaresFactory', function ($resource) {
     getAllFirmwares:  { method: 'GET', isArray: false, params: {type: 'firmwares'}},
     getFirmwareType:  { method: 'GET', isArray: false, params: {type: 'types', id: '@refId'}},
     getFirmwareVersion:  { method: 'GET', isArray: false, params: {type: 'versions', id: '@refId'}},
-    getFirmware:  { method: 'GET', isArray: false,  params: {ype: 'firmwares', id: '@refId'}},
+    getFirmware:  { method: 'GET', isArray: false,  params: {type: 'firmwares', id: '@refId'}},
     deleteFirmwareTypes:  { method: 'POST', params: {type: 'types', id: 'delete'}},
     deleteFirmwareVersions:  { method: 'POST', params: {type: 'versions', id: 'delete'}},
     deleteFirmwares:  { method: 'POST', params: {type: 'firmwares', id: 'delete'}},
@@ -102,13 +102,10 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getFirmwareVersions:  { method: 'GET', isArray: true, params: {type: 'firmwareVersions'}},
     getSensorVariableMapper:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapper'} },
     getSensorVariableMapperByType:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapperByType', id:null}  },
-    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} }, 
-
-
+    updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} },
+    getLanguages: { method: 'GET', isArray: true, params: {type: 'languages', id : null}},
 
     getResources:  { method: 'GET', isArray: true, params: {type: 'resources'} },
-
-    
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },
     getGraphInterpolateTypes:  { method: 'GET', isArray: true, params: {type: 'graphInterpolate'}  },
     getMysConfigTypes:  { method: 'GET', isArray: true, params: {type: 'mysConfigTypes'}  },
@@ -116,7 +113,6 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getMessageTypes:  { method: 'GET', isArray: true, params: {type: 'messageTypes'}  },
     getMessageSubTypes:  { method: 'GET', isArray: true, params: {type: 'messageSubTypes'} },
     getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} },
-    getLanguages:  { method: 'GET', isArray: true, params: {type: 'languages'} }, 
     getTime12h24hformats:  { method: 'GET', isArray: true, params: {type: 'time12h24hformats'} }, 
     
   })

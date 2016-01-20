@@ -223,18 +223,18 @@ public class TypesHandler {
         return RestUtils.getResponse(Status.OK);
     }
 
+    @GET
+    @Path("/languages")
+    public Response getLanguages() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
+    }
+
     //----------------- review required
 
     @GET
     @Path("/roles")
     public Response getUserRoles() {
         return RestUtils.getResponse(Status.OK, USER_ROLE.values());
-    }
-
-    @GET
-    @Path("/languages")
-    public Response getLanguages() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
     }
 
     @GET

@@ -100,24 +100,53 @@
             
             <div class="form-group">
               <label class="col-sm-2 control-label">Alive check interval</label>
-              <div class="col-sm-5">
-                <input ng-show="editEnable.controller" class="form-control" ng-model="controllerSettings.aliveCheckInterval"/>
-                <span ng-hide="editEnable.controller">{{controllerSettings.aliveCheckInterval}}</span>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{aliveCheckMinutes}} Minutes</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="aliveCheckMinutes"/>
+                </div>
+                <div class="col-sm-3 mc-form-fixer">
+                  <span>Minutes</span>
+                </div>
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">Language</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.controller" class="form-control" ng-model="controllerSettings.language"/>
+                <div ng-show="editEnable.controller">
+                  <select class="form-control" pf-select  ng-options="lg.displayName as lg.displayName for lg in languages" ng-model="controllerSettings.language"> 
+                    <option value="" ng-hide="true"></option>
+                  </select>
+                </div>
                 <span ng-hide="editEnable.controller">{{controllerSettings.language}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Time format</label>
+              <div class="col-sm-5">
+                <div ng-show="editEnable.controller">
+                  <select class="form-control" pf-select ng-model="controllerSettings.timeFormat"> 
+                    <option value="12 hours">12 hours</option>
+                    <option value="24 hours">24 hours</option>
+                  </select>
+                </div>
+                <span ng-hide="editEnable.controller">{{controllerSettings.timeFormat}}</span>
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">Units configuration</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.controller" class="form-control" ng-model="controllerSettings.unitConfig"/>
+                <div ng-show="editEnable.controller">
+                  <select class="form-control" pf-select ng-model="controllerSettings.unitConfig"> 
+                    <option value="Metric">Metric</option>
+                    <option value="Imperial">Imperial</option>
+                  </select>
+                </div>
                 <span ng-hide="editEnable.controller">{{controllerSettings.unitConfig}}</span>
               </div>
             </div>

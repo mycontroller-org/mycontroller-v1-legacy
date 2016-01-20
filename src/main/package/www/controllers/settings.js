@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, about) {
+myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, displayRestError, about) {
   
   //about, Timezone, etc.,
   $scope.about = about;
@@ -29,16 +29,20 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   
   //settings MyController
   $scope.updateSettingsController = function(){
-    $scope.controllerSettings = SettingsFactory.getController();
+    SettingsFactory.getController(function(resource){
+      $scope.controllerSettings = resource;
+      $scope.aliveCheckMinutes = $scope.controllerSettings.aliveCheckInterval / 60000;
+    });
   };
   
   //Pre-load
   $scope.locationSettings = {};
   $scope.controllerSettings = {};
+  //get languages
+  $scope.languages = TypesFactory.getLanguages();
   $scope.updateSettingsLocation();
   $scope.updateSettingsController();
-   
-   
+  $scope.aliveCheckMinutes = null;
    
   //Save functions
   
@@ -57,6 +61,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   //Save controller
   $scope.saveController = function(){
     $scope.saveProgress.controller = true;
+    $scope.controllerSettings.aliveCheckInterval = $scope.aliveCheckMinutes * 60000;
     SettingsFactory.saveController($scope.controllerSettings,function(response) {
         alertService.success('Update success...');
         $scope.saveProgress.controller = false;
@@ -156,7 +161,7 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
 
 });
 
-myControllerModule.controller('SettingsSystemMySensors', function(alertService, $scope, $filter, SettingsFactory, displayRestError, about) {
+myControllerModule.controller('SettingsSystemMySensors', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, FirmwaresFactory, displayRestError, about) {
   
   //about, Timezone, etc.,
   $scope.about = about;
@@ -168,13 +173,23 @@ myControllerModule.controller('SettingsSystemMySensors', function(alertService, 
  
   //settings MySensors
   $scope.updateSettingsMySensors = function(){
-    $scope.mySensorsSettings = SettingsFactory.getMySensors();
+    SettingsFactory.getMySensors(function(response){
+      $scope.mySensorsSettings = response;
+      if(response.defaultFirmware){
+        FirmwaresFactory.getFirmware({"refId": response.defaultFirmware},function(response){
+          $scope.defaultFirmware = response.firmwareName;
+        });
+      }      
+    });
   };
  
   
   //Pre-load
   $scope.mySensorsSettings = {};
+  //Get firmwares list
+  $scope.firmwares = TypesFactory.getFirmwares();
   $scope.updateSettingsMySensors();
+  $scope.defaultFirmware = null;
 
   //Save mySensors
   $scope.saveMySensors = function(){

@@ -186,8 +186,12 @@ public class FirmwareHandler {
 
     @GET
     @Path("/firmwares/{id}")
-    public Response getFirmware(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareDao().getById(id));
+    public Response getFirmware(@QueryParam("withData") Boolean withData, @PathParam("id") int id) {
+        Firmware firmware = DaoUtils.getFirmwareDao().getById(id);
+        if (withData == null || !withData) {
+            firmware.setData(null);
+        }
+        return RestUtils.getResponse(Status.OK, firmware);
     }
 
     @PUT
