@@ -19,12 +19,8 @@
 var myControllerModule = angular.module('myController',[
   'ui.router',
   'ui.bootstrap',
-  'ui-confirm',
-  'angular-table',
   'ngResource',
   'ngCookies',
-  'nvd3',
-  'ui-rangeSlider',
   'ui.bootstrap.datetimepicker',
   'base64',
   'colorpicker.module',
