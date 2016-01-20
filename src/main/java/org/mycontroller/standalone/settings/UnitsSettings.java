@@ -49,7 +49,9 @@ public class UnitsSettings {
         Settings settings = null;
         for (MESSAGE_TYPE_SET_REQ sVariable : Unit.variables) {
             settings = getSettings(sVariable.getText());
-            variables.add(new Unit(sVariable.getText(), settings.getValue(), settings.getAltValue()));
+            if (settings != null) {
+                variables.add(new Unit(sVariable.getText(), settings.getValue(), settings.getAltValue()));
+            }
         }
         return UnitsSettings.builder().variables(variables).build();
     }
