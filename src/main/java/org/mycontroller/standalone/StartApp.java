@@ -41,7 +41,7 @@ import org.mycontroller.standalone.api.jaxrs.TimerHandler;
 import org.mycontroller.standalone.api.jaxrs.TypesHandler;
 import org.mycontroller.standalone.api.jaxrs.UidTagHandler;
 import org.mycontroller.standalone.api.jaxrs.UserHandler;
-import org.mycontroller.standalone.api.jaxrs.UserSettingsHandler;
+import org.mycontroller.standalone.api.jaxrs.PermitAllHandler;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
 import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
@@ -140,7 +140,7 @@ public class StartApp {
         resources.add(SettingsHandler.class.getName());
         resources.add(GatewayHandler.class.getName());
         resources.add(ResourcesGroupHandler.class.getName());
-        resources.add(UserSettingsHandler.class.getName());
+        resources.add(PermitAllHandler.class.getName());
 
         //Add PreFlight handler
         //resources.add(OptionsHandler.class.getName());
