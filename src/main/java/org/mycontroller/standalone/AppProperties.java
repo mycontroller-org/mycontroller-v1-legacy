@@ -328,6 +328,7 @@ public class AppProperties {
         mySensorsSettings = MySensorsSettings.get();
         emailSettings = EmailSettings.get();
         smsSettings = SmsSettings.get();
+        unitsSettings = UnitsSettings.get();
     }
 
     private boolean is12HoursSelected() {
