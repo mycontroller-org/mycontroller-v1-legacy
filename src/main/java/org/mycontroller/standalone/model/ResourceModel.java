@@ -31,13 +31,13 @@ import org.mycontroller.standalone.db.tables.Timer;
  * @since 0.0.2
  */
 public class ResourceModel {
-    public static final String DISPLAY_KEY_GATEWAY = "G:";
-    public static final String DISPLAY_KEY_NODE = "N:";
-    public static final String DISPLAY_KEY_SENSOR = "S:";
-    public static final String DISPLAY_KEY_SENSOR_VARIABLE = "SV:";
-    public static final String DISPLAY_KEY_RESOURCES_GROUP = "RG:";
-    public static final String DISPLAY_KEY_ALARM_DIFINITION = "AD:";
-    public static final String DISPLAY_KEY_TIMER = "T:";
+    public static final String DISPLAY_KEY_GATEWAY = "[G]:";
+    public static final String DISPLAY_KEY_NODE = "[N]:";
+    public static final String DISPLAY_KEY_SENSOR = "[S]:";
+    public static final String DISPLAY_KEY_SENSOR_VARIABLE = "[SV]:";
+    public static final String DISPLAY_KEY_RESOURCES_GROUP = "[RG]:";
+    public static final String DISPLAY_KEY_ALARM_DIFINITION = "[AD]:";
+    public static final String DISPLAY_KEY_TIMER = "[T]:";
 
     private RESOURCE_TYPE resourceType;
     private Integer resourceId;

@@ -388,7 +388,11 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       controller: "LoginController",
       data: {
         requireLogin: false
-      }
+      },
+      params: { 
+      'toState': 'dashboard', // default state to proceed to after login
+      'toParams': {}
+    },
     });
 });
 
@@ -397,19 +401,12 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
 myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $rootScope, $state, mchelper, SettingsFactory, $cookieStore) {
     $scope.isCollapsed = true;
     $scope.mchelper = mchelper;
-   
-    $scope.isActive = function (viewLocation) { 
-        return viewLocation === $location.path();
-    };
-    
-    $scope.isStartsWith = function (viewLocation) {
-       return $location.path().indexOf(viewLocation) === 0;
-    };
-    
+    $scope.$state = $state;
+
     $scope.isAuthenticated = function () { 
         return $rootScope.globals.currentUser;
     };
-    
+
     $scope.changeLanguage = function (lang) {
       $translate.use(lang.id);
       $scope.languageId = lang.id;
@@ -420,10 +417,6 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
       //Update cookie store
       $cookieStore.put('mchelper', mchelper);
     };
-    
-    $scope.isLangActive = function(langKey){
-      return angular.equals(langKey, $translate.use());
-    }
 });
 
 myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, mchelper, $translate, editableOptions) {
@@ -458,7 +451,8 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
     // redirect to login page if not logged in
     if (requireLogin && !$rootScope.globals.currentUser) {
       event.preventDefault();
-      return $state.go('login');
+      //return $state.go('login');
+      return $state.go('login', {'toState': toState.name, 'toParams': toParams});
     }
   });
 
@@ -469,11 +463,13 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 
 myControllerModule.controller('LoginController',
     function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, displayRestError, mchelper, $cookieStore, $translate, $filter) {
+        //Load mchelper to this scope
+        $scope.mchelper = mchelper;
         // reset login status
         AuthenticationService.ClearCredentials();
         //Update login page details
         ReadFileFactory.getConfigFile(function(configFile){
-          $scope.cfgFile = configFile;
+          $scope.mchelper.cfg = configFile;
           //Update language
           $translate.use(mchelper.cfg.languageId);
         });
@@ -497,7 +493,8 @@ myControllerModule.controller('LoginController',
                       displayRestError.display(error);            
                     });
                     //alertService.success($filter('translate')('SYSTEM.LOGIN_NOTIFY_SUCCESS'));
-                    $state.go('dashboard'); 
+                    //$state.go('dashboard'); 
+                    $state.go($state.params.toState, $state.params.toParams);
                 } else {
                     alertService.danger($filter('translate')('SYSTEM.LOGIN_NOTIFY_INCORRECT'));
                     $scope.dataLoading = false;
@@ -545,11 +542,11 @@ myControllerModule.filter('mcResourceRepresentation', function() {
       return undefined;
     }
     return text.replace(/>>/g, '<i class="fa fa-chevron-right"></i>')
-               .replace(/RG:/g, '<i class="pficon pficon-replicator fa-lg"></i> ')
-               .replace(/G:/g, '<i class="fa fa-plug"></i> ')
-               .replace(/N:/g, '<i class="fa fa-sitemap"></i> ')
-               .replace(/S:/g, '<i class="fa fa-eye"></i> ')
-               .replace(/SV:/g, '');
+               .replace(/\[RG\]:/g, '<i class="pficon pficon-replicator fa-lg"></i> ')
+               .replace(/\[G\]:/g, '<i class="fa fa-plug"></i> ')
+               .replace(/\[N\]:/g, '<i class="fa fa-sitemap"></i> ')
+               .replace(/\[S\]:/g, '<i class="fa fa-eye"></i> ')
+               .replace(/\[SV\]:/g, '');
   }
 });
 
