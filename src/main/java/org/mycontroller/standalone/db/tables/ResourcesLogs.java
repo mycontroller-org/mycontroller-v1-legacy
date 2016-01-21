@@ -37,11 +37,11 @@ import lombok.Builder;
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.RESOURCES_LOGS)
-@Builder
-@ToString(includeFieldNames = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class ResourcesLogs {
 
     public static final String KEY_ID = "id";

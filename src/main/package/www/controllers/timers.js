@@ -210,11 +210,11 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
         }else if($scope.timer.timerType === 'Cron'){
           $scope.cronFrequencyData = $scope.timer.frequencyData;
         }else{
-          if($scope.timer.frequency === 'Daily'){
+          if($scope.timer.frequencyType === 'Daily'){
             $scope.dailyFrequencyData = $scope.timer.frequencyData.split(',');
-          }else if($scope.timer.frequency === 'Weekly'){
+          }else if($scope.timer.frequencyType === 'Weekly'){
             $scope.weeklyFrequencyData = $scope.timer.frequencyData;
-          }else if($scope.timer.frequency === 'Monthly'){
+          }else if($scope.timer.frequencyType === 'Monthly'){
             $scope.monthlyFrequencyData = $scope.timer.frequencyData;
           } 
         }
@@ -257,7 +257,7 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   
   //Update daily frequency
   $scope.updateFrequency = function() {
-    if($scope.timer.frequency === 'Daily' && $scope.dailyFrequencyData.length == 0){
+    if($scope.timer.frequencyType === 'Daily' && $scope.dailyFrequencyData.length == 0){
       angular.forEach($scope.timerWeekDays, function(value, key){
         $scope.dailyFrequencyData.push(value.displayName);
       });
@@ -297,11 +297,11 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
     }else if($scope.timer.timerType === 'Cron'){
       $scope.timer.frequencyData = $scope.cronFrequencyData;
     }else{
-      if($scope.timer.frequency === 'Daily'){
+      if($scope.timer.frequencyType === 'Daily'){
         $scope.timer.frequencyData = $scope.dailyFrequencyData.join();
-      }else if($scope.timer.frequency === 'Weekly'){
+      }else if($scope.timer.frequencyType === 'Weekly'){
         $scope.timer.frequencyData = $scope.weeklyFrequencyData;
-      }else if($scope.timer.frequency === 'Monthly'){
+      }else if($scope.timer.frequencyType === 'Monthly'){
         $scope.timer.frequencyData = $scope.monthlyFrequencyData;
       } 
     }

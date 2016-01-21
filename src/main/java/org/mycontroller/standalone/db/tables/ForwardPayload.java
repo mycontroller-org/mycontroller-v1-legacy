@@ -17,34 +17,30 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.FORWARD_PAYLOAD)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class ForwardPayload {
     public static final String KEY_ID = "id";
     public static final String KEY_SOURCE_ID = "sourceId";
     public static final String KEY_DESTINATION_ID = "destinationId";
     public static final String KEY_ENABLED = "enabled";
-
-    public ForwardPayload() {
-
-    }
-
-    public ForwardPayload(int id) {
-        this.id = id;
-    }
-
-    public ForwardPayload(SensorVariable source, SensorVariable destination) {
-        this.source = source;
-        this.destination = destination;
-    }
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -60,44 +56,4 @@ public class ForwardPayload {
             foreignAutoRefresh = true, foreignAutoCreate = true, maxForeignAutoRefreshLevel = 4)
     private SensorVariable destination;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public SensorVariable getSource() {
-        return source;
-    }
-
-    public void setSource(SensorVariable source) {
-        this.source = source;
-    }
-
-    public SensorVariable getDestination() {
-        return destination;
-    }
-
-    public void setDestination(SensorVariable destination) {
-        this.destination = destination;
-    }
-
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", Enabled:").append(this.enabled);
-        builder.append("Source:[").append(this.source).append("]");
-        builder.append("Destination:[").append(this.destination).append("]");
-        return builder.toString();
-    }
 }

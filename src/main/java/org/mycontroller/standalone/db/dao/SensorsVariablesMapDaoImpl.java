@@ -52,7 +52,7 @@ public class SensorsVariablesMapDaoImpl extends BaseAbstractDaoImpl<SensorsVaria
 
     @Override
     public void create(MESSAGE_TYPE_PRESENTATION sensorType, MESSAGE_TYPE_SET_REQ variableType) {
-        this.create(new SensorsVariablesMap(sensorType, variableType));
+        this.create(SensorsVariablesMap.builder().sensorType(sensorType).variableType(variableType).build());
     }
 
     @Override

@@ -57,21 +57,21 @@
             
             <div ng-show="timer.timerType === 'Normal' || timer.timerType === 'Before sunrise' || timer.timerType === 'After sunrise' || timer.timerType === 'Before sunset' || timer.timerType === 'After sunset'">
             <div class="col-sm-2 mc-form-fixer">
-              <select class="form-control" pf-select ng-options="tft.displayName as tft.displayName for tft in timerFrequencyTypes" ng-change="updateFrequency()" ng-model="timer.frequency">
+              <select class="form-control" pf-select ng-options="tft.displayName as tft.displayName for tft in timerFrequencyTypes" ng-change="updateFrequency()" ng-model="timer.frequencyType">
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-5 mc-form-fixer" ng-show="timer.frequency === 'Daily'">
+            <div class="col-sm-5 mc-form-fixer" ng-show="timer.frequencyType === 'Daily'">
               <select class="form-control" pf-select multiple ng-options="twd.displayName as twd.displayName for twd in timerWeekDays" ng-model="dailyFrequencyData">
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-3 mc-form-fixer" ng-show="timer.frequency === 'Weekly'">
+            <div class="col-sm-3 mc-form-fixer" ng-show="timer.frequencyType === 'Weekly'">
               <select class="form-control" pf-select ng-options="twd.displayName as twd.displayName for twd in timerWeekDays" ng-model="weeklyFrequencyData">
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-2 mc-form-fixer" ng-show="timer.frequency === 'Monthly'">
+            <div class="col-sm-2 mc-form-fixer" ng-show="timer.frequencyType === 'Monthly'">
               <select class="form-control" pf-select ng-options="monthDay for monthDay in monthDays" ng-model="monthlyFrequencyData">
                 <option value="" ng-hide="true">dd</option>
               </select>

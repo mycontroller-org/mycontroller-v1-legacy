@@ -70,9 +70,8 @@ public class ResourcesGroupHandler {
 
     @GET
     @Path("/{groupId}")
-    public Response getResourcesGroup(@PathParam("groupId") Integer sensorsGroupId) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getResourcesGroupDao()
-                .get(new ResourcesGroup(sensorsGroupId)));
+    public Response getResourcesGroup(@PathParam("groupId") Integer groupId) {
+        return RestUtils.getResponse(Status.OK, DaoUtils.getResourcesGroupDao().get(groupId));
     }
 
     @GET

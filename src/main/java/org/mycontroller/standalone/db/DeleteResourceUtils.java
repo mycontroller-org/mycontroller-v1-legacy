@@ -194,7 +194,7 @@ public class DeleteResourceUtils {
         //TODO: add code to remove logs
 
         //Delete resourceGroupMap and resourcesGroup
-        DaoUtils.getResourcesGroupMapDao().delete(new ResourcesGroup(id));
+        DaoUtils.getResourcesGroupMapDao().delete(ResourcesGroup.builder().id(id).build());
         DaoUtils.getResourcesGroupDao().delete(id);
     }
 }

@@ -21,17 +21,26 @@ import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.metrics.TypeUtils.METRIC_TYPE;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
 @DatabaseTable(tableName = DB_TABLES.SENSOR_VARIABLE)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class SensorVariable {
     public static final String KEY_ID = "id";
     public static final String KEY_SENSOR_DB_ID = "sensorDbId";
@@ -40,46 +49,6 @@ public class SensorVariable {
     public static final String KEY_VALUE = "value";
     public static final String KEY_METRIC = "metricType";
     public static final String KEY_UNIT = "unit";
-
-    public SensorVariable() {
-    }
-
-    public SensorVariable(Integer id) {
-        this.id = id;
-    }
-
-    public SensorVariable(Sensor sensor, MESSAGE_TYPE_SET_REQ variableType, String lastvalue, Long timestamp,
-            METRIC_TYPE metricType, String unit) {
-        this.sensor = sensor;
-        this.variableType = variableType;
-        this.timestamp = timestamp;
-        this.value = lastvalue;
-        this.metricType = metricType;
-        this.unit = (unit == null ? "" : unit);
-    }
-
-    public SensorVariable(Sensor sensor, MESSAGE_TYPE_SET_REQ variableType, String lastvalue, Long timestamp,
-            METRIC_TYPE metricType) {
-        this(sensor, variableType, lastvalue, timestamp, metricType, SensorUtils.getUnit(variableType));
-    }
-
-    public SensorVariable(Sensor sensor, MESSAGE_TYPE_SET_REQ variableType, String lastvalue, METRIC_TYPE metricType) {
-        this(sensor, variableType, lastvalue, System.currentTimeMillis(), metricType,
-                SensorUtils.getUnit(variableType));
-    }
-
-    public SensorVariable(Sensor sensor, MESSAGE_TYPE_SET_REQ variableType, String lastvalue) {
-        this(sensor, variableType, lastvalue, System.currentTimeMillis(), null, SensorUtils.getUnit(variableType));
-    }
-
-    public SensorVariable(Sensor sensor, MESSAGE_TYPE_SET_REQ variableType, METRIC_TYPE metricType) {
-        this(sensor, variableType, null, null, metricType, SensorUtils.getUnit(variableType));
-    }
-
-    public SensorVariable(Sensor sensor, MESSAGE_TYPE_SET_REQ variableType) {
-        this(sensor, variableType, null, null, MYCMessages.getMetricType(
-                MYCMessages.getPayLoadType(variableType)), SensorUtils.getUnit(variableType));
-    }
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -103,73 +72,15 @@ public class SensorVariable {
     @DatabaseField(columnName = KEY_UNIT, canBeNull = true)
     private String unit;
 
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", Sensor:").append("[").append(sensor).append("]");
-        builder.append(", Variable Type:").append(this.variableType.getText())
-                .append("(").append(this.variableType).append(")");
-        builder.append(", Metric Type:").append(this.metricType.toString())
-                .append("(").append(this.metricType).append(")");
-        builder.append(", Value:").append(this.value);
-        builder.append(", Timestamp:").append(this.timestamp);
-        builder.append(", Unit:").append(this.unit);
-        return builder.toString();
+    public SensorVariable updateUnitAndMetricType() {
+        if (this.unit == null) {
+            String unit = SensorUtils.getUnit(variableType);
+            this.unit = unit == null ? "" : unit;
+        }
+        if (this.metricType == null) {
+            this.metricType = MYCMessages.getMetricType(this.variableType);
+        }
+        return this;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public Sensor getSensor() {
-        return sensor;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public void setValue(String lastValue) {
-        this.value = lastValue;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public MESSAGE_TYPE_SET_REQ getVariableType() {
-        return variableType;
-    }
-
-    public void setVariableType(MESSAGE_TYPE_SET_REQ variableType) {
-        this.variableType = variableType;
-    }
-
-    public METRIC_TYPE getMetricType() {
-        return metricType;
-    }
-
-    public void setMetricType(METRIC_TYPE metricType) {
-        this.metricType = metricType;
-    }
 }

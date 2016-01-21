@@ -242,7 +242,7 @@ public class SchedulerUtils {
         stringBuilder.append(sec).append(" ") // Seconds
                 .append(min).append(" ")      // Minutes
                 .append(hour).append(" ");    // Hours
-        switch (timer.getFrequency()) {
+        switch (timer.getFrequencyType()) {
             case DAILY:
             case WEEKLY:
                 stringBuilder.append("? * ");

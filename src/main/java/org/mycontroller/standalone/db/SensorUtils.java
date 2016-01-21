@@ -344,7 +344,9 @@ public class SensorUtils {
                 _logger.debug("Creating entry for variable:{}", newVariable);
                 //Create new entry
                 DaoUtils.getSensorVariableDao().create(
-                        new SensorVariable(sensor, MESSAGE_TYPE_SET_REQ.fromString(newVariable)));
+                        SensorVariable.builder().sensor(sensor)
+                                .variableType(MESSAGE_TYPE_SET_REQ.fromString(newVariable)).build()
+                                .updateUnitAndMetricType());
             }
         }
         //Remove left items

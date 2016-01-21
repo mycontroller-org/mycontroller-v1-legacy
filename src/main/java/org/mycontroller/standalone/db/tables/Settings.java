@@ -20,19 +20,19 @@ import org.mycontroller.standalone.db.DB_TABLES;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import lombok.ToString;
+import lombok.Data;
 
+import lombok.ToString;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.Getter;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.SETTINGS)
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

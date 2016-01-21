@@ -72,7 +72,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             QueryBuilder<MetricsDoubleTypeDevice, Object> queryBuilder = this.getDao().queryBuilder();
             Where<MetricsDoubleTypeDevice, Object> whereBuilder = queryBuilder.where();
             whereBuilder.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID,
-                    metric.getSensorValue().getId())
+                    metric.getSensorVariable().getId())
                     .and().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE,
                             metric.getAggregationType());
             if (metric.getTimestampFrom() != null) {
@@ -96,7 +96,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             return this.getDao().queryForFirst(
                     this.getDao().queryBuilder()
                             .where()
-                            .eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorValue().getId())
+                            .eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId())
                             .and().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType())
                             .and().eq(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp()).prepare());
         } catch (SQLException ex) {

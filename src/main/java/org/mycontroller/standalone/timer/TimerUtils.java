@@ -89,14 +89,14 @@ public class TimerUtils {
         }
     }
 
-    public enum FREQUENCY {
+    public enum FREQUENCY_TYPE {
         DAILY("Daily"),
         WEEKLY("Weekly"),
         MONTHLY("Monthly");
-        public static FREQUENCY get(int id) {
-            for (FREQUENCY frequency : values()) {
-                if (frequency.ordinal() == id) {
-                    return frequency;
+        public static FREQUENCY_TYPE get(int id) {
+            for (FREQUENCY_TYPE frequency_type : values()) {
+                if (frequency_type.ordinal() == id) {
+                    return frequency_type;
                 }
             }
             throw new IllegalArgumentException(String.valueOf(id));
@@ -104,7 +104,7 @@ public class TimerUtils {
 
         private String value;
 
-        private FREQUENCY(String value) {
+        private FREQUENCY_TYPE(String value) {
             this.value = value;
         }
 
@@ -112,9 +112,9 @@ public class TimerUtils {
             return this.value;
         }
 
-        public static FREQUENCY fromString(String text) {
+        public static FREQUENCY_TYPE fromString(String text) {
             if (text != null) {
-                for (FREQUENCY type : FREQUENCY.values()) {
+                for (FREQUENCY_TYPE type : FREQUENCY_TYPE.values()) {
                     if (text.equalsIgnoreCase(type.getText())) {
                         return type;
                     }
@@ -195,8 +195,8 @@ public class TimerUtils {
 
     public static String getFrequencyData(Timer timer) {
         StringBuilder builder = new StringBuilder();
-        builder.append("[").append(timer.getFrequency().getText()).append("-->");
-        switch (timer.getFrequency()) {
+        builder.append("[").append(timer.getFrequencyType().getText()).append("-->");
+        switch (timer.getFrequencyType()) {
             case DAILY:
             case WEEKLY:
                 String[] days = timer.getFrequencyData().split(",");

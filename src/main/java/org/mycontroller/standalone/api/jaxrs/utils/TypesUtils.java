@@ -50,7 +50,7 @@ import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.TypeUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
-import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY;
+import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
 
 /**
@@ -211,9 +211,9 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getTimerFrequencyTypes() {
-        FREQUENCY[] types = FREQUENCY.values();
+        FREQUENCY_TYPE[] types = FREQUENCY_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        for (FREQUENCY type : types) {
+        for (FREQUENCY_TYPE type : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
                     .build());
         }
@@ -420,7 +420,7 @@ public class TypesUtils {
         List<Node> nodes = new ArrayList<Node>();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         if (nodeId != null) {
-            nodes.add(new Node(nodeId));
+            nodes.add(Node.builder().id(nodeId).build());
         } else {
             nodes = DaoUtils.getNodeDao().getAll();
         }

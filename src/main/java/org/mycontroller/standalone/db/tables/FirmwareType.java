@@ -17,27 +17,29 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.ToString;
+
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Data;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.FIRMWARE_TYPE)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class FirmwareType {
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
-
-    public FirmwareType() {
-
-    }
-
-    public FirmwareType(int id) {
-        this.id = id;
-    }
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -47,25 +49,6 @@ public class FirmwareType {
 
     public Integer getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", Name:").append(this.name);
-        return builder.toString();
     }
 
 }

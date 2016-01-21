@@ -338,6 +338,10 @@ public class MYCMessages {
         }
     }
 
+    public static METRIC_TYPE getMetricType(MESSAGE_TYPE_SET_REQ type_set_req) {
+        return getMetricType(getPayLoadType(type_set_req));
+    }
+
     public static PAYLOAD_TYPE getPayLoadType(MESSAGE_TYPE_SET_REQ type_set_req) {
         switch (type_set_req) {
             case V_TEMP:

@@ -17,16 +17,25 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.METRICS_BINARY_TYPE_DEVICE)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class MetricsBinaryTypeDevice {
     public static final String KEY_SENSOR_VARIABLE_ID = "sensorVariableId";
     public static final String KEY_TIMESTAMP = "timestamp";
@@ -42,61 +51,4 @@ public class MetricsBinaryTypeDevice {
     private Long timestampFrom;
     private Long timestampTo;
 
-    public MetricsBinaryTypeDevice() {
-
-    }
-
-    public MetricsBinaryTypeDevice(SensorVariable sensorVariable) {
-        this(sensorVariable, null, null);
-    }
-
-    public MetricsBinaryTypeDevice(SensorVariable sensorVariable, Long timestamp) {
-        this(sensorVariable, timestamp, null);
-    }
-
-    public MetricsBinaryTypeDevice(SensorVariable sensorVariable, Long timestamp, Boolean state) {
-        this.sensorVariable = sensorVariable;
-        this.state = state;
-        this.timestamp = timestamp;
-    }
-
-    public SensorVariable getSensorValue() {
-        return sensorVariable;
-    }
-
-    public void setSensorValue(SensorVariable sensorVariable) {
-        this.sensorVariable = sensorVariable;
-    }
-
-    public Boolean getState() {
-        return state;
-    }
-
-    public void setState(Boolean state) {
-        this.state = state;
-    }
-
-    public Long getTimestampFrom() {
-        return timestampFrom;
-    }
-
-    public void setTimestampFrom(Long timestampFrom) {
-        this.timestampFrom = timestampFrom;
-    }
-
-    public Long getTimestampTo() {
-        return timestampTo;
-    }
-
-    public void setTimestampTo(Long timestampTo) {
-        this.timestampTo = timestampTo;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
 }

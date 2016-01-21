@@ -18,7 +18,6 @@ package org.mycontroller.standalone.db.tables;
 import java.util.List;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
-import org.mycontroller.standalone.api.jaxrs.mapper.SensorsGuiButton;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.SensorUtils;
 
@@ -27,11 +26,22 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.SENSOR)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class Sensor {
     public static final String KEY_ID = "id";
     public static final String KEY_SENSOR_ID = "sensorId";
@@ -40,20 +50,6 @@ public class Sensor {
     public static final String KEY_NAME = "name";
     public static final String KEY_LAST_SEEN = "lastSeen";
     public static final String KEY_TYPE = "type";
-
-    public Sensor() {
-    }
-
-    public Sensor(Integer sensorId, MESSAGE_TYPE_PRESENTATION type, String name) {
-        this.sensorId = sensorId;
-        this.type = type;
-        this.name = name;
-        this.lastSeen = System.currentTimeMillis();
-    }
-
-    public Sensor(Integer sensorId) {
-        this.sensorId = sensorId;
-    }
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -76,67 +72,11 @@ public class Sensor {
 
     private List<String> variableTypes;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getSensorId() {
-        return sensorId;
-    }
-
-    public void setSensorId(Integer sensorId) {
-        this.sensorId = sensorId;
-    }
-
-    public MESSAGE_TYPE_PRESENTATION getType() {
-        return type;
-    }
-
-    public void setType(MESSAGE_TYPE_PRESENTATION type) {
-        this.type = type;
-    }
-
-    public Node getNode() {
-        return node;
-    }
-
-    public void setNode(Node node) {
-        this.node = node;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public SensorsGuiButton getGuiButtons() {
-        return SensorUtils.getGuiButtonsStatus(this);
-    }
-
     public List<String> getVariableTypes() {
         if (this.variableTypes == null) {
             this.variableTypes = SensorUtils.getVariableTypes(this);
         }
         return this.variableTypes;
-    }
-
-    public void setVariableTypes(List<String> variableTypes) {
-        this.variableTypes = variableTypes;
-    }
-
-    public Long getLastSeen() {
-        return lastSeen;
-    }
-
-    public void setLastSeen(Long lastSeen) {
-        this.lastSeen = lastSeen;
     }
 
     //This method is used to create variables for this sensor,
@@ -147,15 +87,4 @@ public class Sensor {
         return this.id;
     }
 
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", SensorId:").append(this.sensorId);
-        builder.append(", Name:").append(this.name);
-        builder.append(", SensorType:").append(this.type);
-        builder.append(", VariableTypes:").append(getVariableTypes());
-        builder.append(", lastSeen:").append(this.lastSeen);
-        builder.append(", Node:[").append(this.node).append("]");
-        return builder.toString();
-    }
 }

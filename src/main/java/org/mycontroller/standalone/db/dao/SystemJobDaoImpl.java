@@ -78,7 +78,6 @@ public class SystemJobDaoImpl extends BaseAbstractDaoImpl<SystemJob, Integer> im
     @Override
     public void update(SystemJob systemJob) {
         try {
-            systemJob.setUpdateTime(System.currentTimeMillis());
             int count = this.getDao().update(systemJob);
             _logger.debug("Update SystemJob:[{}], Change Count:{}",
                     systemJob, count);

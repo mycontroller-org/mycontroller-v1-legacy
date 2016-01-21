@@ -31,7 +31,7 @@ public class MetricsAggregationUtils {
 
     public static void removePreviousData(AGGREGATION_TYPE type, long timestamp) {
         DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(
-                new MetricsDoubleTypeDevice(null, type.ordinal(), timestamp));
+                MetricsDoubleTypeDevice.builder().aggregationType(type).timestamp(timestamp).build());
     }
 
     public static void purgeRawData() {

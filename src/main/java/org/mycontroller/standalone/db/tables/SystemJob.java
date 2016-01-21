@@ -15,33 +15,29 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.SYSTEM_JOB)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class SystemJob {
     public static final String ENABLED = "enabled";
-
-    public SystemJob() {
-
-    }
-
-    public SystemJob(String name, String cron, Boolean enabled, String className) {
-        this.name = name;
-        this.cron = cron;
-        this.enabled = enabled;
-        this.className = className;
-        this.updateTime = System.currentTimeMillis();
-    }
 
     @DatabaseField(generatedId = true)
     private Integer id;
@@ -53,58 +49,5 @@ public class SystemJob {
     private Boolean enabled;
     @DatabaseField(canBeNull = false)
     private String className;
-    @DatabaseField(canBeNull = false)
-    private Long updateTime;
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCron() {
-        return cron;
-    }
-
-    public void setCron(String cron) {
-        this.cron = cron;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
 }

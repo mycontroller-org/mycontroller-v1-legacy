@@ -24,11 +24,22 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.NODE)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class Node {
     public static final String KEY_FIRMWARE_ID = "firmwareId";
     public static final String KEY_GATEWAY_ID = "gatewayId";
@@ -43,32 +54,6 @@ public class Node {
     public static final String KEY_BATTERY_LEVEL = "batteryLevel";
     public static final String KEY_ERASE_CONFIG = "eraseConfig";
     public static final String KEY_LAST_SEEN = "laseSeen";
-
-    public Node() {
-    }
-
-    public Node(Gateway gateway, String eui, String name, String version) {
-        this.eui = eui;
-        this.name = name;
-        this.version = version;
-        this.gateway = gateway;
-    }
-
-    public Node(Gateway gateway, String eui, String name) {
-        this(gateway, eui, name, null);
-    }
-
-    public Node(String eui, Gateway gateway) {
-        this(gateway, eui, null, null);
-    }
-
-    public Node(Integer gatewayId, String eui) {
-        this(new Gateway(gatewayId), eui, null, null);
-    }
-
-    public Node(Integer id) {
-        this.id = id;
-    }
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -95,122 +80,8 @@ public class Node {
     @DatabaseField(canBeNull = true, columnName = KEY_LAST_SEEN)
     private Long lastSeen;
 
-    public Long getLastSeen() {
-        return lastSeen;
-    }
-
-    public void setLastSeen(Long lastSeen) {
-        this.lastSeen = lastSeen;
-    }
-
-    public String getEui() {
-        return eui;
-    }
-
     public Integer getEuiInt() {
         return NumericUtils.getInteger(eui);
     }
 
-    public void setEui(String eui) {
-        this.eui = eui;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getLibVersion() {
-        return libVersion;
-    }
-
-    public String getBatteryLevel() {
-        if (batteryLevel == null) {
-            return "-";
-        }
-        return batteryLevel;
-    }
-
-    public void setBatteryLevel(String batteryLevel) {
-        this.batteryLevel = batteryLevel;
-    }
-
-    public Firmware getFirmware() {
-        return firmware;
-    }
-
-    public void setFirmware(Firmware firmware) {
-        this.firmware = firmware;
-    }
-
-    public Boolean getEraseConfig() {
-        return eraseConfig;
-    }
-
-    public Gateway getGateway() {
-        return gateway;
-    }
-
-    public void setGateway(Gateway gateway) {
-        this.gateway = gateway;
-    }
-
-    public void setLibVersion(String libVersion) {
-        this.libVersion = libVersion;
-    }
-
-    public void setEraseConfig(Boolean eraseConfig) {
-        this.eraseConfig = eraseConfig;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public STATE getState() {
-        return state;
-    }
-
-    public void setState(STATE state) {
-        this.state = state;
-    }
-
-    public MESSAGE_TYPE_PRESENTATION getType() {
-        return type;
-    }
-
-    public void setType(MESSAGE_TYPE_PRESENTATION type) {
-        this.type = type;
-    }
-
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", Eui:").append(this.eui);
-        builder.append(", Name:").append(this.name);
-        builder.append(", Type:").append(this.type);
-        builder.append(", Version:").append(this.version);
-        builder.append(", MySensorsVersion:").append(this.libVersion);
-        builder.append(", BatteryLevel:").append(this.batteryLevel);
-        builder.append(", EraseEEPROM:").append(this.eraseConfig);
-        builder.append(", Firmware:").append(this.firmware);
-        builder.append(", Status:").append(this.state);
-        builder.append(", LastSeen:").append(this.lastSeen);
-        return builder.toString();
-    }
 }

@@ -50,7 +50,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     }
 
     public void create(Integer nodeId, Sensor sensor) {
-        sensor.setNode(new Node(nodeId));
+        sensor.setNode(Node.builder().id(nodeId).build());
         this.create(sensor);
     }
 
@@ -62,13 +62,13 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
 
     @Override
     public void createOrUpdate(Integer nodeId, Sensor sensor) {
-        sensor.setNode(new Node(nodeId));
+        sensor.setNode(Node.builder().id(nodeId).build());
         this.createOrUpdate(sensor);
     }
 
     @Override
     public void create(Integer gatewayId, String nodeEui, Integer sensorId) {
-        this.create(DaoUtils.getNodeDao().get(gatewayId, nodeEui).getId(), new Sensor(sensorId));
+        this.create(DaoUtils.getNodeDao().get(gatewayId, nodeEui).getId(), Sensor.builder().sensorId(sensorId).build());
 
     }
 
@@ -90,7 +90,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
 
     @Override
     public void delete(Integer gatewayId, String nodeEui, Integer sensorId) {
-        Sensor sensor = new Sensor(sensorId);
+        Sensor sensor = Sensor.builder().sensorId(sensorId).build();
         sensor.setNode(DaoUtils.getNodeDao().get(gatewayId, nodeEui));
         this.delete(sensor);
     }
@@ -126,7 +126,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
 
     @Override
     public void update(Integer nodeId, Sensor sensor) {
-        sensor.setNode(new Node(nodeId));
+        sensor.setNode(Node.builder().id(nodeId).build());
         update(sensor);
     }
 

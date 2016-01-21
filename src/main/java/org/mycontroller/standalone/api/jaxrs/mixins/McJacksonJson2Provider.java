@@ -28,11 +28,15 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
+import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.ResourcesGroup;
+import org.mycontroller.standalone.db.tables.ResourcesGroupMap;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +70,11 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixInAnnotations(Sensor.class, SensorMixin.class);
         mapper.addMixInAnnotations(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixInAnnotations(ResourcesLogs.class, ResourcesLogsMixin.class);
+        mapper.addMixInAnnotations(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixInAnnotations(ResourcesGroup.class, ResourcesGroupMixin.class);
+        mapper.addMixInAnnotations(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
+        mapper.addMixInAnnotations(Timer.class, TimerMixin.class);
+
         _logger.debug("Request: Headers:{}", httpHeaders);
         super.writeTo(value, type, genericType, annotations, mediaType, httpHeaders, entityStream);
     }
@@ -82,6 +91,10 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixInAnnotations(Node.class, NodeMixin.class);
         mapper.addMixInAnnotations(Sensor.class, SensorMixin.class);
         mapper.addMixInAnnotations(ForwardPayload.class, ForwardPayloadMixin.class);
+        mapper.addMixInAnnotations(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixInAnnotations(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
+        mapper.addMixInAnnotations(Timer.class, TimerMixin.class);
+
         _logger.debug("Request: Headers:{}", httpHeaders);
 
         return super.readFrom(type, genericType, annotations, mediaType, httpHeaders, entityStream);

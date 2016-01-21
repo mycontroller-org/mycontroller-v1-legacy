@@ -42,6 +42,7 @@ import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Firmware;
+import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
@@ -142,9 +143,11 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
             Node node = getNode(mySensorsRawMessage);
             Sensor sensor = DaoUtils.getSensorDao().get(node.getId(), mySensorsRawMessage.getChildSensorId());
             if (sensor == null) {
-                sensor = new Sensor(mySensorsRawMessage.getChildSensorId(),
-                        MESSAGE_TYPE_PRESENTATION.get(mySensorsRawMessage.getSubType()),
-                        mySensorsRawMessage.getPayload());
+                sensor = Sensor.builder()
+                        .sensorId(mySensorsRawMessage.getChildSensorId())
+                        .type(MESSAGE_TYPE_PRESENTATION.get(mySensorsRawMessage.getSubType()))
+                        .name(mySensorsRawMessage.getPayload())
+                        .build();
                 sensor.setNode(node);
                 DaoUtils.getSensorDao().create(sensor);
             } else {
@@ -189,8 +192,12 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 node.setBatteryLevel(mySensorsRawMessage.getPayload());
                 updateNode(node);
                 //Update battery level in to metrics table
-                MetricsBatteryUsage batteryUsage = new MetricsBatteryUsage(
-                        node, System.currentTimeMillis(), mySensorsRawMessage.getPayloadDouble());
+                MetricsBatteryUsage batteryUsage = MetricsBatteryUsage.builder()
+                        .node(node)
+                        .timestamp(System.currentTimeMillis())
+                        .value(mySensorsRawMessage.getPayloadDouble())
+                        .build();
+
                 DaoUtils.getMetricsBatteryUsageDao().create(batteryUsage);
 
                 break;
@@ -570,9 +577,12 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType()));
         METRIC_TYPE metricType = MYCMessages.getMetricType(payloadType);
         if (sensorVariable == null) {
-            sensorVariable = new SensorVariable(sensor, MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType()),
-                    mySensorsRawMessage.getPayload(),
-                    System.currentTimeMillis(), metricType);
+            sensorVariable = SensorVariable.builder()
+                    .sensor(sensor)
+                    .variableType(MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType()))
+                    .value(mySensorsRawMessage.getPayload())
+                    .timestamp(System.currentTimeMillis())
+                    .metricType(metricType).build().updateUnitAndMetricType();
             _logger.debug("This SensorVariable:[{}] for Sensor:{}] is not available in our DB, Adding...",
                     sensorVariable, sensor);
             DaoUtils.getSensorVariableDao().create(sensorVariable);
@@ -599,7 +609,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
             getNode(mySensorsRawMessage);
             _logger.debug("This sensor[{} from Node:{}] not available in our DB, Adding...",
                     mySensorsRawMessage.getChildSensorId(), mySensorsRawMessage.getNodeEui());
-            sensor = new Sensor(mySensorsRawMessage.getChildSensorId());
+            sensor = Sensor.builder().sensorId(mySensorsRawMessage.getChildSensorId()).build();
             sensor.setNode(this.getNode(mySensorsRawMessage));
             DaoUtils.getSensorDao().create(sensor);
             sensor = DaoUtils.getSensorDao().get(
@@ -614,7 +624,8 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
         Node node = DaoUtils.getNodeDao().get(mySensorsRawMessage.getGatewayId(), mySensorsRawMessage.getNodeEui());
         if (node == null) {
             _logger.debug("This Node[{}] not available in our DB, Adding...", mySensorsRawMessage.getNodeEui());
-            node = new Node(mySensorsRawMessage.getGatewayId(), mySensorsRawMessage.getNodeEui());
+            node = Node.builder().gateway(Gateway.builder().id(mySensorsRawMessage.getGatewayId()).build())
+                    .eui(mySensorsRawMessage.getNodeEui()).build();
             node.setLastSeen(System.currentTimeMillis());
             DaoUtils.getNodeDao().create(node);
             node = DaoUtils.getNodeDao().get(mySensorsRawMessage.getGatewayId(), mySensorsRawMessage.getNodeEui());
@@ -667,19 +678,20 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
         switch (sensorVariable.getMetricType()) {
             case DOUBLE:
                 DaoUtils.getMetricsDoubleTypeDeviceDao()
-                        .create(new MetricsDoubleTypeDevice(
-                                sensorVariable,
-                                AGGREGATION_TYPE.RAW.ordinal(),
-                                System.currentTimeMillis(),
-                                NumericUtils.getDouble(mySensorsRawMessage.getPayload()),
-                                1));
+                        .create(MetricsDoubleTypeDevice.builder()
+                                .sensorVariable(sensorVariable)
+                                .aggregationType(AGGREGATION_TYPE.RAW)
+                                .timestamp(System.currentTimeMillis())
+                                .avg(NumericUtils.getDouble(mySensorsRawMessage.getPayload()))
+                                .samples(1).build());
+
                 break;
             case BINARY:
                 DaoUtils.getMetricsBinaryTypeDeviceDao()
-                        .create(new MetricsBinaryTypeDevice(
-                                sensorVariable,
-                                System.currentTimeMillis(),
-                                mySensorsRawMessage.getPayloadBoolean()));
+                        .create(MetricsBinaryTypeDevice.builder()
+                                .sensorVariable(sensorVariable)
+                                .timestamp(System.currentTimeMillis())
+                                .state(mySensorsRawMessage.getPayloadBoolean()).build());
                 break;
             default:
                 _logger.debug(

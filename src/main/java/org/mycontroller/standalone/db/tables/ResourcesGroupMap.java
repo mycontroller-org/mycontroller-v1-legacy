@@ -19,13 +19,15 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.model.ResourceModel;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -33,7 +35,11 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 
 @DatabaseTable(tableName = DB_TABLES.RESOURCES_GROUP_MAP)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class ResourcesGroupMap {
     public static final String KEY_ID = "id";
     public static final String KEY_RESOURCE_TYPE = "resourceType";
@@ -41,10 +47,6 @@ public class ResourcesGroupMap {
     public static final String KEY_GROUP_ID = "groupId";
     public static final String KEY_PAYLOAD_ON = "payloadOn";
     public static final String KEY_PAYLOAD_OFF = "payloadOff";
-
-    public ResourcesGroupMap() {
-
-    }
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -65,75 +67,7 @@ public class ResourcesGroupMap {
     @DatabaseField(canBeNull = true, columnName = KEY_PAYLOAD_OFF)
     private String payloadOff;
 
-    @JsonGetter(value = "id")
-    public Integer getId() {
-        return this.id;
-    }
-
-    @JsonIgnore
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public ResourcesGroup getResourcesGroup() {
-        return resourcesGroup;
-    }
-
-    public void setResourcesGroup(ResourcesGroup resourcesGroup) {
-        this.resourcesGroup = resourcesGroup;
-    }
-
-    @JsonIgnore
-    public RESOURCE_TYPE getResourceType() {
-        return resourceType;
-    }
-
-    @JsonIgnore
-    public void setResourceType(RESOURCE_TYPE resourceType) {
-        this.resourceType = resourceType;
-    }
-
-    @JsonGetter(value = "resourceType")
-    private String getResourceTypeString() {
-        if (resourceType != null) {
-            return resourceType.getText();
-        }
-        return null;
-    }
-
-    @JsonSetter(value = "resourceType")
-    private void setResourceType(String resourceType) {
-        if (resourceType != null) {
-            this.resourceType = RESOURCE_TYPE.fromString(resourceType);
-        }
-    }
-
-    public Integer getResourceId() {
-        return resourceId;
-    }
-
-    public void setResourceId(Integer resourceId) {
-        this.resourceId = resourceId;
-    }
-
-    public String getPayloadOn() {
-        return payloadOn;
-    }
-
-    public void setPayloadOn(String payloadOn) {
-        this.payloadOn = payloadOn;
-    }
-
-    public String getPayloadOff() {
-        return payloadOff;
-    }
-
-    public void setPayloadOff(String payloadOff) {
-        this.payloadOff = payloadOff;
-    }
-
-    @JsonGetter(value = "resource")
-    private String getResourceString() {
+    public String getResource() {
         ResourceModel resourceModel = new ResourceModel(resourceType, resourceId);
         return resourceModel.getResourceLessDetails();
     }

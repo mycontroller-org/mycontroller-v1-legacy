@@ -17,27 +17,28 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.FIRMWARE_VERSION)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class FirmwareVersion {
     public static final String KEY_ID = "id";
     public static final String KEY_VERSION = "version";
-
-    public FirmwareVersion() {
-
-    }
-
-    public FirmwareVersion(int id) {
-        this.id = id;
-    }
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -45,26 +46,4 @@ public class FirmwareVersion {
     @DatabaseField(canBeNull = false, unique = true, columnName = KEY_VERSION)
     private String version;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setVersion(String name) {
-        this.version = name;
-    }
-
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", Name:").append(this.version);
-        return builder.toString();
-    }
 }

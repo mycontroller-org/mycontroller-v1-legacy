@@ -17,16 +17,25 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
 @DatabaseTable(tableName = DB_TABLES.METRICS_BATTERY_USAGE)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class MetricsBatteryUsage {
     public static final String KEY_ID = "id";
     public static final String KEY_NODE_ID = "nodeId";
@@ -45,54 +54,4 @@ public class MetricsBatteryUsage {
     @DatabaseField(canBeNull = false, columnName = KEY_VALUE)
     private Double value;
 
-    public MetricsBatteryUsage(Node node, Long timestamp, Double value) {
-        this.node = node;
-        this.timestamp = timestamp;
-        this.value = value;
-    }
-
-    public MetricsBatteryUsage() {
-
-    }
-
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(",Node:[").append(this.node).append("]");
-        builder.append(", Timestamp:").append(this.timestamp);
-        builder.append(", Value:").append(this.value);
-        return builder.toString();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Node getNode() {
-        return node;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public Double getValue() {
-        return value;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setNode(Node node) {
-        this.node = node;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
 }

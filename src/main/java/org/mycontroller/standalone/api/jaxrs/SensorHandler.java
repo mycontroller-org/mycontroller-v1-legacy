@@ -139,7 +139,9 @@ public class SensorHandler {
         sensor = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
         for (String variableType : variableTypes) {
             DaoUtils.getSensorVariableDao()
-                    .create(new SensorVariable(sensor, MESSAGE_TYPE_SET_REQ.fromString(variableType)));
+                    .create(SensorVariable.builder().sensor(sensor)
+                            .variableType(MESSAGE_TYPE_SET_REQ.fromString(variableType)).build()
+                            .updateUnitAndMetricType());
         }
         return RestUtils.getResponse(Status.CREATED);
 

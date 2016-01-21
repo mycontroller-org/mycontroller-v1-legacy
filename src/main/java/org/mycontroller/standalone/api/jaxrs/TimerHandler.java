@@ -39,7 +39,7 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.timer.TimerUtils;
-import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY;
+import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 
 /**
@@ -77,7 +77,7 @@ public class TimerHandler {
         filters.put(Timer.KEY_RESOURCE_TYPE, RESOURCE_TYPE.fromString(resourceType));
         filters.put(Timer.KEY_RESOURCE_ID, resourceId);
         filters.put(Timer.KEY_TIMER_TYPE, TIMER_TYPE.fromString(timerType));
-        filters.put(Timer.KEY_FREQUENCY, FREQUENCY.fromString(frequency));
+        filters.put(Timer.KEY_FREQUENCY, FREQUENCY_TYPE.fromString(frequency));
         filters.put(Timer.KEY_ENABLED, enabled);
 
         QueryResponse queryResponse = DaoUtils.getTimerDao().getAll(

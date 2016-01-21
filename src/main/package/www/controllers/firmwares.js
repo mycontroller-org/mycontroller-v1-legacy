@@ -129,7 +129,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
       FirmwaresFactory.deleteFirmwareTypes($scope.itemIds, function(response) {
         alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
         //Update display table
-        getAllItems();
+        $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -307,7 +307,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
       FirmwaresFactory.deleteFirmwareVersions($scope.itemIds, function(response) {
         alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
         //Update display table
-        getAllItems();
+        $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -498,7 +498,7 @@ $scope.filterConfig = {
       FirmwaresFactory.deleteFirmwares($scope.itemIds, function(response) {
         alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
         //Update display table
-        getAllItems();
+        $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -538,7 +538,7 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
   
   //Read File and put it in textarea
   $scope.displayFileContents = function(contents) {
-        $scope.item.hexFileString = contents;
+        $scope.item.fileString = contents;
   };
 
   //Save data

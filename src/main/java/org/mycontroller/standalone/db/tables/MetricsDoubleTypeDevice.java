@@ -15,19 +15,29 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 @DatabaseTable(tableName = DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class MetricsDoubleTypeDevice {
     public static final String KEY_SENSOR_VARIABLE_ID = "sensorVariableId";
     public static final String KEY_TIMESTAMP = "timestamp";
@@ -51,106 +61,10 @@ public class MetricsDoubleTypeDevice {
     @DatabaseField(canBeNull = false)
     private Double avg;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_AGGREGATION_TYPE)
-    private Integer aggregationType;
+    @DatabaseField(uniqueCombo = true, dataType = DataType.ENUM_INTEGER, canBeNull = false, columnName = KEY_AGGREGATION_TYPE)
+    private AGGREGATION_TYPE aggregationType;
 
     private Long timestampFrom;
     private Long timestampTo;
 
-    public MetricsDoubleTypeDevice(SensorVariable sensorVariable, Integer aggregationType) {
-        this(sensorVariable, aggregationType, null, null, aggregationType);
-    }
-
-    public MetricsDoubleTypeDevice(SensorVariable sensorVariable, Integer aggregationType, Long timestamp) {
-        this(sensorVariable, aggregationType, timestamp, null, aggregationType);
-    }
-
-    public MetricsDoubleTypeDevice(SensorVariable sensorVariable, Integer aggregationType, Long timestamp, Double avg,
-            Integer samples) {
-        this.sensorVariable = sensorVariable;
-        this.aggregationType = aggregationType;
-        this.timestamp = timestamp;
-        this.avg = avg;
-        this.samples = samples;
-    }
-
-    public MetricsDoubleTypeDevice() {
-
-    }
-
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public SensorVariable getSensorValue() {
-        return this.sensorVariable;
-    }
-
-    public void setSensorValue(SensorVariable sensorVariable) {
-        this.sensorVariable = sensorVariable;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Integer getSamples() {
-        return samples;
-    }
-
-    public void setSamples(Integer samples) {
-        this.samples = samples;
-    }
-
-    public Double getMin() {
-        return min;
-    }
-
-    public void setMin(Double min) {
-        this.min = min;
-    }
-
-    public Double getMax() {
-        return max;
-    }
-
-    public void setMax(Double max) {
-        this.max = max;
-    }
-
-    public Double getAvg() {
-        return avg;
-    }
-
-    public void setAvg(Double avg) {
-        this.avg = avg;
-    }
-
-    public Integer getAggregationType() {
-        return aggregationType;
-    }
-
-    public void setAggregationType(Integer aggregationType) {
-        this.aggregationType = aggregationType;
-    }
-
-    public Long getTimestampFrom() {
-        return timestampFrom;
-    }
-
-    public void setTimestampFrom(Long timestampFrom) {
-        this.timestampFrom = timestampFrom;
-    }
-
-    public Long getTimestampTo() {
-        return timestampTo;
-    }
-
-    public void setTimestampTo(Long timestampTo) {
-        this.timestampTo = timestampTo;
-    }
 }

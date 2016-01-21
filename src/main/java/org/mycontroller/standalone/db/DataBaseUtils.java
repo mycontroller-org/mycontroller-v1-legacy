@@ -412,7 +412,9 @@ public class DataBaseUtils {
     }
 
     private static void createSystemJob(String name, String cronExpression, boolean isEnabled, Class<?> clazz) {
-        DaoUtils.getSystemJobDao().create(new SystemJob(name, cronExpression, isEnabled, clazz.getName()));
+        DaoUtils.getSystemJobDao().create(
+                SystemJob.builder().name(name).cron(cronExpression).enabled(isEnabled).className(clazz.getName())
+                        .build());
     }
 
     // http://www.h2database.com/html/tutorial.html#upgrade_backup_restore

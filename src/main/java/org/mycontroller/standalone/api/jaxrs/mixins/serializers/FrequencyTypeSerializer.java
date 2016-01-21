@@ -16,14 +16,8 @@
 package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.exception.mappers.VariableStatusModel;
-import org.mycontroller.standalone.db.ComparatorSensorVariable;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,27 +28,16 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-public class SensorVariableSerializer extends JsonSerializer<Integer> {
+public class FrequencyTypeSerializer extends JsonSerializer<FREQUENCY_TYPE> {
 
     @Override
-    public void serialize(Integer id, JsonGenerator jgen, SerializerProvider provider)
+    public void serialize(FREQUENCY_TYPE type, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonProcessingException {
-
-        if (id != null) {
-            List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(id);
-
-            //Sort by defined order
-            Collections.sort(sensorVariables, new ComparatorSensorVariable());
-
-            List<VariableStatusModel> variables = new ArrayList<VariableStatusModel>();
-            for (SensorVariable sensorVariable : sensorVariables) {
-                variables.add(new VariableStatusModel(sensorVariable));
-            }
-            jgen.writeObject(variables);
+        if (type != null) {
+            jgen.writeString(type.getText());
         } else {
             jgen.writeNull();
         }
-
     }
 
 }

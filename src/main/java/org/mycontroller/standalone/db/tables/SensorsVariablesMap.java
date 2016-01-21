@@ -19,29 +19,31 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.ToString;
+
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
 @DatabaseTable(tableName = DB_TABLES.SENSOR_VARIABLES_MAP)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class SensorsVariablesMap {
     public static final String KEY_ID = "id";
     public static final String KEY_SENSOR_TYPE = "sensorType";
     public static final String KEY_VARIABLE_TYPE = "variableType";
-
-    public SensorsVariablesMap() {
-    }
-
-    public SensorsVariablesMap(MESSAGE_TYPE_PRESENTATION sensorType, MESSAGE_TYPE_SET_REQ variableType) {
-        this.sensorType = sensorType;
-        this.variableType = variableType;
-    }
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -52,35 +54,4 @@ public class SensorsVariablesMap {
     @DatabaseField(canBeNull = false, index = true, uniqueCombo = true, columnName = KEY_VARIABLE_TYPE, dataType = DataType.ENUM_STRING)
     private MESSAGE_TYPE_SET_REQ variableType;
 
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", Sensor Type:").append(this.sensorType);
-        builder.append(", Variable Type:").append(this.variableType);
-        return builder.toString();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public MESSAGE_TYPE_PRESENTATION getSensorType() {
-        return sensorType;
-    }
-
-    public void setSensorType(MESSAGE_TYPE_PRESENTATION sensorType) {
-        this.sensorType = sensorType;
-    }
-
-    public MESSAGE_TYPE_SET_REQ getVariableType() {
-        return variableType;
-    }
-
-    public void setVariableType(MESSAGE_TYPE_SET_REQ variableType) {
-        this.variableType = variableType;
-    }
 }

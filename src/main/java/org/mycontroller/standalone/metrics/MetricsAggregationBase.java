@@ -102,14 +102,15 @@ public class MetricsAggregationBase {
                         }
                     }
                     Double avg = sum / samples;
-                    MetricsDoubleTypeDevice metric = new MetricsDoubleTypeDevice();
-                    metric.setAggregationType(this.aggregationType.ordinal());
-                    metric.setSensorValue(sensorVariable);
-                    metric.setMin(NumericUtils.round(min, NumericUtils.DOUBLE_ROUND));
-                    metric.setMax(NumericUtils.round(max, NumericUtils.DOUBLE_ROUND));
-                    metric.setAvg(NumericUtils.round(avg, NumericUtils.DOUBLE_ROUND));
-                    metric.setSamples(samples);
-                    metric.setTimestamp(System.currentTimeMillis() - TIME_REF.ONE_SECOND);
+                    MetricsDoubleTypeDevice metric = MetricsDoubleTypeDevice.builder()
+                            .aggregationType(this.aggregationType)
+                            .sensorVariable(sensorVariable)
+                            .min(NumericUtils.round(min, NumericUtils.DOUBLE_ROUND))
+                            .max(NumericUtils.round(max, NumericUtils.DOUBLE_ROUND))
+                            .avg(NumericUtils.round(avg, NumericUtils.DOUBLE_ROUND))
+                            .samples(samples)
+                            .timestamp(System.currentTimeMillis() - TIME_REF.ONE_SECOND)
+                            .build();
                     DaoUtils.getMetricsDoubleTypeDeviceDao().create(metric);
                 }
             }
@@ -158,7 +159,8 @@ public class MetricsAggregationBase {
     public List<MetricsDoubleTypeDevice> getMetricsDoubleData(SensorVariable sensorVariable,
             AGGREGATION_TYPE aggrType,
             Long fromTimestamp) {
-        MetricsDoubleTypeDevice metricsDoubleType = new MetricsDoubleTypeDevice(sensorVariable, aggrType.ordinal());
+        MetricsDoubleTypeDevice metricsDoubleType = MetricsDoubleTypeDevice.builder().sensorVariable(sensorVariable)
+                .aggregationType(aggrType).build();
         if (fromTimestamp != null) {
             metricsDoubleType.setTimestampFrom(fromTimestamp);
         }
@@ -168,7 +170,8 @@ public class MetricsAggregationBase {
     /** Get metric data for boolean type */
 
     public List<MetricsBinaryTypeDevice> getMetricsBinaryData(SensorVariable sensorVariable, Long fromTimestamp) {
-        MetricsBinaryTypeDevice binaryTypeDevice = new MetricsBinaryTypeDevice(sensorVariable);
+        MetricsBinaryTypeDevice binaryTypeDevice = MetricsBinaryTypeDevice.builder()
+                .sensorVariable(sensorVariable).build();
         if (fromTimestamp != null) {
             binaryTypeDevice.setTimestampFrom(fromTimestamp);
         }

@@ -75,12 +75,12 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
 
     @Override
     public void delete(Integer gatewayId, String nodeEui) {
-        this.delete(new Node(nodeEui, new Gateway(gatewayId)));
+        this.delete(Node.builder().eui(nodeEui).gateway(Gateway.builder().id(gatewayId).build()).build());
     }
 
     @Override
     public void delete(Integer id) {
-        this.delete(new Node(id));
+        this.delete(Node.builder().id(id).build());
     }
 
     @Override
@@ -135,7 +135,7 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
 
     @Override
     public Node get(Integer gatewayId, String nodeEui) {
-        return get(new Node(nodeEui, new Gateway(gatewayId)));
+        return get(Node.builder().eui(nodeEui).gateway(Gateway.builder().id(gatewayId).build()).build());
     }
 
     @Override
