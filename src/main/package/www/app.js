@@ -480,10 +480,10 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, TypesFactory, displayRestError, about, mchelper, $cookieStore, $translate, $filter) {
+    function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, displayRestError, about, mchelper, $cookieStore, $translate, $filter) {
         // reset login status
         AuthenticationService.ClearCredentials();
- 
+        $scope.cfgFile = ReadFileFactory.getConfigFile();
         $scope.login = function () {
             $scope.dataLoading = true;
             AuthenticationService.Login($scope.username, $scope.password, function(authResponse) {

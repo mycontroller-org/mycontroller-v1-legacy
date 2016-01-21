@@ -44,6 +44,7 @@ public class MyControllerSettings {
     public static final String SKEY_DB_VERSION = "dbVersion";
     public static final String SKEY_ALIVE_CHECK_INTERVAL = "aliveCheckInterval";
     public static final String SKEY_UNIT_CONFIG = "unitConfig";
+    public static final String SKEY_LOGIN_MESSAGE = "loginMessage";
 
     private String language;
     private String timeFormat;
@@ -51,6 +52,7 @@ public class MyControllerSettings {
     private Integer dbVersion;
     private Long aliveCheckInterval;
     private String unitConfig;
+    private String loginMessage;
 
     public static MyControllerSettings get() {
         return MyControllerSettings.builder()
@@ -60,6 +62,7 @@ public class MyControllerSettings {
                 .dbVersion(NumericUtils.getInteger(getValue(SKEY_DB_VERSION)))
                 .aliveCheckInterval(NumericUtils.getLong(getValue(SKEY_ALIVE_CHECK_INTERVAL)))
                 .unitConfig(getValue(SKEY_UNIT_CONFIG))
+                .loginMessage(getValue(SKEY_LOGIN_MESSAGE))
                 .build();
     }
 
@@ -75,6 +78,9 @@ public class MyControllerSettings {
         }
         if (unitConfig != null) {
             updateValue(SKEY_UNIT_CONFIG, unitConfig);
+        }
+        if (loginMessage != null) {
+            updateValue(SKEY_LOGIN_MESSAGE, loginMessage);
         }
     }
 

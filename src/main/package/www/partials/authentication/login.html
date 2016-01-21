@@ -56,7 +56,8 @@
         </div><!--/.col-*-->
         <div class="col-sm-5 col-md-6 col-lg-6 details">
           <p><strong>Welcome to MyController.org!</strong> The Open Source Controller...</p>
-          <p>Version: <strong>0.0.2-Alpha7</strong></p>
+          <p>Version: <strong>{{cfgFile.appVersion}}</strong></p>
+          <p ng-bind-html="cfgFile.loginMessage"></p>          
         </div><!--/.col-*-->
       </div><!--/.row-->
     </div><!--/.container-->

@@ -68,7 +68,7 @@ public class SettingsUtils {
     //As all of our REST API basic authentication, 
     //without authentication we need to serve some information about our controller
     public static void updateStaticJsonInformationFile() {
-        String fileLocation = ObjectFactory.getAppProperties().getWebFileLocation() + "aboutMyController.json";
+        String fileLocation = ObjectFactory.getAppProperties().getWebFileLocation() + "configMyController.json";
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             _logger.debug("controller information static file location:[{}]", fileLocation);

@@ -227,6 +227,15 @@ public class DataBaseUtils {
             adminUser.setFullName("Admin");
             DaoUtils.getUserDao().create(adminUser);
 
+            //Update controller default settings
+            MyControllerSettings.builder()
+                    .language(MC_LANGUAGE.EN_US.getText())
+                    .aliveCheckInterval(NodeAliveStatusJob.DEFAULT_ALIVE_CHECK_INTERVAL)
+                    .timeFormat(MC_TIME_FORMAT.HOURS_12.getText())
+                    .unitConfig(UNIT_CONFIG.METRIC.getText())
+                    .loginMessage("Default username: <b>admin</b>, password: <b>admin<b>")
+                    .build().save();
+
             // Update Sensor Type and Variables Type mapping
 
             // Door sensor, V_TRIPPED, V_ARMED
@@ -384,14 +393,6 @@ public class DataBaseUtils {
             // Gas meter, V_FLOW, V_VOLUME
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_GAS, MESSAGE_TYPE_SET_REQ.V_FLOW);
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_GAS, MESSAGE_TYPE_SET_REQ.V_VOLUME);
-
-            //Update controller default settings
-            MyControllerSettings.builder()
-                    .language(MC_LANGUAGE.EN_US.getText())
-                    .aliveCheckInterval(NodeAliveStatusJob.DEFAULT_ALIVE_CHECK_INTERVAL)
-                    .timeFormat(MC_TIME_FORMAT.HOURS_12.getText())
-                    .unitConfig(UNIT_CONFIG.METRIC.getText())
-                    .build().save();
 
             dbVersion = 8;
             // update version information

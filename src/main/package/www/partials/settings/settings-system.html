@@ -151,6 +151,15 @@
               </div>
             </div>
             
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Login message</label>
+              <div class="col-sm-5">
+                <textarea ng-show="editEnable.controller" class="form-control" ng-model="controllerSettings.loginMessage" placeholder="Description" rows="4"></textarea>
+                <p ng-hide="editEnable.controller" ng-bind-html="controllerSettings.loginMessage"></span>
+              </div>
+            </div>
+            
+            
           </form>
 
           <div class="form-actions text-right">

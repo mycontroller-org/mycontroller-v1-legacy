@@ -319,3 +319,10 @@ myControllerModule.factory('ResourcesGroupMapFactory', function ($resource) {
     deleteIds: { method: 'POST', params: {id: 'delete'} },
   })
 });
+
+//Read static files
+myControllerModule.factory('ReadFileFactory', function ($resource) {
+  return $resource('/:fileName', {}, {
+   getConfigFile: { method: 'GET', isArray: false, params: {fileName:'configMyController.json'} },
+  })
+});
