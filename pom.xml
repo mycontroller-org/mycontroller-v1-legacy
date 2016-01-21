@@ -67,7 +67,7 @@
     <version.com.plivo>3.0.6</version.com.plivo>
     <version.commons-codec>1.10</version.commons-codec>
     <version.org.eclipse.paho>1.0.2</version.org.eclipse.paho>
-    <version.moquette-broker>0.8-SNAPSHOT</version.moquette-broker>
+    <version.moquette-broker>0.8</version.moquette-broker>
     <version.org.projectlombok>1.16.6</version.org.projectlombok>
 
     <!-- plugins version -->
