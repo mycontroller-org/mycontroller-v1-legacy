@@ -134,7 +134,11 @@ public class Timer {
     }
 
     public String getTimerDataString() {
-        return TimerUtils.getTimerDataString(this);
+        try {
+            return TimerUtils.getTimerDataString(this);
+        } catch (Exception ex) {
+            return "Error: " + ex.getMessage();
+        }
     }
 
     public String getValidityString() {

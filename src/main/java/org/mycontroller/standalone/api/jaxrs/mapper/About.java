@@ -41,9 +41,11 @@ public class About {
     private String appName;
     private String languageId;
     private String language;
-    private String dateFormatGui;
-    private String loginMessage;
+    private String dateFormat;
+    private String dateFormatWithoutSeconds;
     private String timeFormat;
+    private String timeFormatSet;
+    private String loginMessage;
 
     public About() {
         Date date = new Date();
@@ -55,8 +57,10 @@ public class About {
         this.appVersion = ObjectFactory.getAppProperties().getControllerSettings().getVersion();
         this.languageId = ObjectFactory.getAppProperties().getLanguage().toString().toLowerCase();
         this.language = ObjectFactory.getAppProperties().getLanguage().getText();
-        this.dateFormatGui = ObjectFactory.getAppProperties().getAngularJsDateFormat();
         this.loginMessage = ObjectFactory.getAppProperties().getControllerSettings().getLoginMessage();
-        this.timeFormat = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
+        this.dateFormat = ObjectFactory.getAppProperties().getDateFormat();
+        this.dateFormatWithoutSeconds = ObjectFactory.getAppProperties().getDateFormatWithoutSeconds();
+        this.timeFormat = ObjectFactory.getAppProperties().getTimeFormat();
+        this.timeFormatSet = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
     }
 }

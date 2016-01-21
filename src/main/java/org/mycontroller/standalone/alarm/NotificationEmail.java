@@ -113,7 +113,7 @@ public class NotificationEmail implements INotification {
         builder.append("<td>").append("Triggered at").append("</td>");
         builder.append("<td>")
                 .append(": ")
-                .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getJavaDateFormat()).format(new Date()))
+                .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormat()).format(new Date()))
                 .append("</td>");
         builder.append("<tr>");
 

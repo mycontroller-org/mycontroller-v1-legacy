@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, displayRestError, mchelper) {
+myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory,
+  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore) {
   
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
@@ -63,6 +64,13 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
     $scope.saveProgress.controller = true;
     $scope.controllerSettings.aliveCheckInterval = $scope.aliveCheckMinutes * 60000;
     SettingsFactory.saveController($scope.controllerSettings,function(response) {
+          StatusFactory.getConfig(function(response) {
+            mchelper.cfg = response;//Update config
+            //Update language
+            $translate.use(mchelper.cfg.languageId);
+            //Store all the configurations locally
+            $cookieStore.put('mchelper', mchelper);
+          });
         alertService.success('Update success...');
         $scope.saveProgress.controller = false;
       },function(error){

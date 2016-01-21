@@ -212,7 +212,7 @@ public class TimerUtils {
                 break;
         }
         builder.append("], [Time: ")
-                .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getJavaTimeFormat()).format(new Date(
+                .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getTimeFormat()).format(new Date(
                         timer.getTriggerTime())))
                 .append("]");
         return builder.toString();
@@ -250,27 +250,27 @@ public class TimerUtils {
         StringBuilder stringBuilder = new StringBuilder();
         if (timer.getValidityFrom() != null && timer.getValidityTo() != null) {
             stringBuilder
-                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getJavaDateWithoutSecondsFormat())
+                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormatWithoutSeconds())
                             .format(new Date(timer.getValidityFrom())));
             stringBuilder.append(" ~ ");
             stringBuilder.append(new SimpleDateFormat(ObjectFactory.getAppProperties()
-                    .getJavaDateWithoutSecondsFormat()).format(new Date(timer.getValidityTo())));
+                    .getDateFormatWithoutSeconds()).format(new Date(timer.getValidityTo())));
         } else if (timer.getValidityFrom() != null) {
             stringBuilder.append("From ");
             stringBuilder
-                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getJavaDateWithoutSecondsFormat())
+                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormatWithoutSeconds())
                             .format(new Date(timer.getValidityFrom())));
         } else if (timer.getValidityTo() != null) {
             stringBuilder.append("Till ");
             stringBuilder.append(new SimpleDateFormat(ObjectFactory.getAppProperties()
-                    .getJavaDateWithoutSecondsFormat()).format(new Date(timer.getValidityTo())));
+                    .getDateFormatWithoutSeconds()).format(new Date(timer.getValidityTo())));
         }
         return stringBuilder.toString();
     }
 
     public static Long getValidFromToTime(String date) {
         try {
-            return new SimpleDateFormat(ObjectFactory.getAppProperties().getAngularJsDateFormat()).parse(date)
+            return new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormat()).parse(date)
                     .getTime();
         } catch (ParseException ex) {
             _logger.error("exception, ", ex);
@@ -293,12 +293,23 @@ public class TimerUtils {
         SchedulerUtils.unloadTimerJob(timerOld);
 
         //update details of timer and reload it
-        timer.setLastFired(System.currentTimeMillis()); //Set current time
+        timer.setLastFired(null); //clear last fired
         if (timer.getEnabled()) {
             timer.setInternalVariable1(null);
         }
         DaoUtils.getTimerDao().update(timer);
         SchedulerUtils.loadTimerJob(timer);
+    }
+
+    public static synchronized void addTimer(Timer timer) {
+        //add timer
+        DaoUtils.getTimerDao().create(timer);
+        //update details of timer and load it
+        timer.setLastFired(null); //clear last fired
+        if (timer.getEnabled()) {
+            timer.setInternalVariable1(null);
+            SchedulerUtils.loadTimerJob(timer);
+        }
     }
 
     public static synchronized void enableTimer(Timer timer) {

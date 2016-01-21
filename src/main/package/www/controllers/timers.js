@@ -193,7 +193,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
 myControllerModule.controller('TimersControllerAddEdit', function ($scope, TypesFactory, CommonServices, alertService, TimersFactory, mchelper, $stateParams, $filter) {
   $scope.timer = {};
   $scope.timer.enabled=true;
-  $scope.showMeridian = angular.equals(mchelper.cfg.timeFormat, "12 hours");
+  $scope.showMeridian = angular.equals(mchelper.cfg.timeFormatSet, "12 hours");
 
     if($stateParams.id){
       TimersFactory.get({"id":$stateParams.id},function(response) {

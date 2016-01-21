@@ -341,7 +341,7 @@ public class AppProperties {
         return false;
     }
 
-    public String getAngularJsDateFormat() {
+    public String getDateFormat() {
         if (is12HoursSelected()) {
             return "MMM dd, yyyy hh:mm:ss a";
         } else {
@@ -349,15 +349,7 @@ public class AppProperties {
         }
     }
 
-    public String getJavaDateFormat() {
-        if (is12HoursSelected()) {
-            return "MMM dd, yyyy hh:mm:ss a";
-        } else {
-            return "MMM dd, yyyy HH:mm:ss";
-        }
-    }
-
-    public String getJavaDateWithoutSecondsFormat() {
+    public String getDateFormatWithoutSeconds() {
         if (is12HoursSelected()) {
             return "MMM dd, yyyy hh:mm a";
         } else {
@@ -365,7 +357,7 @@ public class AppProperties {
         }
     }
 
-    public String getJavaTimeFormat() {
+    public String getTimeFormat() {
         if (is12HoursSelected()) {
             return "hh:mm:ss a";
         } else {

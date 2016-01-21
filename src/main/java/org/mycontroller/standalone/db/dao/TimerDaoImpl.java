@@ -44,7 +44,6 @@ public class TimerDaoImpl extends BaseAbstractDaoImpl<Timer, Integer> implements
     public void create(Timer timer) {
         try {
             int count = this.getDao().create(timer);
-            SchedulerUtils.loadTimerJob(timer);
             _logger.debug("Created Timer:[{}], Create count:{}", timer, count);
         } catch (SQLException ex) {
             _logger.error("unable to add Timer:[{}]", timer, ex);

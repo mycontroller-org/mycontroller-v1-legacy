@@ -101,8 +101,7 @@ public class TimerHandler {
     @POST
     @Path("/")
     public Response add(Timer timer) {
-        timer.setLastFired(System.currentTimeMillis()); //Set current time
-        DaoUtils.getTimerDao().create(timer);
+        TimerUtils.addTimer(timer);
         return RestUtils.getResponse(Status.CREATED);
     }
 
