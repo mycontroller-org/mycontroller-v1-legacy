@@ -31,6 +31,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.AuthenticationJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.UserCredential;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,10 +55,12 @@ public class AuthenticationHandler {
         _logger.debug("User Detail:{}", RestUtils.getUser(request));
         _logger.debug("Login user: " + userCredential.getUsername());
         if (BasicAthenticationSecurityDomain.login(userCredential.getUsername(), userCredential.getPassword())) {
-            return RestUtils.getResponse(Status.OK, new AuthenticationJson(true));
+            AuthenticationJson authJson = AuthenticationJson.builder().success(true)
+                    .user(DaoUtils.getUserDao().get(userCredential.getUsername())).build();
+            return RestUtils.getResponse(Status.OK, authJson);
         } else {
-            return RestUtils.getResponse(Status.UNAUTHORIZED, new AuthenticationJson(false,
-                    "Username or password is incorrect"));
+            return RestUtils.getResponse(Status.UNAUTHORIZED,
+                    AuthenticationJson.builder().success(false).message("Invalid user or passowrd!").build());
         }
     }
 }

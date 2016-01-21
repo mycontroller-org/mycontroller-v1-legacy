@@ -19,18 +19,21 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
+import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
 import org.mycontroller.standalone.timer.TimerUtils;
@@ -54,14 +57,14 @@ public class SettingsHandler {
     @GET
     @Path("/location")
     public Response getLocation() {
-        return RestUtils.getResponse(Status.OK, LocationSettings.get());
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getLocationSettings());
     }
 
     @POST
     @Path("/location")
     public Response saveLocation(LocationSettings locationSettings) {
         locationSettings.save();
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        SettingsUtils.updateAllSettings();
         try {
             TimerUtils.updateSunriseSunset();
         } catch (Exception ex) {
@@ -74,73 +77,81 @@ public class SettingsHandler {
     @GET
     @Path("/controller")
     public Response getController() {
-        return RestUtils.getResponse(Status.OK, MyControllerSettings.get());
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getControllerSettings());
     }
 
     @POST
     @Path("/controller")
     public Response saveController(MyControllerSettings myControllerSettings) {
         myControllerSettings.save();
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
+    }
+
+    @PUT
+    @Path("/updateLanguage")
+    public Response updateLanguage(String language) {
+        if (language != null && MC_LANGUAGE.fromString(language) != null) {
+            MyControllerSettings.builder().language(language).build().save();
+            SettingsUtils.updateAllSettings();
+            return RestUtils.getResponse(Status.OK);
+        }
+        return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Unknown language: " + language));
     }
 
     @GET
     @Path("/email")
     public Response getEmail() {
-        return RestUtils.getResponse(Status.OK, EmailSettings.get());
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getEmailSettings());
     }
 
     @POST
     @Path("/email")
     public Response saveEmail(EmailSettings emailSettings) {
         emailSettings.save();
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
     }
 
     @GET
     @Path("/sms")
     public Response getSms() {
-        return RestUtils.getResponse(Status.OK, SmsSettings.get());
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getSmsSettings());
     }
 
     @POST
     @Path("/sms")
     public Response saveSms(SmsSettings smsSettings) {
         smsSettings.save();
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
     }
 
     @GET
     @Path("/mySensors")
     public Response getMySensors() {
-        return RestUtils.getResponse(Status.OK, MySensorsSettings.get());
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMySensorsSettings());
     }
 
     @POST
     @Path("/mySensors")
     public Response saveMySensors(MySensorsSettings mySensorsSettings) {
         mySensorsSettings.save();
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
     }
 
     @GET
     @Path("/units")
     public Response getUnits() {
-        return RestUtils.getResponse(Status.OK, UnitsSettings.get());
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getUnitsSettings());
     }
 
     @POST
     @Path("/units")
     public Response saveUnits(UnitsSettings unitsSettings) {
         unitsSettings.save();
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
     }
-
-    //TODO: refer all the above only from Object factory
-
 }

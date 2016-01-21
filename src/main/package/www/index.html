@@ -170,10 +170,10 @@
           <!-- Language selection -->
           <li class="dropdown">
             <a href="" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-language fa-lg"></i> {{ languageId }} <b class="caret"></b>
+              <i class="fa fa-language fa-lg"></i> {{mchelper.cfg.language}}<b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-              <li ng-repeat="language in languages" ng-class="{ active: isLangActive(language.id)}"><a href="" ng-click="changeLanguage(language.id)"> {{language.displayName}}</a></li>
+              <li ng-repeat="lang in mchelper.languages" ng-class="{ active: mchelper.cfg.languageId == lang.id}"><a href="" ng-click="changeLanguage(lang)"> {{lang.displayName}}</a></li>
             </ul>
           </li>
           <!-- Support Options -->
@@ -192,14 +192,14 @@
           <li class="dropdown">
             <a href="" class="dropdown-toggle" data-toggle="dropdown">
               <span class="pficon pficon-user"></span>
-              Jeeva <b class="caret"></b>
+              {{mchelper.user.fullName}} <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
               <li>
                 <a href=""><i class="pficon pficon-user"> Profile</i></a>
               </li>
               <li>
-                <a ng-hide="isActive('/login')" href="#/login"><i class="fa fa-sign-out fa-lg"></i> Log Out</a><!-- Logout Link -->
+                <a ui-sref="login"><i class="fa fa-sign-out fa-lg"></i> Log Out</a><!-- Logout Link -->
               </li>
             </ul>
           </li>
@@ -209,49 +209,49 @@
         <ul class="nav navbar-nav navbar-primary persistent-secondary">
           <!-- Dashboard -->
           <li ng-class="{ active: isStartsWith('/dashboard')}">
-            <a href="#/dashboard"><i class="fa fa-tachometer fa-lg"></i> {{ 'MENU.DASHBOARD' | translate }}</a>
+            <a ui-sref="dashboard"><i class="fa fa-tachometer fa-lg"></i> {{ 'MENU.DASHBOARD' | translate }}</a>
             <ul class="nav navbar-nav navbar-persistent">
-              <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard">Default</a></li>
+              <li ng-class="{ active: isActive('/dashboard')}"><a ui-sref="dashboard">Dashboard</a></li>
             </ul>
           </li>
           <!-- Nodes -->
           <li ng-class="{ active: isStartsWith('/resources')}">
-            <a ng-href="{{about.urlGatewaysList}}"><i class="fa  fa-cubes fa-lg"></i> Resources</a>
+            <a ui-sref="gatewaysList"><i class="fa  fa-cubes fa-lg"></i> Resources</a>
             <ul class="nav navbar-nav navbar-persistent">
-              <li ng-class="{ active: isStartsWith('/resources/gateway')}"><a ng-href="{{about.urlGatewaysList}}"><i class="fa fa-plug fa-lg"></i> Gateways</a></li>
-              <li ng-class="{ active: isStartsWith('/resources/nodes')}"  ><a ng-href="{{about.urlNodesList}}/"><i class="fa fa-sitemap fa-lg"></i> {{ 'MENU.NODES' | translate }}</a></li>
-              <li ng-class="{ active: isStartsWith('/resources/sensors')}"><a ng-href="{{about.urlSensorsList}}/"><i class="fa fa-eye fa-lg"></i> {{ 'MENU.SENSORS' | translate }}</a></li>
-              <li ng-class="{ active: isStartsWith('/resources/alarms')}"><a ng-href="{{about.urlAlarmsList}}//"><i class="fa fa-bell-o fa-lg"></i> Alarms</a></li>
-              <li ng-class="{ active: isStartsWith('/resources/timers')}"><a ng-href="{{about.urlTimersList}}//"><i class="fa fa-clock-o fa-lg"></i> Timers</a></li>
-              <li ng-class="{ active: isStartsWith('/resources/forwardpayload')}"><a ng-href="{{about.urlForwardPayloadList}}/"><i class="fa fa-forward fa-lg"></i> Forward payload</a></li>
-              <li ng-class="{ active: isStartsWith('/resources/groups')}"><a ng-href="{{about.urlResourcesGroupList}}//"><i class="pficon pficon-replicator fa-lg"></i> Groups</a></li>
-              <li ng-class="{ active: isStartsWith('/resources/firmwares')}"><a ng-href="{{about.urlFirmwaresList}}"><i class="fa fa-file-code-o fa-lg"></i> Firmwares</a></li>
-              <li ng-class="{ active: isStartsWith('/resources/logs')}"><a ng-href="{{about.urlResourcesLogsList}}//"><i class="fa fa-list fa-lg"></i> Logs</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/gateway')}"><a ui-sref="gatewaysList"><i class="fa fa-plug fa-lg"></i> Gateways</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/nodes')}"  ><a ui-sref="nodesList"><i class="fa fa-sitemap fa-lg"></i> Nodes</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/sensors')}"><a ui-sref="sensorsList"><i class="fa fa-eye fa-lg"></i> Sensors</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/alarms')}"><a ui-sref="alarmsList"><i class="fa fa-bell-o fa-lg"></i> Alarms</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/timers')}"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> Timers</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/forwardpayload')}"><a ui-sref="forwardPayloadList"><i class="fa fa-forward fa-lg"></i> Forward payload</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/groups')}"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg"></i> Groups</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/firmwares')}"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> Firmwares</a></li>
+              <li ng-class="{ active: isStartsWith('/resources/logs')}"><a ui-sref="resourcesLogsList"><i class="fa fa-list fa-lg"></i> Logs</a></li>
             </ul>
           </li>
           <!-- Action Board -->
           <li ng-class="{ active: isStartsWith('/actionboard')}">
-            <a href="#/actionboard/sensorsaction/list"><i class="fa fa-magic fa-lg"></i> {{ 'MENU.ACTION_BOARD' | translate }}</a>
+            <a ui-sref="actionBoardSensorsList"><i class="fa fa-magic fa-lg"></i> Action board</a>
             <ul class="nav navbar-nav navbar-persistent">
-              <li ng-class="{ active: isStartsWith('/actionboard/sensorsaction')}"><a href="#/actionboard/sensorsaction/list"><i class="fa fa-eye fa-lg"></i> Sensors action</a></li>
+              <li ng-class="{ active: isStartsWith('/actionboard/sensorsaction')}"><a ui-sref="actionBoardSensorsList"><i class="fa fa-eye fa-lg"></i> Sensors action</a></li>
             </ul>
           </li>
           <!-- Status -->
           <li ng-class="{ active: isStartsWith('/status')}">
-            <a ng-href="{{about.urlStatusSystem}}"><i class="fa fa-file-text-o fa-lg"></i> {{ 'MENU.STATUS' | translate }}</a>
+            <a ui-sref="statusSystem"><i class="fa fa-file-text-o fa-lg"></i> Status</a>
             <ul class="nav navbar-nav navbar-persistent">
-              <li ng-class="{ active: isStartsWith('/status/system')}"><a ng-href="{{about.urlStatusSystem}}"><i class="fa fa-heartbeat fa-lg"></i> {{ 'MENU.SYSTEM_STATUS' | translate }}</a></li>
+              <li ng-class="{ active: isStartsWith('/status/system')}"><a ui-sref="statusSystem"><i class="fa fa-heartbeat fa-lg"></i> System status</a></li>
             </ul>
           </li>
           <!-- Settings -->
           <li ng-class="{ active: isStartsWith('/settings')}">
-            <a ng-href="{{about.urlSettingsSystem}}"><i class="fa fa-cog fa-lg"></i> Settings</a>
+            <a ui-sref="settingsSystem"><i class="fa fa-cog fa-lg"></i> Settings</a>
             <ul class="nav navbar-nav navbar-persistent">
-              <li ng-class="{ active: isStartsWith('/settings/system')}"><a ng-href="{{about.urlSettingsSystem}}"><i class="fa fa-cogs fa-lg"></i> System</a></li>
-              <li ng-class="{ active: isStartsWith('/settings/units')}"><a ng-href="{{about.urlSettingsUnits}}"><i class="fa fa-star-o fa-lg"></i> Units</a></li>
-              <li ng-class="{ active: isStartsWith('/settings/notifications')}"><a ng-href="{{about.urlSettingsNotifications}}"><i class="fa fa-flag-o fa-lg"></i> Notifications</a></li>
-              <li ng-class="{ active: isStartsWith('/settings/mysensors')}"><a ng-href="{{about.urlSettingsMySensors}}"><i class="fa fa-star-o fa-lg"></i> MySensors</a></li>
-              <li ng-class="{ active: isStartsWith('/settings/variablesmapper')}"><a ng-href="{{about.urlSettingsVariablesMapperList}}"><i class="fa fa-clone fa-lg"></i> Variables mapper</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/system')}"><a ui-sref="settingsSystem"><i class="fa fa-cogs fa-lg"></i> System</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/units')}"><a ui-sref="settingsUnits"><i class="fa fa-star-o fa-lg"></i> Units</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/notifications')}"><a ui-sref="settingsNotifications"><i class="fa fa-flag-o fa-lg"></i> Notifications</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/mysensors')}"><a ui-sref="settingsMySensors"><i class="fa fa-star-o fa-lg"></i> MySensors</a></li>
+              <li ng-class="{ active: isStartsWith('/settings/variablesmapper')}"><a ui-sref="settingsVariablesMapperList"><i class="fa fa-clone fa-lg"></i> Variables mapper</a></li>
               <li ng-class="{ active: isStartsWith('/settings/users')}"><a href="#/settings/users"><i class="fa fa-users fa-lg"></i> {{ 'MENU.USERS' | translate }}</a></li>
             </ul>
           </li>

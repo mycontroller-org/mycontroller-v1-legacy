@@ -15,14 +15,23 @@
  */
 package org.mycontroller.standalone.settings;
 
+import java.io.File;
+
+import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.About;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 public class SettingsUtils {
+    private static final Logger _logger = LoggerFactory.getLogger(SettingsUtils.class.getName());
 
     private SettingsUtils() {
 
@@ -52,5 +61,25 @@ public class SettingsUtils {
     public static void updateValue(String key, String subKey, Object value, Object altValue) {
         DaoUtils.getSettingsDao().update(key, subKey, value != null ? String.valueOf(value) : null,
                 altValue != null ? String.valueOf(altValue) : null);
+    }
+
+    //When reloading configuration write this static file
+    //This file used in GUI side before login
+    //As all of our REST API basic authentication, 
+    //without authentication we need to serve some information about our controller
+    public static void updateStaticJsonInformationFile() {
+        String fileLocation = ObjectFactory.getAppProperties().getWebFileLocation() + "aboutMyController.json";
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            _logger.debug("controller information static file location:[{}]", fileLocation);
+            objectMapper.writeValue(new File(fileLocation), new About());
+        } catch (Exception ex) {
+            _logger.error("Unable to write static json information file! location:[{}]", fileLocation, ex);
+        }
+    }
+
+    public static void updateAllSettings() {
+        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        updateStaticJsonInformationFile();
     }
 }

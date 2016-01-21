@@ -22,21 +22,27 @@ import java.util.TimeZone;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
 
+import lombok.ToString;
+
+import lombok.Data;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-
+@Data
+@ToString(includeFieldNames = true)
 public class About {
     private String timezone;
-    private int timezoneMilliseconds;
+    private Integer timezoneMilliseconds;
     private String timezoneString;
     private String appVersion;
     private Date systemDate;
     private String appName;
     private String languageId;
     private String language;
-    private String dateFormat;
+    private String dateFormatGui;
+    private String message;
 
     public About() {
         Date date = new Date();
@@ -48,42 +54,7 @@ public class About {
         this.appVersion = ObjectFactory.getAppProperties().getControllerSettings().getVersion();
         this.languageId = ObjectFactory.getAppProperties().getLanguage().toString().toLowerCase();
         this.language = ObjectFactory.getAppProperties().getLanguage().getText();
-        this.dateFormat = ObjectFactory.getAppProperties().getAngularJsDateFormat();
-    }
-
-    public String getAppVersion() {
-        return appVersion;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public String getTimezoneString() {
-        return timezoneString;
-    }
-
-    public Date getSystemDate() {
-        return systemDate;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public int getTimezoneMilliseconds() {
-        return timezoneMilliseconds;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
-    }
-
-    public String getLanguageId() {
-        return languageId;
+        this.dateFormatGui = ObjectFactory.getAppProperties().getAngularJsDateFormat();
+        this.message = "Hello";
     }
 }

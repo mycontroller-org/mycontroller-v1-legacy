@@ -40,6 +40,7 @@ import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
+import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.Unit;
 import org.mycontroller.standalone.settings.UnitsSettings;
@@ -105,6 +106,8 @@ public class DataBaseUtils {
             upgradeSchema();
             //After update schema, reload settings again
             ObjectFactory.getAppProperties().loadPropertiesFromDb();
+            //create or update static json file used for GUI before login
+            SettingsUtils.updateStaticJsonInformationFile();
         } else {
             _logger.info("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", databaseUrl);
         }

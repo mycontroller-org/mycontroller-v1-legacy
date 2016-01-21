@@ -64,10 +64,18 @@ public class MyControllerSettings {
     }
 
     public void save() {
-        updateValue(SKEY_LANGUAGE, language);
-        updateValue(SKEY_TIME_FORMAT, timeFormat);
-        updateValue(SKEY_ALIVE_CHECK_INTERVAL, aliveCheckInterval);
-        updateValue(SKEY_UNIT_CONFIG, unitConfig);
+        if (language != null) {
+            updateValue(SKEY_LANGUAGE, language);
+        }
+        if (timeFormat != null) {
+            updateValue(SKEY_TIME_FORMAT, timeFormat);
+        }
+        if (aliveCheckInterval != null) {
+            updateValue(SKEY_ALIVE_CHECK_INTERVAL, aliveCheckInterval);
+        }
+        if (unitConfig != null) {
+            updateValue(SKEY_UNIT_CONFIG, unitConfig);
+        }
     }
 
     private static String getValue(String subKey) {

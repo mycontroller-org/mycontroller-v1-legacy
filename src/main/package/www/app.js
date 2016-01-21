@@ -35,8 +35,15 @@ var myControllerModule = angular.module('myController',[
   'frapontillo.bootstrap-switch',
   'xeditable',
   'angularUtils.directives.dirPagination',
-]).
-config(function($stateProvider, $urlRouterProvider) {
+]);
+
+myControllerModule.constant("mchelper", {
+    cfg:{},
+    languages:{},
+    user:{},
+});
+
+myControllerModule.config(function($stateProvider, $urlRouterProvider) {
   //For any unmatched url, redirect to /dashboard
   $urlRouterProvider.otherwise('/dashboard');
   
@@ -139,105 +146,105 @@ config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
-    }).state('urlResourcesGroupList', {
+    }).state('resourcesGroupList', {
       url:"/resources/groups/list/:resourceType/:resourceId",
       templateUrl: "partials/resources-group/resources-group-list.html",
       controller: "ResourcesGroupController",
        data: {
         requireLogin: true
       }
-    }).state('urlResourcesGroupAddEdit', {
+    }).state('resourcesGroupAddEdit', {
       url:"/resources/groups/addedit/:id",
       templateUrl: "partials/resources-group/resources-group-add-edit.html",
       controller: "ResourcesGroupControllerAddEdit",
        data: {
         requireLogin: true
       }
-    }).state('urlResourcesGroupMapList', {
+    }).state('resourcesGroupMapList', {
       url:"/resources/groups/map/list/:id",
       templateUrl: "partials/resources-group/resources-group-map-list.html",
       controller: "ResourcesGroupMapController",
        data: {
         requireLogin: true
       }
-    }).state('urlResourcesGroupMapAddEdit', {
+    }).state('resourcesGroupMapAddEdit', {
       url:"/resources/groups/map/addedit/:groupId/:id",
       templateUrl: "partials/resources-group/resources-group-map-add-edit.html",
       controller: "ResourcesGroupMapControllerAddEdit",
        data: {
         requireLogin: true
       }
-    }).state('urlActionBoardSensorsList', {
+    }).state('actionBoardSensorsList', {
       url:"/actionboard/sensorsaction/list",
       templateUrl: "partials/action-board/sensors-action-list.html",
       controller: "SensorsActionControllerList",
        data: {
         requireLogin: true
       }
-    }).state('urlForwardPayloadList', {
+    }).state('forwardPayloadList', {
       url:"/resources/forwardpayload/list/:sensorId",
       templateUrl: "partials/forward-payload/forward-payload-list.html",
       controller: "ForwardPayloadController",
        data: {
         requireLogin: true
       }
-    }).state('urlForwardPayloadAddEdit', {
+    }).state('forwardPayloadAddEdit', {
       url:"/resources/forwardpayload/addedit/:id",
       templateUrl: "partials/forward-payload/forward-payload-add-edit.html",
       controller: "ForwardPayloadControllerAddEdit",
        data: {
         requireLogin: true
       }
-    }).state('urlFirmwaresList', {
+    }).state('firmwaresList', {
       url:"/resources/firmwares/list",
       templateUrl: "partials/firmwares/firmwares-list.html",
       controller: "FirmwaresController",
        data: {
         requireLogin: true
       }
-    }).state('urlFirmwaresAddEdit', {
+    }).state('firmwaresAddEdit', {
       url:"/resources/firmwares/addedit/:id",
       templateUrl: "partials/firmwares/firmwares-add-edit.html",
       controller: "FirmwaresControllerAddEdit",
        data: {
         requireLogin: true
       }
-    }).state('urlFirmwaresTypeList', {
+    }).state('firmwaresTypeList', {
       url:"/resources/firmwares/type/list",
       templateUrl: "partials/firmwares/firmwares-type-list.html",
       controller: "FirmwaresTypeController",
        data: {
         requireLogin: true
       }
-    }).state('urlFirmwaresTypeAddEdit', {
+    }).state('firmwaresTypeAddEdit', {
       url:"/resources/firmwares/type/addedit/:id",
       templateUrl: "partials/firmwares/firmwares-type-add-edit.html",
       controller: "FirmwaresTypeControllerAddEdit",
        data: {
         requireLogin: true
       }
-    }).state('urlFirmwaresVersionList', {
+    }).state('firmwaresVersionList', {
       url:"/resources/firmwares/version/list",
       templateUrl: "partials/firmwares/firmwares-version-list.html",
       controller: "FirmwaresVersionController",
        data: {
         requireLogin: true
       }
-    }).state('urlFirmwaresVersionAddEdit', {
+    }).state('firmwaresVersionAddEdit', {
       url:"/resources/firmwares/version/addedit/:id",
       templateUrl: "partials/firmwares/firmwares-version-add-edit.html",
       controller: "FirmwaresVersionControllerAddEdit",
        data: {
         requireLogin: true
       }
-    }).state('urlResourcesLogs', {
+    }).state('resourcesLogsList', {
       url:"/resources/logs/:resourceType/:resourceId",
       templateUrl: "partials/resources-logs/resources-logs-list.html",
       controller: "ResourcesLogsController",
       data: {
         requireLogin: true
       }
-    }).state('urlResourcesPurge', {
+    }).state('resourcesLogsPurge', {
       url:"/resources/logs/purge",
       templateUrl: "partials/resources-logs/resources-logs-purge.html",
       controller: "ResourcesLogsPurgeController",
@@ -248,7 +255,7 @@ config(function($stateProvider, $urlRouterProvider) {
     
     
     
-    .state('urlStatusSystem', {
+    .state('statusSystem', {
       url:"/status/system",
       templateUrl: "partials/status/system-status.html",
       controller: "StatusSystemController",
@@ -258,42 +265,42 @@ config(function($stateProvider, $urlRouterProvider) {
     })
     
     
-    .state('urlSettingsSystem', {
+    .state('settingsSystem', {
       url:"/settings/system",
       templateUrl: "partials/settings/settings-system.html",
       controller: "SettingsSystemController",
        data: {
         requireLogin: true
       }
-    }).state('urlSettingsUnits', {
+    }).state('settingsUnits', {
       url:"/settings/units",
       templateUrl: "partials/settings/settings-units.html",
       controller: "SettingsUnitsController",
        data: {
         requireLogin: true
       }
-    }).state('urlSettingsNotifications', {
+    }).state('settingsNotifications', {
       url:"/settings/notifications",
       templateUrl: "partials/settings/settings-notifications.html",
       controller: "SettingsNotificationsController",
        data: {
         requireLogin: true
       }
-    }).state('urlSettingsMySensors', {
+    }).state('settingsMySensors', {
       url:"/settings/mysensors",
       templateUrl: "partials/settings/settings-mysensors.html",
       controller: "SettingsSystemMySensors",
        data: {
         requireLogin: true
       }
-    }).state('urlSettingsVariablesMapperList', {
+    }).state('settingsVariablesMapperList', {
       url:"/settings/variablesmapper/list",
       templateUrl: "partials/variables-mapper/variables-mapper-list.html",
       controller: "VariablesMapperListController",
        data: {
         requireLogin: true
       }
-    }).state('urlSettingsVariablesMapperEdit', {
+    }).state('settingsVariablesMapperEdit', {
       url:"/settings/variablesmapper/edit/:sensorType",
       templateUrl: "partials/variables-mapper/variables-mapper-edit.html",
       controller: "VariablesMapperEditController",
@@ -387,27 +394,33 @@ config(function($stateProvider, $urlRouterProvider) {
 
 
 //McNavCtrl
-myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $rootScope, about, TypesFactory) {
+myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $rootScope, about, $state, mchelper, SettingsFactory, $cookieStore) {
     $scope.isCollapsed = true;
     $scope.about = about;
-    $scope.languages = TypesFactory.getLanguages();
+    $scope.mchelper = mchelper;
     $scope.languageId = about.languageId;
    
     $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
     };
     
-    $scope.isStartsWith = function (viewLocation) { 
-        return $location.path().indexOf(viewLocation) === 0;
+    $scope.isStartsWith = function (viewLocation) {
+       return $location.path().indexOf(viewLocation) === 0;
     };
     
     $scope.isAuthenticated = function () { 
         return $rootScope.globals.currentUser;
     };
     
-    $scope.changeLanguage = function (langKey) {
-      $translate.use(langKey);
-      $scope.languageId = langKey;
+    $scope.changeLanguage = function (lang) {
+      $translate.use(lang.id);
+      $scope.languageId = lang.id;
+      mchelper.cfg.languageId = lang.id;
+      mchelper.cfg.language = lang.displayName;
+      //Update selected language
+      SettingsFactory.updateLanguage(lang.displayName);
+      //Update cookie store
+      $cookieStore.put('mchelper', mchelper);
     };
     
     $scope.isLangActive = function(langKey){
@@ -415,11 +428,12 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
     }
 });
 
-myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about, $translate, editableOptions) {
+myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about, mchelper, $translate, editableOptions) {
   
   // keep user logged in after page refresh
   $rootScope.globals = $cookieStore.get('globals') || {};
   var mcabout = $cookieStore.get('mcabout') || {};
+  var mchelperLocal = $cookieStore.get('mchelper') || {};
   about.timezone = mcabout.timezone;
   about.timezoneMilliseconds = mcabout.timezoneMilliseconds;
   about.timezoneString = mcabout.timezoneString;
@@ -429,7 +443,15 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
   about.languageId = mcabout.languageId;
   about.language = mcabout.language;
   about.dateFormat = mcabout.dateFormat;
-  $translate.use(about.languageId);
+  //Update mchelper
+  mchelper.cfg = mchelperLocal.cfg;
+  mchelper.user = mchelperLocal.user;
+  mchelper.languages = mchelperLocal.languages;
+  
+  if(mchelper.cfg){
+    $translate.use(mchelper.cfg.languageId);
+  }
+
   
   if ($rootScope.globals.currentUser) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
@@ -458,16 +480,18 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, displayRestError, about, $cookieStore, $translate, $filter) {
+    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, TypesFactory, displayRestError, about, mchelper, $cookieStore, $translate, $filter) {
         // reset login status
         AuthenticationService.ClearCredentials();
  
         $scope.login = function () {
             $scope.dataLoading = true;
-            AuthenticationService.Login($scope.username, $scope.password, function(response) {
-                if(response.success) {
+            AuthenticationService.Login($scope.username, $scope.password, function(authResponse) {
+                if(authResponse.success) {
                     AuthenticationService.SetCredentials($scope.username, $scope.password);
+                    mchelper.user = authResponse.user;//Update user details
                     StatusFactory.about(function(response) {
+                      mchelper.cfg = response;//Update config
                         about.timezone = response.timezone;
                         about.timezoneMilliseconds = response.timezoneMilliseconds;
                         about.timezoneString = response.timezoneString;
@@ -480,14 +504,17 @@ myControllerModule.controller('LoginController',
                         about.timeFormat = response.timeFormat;
                         $cookieStore.put('mcabout', about);
                         $translate.use(about.languageId);
+                        TypesFactory.getLanguages(function(langResponse){
+                          mchelper.languages = langResponse;
+                          $cookieStore.put('mchelper', mchelper);
+                        });
                     },function(error){
                       displayRestError.display(error);            
                     });
-                    
-          alertService.success($filter('translate')('SYSTEM.LOGIN_NOTIFY_SUCCESS'));
+                    //alertService.success($filter('translate')('SYSTEM.LOGIN_NOTIFY_SUCCESS'));
                     $state.go('dashboard'); 
                 } else {
-          alertService.danger($filter('translate')('SYSTEM.LOGIN_NOTIFY_INCORRECT'));
+                    alertService.danger($filter('translate')('SYSTEM.LOGIN_NOTIFY_INCORRECT'));
                     $scope.dataLoading = false;
                 }
             });

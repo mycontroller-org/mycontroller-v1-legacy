@@ -265,6 +265,7 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     saveMySensors: { method: 'POST', params: {type:'mySensors'} },
     getUnits: { method: 'GET', isArray: false, params: {type:'units'} },
     saveUnits: { method: 'POST', params: {type:'units'} },
+    updateLanguage: { method: 'PUT', params: {type:'updateLanguage'} },
   })
 });
 

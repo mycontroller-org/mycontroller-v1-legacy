@@ -15,36 +15,29 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
+import org.mycontroller.standalone.db.tables.User;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.Data;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.Builder;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Builder
+@ToString(includeFieldNames = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class AuthenticationJson {
     private Boolean success;
     private String message;
-
-    public AuthenticationJson(Boolean success, String message) {
-        this.setSuccess(success);
-        this.message = message;
-    }
-
-    public AuthenticationJson(Boolean status) {
-        this(status, null);
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
+    @JsonIgnoreProperties({ "password" })
+    private User user;
 }

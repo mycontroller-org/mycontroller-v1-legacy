@@ -62,10 +62,10 @@ public class AppProperties {
     LocationSettings locationSettings;
 
     public enum MC_LANGUAGE {
-        EN_US("English(US)"),
+        EN_US("English (US)"),
         TA_IN("தமிழ் (IN)"),
-        DE_DE("Deutsch(DE)"),
-        RU_RU("Russian(RU)");
+        DE_DE("Deutsch (DE)"),
+        RU_RU("Russian (RU)");
 
         private final String name;
 
@@ -287,6 +287,9 @@ public class AppProperties {
     public void loadProperties(Properties properties) {
         this.dbH2DbLocation = getValue(properties, "mcc.db.h2db.location");
         this.webFileLocation = getValue(properties, "mcc.web.file.location");
+        if (!this.webFileLocation.endsWith("/")) {
+            this.webFileLocation = this.webFileLocation + "/";
+        }
         this.webHttpPort = Integer.valueOf(getValue(properties, "mcc.web.http.port"));
         if (getValue(properties, "mcc.web.enable.https") != null) {
             if (Boolean.valueOf(getValue(properties, "mcc.web.enable.https"))) {
