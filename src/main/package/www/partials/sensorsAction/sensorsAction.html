@@ -57,9 +57,9 @@
           
         <p><small>{{ 'SENSORS_ACTIONS.NODE_ID' | translate }}:{{sensor.node.id}}, {{ 'SENSORS_ACTIONS.SENSOR_ID' | translate }}:{{sensor.sensorId}}, 
           <span tooltip-placement="bottom" tooltip-enable="{{sensor.variableTypes.length > 21}}" uib-tooltip="{{sensor.variableTypes}}">[{{sensor.typeString}}/ {{sensor.variableTypes ? sensor.variableTypes : '-' | limitTo:21}}{{sensor.variableTypes.length > 21 ? '...' : ''}}]</span>
-          <br><span tooltip-placement="right" uib-tooltip="{{sensor.updateTime | date:about.dateFormat:about.timezone}}">{{ 'SENSORS_ACTIONS.LAST_SEEN' | translate }}: {{sensor.lastSeen}}</span></small>
+          <br><span tooltip-placement="right" uib-tooltip="{{sensor.updateTime | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}">{{ 'SENSORS_ACTIONS.LAST_SEEN' | translate }}: {{sensor.lastSeen}}</span></small>
           <span class="pull-right" >
-            <strong ng-repeat="statz in sensor.status| filter:{value: ''}" tooltip-placement="left" uib-tooltip-html="'{{statz.variableType}}<br>{{statz.timestamp | date:about.dateFormat:about.timezone}}'"><b>{{$index > 0 ? ' | ' : '' }}{{statz.friendlyValue}}</b></strong>
+            <strong ng-repeat="statz in sensor.status| filter:{value: ''}" tooltip-placement="left" uib-tooltip-html="'{{statz.variableType}}<br>{{statz.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}'"><b>{{$index > 0 ? ' | ' : '' }}{{statz.friendlyValue}}</b></strong>
           </span>            
         </p> 
         

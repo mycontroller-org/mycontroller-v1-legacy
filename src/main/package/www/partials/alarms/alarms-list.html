@@ -93,7 +93,7 @@
             <td ng-bind-html="item.conditionString | mcResourceRepresentation"></td>
             <td>{{item.dampeningString}}</td>
             <td ng-bind-html="item.notificationString | mcResourceRepresentation"></td>
-            <td>{{item.lastTrigger | date:about.dateFormat:about.timezone}}</td>
+            <td>{{item.lastTrigger | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</td>
           </tr>
         </tbody>
       </table>

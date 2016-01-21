@@ -101,10 +101,10 @@
               <i uib-tooltip="Unavailable" ng-show="item.state == 'Unavailable'" class="pficon pficon-help text-color-gray fa-lg"></i>
               <i uib-tooltip="Up" ng-show="item.state == 'Up'" class="pficon pficon-ok fa-lg"></i>
             </td>
-            <td>{{item.statusSince | date:about.dateFormat:about.timezone}}</td>
+            <td>{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</td>
             <td>{{item.statusMessage}}</td>
             <td class="mc-align-center">
-              <a class="btn btn-link" ng-href="{{about.urlNodesDetail}}/{{item.id}}"><i class="fa fa-chevron-circle-right fa-lg" tooltip="View Details" tooltip-trigger tooltip-placement="top"></i></a>
+              <a class="btn btn-link" ui-sref="gatewaysDetail('id':item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="View Details" tooltip-trigger tooltip-placement="top"></i></a>
             </td>
           </tr>
         </tbody>
