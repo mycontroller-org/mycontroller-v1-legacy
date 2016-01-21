@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionControllerList', function(
-  alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, $location, $uibModal, displayRestError, about, CommonServices, pfViewUtils, $filter) {
+  alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, $uibModal, displayRestError, mchelper, CommonServices, pfViewUtils, $filter) {
   
   //GUI page settings
   //$scope.headerStringList = "Sesnors detail";
@@ -22,7 +22,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
   $scope.noItemsSystemIcon = "fa fa-eye";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, displayRestError, about) {
+myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, displayRestError, mchelper) {
   
-  //about, Timezone, etc.,
-  $scope.about = about;
+  //config, language, user, etc.,
+  $scope.mchelper = mchelper;
   
   //editable settings
   $scope.editEnable = {};
@@ -73,10 +73,10 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
 
 });
 
-myControllerModule.controller('SettingsUnitsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, about) {
+myControllerModule.controller('SettingsUnitsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper) {
   
-  //about, Timezone, etc.,
-  $scope.about = about;
+  //config, language, user, etc.,
+  $scope.mchelper = mchelper;
   
   //editable settings
   $scope.editEnable = {};
@@ -106,10 +106,10 @@ myControllerModule.controller('SettingsUnitsController', function(alertService, 
 
 });
 
-myControllerModule.controller('SettingsNotificationsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, about) {
+myControllerModule.controller('SettingsNotificationsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper) {
   
-  //about, Timezone, etc.,
-  $scope.about = about;
+  //config, language, user, etc.,
+  $scope.mchelper = mchelper;
   
   //editable settings
   $scope.editEnable = {};
@@ -161,10 +161,10 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
 
 });
 
-myControllerModule.controller('SettingsSystemMySensors', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, FirmwaresFactory, displayRestError, about) {
+myControllerModule.controller('SettingsSystemMySensors', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, FirmwaresFactory, displayRestError, mchelper) {
   
-  //about, Timezone, etc.,
-  $scope.about = about;
+  //config, language, user, etc.,
+  $scope.mchelper = mchelper;
   
   //editable settings
   $scope.editEnable = {};

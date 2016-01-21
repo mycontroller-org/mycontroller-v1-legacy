@@ -15,7 +15,7 @@
  */
 /* Firmwares type */
 myControllerModule.controller('FirmwaresTypeController', function(
-  alertService, $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about, CommonServices, $stateParams) {
+  alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
   
   //GUI page settings
   $scope.headerStringList = "Firmware types detail";
@@ -23,7 +23,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
   $scope.noItemsSystemIcon = "fa fa-file-code-o";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -112,7 +112,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlFirmwaresTypeAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("firmwaresTypeAddEdit", {'id': $scope.itemIds[0]});
     }
   };
 
@@ -144,12 +144,12 @@ myControllerModule.controller('FirmwaresTypeController', function(
 
 
 //add edit item
-myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, about, $stateParams, $filter) {
+myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter) {
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add firmware type";
   $scope.headerStringUpdate = "Update firmware type";
-  $scope.cancelButtonUrl = about.urlFirmwaresTypeList; //Cancel button url
+  $scope.cancelButtonState = "firmwaresTypeList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   
@@ -193,7 +193,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
 
 /* Firmwares version */
 myControllerModule.controller('FirmwaresVersionController', function(
-  alertService, $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about, CommonServices, $stateParams) {
+  alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
   
   //GUI page settings
   $scope.headerStringList = "Firmware versions detail";
@@ -201,7 +201,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
   $scope.noItemsSystemIcon = "fa fa-file-code-o";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -290,7 +290,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlFirmwaresVersionAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("firmwaresVersionAddEdit", {'id':$scope.itemIds[0]});
     }
   };
 
@@ -320,13 +320,13 @@ myControllerModule.controller('FirmwaresVersionController', function(
 });
 
 //add edit item
-myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, about, $stateParams, $filter) {
+myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter) {
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add firmware version";
   $scope.headerStringUpdate = "Update firmware version";
-  $scope.cancelButtonUrl = about.urlFirmwaresVersionList; //Cancel button url
+  $scope.cancelButtonState = "firmwaresVersionList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   
@@ -372,7 +372,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
 
 /* Firmware controller */
 myControllerModule.controller('FirmwaresController', function(
-  alertService, $scope, $filter, FirmwaresFactory, $location, $uibModal, displayRestError, about, CommonServices, $stateParams) {  
+  alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {  
   
   //GUI page settings
   $scope.headerStringList = "Firmwares detail";
@@ -380,7 +380,7 @@ myControllerModule.controller('FirmwaresController', function(
   $scope.noItemsSystemIcon = "fa fa-file-code-o";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -481,7 +481,7 @@ $scope.filterConfig = {
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlFirmwaresAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("firmwaresAddEdit", {'id':$scope.itemIds[0]});
     }
   };
 
@@ -513,14 +513,14 @@ $scope.filterConfig = {
 
 
 //add edit item
-myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, about, $stateParams, $filter, TypesFactory) {
+myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter, TypesFactory) {
   $scope.item = {};
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add firmware";
   $scope.headerStringUpdate = "Update firmware";
-  $scope.cancelButtonUrl = about.urlFirmwaresList; //Cancel button url
+  $scope.cancelButtonState = "firmwaresList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
 

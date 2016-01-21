@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsController', function(alertService,
-$scope, SensorsFactory, TypesFactory, NodesFactory, $location, $uibModal, displayRestError, about, CommonServices, $stateParams) {
+$scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
 
   //GUI page settings
   $scope.headerStringList = "Sesnors detail";
@@ -22,7 +22,7 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $location, $uibModal, displa
   $scope.noItemsSystemIcon = "fa fa-eye";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -141,7 +141,7 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $location, $uibModal, displa
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlSensorsAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("sensorsAddEdit", {'id':$scope.itemIds[0]});
     }
   };
   
@@ -173,8 +173,8 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $location, $uibModal, displa
 });
 
 //Add Edit sensor controller
-myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, about, alertService, displayRestError, $filter) {
-  $scope.about = about;
+myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, mchelper, alertService, displayRestError, $filter) {
+  $scope.mchelper = mchelper;
   $scope.sensor = {};
   $scope.sensor.node = {};
   $scope.sensor.node.gateway = {};
@@ -208,7 +208,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add sensor";
   $scope.headerStringUpdate = "Update sensor";
-  $scope.cancelButtonUrl = about.urlSensorsList+'/'; //Cancel button url
+  $scope.cancelButtonState = "sensorsList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   
@@ -238,9 +238,9 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
 
 
 //Item Detail
-myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, about, SensorsFactory, MetricsFactory) {
-  //Load about variables to this scope
-  $scope.about = about;
+myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory) {
+  //Load mchelper variables to this scope
+  $scope.mchelper = mchelper;
   $scope.sensor = SensorsFactory.get({"id":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"Sensor", "resourceId":$stateParams.id});
 });

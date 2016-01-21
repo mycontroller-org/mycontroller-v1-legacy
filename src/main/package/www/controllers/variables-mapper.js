@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('VariablesMapperListController', function(alertService, $scope, $filter, displayRestError, TypesFactory, $filter, about, CommonServices, $location) {
+myControllerModule.controller('VariablesMapperListController', function(alertService, $scope, $filter, displayRestError, TypesFactory, $filter, mchelper, CommonServices, $state) {
   
   
   //GUI page settings
   $scope.headerStringList = "Sensors and variables mapping";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -76,17 +76,17 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
   
   //Edit item
   $scope.editItem = function () {
-    $location.path(about.urlSettingsVariablesMapperEdit.replace('#', '') + '/' + $scope.itemName);
+    $state.go("settingsVariablesMapperEdit", {'sensorType':$scope.itemName});
   };
 
 });
 
 //Edit mapping
-myControllerModule.controller('VariablesMapperEditController', function ($scope, TypesFactory, $filter, $stateParams, about, alertService) {
+myControllerModule.controller('VariablesMapperEditController', function ($scope, TypesFactory, $filter, $stateParams, mchelper, alertService) {
 
   //GUI page settings
   $scope.headerStringAdd = "Modify sensor variables mapping";
-  $scope.cancelButtonUrl = about.urlSettingsVariablesMapperList; //Cancel button url
+  $scope.cancelButtonState = "settingsVariablesMapperList"; //Cancel button state
   $scope.saveProgress = false;
   
   

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ResourcesGroupController', function(alertService,
-$scope, ResourcesGroupFactory, $location, $uibModal, displayRestError, about, CommonServices) {
+$scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, CommonServices) {
 
   //GUI page settings
   $scope.headerStringList = "Resource groups detail";
@@ -22,7 +22,7 @@ $scope, ResourcesGroupFactory, $location, $uibModal, displayRestError, about, Co
   $scope.noItemsSystemIcon = "pficon pficon-replicator";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -156,7 +156,7 @@ $scope, ResourcesGroupFactory, $location, $uibModal, displayRestError, about, Co
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlResourcesGroupAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("resourcesGroupAddEdit", {'id':$scope.itemIds[0]});
     }
   };
   
@@ -216,16 +216,16 @@ $scope, ResourcesGroupFactory, $location, $uibModal, displayRestError, about, Co
 
 
 //Add Edit item controller
-myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scope, $stateParams, ResourcesGroupFactory,  about, alertService, displayRestError, $filter) {
+myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scope, $stateParams, ResourcesGroupFactory,  mchelper, alertService, displayRestError, $filter) {
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add resources group";
   $scope.headerStringUpdate = "Update resources group";
-  $scope.cancelButtonUrl = about.urlResourcesGroupList+'//'; //Cancel button url
+  $scope.cancelButtonState = "resourcesGroupList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.group = {};
   $scope.id = $stateParams.id;
 
@@ -265,7 +265,7 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
 //------------------------------------------------------------------------------
 
 myControllerModule.controller('ResourcesGroupMapController', function(alertService,
-$scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $location, $uibModal, displayRestError, about, CommonServices, $stateParams) {
+$scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
 
   //GUI page settings
   $scope.headerStringList = "Resource groups maps detail";
@@ -273,7 +273,7 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $location, $uibModal, d
   $scope.noItemsSystemIcon = "pficon pficon-replicator";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -288,7 +288,7 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $location, $uibModal, d
   
   //redirect to groups list if id not found
   if(!$stateParams){
-    $location.path(about.urlResourcesGroupList.replace('#', ''));
+    $state.go("resourcesGroupList");
   }
   
   //always lock with group id
@@ -384,7 +384,7 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $location, $uibModal, d
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlResourcesGroupMapAddEdit.replace('#', '') +'/' + $scope.query.groupId + '/' + $scope.itemIds[0]);
+      $state.go("resourcesGroupMapAddEdit", {'groupId':$scope.query.groupId, 'id':$scope.itemIds[0]});
     }
   };
   
@@ -416,8 +416,8 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $location, $uibModal, d
 
 
 //Add Edit item controller
-myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($scope, $stateParams, $location, TypesFactory, CommonServices, ResourcesGroupMapFactory, about, alertService, displayRestError, $filter) {
-  $scope.about = about;
+myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($scope, $stateParams, $state, TypesFactory, CommonServices, ResourcesGroupMapFactory, mchelper, alertService, displayRestError, $filter) {
+  $scope.mchelper = mchelper;
   $scope.groupMap = {};
 
   if($stateParams.id){
@@ -432,7 +432,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
     $scope.groupMap.resourcesGroup = {};
     $scope.groupMap.resourcesGroup.id = $stateParams.groupId;
   }else{
-    $location.path(about.urlResourcesGroupList.replace('#', ''));
+    $state.go("resourcesGroupList");
   }
   
   //pre load
@@ -447,7 +447,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add an entry";
   $scope.headerStringUpdate = "Update an entry";
-  $scope.cancelButtonUrl = about.urlResourcesGroupMapList+'/'+$stateParams.groupId; //Cancel button url
+  $scope.cancelButtonState = "resourcesGroupMapList({id:"+$stateParams.groupId+"})"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   

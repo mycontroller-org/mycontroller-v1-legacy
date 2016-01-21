@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory,
-  about, $filter, SettingsFactory, TypesFactory, SensorsFactory, displayRestError, FileSaver, Blob, $filter) {
+  mchelper, $filter, SettingsFactory, TypesFactory, SensorsFactory, displayRestError, FileSaver, Blob, $filter) {
     
   //Get Chart Interpolate Type
   $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
@@ -33,8 +33,8 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
     },function(error){
       displayRestError.display(error);            
     });
-  //about, Timezone, etc.,
-  $scope.about = about;  
+  //config, language, user, etc.,
+  $scope.mchelper = mchelper;  
   $scope.variableType = {};
   
   $scope.variableTypes = TypesFactory.getGraphSensorVariableTypes({id:$stateParams.sensorId}, function(response) {
@@ -153,28 +153,28 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
         if($scope.variableType.metricType == 1){
           //Chart options for one Minute sample interval data
           $scope.chartRawDataOptions = chartOptions;
-          $scope.chartRawDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatRawData, about.timezone)};
+          $scope.chartRawDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatRawData, mchelper.cfg.timezone)};
           $scope.chartRawDataOptions.title.text = textRawData;
         }
       
         //Chart options for one Minute sample interval data
         $scope.chartMinuteDataOptions = angular.copy(chartOptions);
-        $scope.chartMinuteDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatMinuteData, about.timezone)};
+        $scope.chartMinuteDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatMinuteData, mchelper.cfg.timezone)};
         $scope.chartMinuteDataOptions.title.text = textMinuteData;
 
         //Chart options for 5 Minutes sample interval data
         $scope.chart5MinutesDataOptions = angular.copy(chartOptions);
-        $scope.chart5MinutesDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormat5MinutesData, about.timezone)};
+        $scope.chart5MinutesDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormat5MinutesData, mchelper.cfg.timezone)};
         $scope.chart5MinutesDataOptions.title.text = text5MinutesData;
         
         //Chart options for one Hour sample interval data
         $scope.chartHourDataOptions = angular.copy(chartOptions);
-        $scope.chartHourDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatHourData, about.timezone)};
+        $scope.chartHourDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatHourData, mchelper.cfg.timezone)};
         $scope.chartHourDataOptions.title.text = textHourData;
         
         //Chart options for one Day sample interval data
         $scope.chartDayDataOptions = angular.copy(chartOptions);
-        $scope.chartDayDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatDayData, about.timezone)};
+        $scope.chartDayDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatDayData, mchelper.cfg.timezone)};
         $scope.chartDayDataOptions.title.text = textDayData;
         
         //Get list of Metrics types

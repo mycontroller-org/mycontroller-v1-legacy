@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('AlarmsController', function(alertService,
-$scope, AlarmsFactory, $location, $uibModal, $stateParams, displayRestError, about, CommonServices) {
+$scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices) {
   
   //GUI page settings
   $scope.headerStringList = "Alarms detail";
@@ -22,7 +22,7 @@ $scope, AlarmsFactory, $location, $uibModal, $stateParams, displayRestError, abo
   $scope.noItemsSystemIcon = "fa fa-bell-o";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -202,7 +202,7 @@ $scope, AlarmsFactory, $location, $uibModal, $stateParams, displayRestError, abo
     //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlAlarmsAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("alarmsAddEdit",{'id':$scope.itemIds[0]});
     }
   };
 
@@ -210,9 +210,9 @@ $scope, AlarmsFactory, $location, $uibModal, $stateParams, displayRestError, abo
 
 
 //Add Edit alarm defination controller
-myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, AlarmsFactory, about, alertService, displayRestError, $filter) {
+myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, AlarmsFactory, mchelper, alertService, displayRestError, $filter) {
  
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.alarm = {};
   $scope.alarm.ignoreDuplicate = true;
   $scope.alarm.enabled = true;
@@ -302,7 +302,7 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add alarm";
   $scope.headerStringUpdate = "Update alarm";
-  $scope.cancelButtonUrl = about.urlAlarmsList+'//'; //Cancel button url
+  $scope.cancelButtonState = "alarmsList"; //Cancel button url
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
 

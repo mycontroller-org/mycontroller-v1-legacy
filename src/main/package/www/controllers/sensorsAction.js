@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionController', function(alertService,
-$scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, about) {
+$scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, mchelper) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
   
-  //about, Timezone, etc.,
-  $scope.about = about;
+  //config, language, user, etc.,
+  $scope.mchelper = mchelper;
   
   //Filter
   $scope.updateFilteredList = function() {

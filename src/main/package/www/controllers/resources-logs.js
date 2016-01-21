@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ResourcesLogsController', function(alertService,
-$scope, $filter, ResourcesLogsFactory, $location, $uibModal, $stateParams, about, CommonServices) {
+$scope, $filter, ResourcesLogsFactory, $uibModal, $stateParams, mchelper, CommonServices) {
   
   //GUI page settings
   $scope.headerStringList = "Resources logs detail";
@@ -22,7 +22,7 @@ $scope, $filter, ResourcesLogsFactory, $location, $uibModal, $stateParams, about
   $scope.noItemsSystemIcon = "fa fa-list";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -172,12 +172,12 @@ $scope, $filter, ResourcesLogsFactory, $location, $uibModal, $stateParams, about
 });
 
 //purge resources logs
-myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, CommonServices, alertService, ResourcesLogsFactory, about, $filter, TypesFactory) {
+myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, CommonServices, alertService, ResourcesLogsFactory, mchelper, $filter, TypesFactory) {
   $scope.item = {};
   
   //GUI page settings
   $scope.headerStringAdd = "Purge resources logs";
-  $scope.cancelButtonUrl = about.urlResourcesLogsList+'//'; //Cancel button url
+  $scope.cancelButtonState = "resourcesLogsList"; //Cancel button state
   $scope.saveProgress = false;
   $scope.saveButtonName = 'Purge';
   $scope.savingButtonName = 'Purging...';
@@ -195,7 +195,7 @@ myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, 
   
   //Convert as display string
   $scope.getDateTimeDisplayFormat = function (newDate) {
-    return $filter('date')(newDate, about.dateFormat, about.timezone);
+    return $filter('date')(newDate, mchelper.dateFormat, mchelper.cfg.timezone);
   };
   
   //Save data - here it's purge

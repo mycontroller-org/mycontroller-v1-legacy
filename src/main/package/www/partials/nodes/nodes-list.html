@@ -50,7 +50,7 @@
         </div>
         
         <div class="btn-group" role="group">
-          <a class="btn btn-primary" type="button" ng-href="{{about.urlNodesAddEdit}}/">Add Node</a>
+          <a class="btn btn-primary" type="button" ui-sref="nodesAddEdit">Add Node</a>
         </div>
 
       </div>
@@ -109,7 +109,7 @@
             <td>{{item.libVersion}}</td>
             <td at-implicit at-attribute="firmware.firmwareName" at-title="Firmware"></td>
             <td class="mc-align-center">
-              <a class="btn btn-link" ng-href="{{about.urlNodesDetail}}/{{item.id}}"><i class="fa fa-chevron-circle-right fa-lg" tooltip="View Details" tooltip-trigger tooltip-placement="top"></i></a>
+              <a class="btn btn-link" ui-sref="nodesDetail({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="View Details" tooltip-trigger tooltip-placement="top"></i></a>
             </td>
           </tr>
         </tbody>

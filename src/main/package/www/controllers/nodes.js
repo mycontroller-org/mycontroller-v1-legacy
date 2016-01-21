@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, NodesFactory, $location, $uibModal, displayRestError, CommonServices, about, $filter) {
+$scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter) {
 
   //GUI page settings
   $scope.headerStringList = "Nodes detail";
@@ -22,7 +22,7 @@ $scope, NodesFactory, $location, $uibModal, displayRestError, CommonServices, ab
   $scope.noItemsSystemIcon = "fa fa-sitemap";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -186,7 +186,7 @@ $scope, NodesFactory, $location, $uibModal, displayRestError, CommonServices, ab
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlNodesAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("nodesAddEdit",{'id':$scope.itemIds[0]});
     }
   };
 
@@ -249,9 +249,9 @@ $scope, NodesFactory, $location, $uibModal, displayRestError, CommonServices, ab
 // Nodes other controllers
 
 //Add/Edit Node
-myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, about, alertService, displayRestError, $filter) {
-  //Load about variables to this scope
-  $scope.about = about;
+myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, mchelper, alertService, displayRestError, $filter) {
+  //Load mchelper variables to this scope
+  $scope.mchelper = mchelper;
   $scope.node = {};
   if($stateParams.id){
     $scope.node = NodesFactory.get({"nodeId":$stateParams.id});
@@ -265,7 +265,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add node";
   $scope.headerStringUpdate = "Update node";
-  $scope.cancelButtonUrl = about.urlNodesList+'/'; //Cancel button url
+  $scope.cancelButtonState = "nodesList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   
@@ -294,9 +294,9 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
 
 
 //Node Detail
-myControllerModule.controller('NodesControllerDetail', function ($scope, $stateParams, about, NodesFactory, MetricsFactory) {
-  //Load about variables to this scope
-  $scope.about = about;
+myControllerModule.controller('NodesControllerDetail', function ($scope, $stateParams, mchelper, NodesFactory, MetricsFactory) {
+  //Load mchelper variables to this scope
+  $scope.mchelper = mchelper;
   $scope.node = {};
   $scope.headerStringList = "Node details";
   

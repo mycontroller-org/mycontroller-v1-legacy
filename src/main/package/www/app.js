@@ -394,11 +394,9 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
 
 
 //McNavCtrl
-myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $rootScope, about, $state, mchelper, SettingsFactory, $cookieStore) {
+myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $rootScope, $state, mchelper, SettingsFactory, $cookieStore) {
     $scope.isCollapsed = true;
-    $scope.about = about;
     $scope.mchelper = mchelper;
-    $scope.languageId = about.languageId;
    
     $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
@@ -428,21 +426,11 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
     }
 });
 
-myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about, mchelper, $translate, editableOptions) {
+myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, mchelper, $translate, editableOptions) {
   
   // keep user logged in after page refresh
   $rootScope.globals = $cookieStore.get('globals') || {};
-  var mcabout = $cookieStore.get('mcabout') || {};
   var mchelperLocal = $cookieStore.get('mchelper') || {};
-  about.timezone = mcabout.timezone;
-  about.timezoneMilliseconds = mcabout.timezoneMilliseconds;
-  about.timezoneString = mcabout.timezoneString;
-  about.systemDate = mcabout.systemDate;
-  about.appName = mcabout.appName;
-  about.appVersion = mcabout.appVersion;
-  about.languageId = mcabout.languageId;
-  about.language = mcabout.language;
-  about.dateFormat = mcabout.dateFormat;
   //Update mchelper
   mchelper.cfg = mchelperLocal.cfg;
   mchelper.user = mchelperLocal.user;
@@ -480,34 +468,31 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, displayRestError, about, mchelper, $cookieStore, $translate, $filter) {
+    function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, displayRestError, mchelper, $cookieStore, $translate, $filter) {
         // reset login status
         AuthenticationService.ClearCredentials();
-        $scope.cfgFile = ReadFileFactory.getConfigFile();
+        //Update login page details
+        ReadFileFactory.getConfigFile(function(configFile){
+          $scope.cfgFile = configFile;
+          //Update language
+          $translate.use(mchelper.cfg.languageId);
+        });
+
         $scope.login = function () {
             $scope.dataLoading = true;
             AuthenticationService.Login($scope.username, $scope.password, function(authResponse) {
                 if(authResponse.success) {
                     AuthenticationService.SetCredentials($scope.username, $scope.password);
                     mchelper.user = authResponse.user;//Update user details
-                    StatusFactory.about(function(response) {
+                    StatusFactory.getConfig(function(response) {
                       mchelper.cfg = response;//Update config
-                        about.timezone = response.timezone;
-                        about.timezoneMilliseconds = response.timezoneMilliseconds;
-                        about.timezoneString = response.timezoneString;
-                        about.systemDate = response.systemDate;
-                        about.appName = response.appName;
-                        about.appVersion = response.appVersion;
-                        about.languageId = response.languageId;
-                        about.language = response.language;
-                        about.dateFormat = response.dateFormat;
-                        about.timeFormat = response.timeFormat;
-                        $cookieStore.put('mcabout', about);
-                        $translate.use(about.languageId);
-                        TypesFactory.getLanguages(function(langResponse){
-                          mchelper.languages = langResponse;
-                          $cookieStore.put('mchelper', mchelper);
-                        });
+                      //Update language
+                      $translate.use(mchelper.cfg.languageId);
+                      TypesFactory.getLanguages(function(langResponse){
+                        mchelper.languages = langResponse;
+                        //Store all the configurations locally
+                        $cookieStore.put('mchelper', mchelper);
+                      });
                     },function(error){
                       displayRestError.display(error);            
                     });
@@ -574,61 +559,6 @@ myControllerModule.filter('mcHtml', function($sce) {
        return $sce.trustAsHtml(htmlText);
        //return htmlText
     };
-});
-
-
-myControllerModule.value("about", {
-    timezone: '-',
-    timezoneString: '-',
-    systemDate: '-',
-    appVersion:'-',
-    appName: '-',
-    languageId: 'en_us',
-    language: 'English(US)',
-    dateFormat: 'MMM d, y hh:mm:ss a',
-    timeFormat: 'hh:mm:ss a',
-    //URLs
-    urlGatewaysList: '#/resources/gateways/list',
-    urlGatewaysAddEdit: '#/resources/gateways/addedit',
-    urlGatewaysDetail: '#/resources/gateways/detail',
-    urlNodesList: '#/resources/nodes/list',
-    urlNodesAddEdit: '#/resources/nodes/addedit',
-    urlNodesDetail: '#/resources/nodes/detail',
-    urlSensorsList: '#/resources/sensors/list',
-    urlSensorsAddEdit: '#/resources/sensors/addedit',
-    urlSensorsDetail: '#/resources/sensors/detail',
-    urlAlarmsList: '#/resources/alarms/list',
-    urlAlarmsAddEdit: '#/resources/alarms/addedit',
-    urlTimersList: '#/resources/timers/list',
-    urlTimersAddEdit: '#/resources/timers/addedit',
-    urlResourcesGroupList: '#/resources/groups/list',
-    urlResourcesGroupAddEdit: '#/resources/groups/addedit',
-    urlResourcesGroupMapList: '#/resources/groups/map/list',
-    urlResourcesGroupMapAddEdit: '#/resources/groups/map/addedit',
-    urlActionBoardSensorsList: '#/actionboard/sensorsaction/list',
-    urlForwardPayloadList: '#/resources/forwardpayload/list',
-    urlForwardPayloadAddEdit: '#/resources/forwardpayload/addedit',
-    urlFirmwaresList: '#/resources/firmwares/list',
-    urlFirmwaresAddEdit: '#/resources/firmwares/addedit',
-    urlFirmwaresTypeAddEdit: '#/resources/firmwares/type/addedit',
-    urlFirmwaresTypeList: '#/resources/firmwares/type/list',
-    urlFirmwaresVersionAddEdit: '#/resources/firmwares/version/addedit',
-    urlFirmwaresVersionList: '#/resources/firmwares/version/list',
-    urlResourcesLogsList: '#/resources/logs',
-    urlResourcesLogsPurge: '#/resources/logs/purge',
-    urlStatusSystem: '#/status/system',
-    urlSettingsSystem: '#/settings/system',
-    urlSettingsUnits: '#/settings/units',
-    urlSettingsNotifications: '#/settings/notifications',
-    urlSettingsMySensors: '#/settings/mysensors',
-    urlSettingsVariablesMapperList: '#/settings/variablesmapper/list',
-    urlSettingsVariablesMapperEdit: '#/settings/variablesmapper/edit',
-});
-
-//FooterCtrl
-myControllerModule.controller('FooterCtrl', function($scope, about) {
-  //about, Timezone, etc.,
-  $scope.about = about;
 });
 
 /** 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('GatewaysController', function(alertService,
-$scope, $filter, GatewaysFactory, $location, $uibModal, displayRestError, about, CommonServices) {
+$scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper, CommonServices) {
     
   //GUI page settings
   $scope.headerStringList = "Gateways detail";
@@ -22,7 +22,7 @@ $scope, $filter, GatewaysFactory, $location, $uibModal, displayRestError, about,
   $scope.noItemsSystemIcon = "fa fa-plug";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -148,7 +148,7 @@ $scope, $filter, GatewaysFactory, $location, $uibModal, displayRestError, about,
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlGatewaysAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("gatewaysAddEdit", {'id':$scope.itemIds[0]});
     }
   };
   
@@ -232,7 +232,7 @@ $scope, $filter, GatewaysFactory, $location, $uibModal, displayRestError, about,
 });
 
 
-myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, about) {
+myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper) {
   $scope.gateway = {};
   $scope.gateway.enabled = true;
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
@@ -261,7 +261,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add gateway";
   $scope.headerStringUpdate = "Update gateway";
-  $scope.cancelButtonUrl = about.urlGatewaysList; //Cancel button url
+  $scope.cancelButtonState = "gatewaysList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   

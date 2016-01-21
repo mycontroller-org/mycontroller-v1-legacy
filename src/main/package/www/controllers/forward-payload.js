@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 myControllerModule.controller('ForwardPayloadController', function(alertService,
-$scope, $filter, ForwardPayloadFactory, $location, $uibModal, displayRestError, about, CommonServices, $stateParams) {
+$scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
   //GUI page settings
   $scope.headerStringList = "Forward payloads detail";
   $scope.noItemsSystemMsg = "No forward payloads set up.";
   $scope.noItemsSystemIcon = "fa fa-forward";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -123,7 +123,7 @@ $scope, $filter, ForwardPayloadFactory, $location, $uibModal, displayRestError, 
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlForwardPayloadAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("forwardPayloadAddEdit", {'id':$scope.itemIds[0]});
     }
   };
 
@@ -182,7 +182,7 @@ $scope, $filter, ForwardPayloadFactory, $location, $uibModal, displayRestError, 
 });
 
 //add edit item
-myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scope, CommonServices, alertService, ForwardPayloadFactory, about, $stateParams, $filter) {
+myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scope, CommonServices, alertService, ForwardPayloadFactory, mchelper, $stateParams, $filter) {
   $scope.fpayload = {};
   $scope.fpayload.enabled=true;
   $scope.fpayload.source={};
@@ -209,7 +209,7 @@ myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scop
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add forward payload entry";
   $scope.headerStringUpdate = "Update forward payload entry";
-  $scope.cancelButtonUrl = about.urlForwardPayloadList+'/'; //Cancel button url
+  $scope.cancelButtonState = "forwardPayloadList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   

@@ -43,6 +43,7 @@ public class About {
     private String language;
     private String dateFormatGui;
     private String loginMessage;
+    private String timeFormat;
 
     public About() {
         Date date = new Date();
@@ -56,5 +57,6 @@ public class About {
         this.language = ObjectFactory.getAppProperties().getLanguage().getText();
         this.dateFormatGui = ObjectFactory.getAppProperties().getAngularJsDateFormat();
         this.loginMessage = ObjectFactory.getAppProperties().getControllerSettings().getLoginMessage();
+        this.timeFormat = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
     }
 }

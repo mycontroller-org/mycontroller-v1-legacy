@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('TimersController', function(alertService,
-$scope, TimersFactory, $location, $uibModal, $stateParams, displayRestError, about, CommonServices) {
+$scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices) {
   
   //GUI page settings
   $scope.headerStringList = "Timers detail";
@@ -22,7 +22,7 @@ $scope, TimersFactory, $location, $uibModal, $stateParams, displayRestError, abo
   $scope.noItemsSystemIcon = "fa fa-clock-o";
 
   //load empty, configuration, etc.,
-  $scope.about = about;
+  $scope.mchelper = mchelper;
   $scope.filteredList=[];
     
   //data query details
@@ -130,7 +130,7 @@ $scope, TimersFactory, $location, $uibModal, $stateParams, displayRestError, abo
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $location.path(about.urlTimersAddEdit.replace('#', '') + '/' + $scope.itemIds[0]);
+      $state.go("timersAddEdit",{'id':$scope.itemIds[0]});
     }
   };
 
@@ -190,14 +190,14 @@ $scope, TimersFactory, $location, $uibModal, $stateParams, displayRestError, abo
   
 });
 
-myControllerModule.controller('TimersControllerAddEdit', function ($scope, TypesFactory, CommonServices, alertService, TimersFactory, about, $stateParams, $filter) {
+myControllerModule.controller('TimersControllerAddEdit', function ($scope, TypesFactory, CommonServices, alertService, TimersFactory, mchelper, $stateParams, $filter) {
   $scope.timer = {};
   $scope.timer.enabled=true;
-  $scope.showMeridian = angular.equals(about.dateFormat.indexOf("HH"), -1);
+  $scope.showMeridian = angular.equals(mchelper.cfg.timeFormat, "12 hours");
 
     if($stateParams.id){
       TimersFactory.get({"id":$stateParams.id},function(response) {
-        $scope.timer = response;        
+        $scope.timer = response;
         
         //Update Resource Type
         $scope.dspResources = $scope.getResources($scope.timer.resourceType);
@@ -222,17 +222,14 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
         //Update date    
         if($scope.timer.timerType !== 'Simple' || $scope.timer.timerType !== 'Cron'){
           $scope.lTriggerTime = new Date($scope.timer.triggerTime);
-          //$scope.ttHour = $filter('date')($scope.timer.triggerTime, 'HH', about.timezone);
-          //$scope.ttMinute =$filter('date')($scope.timer.triggerTime, 'mm', about.timezone);
-          //$scope.ttSecond = $filter('date')($scope.timer.triggerTime, 'ss', about.timezone);
         }
         //Update validity from/to
         if($scope.timer.validityFrom){
-          $scope.vFromString = $filter('date')($scope.timer.validityFrom, about.dateFormat, about.timezone);
+          $scope.vFromString = $filter('date')($scope.timer.validityFrom, mchelper.dateFormat, mchelper.cfg.timezone);
           $scope.vFromDate = new Date($scope.timer.validityFrom);
         }
         if($scope.timer.validityTo){
-          $scope.vToString = $filter('date')($scope.timer.validityTo, about.dateFormat, about.timezone);
+          $scope.vToString = $filter('date')($scope.timer.validityTo, mchelper.dateFormat, mchelper.cfg.timezone);
           $scope.vToDate = new Date($scope.timer.validityTo);
         }
       },function(error){
@@ -269,14 +266,14 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   
   //Convert as display string
   $scope.getDateTimeDisplayFormat = function (newDate) {
-    return $filter('date')(newDate, about.dateFormat, about.timezone);
+    return $filter('date')(newDate, mchelper.dateFormat, mchelper.cfg.timezone);
   };
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add timer";
   $scope.headerStringUpdate = "Update timer";
-  $scope.cancelButtonUrl = about.urlTimersList+'//'; //Cancel button url
+  $scope.cancelButtonState = "timersList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   
@@ -314,7 +311,9 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
       $scope.timer.triggerTime = null;
       $scope.timer.frequency = null;
     }else{
-      //$scope.timer.triggerTime = $scope.ttHour+':'+$scope.ttMinute+':'+$scope.ttSecond;
+      if(!$scope.lTriggerTime){
+        $scope.lTriggerTime = new Date();
+      }
       $scope.lTriggerTime.setFullYear(0000,00,00);
       $scope.timer.triggerTime = $scope.lTriggerTime.getTime();
     }

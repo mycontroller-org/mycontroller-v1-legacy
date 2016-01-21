@@ -60,7 +60,7 @@
                 </dd>
                 <dt>Battery</dt> <dd ng-show="node.batteryLevel === '-'">-</dd><dd ng-hide="node.batteryLevel === '-'">{{node.batteryLevel}} %</dd>
                 <dd>
-                  <a class="btn btn-link pull-right" ng-href="{{about.urlNodesAddEdit}}/{{node.id}}"><i class="fa fa-edit"></i> Edit </a>
+                  <a class="btn btn-link pull-right" ui-sref="nNodesAddEdit({ id: node.id })"><i class="fa fa-edit"></i> Edit </a>
                 </dd> 
               </dl>
             </div>
@@ -94,7 +94,7 @@
             <div class="card-pf-body">
               <p class="card-pf-aggregate-status-notifications">
                 <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.sensors == 0" ng-href="{{about.urlSensorsList}}/{{node.id}}">{{resourceCount.sensors}}</a>
+                  <a  ng-hide="resourceCount.sensors == 0" ui-sref="sensorsList({ nodeId: node.id})">{{resourceCount.sensors}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
                 </span>
               </p>
@@ -109,7 +109,7 @@
             <div class="card-pf-body">
               <p class="card-pf-aggregate-status-notifications">
                 <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.timers == 0" href="{{about.urlTimersList}}/Node/{{node.id}}">{{resourceCount.timers}}</a>
+                  <a  ng-hide="resourceCount.timers == 0" ui-sref="timersList({resourceType:'Node', resourceId:node.id})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </span>
               </p>
@@ -124,7 +124,7 @@
             <div class="card-pf-body">
               <p class="card-pf-aggregate-status-notifications">
                 <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.alarmDefinitions == 0" href="{{about.urlAlarmsList}}/Node/{{node.id}}">{{resourceCount.alarmDefinitions}}</a>
+                  <a  ng-hide="resourceCount.alarmDefinitions == 0" ui-sref="alarmsList({resourceType:'Node', resourceId:node.id})">{{resourceCount.alarmDefinitions}}</a>
                   <span ng-show="resourceCount.alarmDefinitions == 0">{{resourceCount.alarmDefinitions}}</span>
                 </span>
               </p>

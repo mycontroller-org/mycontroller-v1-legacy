@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('StatusSystemController', function(alertService,
-$scope, $filter, StatusFactory, $location, $uibModal, $stateParams, displayRestError) {
+$scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
   
   //GUI page settings
   $scope.headerStringList = "System status";

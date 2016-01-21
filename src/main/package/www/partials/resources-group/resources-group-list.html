@@ -49,7 +49,7 @@
         </div>
         
         <div class="btn-group" role="group">
-          <a class="btn btn-primary" type="button" ng-href="{{about.urlResourcesGroupAddEdit}}/">Add group</a>
+          <a class="btn btn-primary" type="button" ui-sref="resourcesGroupAddEdit">Add group</a>
         </div>
 
       </div>
@@ -92,7 +92,7 @@
             <td>{{item.description}}</td>
             <td>{{item.stateSince | date:about.dateFormat:about.timezone}}</td>
             <td class="mc-align-center">
-              <a class="btn btn-link" ng-href="{{about.urlResourcesGroupMapList}}/{{item.id}}"><i class="fa fa-chevron-circle-right fa-lg" tooltip="View details" tooltip-placement="top"></i></a>
+              <a class="btn btn-link" ui-sref="resourcesGroupMapList({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="View details" tooltip-placement="top"></i></a>
             </td>
           </tr>
         </tbody>
