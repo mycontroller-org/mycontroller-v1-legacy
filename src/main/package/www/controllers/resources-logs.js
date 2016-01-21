@@ -195,7 +195,7 @@ myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, 
   
   //Convert as display string
   $scope.getDateTimeDisplayFormat = function (newDate) {
-    return $filter('date')(newDate, mchelper.dateFormat, mchelper.cfg.timezone);
+    return $filter('date')(newDate, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
   };
   
   //Save data - here it's purge

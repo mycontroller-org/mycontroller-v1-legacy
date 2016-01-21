@@ -225,11 +225,11 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
         }
         //Update validity from/to
         if($scope.timer.validityFrom){
-          $scope.vFromString = $filter('date')($scope.timer.validityFrom, mchelper.dateFormat, mchelper.cfg.timezone);
+          $scope.vFromString = $filter('date')($scope.timer.validityFrom, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
           $scope.vFromDate = new Date($scope.timer.validityFrom);
         }
         if($scope.timer.validityTo){
-          $scope.vToString = $filter('date')($scope.timer.validityTo, mchelper.dateFormat, mchelper.cfg.timezone);
+          $scope.vToString = $filter('date')($scope.timer.validityTo, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
           $scope.vToDate = new Date($scope.timer.validityTo);
         }
       },function(error){
@@ -266,7 +266,7 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   
   //Convert as display string
   $scope.getDateTimeDisplayFormat = function (newDate) {
-    return $filter('date')(newDate, mchelper.dateFormat, mchelper.cfg.timezone);
+    return $filter('date')(newDate, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
   };
   
   //GUI page settings
