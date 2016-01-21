@@ -92,6 +92,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixInAnnotations(Sensor.class, SensorMixin.class);
         mapper.addMixInAnnotations(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixInAnnotations(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixInAnnotations(ResourcesGroup.class, ResourcesGroupMixin.class);
         mapper.addMixInAnnotations(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
         mapper.addMixInAnnotations(Timer.class, TimerMixin.class);
 
