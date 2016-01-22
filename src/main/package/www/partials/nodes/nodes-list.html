@@ -100,10 +100,10 @@
             <td>{{item.name}}</td>
             <td>{{item.type}}</td>
             <td>
-              <i ng-hide="item.batteryLevel =='-'" class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}">
+              <i ng-show="item.batteryLevel" class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}">
                 {{item.batteryLevel}} %
               </i>
-              <label ng-show="item.batteryLevel =='-'">-</label>
+              <label ng-hide="item.batteryLevel">-</label>
             </td>
             <td>{{item.version}}</td>
             <td>{{item.libVersion}}</td>

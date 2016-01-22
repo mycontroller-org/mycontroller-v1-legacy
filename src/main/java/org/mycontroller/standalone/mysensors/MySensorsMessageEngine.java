@@ -625,7 +625,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
         if (node == null) {
             _logger.debug("This Node[{}] not available in our DB, Adding...", mySensorsRawMessage.getNodeEui());
             node = Node.builder().gateway(Gateway.builder().id(mySensorsRawMessage.getGatewayId()).build())
-                    .eui(mySensorsRawMessage.getNodeEui()).build();
+                    .eui(mySensorsRawMessage.getNodeEui()).state(STATE.UP).build();
             node.setLastSeen(System.currentTimeMillis());
             DaoUtils.getNodeDao().create(node);
             node = DaoUtils.getNodeDao().get(mySensorsRawMessage.getGatewayId(), mySensorsRawMessage.getNodeEui());

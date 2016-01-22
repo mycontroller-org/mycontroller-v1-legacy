@@ -172,7 +172,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
       NodesFactory.deleteIds($scope.itemIds, function(response) {
         alertService.success('Deleted '+$scope.itemIds.length+' node(s).');
         //Update display table
-        getAllNodes();
+        $scope.getAllNodes();
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            

@@ -184,7 +184,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
 
     public List<Tdao> getAll(String key, List<Tid> ids) {
         try {
-            return this.getDao().queryForEq(key, ids);
+            return this.getDao().queryBuilder().where().in(key, ids).query();
         } catch (SQLException ex) {
             _logger.error("unable to get all alarms ids:{}", ids, ex);
             return null;
