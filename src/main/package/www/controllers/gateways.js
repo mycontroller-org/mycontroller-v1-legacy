@@ -288,3 +288,15 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   }
   
 });
+
+
+//item Detail
+myControllerModule.controller('GatewaysControllerDetail', function ($scope, $stateParams, mchelper, GatewaysFactory, MetricsFactory) {
+  //Load mchelper variables to this scope
+  $scope.mchelper = mchelper;
+  $scope.node = {};
+  $scope.headerStringList = "Gateway details";
+  
+  $scope.item = GatewaysFactory.get({"gatewayId":$stateParams.id});
+  $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"Gateway", "resourceId":$stateParams.id});
+});

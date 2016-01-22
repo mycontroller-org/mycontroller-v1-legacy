@@ -45,18 +45,18 @@
   
               <!-- Sensor name -->
               <div class="col-md-3">
-                <p><i class="fa fa-plug"></i> {{item.node.gateway.name}} <i class="fa fa-chevron-right"></i>
-                  <i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name}} <i class="fa fa-chevron-right"></i> <i class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name}}</strong></i></p>
+                <span><i class="fa fa-plug"></i> {{item.node.gateway.name}} <i class="fa fa-chevron-right"></i>
+                  <i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name}} <i class="fa fa-chevron-right"></i> <i class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name}}</strong></i></span>
               </div>
   
               <!-- Sensor type -->
               <div class="col-md-1">
-                <p><i class="mc-icon-2x" ng-class="getSensorIcon(item.type)"></i><span>{{item.type ? item.type : 'Undefined'}}</span></p>
+                <span><i class="mc-icon-2x" ng-class="getSensorIcon(item.type)"></i><span>{{item.type ? item.type : 'Undefined'}}</span></span>
               </div>
   
               <!-- Last seen -->
               <div class="col-md-1">
-                <p class="text-left"><i class="fa fa-clock-o mc-icon-lg"></i>{{item.lastSeen.inString?item.lastSeen.inString:'Never'}}</p>
+                <span class="text-left"><i class="fa fa-clock-o mc-icon-lg" ></i><span  uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.lastSeen.inString  || 'Never'}}</span></span>
               </div>
             
               <!-- Variables, selects only one-->
@@ -74,109 +74,109 @@
   
                   <!-- Temperature -->
                   <div ng-if="variable.type === 'Temperature'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="wi wi-thermometer mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Percentage -->
                   <div ng-if="variable.type === 'Percentage'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="fa fa-percent mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}}</span></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Humidity -->
                   <div ng-if="variable.type === 'Humidity'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="wi wi-humidity mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Pressure -->
                   <div ng-if="variable.type === 'Pressure'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="wi wi-barometer mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Forecast -->
                   <div ng-if="variable.type === 'Forecast'" uib-tooltip="Forecast" tooltip-placement="left">
-                    <!-- <p><i class="wi wi-{{getForecastValue(variable.value)}} mc-icon-2x"></i></p> -->
-                    <p><span class="mc-inline-editer-ab mc-style-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <!-- <span><i class="wi wi-{{getForecastValue(variable.value)}} mc-icon-2x"></i></span> -->
+                    <span><span class="mc-inline-editer-ab mc-style-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="wi wi-{{getForecastValue(variable.value)}} mc-icon-2x"></i></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Watt -->
                   <div ng-if="variable.type === 'Watt'" uib-tooltip="Watt" tooltip-placement="left">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="fa fa-bolt mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Weight -->
                   <div ng-if="variable.type === 'Weight'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="fa fa-balance-scale mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Stop -->
                   <div ng-if="variable.type === 'Stop'">
-                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-stop mc-icon-2x" ng-click="updateVariable(variable)"></i></span></p>
+                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-stop mc-icon-2x" ng-click="updateVariable(variable)"></i></span></span>
                   </div>
                   
                   <!-- Up -->
                   <div ng-if="variable.type === 'Up'">
-                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-arrow-up mc-icon-2x" ng-click="updateVariable(variable)"></i></span></p>
+                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-arrow-up mc-icon-2x" ng-click="updateVariable(variable)"></i></span></span>
                   </div>
                   
                   <!-- Down -->
                   <div ng-if="variable.type === 'Down'">
-                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-arrow-down mc-icon-2x" ng-click="updateVariable(variable)"></i></span></p>
+                    <p class="mc-inline-editer-ab"><i ng-init="variable.value = 1" class="fa fa-arrow-down mc-icon-2x" ng-click="updateVariable(variable)"></i></span></span>
                   </div>
                   
                   <!-- Rain -->
                   <div ng-if="variable.type === 'Rain'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="wi wi-raindrops mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Rain rate-->
                   <div ng-if="variable.type === 'Rain rate'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="wi wi-raindrops mc-icon-2x">r</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                   
                   <!-- Distance-->
                   <div ng-if="variable.type === 'Distance'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="fa fa-binoculars mc-icon-2x"></i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                   
                   <!-- Current-->
                   <div ng-if="variable.type === 'Current'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="fa mc-icon-2x">I</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                   
                   <!-- Voltage-->
                   <div ng-if="variable.type === 'Voltage'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="fa mc-icon-2x">V</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                   
                   <!-- Impedance-->
                   <div ng-if="variable.type === 'Impedance'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="fa mc-icon-2x">Ohm</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                 
                   <!-- Armed -->
@@ -226,23 +226,23 @@
                 
                   <!-- HVAC Heat set point -->
                   <div ng-if="variable.type === 'HVAC setpoint heat'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="wi wi-thermometer mc-icon-2x">h</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                      </p>
+                      </span>
                   </div>
                   
                   <!-- HVAC Cool set point -->
                   <div ng-if="variable.type === 'HVAC setpoint cool'">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <i class="wi wi-thermometer mc-icon-2x">c</i><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                   
                   <!-- Variable 1,2,3,4,5 -->
                   <div ng-if="variable.type.indexOf('Variable ') > -1" uib-tooltip="{{variable.type}}" tooltip-placement="left">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <span class="mc-style-ab">{{variable.type.replace('Variable ','V')}}: {{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                   
                   <!-- RGB color picker -->
@@ -259,9 +259,9 @@
                 
                   <!-- Default, if non selected -->
                   <div ng-if="definedVariableTypes.indexOf(variable.type) == -1">
-                    <p><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                    <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
                       <span class="mc-style-ab">{{variable.type}}: {{variable.value ||"-"}} {{variable.unit}}</span></span>
-                    </p>
+                    </span>
                   </div>
                   
               </div>
@@ -269,14 +269,15 @@
   
             <!-- fill empty space -->
             <div ng-if="item.variables.length < 6" class="col-md-{{(6 -  item.variables.length)*1}}">
-              <p></p>
+              <span></span>
             </div>
   
             <!-- Quick access buttons -->
-            <div class="col-md-1 pull-right">
-              <label class="text-default pull-right mc-inline-editer-ab" href="" ng-model="radioModel" ng-click="refreshSensor(item)" >
-                <i class="fa fa-refresh mc-icon-lg"></i>
-              </label>
+            <div class="col-md-1">
+              <div class=" pull-right">
+                <a class="btn btn-link mc-padding" ng-model="radioModel" ng-click="refreshSensor(item)"><i class="fa fa-refresh  mc-icon-lg mc-inline-editer-ab" tooltip="Refresh" tooltip-placement="left"></i></a>
+                <a class="btn btn-link mc-padding" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right mc-icon-lg" tooltip="View Details" tooltip-placement="left"></i></a>
+              </div>
             </div>
   
           </div><!-- list-row -->

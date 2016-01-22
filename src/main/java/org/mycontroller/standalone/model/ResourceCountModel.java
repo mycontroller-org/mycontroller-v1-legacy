@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.model;
 
+import java.util.List;
+
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 
@@ -49,7 +51,9 @@ public class ResourceCountModel {
                 resourcesGroups = DaoUtils.getResourcesGroupMapDao().countOf(resourceType, resourceId);
                 break;
             case SENSOR:
-                alarmDefinitions = DaoUtils.getAlarmDefinitionDao().countOf(resourceType, resourceId);
+                List<Integer> ids = DaoUtils.getSensorVariableDao().getSensorVariableIds(resourceId);
+
+                alarmDefinitions = DaoUtils.getAlarmDefinitionDao().countOf(RESOURCE_TYPE.SENSOR_VARIABLE, ids);
                 timers = DaoUtils.getTimerDao().countOf(resourceType, resourceId);
                 resourcesGroups = DaoUtils.getResourcesGroupMapDao().countOf(resourceType, resourceId);
                 break;

@@ -27,82 +27,61 @@
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
-    <div>    
-
-      <div class="row row-cards-pf">
+    <div class=" container-fluid row"><!-- row1 -->
+      <div class="row-cards-pf ">
   
-        <div class="col-sm-6 col-lg-4">
+        <div class="col-xs-6 col-sm-6 col-lg-6">
           <div class="card-pf card-pf-utilization">
-            <div class="card-pf-heading"><h2 class="card-pf-title">Details</h2></div>
+            <div class="card-pf-heading">
+              <h2 class="card-pf-title">Details</h2>
+            </div>
             <div class="card-pf-body">
               <dl class="dl-horizontal">
-                <dt>Name</dt> <dd>{{sensor.name}}</dd>
-                <dt>Sensor id</dt> <dd>{{sensor.sensorId}}</dd>
-                <dt>Type</dt> <dd>{{sensor.type}}</dd>
-                <dt>Variables</dt> <dd>{{sensor.variableTypes.join(', ')}}</dd>
-                <dt>Node EUI</dt> <dd>{{sensor.node.eui}}</dd>
-                <dt>Node type</dt> <dd>{{sensor.node.type}}</dd>
-                <dt>Gateway name</dt> <dd>{{sensor.node.gateway.name}}</dd>
-                <dt>Gateway type</dt> <dd>{{sensor.node.gateway.type}}</dd>
-                <dt>Network</dt> <dd>{{sensor.node.gateway.networkType}}</dd>
-                <dt>Node version</dt> <dd>{{sensor.node.version}}</dd>
-                <dt>Node status</dt> 
+                <dt>Name</dt> <dd>{{item.name}}</dd>
+                <dt>Enabled</dt> <dd>{{item.enabled?"Enabled":"Disabled"}}</dd>
+                <dt>Type</dt> <dd>{{item.type}}</dd>
+                <dt>Network type</dt> <dd>{{item.networkType}}</dd>
+                <dt>Connection detail</dt> <dd>{{item.connectionDetails}}</dd>
+                <dt>Status</dt> 
                 <dd>
                   <span class="card-pf-aggregate-status-notification">
-                    <span ng-show="sensor.node.state.toLowerCase() === 'up'">
+                    <span ng-show="item.state.toLowerCase() === 'up'">
                       Up <i class="fa fa-arrow-circle-o-up text-color-green fa-lg"></i>
                     </span>
-                    <span ng-show="sensor.node.state.toLowerCase() === 'down'">
+                    <span ng-show="item.state.toLowerCase() === 'down'">
                       Down <i class="fa fa-arrow-circle-o-down text-color-red fa-lg"></i>
                     </span>
-                     <span ng-show="sensor.node.state.toLowerCase() === 'unavailable'">
+                     <span ng-show="item.state.toLowerCase() === 'unavailable'">
                       Unavailable <i class="fa fa-question-circle text-color-gray fa-lg"></i>
                     </span>
                   </span>
                 </dd>
+                <dt>Status since</dt> <dd>{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</dd>
+                <dt>Status message</dt> <dd>{{item.statusMessage}}</dd>
                 <dd>
-                  <a class="btn btn-link pull-right" ng-href="{{about.urlSensorsAddEdit}}/{{sensor.id}}"><i class="fa fa-edit"></i> Edit </a>
+                  <a class="btn btn-link pull-right" ui-sref="gatewaysAddEdit({ id: item.id })"><i class="fa fa-edit"></i> Edit </a>
                 </dd> 
               </dl>
             </div>
           </div>
-
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-lg-8">
-          <div class="card-pf card-pf-utilization">
-            <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-battery-full"></i> Battery Usage</h2>
-            </div>
-            <div class="card-pf-body">
-              <div class="blank-slate-pf">
-                <div class="blank-slate-pf-icon">
-                  <i class="fa fa-exclamation-triangle"></i>
-                </div>
-              <h1>Data unavailable!</h1>
-              </div>
-            </div>
-          </div>
-        </div>
-  
-      </div><!-- /row -->
-      
-      <div class="row row-cards-pf">
-        <div class="col-xs-6 col-sm-4 col-md-2">
+        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
           <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-              <span class="pficon pficon-replicator"></span> Groups
+              <span class="fa fa-eye"></span> Nodes
             </h2>
             <div class="card-pf-body">
               <p class="card-pf-aggregate-status-notifications">
                 <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.resourcesGroups == 0" ng-href="{{about.urlResourcesGroupList}}/Resources group{{node.id}}">{{resourceCount.sensors}}</a>
-                  <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
+                  <a  ng-hide="resourceCount.sensors == 0" ui-sref="nodesList({ gatewayId: item.id})">{{resourceCount.nodes}}</a>
+                  <span ng-show="resourceCount.sensors == 0">{{resourceCount.nodes}}</span>
                 </span>
               </p>
             </div>
           </div>
         </div>
-        <div class="col-xs-6 col-sm-4 col-md-2">
+        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
           <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
               <span class="fa fa-clock-o"></span> Timers
@@ -110,14 +89,14 @@
             <div class="card-pf-body">
               <p class="card-pf-aggregate-status-notifications">
                 <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.timers == 0" href="{{about.urlTimersList}}/Node/{{node.id}}">{{resourceCount.timers}}</a>
+                  <a  ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </span>
               </p>
             </div>
           </div>
         </div>
-        <div class="col-xs-6 col-sm-4 col-md-2">
+        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
           <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
               <span class="fa fa-bell-o"></span> Alarm Definitions
@@ -125,17 +104,32 @@
             <div class="card-pf-body">
               <p class="card-pf-aggregate-status-notifications">
                 <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.alarmDefinitions == 0" href="{{about.urlAlarmsList}}/Node/{{node.id}}">{{resourceCount.alarmDefinitions}}</a>
+                  <a  ng-hide="resourceCount.alarmDefinitions == 0" ui-sref="alarmsList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.alarmDefinitions}}</a>
                   <span ng-show="resourceCount.alarmDefinitions == 0">{{resourceCount.alarmDefinitions}}</span>
                 </span>
               </p>
             </div>
           </div>
         </div>
-      </div> 
-
-    </div>
-
+        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+          <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+              <span class="pficon pficon-replicator"></span> Resources groups
+            </h2>
+            <div class="card-pf-body">
+              <p class="card-pf-aggregate-status-notifications">
+                <span class="card-pf-aggregate-status-notification">
+                  <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
+                  <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      
+      </div>  
+    </div><!-- /row1 -->
+    
   </div> <!-- Main Message -->
 
 </div> <!-- Container-fluid -->

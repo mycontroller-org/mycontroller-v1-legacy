@@ -85,6 +85,12 @@ public class SettingsHandler {
     public Response saveController(MyControllerSettings myControllerSettings) {
         myControllerSettings.save();
         SettingsUtils.updateAllSettings();
+        //Update sunriuse and sun set timings
+        try {
+            TimerUtils.updateSunriseSunset();
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Error: " + ex.getMessage()));
+        }
         return RestUtils.getResponse(Status.OK);
     }
 

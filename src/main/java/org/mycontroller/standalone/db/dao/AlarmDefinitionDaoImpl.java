@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
@@ -107,20 +108,6 @@ public class AlarmDefinitionDaoImpl extends BaseAbstractDaoImpl<AlarmDefinition,
     }
 
     @Override
-    public long countOf(RESOURCE_TYPE resourceType, Integer resourceId) {
-        try {
-            QueryBuilder<AlarmDefinition, Integer> queryBuilder = this.getDao().queryBuilder();
-            queryBuilder.where().eq(AlarmDefinition.KEY_RESOURCE_TYPE, resourceType).and()
-                    .eq(AlarmDefinition.KEY_RESOURCE_ID, resourceId);
-            return queryBuilder.countOf();
-        } catch (SQLException ex) {
-            _logger.error("unable to get alarm definitions count for resource[Type:{}, Id:{}]", resourceType,
-                    resourceId, ex);
-        }
-        return 0;
-    }
-
-    @Override
     public QueryResponse getAll(Query query) {
         try {
             return this.getQueryResponse(query, AlarmDefinition.KEY_ID);
@@ -138,6 +125,25 @@ public class AlarmDefinitionDaoImpl extends BaseAbstractDaoImpl<AlarmDefinition,
     @Override
     public List<AlarmDefinition> getAll(List<Integer> ids) {
         return getAll(AlarmDefinition.KEY_ID, ids);
+    }
+
+    @Override
+    public long countOf(RESOURCE_TYPE resourceType, Integer resourceId) {
+        return countOf(resourceType, Arrays.asList(resourceId));
+    }
+
+    @Override
+    public long countOf(RESOURCE_TYPE resourceType, List<Integer> resourceIds) {
+        try {
+            QueryBuilder<AlarmDefinition, Integer> queryBuilder = this.getDao().queryBuilder();
+            queryBuilder.where().eq(AlarmDefinition.KEY_RESOURCE_TYPE, resourceType).and()
+                    .in(AlarmDefinition.KEY_RESOURCE_ID, resourceIds);
+            return queryBuilder.countOf();
+        } catch (SQLException ex) {
+            _logger.error("unable to get alarm definitions count for resource[Type:{}, Id:{}]", resourceType,
+                    resourceIds, ex);
+        }
+        return 0;
     }
 
 }

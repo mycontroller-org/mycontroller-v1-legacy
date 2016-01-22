@@ -41,6 +41,8 @@ public interface AlarmDefinitionDao extends BaseDao<AlarmDefinition, Integer> {
     void disableAllTriggered();
 
     long countOf(RESOURCE_TYPE resourceType, Integer resourceId);
+    
+    long countOf(RESOURCE_TYPE resourceType, List<Integer> resourceIds);
 
     QueryResponse getAll(Query query);
 

@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
@@ -198,6 +199,26 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.error("unable to get count,", ex);
         }
         return null;
+    }
+
+    public long countOf(HashMap<String, List<Object>> columnValues) {
+        try {
+            QueryBuilder<Tdao, Tid> queryBuilder = this.getDao().queryBuilder();
+            Where<Tdao, Tid> where = queryBuilder.where();
+            boolean appendAND = false;
+            for (String key : columnValues.keySet()) {
+                if (appendAND) {
+                    where.and();
+                } else {
+                    appendAND = true;
+                }
+                where.in(key, columnValues.get(key));
+            }
+            return queryBuilder.countOf();
+        } catch (SQLException ex) {
+            _logger.error("unable to get count for query, input[{}]", columnValues, ex);
+        }
+        return 0;
     }
 
 }

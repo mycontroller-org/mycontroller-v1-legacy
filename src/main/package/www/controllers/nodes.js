@@ -297,10 +297,10 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
 myControllerModule.controller('NodesControllerDetail', function ($scope, $stateParams, mchelper, NodesFactory, MetricsFactory) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
-  $scope.node = {};
+  $scope.item = {};
   $scope.headerStringList = "Node details";
   
-  $scope.node = NodesFactory.get({"nodeId":$stateParams.id});
+  $scope.item = NodesFactory.get({"nodeId":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"NODE", "resourceId":$stateParams.id});
 });
 

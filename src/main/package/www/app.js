@@ -71,7 +71,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       }
     }).state('gatewaysDetail', {
       url:"/resources/gateways/detail/:id",
-      templateUrl: "partials/gateways/gateway-detail.html",
+      templateUrl: "partials/gateways/gateways-detail.html",
       controller: "GatewaysControllerDetail",
        data: {
         requireLogin: true
@@ -113,7 +113,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       }
     }).state('sensorsDetail', {
       url:"/resources/sensors/detail/:id",
-      templateUrl: "partials/sensors/sensor-detail.html",
+      templateUrl: "partials/sensors/sensors-detail.html",
       controller: "SensorsControllerDetail",
       data: {
         requireLogin: true

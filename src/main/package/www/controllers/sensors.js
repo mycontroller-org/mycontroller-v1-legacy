@@ -236,11 +236,13 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
   }
 });
 
-
-//Item Detail
+//item Detail
 myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
-  $scope.sensor = SensorsFactory.get({"id":$stateParams.id});
+  $scope.node = {};
+  $scope.headerStringList = "Sensor details";
+  
+  $scope.item = SensorsFactory.get({"id":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"Sensor", "resourceId":$stateParams.id});
 });

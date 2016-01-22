@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.db.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -43,5 +44,7 @@ public interface BaseDao<Tdao, Tid> {
     List<Tdao> getAll(List<Tid> ids);
 
     Long countOf();
+
+    long countOf(HashMap<String, List<Object>> columnValues);
 
 }
