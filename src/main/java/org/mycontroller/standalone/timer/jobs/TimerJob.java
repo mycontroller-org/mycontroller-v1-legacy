@@ -69,9 +69,14 @@ public class TimerJob extends Job {
         try {
             this.executeTimer(timer);
             //AlarmDefinition Triggered Message, ResourcesLogs message data
-            ResourcesLogsUtils.setTimerLog(LOG_LEVEL.INFO, timer, null);
+            //if you have resource id, it's timer job, other wise it might come from alarm definition, etc.,
+            if (timer.getId() != null) {
+                ResourcesLogsUtils.setTimerLog(LOG_LEVEL.INFO, timer, null);
+            }
         } catch (Exception ex) {
-            ResourcesLogsUtils.setTimerLog(LOG_LEVEL.ERROR, timer, ex.getMessage());
+            if (timer.getId() != null) {
+                ResourcesLogsUtils.setTimerLog(LOG_LEVEL.ERROR, timer, ex.getMessage());
+            }
             _logger.error("Exception, ", ex);
         }
     }

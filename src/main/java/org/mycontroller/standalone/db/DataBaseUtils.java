@@ -26,12 +26,13 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
+import org.mycontroller.standalone.alarm.jobs.AlarmDefinitionDampeningActiveTimeJob;
 import org.mycontroller.standalone.auth.USER_ROLE;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.User;
-import org.mycontroller.standalone.jobs.MidNightJob;
+import org.mycontroller.standalone.jobs.MidNightJobs;
 import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
-import org.mycontroller.standalone.jobs.SensorLogAggregationJob;
+import org.mycontroller.standalone.jobs.ResourcesLogsAggregationJob;
 import org.mycontroller.standalone.metrics.jobs.MetricsFiveMinutesAggregationJob;
 import org.mycontroller.standalone.metrics.jobs.MetricsOneDayAggregationJob;
 import org.mycontroller.standalone.metrics.jobs.MetricsOneHourAggregationJob;
@@ -216,8 +217,13 @@ public class DataBaseUtils {
             // One day aggregation table takes previous date, if you change here
             // change there also
             createSystemJob("Aggregate One Day Data", "5 0 0 * * ? *", true, MetricsOneDayAggregationJob.class);
-            createSystemJob("ResourcesLogs Aggregation Job", "45 * * * * ? *", true, SensorLogAggregationJob.class);
-            createSystemJob("Daily once job", "30 3 0 * * ? *", true, MidNightJob.class);
+            createSystemJob("ResourcesLogs Aggregation Job", "45 * * * * ? *", true, ResourcesLogsAggregationJob.class);
+            createSystemJob("Daily once job", "30 3 0 * * ? *", true, MidNightJobs.class);
+
+            // Add a job to monitor Alarm definitions with active time dampening
+            // run this job every 30 seconds once
+            createSystemJob("Alarm definition dampening active time", "25,55 * * * * ? *", true,
+                    AlarmDefinitionDampeningActiveTimeJob.class);
 
             // Add default User
             User adminUser = new User("admin");

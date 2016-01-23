@@ -546,7 +546,8 @@ myControllerModule.filter('mcResourceRepresentation', function() {
                .replace(/\[G\]:/g, '<i class="fa fa-plug"></i> ')
                .replace(/\[N\]:/g, '<i class="fa fa-sitemap"></i> ')
                .replace(/\[S\]:/g, '<i class="fa fa-eye"></i> ')
-               .replace(/\[SV\]:/g, '');
+               .replace(/\[SV\]:/g, '')
+               .replace(/\[AD\]:/g, '<i class="fa fa-bell-o"></i> ');
   }
 });
 

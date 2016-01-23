@@ -52,6 +52,7 @@ public class AlarmDefinition {
     public static final String KEY_TRIGGERED = "triggered";
     public static final String KEY_RESOURCE_TYPE = "resourceType";
     public static final String KEY_RESOURCE_ID = "resourceId";
+    public static final String KEY_DAMPENING_TYPE = "dampeningType";
     public static final String KEY_LAST_TRIGGER = "lastTrigger";
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
@@ -93,7 +94,7 @@ public class AlarmDefinition {
     @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING)
     private TRIGGER_TYPE triggerType;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING)
+    @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING, columnName = KEY_DAMPENING_TYPE)
     private DAMPENING_TYPE dampeningType;
 
     @DatabaseField(canBeNull = true)

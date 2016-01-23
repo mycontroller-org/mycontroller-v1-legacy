@@ -161,7 +161,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         try {
             return this.getDao().queryForId(id);
         } catch (SQLException ex) {
-            _logger.error("unable to get AlarmDefinition[id:{}]", id, ex);
+            _logger.error("unable to get item[id:{}]", id, ex);
             return null;
         }
     }
@@ -179,7 +179,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         try {
             this.getDao().deleteById(id);
         } catch (SQLException ex) {
-            _logger.error("unable to delete alarm:id:[{}]", id, ex);
+            _logger.error("unable to delete item, id:[{}]", id, ex);
         }
     }
 
@@ -187,7 +187,16 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         try {
             return this.getDao().queryBuilder().where().in(key, ids).query();
         } catch (SQLException ex) {
-            _logger.error("unable to get all alarms ids:{}", ids, ex);
+            _logger.error("unable to get all items ids:{}", ids, ex);
+            return null;
+        }
+    }
+
+    public List<Tdao> getAll(String key, Object value) {
+        try {
+            return this.getDao().queryBuilder().where().eq(key, value).query();
+        } catch (SQLException ex) {
+            _logger.error("unable to get all items value:{}", value, ex);
             return null;
         }
     }

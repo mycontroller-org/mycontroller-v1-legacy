@@ -28,8 +28,8 @@ import com.xeiam.sundial.exceptions.JobInterruptException;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class SensorLogAggregationJob extends Job {
-    private static final Logger _logger = LoggerFactory.getLogger(SensorLogAggregationJob.class.getName());
+public class ResourcesLogsAggregationJob extends Job {
+    private static final Logger _logger = LoggerFactory.getLogger(ResourcesLogsAggregationJob.class.getName());
     private static final long TRUNCATE_SENSOR_LOG_BEFORE = NumericUtils.MINUTE * 30;
     private static final long TRUNCATE_SENSOR_LOG_OTHERS_BEFORE = NumericUtils.MINUTE * 30;
     private static final long TRUNCATE_ALARM_LOG_BEFORE = NumericUtils.HOUR * 12;

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.alarm.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
@@ -144,6 +145,11 @@ public class AlarmDefinitionDaoImpl extends BaseAbstractDaoImpl<AlarmDefinition,
                     resourceIds, ex);
         }
         return 0;
+    }
+
+    @Override
+    public List<AlarmDefinition> getAll(DAMPENING_TYPE dampeningType) {
+        return getAll(AlarmDefinition.KEY_DAMPENING_TYPE, dampeningType);
     }
 
 }

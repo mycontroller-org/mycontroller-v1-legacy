@@ -26,28 +26,41 @@ import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.model.ResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import lombok.Builder;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Builder
 public class AlarmEngine implements Runnable {
     private static final Logger _logger = LoggerFactory.getLogger(AlarmEngine.class);
 
     private List<AlarmDefinition> alarmDefinitions;
-    private String actualValue;
-    private Object actualValueObject;
+    private Object resourceObject;
 
-    public AlarmEngine(List<AlarmDefinition> alarmDefinitions, Object actualValueObject) {
+    public AlarmEngine(List<AlarmDefinition> alarmDefinitions, Object resourceObject) {
         this.alarmDefinitions = alarmDefinitions;
-        this.actualValueObject = actualValueObject;
+        this.resourceObject = resourceObject;
+    }
+
+    public AlarmEngine(List<AlarmDefinition> alarmDefinitions) {
+        this(alarmDefinitions, null);
     }
 
     public void runAlarm(AlarmDefinition alarmDefinition) throws Exception {
         boolean triggerAlarm = false;
         String thresholdValue = null;
+        Object actualValueObject = this.resourceObject;
+        String actualValue = null;
+        if (actualValueObject == null) {
+            actualValueObject = new ResourceModel(alarmDefinition.getResourceType(),
+                    alarmDefinition.getResourceId()).getResource();
+        }
         switch (alarmDefinition.getResourceType()) {
             case SENSOR_VARIABLE:
                 actualValue = ((SensorVariable) actualValueObject).getValue();
@@ -131,7 +144,7 @@ public class AlarmEngine implements Runnable {
         //Dampening Mode
         switch (alarmDefinition.getDampeningType()) {
             case NONE:
-                alarmTriggerCall(alarmDefinition, triggerAlarm);
+                alarmTriggerCall(alarmDefinition, actualValue, triggerAlarm);
                 break;
             case CONSECUTIVE:
                 DampeningConsecutive dampeningConsecutive = new DampeningConsecutive(alarmDefinition);
@@ -139,11 +152,11 @@ public class AlarmEngine implements Runnable {
                     dampeningConsecutive.incrementConsecutiveCount();
                 } else {
                     dampeningConsecutive.setConsecutiveCount(0);
-                    alarmTriggerCall(alarmDefinition, triggerAlarm);
+                    alarmTriggerCall(alarmDefinition, actualValue, triggerAlarm);
                 }
                 if (dampeningConsecutive.evaluate()) {
                     dampeningConsecutive.reset();
-                    alarmTriggerCall(alarmDefinition, triggerAlarm);
+                    alarmTriggerCall(alarmDefinition, actualValue, triggerAlarm);
                 }
                 break;
             case LAST_N_EVALUATIONS:
@@ -154,9 +167,9 @@ public class AlarmEngine implements Runnable {
                 }
                 if (lastNEvaluations.isExecutable()) {
                     if (lastNEvaluations.evaluate()) {
-                        alarmTriggerCall(alarmDefinition, triggerAlarm);
+                        alarmTriggerCall(alarmDefinition, actualValue, triggerAlarm);
                     } else {
-                        alarmTriggerCall(alarmDefinition, false);
+                        alarmTriggerCall(alarmDefinition, actualValue, false);
                     }
                     lastNEvaluations.reset();
                 }
@@ -165,13 +178,13 @@ public class AlarmEngine implements Runnable {
                 DampeningActiveTime dampeningActiveTime = new DampeningActiveTime(alarmDefinition);
                 if (triggerAlarm) {
                     if (dampeningActiveTime.getActiveFrom() == DampeningActiveTime.ACTIVE_FROM_RESET_VALUE) {//Set active as current time
-                        dampeningActiveTime.setActiveFrom(System.currentTimeMillis());
+                        dampeningActiveTime.updateActiveFrom(System.currentTimeMillis());
                     } else if (dampeningActiveTime.evaluate()) {
-                        alarmTriggerCall(alarmDefinition, triggerAlarm);
+                        alarmTriggerCall(alarmDefinition, actualValue, triggerAlarm);
                     }
                 } else {
                     dampeningActiveTime.reset();
-                    alarmTriggerCall(alarmDefinition, triggerAlarm);
+                    alarmTriggerCall(alarmDefinition, actualValue, triggerAlarm);
                 }
                 break;
             default:
@@ -181,7 +194,8 @@ public class AlarmEngine implements Runnable {
 
     }
 
-    private void alarmTriggerCall(AlarmDefinition alarmDefinition, boolean triggerAlarm) throws Exception {
+    private void alarmTriggerCall(AlarmDefinition alarmDefinition, String actualValue, boolean triggerAlarm)
+            throws Exception {
         if (triggerAlarm) {
             if (!alarmDefinition.getTriggered() || !alarmDefinition.getIgnoreDuplicate()) {
                 INotification notification = null;

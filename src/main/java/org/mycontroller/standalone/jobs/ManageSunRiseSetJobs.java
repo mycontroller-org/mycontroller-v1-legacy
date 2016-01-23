@@ -50,7 +50,6 @@ public class ManageSunRiseSetJobs implements Runnable {
     @Override
     public void run() {
         try {
-            _logger.debug("SunRise, SunSet jobs reseting started...");
             unloadLoadSunRiseSetJobs();
             _logger.debug("SunRise, SunSet jobs reseting completed...");
         } catch (Exception ex) {

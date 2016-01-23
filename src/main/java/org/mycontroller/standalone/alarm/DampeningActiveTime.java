@@ -51,7 +51,7 @@ public class DampeningActiveTime implements IDampening {
 
     @Override
     public void reset() {
-        this.setActiveFrom(ACTIVE_FROM_RESET_VALUE);
+        this.activeFrom = ACTIVE_FROM_RESET_VALUE;
         this.update();
     }
 
@@ -82,7 +82,8 @@ public class DampeningActiveTime implements IDampening {
         return activeFrom;
     }
 
-    public void setActiveFrom(Long activeFrom) {
+    public void updateActiveFrom(Long activeFrom) {
         this.activeFrom = activeFrom;
+        update();
     }
 }

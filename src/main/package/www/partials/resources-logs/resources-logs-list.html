@@ -87,7 +87,7 @@
             <td ng-bind-html="item.resource | mcResourceRepresentation"></td>
             <td>{{item.logDirection}}</td>
             <td>{{item.messageType}}</td>
-            <td>{{item.message}}</td>
+            <td ng-bind-html="item.message | mcResourceRepresentation"></td>
           </tr>
         </tbody>
       </table>

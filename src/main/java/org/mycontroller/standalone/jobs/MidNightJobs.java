@@ -26,8 +26,8 @@ import com.xeiam.sundial.exceptions.JobInterruptException;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class MidNightJob extends Job {
-    private static final Logger _logger = LoggerFactory.getLogger(MidNightJob.class);
+public class MidNightJobs extends Job {
+    private static final Logger _logger = LoggerFactory.getLogger(MidNightJobs.class);
 
     private void updateSunriseSunset() {
         try {

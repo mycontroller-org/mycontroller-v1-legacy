@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db.dao;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.alarm.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
@@ -32,6 +33,8 @@ public interface AlarmDefinitionDao extends BaseDao<AlarmDefinition, Integer> {
 
     List<AlarmDefinition> getAll(RESOURCE_TYPE resourceType);
 
+    List<AlarmDefinition> getAll(DAMPENING_TYPE dampeningType);
+
     List<AlarmDefinition> getAll(RESOURCE_TYPE resourceType, Integer resourceId);
 
     List<AlarmDefinition> getAllEnabled(RESOURCE_TYPE resourceType, Integer resourceId);
@@ -41,7 +44,7 @@ public interface AlarmDefinitionDao extends BaseDao<AlarmDefinition, Integer> {
     void disableAllTriggered();
 
     long countOf(RESOURCE_TYPE resourceType, Integer resourceId);
-    
+
     long countOf(RESOURCE_TYPE resourceType, List<Integer> resourceIds);
 
     QueryResponse getAll(Query query);
