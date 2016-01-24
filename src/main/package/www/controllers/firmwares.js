@@ -144,7 +144,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
 
 
 //add edit item
-myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter) {
+myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter, $state) {
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add firmware type";
@@ -171,7 +171,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
     if($stateParams.id){
       FirmwaresFactory.updateFirmwareType($scope.firmwareType,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("firmwaresTypeList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -179,7 +179,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
     }else{
       FirmwaresFactory.createFirmwareType($scope.firmwareType,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("firmwaresTypeList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -320,7 +320,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
 });
 
 //add edit item
-myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter) {
+myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter, $state) {
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
@@ -348,7 +348,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
     if($stateParams.id){
       FirmwaresFactory.updateFirmwareVersion($scope.item,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("firmwaresVersionList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -356,7 +356,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
     }else{
       FirmwaresFactory.createFirmwareVersion($scope.item,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("firmwaresVersionList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -513,7 +513,7 @@ $scope.filterConfig = {
 
 
 //add edit item
-myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter, TypesFactory) {
+myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $state, $filter, TypesFactory) {
   $scope.item = {};
   
   //GUI page settings
@@ -547,7 +547,7 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
     if($stateParams.id){
       FirmwaresFactory.updateFirmware($scope.item,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("firmwaresList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -555,7 +555,7 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
     }else{
       FirmwaresFactory.createFirmware($scope.item,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("firmwaresList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;

@@ -48,7 +48,7 @@
             <label class="col-sm-2 control-label">Network Type</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-options="gatewayNetworkType.displayName as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes" ng-model="gateway.networkType">
-                <option value=""></option>
+                <option value="" ng-hide="true"></option>
               </select>
             </div>
           </div>
@@ -57,7 +57,7 @@
             <label class="col-sm-2 control-label">Type</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-options="gatewayType.displayName as gatewayType.displayName for gatewayType in gatewayTypes" ng-model="gateway.type" ng-change="updateTypeChange()">
-                <option value=""></option>
+                <option value="" ng-hide="true"></option>
               </select>
             </div>
           </div>
@@ -68,7 +68,7 @@
               <label class="col-sm-2 control-label">Driver</label>
               <div class="col-sm-5">
                 <select class="form-control" pf-select ng-options="gatewaySerialDriver.displayName as gatewaySerialDriver.displayName for gatewaySerialDriver in gatewaySerialDrivers" ng-model="gateway.variable1">
-                  <option value=""></option>
+                <option value="" ng-hide="true"></option>
                 </select>
               </div>
             </div>

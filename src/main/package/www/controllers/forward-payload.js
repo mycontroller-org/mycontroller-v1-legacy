@@ -182,7 +182,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
 });
 
 //add edit item
-myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scope, CommonServices, alertService, ForwardPayloadFactory, mchelper, $stateParams, $filter) {
+myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scope, CommonServices, alertService, ForwardPayloadFactory, mchelper, $stateParams, $state, $filter) {
   $scope.fpayload = {};
   $scope.fpayload.enabled=true;
   $scope.fpayload.source={};
@@ -220,7 +220,7 @@ myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scop
     if($stateParams.id){
       ForwardPayloadFactory.update($scope.fpayload,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("forwardPayloadList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -228,7 +228,7 @@ myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scop
     }else{
       ForwardPayloadFactory.create($scope.fpayload,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("forwardPayloadList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;

@@ -173,7 +173,7 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
 });
 
 //Add Edit sensor controller
-myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, mchelper, alertService, displayRestError, $filter) {
+myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $stateParams, $state, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, mchelper, alertService, displayRestError, $filter) {
   $scope.mchelper = mchelper;
   $scope.sensor = {};
   $scope.sensor.node = {};
@@ -186,7 +186,6 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
   if($stateParams.id){
     SensorsFactory.get({"sensorId":$stateParams.id},function(response) {
         $scope.sensor = response;
-        $scope.nodes  = TypesFactory.getNodes({"gatewayId":$scope.sensor.node.gateway.id});
         $scope.sensorVariableTypes = TypesFactory.getSensorVariableTypes({'sensorType': $scope.sensor.type, 'sensorId': $scope.sensor.id});
       },function(error){
         displayRestError.display(error);
@@ -194,12 +193,12 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
   }
   $scope.sensorTypes = TypesFactory.getSensorTypes();
   
-  $scope.gateways = TypesFactory.getGateways();
-  
+  $scope.nodes = TypesFactory.getNodes();
+/*  
   $scope.updateNodes= function(gatewayId){
     $scope.nodes = TypesFactory.getNodes({"gatewayId":gatewayId});
   }
-  
+  */
   $scope.refreshVariableTypes = function(sensorType){
     $scope.sensorVariableTypes = TypesFactory.getSensorVariableTypes({'sensorType': sensorType});
   }
@@ -219,7 +218,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
     if($stateParams.id){
       SensorsFactory.update($scope.sensor,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("sensorsList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -227,7 +226,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
     }else{
       SensorsFactory.create($scope.sensor,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("sensorsList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;

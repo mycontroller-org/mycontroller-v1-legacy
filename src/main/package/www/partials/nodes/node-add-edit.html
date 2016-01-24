@@ -34,8 +34,9 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">Gateway</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select ng-options="gateway.id as gateway.displayName for gateway in gateways" ng-model="node.gateway.id">
+              <select class="form-control" pf-select ng-model="node.gateway.id" ng-disabled="node.id">
                 <option value="" ng-hide="true"></option>
+                <option ng-repeat="gateway in gateways" ng-bind-html="gateway.displayName | mcResourceRepresentation" value="{{gateway.id}}"  ng-selected="gateway.id == node.gateway.id"></option>
               </select>
             </div>
           </div>

@@ -109,6 +109,7 @@
               <div class="col-sm-5">
                 <div ng-show="editEnable.sms">
                   <select class="form-control" pf-select ng-model="smsSettings.vendor"> 
+                    <option value="" ng-hide="true"></option>
                     <option value="Plivo">Plivo</option>
                     <option value="Twilio">Twilio</option>
                   </select>

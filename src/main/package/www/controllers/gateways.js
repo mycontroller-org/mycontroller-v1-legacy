@@ -232,7 +232,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
 });
 
 
-myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper) {
+myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService) {
   $scope.gateway = {};
   $scope.gateway.enabled = true;
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
@@ -271,7 +271,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
     if($stateParams.id){
       GatewaysFactory.update($scope.gateway,function(response) {
         alertService.success("Gateway Updated");
-        $scope.saveProgress = false;
+        $state.go("gatewaysList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -279,7 +279,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
     }else{
       GatewaysFactory.create($scope.gateway,function(response) {
         alertService.success("Gateway Created");
-        $scope.saveProgress = false;
+        $state.go("gatewaysList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;

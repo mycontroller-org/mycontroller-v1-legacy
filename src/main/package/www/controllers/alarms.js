@@ -210,7 +210,7 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
 
 
 //Add Edit alarm defination controller
-myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, AlarmsFactory, mchelper, alertService, displayRestError, $filter) {
+myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stateParams, $state, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, AlarmsFactory, mchelper, alertService, displayRestError, $filter) {
  
   $scope.mchelper = mchelper;
   $scope.alarm = {};
@@ -321,7 +321,7 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
     if($stateParams.id){
       AlarmsFactory.update($scope.alarm,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
-          $scope.saveProgress = false;
+        $state.go("alarmsList");
       },function(error){
         displayRestError.display(error);
           $scope.saveProgress = false;
@@ -329,7 +329,7 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
     }else{
       AlarmsFactory.create($scope.alarm,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
-          $scope.saveProgress = false;
+        $state.go("alarmsList");
       },function(error){
         displayRestError.display(error);
           $scope.saveProgress = false;

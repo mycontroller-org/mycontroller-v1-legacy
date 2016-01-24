@@ -249,7 +249,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
 // Nodes other controllers
 
 //Add/Edit Node
-myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, mchelper, alertService, displayRestError, $filter) {
+myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, mchelper, alertService, displayRestError, $filter, $state) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.node = {};
@@ -275,7 +275,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
     if($stateParams.id){
       NodesFactory.update($scope.node,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
-          $scope.saveProgress = false;
+        $state.go("nodesList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -283,7 +283,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
     }else{
       NodesFactory.create($scope.node,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
-        $scope.saveProgress = false;
+        $state.go("nodesList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;

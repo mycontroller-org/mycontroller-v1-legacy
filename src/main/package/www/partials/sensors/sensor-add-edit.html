@@ -18,11 +18,11 @@
 <div class="container-fluid"> <!-- Container-fluid -->
   
   <!-- Loading icon disaplay --> 
-  <div ng-hide="gateways.$resolved">
+  <div ng-hide="nodes.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
-  <div ng-show="gateways.$resolved"> <!-- Main Message -->
+  <div ng-show="nodes.$resolved"> <!-- Main Message -->
     
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
@@ -30,21 +30,23 @@
     <div>
       <form class="form-horizontal">
         <div class="col-md-5">
-          
+          <!--
           <div class="form-group">
             <label class="col-sm-2 control-label">Gateway</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select ng-options="gateway.id as gateway.displayName for gateway in gateways" ng-change="updateNodes(sensor.node.gateway.id)" ng-model="sensor.node.gateway.id">
-                <option value=""></option>
+              <select class="form-control" pf-select ng-change="updateNodes(sensor.node.gateway.id)" ng-model="sensor.node.gateway.id">
+                <option value="" ng-hide="true"></option>
+                <option ng-repeat="gateway in gateways" ng-bind-html="gateway.displayName | mcResourceRepresentation" value="{{gateway.id}}"  ng-selected="gateway.id == sensor.node.gateway.id"></option>
               </select>
             </div>
           </div>
-          
+          -->
           <div class="form-group">
             <label class="col-sm-2 control-label">Node</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select data-live-search="true" ng-options="node.id as node.displayName for node in nodes" ng-model="sensor.node.id">
+              <select class="form-control" pf-select data-live-search="true" ng-model="sensor.node.id" ng-disabled="sensor.id">
                 <option value="" ng-hide="true"></option>
+                <option ng-repeat="node in nodes" ng-bind-html="node.displayName | mcResourceRepresentation" value="{{node.id}}"  ng-selected="node.id == sensor.node.id"></option>
               </select>
             </div>
           </div>

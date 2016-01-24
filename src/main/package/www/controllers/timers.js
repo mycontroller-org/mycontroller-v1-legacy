@@ -190,7 +190,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   
 });
 
-myControllerModule.controller('TimersControllerAddEdit', function ($scope, TypesFactory, CommonServices, alertService, TimersFactory, mchelper, $stateParams, $filter) {
+myControllerModule.controller('TimersControllerAddEdit', function ($scope, TypesFactory, CommonServices, alertService, TimersFactory, mchelper, $stateParams, $state, $filter) {
   $scope.timer = {};
   $scope.timer.enabled=true;
   $scope.showMeridian = angular.equals(mchelper.cfg.timeFormatSet, "12 hours");
@@ -320,16 +320,16 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
       $scope.saveProgress = true;
     if($stateParams.id){
       TimersFactory.update($scope.timer,function(response) {
-        $scope.saveProgress = false;
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        $state.go("timersList");
       },function(error){
         $scope.saveProgress = false;
         displayRestError.display(error);
       });
     }else{
       TimersFactory.create($scope.timer,function(response) {
-        $scope.saveProgress = false;
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        $state.go("timersList");
       },function(error){
         $scope.saveProgress = false;
         displayRestError.display(error);

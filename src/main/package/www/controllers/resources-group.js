@@ -216,7 +216,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
 
 
 //Add Edit item controller
-myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scope, $stateParams, ResourcesGroupFactory,  mchelper, alertService, displayRestError, $filter) {
+myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scope, $stateParams, $state, ResourcesGroupFactory,  mchelper, alertService, displayRestError, $filter) {
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = "Add resources group";
@@ -243,7 +243,7 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
     if($stateParams.id){
       ResourcesGroupFactory.update($scope.group,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.group));
-        $scope.saveProgress = false;
+        $state.go("resourcesGroupList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -251,7 +251,7 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
     }else{
       ResourcesGroupFactory.create($scope.group,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.group));
-        $scope.saveProgress = false;
+        $state.go("resourcesGroupList");
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -456,7 +456,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
     if($stateParams.id){
       ResourcesGroupMapFactory.update($scope.groupMap,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.group));
-        $scope.saveProgress = false;
+        $state.go("resourcesGroupMapList",{id:$stateParams.groupId});
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
@@ -464,7 +464,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
     }else{
       ResourcesGroupMapFactory.create($scope.groupMap,function(response) {
         alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.group));
-        $scope.saveProgress = false;
+        $state.go("resourcesGroupMapList",{id:$stateParams.groupId});
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress = false;
