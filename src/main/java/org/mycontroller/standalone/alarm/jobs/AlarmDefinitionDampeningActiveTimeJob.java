@@ -46,7 +46,7 @@ public class AlarmDefinitionDampeningActiveTimeJob extends Job {
         try {
             List<AlarmDefinition> activeTimeDefinitions = DaoUtils.getAlarmDefinitionDao().getAll(
                     DAMPENING_TYPE.ACTIVE_TIME);
-            _logger.info("Number of definitions:{}, Alarm definitions:{}", activeTimeDefinitions.size(),
+            _logger.debug("Number of definitions:{}, Alarm definitions:{}", activeTimeDefinitions.size(),
                     activeTimeDefinitions);
             //As already I'm in a thread, I will not start another thread. Going with normal method call
             AlarmEngine.builder().alarmDefinitions(activeTimeDefinitions).build().run();

@@ -35,23 +35,27 @@ import lombok.ToString;
 @JsonTypeName("smsSettings")
 public class SmsSettings {
     public static final String KEY_SMS = "sms";
-    public static final String SKEY_AUTH_ID = "smtpHost";
-    public static final String SKEY_AUTH_TOKEN = "smtpPort";
+    public static final String SKEY_VENDOR = "vendor";
+    public static final String SKEY_AUTH_SID = "sid";
+    public static final String SKEY_AUTH_TOKEN = "authToken";
     public static final String SKEY_FROM_NUMBER = "fromAddress";
 
-    private String authId;
+    private String vendor;
+    private String authSid;
     private String authToken;
     private String fromNumber;
 
     public static SmsSettings get() {
         return SmsSettings.builder()
-                .authId(getValue(SKEY_AUTH_ID))
+                .vendor(getValue(SKEY_VENDOR))
+                .authSid(getValue(SKEY_AUTH_SID))
                 .authToken(getValue(SKEY_AUTH_TOKEN))
                 .fromNumber(getValue(SKEY_FROM_NUMBER)).build();
     }
 
     public void save() {
-        updateValue(SKEY_AUTH_ID, authId);
+        updateValue(SKEY_VENDOR, vendor);
+        updateValue(SKEY_AUTH_SID, authSid);
         updateValue(SKEY_AUTH_TOKEN, authToken);
         updateValue(SKEY_FROM_NUMBER, fromNumber);
     }

@@ -277,6 +277,41 @@ public class AppProperties {
         }
     }
 
+    public enum SMS_VENDOR {
+        PLIVO("Plivo"),
+        TWILIO("Twilio");
+
+        private final String name;
+
+        private SMS_VENDOR(String name) {
+            this.name = name;
+        }
+
+        public String getText() {
+            return this.name;
+        }
+
+        public static SMS_VENDOR get(int id) {
+            for (SMS_VENDOR type : values()) {
+                if (type.ordinal() == id) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
+
+        public static SMS_VENDOR fromString(String text) {
+            if (text != null) {
+                for (SMS_VENDOR type : SMS_VENDOR.values()) {
+                    if (text.equalsIgnoreCase(type.getText())) {
+                        return type;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
     public AppProperties() {
     }
 

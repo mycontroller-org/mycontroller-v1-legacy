@@ -205,7 +205,8 @@ public class DataBaseUtils {
 
             //Update SMS settings
             SmsSettings.builder()
-                    .authId(null)
+                    .vendor(null)
+                    .authSid(null)
                     .authToken(null)
                     .fromNumber(null).build().save();
 

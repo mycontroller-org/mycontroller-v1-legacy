@@ -406,7 +406,9 @@ input.mc-color-steel-blue{
 
 
 
-
+.mc-margin-right{
+  margin-right: 8px;
+}
 
 
 .mc-v-margin > div {
@@ -420,7 +422,9 @@ input.mc-color-steel-blue{
 }
 
 
-
+.dl-horizontal dt {
+    white-space: normal;
+}
 
 
 

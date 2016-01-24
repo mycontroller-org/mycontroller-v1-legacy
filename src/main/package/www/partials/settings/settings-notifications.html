@@ -105,10 +105,23 @@
           <form class="form-horizontal">
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Auth id</label>
+              <label class="col-sm-2 control-label">Vendor</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.authId"/>
-                <span ng-hide="editEnable.sms">{{smsSettings.authId}}</span>
+                <div ng-show="editEnable.sms">
+                  <select class="form-control" pf-select ng-model="smsSettings.vendor"> 
+                    <option value="Plivo">Plivo</option>
+                    <option value="Twilio">Twilio</option>
+                  </select>
+                </div>
+                <span ng-hide="editEnable.sms">{{smsSettings.vendor}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Auth id/sid</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.authSid"/>
+                <span ng-hide="editEnable.sms">{{smsSettings.authSid}}</span>
               </div>
             </div>
             

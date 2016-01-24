@@ -36,6 +36,7 @@ import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
+import org.mycontroller.standalone.sms.SMSUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,6 +131,8 @@ public class SettingsHandler {
     public Response saveSms(SmsSettings smsSettings) {
         smsSettings.save();
         SettingsUtils.updateAllSettings();
+        //When update sms notification settings, clear clients
+        SMSUtils.clearClients();
         return RestUtils.getResponse(Status.OK);
     }
 
