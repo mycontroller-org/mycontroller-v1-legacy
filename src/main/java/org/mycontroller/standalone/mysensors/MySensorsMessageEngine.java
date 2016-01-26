@@ -91,7 +91,8 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
 
         if (mySensorsRawMessage.isTxMessage()) {
             //Change RGB and RGBW values
-            if (MESSAGE_TYPE.C_SET == MESSAGE_TYPE.get(mySensorsRawMessage.getMessageType())) {
+            if (MESSAGE_TYPE.C_SET == MESSAGE_TYPE.get(mySensorsRawMessage.getMessageType())
+                    || MESSAGE_TYPE.C_REQ == MESSAGE_TYPE.get(mySensorsRawMessage.getMessageType())) {
                 if (MESSAGE_TYPE_SET_REQ.V_RGB == MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType())
                         || MESSAGE_TYPE_SET_REQ.V_RGBW == MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType())) {
                     if (mySensorsRawMessage.getPayload().startsWith("#")) {
