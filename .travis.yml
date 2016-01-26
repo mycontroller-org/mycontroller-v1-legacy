@@ -3,9 +3,15 @@ jdk:
 - oraclejdk8
 branches:
   only:
-    - master
-    - development
+  - master
+  - development
 install:
 - mvn -version -B
 script:
-- mvn test
+- mvn -s .travis.maven.settings.xml test
+after_success:
+- mvn -s .travis.maven.settings.xml deploy -DskipTests
+env:
+  global:
+  - secure: uAkIi7nMkL4DRdEkFYfDvJShy+BZErCELj8Yfkv53Uqu26WERIzbKi1qpoBgmPN8Z0VitRodg16UEnBQc7pX/TD9qSgkO2/dzwbvrEwc9YlRF6Zpfm0iei3/b+U/kPCGCSgIv2xU1qOxLSVwUX0RdGXb6+bq+/Ie9SwdcM2ZMtRlOlX+AsoclXIEJBIrIOn8hodGp7WDZluoFuroL+Pye3iF5R92xsXApUzEh0bsZVWkAOjcUnEZSBKiNUOCn3LHyYXMQe1uS+M82SIBfTyDc2IJHU/Qt6iYVMieTS7i/atLd6On89LMNqlyAWJexaN+uLAQG9jV9n8+psrV/+QT9K3TyJQr1Do19zjXeE7XDxyRN+9gCI4NN+lkk1K1yArbasDqjNfqpPK6BSWZzb4VPlAyWL6RO5N8aF/BNKqcnd7pW0ci8zE/tQF8BCVdFpYvK0diGA19bdWVfMAxxCXYDCU5B6tISUVzVcI1H71xQrKFqqJ6lRe3rZcl9P//QwHjVec/GdAM9/dU0HWXBEuQpf40XbQqYaqlZSIlxjDpMbiFL/BvL5ecpufHRI9klJFFsSA/YG2l8Iws9nPu+R+tUumzV1GVsJrqSYXu1xfWrfyKucdJzu6H8DuRgnNB9SsUr2GOV1PS7UtVprgDCkRRtW3hh/hFxC7NQFrhEjGtGa8=
+  - secure: z6WjSpoEKAneZJHqd4v8ytpboMJ1Qn29ZDmDyn1+gmR94zmK8GNAGqQ26I9aEIDy4FXCIkyEgDbenwuj1dvX85KPnKi8T4OnaeVX79Qzg3r3hON+2Lq2noCQP/oA+Fc2w9Ns23dT6NqqK+xaCTlHlNLHYAqR1JM9xe0aDtGo3EWoQVWGeMbRVy6KhKCJ6jDT0NqIjZKC36H1lMxMygCoCc8REtk2i1hNa326mSqvJ7+V4poqDGex9B2pHOyzfcV8giSJqjpdNRDXLEzDL3XsCImIH+M1D7EEhQ9zO7ecl6yFBhBOFPxmqZBt+1iiJKSqTI60aLkOjMTe9vkFhVUcb1L2aTKTeW5Crk2XPdnjpTDewUx3QEc2Dc8lq5P9DUjCG3P3Pa47DV4FFpjgdmvKMm2imu52bq8szSkrWWhXHDLaTCjUt0yoKrv5LD8/uMKcnRn585m47He1xPTsadLJU0Fqvpnjj5wQUeK/Zgsv1yWw5qcvIov2DK+SYRYe/zjyeOWtN8PsnNgLMETLMInez3abHHstzPLAHWB4SKVfFiyDBMKmK3h+6J7heK4Yvee4zzfMDysM0/tdiF0+ptylxB2wNtnr5djVqFPazlUdUv1KWq0EkkJLT2gLzJEsCd40Op24DQJbL5TjPN/3Gu2faoDdJ91Sb+6fVxKmSQIIGOM=
