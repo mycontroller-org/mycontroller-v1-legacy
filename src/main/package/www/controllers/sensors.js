@@ -279,18 +279,30 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
             }
         },
           title: {
-            enable: true,
+            enable: false,
             text: 'Title'
         }
     };
   
-  $scope.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + ' %' };
+  //pre select, should be updated from server
+  $scope.chartEnableMinMax = true;
+  $scope.chartFromTimestamp = "3600000";
+  
   $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, 'hh:mm:ss a', mchelper.cfg.timezone)};
   
-  $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":true});
+  $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - 3600000});
   
-  var updateChartValue = function(){
-    $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":true});
+  $scope.updateChart = function(){
+    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
+      //$scope.chartData = resource;
+      resource.forEach(function(item) {
+        $scope.chartData.forEach(function(itemLocal) {
+          if(itemLocal.id === item.id){
+            itemLocal.chartData = item.chartData;
+          }
+        });
+      });
+    });
   }
   
   
@@ -300,9 +312,14 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     var chOptions = angular.copy($scope.chartOptions);
     chOptions.chart.type = chData.chartData[0].type;
     chOptions.chart.interpolate = chData.chartData[0].interpolate;
-    chOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + chData.unit};
+    if(chData.dataType === 'Double'){
+      chOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + chData.unit};
+    }else if(chData.dataType === 'Binary'){
+      chOptions.chart.yAxis.tickFormat = function(d){return d3.format('.0f')(d)};
+    }
     chOptions.title.text = chData.variableType;
     return chOptions;
   }
+  
   
 });

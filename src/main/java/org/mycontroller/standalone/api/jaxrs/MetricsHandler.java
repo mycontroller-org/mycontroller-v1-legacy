@@ -172,6 +172,7 @@ public class MetricsHandler {
                     }
                     finalData.add(MetricsChartDataGroupNVD3.builder()
                             .metricsChartDataNVD3(preDoubleData)
+                            .id(sensorVariable.getId())
                             .unit(sensorVariable.getUnit())
                             .variableType(sensorVariable.getVariableType().getText())
                             .dataType(sensorVariable.getMetricType().getText()).build());
@@ -199,6 +200,7 @@ public class MetricsHandler {
                             .build());
                     finalData.add(MetricsChartDataGroupNVD3.builder()
                             .metricsChartDataNVD3(preBinaryData)
+                            .id(sensorVariable.getId())
                             .unit(sensorVariable.getUnit())
                             .variableType(sensorVariable.getVariableType().getText())
                             .dataType(sensorVariable.getMetricType().getText()).build());

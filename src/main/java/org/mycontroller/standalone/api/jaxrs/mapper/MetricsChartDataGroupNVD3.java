@@ -35,6 +35,7 @@ import lombok.Data;
 public class MetricsChartDataGroupNVD3 {
     @JsonProperty("chartData")
     private ArrayList<MetricsChartDataNVD3> metricsChartDataNVD3;
+    private Integer id;
     private String variableType;
     private String unit;
     private String dataType;

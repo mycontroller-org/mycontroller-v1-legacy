@@ -27,13 +27,17 @@
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
-    <div class=" container-fluid row"><!-- row1 -->
-      <div class="row-cards-pf ">
+    <div class="container-cards-pf"><!-- row1 -->
+      <div class="col-lg-12">
+      
+      </div>
+      <div class="row row-cards-pf">
   
-        <div class="col-xs-6 col-sm-6 col-lg-6">
-          <div class="card-pf card-pf-utilization">
+        <!-- details -->
+        <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
+          <div class="card-pf card-pf-utilization card-pf-accented">
             <div class="card-pf-heading">
-              <h2 class="card-pf-title">Details</h2>
+              <h2 class="card-pf-title">Details <a class="btn btn-link pull-right" ui-sref="sensorsAddEdit({ id: item.id })"><i class="fa fa-edit"></i> Edit </a></h2>
             </div>
             <div class="card-pf-body">
               <dl class="dl-horizontal">
@@ -49,88 +53,103 @@
                 <dt>Network</dt> <dd>{{item.node.gateway.networkType}}</dd>
                 <dt>Last seen</dt> <dd><span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right">{{item.lastSeen.inString  || "Never"}}</span></dd>
                 
+                <legend><small>Resources</small></legend>
+                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>Timers</dt> 
                 <dd>
-                  <a class="btn btn-link pull-right" ui-sref="sensorsAddEdit({ id: item.id })"><i class="fa fa-edit"></i> Edit </a>
-                </dd> 
+                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
+                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
+                </dd>
+                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>Alarm Definitions</dt> 
+                <dd>
+                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
+                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
+                </dd>
+
               </dl>
             </div>
           </div>
         </div>
 
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-              <span class="fa fa-clock-o"></span> Timers
-            </h2>
+        <!-- custom buttons -->
+        <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8">
+          <div class="card-pf card-pf-accented ">
+            <div class="card-pf-heading">
+              <div class="dropdown card-pf-time-frame-filter">
+                <select pf-select ng-model="customButtonVariable" ng-options="variable.id as variable.type for variable in item.variables">
+                  <option value="" ng-hide="true"></option>
+                </select>
+                <select pf-select ng-model="timeRange">
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+              <h2 class="card-pf-title">
+                Custom buttons
+              </h2>
+            </div>
             <div class="card-pf-body">
-              <p class="card-pf-aggregate-status-notifications">
-                <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
-                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
-                </span>
-              </p>
+              Yet to implement
             </div>
           </div>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-              <span class="fa fa-bell-o"></span> Alarm Definitions
-            </h2>
-            <div class="card-pf-body">
-              <p class="card-pf-aggregate-status-notifications">
-                <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.alarmDefinitions == 0" ui-sref="alarmsList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.alarmDefinitions}}</a>
-                  <span ng-show="resourceCount.alarmDefinitions == 0">{{resourceCount.alarmDefinitions}}</span>
+        
+      <div class="container-cards-pf">
+      <div class="row row-cards-pf">
+        <div ng-repeat="variable in item.variables"> <!-- variables ng-repeat -->
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented ">
+              <h2 class="card-pf-title">{{variable.type}}</h2>
+              <div class="card-pf-body">
+                <!-- variable value -->
+                <span class="mc-inline-editer-ab" e-style="height: 22px;" id="value" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+                  <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit ||""}}
                 </span>
-              </p>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-              <span class="pficon pficon-replicator"></span> Resources groups
-            </h2>
-            <div class="card-pf-body">
-              <p class="card-pf-aggregate-status-notifications">
-                <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
-                  <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
+        
+      </div><!-- /row -->
+    </div><!-- /container -->
+        
       </div>  
     </div><!-- /row1 -->
     
-    <!-- chart -->
-    <div>
-
-      <div class="continer center">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div>
-              <p class="panel-title" >
-                Variables graphical view
-                <a class="pull-right text-default" href='' ng-click="downloadCSV(variableType.id, 0)" tooltip-placement="left" uib-tooltip="{{ 'CHART.DOWNLOAD_CSV_FILE' | translate }}">
-                  <i class="fa fa-download"></i>
-                </a>
-              </p>
+    
+    <div class="container-cards-pf">
+      <div class="row row-cards-pf">
+        <div class="col-lg-12">
+          <div class="card-pf card-pf-accented ">
+            <div class="card-pf-heading">
+              <div class="dropdown card-pf-time-frame-filter">
+                <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"
+                    switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="" switch-label-width="70px"
+                    switch-label="Min / Max" ng-true-value="true" ng-false-value="false" switch-on-text="Enabled" switch-off-text="Disabled" >
+                <select pf-select ng-model="chartFromTimestamp" ng-change="updateChart()">
+                  <option value="" ng-hide="true"></option>
+                  <option value="3600000">Last hour</option>
+                  <option value="21600000">Last 6 hours</option>
+                  <option value="43200000">Last 12 hours</option>
+                  <option value="86400000">Last day</option>
+                  <option value="604800000">Last week</option>
+                  <option value="2419200000">Last month</option>
+                  <option value="31536000000">Last year</option>
+                  <option value="0" ng-hide="true">Custom</option>
+                </select>
+              </div>
+              <h2 class="card-pf-title">
+                <i class="fa fa-area-chart fa-lg"></i> Variables graphical view
+              </h2>
             </div>
-          </div>
-          <div class="panel-body">
-            <div ng-repeat="chData in chartData">
+            <div class="card-pf-body">
+              <div ng-repeat="chData in chartData">
+                <legend><small>{{chData.variableType}}</small></legend>
               <!-- Refer this one https://github.com/krispo/angular-nvd3/issues/40 -->
               <nvd3 options='chOptions' data="chData.chartData" ng-init="chOptions=updateChartOptions(chData)"></nvd3>
-              <hr>
             </div>
           </div>
         </div>
-      </div>
-
-    </div>
+      </div><!-- /row -->
+    </div><!-- /container -->
     
     
   </div> <!-- Main Message -->
