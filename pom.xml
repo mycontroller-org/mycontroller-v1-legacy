@@ -351,4 +351,13 @@
 
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>clojars-repository</id>
+      <name>Clojars repository</name>
+      <url>https://clojars.org/repo</url>
+    </repository>
+  </distributionManagement>
+
 </project>
