@@ -224,7 +224,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory) {
   commonService.getMin = function(item1, item2){
     return Math.min(item1, item2);
   };
-
+  
  return commonService;
 
 });

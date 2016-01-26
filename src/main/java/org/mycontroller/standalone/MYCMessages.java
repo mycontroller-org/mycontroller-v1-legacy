@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone;
 
-import org.mycontroller.standalone.metrics.TypeUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 
 /* All the messages based on MYSENSORS.ORG, Do not add new */
 /**

@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
+import org.mycontroller.standalone.settings.MetricsSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
@@ -60,6 +61,7 @@ public class AppProperties {
     SmsSettings smsSettings;
     UnitsSettings unitsSettings;
     LocationSettings locationSettings;
+    MetricsSettings metricsSettings;
 
     public enum MC_LANGUAGE {
         EN_US("English (US)"),
@@ -367,6 +369,7 @@ public class AppProperties {
         emailSettings = EmailSettings.get();
         smsSettings = SmsSettings.get();
         unitsSettings = UnitsSettings.get();
+        metricsSettings = MetricsSettings.get();
     }
 
     private boolean is12HoursSelected() {
@@ -486,6 +489,14 @@ public class AppProperties {
 
     public LocationSettings getLocationSettings() {
         return locationSettings;
+    }
+
+    public MetricsSettings getMetricsSettings() {
+        return metricsSettings;
+    }
+
+    public void setMetricsSettings(MetricsSettings metricsSettings) {
+        this.metricsSettings = metricsSettings;
     }
 
 }

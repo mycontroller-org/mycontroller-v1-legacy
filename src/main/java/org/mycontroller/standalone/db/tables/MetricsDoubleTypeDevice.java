@@ -15,8 +15,8 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;

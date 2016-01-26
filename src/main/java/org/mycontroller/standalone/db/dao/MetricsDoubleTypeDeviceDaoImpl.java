@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
         try {
             DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
             deleteBuilder.where().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType())
-                    .and().lt(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+                    .and().le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
 
             int count = this.getDao().delete(deleteBuilder.prepare());
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
@@ -72,11 +73,13 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             QueryBuilder<MetricsDoubleTypeDevice, Object> queryBuilder = this.getDao().queryBuilder();
             Where<MetricsDoubleTypeDevice, Object> whereBuilder = queryBuilder.where();
             whereBuilder.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID,
-                    metric.getSensorVariable().getId())
-                    .and().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE,
-                            metric.getAggregationType());
+                    metric.getSensorVariable().getId());
+            if (metric.getAggregationType() != null) {
+                whereBuilder.and().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE,
+                        metric.getAggregationType());
+            }
             if (metric.getTimestampFrom() != null) {
-                whereBuilder.and().ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP,
+                whereBuilder.and().gt(MetricsDoubleTypeDevice.KEY_TIMESTAMP,
                         metric.getTimestampFrom());
             }
             if (metric.getTimestampTo() != null) {
@@ -108,5 +111,21 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
     @Override
     public List<MetricsDoubleTypeDevice> getAll(List<Object> ids) {
         return null;
+    }
+
+    @Override
+    public List<MetricsDoubleTypeDevice> getAggregationRequiredVariableIds(AGGREGATION_TYPE aggregationType,
+            Long fromTimestamp, Long toTimestamp) {
+        QueryBuilder<MetricsDoubleTypeDevice, Object> queryBuilder = this.getDao().queryBuilder();
+        try {
+            return queryBuilder.distinct().selectColumns(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID)
+                    .where().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, aggregationType).and()
+                    .gt(MetricsDoubleTypeDevice.KEY_TIMESTAMP, fromTimestamp).and()
+                    .le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, toTimestamp)
+                    .query();
+        } catch (SQLException ex) {
+            _logger.error("Exception,", ex);
+            return null;
+        }
     }
 }

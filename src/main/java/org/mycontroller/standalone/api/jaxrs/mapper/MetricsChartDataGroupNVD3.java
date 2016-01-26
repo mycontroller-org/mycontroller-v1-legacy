@@ -17,40 +17,25 @@ package org.mycontroller.standalone.api.jaxrs.mapper;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class MetricsChartDataKeyValuesJson {
-    private String key;
-    private ArrayList<Object> values = new ArrayList<Object>();
-
-    public MetricsChartDataKeyValuesJson(String key) {
-        this.key = key;
-    }
-
-    public MetricsChartDataKeyValuesJson(String key, ArrayList<Object> values) {
-        this.key = key;
-        this.values = values;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public ArrayList<Object> getValues() {
-        return values;
-    }
-
-    public void setValues(ArrayList<Object> values) {
-        this.values = values;
-    }
-
-    public void add(Object value) {
-        this.values.add(value);
-    }
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class MetricsChartDataGroupNVD3 {
+    @JsonProperty("chartData")
+    private ArrayList<MetricsChartDataNVD3> metricsChartDataNVD3;
+    private String variableType;
+    private String unit;
+    private String dataType;
 }

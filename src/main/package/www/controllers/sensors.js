@@ -236,12 +236,73 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
 });
 
 //item Detail
-myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory) {
+myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory, $filter) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.node = {};
   $scope.headerStringList = "Sensor details";
   
   $scope.item = SensorsFactory.get({"id":$stateParams.id});
+  
+  $scope.chartOptions = {
+        chart: {
+            type: 'lineChart',
+            noErrorCheck: true,
+            height: 270,
+            margin : {
+                top: 0,
+                right: 20,
+                bottom: 60,
+                left: 65
+            },
+            color: ["#2ca02c","#1f77b4", "#ff7f0e"],
+          
+            x: function(d){return d[0];},
+            y: function(d){return d[1];},
+            useVoronoi: false,
+            clipEdge: false,
+            transitionDuration: 500,
+            useInteractiveGuideline: true,
+            xAxis: {
+                showMaxMin: false,
+                tickFormat: function(d) {
+                    return d3.time.format('hh:mm a')(new Date(d))
+                },
+                //axisLabel: 'Timestamp',
+                rotateLabels: -20
+            },
+            yAxis: {
+                tickFormat: function(d){
+                    return d3.format(',.2f')(d);
+                },
+                //axisLabel: ''
+            }
+        },
+          title: {
+            enable: true,
+            text: 'Title'
+        }
+    };
+  
+  $scope.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + ' %' };
+  $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, 'hh:mm:ss a', mchelper.cfg.timezone)};
+  
+  $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":true});
+  
+  var updateChartValue = function(){
+    $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":true});
+  }
+  
+  
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"Sensor", "resourceId":$stateParams.id});
+
+  $scope.updateChartOptions = function(chData){
+    var chOptions = angular.copy($scope.chartOptions);
+    chOptions.chart.type = chData.chartData[0].type;
+    chOptions.chart.interpolate = chData.chartData[0].interpolate;
+    chOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + chData.unit};
+    chOptions.title.text = chData.variableType;
+    return chOptions;
+  }
+  
 });

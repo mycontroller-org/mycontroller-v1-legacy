@@ -33,12 +33,10 @@ import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.jobs.MidNightJobs;
 import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
 import org.mycontroller.standalone.jobs.ResourcesLogsAggregationJob;
-import org.mycontroller.standalone.metrics.jobs.MetricsFiveMinutesAggregationJob;
-import org.mycontroller.standalone.metrics.jobs.MetricsOneDayAggregationJob;
-import org.mycontroller.standalone.metrics.jobs.MetricsOneHourAggregationJob;
-import org.mycontroller.standalone.metrics.jobs.MetricsOneMinuteAggregationJob;
+import org.mycontroller.standalone.metrics.jobs.MetricsAggregationJob;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
+import org.mycontroller.standalone.settings.MetricsSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
@@ -211,13 +209,7 @@ public class DataBaseUtils {
                     .fromNumber(null).build().save();
 
             // Add System Jobs
-            createSystemJob("Aggregate One Minute Data", "58 * * * * ? *", true, MetricsOneMinuteAggregationJob.class);
-            createSystemJob("Aggregate Five Minutes Data", "0 0/5 * * * ? *", true,
-                    MetricsFiveMinutesAggregationJob.class);
-            createSystemJob("Aggregate One Hour Data", "5 0 0/1 * * ? *", true, MetricsOneHourAggregationJob.class);
-            // One day aggregation table takes previous date, if you change here
-            // change there also
-            createSystemJob("Aggregate One Day Data", "5 0 0 * * ? *", true, MetricsOneDayAggregationJob.class);
+            createSystemJob("Metrics aggregate job", "05 * * * * ? *", true, MetricsAggregationJob.class);
             createSystemJob("ResourcesLogs Aggregation Job", "45 * * * * ? *", true, ResourcesLogsAggregationJob.class);
             createSystemJob("Daily once job", "30 3 0 * * ? *", true, MidNightJobs.class);
 
@@ -242,6 +234,17 @@ public class DataBaseUtils {
                     .unitConfig(UNIT_CONFIG.METRIC.getText())
                     .loginMessage("Default username: <b>admin</b>, password: <b>admin<b>")
                     .build().save();
+
+            //Update Metrics reference data
+            MetricsSettings.builder()
+                    .lastAggregationRawData(System.currentTimeMillis())
+                    .lastAggregationOneMinute(System.currentTimeMillis())
+                    .lastAggregationFiveMinutes(System.currentTimeMillis())
+                    .lastAggregationOneHour(System.currentTimeMillis())
+                    .lastAggregationSixHours(System.currentTimeMillis())
+                    .lastAggregationTwelveHours(System.currentTimeMillis())
+                    .lastAggregationOneDay(System.currentTimeMillis())
+                    .build().updateInternal();
 
             // Update Sensor Type and Variables Type mapping
 

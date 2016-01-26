@@ -27,6 +27,7 @@ var myControllerModule = angular.module('myController',[
   'ngFileSaver',
   'pascalprecht.translate',
   'ngSanitize',
+  'nvd3',
   'patternfly',
   'patternfly.charts',
   'patternfly.select',

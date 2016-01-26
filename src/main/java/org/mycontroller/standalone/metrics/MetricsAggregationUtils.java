@@ -15,10 +15,9 @@
  */
 package org.mycontroller.standalone.metrics;
 
-import org.mycontroller.standalone.TIME_REF;
-import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -35,19 +34,19 @@ public class MetricsAggregationUtils {
     }
 
     public static void purgeRawData() {
-        purgeRawData(System.currentTimeMillis() - TIME_REF.RAW_DATA_MAX_RETAIN_TIME);
+        purgeRawData(System.currentTimeMillis() - MetricsUtils.RAW_DATA_MAX_RETAIN_TIME);
     }
 
     public static void purgeOneMinuteData() {
-        purgeOneMinuteData(System.currentTimeMillis() - TIME_REF.ONE_MINUTE_MAX_RETAIN_TIME);
+        purgeOneMinuteData(System.currentTimeMillis() - MetricsUtils.ONE_MINUTE_MAX_RETAIN_TIME);
     }
 
     public static void purgeFiveMinutesData() {
-        purgeFiveMinutesData(System.currentTimeMillis() - TIME_REF.FIVE_MINUTES_MAX_RETAIN_TIME);
+        purgeFiveMinutesData(System.currentTimeMillis() - MetricsUtils.FIVE_MINUTES_MAX_RETAIN_TIME);
     }
 
     public static void purgeOneHourData() {
-        purgeOneHourData(System.currentTimeMillis() - TIME_REF.ONE_HOUR_MAX_RETAIN_TIME);
+        purgeOneHourData(System.currentTimeMillis() - MetricsUtils.ONE_HOUR_MAX_RETAIN_TIME);
     }
 
     public static void purgeRawData(long timestamp) {

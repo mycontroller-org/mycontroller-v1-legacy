@@ -121,6 +121,9 @@ myControllerModule.factory('TypesFactory', function ($resource) {
 //Metrics Services
 myControllerModule.factory('MetricsFactory', function ($resource) {
   return $resource('/mc/rest/metrics/:type', {}, {
+    getResourceCount: { method: 'GET', isArray: false, params: {type: 'resourceCount'}},
+    getMetricsData: { method: 'GET', isArray: true, params: {type: 'metricsData'}},
+    
     getRawData: { method: 'GET', isArray: true, params: {type: 'rawData'}},
     getOneMinuteData: { method: 'GET', isArray: true, params: {type: 'oneMinuteData'}},
     getFiveMinutesData: { method: 'GET', isArray: true, params: {type: 'fiveMinutesData'}},
@@ -128,7 +131,6 @@ myControllerModule.factory('MetricsFactory', function ($resource) {
     getOneDayData: { method: 'GET', isArray: true, params: {type: 'oneDayData'}},
     getCsvFile: { method: 'GET', isArray: false, params: {type: 'csvFile'}},
     batteryUsage: { method: 'GET', isArray: true, params: {type: 'batteryUsage'}},
-    getResourceCount: { method: 'GET', isArray: false, params: {type: 'resourceCount'}},
   })
 });
 

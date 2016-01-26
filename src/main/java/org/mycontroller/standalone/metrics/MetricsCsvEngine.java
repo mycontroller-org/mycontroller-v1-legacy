@@ -21,13 +21,13 @@ import java.util.List;
 
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.api.jaxrs.mapper.MetricsCsvDownload;
-import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.metrics.TypeUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,20 +66,18 @@ public class MetricsCsvEngine {
 
     private String getData(SensorVariable sensorVariable, AGGREGATION_TYPE aggrType) {
         METRIC_TYPE type = sensorVariable.getMetricType();
-        MetricsAggregationBase aggregationBase = new MetricsAggregationBase();
         switch (type) {
             case BINARY:
-                return getBinaryData(sensorVariable, aggrType, aggregationBase);
+                return getBinaryData(sensorVariable, aggrType);
             case DOUBLE:
-                return getDoubleData(sensorVariable, aggrType, aggregationBase);
+                return getDoubleData(sensorVariable, aggrType);
             default:
                 _logger.debug("Unknown Metric Type[{}]", type);
                 throw new RuntimeException("Unknown Metric Type[" + type + "]");
         }
     }
 
-    private String getBinaryData(SensorVariable sensorVariable, AGGREGATION_TYPE aggrType,
-            MetricsAggregationBase aggrBase) {
+    private String getBinaryData(SensorVariable sensorVariable, AGGREGATION_TYPE aggrType) {
         Long fromTime = null;
         switch (aggrType) {
             case RAW:
@@ -97,7 +95,7 @@ public class MetricsCsvEngine {
             default:
                 break;
         }
-        List<MetricsBinaryTypeDevice> metrics = aggrBase.getMetricsBinaryData(
+        List<MetricsBinaryTypeDevice> metrics = MetricsAggregationBase.getMetricsBinaryData(
                 sensorVariable, fromTime);
 
         StringBuilder builder = new StringBuilder();
@@ -116,12 +114,9 @@ public class MetricsCsvEngine {
         return builder.toString();
     }
 
-    private String getDoubleData(SensorVariable sensorVariable, AGGREGATION_TYPE aggrType,
-            MetricsAggregationBase aggrBase) {
-        List<MetricsDoubleTypeDevice> metrics = aggrBase.getMetricsDoubleData(
-                sensorVariable,
-                aggrType,
-                null);
+    private String getDoubleData(SensorVariable sensorVariable, AGGREGATION_TYPE aggrType) {
+        List<MetricsDoubleTypeDevice> metrics = MetricsAggregationBase
+                .getMetricsDoubleData(sensorVariable, null, null);
         StringBuilder builder = new StringBuilder();
 
         if (aggrType == AGGREGATION_TYPE.RAW) {

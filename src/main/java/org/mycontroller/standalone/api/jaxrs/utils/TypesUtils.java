@@ -48,7 +48,7 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.gateway.GatewayUtils;
-import org.mycontroller.standalone.metrics.TypeUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;

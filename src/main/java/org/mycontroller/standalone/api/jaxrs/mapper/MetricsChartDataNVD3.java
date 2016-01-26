@@ -13,25 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.db;
+package org.mycontroller.standalone.api.jaxrs.mapper;
+
+import java.util.ArrayList;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public enum AGGREGATION_TYPE {
-    RAW,
-    ONE_MINUTE,
-    FIVE_MINUTES,
-    ONE_HOUR,
-    ONE_DAY;
-
-    public static AGGREGATION_TYPE get(int id) {
-        for (AGGREGATION_TYPE type : values()) {
-            if (type.ordinal() == id) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException(String.valueOf(id));
-    }
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class MetricsChartDataNVD3 {
+    private String key;
+    private ArrayList<Object> values;
+    private Double mean;
+    private Integer yAxis;
+    private String type;
+    private String interpolate;
+    private Boolean area;
+    private String color;
 }

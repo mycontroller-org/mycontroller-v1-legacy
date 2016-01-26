@@ -104,7 +104,35 @@
         </div>
       </div>  
     </div><!-- /row1 -->
+    
+    <!-- chart -->
+    <div>
 
+      <div class="continer center">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-title" >
+                Variables graphical view
+                <a class="pull-right text-default" href='' ng-click="downloadCSV(variableType.id, 0)" tooltip-placement="left" uib-tooltip="{{ 'CHART.DOWNLOAD_CSV_FILE' | translate }}">
+                  <i class="fa fa-download"></i>
+                </a>
+              </p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div ng-repeat="chData in chartData">
+              <!-- Refer this one https://github.com/krispo/angular-nvd3/issues/40 -->
+              <nvd3 options='chOptions' data="chData.chartData" ng-init="chOptions=updateChartOptions(chData)"></nvd3>
+              <hr>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+    
   </div> <!-- Main Message -->
 
 </div> <!-- Container-fluid -->

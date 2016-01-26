@@ -49,11 +49,8 @@ public class NumericUtils {
     }
 
     public static String getDoubleAsString(double value) {
-        if (value % 1 != 0) {
-            return String.valueOf(value);
-        } else {
-            return decimalFormat.format(value);
-        }
+        Double truncatedDouble = new BigDecimal(value).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return String.valueOf(truncatedDouble);
     }
 
     public static String getDoubleAsString(String value) {

@@ -219,7 +219,9 @@ public class SchedulerUtils {
                         jobName,
                         timerSimple.getRepeatCount(), //repeatCount
                         timerSimple.getRepeatInterval(), //repeatInterval
-                        timer.getValidityFrom() != null ? new Date(timer.getValidityFrom()) : null,
+                        //Start time should be - current time + repeat interval
+                        timer.getValidityFrom() != null ? new Date(timer.getValidityFrom()) :
+                                new Date(System.currentTimeMillis() + timerSimple.getRepeatInterval()),
                         timer.getValidityTo() != null ? new Date(timer.getValidityTo()) : null);
                 _logger.debug("New simple timer job added:[{}], CornExpression:[{}]", timer, cronExpression);
             } else {

@@ -28,7 +28,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson.TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.SensorsGuiButton;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.metrics.TypeUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.settings.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

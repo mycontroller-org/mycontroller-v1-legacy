@@ -19,7 +19,7 @@ import org.mycontroller.standalone.MYCMessages;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.SensorUtils;
-import org.mycontroller.standalone.metrics.TypeUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;

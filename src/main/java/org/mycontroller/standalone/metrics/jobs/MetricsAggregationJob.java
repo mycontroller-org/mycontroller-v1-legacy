@@ -15,7 +15,6 @@
  */
 package org.mycontroller.standalone.metrics.jobs;
 
-import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.metrics.MetricsAggregationBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,15 +26,13 @@ import com.xeiam.sundial.exceptions.JobInterruptException;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class MetricsOneDayAggregationJob extends Job {
-    private static final Logger _logger = LoggerFactory.getLogger(MetricsOneDayAggregationJob.class.getName());
+public class MetricsAggregationJob extends Job {
+    private static final Logger _logger = LoggerFactory.getLogger(MetricsAggregationJob.class.getName());
 
     @Override
     public void doRun() throws JobInterruptException {
-        _logger.debug("One Day Aggregation job triggered");
-        //Do Aggregation for last one day
-        new MetricsAggregationBase(AGGREGATION_TYPE.ONE_DAY).runAggregate();
-        _logger.debug("One Day Aggregation job completed");
-
+        _logger.debug("Metrics aggregation job triggered");
+        new MetricsAggregationBase().runAggregation();
+        _logger.debug("Metrics aggregation job completed");
     }
 }

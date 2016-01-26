@@ -137,10 +137,10 @@ public class ResourcesLogsUtils {
     public static void setTimerLog(LOG_LEVEL logLevel, Timer timer, String errorMsg) {
         StringBuilder builder = new StringBuilder();
         if (errorMsg != null) {
-            builder.append("Failed: ").append(timer.toString())
+            builder.append("Failed: ").append(timer.getTimerDataString())
                     .append(", Error: ").append(errorMsg);
         } else {
-            builder.append("Fired: ").append(timer.toString());
+            builder.append("Fired: ").append(timer.getTimerDataString());
         }
 
         ResourcesLogs resourcesLogs = ResourcesLogs.builder()

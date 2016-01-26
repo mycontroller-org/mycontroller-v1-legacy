@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db.dao;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -30,5 +31,9 @@ public interface MetricsDoubleTypeDeviceDao extends BaseDao<MetricsDoubleTypeDev
     void deleteBySensorVariableRefId(int sensorRefId);
 
     List<MetricsDoubleTypeDevice> getAll(MetricsDoubleTypeDevice metric);
+
+    List<MetricsDoubleTypeDevice> getAggregationRequiredVariableIds(AGGREGATION_TYPE aggregationType,
+            Long fromTimestamp,
+            Long toTimestamp);
 
 }

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.db.DbException;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.metrics.TypeUtils;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -150,11 +150,11 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             }
             QueryBuilder<SensorVariable, Integer> queryBuilder = this.getDao().queryBuilder();
             queryBuilder.where().eq(SensorVariable.KEY_SENSOR_DB_ID, sensorRefId).and()
-                    .eq(SensorVariable.KEY_METRIC, TypeUtils.METRIC_TYPE.DOUBLE);
+                    .eq(SensorVariable.KEY_METRIC, MetricsUtils.METRIC_TYPE.DOUBLE);
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get all list with sensorRefId:{}, MetricType:{}", sensorRefId,
-                    TypeUtils.METRIC_TYPE.DOUBLE, ex);
+                    MetricsUtils.METRIC_TYPE.DOUBLE, ex);
             return null;
         }
     }
