@@ -8,6 +8,4 @@ branches:
 install:
 - mvn -version -B
 script:
-- git clone https://github.com/jkandasa/moquette
-- mvn -f moquette/pom.xml install -Dmaven.test.skip=true
 - mvn test
