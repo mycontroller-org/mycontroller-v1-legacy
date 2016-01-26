@@ -4,6 +4,7 @@ jdk:
 branches:
   only:
     - master
+    - development
 install:
 - mvn -version -B
 script:
