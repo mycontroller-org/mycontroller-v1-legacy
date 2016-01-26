@@ -90,7 +90,16 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
         }
 
         if (mySensorsRawMessage.isTxMessage()) {
-            MessageUtils.sendMessgaeToGateway(rawMessage);
+            //Change RGB and RGBW values
+            if (MESSAGE_TYPE.C_SET == MESSAGE_TYPE.get(mySensorsRawMessage.getMessageType())) {
+                if (MESSAGE_TYPE_SET_REQ.V_RGB == MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType())
+                        || MESSAGE_TYPE_SET_REQ.V_RGBW == MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType())) {
+                    if (mySensorsRawMessage.getPayload().startsWith("#")) {
+                        mySensorsRawMessage.setPayload(mySensorsRawMessage.getPayload().replaceAll("#", ""));
+                    }
+                }
+            }
+            MessageUtils.sendMessgaeToGateway(mySensorsRawMessage.getRawMessage());
             _logger.debug("This is Tx Message[{}] sent", mySensorsRawMessage);
         }
 
@@ -643,6 +652,15 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
         PAYLOAD_TYPE payloadType = MYCMessages.getPayLoadType(MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage
                 .getSubType()));
         Sensor sensor = this.getSensor(mySensorsRawMessage);
+        //Before updating value into table convert payload types
+        //Change RGB and RGBW values
+        if (MESSAGE_TYPE_SET_REQ.V_RGB == MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType())
+                || MESSAGE_TYPE_SET_REQ.V_RGBW == MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType())) {
+            if (!mySensorsRawMessage.getPayload().startsWith("#")) {
+                mySensorsRawMessage.setPayload("#" + mySensorsRawMessage.getPayload());
+            }
+        }
+
         SensorVariable sensorVariable = this.updateSensorVariable(mySensorsRawMessage, sensor, payloadType);
 
         _logger.debug("Sensor:{}[NodeId:{},SesnorId:{},SubType({}):{}], PayLoad Type: {}",
@@ -666,12 +684,6 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
             return;
         }
 
-        /*if (sensor.getMessageType() == null) {
-            sensor.setMessageType(rawMessage.getSubType());
-        } else if (sensor.getMessageType() != rawMessage.getSubType()) {
-            sensor.setMessageType(rawMessage.getSubType());
-        }
-        */
         sensor.setLastSeen(System.currentTimeMillis());
         DaoUtils.getSensorDao().update(sensor);
 
