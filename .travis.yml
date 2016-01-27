@@ -9,8 +9,8 @@ install:
 - mvn -version -B
 script:
 - mvn -s .travis.maven.settings.xml test
-after_success:
-- mvn -s .travis.maven.settings.xml deploy -DskipTests
+#after_success:
+#- mvn -s .travis.maven.settings.xml deploy -DskipTests
 env:
   global:
   - secure: uAkIi7nMkL4DRdEkFYfDvJShy+BZErCELj8Yfkv53Uqu26WERIzbKi1qpoBgmPN8Z0VitRodg16UEnBQc7pX/TD9qSgkO2/dzwbvrEwc9YlRF6Zpfm0iei3/b+U/kPCGCSgIv2xU1qOxLSVwUX0RdGXb6+bq+/Ie9SwdcM2ZMtRlOlX+AsoclXIEJBIrIOn8hodGp7WDZluoFuroL+Pye3iF5R92xsXApUzEh0bsZVWkAOjcUnEZSBKiNUOCn3LHyYXMQe1uS+M82SIBfTyDc2IJHU/Qt6iYVMieTS7i/atLd6On89LMNqlyAWJexaN+uLAQG9jV9n8+psrV/+QT9K3TyJQr1Do19zjXeE7XDxyRN+9gCI4NN+lkk1K1yArbasDqjNfqpPK6BSWZzb4VPlAyWL6RO5N8aF/BNKqcnd7pW0ci8zE/tQF8BCVdFpYvK0diGA19bdWVfMAxxCXYDCU5B6tISUVzVcI1H71xQrKFqqJ6lRe3rZcl9P//QwHjVec/GdAM9/dU0HWXBEuQpf40XbQqYaqlZSIlxjDpMbiFL/BvL5ecpufHRI9klJFFsSA/YG2l8Iws9nPu+R+tUumzV1GVsJrqSYXu1xfWrfyKucdJzu6H8DuRgnNB9SsUr2GOV1PS7UtVprgDCkRRtW3hh/hFxC7NQFrhEjGtGa8=
