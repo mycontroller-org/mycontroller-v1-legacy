@@ -205,7 +205,9 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 MetricsBatteryUsage batteryUsage = MetricsBatteryUsage.builder()
                         .node(node)
                         .timestamp(System.currentTimeMillis())
-                        .value(mySensorsRawMessage.getPayloadDouble())
+                        .aggregationType(AGGREGATION_TYPE.RAW)
+                        .avg(mySensorsRawMessage.getPayloadDouble())
+                        .samples(1)
                         .build();
 
                 DaoUtils.getMetricsBatteryUsageDao().create(batteryUsage);

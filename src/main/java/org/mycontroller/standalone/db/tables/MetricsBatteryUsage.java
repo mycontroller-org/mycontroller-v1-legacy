@@ -16,7 +16,9 @@
 package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -37,13 +39,9 @@ import lombok.ToString;
 @Builder
 @ToString(includeFieldNames = true)
 public class MetricsBatteryUsage {
-    public static final String KEY_ID = "id";
     public static final String KEY_NODE_ID = "nodeId";
     public static final String KEY_TIMESTAMP = "timestamp";
-    public static final String KEY_VALUE = "value";
-
-    @DatabaseField(generatedId = true, columnName = KEY_ID)
-    private Integer id;
+    public static final String KEY_AGGREGATION_TYPE = "aggregationType";
 
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_NODE_ID)
     private Node node;
@@ -51,7 +49,22 @@ public class MetricsBatteryUsage {
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
-    @DatabaseField(canBeNull = false, columnName = KEY_VALUE)
-    private Double value;
+    @DatabaseField(canBeNull = false)
+    private Integer samples;
+
+    @DatabaseField
+    private Double min;
+
+    @DatabaseField
+    private Double max;
+
+    @DatabaseField(canBeNull = false)
+    private Double avg;
+
+    @DatabaseField(uniqueCombo = true, dataType = DataType.ENUM_INTEGER, canBeNull = false, columnName = KEY_AGGREGATION_TYPE)
+    private AGGREGATION_TYPE aggregationType;
+
+    private Long timestampFrom;
+    private Long timestampTo;
 
 }

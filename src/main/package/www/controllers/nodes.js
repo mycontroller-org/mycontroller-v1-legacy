@@ -294,7 +294,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
 
 
 //Node Detail
-myControllerModule.controller('NodesControllerDetail', function ($scope, $stateParams, mchelper, NodesFactory, MetricsFactory) {
+myControllerModule.controller('NodesControllerDetail', function ($scope, $stateParams, mchelper, NodesFactory, MetricsFactory, $filter, $timeout, $window) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.item = {};
@@ -302,6 +302,72 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
   
   $scope.item = NodesFactory.get({"nodeId":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"NODE", "resourceId":$stateParams.id});
+  
+  $scope.chartOptions = {
+        chart: {
+            type: 'lineChart',
+            noErrorCheck: true,
+            height: 325,
+            width:null,
+            margin : {
+                top: 0,
+                right: 10,
+                bottom: 90,
+                left: 65
+            },
+            color: ["#2ca02c","#1f77b4", "#ff7f0e"],
+          
+            x: function(d){return d[0];},
+            y: function(d){return d[1];},
+            useVoronoi: false,
+            clipEdge: false,
+            transitionDuration: 500,
+            useInteractiveGuideline: true,
+            xAxis: {
+                showMaxMin: false,
+                tickFormat: function(d) {
+                    return d3.time.format('hh:mm:ss a')(new Date(d))
+                },
+                //axisLabel: 'Timestamp',
+                rotateLabels: -20
+            },
+            yAxis: {
+                tickFormat: function(d){
+                    return d3.format(',.2f')(d) + ' %';
+                },
+                //axisLabel: ''
+            }
+        },
+          title: {
+            enable: false,
+            text: 'Title'
+        }
+    };
+  
+  //pre select, should be updated from server
+  $scope.chartEnableMinMax = false;
+  $scope.chartFromTimestamp = "604800000";
+  
+  $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, mchelper.cfg.dateFormat, mchelper.cfg.timezone)};
+  
+  $scope.batteryChartData = MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - 604800000});
+  
+  $scope.updateChart = function(){
+    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
+      $scope.batteryChartData.chartData = resource.chartData;
+    });
+  }
+
+  //Graph resize issue, see: https://github.com/krispo/angular-nvd3/issues/40
+  $scope.$watch('fetching', function() {
+      if(!$scope.fetching) {
+        $timeout(function() {
+          $window.dispatchEvent(new Event('resize'));
+          $scope.fetching = true;
+        }, 300);
+      }
+    });
+  
 });
 
 //Nodes Modal - Delete

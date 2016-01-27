@@ -284,7 +284,7 @@ public class MySensorsRawMessage {
         Gateway gateway = DaoUtils.getGatewayDao().getById(this.gatewayId);
         switch (gateway.getType()) {
             case MQTT:
-                return new RawMessage(this.gatewayId, this.getMqttTopic(), this.getPayload(), this.isTxMessage());
+                return new RawMessage(this.gatewayId, this.getPayload(), this.getMqttTopic(), this.isTxMessage());
             case ETHERNET:
             case SERIAL:
                 return new RawMessage(this.gatewayId, this.getGWString(), null, this.isTxMessage());

@@ -236,7 +236,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
 });
 
 //item Detail
-myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory, $filter, CommonServices, TypesFactory) {
+myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory, $filter, CommonServices, TypesFactory, $timeout, $window) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.node = {};
@@ -351,5 +351,14 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     $scope.updateVariable(variable);
   };
   
+  //Graph resize issue, see: https://github.com/krispo/angular-nvd3/issues/40
+  $scope.$watch('fetching', function() {
+      if(!$scope.fetching) {
+        $timeout(function() {
+          $window.dispatchEvent(new Event('resize'));
+          $scope.fetching = true;
+        }, 500);
+      }
+    });
   
 });

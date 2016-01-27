@@ -18,20 +18,22 @@ package org.mycontroller.standalone.db.dao;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-public interface MetricsBatteryUsageDao extends BaseDao<MetricsBatteryUsage, Integer> {
+public interface MetricsBatteryUsageDao extends BaseDao<MetricsBatteryUsage, Object> {
 
     void deletePrevious(MetricsBatteryUsage metric);
 
-    void deleteByNodeRefId(int nodeId);
+    void deleteByNodeId(int nodeId);
 
-    List<MetricsBatteryUsage> getAllAfter(MetricsBatteryUsage metric);
+    List<MetricsBatteryUsage> getAll(MetricsBatteryUsage metric);
 
-    List<MetricsBatteryUsage> getAll(int nodeId);
+    List<MetricsBatteryUsage> getAggregationRequiredNodeIds(AGGREGATION_TYPE aggregationType,
+            Long fromTimestamp,
+            Long toTimestamp);
 
-    MetricsBatteryUsage getLast(int nodeId);
 }

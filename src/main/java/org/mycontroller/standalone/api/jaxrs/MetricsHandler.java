@@ -37,11 +37,10 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
 import org.mycontroller.standalone.model.ResourceCountModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -52,7 +51,6 @@ import org.slf4j.LoggerFactory;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 public class MetricsHandler {
-    private static final Logger _logger = LoggerFactory.getLogger(MetricsHandler.class.getName());
     public static final String MINUMUM = "Minimum";
     public static final String MAXIMUM = "Maximum";
     public static final String AVERAGE = "Average";
@@ -90,27 +88,64 @@ public class MetricsHandler {
     }
 
     @GET
-    @Path("/batteryUsage")
-    public Response getBatteryUsageDetails(@QueryParam("nodeId") Integer nodeId) {
-        return RestUtils.getResponse(Status.OK, this.getBatterUsage(nodeId));
+    @Path("/metricsBattery")
+    public Response getMetricsBattery(
+            @QueryParam("nodeId") Integer nodeId,
+            @QueryParam("timestampFrom") Long timestampFrom,
+            @QueryParam("timestampTo") Long timestampTo,
+            @QueryParam("withMinMax") Boolean withMinMax) {
+        return RestUtils.getResponse(Status.OK,
+                getMetricsBatteryJsonNVD3(nodeId, timestampFrom, timestampTo,
+                        withMinMax != null ? withMinMax : false));
     }
 
-    private ArrayList<MetricsChartDataNVD3> getBatterUsage(int nodeId) {
-        ArrayList<MetricsChartDataNVD3> finalData = new ArrayList<MetricsChartDataNVD3>();
-        List<MetricsBatteryUsage> metrics = DaoUtils.getMetricsBatteryUsageDao().getAll(nodeId);
-        if (metrics == null) {
-            _logger.debug("No data");
-            return null;
-        }
-        else {
-            ArrayList<Object> batteryMetrics = new ArrayList<Object>();
-            for (MetricsBatteryUsage metric : metrics) {
-                batteryMetrics.add(new Object[] { metric.getTimestamp(), metric.getValue() });
+    private MetricsChartDataGroupNVD3 getMetricsBatteryJsonNVD3(Integer nodeId, Long timestampFrom,
+            Long timestampTo, Boolean withMinMax) {
+        ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
+
+        MetricsBatteryUsage metricQueryBattery = MetricsBatteryUsage.builder()
+                .timestampFrom(timestampFrom)
+                .timestampTo(timestampTo)
+                .node(Node.builder().id(nodeId).build())
+                .build();
+        List<MetricsBatteryUsage> batteryMetrics = DaoUtils.getMetricsBatteryUsageDao().getAll(metricQueryBattery);
+        ArrayList<Object> avgMetricValues = new ArrayList<Object>();
+        ArrayList<Object> minMetricValues = new ArrayList<Object>();
+        ArrayList<Object> maxMetricValues = new ArrayList<Object>();
+        for (MetricsBatteryUsage metric : batteryMetrics) {
+            avgMetricValues.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
+            if (withMinMax) {
+                minMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMin() });
+                maxMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMax() });
             }
-            finalData.add(MetricsChartDataNVD3.builder().key("Battery Level")
-                    .values(batteryMetrics).build());
         }
-        return finalData;
+        preDoubleData.add(MetricsChartDataNVD3.builder()
+                .key("Average")
+                .values(avgMetricValues)
+                .type("lineChart")
+                .interpolate("linear")
+                .area(false)
+                .build());
+        if (withMinMax) {
+            preDoubleData.add(MetricsChartDataNVD3.builder()
+                    .key("Minimum")
+                    .values(minMetricValues)
+                    .type("lineChart")
+                    .interpolate("linear")
+                    .area(false)
+                    .build());
+            preDoubleData.add(MetricsChartDataNVD3.builder()
+                    .key("Maximum")
+                    .values(maxMetricValues)
+                    .type("lineChart")
+                    .interpolate("linear")
+                    .area(false)
+                    .build());
+        }
+        return MetricsChartDataGroupNVD3.builder()
+                .metricsChartDataNVD3(preDoubleData)
+                .unit("%")
+                .id(nodeId).build();
     }
 
     private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3(Integer sensorId, Long timestampFrom,
