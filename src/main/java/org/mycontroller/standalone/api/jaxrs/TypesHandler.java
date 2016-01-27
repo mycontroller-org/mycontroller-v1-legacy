@@ -229,6 +229,24 @@ public class TypesHandler {
         return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
     }
 
+    @GET
+    @Path("/hvacOptionsFlowState")
+    public Response getHvacOptionsFlowState() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getHvacOptionsFlowState());
+    }
+
+    @GET
+    @Path("/hvacOptionsFlowMode")
+    public Response getHvacOptionsFlowMode() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getHvacOptionsFlowMode());
+    }
+
+    @GET
+    @Path("/hvacOptionsFanSpeed")
+    public Response getHvacOptionsFanSpeed() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getHvacOptionsFanSpeed());
+    }
+
     //----------------- review required
 
     @GET

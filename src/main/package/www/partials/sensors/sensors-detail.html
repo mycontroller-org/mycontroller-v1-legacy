@@ -27,11 +27,8 @@
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
-    <div class="container-cards-pf"><!-- row1 -->
-      <div class="col-lg-12">
-      
-      </div>
-      <div class="row row-cards-pf">
+    <div class="container-cards-pf"><!-- row -->
+      <div class="row row-cards-pf"> <!-- row-details -->
   
         <!-- details -->
         <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
@@ -91,31 +88,25 @@
             </div>
           </div>
         </div>
-        
-      <div class="container-cards-pf">
-      <div class="row row-cards-pf">
-        <div ng-repeat="variable in item.variables"> <!-- variables ng-repeat -->
+
+        <!-- variables ng-repeat -->
+        <div ng-repeat="variable in item.variables"> 
           <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-            <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented ">
+            <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented mc-sensor-variable-detail">
               <h2 class="card-pf-title">{{variable.type}}</h2>
               <div class="card-pf-body">
-                <!-- variable value -->
-                <span class="mc-inline-editer-ab" e-style="height: 22px;" id="value" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
-                  <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit ||""}}
-                </span>
+                <!-- Sensor variables -->
+                <div ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
               </div>
             </div>
           </div>
         </div>
         
-      </div><!-- /row -->
-    </div><!-- /container -->
-        
-      </div>  
-    </div><!-- /row1 -->
+      </div> <!-- /row-details -->
+    </div><!-- /row -->
     
     
-    <div class="container-cards-pf">
+    <div class="container-cards-pf" ng-show="chartData.length > 0">
       <div class="row row-cards-pf">
         <div class="col-lg-12">
           <div class="card-pf card-pf-accented ">
@@ -148,6 +139,7 @@
             </div>
           </div>
         </div>
+        
       </div><!-- /row -->
     </div><!-- /container -->
     

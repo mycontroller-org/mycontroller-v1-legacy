@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone;
 
+import java.util.HashMap;
+
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 
 /* All the messages based on MYSENSORS.ORG, Do not add new */
@@ -430,8 +432,38 @@ public class MYCMessages {
             case V_HVAC_FLOW_MODE:
                 return PAYLOAD_TYPE.PL_STRING;
             default:
-                return null;
+                //Make default to string
+                return PAYLOAD_TYPE.PL_STRING;
         }
+    }
+
+    //HVAC Options flow state
+    public static final HashMap<String, String> HVAC_OPTIONS_FLOW_STATE;
+    static {
+        HVAC_OPTIONS_FLOW_STATE = new HashMap<String, String>();
+        HVAC_OPTIONS_FLOW_STATE.put("AutoChangeOver", "Auto Change Over");
+        HVAC_OPTIONS_FLOW_STATE.put("HeatOn", "Heat On");
+        HVAC_OPTIONS_FLOW_STATE.put("CoolOn", "Cool On");
+        HVAC_OPTIONS_FLOW_STATE.put("Off", "Off");
+    }
+
+    //HVAC Options flow state
+    public static final HashMap<String, String> HVAC_OPTIONS_FLOW_MODE;
+    static {
+        HVAC_OPTIONS_FLOW_MODE = new HashMap<String, String>();
+        HVAC_OPTIONS_FLOW_MODE.put("Auto", "Auto");
+        HVAC_OPTIONS_FLOW_MODE.put("ContinuousOn", "Continuous On");
+        HVAC_OPTIONS_FLOW_MODE.put("PeriodicOn", "Periodic On");
+    }
+
+    //HVAC heater options - HVAC fan speed
+    public static final HashMap<String, String> HVAC_OPTIONS_FAN_SPEED;
+    static {
+        HVAC_OPTIONS_FAN_SPEED = new HashMap<String, String>();
+        HVAC_OPTIONS_FAN_SPEED.put("Min", "Minimum");
+        HVAC_OPTIONS_FAN_SPEED.put("Normal", "Normal");
+        HVAC_OPTIONS_FAN_SPEED.put("Max", "Maximum");
+        HVAC_OPTIONS_FAN_SPEED.put("Auto", "Auto");
     }
 
 }

@@ -29,6 +29,7 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_STREAM;
+import org.mycontroller.standalone.MYCMessages;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.alarm.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.THRESHOLD_TYPE;
@@ -674,6 +675,33 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (GatewayUtils.SERIAL_PORT_DRIVER type : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getHvacOptionsFlowState() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (String key : MYCMessages.HVAC_OPTIONS_FLOW_STATE.keySet()) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(key)
+                    .displayName(MYCMessages.HVAC_OPTIONS_FLOW_STATE.get(key)).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getHvacOptionsFlowMode() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (String key : MYCMessages.HVAC_OPTIONS_FLOW_MODE.keySet()) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(key)
+                    .displayName(MYCMessages.HVAC_OPTIONS_FLOW_MODE.get(key)).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getHvacOptionsFanSpeed() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (String key : MYCMessages.HVAC_OPTIONS_FAN_SPEED.keySet()) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(key)
+                    .displayName(MYCMessages.HVAC_OPTIONS_FAN_SPEED.get(key)).build());
         }
         return typesIdNameMappers;
     }

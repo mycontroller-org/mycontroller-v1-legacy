@@ -426,7 +426,9 @@ input.mc-color-steel-blue{
     white-space: normal;
 }
 
-
+.mc-sensor-variable-detail{
+  height:75px;
+}
 
 
 

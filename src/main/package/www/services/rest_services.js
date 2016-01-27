@@ -104,6 +104,10 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getSensorVariableMapperByType:  { method: 'GET', isArray: true, params: {type: 'sensorVariableMapperByType', id:null}  },
     updateSensorVariableMapper:  { method: 'PUT', params: {type: 'sensorVariableMapper', id : null} },
     getLanguages: { method: 'GET', isArray: true, params: {type: 'languages', id : null}},
+    getHvacOptionsFlowState: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFlowState', id : null}},
+    getHvacOptionsFlowMode: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFlowMode', id : null}},
+    getHvacOptionsFanSpeed: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFanSpeed', id : null}},    
+    
 
     getResources:  { method: 'GET', isArray: true, params: {type: 'resources'} },
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },

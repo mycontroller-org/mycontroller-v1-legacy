@@ -17,7 +17,7 @@
 //http://js2.coffee/#coffee2js
 //https://coderwall.com/p/r_bvhg/angular-ui-bootstrap-alert-service-for-angular-js
 
-myControllerModule.factory('CommonServices', function(TypesFactory) {
+myControllerModule.factory('CommonServices', function(TypesFactory, $filter) {
   var commonService = {};
   
   //Get value nested supported
@@ -224,6 +224,116 @@ myControllerModule.factory('CommonServices', function(TypesFactory) {
   commonService.getMin = function(item1, item2){
     return Math.min(item1, item2);
   };
+  
+  //item for sensor actions
+  //--------------------------------------------------
+  
+  //Defined variable types list
+  commonService.getSensorVariablesKnownList = function(){
+    var definedVariableTypes = ["Status","Watt","Temperature","Humidity","Pressure","Forecast","Armed","Tripped","Lock status","Percentage","Weight","Stop","Up","Down","Rain","Rain rate",
+    "HVAC flow state","HVAC flow mode","HVAC speed","HVAC setpoint cool","HVAC setpoint heat","Variable 1","Variable 2","Variable 3","Variable 4","Variable 5","RGB","RGBW","Distance",
+    "Current","Voltage","Impedance"];
+    return definedVariableTypes;
+  };
+  
+  //Forecast mapper
+    var forecastMapper = [
+        {
+          id:"sunny",
+          value:"day-sunny",
+        },{
+          id:"cloudy",
+          value:"day-cloudy",
+        },{
+          id:"thunderstorm",
+          value:"day-thunderstorm",
+        },{
+          id:"stable",
+          value:"na",
+        },{
+          id:"unstable",
+          value:"na",
+        },{
+          id:"na",
+          value:"na",
+        },
+      ];
+  
+  commonService.getForecastValue = function(key){
+    if(key === undefined){
+      key = 'na';
+    }
+    var result = $filter('filter')(forecastMapper, {id: key}, true)[0];
+    if(!result){
+      return "na";
+    }else{
+      return result.value
+    }
+    //return $filter('filter')($scope.forecastMapper, {id: key}, true)[0].value;
+  };
+
+  
+  //Sensor icons
+    var sensorIcons = [
+        { id:"na",value:"na"},{id:"Door",value:"fa fa-building-o"},{ id:"Motion",value:"fa fa-paw"},{ id:"Smoke",value:"wi wi-smoke"},{ id:"Binary",value:"fa fa-power-off"},{ id:"Dimmer",value:"fa fa-lightbulb-o"},
+        { id:"Cover",value:"fa fa-archive"},{ id:"Temperature",value:"wi wi-thermometer"},{ id:"Humidity",value:"wi wi-humidity"},{ id:"Barometer",value:"wi wi-barometer"},{ id:"Wind",value:"wi wi-windy"},
+        { id:"Rain",value:"wi wi-raindrops"},{ id:"UV",value:"fa fa-star-o"},{ id:"Weight",value:"fa fa-balance-scale"},{ id:"Power",value:"fa fa-bolt"},{ id:"Heater",value:"fa fa-star-o"},{ id:"Distance",value:"fa fa-binoculars"},
+        { id:"Light level",value:"wi wi-moon-alt-waxing-crescent-5"},{ id:"Node",value:"fa fa-sitemap"},{ id:"Repeater node",value:"fa fa-sitemap"},{ id:"Lock",value:"fa fa-lock"},{ id:"IR",value:"fa fa-star-o"},
+        { id:"Water",value:"fa fa-star-o"},{ id:"Air quality",value:"fa fa-star-o"},{ id:"Custom",value:"fa fa-star-o"},    { id:"Dust",value:"wi wi-dust"},{ id:"Scene controller",value:"fa fa-picture-o"},
+        { id:"RGB light",value:"fa fa-star-o"},{ id:"RGBW light",value:"fa fa-star-o"},{ id:"Color sensor",value:"fa fa-star-o"},{ id:"HVAC",value:"fa fa-star-o"},{ id:"Multimeter",value:"fa fa-calculator"},
+        { id:"Sprinkler",value:"fa fa-star-o"},{ id:"Water leak",value:"fa fa-tint"},{ id:"Sound",value:"fa fa-volume-up"},{ id:"Vibration",value:"fa fa-star-o"},{ id:"Moisture",value:"fa fa-star-o"},
+        { id:"Information",value:"fa fa-info"},{ id:"Gas",value:"fa fa-star-o"},{ id:"GPS",value:"fa fa-star-o"},
+      ];
+  
+  commonService.getSensorIcon = function(key){
+    if(key === undefined){
+      key = 'na';
+    }
+    return $filter('filter')(sensorIcons, {id: key}, true)[0].value;
+  };
+  
+  
+  //RGBA functions
+  //Function to convert rgba format to hex color
+  commonService.rgba2hex = function rgb2hex(rgb){  
+    rgb = rgb.replace("rgba","").replace("(","").replace(")","").split(",");
+    return "#"+parseInt(rgb[0],10).toString(16)
+      + parseInt(rgb[1],10).toString(16)
+      + parseInt(rgb[2],10).toString(16)
+      + parseInt((parseFloat(rgb[3],10)*255)).toString(16);
+  };
+  
+  //Function to convert hex format to RGBA color
+  commonService.hex2rgba = function(hex){
+    if(hex){
+      hex = hex.replace('#','');
+      r = parseInt(hex.substring(0,2), 16);
+      g = parseInt(hex.substring(2,4), 16);
+      b = parseInt(hex.substring(4,6), 16);
+      opacity = parseInt(hex.substring(6,8), 16);
+      result = 'rgba('+r+','+g+','+b+','+(opacity/255).toFixed(2)+')';
+      return result;
+    }
+    return undefined;
+  };
+  
+  //Get integer value for switch
+  commonService.getInteger = function(value){
+    if(!value){
+      return undefined;
+    }else{
+      return parseInt(value);
+    }
+  };
+  
+  //Switch settings
+  commonService.mcbStyle = {
+      handleWidth: "60px",
+      stateHandleWidth: "35px",
+      labelWidth: "3px",
+      animate:true,
+      size:"small",
+    };
   
  return commonService;
 

@@ -236,11 +236,12 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
 });
 
 //item Detail
-myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory, $filter) {
+myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory, $filter, CommonServices, TypesFactory) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.node = {};
   $scope.headerStringList = "Sensor details";
+  $scope.cs = CommonServices;
   
   $scope.item = SensorsFactory.get({"id":$stateParams.id});
   
@@ -320,6 +321,35 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     chOptions.title.text = chData.variableType;
     return chOptions;
   }
+  
+    //Update Variable / Send Payload
+  $scope.updateVariable = function(variable){
+    SensorsFactory.updateVariable(variable, function(){
+      //update Success
+    },function(error){
+      displayRestError.display(error);
+    });
+  };
+  
+  //HVAC heater options - HVAC flow state
+  $scope.hvacOptionsFlowState = TypesFactory.getHvacOptionsFlowState();  
+  //HVAC heater options - HVAC flow mode
+  $scope.hvacOptionsFlowMode = TypesFactory.getHvacOptionsFlowMode();  
+  //HVAC heater options - HVAC fan speed
+  $scope.hvacOptionsFanSpeed = TypesFactory.getHvacOptionsFanSpeed();  
+  
+  //Defined variable types list
+  $scope.definedVariableTypes = CommonServices.getSensorVariablesKnownList();
+  
+  //Hide variable names
+  $scope.hideVariableName=true;
+
+  
+  //update rgba color
+  $scope.updateRgba = function(variable){
+    variable.value = CommonServices.rgba2hex(variable.rgba);
+    $scope.updateVariable(variable);
+  };
   
   
 });

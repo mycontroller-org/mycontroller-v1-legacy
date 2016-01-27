@@ -24,6 +24,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
+  $scope.cs = CommonServices;
     
   //data query details
   $scope.currentPage = 1;
@@ -176,172 +177,22 @@ myControllerModule.controller('SensorsActionControllerList', function(
     });
   };
   
-  
-  //Switch settings
-  $scope.mcbStyle = {
-      handleWidth: "60px",
-      stateHandleWidth: "35px",
-      labelWidth: "3px",
-      animate:true,
-      size:"small",
-    };
+  //HVAC heater options - HVAC flow state
+  $scope.hvacOptionsFlowState = TypesFactory.getHvacOptionsFlowState();  
+  //HVAC heater options - HVAC flow mode
+  $scope.hvacOptionsFlowMode = TypesFactory.getHvacOptionsFlowMode();  
+  //HVAC heater options - HVAC fan speed
+  $scope.hvacOptionsFanSpeed = TypesFactory.getHvacOptionsFanSpeed();  
   
   //Defined variable types list
-  $scope.definedVariableTypes = ["Status","Watt","Temperature","Humidity","Pressure","Forecast","Armed","Tripped","Lock status","Percentage","Weight","Stop","Up","Down","Rain","Rain rate",
-    "HVAC flow state","HVAC flow mode","HVAC speed","HVAC setpoint cool","HVAC setpoint heat","Variable 1","Variable 2","Variable 3","Variable 4","Variable 5","RGB","RGBW","Distance",
-    "Current","Voltage","Impedance"];
-    
-  //HVAC heater options - HVAC flow state
-  $scope.hvacOptionsFlowState = [
-    {
-      id:"AutoChangeOver",
-      label:"Auto Change Over",
-    },
-    {
-      id:"HeatOn",
-      label:"Heat On",
-    },
-    {
-      id:"CoolOn",
-      label:"Cool On",
-    },
-    {
-      id:"Off",
-      label:"Off",
-    },
-  ];
-  
-  //HVAC heater options - HVAC flow mode
-  $scope.hvacOptionsFlowMode = [
-    {
-      id:"Auto",
-      label:"Auto",
-    },
-    {
-      id:"ContinuousOn",
-      label:"Continuous On",
-    },
-    {
-      id:"PeriodicOn",
-      label:"Periodic On",
-    },
-  ];
-  
-  //HVAC heater options - HVAC fan speed
-  $scope.hvacOptionsFanSpeed = [
-    {
-      id:"Min",
-      label:"Minimum",
-    },
-    {
-      id:"Normal",
-      label:"Normal",
-    },
-    {
-      id:"Max",
-      label:"Maximum",
-    },
-    {
-      id:"Auto",
-      label:"Auto",
-    },
-  ];
-  
-  //Forecast mapper
-  $scope.forecastMapper = [
-    {
-      id:"sunny",
-      value:"day-sunny",
-    },{
-      id:"cloudy",
-      value:"day-cloudy",
-    },{
-      id:"thunderstorm",
-      value:"day-thunderstorm",
-    },{
-      id:"stable",
-      value:"na",
-    },{
-      id:"unstable",
-      value:"na",
-    },{
-      id:"na",
-      value:"na",
-    },
-  ];
-  
-  $scope.getForecastValue = function(key){
-    if(key === undefined){
-      key = 'na';
-    }
-    var result = $filter('filter')($scope.forecastMapper, {id: key}, true)[0];
-    if(!result){
-      return "na";
-    }else{
-      return result.value
-    }
-    //return $filter('filter')($scope.forecastMapper, {id: key}, true)[0].value;
-  };
-  
-  //Sesnor type icon mapper
-  $scope.sensorIcons = [
-    { id:"na",value:"na"},{id:"Door",value:"fa fa-building-o"},{ id:"Motion",value:"fa fa-paw"},{ id:"Smoke",value:"wi wi-smoke"},{ id:"Binary",value:"fa fa-power-off"},{ id:"Dimmer",value:"fa fa-lightbulb-o"},
-    { id:"Cover",value:"fa fa-archive"},{ id:"Temperature",value:"wi wi-thermometer"},{ id:"Humidity",value:"wi wi-humidity"},{ id:"Barometer",value:"wi wi-barometer"},{ id:"Wind",value:"wi wi-windy"},
-    { id:"Rain",value:"wi wi-raindrops"},{ id:"UV",value:"fa fa-star-o"},{ id:"Weight",value:"fa fa-balance-scale"},{ id:"Power",value:"fa fa-bolt"},{ id:"Heater",value:"fa fa-star-o"},{ id:"Distance",value:"fa fa-binoculars"},
-    { id:"Light level",value:"wi wi-moon-alt-waxing-crescent-5"},{ id:"Node",value:"fa fa-sitemap"},{ id:"Repeater node",value:"fa fa-sitemap"},{ id:"Lock",value:"fa fa-lock"},{ id:"IR",value:"fa fa-star-o"},
-    { id:"Water",value:"fa fa-star-o"},{ id:"Air quality",value:"fa fa-star-o"},{ id:"Custom",value:"fa fa-star-o"},    { id:"Dust",value:"wi wi-dust"},{ id:"Scene controller",value:"fa fa-picture-o"},
-    { id:"RGB light",value:"fa fa-star-o"},{ id:"RGBW light",value:"fa fa-star-o"},{ id:"Color sensor",value:"fa fa-star-o"},{ id:"HVAC",value:"fa fa-star-o"},{ id:"Multimeter",value:"fa fa-calculator"},
-    { id:"Sprinkler",value:"fa fa-star-o"},{ id:"Water leak",value:"fa fa-tint"},{ id:"Sound",value:"fa fa-volume-up"},{ id:"Vibration",value:"fa fa-star-o"},{ id:"Moisture",value:"fa fa-star-o"},
-    { id:"Information",value:"fa fa-info"},{ id:"Gas",value:"fa fa-star-o"},{ id:"GPS",value:"fa fa-star-o"},
-  ];
-  
-  $scope.getSensorIcon = function(key){
-    if(key === undefined){
-      key = 'na';
-    }
-    return $filter('filter')($scope.sensorIcons, {id: key}, true)[0].value;
-  };
-  
-  //Get integer value for switch
-  $scope.getInteger = function(value){
-    if(!value){
-      return undefined;
-    }else{
-      return parseInt(value);
-    }
-  };
+  $scope.definedVariableTypes = CommonServices.getSensorVariablesKnownList();
   
 
   
   //update rgba color
   $scope.updateRgba = function(variable){
-    variable.value = rgba2hex(variable.rgba);
+    variable.value = CommonServices.rgba2hex(variable.rgba);
     $scope.updateVariable(variable);
-  };
-  
-  //RGBA functions
-  //Function to convert rgba format to hex color
-  var rgba2hex = function rgb2hex(rgb){  
-    rgb = rgb.replace("rgba","").replace("(","").replace(")","").split(",");
-    return "#"+parseInt(rgb[0],10).toString(16)
-      + parseInt(rgb[1],10).toString(16)
-      + parseInt(rgb[2],10).toString(16)
-      + parseInt((parseFloat(rgb[3],10)*255)).toString(16);
-  };
-
-  
-  //Function to convert hex format to rgba color
-  $scope.hex2rgba = function(hex){
-    if(hex){
-      hex = hex.replace('#','');
-      r = parseInt(hex.substring(0,2), 16);
-      g = parseInt(hex.substring(2,4), 16);
-      b = parseInt(hex.substring(4,6), 16);
-      opacity = parseInt(hex.substring(4,6), 16);
-      result = 'rgba('+r+','+g+','+b+','+(opacity/255).toFixed(2)+')';
-      return result;
-    }
-    return undefined;
   };
   
   
