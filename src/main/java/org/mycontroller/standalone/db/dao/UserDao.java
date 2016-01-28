@@ -15,22 +15,20 @@
  */
 package org.mycontroller.standalone.db.dao;
 
-import java.util.List;
-
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.User;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface UserDao {
-    void create(User user);
-    void createOrUpdate(User user);
-    void delete(User user);
-    void delete(int userId);
-    void update(User user);
-    List<User> getAll();
-    User get(User user);
-    User get(int userId);
-    User get(String userName);
+public interface UserDao extends BaseDao<User, Integer> {
+
+    User getById(Integer id);
+
+    User getByUsername(String userName);
+
+    QueryResponse getAll(Query query);
+
 }

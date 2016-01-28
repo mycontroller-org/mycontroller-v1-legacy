@@ -106,8 +106,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getLanguages: { method: 'GET', isArray: true, params: {type: 'languages', id : null}},
     getHvacOptionsFlowState: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFlowState', id : null}},
     getHvacOptionsFlowMode: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFlowMode', id : null}},
-    getHvacOptionsFanSpeed: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFanSpeed', id : null}},    
-    
+    getHvacOptionsFanSpeed: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFanSpeed', id : null}},
+    getRolePermissions: { method: 'GET', isArray: true, params: {type: 'rolePermissions', id : null}},
 
     getResources:  { method: 'GET', isArray: true, params: {type: 'resources'} },
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },
@@ -184,14 +184,25 @@ myControllerModule.factory('AuthenticationService',
     });
 
 
-//User Services
-myControllerModule.factory('UsersFactory', function ($resource) {
-  return $resource('/mc/rest/users/:userId', {userId: '@userId'}, {
-    getAll: { method: 'GET', isArray: true },
-    get:    { method: 'GET' },
-    create: { method: 'POST'},
-    update: { method: 'PUT' },
-    delete: { method: 'DELETE' }
+//Security Services
+myControllerModule.factory('SecurityFactory', function ($resource) {
+  return $resource('/mc/rest/security/:type/:id', {}, {
+    getAllRoles: { method: 'GET', isArray: false, params: {type: 'roles', id:null, 'onlyRolename':null}},
+    getAllRolesSimple: { method: 'GET', isArray: true, params: {type: 'roles', id:null, 'onlyRolename':true}},
+    getRole: { method: 'GET', isArray: false, params: {type: 'roles', id:'@id'}},
+    createRole: { method: 'POST', isArray: false, params: {type: 'roles', id:null}},
+    updateRole: { method: 'PUT', isArray: false, params: {type: 'roles', id:null}},
+    deleteRoleIds: { method: 'POST', isArray: false, params: {type: 'roles', id:'delete'}},
+    
+    getAllUsers: { method: 'GET', isArray: false, params: {type: 'users', id:null, 'onlyUsername':null}},
+    getAllUsersSimple: { method: 'GET', isArray: true, params: {type: 'users', id:null, 'onlyUsername':true}},
+    getUser: { method: 'GET', isArray: false, params: {type: 'users', id:'@id'}},
+    createUser: { method: 'POST', isArray: false, params: {type: 'users', id:null}},
+    updateUser: { method: 'PUT', isArray: false, params: {type: 'users', id:null}},
+    deleteUserIds: { method: 'POST', isArray: false, params: {type: 'users', id:'delete'}},
+    enableUserIds: { method: 'POST', isArray: false, params: {type: 'users', id:'enable'}},
+    disableUserIds: { method: 'POST', isArray: false, params: {type: 'users', id:'disable'}},
+    updateProfile: { method: 'PUT', isArray: false, params: {type: 'profile', id:null}},
   })
 });
 

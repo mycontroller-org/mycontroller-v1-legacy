@@ -40,7 +40,7 @@ import org.mycontroller.standalone.api.jaxrs.SettingsHandler;
 import org.mycontroller.standalone.api.jaxrs.TimerHandler;
 import org.mycontroller.standalone.api.jaxrs.TypesHandler;
 import org.mycontroller.standalone.api.jaxrs.UidTagHandler;
-import org.mycontroller.standalone.api.jaxrs.UserHandler;
+import org.mycontroller.standalone.api.jaxrs.SecurityHandler;
 import org.mycontroller.standalone.api.jaxrs.PermitAllHandler;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
 import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
@@ -130,7 +130,7 @@ public class StartApp {
         resources.add(TypesHandler.class.getName());
         resources.add(MetricsHandler.class.getName());
         resources.add(AuthenticationHandler.class.getName());
-        resources.add(UserHandler.class.getName());
+        resources.add(SecurityHandler.class.getName());
         resources.add(AlarmHandler.class.getName());
         resources.add(ResourcesLogsHandler.class.getName());
         resources.add(TimerHandler.class.getName());

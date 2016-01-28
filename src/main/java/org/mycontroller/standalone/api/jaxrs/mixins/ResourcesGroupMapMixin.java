@@ -21,7 +21,6 @@ import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ResourceTypeSeri
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -29,7 +28,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("resourcesGroupMap")
 abstract class ResourcesGroupMapMixin {
 
     @JsonSerialize(using = ResourceTypeSerializer.class)

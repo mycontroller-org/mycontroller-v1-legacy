@@ -25,7 +25,6 @@ import org.mycontroller.standalone.api.jaxrs.mixins.serializers.NetworkTypeSeria
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.StateSerializer;
 import org.mycontroller.standalone.gateway.GatewayUtils.TYPE;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -33,7 +32,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("gateway")
 abstract class GatewayMixin {
 
     @JsonSerialize(using = GatewayTypeSerializer.class)

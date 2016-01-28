@@ -18,6 +18,7 @@ package org.mycontroller.standalone.auth;
 import java.security.Principal;
 
 import org.jboss.resteasy.plugins.server.embedded.SecurityDomain;
+import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
     @Override
     public Principal authenticate(String aUsername, String aPassword) throws SecurityException {
         _logger.debug("HTTP authentication: User:{}", aUsername);
-        User user = DaoUtils.getUserDao().get(aUsername);
+        User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
             if (user.getPassword().equals(aPassword)) {
@@ -45,15 +46,17 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
     }
 
     @Override
-    public boolean isUserInRole(Principal principal, String role) {
+    public boolean isUserInRole(Principal principal, String permission) {
         User user = (User) principal;
-        _logger.debug("isUserInRole called with role[{}], user[{}]", role, user);
-        if (USER_ROLE.ADMIN.toString().equalsIgnoreCase(user.getRole())) {
+        _logger.debug("isUserInRole(permission) called with permission[{}], user[{}]", permission, user);
+        PERMISSION_TYPE permissionType = AuthUtils.getPermission(user);
+        if (PERMISSION_TYPE.SUPER_ADMIN == permissionType) {
             return true;
-        } else if (role.equalsIgnoreCase(user.getRole())) {
+        } else if (permission.equalsIgnoreCase(permissionType.getText())) {
             return true;
         } else {
-            _logger.info("Roles Mismatch, api role[{}], user role[{}]", role, user.getRole());
+            _logger.info("Roles mismatch, api permission[{}], user permission[{}]", permission,
+                    permissionType.getText());
         }
         return false;
     }
@@ -63,7 +66,7 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
             return false;
         }
         _logger.debug("User:{},Password:{}", aUsername, aPassword);
-        User user = DaoUtils.getUserDao().get(aUsername);
+        User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
             if (user.getPassword().equals(aPassword)) {

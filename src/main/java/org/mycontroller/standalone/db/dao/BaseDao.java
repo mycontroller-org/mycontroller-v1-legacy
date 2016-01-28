@@ -31,6 +31,10 @@ public interface BaseDao<Tdao, Tid> {
 
     void deleteById(Tid id);
 
+    void delete(String key, Object value);
+
+    void delete(String key, List<Object> values);
+
     void update(Tdao tdao);
 
     List<Tdao> getAll();
@@ -45,7 +49,7 @@ public interface BaseDao<Tdao, Tid> {
 
     Long countOf();
 
-    public List<Tdao> getAll(String key, Object value);
+    List<Tdao> getAll(String key, Object value);
 
     long countOf(HashMap<String, List<Object>> columnValues);
 

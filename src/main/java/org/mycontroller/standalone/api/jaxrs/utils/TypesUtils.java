@@ -36,6 +36,7 @@ import org.mycontroller.standalone.alarm.AlarmUtils.THRESHOLD_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.TRIGGER_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.NOTIFICATION_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
+import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Firmware;
@@ -702,6 +703,17 @@ public class TypesUtils {
         for (String key : MYCMessages.HVAC_OPTIONS_FAN_SPEED.keySet()) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(key)
                     .displayName(MYCMessages.HVAC_OPTIONS_FAN_SPEED.get(key)).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getRolePermissions() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (PERMISSION_TYPE permission : PERMISSION_TYPE.values()) {
+            if (permission != PERMISSION_TYPE.SUPER_ADMIN) {
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(permission.ordinal())
+                        .displayName(permission.getText()).build());
+            }
         }
         return typesIdNameMappers;
     }

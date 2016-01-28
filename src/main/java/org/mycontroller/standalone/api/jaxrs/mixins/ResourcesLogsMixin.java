@@ -20,14 +20,12 @@ import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LogLevelSerializ
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.MessageTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ResourceTypeSerializer;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("resourcesLogs")
 abstract class ResourcesLogsMixin {
 
     @JsonSerialize(using = LogLevelSerializer.class)

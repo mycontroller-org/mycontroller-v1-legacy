@@ -247,6 +247,13 @@ public class TypesHandler {
         return RestUtils.getResponse(Status.OK, TypesUtils.getHvacOptionsFanSpeed());
     }
 
+    //Security
+    @GET
+    @Path("/rolePermissions")
+    public Response getRolePermissions() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getRolePermissions());
+    }
+
     //----------------- review required
 
     @GET

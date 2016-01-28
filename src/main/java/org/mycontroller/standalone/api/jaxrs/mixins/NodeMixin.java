@@ -25,7 +25,6 @@ import org.mycontroller.standalone.api.jaxrs.mixins.serializers.StateSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -33,7 +32,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("node")
 abstract class NodeMixin {
 
     @JsonSerialize(using = NodeTypeSerializer.class)

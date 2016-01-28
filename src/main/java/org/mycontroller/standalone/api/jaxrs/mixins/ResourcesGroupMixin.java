@@ -19,14 +19,12 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.StateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("resourcesGroup")
 abstract class ResourcesGroupMixin {
 
     @JsonSerialize(using = StateSerializer.class)

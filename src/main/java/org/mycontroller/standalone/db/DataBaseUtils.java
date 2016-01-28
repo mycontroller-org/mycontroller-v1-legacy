@@ -27,7 +27,9 @@ import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.alarm.jobs.AlarmDefinitionDampeningActiveTimeJob;
-import org.mycontroller.standalone.auth.USER_ROLE;
+import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
+import org.mycontroller.standalone.db.tables.Role;
+import org.mycontroller.standalone.db.tables.RoleUserMap;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.jobs.MidNightJobs;
@@ -218,13 +220,30 @@ public class DataBaseUtils {
             createSystemJob("Alarm definition dampening active time", "25,55 * * * * ? *", true,
                     AlarmDefinitionDampeningActiveTimeJob.class);
 
-            // Add default User
-            User adminUser = new User("admin");
-            adminUser.setPassword("admin");
-            adminUser.setEmail("admin@localhost.com");
-            adminUser.setRoleId(USER_ROLE.ADMIN.ordinal());
-            adminUser.setFullName("Admin");
-            DaoUtils.getUserDao().create(adminUser);
+            //Add super admin role
+            DaoUtils.getRoleDao().create(Role.builder()
+                    .name("Super admin role")
+                    .description("created by system on installation")
+                    .permission(PERMISSION_TYPE.SUPER_ADMIN)
+                    .build());
+
+            // Add default User          
+            DaoUtils.getUserDao().create(User.builder()
+                    .username("admin")
+                    .enabled(true)
+                    .fullName("Admin")
+                    .email("admin@localhost.com")
+                    .password("admin")
+                    .build());
+            //Get created role
+            Role superAdminRole = DaoUtils.getRoleDao().getByRoleName("Super admin role");
+            //Get created user
+            User adminUser = DaoUtils.getUserDao().getByUsername("admin");
+            //Map role and user
+            DaoUtils.getRoleUserMapDao().create(RoleUserMap.builder()
+                    .user(adminUser)
+                    .role(superAdminRole)
+                    .build());
 
             //Update controller default settings
             MyControllerSettings.builder()

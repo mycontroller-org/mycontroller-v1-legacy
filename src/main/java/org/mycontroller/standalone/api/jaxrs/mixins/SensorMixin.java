@@ -28,7 +28,6 @@ import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorVariableSe
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -36,8 +35,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("sensor")
-//@JsonIgnoreProperties(value = { "lastSeen" })
 abstract class SensorMixin {
 
     @JsonSerialize(using = SensorTypeSerializer.class)

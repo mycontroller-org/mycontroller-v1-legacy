@@ -37,6 +37,18 @@ import org.mycontroller.standalone.db.dao.NodeDao;
 import org.mycontroller.standalone.db.dao.NodeDaoImpl;
 import org.mycontroller.standalone.db.dao.ForwardPayloadDao;
 import org.mycontroller.standalone.db.dao.ForwardPayloadDaoImpl;
+import org.mycontroller.standalone.db.dao.RoleDao;
+import org.mycontroller.standalone.db.dao.RoleDaoImpl;
+import org.mycontroller.standalone.db.dao.RoleGatewayMapDao;
+import org.mycontroller.standalone.db.dao.RoleGatewayMapDaoImpl;
+import org.mycontroller.standalone.db.dao.RoleMqttMapDao;
+import org.mycontroller.standalone.db.dao.RoleMqttMapDaoImpl;
+import org.mycontroller.standalone.db.dao.RoleNodeMapDao;
+import org.mycontroller.standalone.db.dao.RoleNodeMapDaoImpl;
+import org.mycontroller.standalone.db.dao.RoleSensorMapDao;
+import org.mycontroller.standalone.db.dao.RoleSensorMapDaoImpl;
+import org.mycontroller.standalone.db.dao.RoleUserMapDao;
+import org.mycontroller.standalone.db.dao.RoleUserMapDaoImpl;
 import org.mycontroller.standalone.db.dao.SensorDao;
 import org.mycontroller.standalone.db.dao.SensorDaoImpl;
 import org.mycontroller.standalone.db.dao.ResourcesLogsDao;
@@ -97,6 +109,12 @@ public class DaoUtils {
     private static GatewayDao gatewayDao = null;
     private static ResourcesGroupDao resourcesGroupDao = null;
     private static ResourcesGroupMapDao resourcesGroupMapDao = null;
+    private static RoleDao roleDao = null;
+    private static RoleUserMapDao roleUserMapDao = null;
+    private static RoleGatewayMapDao roleGatewayMapDao = null;
+    private static RoleNodeMapDao roleNodeMapDao = null;
+    private static RoleSensorMapDao roleSensorMapDao = null;
+    private static RoleMqttMapDao roleMqttMapDao = null;
 
     public static void loadAllDao() {
         try {
@@ -122,6 +140,12 @@ public class DaoUtils {
             resourcesGroupDao = new ResourcesGroupDaoImpl(DataBaseUtils.getConnectionSource());
             resourcesGroupMapDao = new ResourcesGroupMapDaoImpl(DataBaseUtils.getConnectionSource());
             userSettingsDao = new UserSettingsDaoImpl(DataBaseUtils.getConnectionSource());
+            roleDao = new RoleDaoImpl(DataBaseUtils.getConnectionSource());
+            roleUserMapDao = new RoleUserMapDaoImpl(DataBaseUtils.getConnectionSource());
+            roleGatewayMapDao = new RoleGatewayMapDaoImpl(DataBaseUtils.getConnectionSource());
+            roleNodeMapDao = new RoleNodeMapDaoImpl(DataBaseUtils.getConnectionSource());
+            roleSensorMapDao = new RoleSensorMapDaoImpl(DataBaseUtils.getConnectionSource());
+            roleMqttMapDao = new RoleMqttMapDaoImpl(DataBaseUtils.getConnectionSource());
         } catch (SQLException sqlEx) {
             _logger.error("Unable to load Dao,", sqlEx);
         } catch (DbException dbEx) {
@@ -215,6 +239,30 @@ public class DaoUtils {
 
     public static UserSettingsDao getUserSettingsDao() {
         return userSettingsDao;
+    }
+
+    public static RoleDao getRoleDao() {
+        return roleDao;
+    }
+
+    public static RoleUserMapDao getRoleUserMapDao() {
+        return roleUserMapDao;
+    }
+
+    public static RoleGatewayMapDao getRoleGatewayMapDao() {
+        return roleGatewayMapDao;
+    }
+
+    public static RoleNodeMapDao getRoleNodeMapDao() {
+        return roleNodeMapDao;
+    }
+
+    public static RoleSensorMapDao getRoleSensorMapDao() {
+        return roleSensorMapDao;
+    }
+
+    public static RoleMqttMapDao getRoleMqttMapDao() {
+        return roleMqttMapDao;
     }
 
 }

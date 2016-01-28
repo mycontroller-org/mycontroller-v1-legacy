@@ -33,6 +33,12 @@ public class DB_TABLES {
     public static final String NODE = "node";
     public static final String RESOURCES_GROUP = "resources_group";
     public static final String RESOURCES_GROUP_MAP = "resources_group_map";
+    public static final String ROLE = "role";
+    public static final String ROLE_GATEWAY_MAP = "role_gateway_map";
+    public static final String ROLE_MQTT_MAP = "role_mqtt_map";
+    public static final String ROLE_NODE_MAP = "role_node_map";
+    public static final String ROLE_SENSOR_MAP = "role_sensor_map";
+    public static final String ROLE_USER_MAP = "role_user_map";
     public static final String SENSOR = "sensor";
     public static final String SENSOR_VARIABLES_MAP = "sensor_variables_map";
     public static final String SENSOR_VARIABLE = "sensor_variable";
@@ -42,4 +48,5 @@ public class DB_TABLES {
     public static final String UID_TAG = "uid_tag";
     public static final String USER = "user";
     public static final String USER_SETTINGS = "user_settings";
+
 }

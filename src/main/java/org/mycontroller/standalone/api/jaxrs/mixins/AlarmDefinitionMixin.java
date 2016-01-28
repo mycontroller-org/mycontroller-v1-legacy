@@ -32,7 +32,6 @@ import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ThresholdTypeSer
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.TriggerTypeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -40,7 +39,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("alarmDefinition")
 @JsonIgnoreProperties({ "dampeningInternal1", "dampeningInternal2" })
 abstract class AlarmDefinitionMixin {
 

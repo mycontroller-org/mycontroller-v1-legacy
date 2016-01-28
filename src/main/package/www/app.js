@@ -37,6 +37,7 @@ var myControllerModule = angular.module('myController',[
   'frapontillo.bootstrap-switch',
   'xeditable',
   'angularUtils.directives.dirPagination',
+  'frapontillo.bootstrap-duallistbox',
 ]);
 
 myControllerModule.constant("mchelper", {
@@ -306,6 +307,41 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       url:"/settings/variablesmapper/edit/:sensorType",
       templateUrl: "partials/variables-mapper/variables-mapper-edit.html",
       controller: "VariablesMapperEditController",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsRolesList', {
+      url:"/settings/roles/list",
+      templateUrl: "partials/users-roles/roles-list.html",
+      controller: "RolesControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsRolesAddEdit', {
+      url:"/settings/roles/addedit/:id",
+      templateUrl: "partials/users-roles/roles-add-edit.html",
+      controller: "RolesControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsUsersList', {
+      url:"/settings/users/list",
+      templateUrl: "partials/users-roles/users-list.html",
+      controller: "UsersControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsUsersAddEdit', {
+      url:"/settings/users/addedit/:id",
+      templateUrl: "partials/users-roles/users-add-edit.html",
+      controller: "UsersControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsProfileUpdate', {
+      url:"/settings/profile/update/:id",
+      templateUrl: "partials/users-roles/profile-update.html",
+      controller: "ProfileControllerUpdate",
        data: {
         requireLogin: true
       }

@@ -18,14 +18,12 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorVariableInfoSerializer;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("forwardpayload")
 abstract class ForwardPayloadMixin {
 
     @JsonGetter("source")

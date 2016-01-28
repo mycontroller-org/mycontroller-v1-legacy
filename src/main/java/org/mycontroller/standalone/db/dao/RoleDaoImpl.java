@@ -1,0 +1,75 @@
+/**
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.mycontroller.standalone.db.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
+import org.mycontroller.standalone.db.tables.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.j256.ormlite.support.ConnectionSource;
+
+/**
+ * @author Jeeva Kandasamy (jkandasa)
+ * @since 0.0.2
+ */
+public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements RoleDao {
+    private static final Logger _logger = LoggerFactory.getLogger(RoleDaoImpl.class);
+
+    public RoleDaoImpl(ConnectionSource connectionSource) throws SQLException {
+        super(connectionSource, Role.class);
+    }
+
+    @Override
+    public List<Role> getAll(List<Integer> ids) {
+        return super.getAll(Role.KEY_ID, ids);
+    }
+
+    @Override
+    public Role getByUserId(Integer userId) {
+        _logger.debug("User is:{}", userId);
+        return null;
+    }
+
+    @Override
+    public Role get(Role role) {
+        return super.getById(role.getId());
+    }
+
+    @Override
+    public Role getByRoleName(String roleName) {
+        List<Role> roles = super.getAll(Role.KEY_NAME, roleName);
+        if (roles != null && !roles.isEmpty()) {
+            return roles.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public QueryResponse getAll(Query query) {
+        try {
+            return super.getQueryResponse(query, Role.KEY_ID);
+        } catch (SQLException ex) {
+            _logger.error("unable to run query:[{}]", query, ex);
+            return null;
+        }
+    }
+
+}

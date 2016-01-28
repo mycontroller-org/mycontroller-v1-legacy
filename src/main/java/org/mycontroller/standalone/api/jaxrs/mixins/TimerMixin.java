@@ -27,7 +27,6 @@ import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -35,7 +34,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonTypeName("timer")
 @JsonIgnoreProperties({ "internalVariable1" })
 abstract class TimerMixin {
 

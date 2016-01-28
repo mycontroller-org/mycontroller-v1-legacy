@@ -56,7 +56,7 @@ public class AuthenticationHandler {
         _logger.debug("Login user: " + userCredential.getUsername());
         if (BasicAthenticationSecurityDomain.login(userCredential.getUsername(), userCredential.getPassword())) {
             AuthenticationJson authJson = AuthenticationJson.builder().success(true)
-                    .user(DaoUtils.getUserDao().get(userCredential.getUsername())).build();
+                    .user(DaoUtils.getUserDao().getByUsername(userCredential.getUsername())).build();
             return RestUtils.getResponse(Status.OK, authJson);
         } else {
             return RestUtils.getResponse(Status.UNAUTHORIZED,

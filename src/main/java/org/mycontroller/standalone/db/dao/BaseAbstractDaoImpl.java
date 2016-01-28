@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
@@ -180,6 +181,28 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             this.getDao().deleteById(id);
         } catch (SQLException ex) {
             _logger.error("unable to delete item, id:[{}]", id, ex);
+        }
+    }
+
+    public void delete(String key, Object value) {
+        try {
+            DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
+            deleteBuilder.where().eq(key, value);
+            int deleteCount = deleteBuilder.delete();
+            _logger.debug("Deleted count:{}, for key:{}, value:{}", deleteCount, key, value);
+        } catch (SQLException ex) {
+            _logger.error("unable to delete item, key:{}, value:{}", key, value, ex);
+        }
+    }
+    
+    public void delete(String key, List<Object> values) {
+        try {
+            DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
+            deleteBuilder.where().in(key, values);
+            int deleteCount = deleteBuilder.delete();
+            _logger.debug("Deleted count:{}, for key:{}, values:{}", deleteCount, key, values);
+        } catch (SQLException ex) {
+            _logger.error("unable to delete item, key:{}, values:{}", key, values, ex);
         }
     }
 
