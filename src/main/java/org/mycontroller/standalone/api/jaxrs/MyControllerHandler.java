@@ -24,7 +24,9 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.ObjectFactory;
@@ -47,9 +49,12 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/rest")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "user" })
+@RolesAllowed({ "User" })
 public class MyControllerHandler {
     private static final Logger _logger = LoggerFactory.getLogger(MyControllerHandler.class);
+
+    @Context
+    SecurityContext securityContext;
 
     //https://gist.github.com/tganzarolli/8520728
     //http://stackoverflow.com/questions/21221688/angularjs-resource-makes-http-options-request-instead-of-http-post-for-save-me

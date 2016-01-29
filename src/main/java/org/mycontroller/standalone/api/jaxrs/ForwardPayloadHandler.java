@@ -47,7 +47,7 @@ import org.mycontroller.standalone.db.tables.ForwardPayload;
 @Path("/rest/forwardpayload")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "admin" })
+@RolesAllowed({ "User" })
 public class ForwardPayloadHandler {
 
     @POST

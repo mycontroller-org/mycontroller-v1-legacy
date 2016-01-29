@@ -20,6 +20,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -50,6 +51,7 @@ import org.mycontroller.standalone.model.ResourceCountModel;
 @Path("/rest/metrics")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
+@RolesAllowed({ "User" })
 public class MetricsHandler {
     public static final String MINUMUM = "Minimum";
     public static final String MAXIMUM = "Maximum";

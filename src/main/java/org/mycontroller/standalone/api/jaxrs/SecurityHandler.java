@@ -34,6 +34,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 
 import org.jboss.resteasy.spi.HttpRequest;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
@@ -60,6 +61,9 @@ import org.mycontroller.standalone.db.tables.User;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "admin" })
 public class SecurityHandler {
+
+    @Context
+    SecurityContext securityContext;
 
     @GET
     @Path("/roles")
@@ -199,11 +203,16 @@ public class SecurityHandler {
     @POST
     @Path("/users/delete")
     public Response deleteUsers(List<Integer> userIds) {
+        //Remove logged in user from delete list
+        boolean removed = userIds.remove(((User) securityContext.getUserPrincipal()).getId());
         new UserJson().deleteUsers(userIds);
+        if (removed) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Self deletion not allowed!"));
+        }
         return RestUtils.getResponse(Status.OK);
     }
 
-    @RolesAllowed({ "user", "admin" })
+    @RolesAllowed({ "User", "MQTT user" })
     @PUT
     @Path("/profile")
     public Response updateProfile(UserJson userJson) {
@@ -213,6 +222,16 @@ public class SecurityHandler {
         } catch (IllegalAccessError ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
+    }
+
+    @RolesAllowed({ "User", "MQTT user" })
+    @GET
+    @Path("/profile")
+    public Response getProfile() {
+        User user = DaoUtils.getUserDao().getById(((User) securityContext.getUserPrincipal()).getId());
+        UserJson userJson = new UserJson();
+        userJson.mapResources(user);
+        return RestUtils.getResponse(Status.OK, userJson);
     }
 
     //review required

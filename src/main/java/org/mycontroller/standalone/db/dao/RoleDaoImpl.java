@@ -16,14 +16,18 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Role;
+import org.mycontroller.standalone.db.tables.RoleUserMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
@@ -72,4 +76,20 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
         }
     }
 
+    @Override
+    public List<String> getPermissionsByUserId(Integer userId) {
+        List<String> permissions = new ArrayList<String>();
+        try {
+            QueryBuilder<RoleUserMap, Object> roleUserQuery = DaoUtils.getRoleUserMapDao().getDao().queryBuilder();
+            roleUserQuery.selectColumns(RoleUserMap.KEY_ROLE_ID).where().eq(RoleUserMap.KEY_USER_ID, userId);
+            List<Role> roles = this.getDao().queryBuilder().selectColumns(Role.KEY_PERMISSION).distinct().join(roleUserQuery)
+                    .query();
+            for(Role role: roles){
+                permissions.add(role.getPermission().getText());
+            }
+        } catch (SQLException ex) {
+            _logger.error("Exception, ", ex);
+        }
+        return permissions;
+    }
 }

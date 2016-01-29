@@ -50,7 +50,7 @@ import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 @Path("/rest/timers")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "admin" })
+@RolesAllowed({ "User" })
 public class TimerHandler {
     @GET
     @Path("/{id}")

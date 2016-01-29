@@ -51,7 +51,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/rest/settings")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "user" })
+@RolesAllowed({ "admin" })
 public class SettingsHandler {
     private static final Logger _logger = LoggerFactory.getLogger(SettingsHandler.class.getName());
 

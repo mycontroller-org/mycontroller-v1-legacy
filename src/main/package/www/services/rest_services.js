@@ -202,6 +202,7 @@ myControllerModule.factory('SecurityFactory', function ($resource) {
     deleteUserIds: { method: 'POST', isArray: false, params: {type: 'users', id:'delete'}},
     enableUserIds: { method: 'POST', isArray: false, params: {type: 'users', id:'enable'}},
     disableUserIds: { method: 'POST', isArray: false, params: {type: 'users', id:'disable'}},
+    getProfile: { method: 'GET', isArray: false, params: {type: 'profile', id:null}},
     updateProfile: { method: 'PUT', isArray: false, params: {type: 'profile', id:null}},
   })
 });

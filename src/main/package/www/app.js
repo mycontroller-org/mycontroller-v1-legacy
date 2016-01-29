@@ -339,7 +339,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     }).state('settingsProfileUpdate', {
-      url:"/settings/profile/update/:id",
+      url:"/settings/profile/update",
       templateUrl: "partials/users-roles/profile-update.html",
       controller: "ProfileControllerUpdate",
        data: {

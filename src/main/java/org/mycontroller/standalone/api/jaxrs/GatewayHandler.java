@@ -53,7 +53,7 @@ import java.util.List;
 @Path("/rest/gateways")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "user" })
+@RolesAllowed({ "User" })
 public class GatewayHandler {
 
     @PUT

@@ -214,9 +214,10 @@ myControllerModule.controller('ProfileControllerUpdate', function ($scope, $stat
   $scope.item.user = {};
   $scope.item.user.enabled = true;
   
-  if($stateParams.id){
-    SecurityFactory.getUser({"id":$stateParams.id},function(response) {
+  $scope.resetProfile = function(){
+    SecurityFactory.getProfile(function(response) {
         $scope.item = response;
+        mchelper.user = angular.copy(response.user);
       },function(error){
         displayRestError.display(error);
       });
@@ -230,13 +231,8 @@ myControllerModule.controller('ProfileControllerUpdate', function ($scope, $stat
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   
-  
-  $scope.resetProfile = function(){
-    SecurityFactory.getUser({"id":$stateParams.id}, function(response){
-      $scope.item = response;
-      mchelper.user = angular.copy(response.user);
-    });
-  }
+  //Load self details
+  $scope.resetProfile();
 
   $scope.save = function(){
     $scope.saveProgress = true;

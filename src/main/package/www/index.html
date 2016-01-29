@@ -211,7 +211,7 @@
             </a>
             <ul class="dropdown-menu">
               <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }">
-                <a ui-sref="settingsProfileUpdate({'id':mchelper.user.id})"><i class="pficon pficon-user"> Profile</i></a>
+                <a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user"> Profile</i></a>
               </li>
               <li>
                 <a ui-sref="login"><i class="fa fa-sign-out fa-lg"></i> Log Out</a><!-- Logout Link -->
@@ -269,7 +269,7 @@
               <li ng-class="{ active: $state.current.name.indexOf('settingsVariablesMapperList') == 0 }"><a ui-sref="settingsVariablesMapperList"><i class="fa fa-clone fa-lg"></i> Variables mapper</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('settingsUsers') == 0 }"><a ui-sref="settingsUsersList"><i class="fa fa-users fa-lg"></i> Users</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('settingsRoles') == 0 }"><a ui-sref="settingsRolesList"><i class="pficon pficon-registry fa-lg mc-margin-right"></i>Roles</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }"><a ui-sref="settingsProfileUpdate({'id':mchelper.user.id})"><i class="pficon pficon-user fa-lg mc-margin-right"></i>Profile</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }"><a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user fa-lg mc-margin-right"></i>Profile</a></li>
             </ul>
           </li>
         </ul>

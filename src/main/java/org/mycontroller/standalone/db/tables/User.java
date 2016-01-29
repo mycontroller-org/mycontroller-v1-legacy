@@ -16,8 +16,10 @@
 package org.mycontroller.standalone.db.tables;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.db.DaoUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
@@ -63,6 +65,15 @@ public class User implements Principal {
     private String password;
     @DatabaseField(canBeNull = true, columnName = KEY_VALIDITY)
     private Long validity;
+
+    private List<String> permissions;
+
+    public List<String> getPermissions() {
+        if (permissions == null) {
+            permissions = DaoUtils.getRoleDao().getPermissionsByUserId(id);
+        }
+        return permissions;
+    }
 
     @Override
     public String getName() {

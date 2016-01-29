@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.db.dao;
 
+import java.util.List;
+
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.Role;
@@ -27,6 +29,8 @@ public interface RoleDao extends BaseDao<Role, Integer> {
     Role getByUserId(Integer userId);
 
     Role getByRoleName(String roleName);
+
+    List<String> getPermissionsByUserId(Integer userId);
 
     QueryResponse getAll(Query query);
 

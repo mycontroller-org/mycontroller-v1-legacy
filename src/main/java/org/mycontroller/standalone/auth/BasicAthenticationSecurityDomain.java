@@ -49,14 +49,16 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
     public boolean isUserInRole(Principal principal, String permission) {
         User user = (User) principal;
         _logger.debug("isUserInRole(permission) called with permission[{}], user[{}]", permission, user);
-        PERMISSION_TYPE permissionType = AuthUtils.getPermission(user);
-        if (PERMISSION_TYPE.SUPER_ADMIN == permissionType) {
+        if (user.getPermissions() == null || user.getPermissions().isEmpty()) {
+            return false;
+        }
+        if (user.getPermissions().contains(PERMISSION_TYPE.SUPER_ADMIN.getText())) {
             return true;
-        } else if (permission.equalsIgnoreCase(permissionType.getText())) {
+        } else if (user.getPermissions().contains(permission)) {
             return true;
         } else {
-            _logger.info("Roles mismatch, api permission[{}], user permission[{}]", permission,
-                    permissionType.getText());
+            _logger.info("Roles mismatch for user[{}], api permission[{}], user permission[{}]", user.getUsername(),
+                    permission, user.getPermissions());
         }
         return false;
     }

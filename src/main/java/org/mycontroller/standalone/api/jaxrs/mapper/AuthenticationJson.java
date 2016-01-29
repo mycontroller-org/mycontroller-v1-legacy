@@ -17,8 +17,6 @@ package org.mycontroller.standalone.api.jaxrs.mapper;
 
 import org.mycontroller.standalone.db.tables.User;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.Data;
 
 import lombok.AllArgsConstructor;
@@ -38,6 +36,5 @@ import lombok.Builder;
 public class AuthenticationJson {
     private Boolean success;
     private String message;
-    @JsonIgnoreProperties({ "password" })
     private User user;
 }

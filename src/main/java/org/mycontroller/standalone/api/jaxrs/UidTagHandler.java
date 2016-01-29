@@ -40,7 +40,7 @@ import org.mycontroller.standalone.db.tables.UidTag;
 @Path("/rest/uidtag")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "admin" })
+@RolesAllowed({ "User" })
 public class UidTagHandler {
 
     @GET

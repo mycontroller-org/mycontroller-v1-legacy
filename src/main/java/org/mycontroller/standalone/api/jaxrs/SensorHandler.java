@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 @Path("/rest/sensors")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "user" })
+@RolesAllowed({ "User" })
 public class SensorHandler {
     private static final Logger _logger = LoggerFactory.getLogger(SensorHandler.class);
 

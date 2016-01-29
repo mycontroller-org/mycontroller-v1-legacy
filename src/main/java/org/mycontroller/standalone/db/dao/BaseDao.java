@@ -18,6 +18,8 @@ package org.mycontroller.standalone.db.dao;
 import java.util.HashMap;
 import java.util.List;
 
+import com.j256.ormlite.dao.Dao;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
@@ -52,5 +54,7 @@ public interface BaseDao<Tdao, Tid> {
     List<Tdao> getAll(String key, Object value);
 
     long countOf(HashMap<String, List<Object>> columnValues);
+
+    Dao<Tdao, Tid> getDao();
 
 }

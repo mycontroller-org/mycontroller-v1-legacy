@@ -49,7 +49,7 @@ import org.mycontroller.standalone.db.tables.ResourcesLogs;
 @Path("/rest/resources/logs")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "admin" })
+@RolesAllowed({ "User" })
 public class ResourcesLogsHandler {
 
     @GET

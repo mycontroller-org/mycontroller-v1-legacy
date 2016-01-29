@@ -17,6 +17,7 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -31,7 +32,6 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
-import org.mycontroller.standalone.auth.USER_ROLE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -41,6 +41,7 @@ import org.mycontroller.standalone.auth.USER_ROLE;
 @Path("/rest/types")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
+@RolesAllowed({ "User" })
 public class TypesHandler {
 
     @GET
@@ -203,12 +204,14 @@ public class TypesHandler {
         return RestUtils.getResponse(Status.OK, TypesUtils.getTimerWeekDays(allDays != null ? allDays : false));
     }
 
+    @RolesAllowed({ "admin" })
     @GET
     @Path("/sensorVariableMapper")
     public Response getSensorVariableMapper() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
     }
 
+    @RolesAllowed({ "admin" })
     @GET
     @Path("/sensorVariableMapperByType")
     public Response getSensorVariableTypesAll(@QueryParam("sensorType") String sensorType) {
@@ -216,6 +219,7 @@ public class TypesHandler {
                 TypesUtils.getSensorVariableMapperByType(MESSAGE_TYPE_PRESENTATION.fromString(sensorType)));
     }
 
+    @RolesAllowed({ "admin" })
     @PUT
     @Path("/sensorVariableMapper")
     public Response updateSensorVariableMapper(TypesIdNameMapper idNameMapper) {
@@ -255,12 +259,6 @@ public class TypesHandler {
     }
 
     //----------------- review required
-
-    @GET
-    @Path("/roles")
-    public Response getUserRoles() {
-        return RestUtils.getResponse(Status.OK, USER_ROLE.values());
-    }
 
     @GET
     @Path("/configUnitTypes")

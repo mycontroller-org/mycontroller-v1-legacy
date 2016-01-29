@@ -20,6 +20,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -52,6 +53,7 @@ import org.mycontroller.standalone.db.tables.Node;
 @Path("/rest/nodes")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
+@RolesAllowed({ "User" })
 public class NodeHandler {
     @GET
     @Path("/")

@@ -1,7 +1,5 @@
 package org.mycontroller.standalone.auth;
 
-import org.mycontroller.standalone.db.tables.User;
-
 public class AuthUtils {
     private AuthUtils() {
 
@@ -40,10 +38,6 @@ public class AuthUtils {
             }
             return null;
         }
-    }
-
-    public static PERMISSION_TYPE getPermission(User user) {
-        return PERMISSION_TYPE.SUPER_ADMIN;
     }
 
 }
