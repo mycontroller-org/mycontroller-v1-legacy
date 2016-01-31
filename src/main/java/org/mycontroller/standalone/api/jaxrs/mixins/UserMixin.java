@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonIgnoreProperties({ "name", "permissions" })
+@JsonIgnoreProperties({ "name", "permissions", "gatewayIds", "nodeIds", "sensorIds", "sensorVariableIds" })
 abstract class UserMixin {
 
     @JsonIgnore

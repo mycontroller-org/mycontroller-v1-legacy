@@ -23,6 +23,9 @@ import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Role;
+import org.mycontroller.standalone.db.tables.RoleGatewayMap;
+import org.mycontroller.standalone.db.tables.RoleNodeMap;
+import org.mycontroller.standalone.db.tables.RoleSensorMap;
 import org.mycontroller.standalone.db.tables.RoleUserMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,9 +85,10 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
         try {
             QueryBuilder<RoleUserMap, Object> roleUserQuery = DaoUtils.getRoleUserMapDao().getDao().queryBuilder();
             roleUserQuery.selectColumns(RoleUserMap.KEY_ROLE_ID).where().eq(RoleUserMap.KEY_USER_ID, userId);
-            List<Role> roles = this.getDao().queryBuilder().selectColumns(Role.KEY_PERMISSION).distinct().join(roleUserQuery)
+            List<Role> roles = this.getDao().queryBuilder().selectColumns(Role.KEY_PERMISSION).distinct()
+                    .join(roleUserQuery)
                     .query();
-            for(Role role: roles){
+            for (Role role : roles) {
                 permissions.add(role.getPermission().getText());
             }
         } catch (SQLException ex) {
@@ -92,4 +96,77 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
         }
         return permissions;
     }
+
+    @Override
+    public List<Integer> getGatewayIds(Integer userId) {
+        List<Integer> ids = new ArrayList<Integer>();
+        try {
+            //Get role ids for this user
+            List<Integer> roleIds = DaoUtils.getRoleUserMapDao().getRolesByUserId(userId);
+            _logger.debug("RoleIds:{}", roleIds);
+            //if role id is not null do not execute
+            if (roleIds != null && roleIds.size() != 0) {
+                QueryBuilder<RoleGatewayMap, Object> roleGatewayQuery = DaoUtils.getRoleGatewayMapDao().getDao()
+                        .queryBuilder();
+                List<RoleGatewayMap> roleGatewayMaps = roleGatewayQuery.where()
+                        .in(RoleGatewayMap.KEY_ROLE_ID, roleIds).query();
+                for (RoleGatewayMap roleGatewayMap : roleGatewayMaps) {
+                    ids.add(roleGatewayMap.getGateway().getId());
+                }
+            }
+
+        } catch (SQLException ex) {
+            _logger.error("Exception, ", ex);
+        }
+        return ids;
+    }
+
+    @Override
+    public List<Integer> getNodeIds(Integer userId) {
+        List<Integer> ids = new ArrayList<Integer>();
+        try {
+            //Get role ids for this user
+            List<Integer> roleIds = DaoUtils.getRoleUserMapDao().getRolesByUserId(userId);
+            //if role id is not null do not execute
+            if (roleIds != null && roleIds.size() != 0) {
+                QueryBuilder<RoleNodeMap, Object> roleNodeQuery = DaoUtils.getRoleNodeMapDao().getDao()
+                        .queryBuilder();
+                List<RoleNodeMap> roleNodeMaps = roleNodeQuery.where()
+                        .in(RoleGatewayMap.KEY_ROLE_ID, roleIds).query();
+                for (RoleNodeMap roleNodeMap : roleNodeMaps) {
+                    ids.add(roleNodeMap.getNode().getId());
+                }
+            }
+            ids.addAll(DaoUtils.getNodeDao().getNodeIdsByGatewayIds(getGatewayIds(userId)));
+
+        } catch (SQLException ex) {
+            _logger.error("Exception, ", ex);
+        }
+        return ids;
+    }
+
+    @Override
+    public List<Integer> getSensorIds(Integer userId) {
+        List<Integer> ids = new ArrayList<Integer>();
+        try {
+            //Get role ids for this user
+            List<Integer> roleIds = DaoUtils.getRoleUserMapDao().getRolesByUserId(userId);
+            //if role id is not null do not execute
+            if (roleIds != null && roleIds.size() != 0) {
+                QueryBuilder<RoleSensorMap, Object> roleSensorQuery = DaoUtils.getRoleSensorMapDao().getDao()
+                        .queryBuilder();
+                List<RoleSensorMap> roleSensorMaps = roleSensorQuery.where()
+                        .in(RoleSensorMap.KEY_ROLE_ID, roleIds).query();
+                for (RoleSensorMap roleSensorMap : roleSensorMaps) {
+                    ids.add(roleSensorMap.getSensor().getId());
+                }
+            }
+            ids.addAll(DaoUtils.getSensorDao().getSensorIdsByNodeIds(getNodeIds(userId)));
+
+        } catch (SQLException ex) {
+            _logger.error("Exception, ", ex);
+        }
+        return ids;
+    }
+
 }

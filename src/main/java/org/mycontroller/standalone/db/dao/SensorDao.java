@@ -47,7 +47,7 @@ public interface SensorDao extends BaseDao<Sensor, Integer> {
 
     List<Sensor> getAll(String nodeEui, Integer gatewayId);
 
-    List<Sensor> getAll(Integer nodeId);
+    List<Sensor> getAllByNodeId(Integer nodeId);
 
     List<Sensor> getAllByNodeIds(List<Integer> nodeIds);
 
@@ -66,5 +66,7 @@ public interface SensorDao extends BaseDao<Sensor, Integer> {
     List<Integer> getSensorIds(String nodeEui, Integer gatewayId);
 
     long countOf(Integer nodeId);
+
+    List<Integer> getSensorIdsByNodeIds(List<Integer> ids);
 
 }

@@ -343,7 +343,7 @@ public class TypesUtils {
     public static ArrayList<TypesIdNameMapper> getNodes(Integer gatewayId) {
         List<Node> nodes = null;
         if (gatewayId != null) {
-            nodes = DaoUtils.getNodeDao().getAll(gatewayId);
+            nodes = DaoUtils.getNodeDao().getAllByGatewayId(gatewayId);
         } else {
             nodes = DaoUtils.getNodeDao().getAll();
         }
@@ -427,7 +427,7 @@ public class TypesUtils {
             nodes = DaoUtils.getNodeDao().getAll();
         }
         for (Node node : nodes) {
-            List<Sensor> sensors = DaoUtils.getSensorDao().getAll(node.getId());
+            List<Sensor> sensors = DaoUtils.getSensorDao().getAllByNodeId(node.getId());
             for (Sensor sensor : sensors) {
                 typesIdNameMappers
                         .add(TypesIdNameMapper.builder().id(sensor.getId()).subId(sensor.getSensorId())

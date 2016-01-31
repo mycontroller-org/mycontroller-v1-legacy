@@ -93,7 +93,8 @@ public class AlarmEngine implements Runnable {
                 }
                 break;
             case NODE_STATE:
-                Node node = DaoUtils.getNodeDao().get(NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
+                Node node = DaoUtils.getNodeDao()
+                        .getById(NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
                 if (node != null) {
                     thresholdValue = node.getState().getText();
                 }

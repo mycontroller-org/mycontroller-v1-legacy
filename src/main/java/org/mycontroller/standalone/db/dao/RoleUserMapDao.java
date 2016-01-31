@@ -31,4 +31,6 @@ public interface RoleUserMapDao extends BaseDao<RoleUserMap, Object> {
     void deleteByUserId(Integer userId);
 
     void deleteByRoleId(Integer roleId);
+
+    List<Integer> getRolesByUserId(Integer userId);
 }

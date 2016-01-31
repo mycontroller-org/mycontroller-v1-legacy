@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,7 +30,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.STATE;
@@ -40,6 +42,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.Gateway;
@@ -55,6 +58,10 @@ import org.mycontroller.standalone.db.tables.Node;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
 public class NodeHandler {
+
+    @Context
+    SecurityContext securityContext;
+
     @GET
     @Path("/")
     public Response getAllNodes(
@@ -77,6 +84,11 @@ public class NodeHandler {
         filters.put(Node.KEY_EUI, eui);
         filters.put(Node.KEY_NAME, name);
 
+        //Add id filter if he is non-admin
+        if (!AuthUtils.isSuperAdmin(securityContext)) {
+            filters.put(Node.KEY_ID, AuthUtils.getUser(securityContext).getNodeIds());
+        }
+
         QueryResponse queryResponse = DaoUtils.getNodeDao().getAll(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
@@ -89,23 +101,17 @@ public class NodeHandler {
     }
 
     @GET
-    @Path("/{nodeId}")
-    public Response get(@PathParam("nodeId") Integer nodeId) {
-        Node node = DaoUtils.getNodeDao().get(nodeId);
-        return RestUtils.getResponse(Status.OK, node);
-    }
-
-    @DELETE
     @Path("/{id}")
-    public Response delete(@PathParam("id") Integer id) {
-        Node node = DaoUtils.getNodeDao().get(id);
-        DeleteResourceUtils.deleteNode(node);
-        return RestUtils.getResponse(Status.NO_CONTENT);
+    public Response get(@PathParam("nodeId") Integer id) {
+        this.hasAccess(id);
+        Node node = DaoUtils.getNodeDao().getById(id);
+        return RestUtils.getResponse(Status.OK, node);
     }
 
     @POST
     @Path("/deleteIds")
     public Response deleteIds(List<Integer> ids) {
+        this.updateIds(ids);
         DeleteResourceUtils.deleteNodes(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -113,10 +119,12 @@ public class NodeHandler {
     @PUT
     @Path("/")
     public Response update(Node node) {
+        this.hasAccess(node.getId());
         ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).updateNode(node);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
+    @RolesAllowed({ "admin" })
     @POST
     @Path("/")
     public Response add(Node node) {
@@ -129,7 +137,8 @@ public class NodeHandler {
     @POST
     @Path("/reboot")
     public Response reboot(List<Integer> ids) {
-        List<Node> nodes = DaoUtils.getNodeDao().get(ids);
+        this.updateIds(ids);
+        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
                 ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).rebootNode(node);
@@ -144,7 +153,8 @@ public class NodeHandler {
     @POST
     @Path("/uploadFirmware")
     public Response uploadFirmware(List<Integer> ids) {
-        List<Node> nodes = DaoUtils.getNodeDao().get(ids);
+        this.updateIds(ids);
+        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
                 if (node.getFirmware() != null) {
@@ -161,7 +171,8 @@ public class NodeHandler {
     @POST
     @Path("/eraseConfiguration")
     public Response eraseConfig(List<Integer> ids) {
-        List<Node> nodes = DaoUtils.getNodeDao().get(ids);
+        this.updateIds(ids);
+        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
                 ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).eraseConfiguration(node);
@@ -171,6 +182,24 @@ public class NodeHandler {
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST,
                     new ApiError("Selected Node not available! Node Ids:[" + ids + "]"));
+        }
+    }
+
+    private void updateIds(List<Integer> ids) {
+        if (!AuthUtils.isSuperAdmin(securityContext)) {
+            for (Integer id : ids) {
+                if (!AuthUtils.getUser(securityContext).getNodeIds().contains(id)) {
+                    ids.remove(id);
+                }
+            }
+        }
+    }
+
+    private void hasAccess(Integer nodeId) {
+        if (!AuthUtils.isSuperAdmin(securityContext)) {
+            if (!AuthUtils.getUser(securityContext).getNodeIds().contains(nodeId)) {
+                throw new ForbiddenException("You do not have access for this resource!");
+            }
         }
     }
 

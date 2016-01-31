@@ -137,7 +137,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     }
 
     @Override
-    public List<Sensor> getAll(Integer nodeId) {
+    public List<Sensor> getAllByNodeId(Integer nodeId) {
         try {
             if (nodeId == null) {
                 return null;
@@ -151,7 +151,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
 
     @Override
     public List<Sensor> getAll(String nodeEui, Integer gatewayId) {
-        return getAll(DaoUtils.getNodeDao().get(gatewayId, nodeEui).getId());
+        return getAllByNodeId(DaoUtils.getNodeDao().get(gatewayId, nodeEui).getId());
     }
 
     @Override
@@ -285,7 +285,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, Sensor.KEY_ID);
+            return super.getQueryResponse(query, Sensor.KEY_ID);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
@@ -295,5 +295,15 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     @Override
     public List<Sensor> getAll(List<Integer> ids) {
         return getAll(Sensor.KEY_ID, ids);
+    }
+
+    @Override
+    public List<Integer> getSensorIdsByNodeIds(List<Integer> ids) {
+        List<Sensor> sensors = super.getAll(Sensor.KEY_NODE_ID, ids);
+        List<Integer> sensorIds = new ArrayList<Integer>();
+        for (Sensor sensor : sensors) {
+            sensorIds.add(sensor.getId());
+        }
+        return sensorIds;
     }
 }

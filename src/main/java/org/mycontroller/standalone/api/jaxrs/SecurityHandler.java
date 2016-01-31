@@ -45,6 +45,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.mapper.UserJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.UserMapper;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
@@ -217,6 +218,10 @@ public class SecurityHandler {
     @Path("/profile")
     public Response updateProfile(UserJson userJson) {
         try {
+            //Via profile do not allow to change username
+            userJson.getUser().setUsername(AuthUtils.getUser(securityContext).getUsername());
+            //He/she can update only his/her profile, not others
+            userJson.getUser().setId(AuthUtils.getUser(securityContext).getId());
             userJson.updateProfile();
             return RestUtils.getResponse(Status.OK);
         } catch (IllegalAccessError ex) {
@@ -228,7 +233,7 @@ public class SecurityHandler {
     @GET
     @Path("/profile")
     public Response getProfile() {
-        User user = DaoUtils.getUserDao().getById(((User) securityContext.getUserPrincipal()).getId());
+        User user = DaoUtils.getUserDao().getById(AuthUtils.getUser(securityContext).getId());
         UserJson userJson = new UserJson();
         userJson.mapResources(user);
         return RestUtils.getResponse(Status.OK, userJson);

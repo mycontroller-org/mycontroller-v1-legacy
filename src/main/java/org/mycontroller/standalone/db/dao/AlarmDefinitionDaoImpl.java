@@ -152,4 +152,16 @@ public class AlarmDefinitionDaoImpl extends BaseAbstractDaoImpl<AlarmDefinition,
         return getAll(AlarmDefinition.KEY_DAMPENING_TYPE, dampeningType);
     }
 
+    @Override
+    public List<AlarmDefinition> getAllByResourceIds(RESOURCE_TYPE resourceType, List<Integer> resourceIds) {
+        try {
+            return this.getDao().queryBuilder().where().eq(AlarmDefinition.KEY_RESOURCE_TYPE, resourceType).and()
+                    .in(AlarmDefinition.KEY_RESOURCE_ID, resourceIds).query();
+        } catch (SQLException ex) {
+            _logger.error("unable to get alarm definitions count for resource[Type:{}, Id:{}]", resourceType,
+                    resourceIds, ex);
+        }
+        return null;
+    }
+
 }

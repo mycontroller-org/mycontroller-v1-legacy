@@ -87,11 +87,11 @@ public class DeleteResourceUtils {
     }
 
     public static void deleteNode(Node node) {
-        List<Sensor> sensors = DaoUtils.getSensorDao().getAll(node.getId());
+        List<Sensor> sensors = DaoUtils.getSensorDao().getAllByNodeId(node.getId());
         for (Sensor sensor : sensors) {
             deleteSensor(sensor);
         }
-        DaoUtils.getNodeDao().delete(node.getId());
+        DaoUtils.getNodeDao().deleteById(node.getId());
         _logger.debug("Deleted node trace for node:[{}]", node);
     }
 
@@ -100,7 +100,7 @@ public class DeleteResourceUtils {
         for (Sensor sensor : sensors) {
             deleteSensor(sensor);
         }
-        DaoUtils.getNodeDao().delete(nodeIds);
+        DaoUtils.getNodeDao().deleteByIds(nodeIds);
         _logger.debug("Deleted node trace for nodeIds:[{}]", nodeIds);
     }
 
@@ -113,7 +113,7 @@ public class DeleteResourceUtils {
 
     public static void deleteGateway(Integer id) {
         GatewayUtils.unloadGateway(id);
-        List<Node> nodes = DaoUtils.getNodeDao().getAll(id);
+        List<Node> nodes = DaoUtils.getNodeDao().getAllByGatewayId(id);
         for (Node node : nodes) {
             deleteNode(node);
         }

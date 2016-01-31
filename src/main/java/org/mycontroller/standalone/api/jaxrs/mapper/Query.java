@@ -17,8 +17,15 @@ package org.mycontroller.standalone.api.jaxrs.mapper;
 
 import java.util.HashMap;
 
-import lombok.ToString;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.SecurityContext;
 
+import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.ToString;
 import lombok.NonNull;
 import lombok.Builder;
 import lombok.Data;
@@ -43,6 +50,23 @@ public class Query {
     private long pageLimit;
     private long page;
     private String orderBy;
+    @JsonIgnore
+    private PERMISSION_TYPE permissionType;
+
+    @Context
+    SecurityContext securityContext;
+
+    public PERMISSION_TYPE getPermissionType() {
+        if (permissionType == null) {
+            if (AuthUtils.getUser(securityContext).getPermissions().contains(PERMISSION_TYPE.SUPER_ADMIN)) {
+                permissionType = PERMISSION_TYPE.SUPER_ADMIN;
+            } else if (AuthUtils.getUser(securityContext).getPermissions().contains(PERMISSION_TYPE.USER)) {
+                permissionType = PERMISSION_TYPE.USER;
+            }
+        }
+        return permissionType;
+    }
+
     @NonNull
     private String order;//asc or desc
     private HashMap<String, Object> filters;

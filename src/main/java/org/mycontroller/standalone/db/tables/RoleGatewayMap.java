@@ -46,5 +46,7 @@ public class RoleGatewayMap {
     @DatabaseField(canBeNull = false, columnName = KEY_GATEWAY_ID, uniqueCombo = true, foreign = true, 
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 0)
     private Gateway gateway;
+    
+    
 
 }

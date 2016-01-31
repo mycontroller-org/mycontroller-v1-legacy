@@ -53,7 +53,7 @@ public class ResourceModel {
                 networkType = ((Gateway) resource).getNetworkType();
                 break;
             case NODE:
-                resource = DaoUtils.getNodeDao().get(this.resourceId);
+                resource = DaoUtils.getNodeDao().getById(this.resourceId);
                 networkType = ((Node) resource).getGateway().getNetworkType();
                 break;
             case SENSOR:

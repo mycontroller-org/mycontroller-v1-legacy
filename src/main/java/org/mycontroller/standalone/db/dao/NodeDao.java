@@ -25,37 +25,15 @@ import org.mycontroller.standalone.db.tables.Node;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface NodeDao {
+public interface NodeDao extends BaseDao<Node, Integer> {
 
-    void create(Node node);
-
-    void createOrUpdate(Node node);
-
-    void delete(Node node);
-
-    void delete(Integer gatewayId, String nodeEui);
-
-    void delete(Integer id);
-
-    void delete(List<Integer> ids);
-
-    void update(Node node);
-
-    List<Node> getAll();
-
-    List<Node> getAll(Integer gatewayId);
-
-    List<Node> get(List<Integer> ids);
-
-    Node get(Node node);
+    List<Node> getAllByGatewayId(Integer gatewayId);
 
     Node get(Integer gatewayId, String nodeEui);
-
-    Node get(Integer id);
-
-    List<Node> getByName(String name);
 
     QueryResponse getAll(Query query);
 
     long countOf(Integer gatewayId);
+
+    List<Integer> getNodeIdsByGatewayIds(List<Integer> ids);
 }

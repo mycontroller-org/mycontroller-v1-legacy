@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.RoleUserMap;
@@ -63,6 +64,23 @@ public class RoleUserMapDaoImpl extends BaseAbstractDaoImpl<RoleUserMap, Object>
     public void deleteByUserId(Integer userId) {
         super.delete(RoleUserMap.KEY_USER_ID, userId);
 
+    }
+
+    @Override
+    public List<Integer> getRolesByUserId(Integer userId) {
+        List<Integer> roleIds = new ArrayList<Integer>();
+        try {
+            if (userId != null) {
+                List<RoleUserMap> roleUserMaps = this.getDao().queryBuilder().where()
+                        .eq(RoleUserMap.KEY_USER_ID, userId).query();
+                for (RoleUserMap roleUserMap : roleUserMaps) {
+                    roleIds.add(roleUserMap.getRole().getId());
+                }
+            }
+        } catch (SQLException ex) {
+            _logger.error("Exception, ", ex);
+        }
+        return roleIds;
     }
 
 }

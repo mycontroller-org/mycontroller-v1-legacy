@@ -49,4 +49,6 @@ public interface AlarmDefinitionDao extends BaseDao<AlarmDefinition, Integer> {
 
     QueryResponse getAll(Query query);
 
+    List<AlarmDefinition> getAllByResourceIds(RESOURCE_TYPE resourceType, List<Integer> resourceIds);
+
 }

@@ -357,7 +357,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
         $timeout(function() {
           $window.dispatchEvent(new Event('resize'));
           $scope.fetching = true;
-        }, 500);
+        }, 1000);
       }
     });
   

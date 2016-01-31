@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,40 +60,64 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
     public QueryResponse getQueryResponse(Query query, String idColumn, String isAlterdTotalCountKey)
             throws SQLException {
         QueryBuilder<Tdao, Tid> queryBuilder = this.getDao().queryBuilder();
-        Where<Tdao, Tid> where = queryBuilder.where();
-        where.isNotNull(idColumn);
+        Where<Tdao, Tid> where = this.getDao().queryBuilder().where();
+        //where.isNotNull(idColumn);
+        boolean addAnd = false;
         for (String key : query.getFilters().keySet()) {
             if (query.getFilters().get(key) != null) {
                 if (query.getFilters().get(key) instanceof List<?>) {
                     for (Object value : (List<?>) query.getFilters().get(key)) {
                         if (value instanceof String) {//If it's string add one by one
-                            where.and().like(key, "%" + value + "%");
+                            if (addAnd) {
+                                where.and();
+                            }
+                            where.like(key, "%" + value + "%");
+                            addAnd = true;
                         } else {//If it's integer, float, long, etc., add it under IN type
-                            where.and().in(key, query.getFilters().get(key));
+                            if (addAnd) {
+                                where.and();
+                            }
+                            where.in(key, (List<?>) query.getFilters().get(key));
+                            addAnd = true;
                             break;
                         }
                     }
                 } else {
-                    where.and().eq(key, query.getFilters().get(key));
+                    if (addAnd) {
+                        where.and();
+                    }
+                    where.eq(key, query.getFilters().get(key));
+                    addAnd = true;
                 }
             }
         }
 
         //Set filtered count result
         QueryBuilder<Tdao, Tid> queryBuilderFilteredCount = this.getDao().queryBuilder();
-        queryBuilderFilteredCount.setWhere(where);
+        if (addAnd) {
+            queryBuilderFilteredCount.setWhere(where);
+        }
         query.setFilteredCount(queryBuilderFilteredCount.countOf());
 
+        //Total count
+        QueryBuilder<Tdao, Tid> totalItemsBuilder = this.getDao().queryBuilder();
         if (isAlterdTotalCountKey != null) {
             if (query.getFilters().get(isAlterdTotalCountKey) != null) {
-                QueryBuilder<Tdao, Tid> totalItemsBuilder = this.getDao().queryBuilder();
                 totalItemsBuilder.where().eq(isAlterdTotalCountKey, query.getFilters().get(isAlterdTotalCountKey));
                 query.setTotalItems(totalItemsBuilder.countOf());
             } else {
                 query.setTotalItems(this.getDao().countOf());
             }
         } else {
-            query.setTotalItems(this.getDao().countOf());
+            if (query.getFilters().get(idColumn) != null) {
+                totalItemsBuilder.where().in(idColumn, (List<?>) query.getFilters().get(idColumn));
+                query.setTotalItems(totalItemsBuilder.countOf());
+            } else {
+                query.setTotalItems(this.getDao().countOf());
+            }
+        }
+        if (addAnd) {
+            queryBuilder.setWhere(where);
         }
 
         queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
@@ -194,7 +219,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.error("unable to delete item, key:{}, value:{}", key, value, ex);
         }
     }
-    
+
     public void delete(String key, List<Object> values) {
         try {
             DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
@@ -208,7 +233,10 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
 
     public List<Tdao> getAll(String key, List<Tid> ids) {
         try {
-            return this.getDao().queryBuilder().where().in(key, ids).query();
+            if (ids != null && !ids.isEmpty()) {
+                return this.getDao().queryBuilder().where().in(key, ids).query();
+            }
+            return new ArrayList<Tdao>();
         } catch (SQLException ex) {
             _logger.error("unable to get all items ids:{}", ids, ex);
             return null;
@@ -231,6 +259,15 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.error("unable to get count,", ex);
         }
         return null;
+    }
+
+    public Long countOf(String key, Object value) {
+        try {
+            return this.getDao().queryBuilder().where().eq(key, value).countOf();
+        } catch (SQLException ex) {
+            _logger.error("unable to get count key:{}, value:{}", key, value, ex);
+            return null;
+        }
     }
 
     public long countOf(HashMap<String, List<Object>> columnValues) {

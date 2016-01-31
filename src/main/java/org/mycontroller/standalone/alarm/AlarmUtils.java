@@ -277,7 +277,7 @@ public class AlarmUtils {
                 }
                 break;
             case NODE:
-                Node node = DaoUtils.getNodeDao().get(alarmDefinition.getResourceId());
+                Node node = DaoUtils.getNodeDao().getById(alarmDefinition.getResourceId());
                 if (isDetailed) {
                     builder.append("[Name:").append(node.getName());
                     builder.append(", Eui:").append(node.getEui());

@@ -16,17 +16,15 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
-import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
-import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -42,106 +40,21 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
     }
 
     @Override
-    public void create(Node node) {
-        try {
-
-            int count = this.getDao().create(node);
-            _logger.debug("Created Node:[{}], Create count:{}", node, count);
-
-        } catch (SQLException ex) {
-            _logger.error("unable to add Node:[{}]", node, ex);
-        }
-    }
-
-    @Override
-    public void delete(Node node) {
-        try {
-            int count = 0;
-            if (node.getId() != null) {
-                count = this.getDao().delete(node);
-            } else {
-                DeleteBuilder<Node, Integer> deleteBuilder = this.getDao().deleteBuilder();
-                deleteBuilder.where().eq(Node.KEY_GATEWAY_ID, node.getGateway());
-                if (node.getEui() != null) {
-                    deleteBuilder.where().and().eq("eui", node.getEui());
-                }
-                count = deleteBuilder.delete();
-            }
-            _logger.debug("Node:[{}] deleted, Delete count:{}", node, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to delete node:[{}]", node, ex);
-        }
-    }
-
-    @Override
-    public void delete(Integer gatewayId, String nodeEui) {
-        this.delete(Node.builder().eui(nodeEui).gateway(Gateway.builder().id(gatewayId).build()).build());
-    }
-
-    @Override
-    public void delete(Integer id) {
-        this.delete(Node.builder().id(id).build());
-    }
-
-    @Override
-    public void update(Node node) {
-        try {
-            int count = this.getDao().update(node);
-            _logger.debug("Updated Node:[{}], Update count:{}", node, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to update node:[{}]", node, ex);
-        }
-    }
-
-    @Override
-    public List<Node> getAll() {
-        try {
-            return this.getDao().queryForAll();
-        } catch (SQLException ex) {
-            _logger.error("unable to get all Nodes", ex);
-            return null;
-        }
-    }
-
-    @Override
-    public List<Node> getAll(Integer gatewayId) {
-        try {
-            if (gatewayId != null) {
-                return this.getDao().queryForEq(Node.KEY_GATEWAY_ID, gatewayId);
-            } else {
-                return this.getDao().queryForAll();
-            }
-        } catch (SQLException ex) {
-            _logger.error("unable to get all Nodes", ex);
-            return null;
-        }
+    public List<Node> getAllByGatewayId(Integer gatewayId) {
+        return super.getAll(Node.KEY_GATEWAY_ID, gatewayId);
     }
 
     @Override
     public Node get(Node node) {
-        if (node.getId() != null) {
-            return this.get(node.getId());
-        } else {
-            try {
-                QueryBuilder<Node, Integer> queryBuilder = this.getDao().queryBuilder();
-                queryBuilder.where().eq(Node.KEY_GATEWAY_ID, node.getGateway()).and().eq("eui", node.getEui());
-                return queryBuilder.queryForFirst();
-            } catch (SQLException ex) {
-                _logger.error("unable to get Node", ex);
-                return null;
-            }
-        }
+        return super.getById(node.getId());
     }
 
     @Override
     public Node get(Integer gatewayId, String nodeEui) {
-        return get(Node.builder().eui(nodeEui).gateway(Gateway.builder().id(gatewayId).build()).build());
-    }
-
-    @Override
-    public Node get(Integer id) {
         try {
-            return this.getDao().queryForId(id);
+            QueryBuilder<Node, Integer> queryBuilder = this.getDao().queryBuilder();
+            queryBuilder.where().eq(Node.KEY_GATEWAY_ID, gatewayId).and().eq(Node.KEY_EUI, nodeEui);
+            return queryBuilder.queryForFirst();
         } catch (SQLException ex) {
             _logger.error("unable to get Node", ex);
             return null;
@@ -149,66 +62,8 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
     }
 
     @Override
-    public List<Node> getByName(String nodeName) {
-        try {
-
-            return this.getDao().queryForEq("name", nodeName);
-        } catch (SQLException ex) {
-            _logger.error("unable to get node by name", ex);
-            return null;
-        }
-    }
-
-    @Override
-    public void createOrUpdate(Node node) {
-        try {
-            CreateOrUpdateStatus status = this.getDao().createOrUpdate(node);
-            _logger.debug("CreateOrUpdate Node:[{}],Create:{},Update:{},Lines Changed:{}", node, status.isCreated(),
-                    status.isUpdated(), status.getNumLinesChanged());
-        } catch (SQLException ex) {
-            _logger.error("unable to CreateOrUpdate Node:[{}]", node, ex);
-        }
-    }
-
-    @Override
     public long countOf(Integer gatewayId) {
-        try {
-            QueryBuilder<Node, Integer> queryBuilder = this.getDao().queryBuilder();
-            queryBuilder.where().eq(Node.KEY_GATEWAY_ID, gatewayId);
-            return queryBuilder.countOf();
-        } catch (SQLException ex) {
-            _logger.error("unable to get Node count:[GatewayId:{}]", gatewayId, ex);
-        }
-        return 0;
-    }
-
-    @Override
-    public void delete(List<Integer> nodeIds) {
-        try {
-            int count = 0;
-            if (nodeIds != null) {
-                DeleteBuilder<Node, Integer> deleteBuilder = this.getDao().deleteBuilder();
-                deleteBuilder.where().in(Node.KEY_ID, nodeIds);
-                count = deleteBuilder.delete();
-            }
-            _logger.debug("NodeIds:[{}] deleted, Delete count:{}", nodeIds, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to delete nodeIds:[{}]", nodeIds, ex);
-        }
-    }
-
-    @Override
-    public List<Node> get(List<Integer> ids) {
-        try {
-            if (ids != null) {
-                QueryBuilder<Node, Integer> queryBuilder = this.getDao().queryBuilder();
-                queryBuilder.where().in(Node.KEY_ID, ids);
-                return queryBuilder.query();
-            }
-        } catch (SQLException ex) {
-            _logger.error("unable to get node for Ids:[{}]", ids, ex);
-        }
-        return null;
+        return super.countOf(Node.KEY_GATEWAY_ID, gatewayId);
     }
 
     @Override
@@ -220,4 +75,20 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
             return null;
         }
     }
+
+    @Override
+    public List<Node> getAll(List<Integer> ids) {
+        return super.getAll(Node.KEY_ID, ids);
+    }
+
+    @Override
+    public List<Integer> getNodeIdsByGatewayIds(List<Integer> ids) {
+        List<Node> nodes = super.getAll(Node.KEY_GATEWAY_ID, ids);
+        List<Integer> nodeIds = new ArrayList<Integer>();
+        for (Node node : nodes) {
+            nodeIds.add(node.getId());
+        }
+        return nodeIds;
+    }
+
 }

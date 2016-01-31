@@ -1,6 +1,14 @@
 package org.mycontroller.standalone.auth;
 
+import javax.ws.rs.core.SecurityContext;
+
+import org.mycontroller.standalone.db.tables.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AuthUtils {
+    public static final Logger _logger = LoggerFactory.getLogger(AuthUtils.class);
+
     private AuthUtils() {
 
     }
@@ -38,6 +46,16 @@ public class AuthUtils {
             }
             return null;
         }
+    }
+
+    public static User getUser(SecurityContext securityContext) {
+        return (User) securityContext.getUserPrincipal();
+    }
+
+    public static boolean isSuperAdmin(SecurityContext securityContext) {
+        _logger.debug("User:{}", securityContext.getUserPrincipal());
+        return ((User) securityContext.getUserPrincipal()).getPermissions().contains(
+                PERMISSION_TYPE.SUPER_ADMIN.getText());
     }
 
 }

@@ -32,6 +32,12 @@ public interface RoleDao extends BaseDao<Role, Integer> {
 
     List<String> getPermissionsByUserId(Integer userId);
 
+    List<Integer> getGatewayIds(Integer userId);
+
+    List<Integer> getNodeIds(Integer userId);
+
+    List<Integer> getSensorIds(Integer userId);
+
     QueryResponse getAll(Query query);
 
 }

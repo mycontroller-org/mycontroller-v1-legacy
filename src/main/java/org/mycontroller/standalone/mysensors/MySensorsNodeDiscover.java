@@ -68,7 +68,7 @@ public class MySensorsNodeDiscover implements Runnable {
 
             //TODO: For now discovery disabled, doing only for known nodes with I_PRESENTATION,
             //We should update this with I_DISCOVERY and I_PRESENTATION combination
-            List<Node> nodes = DaoUtils.getNodeDao().getAll(this.gatewayId);
+            List<Node> nodes = DaoUtils.getNodeDao().getAllByGatewayId(this.gatewayId);
             for (Node node : nodes) {
                 MySensorsRawMessage mySensorsRawMessage = new MySensorsRawMessage(
                         this.gatewayId,

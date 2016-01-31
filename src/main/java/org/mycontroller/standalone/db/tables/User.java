@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
@@ -43,6 +45,8 @@ import lombok.ToString;
 @ToString(includeFieldNames = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Principal {
+    public static final Logger _logger = LoggerFactory.getLogger(User.class);
+
     public static final String KEY_ID = "id";
     public static final String KEY_ENABLED = "enabled";
     public static final String KEY_USER_NAME = "username";
@@ -68,11 +72,47 @@ public class User implements Principal {
 
     private List<String> permissions;
 
+    private List<Integer> gatewayIds;
+
+    private List<Integer> nodeIds;
+
+    private List<Integer> sensorIds;
+
     public List<String> getPermissions() {
         if (permissions == null) {
             permissions = DaoUtils.getRoleDao().getPermissionsByUserId(id);
         }
         return permissions;
+    }
+
+    public List<Integer> getGatewayIds() {
+        if (gatewayIds == null || gatewayIds.size() == 0) {
+            gatewayIds = DaoUtils.getRoleDao().getGatewayIds(id);
+            if (gatewayIds.isEmpty()) {
+                gatewayIds.add(-1);
+            }
+        }
+        return gatewayIds;
+    }
+
+    public List<Integer> getNodeIds() {
+        if (nodeIds == null || nodeIds.size() == 0) {
+            nodeIds = DaoUtils.getRoleDao().getNodeIds(id);
+            if (nodeIds.isEmpty()) {
+                nodeIds.add(-1);
+            }
+        }
+        return nodeIds;
+    }
+
+    public List<Integer> getSensorIds() {
+        if (sensorIds == null || sensorIds.size() == 0) {
+            sensorIds = DaoUtils.getRoleDao().getSensorIds(id);
+            if (sensorIds.isEmpty()) {
+                sensorIds.add(-1);
+            }
+        }
+        return sensorIds;
     }
 
     @Override

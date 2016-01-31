@@ -364,7 +364,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
         $timeout(function() {
           $window.dispatchEvent(new Event('resize'));
           $scope.fetching = true;
-        }, 300);
+        }, 1000);
       }
     });
   

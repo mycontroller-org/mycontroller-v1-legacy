@@ -142,7 +142,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
                 }
                 break;
             case NODE:
-                Node node = DaoUtils.getNodeDao().get(resourceId);
+                Node node = DaoUtils.getNodeDao().getById(resourceId);
                 List<Integer> sensorIds = DaoUtils.getSensorDao().getSensorIds(node.getEui(),
                         node.getGateway().getId());
                 if (!sensorIds.isEmpty()) {
