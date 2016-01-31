@@ -101,9 +101,10 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 }
             }
             MessageUtils.sendMessgaeToGateway(mySensorsRawMessage.getRawMessage());
-            _logger.debug("This is Tx Message[{}] sent", mySensorsRawMessage);
+            _logger.debug("This is Tx Message[{}] and sent", mySensorsRawMessage);
         }
 
+        _logger.debug("Message type:{}", MESSAGE_TYPE.get(mySensorsRawMessage.getMessageType()).getText());
         switch (MESSAGE_TYPE.get(mySensorsRawMessage.getMessageType())) {
             case C_PRESENTATION:
                 if (mySensorsRawMessage.isTxMessage()) {
@@ -116,29 +117,24 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                     }
 
                 } else {
-                    _logger.debug("Received a 'Presentation' message");
                     this.presentationSubMessageTypeSelector(mySensorsRawMessage);
                 }
                 break;
             case C_SET:
-                _logger.debug("Received a 'Set' message");
                 this.recordSetTypeData(mySensorsRawMessage);
                 break;
             case C_REQ:
-                _logger.debug("Received a 'Req' message");
                 this.responseReqTypeData(mySensorsRawMessage);
                 break;
             case C_INTERNAL:
-                _logger.debug("Received a 'Internal' message");
                 this.internalSubMessageTypeSelector(mySensorsRawMessage);
                 break;
             case C_STREAM:
-                _logger.debug("Received a 'Stream' message");
                 streamSubMessageTypeSelector(mySensorsRawMessage);
                 break;
             default:
-                _logger.warn("Received unknown message type, "
-                        + "not able to process further. Message[{}] dropped", mySensorsRawMessage);
+                _logger.warn("Unknown message type, "
+                        + "unable to process further. Message[{}] dropped", mySensorsRawMessage);
                 break;
         }
     }
