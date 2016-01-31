@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db.tables;
 import java.security.Principal;
 import java.util.List;
 
+import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.slf4j.Logger;
@@ -83,6 +84,18 @@ public class User implements Principal {
             permissions = DaoUtils.getRoleDao().getPermissionsByUserId(id);
         }
         return permissions;
+    }
+
+    public String getPermission() {
+        if (getPermissions().contains(PERMISSION_TYPE.SUPER_ADMIN.getText())) {
+            return PERMISSION_TYPE.SUPER_ADMIN.getText();
+        } else if (getPermissions().contains(PERMISSION_TYPE.USER.getText())) {
+            return PERMISSION_TYPE.USER.getText();
+        } else if (getPermissions().contains(PERMISSION_TYPE.MQTT_USER.getText())) {
+            return PERMISSION_TYPE.MQTT_USER.getText();
+        } else {
+            return null;
+        }
     }
 
     public List<Integer> getGatewayIds() {

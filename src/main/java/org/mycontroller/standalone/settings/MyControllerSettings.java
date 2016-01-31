@@ -45,6 +45,7 @@ public class MyControllerSettings {
     public static final String SKEY_ALIVE_CHECK_INTERVAL = "aliveCheckInterval";
     public static final String SKEY_UNIT_CONFIG = "unitConfig";
     public static final String SKEY_LOGIN_MESSAGE = "loginMessage";
+    public static final String SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES = "grantAccessToChildResources";
 
     private String language;
     private String timeFormat;
@@ -53,6 +54,7 @@ public class MyControllerSettings {
     private Long aliveCheckInterval;
     private String unitConfig;
     private String loginMessage;
+    private Boolean grantAccessToChildResources;
 
     public static MyControllerSettings get() {
         return MyControllerSettings.builder()
@@ -63,6 +65,7 @@ public class MyControllerSettings {
                 .aliveCheckInterval(NumericUtils.getLong(getValue(SKEY_ALIVE_CHECK_INTERVAL)))
                 .unitConfig(getValue(SKEY_UNIT_CONFIG))
                 .loginMessage(getValue(SKEY_LOGIN_MESSAGE))
+                .grantAccessToChildResources(NumericUtils.getBoolean(getValue(SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES)))
                 .build();
     }
 
@@ -81,6 +84,9 @@ public class MyControllerSettings {
         }
         if (loginMessage != null) {
             updateValue(SKEY_LOGIN_MESSAGE, loginMessage);
+        }
+        if (grantAccessToChildResources != null) {
+            updateValue(SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES, grantAccessToChildResources);
         }
     }
 

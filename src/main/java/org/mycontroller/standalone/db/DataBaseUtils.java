@@ -252,6 +252,7 @@ public class DataBaseUtils {
                     .timeFormat(MC_TIME_FORMAT.HOURS_12.getText())
                     .unitConfig(UNIT_CONFIG.METRIC.getText())
                     .loginMessage("Default username: <b>admin</b>, password: <b>admin<b>")
+                    .grantAccessToChildResources(true)
                     .build().save();
 
             //Update Metrics reference data

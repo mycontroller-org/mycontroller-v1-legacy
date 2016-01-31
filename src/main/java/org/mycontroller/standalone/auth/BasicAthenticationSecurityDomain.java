@@ -63,7 +63,7 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
         return false;
     }
 
-    public static boolean login(String aUsername, String aPassword) {
+    public static boolean login(String aUsername, String aPassword) throws IllegalAccessException {
         if (aUsername == null || aPassword == null) {
             return false;
         }
@@ -72,7 +72,12 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
             if (user.getPassword().equals(aPassword)) {
-                return true;
+                if (user.getPermission() != null && !user.getPermission().equalsIgnoreCase("MQTT user")) {
+                    return true;
+                } else {
+                    throw new IllegalAccessException(
+                            "There is no suitable role assigned for you! Contact administrator.");
+                }
             }
         }
         return false;

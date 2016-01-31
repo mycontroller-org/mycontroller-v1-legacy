@@ -54,13 +54,18 @@ public class AuthenticationHandler {
     public Response login(UserCredential userCredential) throws InterruptedException {
         _logger.debug("User Detail:{}", RestUtils.getUser(request));
         _logger.debug("Login user: " + userCredential.getUsername());
-        if (BasicAthenticationSecurityDomain.login(userCredential.getUsername(), userCredential.getPassword())) {
-            AuthenticationJson authJson = AuthenticationJson.builder().success(true)
-                    .user(DaoUtils.getUserDao().getByUsername(userCredential.getUsername())).build();
-            return RestUtils.getResponse(Status.OK, authJson);
-        } else {
+        try {
+            if (BasicAthenticationSecurityDomain.login(userCredential.getUsername(), userCredential.getPassword())) {
+                AuthenticationJson authJson = AuthenticationJson.builder().success(true)
+                        .user(DaoUtils.getUserDao().getByUsername(userCredential.getUsername())).build();
+                return RestUtils.getResponse(Status.OK, authJson);
+            } else {
+                return RestUtils.getResponse(Status.UNAUTHORIZED,
+                        AuthenticationJson.builder().success(false).message("Invalid user or passowrd!").build());
+            }
+        } catch (IllegalAccessException ex) {
             return RestUtils.getResponse(Status.UNAUTHORIZED,
-                    AuthenticationJson.builder().success(false).message("Invalid user or passowrd!").build());
+                    AuthenticationJson.builder().success(false).message(ex.getMessage()).build());
         }
     }
 }

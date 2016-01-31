@@ -49,7 +49,7 @@ import org.mycontroller.standalone.mysensors.firmware.FirmwareUtils;
 @Path("/rest/firmwares")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "User" })
+@RolesAllowed({ "admin" })
 public class FirmwareHandler {
 
     //Firmware type handler

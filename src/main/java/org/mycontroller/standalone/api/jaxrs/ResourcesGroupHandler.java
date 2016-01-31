@@ -51,7 +51,7 @@ import java.util.List;
 @Path("/rest/resources/group")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "User" })
+@RolesAllowed({ "admin" })
 public class ResourcesGroupHandler {
 
     @PUT

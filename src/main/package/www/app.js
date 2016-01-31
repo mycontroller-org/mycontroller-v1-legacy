@@ -451,7 +451,9 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
       mchelper.cfg.languageId = lang.id;
       mchelper.cfg.language = lang.displayName;
       //Update selected language
-      SettingsFactory.updateLanguage(lang.displayName);
+      if(mchelper.user.permission === 'Super admin'){
+        SettingsFactory.updateLanguage(lang.displayName);
+      }
       //Update cookie store
       $cookieStore.put('mchelper', mchelper);
     };
@@ -534,7 +536,7 @@ myControllerModule.controller('LoginController',
                     //$state.go('dashboard'); 
                     $state.go($state.params.toState, $state.params.toParams);
                 } else {
-                    alertService.danger($filter('translate')('SYSTEM.LOGIN_NOTIFY_INCORRECT'));
+                    alertService.danger(authResponse.message);
                     $scope.dataLoading = false;
                 }
             });

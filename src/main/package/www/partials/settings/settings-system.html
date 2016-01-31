@@ -152,6 +152,16 @@
             </div>
             
             <div class="form-group">
+              <label class="col-sm-2 control-label">Grant access to child resources(In roles)</label>
+              <div class="col-sm-5">
+                <input bs-switch ng-change="editEnable.controller = true" ng-model="controllerSettings.grantAccessToChildResources" type="checkbox"
+                      switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true" 
+                      ng-false-value="false" switch-on-text="Enabled" switch-off-text="Disabled">
+              </div>
+            </div>
+            
+            <div class="form-group">
               <label class="col-sm-2 control-label">Login message</label>
               <div class="col-sm-5">
                 <textarea ng-show="editEnable.controller" class="form-control" ng-model="controllerSettings.loginMessage" placeholder="Description" rows="4"></textarea>

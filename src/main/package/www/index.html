@@ -239,8 +239,8 @@
               <li ng-class="{ active: $state.current.name.indexOf('alarms') == 0 }"><a ui-sref="alarmsList"><i class="fa fa-bell-o fa-lg"></i> Alarms</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> Timers</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('forwardPayload') == 0 }"><a ui-sref="forwardPayloadList"><i class="fa fa-forward fa-lg"></i> Forward payload</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>Groups</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> Firmwares</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>Groups</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> Firmwares</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('resourcesLogs') == 0 }"><a ui-sref="resourcesLogsList"><i class="fa fa-list fa-lg"></i> Logs</a></li>
             </ul>
           </li>
@@ -260,16 +260,16 @@
           </li>
           <!-- Settings -->
           <li ng-class="{ active: $state.current.url.indexOf('/settings') == 0 }">
-            <a ui-sref="settingsSystem"><i class="fa fa-cog fa-lg"></i> Settings</a>
+            <a ui-sref="settingsProfileUpdate"><i class="fa fa-cog fa-lg"></i> Settings</a>
             <ul class="nav navbar-nav navbar-persistent">
-              <li ng-class="{ active: $state.current.name.indexOf('settingsSystem') == 0 }"><a ui-sref="settingsSystem"><i class="fa fa-cogs fa-lg"></i> System</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('settingsUnits') == 0 }"><a ui-sref="settingsUnits"><i class="fa fa-star-o fa-lg"></i> Units</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('settingsNotifications') == 0 }"><a ui-sref="settingsNotifications"><i class="fa fa-flag-o fa-lg"></i> Notifications</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('settingsMySensors') == 0 }"><a ui-sref="settingsMySensors"><i class="fa fa-star-o fa-lg"></i> MySensors</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('settingsVariablesMapperList') == 0 }"><a ui-sref="settingsVariablesMapperList"><i class="fa fa-clone fa-lg"></i> Variables mapper</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('settingsUsers') == 0 }"><a ui-sref="settingsUsersList"><i class="fa fa-users fa-lg"></i> Users</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('settingsRoles') == 0 }"><a ui-sref="settingsRolesList"><i class="pficon pficon-registry fa-lg mc-margin-right"></i>Roles</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }"><a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user fa-lg mc-margin-right"></i>Profile</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsSystem') == 0 }"><a ui-sref="settingsSystem"><i class="fa fa-cogs fa-lg"></i> System</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUnits') == 0 }"><a ui-sref="settingsUnits"><i class="fa fa-star-o fa-lg"></i> Units</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsNotifications') == 0 }"><a ui-sref="settingsNotifications"><i class="fa fa-flag-o fa-lg"></i> Notifications</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMySensors') == 0 }"><a ui-sref="settingsMySensors"><i class="fa fa-star-o fa-lg"></i> MySensors</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsVariablesMapperList') == 0 }"><a ui-sref="settingsVariablesMapperList"><i class="fa fa-clone fa-lg"></i> Variables mapper</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUsers') == 0 }"><a ui-sref="settingsUsersList"><i class="fa fa-users fa-lg"></i> Users</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsRoles') == 0 }"><a ui-sref="settingsRolesList"><i class="pficon pficon-registry fa-lg mc-margin-right"></i>Roles</a></li>
             </ul>
           </li>
         </ul>
