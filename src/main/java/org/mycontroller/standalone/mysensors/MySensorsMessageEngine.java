@@ -662,12 +662,13 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
 
         SensorVariable sensorVariable = this.updateSensorVariable(mySensorsRawMessage, sensor, payloadType);
 
-        _logger.debug("Sensor:{}[NodeId:{},SesnorId:{},SubType({}):{}], PayLoad Type: {}",
+        _logger.debug("GatewayName:{}, SensorName:{}, NodeId:{}, SesnorId:{}, SubType:{}, PayloadType:{}, Payload:{}",
                 sensor.getName(),
+                sensor.getNode().getGateway().getName(),
                 sensor.getNode().getEui(), sensor.getSensorId(),
-                mySensorsRawMessage.getSubType(),
-                MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType()),
-                payloadType.toString());
+                MESSAGE_TYPE_SET_REQ.get(mySensorsRawMessage.getSubType()).getText(),
+                payloadType.toString(),
+                mySensorsRawMessage.getPayload());
 
         if (mySensorsRawMessage.getSubType() == MESSAGE_TYPE_SET_REQ.V_UNIT_PREFIX.ordinal()) {
             //TODO: Add fix
