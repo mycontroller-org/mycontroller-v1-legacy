@@ -99,7 +99,10 @@ public class SchedulerUtils {
         SundialJobScheduler.addCronTrigger(
                 getCronTriggerName(jobName),
                 jobName,
-                systemJob.getCron());
+                systemJob.getCron(),
+                //Start all the system jobs after 10 seconds
+                new Date(System.currentTimeMillis() + (TIME_REF.ONE_SECOND * 10)),
+                null);
         _logger.debug("New job added:{}", systemJob);
     }
 
@@ -281,8 +284,14 @@ public class SchedulerUtils {
 
     public static void startNodeAliveCheckJob() {
         SundialJobScheduler.addJob(NodeAliveStatusJob.NAME, NodeAliveStatusJob.class.getName());
-        SundialJobScheduler.addSimpleTrigger(NodeAliveStatusJob.TRIGGER_NAME, NodeAliveStatusJob.NAME, -1,
-                ObjectFactory.getAppProperties().getControllerSettings().getAliveCheckInterval());
+        SundialJobScheduler.addSimpleTrigger(
+                NodeAliveStatusJob.TRIGGER_NAME,
+                NodeAliveStatusJob.NAME,
+                -1,
+                ObjectFactory.getAppProperties().getControllerSettings().getAliveCheckInterval(),
+                //Start this job after 10 seconds
+                new Date(System.currentTimeMillis() + (TIME_REF.ONE_SECOND * 10)),
+                null);
     }
 
     public static void stopNodeAliveCheckJob() {
