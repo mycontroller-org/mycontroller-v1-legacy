@@ -105,8 +105,11 @@ public class ResourcesLogsUtils {
     }
 
     public static boolean isLevel(LOG_LEVEL logLevel) {
-        return ObjectFactory.getAppProperties().getControllerSettings().getResourcesLogLevel()
-                .equalsIgnoreCase(logLevel.getText());
+        if (LOG_LEVEL.fromString(ObjectFactory.getAppProperties().getControllerSettings().getResourcesLogLevel())
+                .ordinal() >= logLevel.ordinal()) {
+            return true;
+        }
+        return false;
     }
 
     public static void setAlarmLog(LOG_LEVEL logLevel, AlarmDefinition alarmDefinition, Boolean triggered,
