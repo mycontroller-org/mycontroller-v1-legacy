@@ -149,27 +149,12 @@ public class MetricsHandler {
         return MetricsChartDataGroupNVD3.builder()
                 .metricsChartDataNVD3(preDoubleData)
                 .unit("%")
+                .timeFormat(getTimeFormat(timestampFrom))
                 .id(nodeId).build();
     }
 
     private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3(Integer sensorId, Long timestampFrom,
             Long timestampTo, Boolean withMinMax) {
-        String timeFormat = null;
-        if (timestampFrom != null) {
-            //subtract 5 seconds to get proper timeformat
-            Long timeDifferance = System.currentTimeMillis() - timestampFrom - (TIME_REF.ONE_SECOND * 5);
-            if (timeDifferance > (TIME_REF.ONE_DAY * 365)) {
-                timeFormat = ObjectFactory.getAppProperties().getDateFormat();
-            } else if (timeDifferance > TIME_REF.ONE_DAY * 7) {
-                timeFormat = "MMM dd, " + ObjectFactory.getAppProperties().getTimeFormat();
-            } else if (timeDifferance > TIME_REF.ONE_DAY * 1) {
-                timeFormat = "dd, " + ObjectFactory.getAppProperties().getTimeFormat();
-            } else {
-                timeFormat = ObjectFactory.getAppProperties().getTimeFormat();
-            }
-        } else {
-            timeFormat = ObjectFactory.getAppProperties().getDateFormat();
-        }
         //Get sensor variables
         List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensorId);
         //Return if no data available
@@ -228,7 +213,7 @@ public class MetricsHandler {
                             .metricsChartDataNVD3(preDoubleData)
                             .id(sensorVariable.getId())
                             .unit(sensorVariable.getUnit())
-                            .timeFormat(timeFormat)
+                            .timeFormat(getTimeFormat(timestampFrom))
                             .variableType(sensorVariable.getVariableType().getText())
                             .dataType(sensorVariable.getMetricType().getText()).build());
 
@@ -257,7 +242,7 @@ public class MetricsHandler {
                             .metricsChartDataNVD3(preBinaryData)
                             .id(sensorVariable.getId())
                             .unit(sensorVariable.getUnit())
-                            .timeFormat(timeFormat)
+                            .timeFormat(getTimeFormat(timestampFrom))
                             .variableType(sensorVariable.getVariableType().getText())
                             .dataType(sensorVariable.getMetricType().getText()).build());
                     break;
@@ -268,5 +253,23 @@ public class MetricsHandler {
         }
 
         return finalData;
+    }
+
+    private String getTimeFormat(Long timestampFrom) {
+        if (timestampFrom != null) {
+            //subtract 5 seconds to get proper timeformat
+            Long timeDifferance = System.currentTimeMillis() - timestampFrom - (TIME_REF.ONE_SECOND * 5);
+            if (timeDifferance > (TIME_REF.ONE_DAY * 365)) {
+                return ObjectFactory.getAppProperties().getDateFormat();
+            } else if (timeDifferance > TIME_REF.ONE_DAY * 7) {
+                return "MMM dd, " + ObjectFactory.getAppProperties().getTimeFormat();
+            } else if (timeDifferance > TIME_REF.ONE_DAY * 1) {
+                return "dd, " + ObjectFactory.getAppProperties().getTimeFormat();
+            } else {
+                return ObjectFactory.getAppProperties().getTimeFormat();
+            }
+        } else {
+            return ObjectFactory.getAppProperties().getDateFormat();
+        }
     }
 }

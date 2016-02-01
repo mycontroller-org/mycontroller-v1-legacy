@@ -347,14 +347,25 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
   //pre select, should be updated from server
   $scope.chartEnableMinMax = false;
   $scope.chartFromTimestamp = "604800000";
-  
-  $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, mchelper.cfg.dateFormat, mchelper.cfg.timezone)};
-  
-  $scope.batteryChartData = MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - 604800000});
+  $scope.chartTimeFormat = mchelper.cfg.dateFormat;
+  $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, $scope.chartTimeFormat, mchelper.cfg.timezone)};
+
+  var chartFirstTimeLoad = function(){
+    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - 604800000},function(response){
+      $scope.batteryChartData = response;
+      //Update display time format
+      $scope.chartTimeFormat = response.timeFormat;
+    });
+};
+
+  //Load chart data
+  chartFirstTimeLoad();
   
   $scope.updateChart = function(){
     MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
       $scope.batteryChartData.chartData = resource.chartData;
+      //Update display time format
+      $scope.chartTimeFormat = resource.timeFormat;
     });
   }
 

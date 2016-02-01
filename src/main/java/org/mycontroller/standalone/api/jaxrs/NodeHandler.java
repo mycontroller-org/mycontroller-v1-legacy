@@ -102,7 +102,7 @@ public class NodeHandler {
 
     @GET
     @Path("/{id}")
-    public Response get(@PathParam("nodeId") Integer id) {
+    public Response get(@PathParam("id") Integer id) {
         this.hasAccess(id);
         Node node = DaoUtils.getNodeDao().getById(id);
         return RestUtils.getResponse(Status.OK, node);
