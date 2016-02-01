@@ -33,7 +33,7 @@
         <div class="col-xs-6 col-sm-6 col-lg-6">
           <div class="card-pf card-pf-utilization">
             <div class="card-pf-heading">
-              <h2 class="card-pf-title">Details</h2>
+              <h2 class="card-pf-title">Details <a class="btn btn-link pull-right" ui-sref="gatewaysAddEdit({ id: item.id })"><i class="fa fa-edit"></i> Edit </a></h2>
             </div>
             <div class="card-pf-body">
               <dl class="dl-horizontal">
@@ -58,71 +58,34 @@
                 </dd>
                 <dt>Status since</dt> <dd>{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</dd>
                 <dt>Status message</dt> <dd>{{item.statusMessage}}</dd>
+                
+                <legend><small>Resources</small></legend>
+                <dt><span class="fa fa-sitemap mc-icon-md-3"></span>Nodes</dt> 
                 <dd>
-                  <a class="btn btn-link pull-right" ui-sref="gatewaysAddEdit({ id: item.id })"><i class="fa fa-edit"></i> Edit </a>
-                </dd> 
-              </dl>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-              <span class="fa fa-eye"></span> Nodes
-            </h2>
-            <div class="card-pf-body">
-              <p class="card-pf-aggregate-status-notifications">
-                <span class="card-pf-aggregate-status-notification">
                   <a  ng-hide="resourceCount.sensors == 0" ui-sref="nodesList({ gatewayId: item.id})">{{resourceCount.nodes}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.nodes}}</span>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-              <span class="fa fa-clock-o"></span> Timers
-            </h2>
-            <div class="card-pf-body">
-              <p class="card-pf-aggregate-status-notifications">
-                <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
+                </dd>
+                <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt> 
+                <dd>
+                  <a  ng-hide="resourceCount.sensors == 0" >{{resourceCount.sensors}}</a>
+                  <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
+                </dd>
+                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>Timers</dt> 
+                <dd>
+                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-              <span class="fa fa-bell-o"></span> Alarm Definitions
-            </h2>
-            <div class="card-pf-body">
-              <p class="card-pf-aggregate-status-notifications">
-                <span class="card-pf-aggregate-status-notification">
-                  <a  ng-hide="resourceCount.alarmDefinitions == 0" ui-sref="alarmsList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.alarmDefinitions}}</a>
-                  <span ng-show="resourceCount.alarmDefinitions == 0">{{resourceCount.alarmDefinitions}}</span>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-              <span class="pficon pficon-replicator"></span> Resources groups
-            </h2>
-            <div class="card-pf-body">
-              <p class="card-pf-aggregate-status-notifications">
-                <span class="card-pf-aggregate-status-notification">
+                </dd>
+                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>Alarm Definitions</dt> 
+                <dd>
+                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
+                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
+                </dd>
+                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>Resources groups</dt> 
+                <dd>
                   <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
                   <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
-                </span>
-              </p>
+                </dd>
+              </dl>
             </div>
           </div>
         </div>
