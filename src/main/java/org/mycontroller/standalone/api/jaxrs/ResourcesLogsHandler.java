@@ -83,6 +83,7 @@ public class ResourcesLogsHandler {
         return RestUtils.getResponse(Status.OK, queryResponse);
     }
 
+    @RolesAllowed({ "Admin" })
     @PUT
     @Path("/")
     public Response purge(ResourcesLogs resourcesLogs) {
@@ -97,7 +98,6 @@ public class ResourcesLogsHandler {
     @POST
     @Path("/delete")
     public Response purge(List<Integer> ids) {
-
         DaoUtils.getResourcesLogsDao().delete(ids);
         return RestUtils.getResponse(Status.OK);
     }

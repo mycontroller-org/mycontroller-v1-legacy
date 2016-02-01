@@ -30,6 +30,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataGroupNVD3;
 import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataNVD3;
@@ -152,7 +154,22 @@ public class MetricsHandler {
 
     private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3(Integer sensorId, Long timestampFrom,
             Long timestampTo, Boolean withMinMax) {
-
+        String timeFormat = null;
+        if (timestampFrom != null) {
+            //subtract 5 seconds to get proper timeformat
+            Long timeDifferance = System.currentTimeMillis() - timestampFrom - (TIME_REF.ONE_SECOND * 5);
+            if (timeDifferance > (TIME_REF.ONE_DAY * 365)) {
+                timeFormat = ObjectFactory.getAppProperties().getDateFormat();
+            } else if (timeDifferance > TIME_REF.ONE_DAY * 7) {
+                timeFormat = "MMM dd, " + ObjectFactory.getAppProperties().getTimeFormat();
+            } else if (timeDifferance > TIME_REF.ONE_DAY * 1) {
+                timeFormat = "dd, " + ObjectFactory.getAppProperties().getTimeFormat();
+            } else {
+                timeFormat = ObjectFactory.getAppProperties().getTimeFormat();
+            }
+        } else {
+            timeFormat = ObjectFactory.getAppProperties().getDateFormat();
+        }
         //Get sensor variables
         List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensorId);
         //Return if no data available
@@ -211,6 +228,7 @@ public class MetricsHandler {
                             .metricsChartDataNVD3(preDoubleData)
                             .id(sensorVariable.getId())
                             .unit(sensorVariable.getUnit())
+                            .timeFormat(timeFormat)
                             .variableType(sensorVariable.getVariableType().getText())
                             .dataType(sensorVariable.getMetricType().getText()).build());
 
@@ -239,6 +257,7 @@ public class MetricsHandler {
                             .metricsChartDataNVD3(preBinaryData)
                             .id(sensorVariable.getId())
                             .unit(sensorVariable.getUnit())
+                            .timeFormat(timeFormat)
                             .variableType(sensorVariable.getVariableType().getText())
                             .dataType(sensorVariable.getMetricType().getText()).build());
                     break;

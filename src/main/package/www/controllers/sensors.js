@@ -288,8 +288,8 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
   //pre select, should be updated from server
   $scope.chartEnableMinMax = true;
   $scope.chartFromTimestamp = "3600000";
-  
-  $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, 'hh:mm:ss a', mchelper.cfg.timezone)};
+  $scope.chartTimeFormat = mchelper.cfg.dateFormat;
+  $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, $scope.chartTimeFormat, mchelper.cfg.timezone)};
   
   $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - 3600000});
   
@@ -300,6 +300,8 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
         $scope.chartData.forEach(function(itemLocal) {
           if(itemLocal.id === item.id){
             itemLocal.chartData = item.chartData;
+            //Update display time format
+            $scope.chartTimeFormat = item.timeFormat;
           }
         });
       });
@@ -313,6 +315,8 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     var chOptions = angular.copy($scope.chartOptions);
     chOptions.chart.type = chData.chartData[0].type;
     chOptions.chart.interpolate = chData.chartData[0].interpolate;
+    //Update display time format
+    $scope.chartTimeFormat = chData.timeFormat;
     if(chData.dataType === 'Double'){
       chOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + chData.unit};
     }else if(chData.dataType === 'Binary'){

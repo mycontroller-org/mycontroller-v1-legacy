@@ -24,7 +24,7 @@ import org.mycontroller.standalone.TIME_REF;
 public class MetricsUtils {
     public static final long RAW_DATA_MAX_RETAIN_TIME = TIME_REF.ONE_MINUTE;        // 1 minute
     public static final long ONE_MINUTE_MAX_RETAIN_TIME = TIME_REF.ONE_HOUR * 6;    // 6 Hours
-    public static final long FIVE_MINUTES_MAX_RETAIN_TIME = TIME_REF.ONE_DAY * 7;   // 7 days
+    public static final long FIVE_MINUTES_MAX_RETAIN_TIME = TIME_REF.ONE_DAY * 2;   // 2 days
     public static final long ONE_HOUR_MAX_RETAIN_TIME = TIME_REF.ONE_DAY * 30;      // 30 days
     public static final long SIX_HOURS_MAX_RETAIN_TIME = TIME_REF.ONE_DAY * 90;      // 90 days
     public static final long TWELVE_HOURS_MAX_RETAIN_TIME = TIME_REF.ONE_DAY * 180;  // 180 days
