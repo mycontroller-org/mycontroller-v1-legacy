@@ -38,6 +38,8 @@ import org.mycontroller.standalone.alarm.AlarmUtils.NOTIFICATION_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
+import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareType;
@@ -714,6 +716,33 @@ public class TypesUtils {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(permission.ordinal())
                         .displayName(permission.getText()).build());
             }
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getResourceLogsMessageTypes() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (MESSAGE_TYPE type : MESSAGE_TYPE.values()) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                    .displayName(type.getText()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getResourceLogsLogDirections() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (LOG_DIRECTION type : LOG_DIRECTION.values()) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                    .displayName(type.getText()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getResourceLogsLogLevels() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (LOG_LEVEL type : LOG_LEVEL.values()) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                    .displayName(type.getText()).build());
         }
         return typesIdNameMappers;
     }

@@ -33,7 +33,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
-import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -87,11 +86,7 @@ public class ResourcesLogsHandler {
     @PUT
     @Path("/")
     public Response purge(ResourcesLogs resourcesLogs) {
-        if (resourcesLogs.getTimestamp() == null) {
-            return RestUtils.getResponse(Status.BAD_REQUEST,
-                    new ApiError("at least 'timestamp' is required to purge."));
-        }
-        DaoUtils.getResourcesLogsDao().deleteAll(null, resourcesLogs.getTimestamp());
+        DaoUtils.getResourcesLogsDao().deleteAll(resourcesLogs);
         return RestUtils.getResponse(Status.OK);
     }
 

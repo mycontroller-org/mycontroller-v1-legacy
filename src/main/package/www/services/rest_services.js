@@ -117,7 +117,11 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getMessageTypes:  { method: 'GET', isArray: true, params: {type: 'messageTypes'}  },
     getMessageSubTypes:  { method: 'GET', isArray: true, params: {type: 'messageSubTypes'} },
     getGraphSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'graphSensorVariableTypes'} },
-    getTime12h24hformats:  { method: 'GET', isArray: true, params: {type: 'time12h24hformats'} }, 
+    getTime12h24hformats:  { method: 'GET', isArray: true, params: {type: 'time12h24hformats'} },
+    //ResourcesLogs
+    getResourceLogsMessageTypes:  { method: 'GET', isArray: true, params: {type: 'resourceLogsMessageTypes'} },
+    getResourceLogsLogDirections:  { method: 'GET', isArray: true, params: {type: 'resourceLogsLogDirections'} },
+    getResourceLogsLogLevels:  { method: 'GET', isArray: true, params: {type: 'resourceLogsLogLevels'} },
     
   })
 });

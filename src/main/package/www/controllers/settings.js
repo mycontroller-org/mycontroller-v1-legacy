@@ -39,6 +39,8 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   //Pre-load
   $scope.locationSettings = {};
   $scope.controllerSettings = {};
+  //get log levels
+  $scope.logLevels = TypesFactory.getResourceLogsLogLevels();
   //get languages
   $scope.languages = TypesFactory.getLanguages();
   $scope.updateSettingsLocation();
@@ -190,8 +192,7 @@ myControllerModule.controller('SettingsSystemMySensors', function(alertService, 
       }      
     });
   };
- 
-  
+
   //Pre-load
   $scope.mySensorsSettings = {};
   //Get firmwares list

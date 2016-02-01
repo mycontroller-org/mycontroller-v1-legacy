@@ -15,11 +15,20 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.LogDirectionDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.LogLevelDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.MessageTypeDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ResourceTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LogDirectionSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LogLevelSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.MessageTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ResourceTypeSerializer;
+import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
+import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
@@ -39,5 +48,17 @@ abstract class ResourcesLogsMixin {
 
     @JsonSerialize(using = MessageTypeSerializer.class)
     abstract public String getMessageType();
+
+    @JsonDeserialize(using = LogLevelDeserializer.class)
+    abstract public void setLogLevel(LOG_LEVEL logLevel);
+
+    @JsonDeserialize(using = ResourceTypeDeserializer.class)
+    abstract public void setResourceType(RESOURCE_TYPE resourceType);
+
+    @JsonDeserialize(using = LogDirectionDeserializer.class)
+    abstract public void setLogDirection(LOG_DIRECTION logDirection);
+
+    @JsonDeserialize(using = MessageTypeDeserializer.class)
+    abstract public void setMessageType(MESSAGE_TYPE messageType);
 
 }

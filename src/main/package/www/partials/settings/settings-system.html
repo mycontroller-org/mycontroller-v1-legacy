@@ -162,6 +162,18 @@
             </div>
             
             <div class="form-group">
+              <label class="col-sm-2 control-label">Resources log level</label>
+              <div class="col-sm-5">
+                <div ng-show="editEnable.controller">
+                  <select class="form-control" pf-select  ng-options="ll.displayName as ll.displayName for ll in logLevels" ng-model="controllerSettings.resourcesLogLevel"> 
+                    <option value="" ng-hide="true"></option>
+                  </select>
+                </div>
+                <span ng-hide="editEnable.controller">{{controllerSettings.resourcesLogLevel}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-sm-2 control-label">Login message</label>
               <div class="col-sm-5">
                 <textarea ng-show="editEnable.controller" class="form-control" ng-model="controllerSettings.loginMessage" placeholder="Description" rows="4"></textarea>

@@ -28,6 +28,7 @@ import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.alarm.jobs.AlarmDefinitionDampeningActiveTimeJob;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
+import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.Role;
 import org.mycontroller.standalone.db.tables.RoleUserMap;
 import org.mycontroller.standalone.db.tables.SystemJob;
@@ -253,6 +254,7 @@ public class DataBaseUtils {
                     .unitConfig(UNIT_CONFIG.METRIC.getText())
                     .loginMessage("Default username: <b>admin</b>, password: <b>admin<b>")
                     .grantAccessToChildResources(true)
+                    .resourcesLogLevel(LOG_LEVEL.NOTICE.getText())
                     .build().save();
 
             //Update Metrics reference data

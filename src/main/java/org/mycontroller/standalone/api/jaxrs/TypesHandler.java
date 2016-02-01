@@ -258,6 +258,25 @@ public class TypesHandler {
         return RestUtils.getResponse(Status.OK, TypesUtils.getRolePermissions());
     }
 
+    //Resource logs
+    @GET
+    @Path("/resourceLogsMessageTypes")
+    public Response getResourceLogsMessageTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourceLogsMessageTypes());
+    }
+
+    @GET
+    @Path("/resourceLogsLogDirections")
+    public Response getResourceLogsLogDirections() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourceLogsLogDirections());
+    }
+
+    @GET
+    @Path("/resourceLogsLogLevels")
+    public Response getResourceLogsLogLevels() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourceLogsLogLevels());
+    }
+
     //----------------- review required
 
     @GET

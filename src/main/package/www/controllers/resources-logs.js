@@ -181,9 +181,14 @@ myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, 
   $scope.saveProgress = false;
   $scope.saveButtonName = 'Purge';
   $scope.savingButtonName = 'Purging...';
+  $scope.saveButtonTooltip = "WARNING: If you don't select any parameter, This process will delete everything!";
   //$scope.isSettingChange = false;
   
   //Pre load
+  $scope.messageTypes = TypesFactory.getResourceLogsMessageTypes();
+  $scope.logDirections = TypesFactory.getResourceLogsLogDirections();
+  $scope.logLevels = TypesFactory.getResourceLogsLogLevels();
+    
   $scope.resourceTypes = TypesFactory.getResourceTypes();
   $scope.resourcesLogs = {};
   

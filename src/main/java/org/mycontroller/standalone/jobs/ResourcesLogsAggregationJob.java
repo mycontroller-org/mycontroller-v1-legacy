@@ -15,9 +15,10 @@
  */
 package org.mycontroller.standalone.jobs;
 
-import org.mycontroller.standalone.NumericUtils;
-import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
+import org.mycontroller.standalone.db.tables.ResourcesLogs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,32 +31,46 @@ import com.xeiam.sundial.exceptions.JobInterruptException;
  */
 public class ResourcesLogsAggregationJob extends Job {
     private static final Logger _logger = LoggerFactory.getLogger(ResourcesLogsAggregationJob.class.getName());
-    private static final long TRUNCATE_SENSOR_LOG_BEFORE = NumericUtils.MINUTE * 30;
-    private static final long TRUNCATE_SENSOR_LOG_OTHERS_BEFORE = NumericUtils.MINUTE * 30;
-    private static final long TRUNCATE_ALARM_LOG_BEFORE = NumericUtils.HOUR * 12;
-    private static final long TRUNCATE_TIMER_LOG_BEFORE = NumericUtils.HOUR * 12;
-    private static final long TRUNCATE_ALL_OTHERS = NumericUtils.DAY * 3;
+    private static final long TRUNCATE_TRACE = TIME_REF.ONE_MINUTE * 15;
+    private static final long TRUNCATE_NOTICE = TIME_REF.ONE_HOUR * 2;
+    private static final long TRUNCATE_INFO = TIME_REF.ONE_HOUR * 6;
+    private static final long TRUNCATE_WARNING = TIME_REF.ONE_HOUR * 12;
+    private static final long TRUNCATE_ERROR = TIME_REF.ONE_DAY * 2;
+    private static final long TRUNCATE_ALL = TIME_REF.ONE_DAY * 3;
 
     private void truncateSensorLogs() {
 
-        //Truncate Sensor related logs
-        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.SENSOR,
-                System.currentTimeMillis() - TRUNCATE_SENSOR_LOG_BEFORE);
+        ResourcesLogs resourcesLogs = ResourcesLogs.builder().build();
 
-        //Truncate Sensor related logs
-        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.SENSOR_VARIABLE,
-                System.currentTimeMillis() - TRUNCATE_SENSOR_LOG_OTHERS_BEFORE);
+        //Truncate Trace
+        resourcesLogs.setLogLevel(LOG_LEVEL.TRACE);
+        resourcesLogs.setTimestamp(System.currentTimeMillis() - TRUNCATE_TRACE);
+        DaoUtils.getResourcesLogsDao().deleteAll(resourcesLogs);
 
-        //Truncate AlarmDefinition related logs
-        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.ALARM_DEFINITION,
-                System.currentTimeMillis() - TRUNCATE_ALARM_LOG_BEFORE);
+        //Truncate notice logs
+        resourcesLogs.setLogLevel(LOG_LEVEL.NOTICE);
+        resourcesLogs.setTimestamp(System.currentTimeMillis() - TRUNCATE_NOTICE);
+        DaoUtils.getResourcesLogsDao().deleteAll(resourcesLogs);
 
-        //Truncate Scheduler related logs
-        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.TIMER,
-                System.currentTimeMillis() - TRUNCATE_TIMER_LOG_BEFORE);
+        //Truncate info logs
+        resourcesLogs.setLogLevel(LOG_LEVEL.INFO);
+        resourcesLogs.setTimestamp(System.currentTimeMillis() - TRUNCATE_INFO);
+        DaoUtils.getResourcesLogsDao().deleteAll(resourcesLogs);
 
-        //Remove other logs which is not listed here
-        DaoUtils.getResourcesLogsDao().deleteAll(null, System.currentTimeMillis() - TRUNCATE_ALL_OTHERS);
+        //Truncate warning logs
+        resourcesLogs.setLogLevel(LOG_LEVEL.WARNING);
+        resourcesLogs.setTimestamp(System.currentTimeMillis() - TRUNCATE_WARNING);
+        DaoUtils.getResourcesLogsDao().deleteAll(resourcesLogs);
+
+        //Truncate warning logs
+        resourcesLogs.setLogLevel(LOG_LEVEL.ERROR);
+        resourcesLogs.setTimestamp(System.currentTimeMillis() - TRUNCATE_ERROR);
+        DaoUtils.getResourcesLogsDao().deleteAll(resourcesLogs);
+
+        //truncate all data
+        resourcesLogs.setLogLevel(null);
+        resourcesLogs.setTimestamp(System.currentTimeMillis() - TRUNCATE_ALL);
+        DaoUtils.getResourcesLogsDao().deleteAll(resourcesLogs);
     }
 
     @Override

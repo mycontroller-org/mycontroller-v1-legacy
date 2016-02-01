@@ -70,7 +70,49 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
 
     @Override
     public void deleteAll(ResourcesLogs resourcesLogs) {
-        this.deleteAll(resourcesLogs.getResourceType(), resourcesLogs.getResourceId());
+        try {
+            DeleteBuilder<ResourcesLogs, Integer> deleteBuilder = this.getDao().deleteBuilder();
+
+            Where<ResourcesLogs, Integer> where = deleteBuilder.where();
+            //Add any where condition to avoid and append check
+            where.isNotNull(ResourcesLogs.KEY_ID);
+            //timestamp before
+            if (resourcesLogs.getTimestamp() != null) {
+                where.and().le(ResourcesLogs.KEY_TIMESTAMP, resourcesLogs.getTimestamp());
+            }
+            //message contains
+            if (resourcesLogs.getMessage() != null) {
+                where.and().like(ResourcesLogs.KEY_MESSAGE, "%" + resourcesLogs.getMessage() + "%");
+            }
+            //message contains
+            if (resourcesLogs.getMessage() != null) {
+                where.and().like(ResourcesLogs.KEY_MESSAGE, "%" + resourcesLogs.getMessage() + "%");
+            }
+            //log level
+            if (resourcesLogs.getLogLevel() != null) {
+                where.and().eq(ResourcesLogs.KEY_LOG_LEVEL, resourcesLogs.getLogLevel());
+            }
+            //log direction
+            if (resourcesLogs.getLogDirection() != null) {
+                where.and().eq(ResourcesLogs.KEY_LOG_DIRECTION, resourcesLogs.getLogDirection());
+            }
+            //message type
+            if (resourcesLogs.getMessageType() != null) {
+                where.and().eq(ResourcesLogs.KEY_MESSAGE_TYPE, resourcesLogs.getMessageType());
+            }
+            //resource type and resource id
+            if (resourcesLogs.getResourceType() != null && resourcesLogs.getResourceId() != null) {
+                where.and().eq(ResourcesLogs.KEY_RESOURCE_TYPE, resourcesLogs.getResourceType()).and()
+                        .eq(ResourcesLogs.KEY_RESOURCE_ID, resourcesLogs.getResourceId());
+            } else if (resourcesLogs.getResourceType() != null) {
+                where.and().eq(ResourcesLogs.KEY_RESOURCE_TYPE, resourcesLogs.getResourceType());
+            }
+            deleteBuilder.setWhere(where);
+            int deletionCount = deleteBuilder.delete();
+            _logger.debug("Deleted Resource:[{}], deletion count:{}", resourcesLogs, deletionCount);
+        } catch (SQLException ex) {
+            _logger.error("unable to delete Resource:[{}]", resourcesLogs, ex);
+        }
     }
 
     @Override

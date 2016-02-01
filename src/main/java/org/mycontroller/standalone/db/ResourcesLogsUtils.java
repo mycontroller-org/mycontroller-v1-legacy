@@ -17,6 +17,7 @@ package org.mycontroller.standalone.db;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
+import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
@@ -104,7 +105,8 @@ public class ResourcesLogsUtils {
     }
 
     public static boolean isLevel(LOG_LEVEL logLevel) {
-        return true;
+        return ObjectFactory.getAppProperties().getControllerSettings().getResourcesLogLevel()
+                .equalsIgnoreCase(logLevel.getText());
     }
 
     public static void setAlarmLog(LOG_LEVEL logLevel, AlarmDefinition alarmDefinition, Boolean triggered,
