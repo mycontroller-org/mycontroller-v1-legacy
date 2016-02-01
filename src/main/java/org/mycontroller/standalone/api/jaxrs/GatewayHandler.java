@@ -106,7 +106,7 @@ public class GatewayHandler {
 
         //Add id filter if he is non-admin
         if (!AuthUtils.isSuperAdmin(securityContext)) {
-            filters.put(Gateway.KEY_ID, AuthUtils.getUser(securityContext).getGatewayIds());
+            filters.put(Gateway.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds());
         }
 
         QueryResponse queryResponse = DaoUtils.getGatewayDao().getAll(
@@ -174,7 +174,7 @@ public class GatewayHandler {
     private void updateIds(List<Integer> ids) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
             for (Integer id : ids) {
-                if (!AuthUtils.getUser(securityContext).getGatewayIds().contains(id)) {
+                if (!AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds().contains(id)) {
                     ids.remove(id);
                 }
             }
@@ -183,7 +183,7 @@ public class GatewayHandler {
 
     private void hasAccess(Integer gatewayId) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
-            if (!AuthUtils.getUser(securityContext).getGatewayIds().contains(gatewayId)) {
+            if (!AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds().contains(gatewayId)) {
                 throw new ForbiddenException("You do not have access for this resource!");
             }
         }

@@ -92,7 +92,7 @@ public class SensorHandler {
 
         //Add id filter if he is non-admin
         if (!AuthUtils.isSuperAdmin(securityContext)) {
-            filters.put(Sensor.KEY_ID, AuthUtils.getUser(securityContext).getSensorIds());
+            filters.put(Sensor.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds());
         }
 
         QueryResponse queryResponse = DaoUtils.getSensorDao().getAll(
@@ -174,16 +174,16 @@ public class SensorHandler {
     private void updateIds(List<Integer> ids) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
             for (Integer id : ids) {
-                if (!AuthUtils.getUser(securityContext).getSensorIds().contains(id)) {
+                if (!AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds().contains(id)) {
                     ids.remove(id);
                 }
             }
         }
     }
 
-    private void hasAccess(Integer nodeId) {
+    private void hasAccess(Integer id) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
-            if (!AuthUtils.getUser(securityContext).getSensorIds().contains(nodeId)) {
+            if (!AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds().contains(id)) {
                 throw new ForbiddenException("You do not have access for this resource!");
             }
         }

@@ -117,14 +117,28 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
     }
 
     @Override
-    public List<SensorVariable> getAll(Integer sensorRefId) {
+    public List<SensorVariable> getAllBySensorId(Integer sensorRefId) {
         try {
             if (sensorRefId == null) {
                 return new ArrayList<SensorVariable>();
             }
             return this.getDao().queryForEq(SensorVariable.KEY_SENSOR_DB_ID, sensorRefId);
         } catch (SQLException ex) {
-            _logger.error("unable to get all list wit sensorRefId:{}", sensorRefId, ex);
+            _logger.error("unable to get all list with sensorRefId:{}", sensorRefId, ex);
+            return null;
+        }
+    }
+
+    @Override
+    public List<SensorVariable> getAllBySensorIds(List<Integer> sensorRefIds) {
+        try {
+            if (sensorRefIds == null) {
+                return new ArrayList<SensorVariable>();
+            }
+            return this.getDao().queryBuilder().selectColumns(SensorVariable.KEY_ID, SensorVariable.KEY_SENSOR_DB_ID)
+                    .where().in(SensorVariable.KEY_SENSOR_DB_ID, sensorRefIds).query();
+        } catch (SQLException ex) {
+            _logger.error("unable to get all list with sensorRefIds:{}", sensorRefIds, ex);
             return null;
         }
     }
@@ -230,13 +244,18 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
 
     @Override
     public List<Integer> getSensorVariableIds(Integer sensorRefId) {
-        List<SensorVariable> variables = this.getAll(sensorRefId);
+        List<SensorVariable> variables = this.getAllBySensorId(sensorRefId);
         List<Integer> ids = new ArrayList<Integer>();
         //TODO: should modify by query (RAW query)
         for (SensorVariable sensorVariable : variables) {
             ids.add(sensorVariable.getId());
         }
         return ids;
+    }
+
+    @Override
+    public List<SensorVariable> getAll(List<Integer> ids) {
+        return super.getAll(SensorVariable.KEY_ID, ids);
     }
 
 }

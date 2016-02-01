@@ -38,6 +38,8 @@ public interface RoleDao extends BaseDao<Role, Integer> {
 
     List<Integer> getSensorIds(Integer userId);
 
+    List<Integer> getSensorVariableIds(Integer userId);
+
     QueryResponse getAll(Query query);
 
 }

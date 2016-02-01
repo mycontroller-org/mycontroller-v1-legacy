@@ -25,13 +25,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
+import org.mycontroller.standalone.auth.AuthUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -43,6 +46,9 @@ import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
 public class TypesHandler {
+
+    @Context
+    SecurityContext securityContext;
 
     @GET
     @Path("/gatewayTypes")
@@ -71,37 +77,40 @@ public class TypesHandler {
     @GET
     @Path("/resourceTypes")
     public Response getResourceTypes(@QueryParam("resourceType") String resourceType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getResourceTypes(resourceType));
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getResourceTypes(AuthUtils.getUser(securityContext), resourceType));
     }
 
     @GET
     @Path("/resources")
     public Response getResources(@QueryParam("resourceType") String resourceType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getResources(resourceType));
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getResources(AuthUtils.getUser(securityContext), resourceType));
     }
 
     @GET
     @Path("/gateways")
     public Response getGateways() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getGateways());
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGateways(AuthUtils.getUser(securityContext)));
     }
 
     @GET
     @Path("/nodes")
     public Response getNodes(@QueryParam("gatewayId") Integer gatewayId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getNodes(gatewayId));
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNodes(AuthUtils.getUser(securityContext), gatewayId));
     }
 
     @GET
     @Path("/sensors")
     public Response getSensors(@QueryParam("nodeId") Integer nodeId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(nodeId));
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(AuthUtils.getUser(securityContext), nodeId));
     }
 
     @GET
     @Path("/sensorVariables")
     public Response getSensorVaribles(@QueryParam("sensorId") Integer sensorId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariables(sensorId));
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId));
     }
 
     @GET

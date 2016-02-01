@@ -33,7 +33,7 @@
           <label class="mc-align-center mc-top-space-5px">Showing {{(query.pageLimit * (query.page - 1))+1}} to {{getMin(getMin(query.pageLimit * query.page, queryResponse.query.totalItems), queryResponse.query.filteredCount)}} of {{queryResponse.query.totalItems}} items</label>
         </div>
         
-        <div class="btn-group" role="group" aria-label="" ng-show="filteredList.length > 0">
+        <div class="btn-group" role="group" aria-label="" ng-show="filteredList.length > 0 && mchelper.user.permission === 'Super admin'">
           <!-- Single button -->
           <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="itemIds.length == 0">

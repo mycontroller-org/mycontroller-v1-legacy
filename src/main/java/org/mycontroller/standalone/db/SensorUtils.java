@@ -48,7 +48,7 @@ public class SensorUtils {
 
     public static List<String> getVariableTypes(Sensor sensor) {
         List<String> variableTypes = new ArrayList<String>();
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensor.getId());
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId());
         if (sensorVariables != null) {
             for (SensorVariable sensorVariable : sensorVariables) {
                 variableTypes.add(sensorVariable.getVariableType().getText());
@@ -58,7 +58,7 @@ public class SensorUtils {
     }
 
     public static SensorsGuiButton getGuiButtonsStatus(Sensor sensor) {
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensor.getId());
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId());
         SensorsGuiButton guiButton = new SensorsGuiButton();
         for (SensorVariable sensorVariable : sensorVariables) {
             setGuiButton(sensorVariable, guiButton);
@@ -380,7 +380,7 @@ public class SensorUtils {
     public static List<KeyValueJson> getOthers(Integer sensorRefId) {
         List<KeyValueJson> keyValues = new ArrayList<KeyValueJson>();
         //Add sensor Units
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensorRefId);
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorRefId);
         for (SensorVariable sensorVariable : sensorVariables) {
             keyValues.add(new KeyValueJson(
                     sensorVariable.getVariableType().getText(),

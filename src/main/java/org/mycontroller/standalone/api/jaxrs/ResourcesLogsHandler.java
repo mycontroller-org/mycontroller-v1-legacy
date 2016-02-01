@@ -28,14 +28,18 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.mapper.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
@@ -50,6 +54,9 @@ import org.mycontroller.standalone.db.tables.ResourcesLogs;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
 public class ResourcesLogsHandler {
+
+    @Context
+    SecurityContext securityContext;
 
     @GET
     @Path("/")
@@ -71,6 +78,12 @@ public class ResourcesLogsHandler {
         filters.put(ResourcesLogs.KEY_MESSAGE, message);
         filters.put(ResourcesLogs.KEY_LOG_DIRECTION, LOG_DIRECTION.fromString(logDirection));
 
+        //Add allowed resources filter if he is non-admin
+        if (!AuthUtils.isSuperAdmin(securityContext)) {
+            filters.put(AllowedResources.KEY_ALLOWED_RESOURCES, AuthUtils.getUser(securityContext)
+                    .getAllowedResources());
+        }
+
         QueryResponse queryResponse = DaoUtils.getResourcesLogsDao().getAll(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
@@ -90,10 +103,12 @@ public class ResourcesLogsHandler {
         return RestUtils.getResponse(Status.OK);
     }
 
+    @RolesAllowed({ "Admin" })
     @POST
     @Path("/delete")
     public Response purge(List<Integer> ids) {
         DaoUtils.getResourcesLogsDao().delete(ids);
         return RestUtils.getResponse(Status.OK);
     }
+
 }

@@ -57,7 +57,7 @@ public class DeleteResourceUtils {
         //TODO: Delete timer created by alarmDefinition
 
         //Delete all variable Types
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensor.getId());
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId());
         for (SensorVariable sensorVariable : sensorVariables) {
             deleteSensorValue(sensorVariable);
         }

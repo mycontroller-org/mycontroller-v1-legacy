@@ -193,4 +193,9 @@ public class TimerDaoImpl extends BaseAbstractDaoImpl<Timer, Integer> implements
         }
     }
 
+    @Override
+    public List<Timer> getAll(List<Integer> ids) {
+        return getAll(Timer.KEY_ID, ids);
+    }
+
 }

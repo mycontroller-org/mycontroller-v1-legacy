@@ -86,7 +86,7 @@ public class NodeHandler {
 
         //Add id filter if he is non-admin
         if (!AuthUtils.isSuperAdmin(securityContext)) {
-            filters.put(Node.KEY_ID, AuthUtils.getUser(securityContext).getNodeIds());
+            filters.put(Node.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getNodeIds());
         }
 
         QueryResponse queryResponse = DaoUtils.getNodeDao().getAll(
@@ -188,7 +188,7 @@ public class NodeHandler {
     private void updateIds(List<Integer> ids) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
             for (Integer id : ids) {
-                if (!AuthUtils.getUser(securityContext).getNodeIds().contains(id)) {
+                if (!AuthUtils.getUser(securityContext).getAllowedResources().getNodeIds().contains(id)) {
                     ids.remove(id);
                 }
             }
@@ -197,7 +197,7 @@ public class NodeHandler {
 
     private void hasAccess(Integer nodeId) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
-            if (!AuthUtils.getUser(securityContext).getNodeIds().contains(nodeId)) {
+            if (!AuthUtils.getUser(securityContext).getAllowedResources().getNodeIds().contains(nodeId)) {
                 throw new ForbiddenException("You do not have access for this resource!");
             }
         }

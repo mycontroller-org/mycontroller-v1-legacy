@@ -156,7 +156,7 @@ public class MetricsHandler {
     private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3(Integer sensorId, Long timestampFrom,
             Long timestampTo, Boolean withMinMax) {
         //Get sensor variables
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(sensorId);
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
         //Return if no data available
         if (sensorVariables == null || sensorVariables.size() == 0) {
             return null;

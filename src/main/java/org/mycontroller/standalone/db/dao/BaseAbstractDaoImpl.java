@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.mapper.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.slf4j.Logger;
@@ -57,71 +59,97 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         return dao;
     }
 
+    private void addResourcesFilter(AllowedResources allowedResources, Where<Tdao, Tid> where) throws SQLException {
+        where.eq(AllowedResources.KEY_RESOURCE_TYPE, RESOURCE_TYPE.GATEWAY).and()
+                .in(AllowedResources.KEY_RESOURCE_ID, allowedResources.getGatewayIds()).or()
+                .eq(AllowedResources.KEY_RESOURCE_TYPE, RESOURCE_TYPE.NODE).and()
+                .in(AllowedResources.KEY_RESOURCE_ID, allowedResources.getNodeIds()).
+                or().eq(AllowedResources.KEY_RESOURCE_TYPE, RESOURCE_TYPE.SENSOR).and()
+                .in(AllowedResources.KEY_RESOURCE_ID, allowedResources.getSensorIds()).or()
+                .eq(AllowedResources.KEY_RESOURCE_TYPE, RESOURCE_TYPE.SENSOR_VARIABLE).and()
+                .in(AllowedResources.KEY_RESOURCE_ID, allowedResources.getSensorVariableIds());
+    }
+
     public QueryResponse getQueryResponse(Query query, String idColumn, String isAlterdTotalCountKey)
             throws SQLException {
+        _logger.debug("Input query: {}", query);
         QueryBuilder<Tdao, Tid> queryBuilder = this.getDao().queryBuilder();
         Where<Tdao, Tid> where = this.getDao().queryBuilder().where();
+
         //where.isNotNull(idColumn);
-        boolean addAnd = false;
+        int andCount = 0;
         for (String key : query.getFilters().keySet()) {
             if (query.getFilters().get(key) != null) {
                 if (query.getFilters().get(key) instanceof List<?>) {
                     for (Object value : (List<?>) query.getFilters().get(key)) {
                         if (value instanceof String) {//If it's string add one by one
-                            if (addAnd) {
-                                where.and();
-                            }
                             where.like(key, "%" + value + "%");
-                            addAnd = true;
+                            andCount++;
                         } else {//If it's integer, float, long, etc., add it under IN type
-                            if (addAnd) {
-                                where.and();
-                            }
                             where.in(key, (List<?>) query.getFilters().get(key));
-                            addAnd = true;
+                            andCount++;
                             break;
                         }
                     }
+                } else if (query.getFilters().get(key) instanceof AllowedResources) {
+                    AllowedResources allowedResources = (AllowedResources) query.getFilters().get(key);
+                    //Add resource filter for gateways, nodes, sensors
+                    addResourcesFilter(allowedResources, where);
+                    andCount++;
                 } else {
-                    if (addAnd) {
-                        where.and();
-                    }
                     where.eq(key, query.getFilters().get(key));
-                    addAnd = true;
+                    andCount++;
                 }
             }
         }
 
         //Set filtered count result
         QueryBuilder<Tdao, Tid> queryBuilderFilteredCount = this.getDao().queryBuilder();
-        if (addAnd) {
+        if (andCount != 0) {
+            where.and(andCount);
             queryBuilderFilteredCount.setWhere(where);
         }
         query.setFilteredCount(queryBuilderFilteredCount.countOf());
 
-        //Total count
+        // Add total count
+        //-----------------
         QueryBuilder<Tdao, Tid> totalItemsBuilder = this.getDao().queryBuilder();
-        if (isAlterdTotalCountKey != null) {
-            if (query.getFilters().get(isAlterdTotalCountKey) != null) {
-                totalItemsBuilder.where().eq(isAlterdTotalCountKey, query.getFilters().get(isAlterdTotalCountKey));
-                query.setTotalItems(totalItemsBuilder.countOf());
-            } else {
-                query.setTotalItems(this.getDao().countOf());
-            }
+        int totalItemsAndCount = 0;
+        if (isAlterdTotalCountKey != null && query.getFilters().get(isAlterdTotalCountKey) != null) {
+            totalItemsBuilder.where().eq(isAlterdTotalCountKey, query.getFilters().get(isAlterdTotalCountKey));
+            totalItemsAndCount++;
         } else {
             if (query.getFilters().get(idColumn) != null) {
                 totalItemsBuilder.where().in(idColumn, (List<?>) query.getFilters().get(idColumn));
-                query.setTotalItems(totalItemsBuilder.countOf());
-            } else {
-                query.setTotalItems(this.getDao().countOf());
+                totalItemsAndCount++;
             }
         }
-        if (addAnd) {
+
+        if (query.getFilters().get(AllowedResources.KEY_ALLOWED_RESOURCES) != null) {
+            AllowedResources allowedResources = (AllowedResources) query.getFilters().get(
+                    AllowedResources.KEY_ALLOWED_RESOURCES);
+            addResourcesFilter(allowedResources, totalItemsBuilder.where());
+            totalItemsAndCount++;
+        }
+
+        if (totalItemsAndCount > 1) {
+            totalItemsBuilder.where().and(totalItemsAndCount);
+            query.setTotalItems(totalItemsBuilder.countOf());
+        } else if (totalItemsAndCount != 0) {
+            query.setTotalItems(totalItemsBuilder.countOf());
+        } else {
+            query.setTotalItems(this.getDao().countOf());
+        }
+        //-----------------
+
+        if (andCount != 0) {
             queryBuilder.setWhere(where);
         }
 
         queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
                 .orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
+        //Remove allowed resources from query, to avoid send list to user
+        query.getFilters().put(AllowedResources.KEY_ALLOWED_RESOURCES, null);
         return QueryResponse.builder().data(queryBuilder.query()).query(query).build();
     }
 

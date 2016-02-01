@@ -45,6 +45,8 @@ public interface TimerDao {
 
     List<Timer> getAll(RESOURCE_TYPE resourceType);
 
+    List<Timer> getAll(List<Integer> ids);
+
     List<Timer> getAllEnabled();
 
     Timer get(int id);

@@ -28,6 +28,7 @@ import org.mycontroller.standalone.db.tables.RoleGatewayMap;
 import org.mycontroller.standalone.db.tables.RoleNodeMap;
 import org.mycontroller.standalone.db.tables.RoleSensorMap;
 import org.mycontroller.standalone.db.tables.RoleUserMap;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,6 +169,17 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
             }
         } catch (SQLException ex) {
             _logger.error("Exception, ", ex);
+        }
+        return ids;
+    }
+
+    @Override
+    public List<Integer> getSensorVariableIds(Integer userId) {
+        List<Integer> ids = new ArrayList<Integer>();
+        //if role id is not null do not execute
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorIds(getSensorIds(userId));
+        for (SensorVariable sensorVariable : sensorVariables) {
+            ids.add(sensorVariable.getId());
         }
         return ids;
     }

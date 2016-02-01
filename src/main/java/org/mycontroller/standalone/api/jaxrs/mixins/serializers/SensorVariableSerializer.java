@@ -41,7 +41,7 @@ public class SensorVariableSerializer extends JsonSerializer<Integer> {
             throws IOException, JsonProcessingException {
 
         if (id != null) {
-            List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(id);
+            List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(id);
 
             //Sort by defined order
             Collections.sort(sensorVariables, new ComparatorSensorVariable());

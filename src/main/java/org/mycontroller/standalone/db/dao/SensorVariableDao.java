@@ -35,7 +35,11 @@ public interface SensorVariableDao {
 
     void update(SensorVariable sensorVariable);
 
-    List<SensorVariable> getAll(Integer sensorRefId);
+    List<SensorVariable> getAllBySensorId(Integer sensorRefId);
+
+    List<SensorVariable> getAllBySensorIds(List<Integer> sensorRefIds);
+    
+    List<SensorVariable> getAll(List<Integer> ids);
 
     List<SensorVariable> getAllDoubleMetric(Integer sensorRefId);
 
@@ -44,12 +48,12 @@ public interface SensorVariableDao {
     List<SensorVariable> getAll();
 
     SensorVariable get(SensorVariable sensorVariable);
-    
+
     SensorVariable get(int id);
 
     SensorVariable get(Integer sensorRefId, MESSAGE_TYPE_SET_REQ variableType);
 
     Dao<SensorVariable, Integer> getDao();
-    
+
     List<Integer> getSensorVariableIds(Integer sensorRefId);
 }

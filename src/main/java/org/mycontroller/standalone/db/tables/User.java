@@ -18,13 +18,13 @@ package org.mycontroller.standalone.db.tables;
 import java.security.Principal;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.AllowedResources;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -44,7 +44,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString(includeFieldNames = true)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Principal {
     public static final Logger _logger = LoggerFactory.getLogger(User.class);
 
@@ -73,11 +72,14 @@ public class User implements Principal {
 
     private List<String> permissions;
 
-    private List<Integer> gatewayIds;
+    private AllowedResources allowedResources;
 
-    private List<Integer> nodeIds;
-
-    private List<Integer> sensorIds;
+    public AllowedResources getAllowedResources() {
+        if (allowedResources == null) {
+            allowedResources = AllowedResources.builder().userId(this.getId()).build();
+        }
+        return allowedResources;
+    }
 
     public List<String> getPermissions() {
         if (permissions == null) {
@@ -96,36 +98,6 @@ public class User implements Principal {
         } else {
             return null;
         }
-    }
-
-    public List<Integer> getGatewayIds() {
-        if (gatewayIds == null || gatewayIds.size() == 0) {
-            gatewayIds = DaoUtils.getRoleDao().getGatewayIds(id);
-            if (gatewayIds.isEmpty()) {
-                gatewayIds.add(-1);
-            }
-        }
-        return gatewayIds;
-    }
-
-    public List<Integer> getNodeIds() {
-        if (nodeIds == null || nodeIds.size() == 0) {
-            nodeIds = DaoUtils.getRoleDao().getNodeIds(id);
-            if (nodeIds.isEmpty()) {
-                nodeIds.add(-1);
-            }
-        }
-        return nodeIds;
-    }
-
-    public List<Integer> getSensorIds() {
-        if (sensorIds == null || sensorIds.size() == 0) {
-            sensorIds = DaoUtils.getRoleDao().getSensorIds(id);
-            if (sensorIds.isEmpty()) {
-                sensorIds.add(-1);
-            }
-        }
-        return sensorIds;
     }
 
     @Override

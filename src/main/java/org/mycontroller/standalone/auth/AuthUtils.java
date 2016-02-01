@@ -1,11 +1,31 @@
+/**
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.mycontroller.standalone.auth;
 
 import javax.ws.rs.core.SecurityContext;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.tables.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author Jeeva Kandasamy (jkandasa)
+ * @since 0.0.2
+ */
 public class AuthUtils {
     public static final Logger _logger = LoggerFactory.getLogger(AuthUtils.class);
 
@@ -53,9 +73,31 @@ public class AuthUtils {
     }
 
     public static boolean isSuperAdmin(SecurityContext securityContext) {
-        _logger.debug("User:{}", securityContext.getUserPrincipal());
-        return ((User) securityContext.getUserPrincipal()).getPermissions().contains(
-                PERMISSION_TYPE.SUPER_ADMIN.getText());
+        return isSuperAdmin(AuthUtils.getUser(securityContext));
+    }
+
+    public static boolean isSuperAdmin(User user) {
+        _logger.debug("User:{}", user);
+        return user.getPermissions().contains(PERMISSION_TYPE.SUPER_ADMIN.getText());
+    }
+
+    public static boolean hasAccess(SecurityContext securityContext, RESOURCE_TYPE resourceType, Integer resourceId) {
+        return hasAccess(getUser(securityContext), resourceType, resourceId);
+    }
+
+    public static boolean hasAccess(User user, RESOURCE_TYPE resourceType, Integer resourceId) {
+        switch (resourceType) {
+            case GATEWAY:
+                return user.getAllowedResources().getGatewayIds().contains(resourceId);
+            case NODE:
+                return user.getAllowedResources().getNodeIds().contains(resourceId);
+            case SENSOR:
+                return user.getAllowedResources().getSensorIds().contains(resourceId);
+            case SENSOR_VARIABLE:
+                return user.getAllowedResources().getSensorVariableIds().contains(resourceId);
+            default:
+                return false;
+        }
     }
 
 }
