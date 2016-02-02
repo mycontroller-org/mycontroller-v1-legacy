@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_TIME_FORMAT;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
+import org.mycontroller.standalone.MYCMessages;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.ObjectFactory;
@@ -36,9 +37,11 @@ import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.jobs.MidNightJobs;
 import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
 import org.mycontroller.standalone.jobs.ResourcesLogsAggregationJob;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.metrics.jobs.MetricsAggregationJob;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
+import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
@@ -181,6 +184,55 @@ public class DataBaseUtils {
             //Update unit values into table
             UnitsSettings.builder().variables(unitVariables).build().save();
 
+            //Update metrics settings
+            ArrayList<MetricsGraph> metrics = new ArrayList<MetricsGraph>();
+            for (MESSAGE_TYPE_SET_REQ type : MetricsGraph.variables) {
+                if (MYCMessages.getMetricType(type) == METRIC_TYPE.DOUBLE) {
+                    metrics.add(MetricsGraph.builder()
+                            .metricName(type.getText())
+                            .type("lineChart")
+                            .interpolate("linear")
+                            .color("#ff7f0e")
+                            .area(false)
+                            .bar(false)
+                            .build());
+                } else if (MYCMessages.getMetricType(type) == METRIC_TYPE.BINARY) {
+                    metrics.add(MetricsGraph.builder()
+                            .metricName(type.getText())
+                            .type("lineChart")
+                            .interpolate("step-after")
+                            .color("#ff7f0e")
+                            .area(false)
+                            .bar(false)
+                            .build());
+                }
+            }
+            MetricsGraph batteryGrapth = MetricsGraph.builder()
+                    .metricName(MetricsSettings.SKEY_BATTERY)
+                    .type("lineChart")
+                    .interpolate("linear")
+                    .color("#ff7f0e")
+                    .area(false)
+                    .bar(false)
+                    .build();
+
+            //Update Metrics reference data
+            MetricsSettings metricsSettings = MetricsSettings.builder()
+                    .lastAggregationRawData(System.currentTimeMillis())
+                    .lastAggregationOneMinute(System.currentTimeMillis())
+                    .lastAggregationFiveMinutes(System.currentTimeMillis())
+                    .lastAggregationOneHour(System.currentTimeMillis())
+                    .lastAggregationSixHours(System.currentTimeMillis())
+                    .lastAggregationTwelveHours(System.currentTimeMillis())
+                    .lastAggregationOneDay(System.currentTimeMillis())
+                    .enabledMinMax(true)
+                    .defaultTimeRange(TIME_REF.ONE_HOUR * 6)
+                    .metrics(metrics)
+                    .battery(batteryGrapth)
+                    .build();
+            metricsSettings.updateInternal();
+            metricsSettings.save();
+
             //Update location settings
             LocationSettings.builder()
                     .name("Namakkal")
@@ -257,17 +309,6 @@ public class DataBaseUtils {
                     .grantAccessToChildResources(true)
                     .resourcesLogLevel(LOG_LEVEL.NOTICE.getText())
                     .build().save();
-
-            //Update Metrics reference data
-            MetricsSettings.builder()
-                    .lastAggregationRawData(System.currentTimeMillis())
-                    .lastAggregationOneMinute(System.currentTimeMillis())
-                    .lastAggregationFiveMinutes(System.currentTimeMillis())
-                    .lastAggregationOneHour(System.currentTimeMillis())
-                    .lastAggregationSixHours(System.currentTimeMillis())
-                    .lastAggregationTwelveHours(System.currentTimeMillis())
-                    .lastAggregationOneDay(System.currentTimeMillis())
-                    .build().updateInternal();
 
             // Update Sensor Type and Variables Type mapping
 

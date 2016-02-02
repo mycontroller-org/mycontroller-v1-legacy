@@ -46,6 +46,14 @@ public class SettingsUtils {
         return settings != null ? settings.getValue() : null;
     }
 
+    public static void updateSettings(Settings settings) {
+        if (getSettings(settings.getKey(), settings.getSubKey()) == null) {
+            DaoUtils.getSettingsDao().create(settings);
+        } else {
+            DaoUtils.getSettingsDao().update(settings);
+        }
+    }
+
     public static Settings getSettings(String key, String subKey) {
         return DaoUtils.getSettingsDao().get(key, subKey);
     }

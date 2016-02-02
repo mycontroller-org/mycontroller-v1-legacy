@@ -35,6 +35,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.settings.MetricsSettings;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -284,6 +285,14 @@ public class TypesHandler {
     @Path("/resourceLogsLogLevels")
     public Response getResourceLogsLogLevels() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getResourceLogsLogLevels());
+    }
+
+    @GET
+    @Path("/metricsSettings")
+    public Response getMetricsSettings() {
+        MetricsSettings metricsSettings = MetricsSettings.get();
+        metricsSettings.setMetrics(null);
+        return RestUtils.getResponse(Status.OK, metricsSettings);
     }
 
     //----------------- review required

@@ -286,13 +286,17 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     };
   
   //pre select, should be updated from server
+  TypesFactory.getMetricsSettings(function(response){
+    $scope.metricsSettings = response;
+    $scope.chartEnableMinMax = $scope.metricsSettings.enabledMinMax;
+    $scope.chartFromTimestamp = $scope.metricsSettings.defaultTimeRange.toString();
+    $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp});
+  });
   $scope.tooltipPlacement = 'top';
-  $scope.chartEnableMinMax = true;
-  $scope.chartFromTimestamp = "3600000";
   $scope.chartTimeFormat = mchelper.cfg.dateFormat;
   $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, $scope.chartTimeFormat, mchelper.cfg.timezone)};
   
-  $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - 3600000});
+  
   
   $scope.updateChart = function(){
     MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){

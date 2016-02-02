@@ -122,6 +122,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getResourceLogsMessageTypes:  { method: 'GET', isArray: true, params: {type: 'resourceLogsMessageTypes'} },
     getResourceLogsLogDirections:  { method: 'GET', isArray: true, params: {type: 'resourceLogsLogDirections'} },
     getResourceLogsLogLevels:  { method: 'GET', isArray: true, params: {type: 'resourceLogsLogLevels'} },
+    //Metrics
+    getMetricsSettings:  { method: 'GET', isArray: false, params: {type: 'metricsSettings', id:null} },
     
   })
 });
@@ -284,6 +286,8 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     getUnits: { method: 'GET', isArray: false, params: {type:'units'} },
     saveUnits: { method: 'POST', params: {type:'units'} },
     updateLanguage: { method: 'PUT', params: {type:'updateLanguage'} },
+    getMetrics: { method: 'GET', isArray: false, params: {type:'metrics'} },
+    saveMetrics: { method: 'POST', params: {type:'metrics'} },
   })
 });
 

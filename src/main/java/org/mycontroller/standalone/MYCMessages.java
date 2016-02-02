@@ -426,9 +426,9 @@ public class MYCMessages {
             case V_UNIT_PREFIX:
                 return PAYLOAD_TYPE.PL_STRING;
             case V_HVAC_SETPOINT_COOL:
-                return PAYLOAD_TYPE.PL_INTEGER;
+                return PAYLOAD_TYPE.PL_STRING;
             case V_HVAC_SETPOINT_HEAT:
-                return PAYLOAD_TYPE.PL_INTEGER;
+                return PAYLOAD_TYPE.PL_STRING;
             case V_HVAC_FLOW_MODE:
                 return PAYLOAD_TYPE.PL_STRING;
             default:

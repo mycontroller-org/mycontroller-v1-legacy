@@ -15,14 +15,20 @@
  */
 package org.mycontroller.standalone.settings;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.db.tables.Settings;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import lombok.Data;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -32,7 +38,7 @@ import lombok.ToString;
  */
 @Builder
 @ToString(includeFieldNames = true)
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName("metricsSettings")
@@ -46,6 +52,10 @@ public class MetricsSettings {
     public static final String SKEY_LAST_AGGREGATION_TWELVE_HOURS = "lastAggregationTwelveHours";
     public static final String SKEY_LAST_AGGREGATION_ONE_DAY = "lastAggregationOneDay";
 
+    public static final String SKEY_ENABLED_MIN_MAX = "enabledMinMax";
+    public static final String SKEY_DEFAULT_TIME_RANGE = "defaultTimeRange";
+    public static final String SKEY_BATTERY = "battery";
+
     private Long lastAggregationRawData;
     private Long lastAggregationOneMinute;
     private Long lastAggregationFiveMinutes;
@@ -54,7 +64,17 @@ public class MetricsSettings {
     private Long lastAggregationTwelveHours;
     private Long lastAggregationOneDay;
 
+    private Boolean enabledMinMax;
+    private Long defaultTimeRange;
+    private MetricsGraph battery;
+
+    private List<MetricsGraph> metrics;
+
     public static MetricsSettings get() {
+        ArrayList<MetricsGraph> metrics = new ArrayList<MetricsGraph>();
+        for (MESSAGE_TYPE_SET_REQ sVariable : MetricsGraph.variables) {
+            metrics.add(getMetricsGraph(sVariable.getText()));
+        }
         return MetricsSettings.builder()
                 .lastAggregationRawData(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_RAW_DATA)))
                 .lastAggregationOneMinute(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_MINUTE)))
@@ -63,11 +83,37 @@ public class MetricsSettings {
                 .lastAggregationSixHours(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_SIX_HOURS)))
                 .lastAggregationTwelveHours(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_TWELVE_HOURS)))
                 .lastAggregationOneDay(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_DAY)))
+                .metrics(metrics)
+                .battery(getMetricsGraph(SKEY_BATTERY))
+                .enabledMinMax(NumericUtils.getBoolean(getValue(SKEY_ENABLED_MIN_MAX)))
+                .defaultTimeRange(NumericUtils.getLong(getValue(SKEY_DEFAULT_TIME_RANGE)))
                 .build();
     }
 
     public void save() {
-        //may be add later
+        for (MetricsGraph metric : metrics) {
+            if (MetricsGraph.variables.contains(MESSAGE_TYPE_SET_REQ.fromString(metric.getMetricName()))) {
+                updateMetricsGraph(metric);
+            }
+        }
+        if (battery != null) {
+            updateMetricsGraph(battery);
+        }
+        if (enabledMinMax != null) {
+            updateValue(SKEY_ENABLED_MIN_MAX, enabledMinMax);
+        }
+        if (defaultTimeRange != null) {
+            updateValue(SKEY_DEFAULT_TIME_RANGE, defaultTimeRange);
+        }
+    }
+
+    public MetricsGraph getMetric(String metricName) {
+        for (MetricsGraph metric : metrics) {
+            if (metric.getMetricName().equals(metricName)) {
+                return metric;
+            }
+        }
+        return null;
     }
 
     @JsonIgnore
@@ -102,4 +148,34 @@ public class MetricsSettings {
     private static void updateValue(String subKey, Object value) {
         SettingsUtils.updateValue(KEY_METRICS, subKey, value);
     }
+
+    private static MetricsGraph getMetricsGraph(String subKey) {
+        Settings settings = SettingsUtils.getSettings(KEY_METRICS, subKey);
+        if (settings != null) {
+            return MetricsGraph.builder()
+                    .id(settings.getId())
+                    .metricName(subKey)
+                    .type(settings.getValue())
+                    .interpolate(settings.getAltValue())
+                    .area(NumericUtils.getBoolean(settings.getValue2()))
+                    .bar(NumericUtils.getBoolean(settings.getValue3()))
+                    .color(settings.getValue4())
+                    .build();
+        }
+        return null;
+    }
+
+    private static void updateMetricsGraph(MetricsGraph metric) {
+        SettingsUtils.updateSettings(Settings.builder()
+                .id(metric.getId())
+                .key(KEY_METRICS)
+                .subKey(metric.getMetricName())
+                .value(metric.getType())
+                .altValue(metric.getInterpolate())
+                .value2(String.valueOf(metric.getArea()))
+                .value3(String.valueOf(metric.getBar()))
+                .value4(metric.getColor())
+                .build());
+    }
+
 }

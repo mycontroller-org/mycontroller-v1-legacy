@@ -44,6 +44,10 @@ public class Settings {
     public static final String KEY_SUB_KEY = "subKey";
     public static final String KEY_VALUE = "value";
     public static final String KEY_ALT_VALUE = "altValue";
+    public static final String KEY_VALUE2 = "value2";
+    public static final String KEY_VALUE3 = "value3";
+    public static final String KEY_VALUE4 = "value4";
+    public static final String KEY_VALUE5 = "value5";
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -55,5 +59,13 @@ public class Settings {
     private String value;
     @DatabaseField(canBeNull = true, columnName = KEY_ALT_VALUE)
     private String altValue;
+    @DatabaseField(canBeNull = true, columnName = KEY_VALUE2)
+    private String value2;
+    @DatabaseField(canBeNull = true, columnName = KEY_VALUE3)
+    private String value3;
+    @DatabaseField(canBeNull = true, columnName = KEY_VALUE4)
+    private String value4;
+    @DatabaseField(canBeNull = true, columnName = KEY_VALUE5)
+    private String value5;
 
 }

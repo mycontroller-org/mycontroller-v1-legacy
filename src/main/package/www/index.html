@@ -264,8 +264,9 @@
             <ul class="nav navbar-nav navbar-persistent">
               <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }"><a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user fa-lg mc-margin-right"></i>Profile</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsSystem') == 0 }"><a ui-sref="settingsSystem"><i class="fa fa-cogs fa-lg"></i> System</a></li>
-              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUnits') == 0 }"><a ui-sref="settingsUnits"><i class="fa fa-star-o fa-lg"></i> Units</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsNotifications') == 0 }"><a ui-sref="settingsNotifications"><i class="fa fa-flag-o fa-lg"></i> Notifications</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMetrics') == 0 }"><a ui-sref="settingsMetrics"><i class="fa fa-area-chart fa-lg"></i> Metrics</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUnits') == 0 }"><a ui-sref="settingsUnits"><i class="fa fa-star-o fa-lg"></i> Units</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMySensors') == 0 }"><a ui-sref="settingsMySensors"><i class="fa fa-star-o fa-lg"></i> MySensors</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsVariablesMapperList') == 0 }"><a ui-sref="settingsVariablesMapperList"><i class="fa fa-clone fa-lg"></i> Variables mapper</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUsers') == 0 }"><a ui-sref="settingsUsersList"><i class="fa fa-users fa-lg"></i> Users</a></li>

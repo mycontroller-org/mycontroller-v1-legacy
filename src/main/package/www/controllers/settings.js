@@ -213,3 +213,39 @@ myControllerModule.controller('SettingsSystemMySensors', function(alertService, 
   };
 
 });
+
+myControllerModule.controller('SettingsMetricsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper) {
+  
+  //config, language, user, etc.,
+  $scope.mchelper = mchelper;
+  
+  //editable settings
+  $scope.editEnable = {};
+  $scope.saveProgress = {};
+  
+  //settings Units
+  $scope.updateSettingsMetrics = function(){
+    SettingsFactory.getMetrics(function(response){
+      $scope.metricsSettings = response;
+      $scope.metricsSettings.defaultTimeRange = $scope.metricsSettings.defaultTimeRange.toString();
+    });
+  };
+  
+  
+  //Pre-load
+  $scope.metricsSettings = {};
+  $scope.updateSettingsMetrics();
+
+  //Save units
+  $scope.saveMetrics = function(){
+    $scope.saveProgress.metrics = true;
+    SettingsFactory.saveMetrics($scope.metricsSettings,function(response) {
+        alertService.success('Update success...');
+        $scope.saveProgress.metrics = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.metrics = false;
+      });
+  }; 
+
+});

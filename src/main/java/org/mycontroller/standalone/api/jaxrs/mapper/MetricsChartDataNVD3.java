@@ -38,5 +38,6 @@ public class MetricsChartDataNVD3 {
     private String type;
     private String interpolate;
     private Boolean area;
+    private Boolean bar;
     private String color;
 }

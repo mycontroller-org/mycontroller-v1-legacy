@@ -44,6 +44,8 @@ import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
 import org.mycontroller.standalone.model.ResourceCountModel;
+import org.mycontroller.standalone.settings.MetricsGraph;
+import org.mycontroller.standalone.settings.MetricsSettings;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -58,6 +60,8 @@ public class MetricsHandler {
     public static final String MINUMUM = "Minimum";
     public static final String MAXIMUM = "Maximum";
     public static final String AVERAGE = "Average";
+    public static final String COLOR_MINIMUM = "#2ca02c";
+    public static final String COLOR_MAXIMUM = "#802b00";
 
     //Get count of resources
     @GET
@@ -123,27 +127,34 @@ public class MetricsHandler {
                 maxMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMax() });
             }
         }
+        MetricsGraph metricBattery = ObjectFactory.getAppProperties().getMetricsSettings().getBattery();
         preDoubleData.add(MetricsChartDataNVD3.builder()
-                .key("Average")
+                .key(AVERAGE)
                 .values(avgMetricValues)
-                .type("lineChart")
-                .interpolate("linear")
-                .area(false)
+                .type(metricBattery.getType())
+                .interpolate(metricBattery.getInterpolate())
+                .area(metricBattery.getArea())
+                .bar(metricBattery.getBar())
+                .color(metricBattery.getColor())
                 .build());
         if (withMinMax) {
             preDoubleData.add(MetricsChartDataNVD3.builder()
-                    .key("Minimum")
+                    .key(MINUMUM)
                     .values(minMetricValues)
-                    .type("lineChart")
-                    .interpolate("linear")
-                    .area(false)
+                    .type(metricBattery.getType())
+                    .interpolate(metricBattery.getInterpolate())
+                    .area(metricBattery.getArea())
+                    .bar(metricBattery.getBar())
+                    .color(COLOR_MINIMUM)
                     .build());
             preDoubleData.add(MetricsChartDataNVD3.builder()
-                    .key("Maximum")
+                    .key(MAXIMUM)
                     .values(maxMetricValues)
-                    .type("lineChart")
-                    .interpolate("linear")
-                    .area(false)
+                    .type(metricBattery.getType())
+                    .interpolate(metricBattery.getInterpolate())
+                    .area(metricBattery.getArea())
+                    .bar(metricBattery.getBar())
+                    .color(COLOR_MAXIMUM)
                     .build());
         }
         return MetricsChartDataGroupNVD3.builder()
@@ -162,9 +173,11 @@ public class MetricsHandler {
             return null;
         }
 
+        MetricsSettings metricsSettings = ObjectFactory.getAppProperties().getMetricsSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         for (SensorVariable sensorVariable : sensorVariables) {
+            MetricsGraph metrics = metricsSettings.getMetric(sensorVariable.getVariableType().getText());
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
                     ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
@@ -187,26 +200,32 @@ public class MetricsHandler {
                         }
                     }
                     preDoubleData.add(MetricsChartDataNVD3.builder()
-                            .key("Average")
+                            .key(AVERAGE)
                             .values(avgMetricDoubleValues)
-                            .type("lineChart")
-                            .interpolate("linear")
-                            .area(false)
+                            .type(metrics.getType())
+                            .interpolate(metrics.getInterpolate())
+                            .area(metrics.getArea())
+                            .bar(metrics.getBar())
+                            .color(metrics.getColor())
                             .build());
                     if (withMinMax) {
                         preDoubleData.add(MetricsChartDataNVD3.builder()
-                                .key("Minimum")
+                                .key(MINUMUM)
                                 .values(minMetricDoubleValues)
-                                .type("lineChart")
-                                .interpolate("linear")
-                                .area(false)
+                                .type(metrics.getType())
+                                .interpolate(metrics.getInterpolate())
+                                .area(metrics.getArea())
+                                .bar(metrics.getBar())
+                                .color(COLOR_MINIMUM)
                                 .build());
                         preDoubleData.add(MetricsChartDataNVD3.builder()
-                                .key("Maximum")
+                                .key(MAXIMUM)
                                 .values(maxMetricDoubleValues)
-                                .type("lineChart")
-                                .interpolate("linear")
-                                .area(false)
+                                .type(metrics.getType())
+                                .interpolate(metrics.getInterpolate())
+                                .area(metrics.getArea())
+                                .bar(metrics.getBar())
+                                .color(COLOR_MAXIMUM)
                                 .build());
                     }
                     finalData.add(MetricsChartDataGroupNVD3.builder()
@@ -234,9 +253,11 @@ public class MetricsHandler {
                     preBinaryData.add(MetricsChartDataNVD3.builder()
                             .key(sensorVariable.getVariableType().getText())
                             .values(metricBinaryValues)
-                            .type("lineChart")
-                            .interpolate("step-after")
-                            .area(false)
+                            .type(metrics.getType())
+                            .interpolate(metrics.getInterpolate())
+                            .area(metrics.getArea())
+                            .bar(metrics.getBar())
+                            .color(metrics.getColor())
                             .build());
                     finalData.add(MetricsChartDataGroupNVD3.builder()
                             .metricsChartDataNVD3(preBinaryData)

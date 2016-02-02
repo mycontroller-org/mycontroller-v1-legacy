@@ -282,6 +282,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('settingsMetrics', {
+      url:"/settings/metrics",
+      templateUrl: "partials/settings/settings-metrics.html",
+      controller: "SettingsMetricsController",
+       data: {
+        requireLogin: true
+      }
     }).state('settingsNotifications', {
       url:"/settings/notifications",
       templateUrl: "partials/settings/settings-notifications.html",

@@ -31,6 +31,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
+import org.mycontroller.standalone.settings.MetricsSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
@@ -160,6 +161,20 @@ public class SettingsHandler {
     @Path("/units")
     public Response saveUnits(UnitsSettings unitsSettings) {
         unitsSettings.save();
+        SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/metrics")
+    public Response getMetrics() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMetricsSettings());
+    }
+
+    @POST
+    @Path("/metrics")
+    public Response saveMetrics(MetricsSettings metricsSettings) {
+        metricsSettings.save();
         SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
     }
