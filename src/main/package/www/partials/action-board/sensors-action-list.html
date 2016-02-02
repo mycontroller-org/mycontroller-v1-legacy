@@ -99,7 +99,7 @@
               
               <!-- card title -->
               <div class="card-pf-title col-md-12">
-                  <i class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name}}</strong></i>
+                  <i tooltip-enable="item.name.length > 24" uib-tooltip="{{item.name}}" class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name ? item.name : '-' | limitTo:24}}{{item.name.length > 24 ? '...' : ''}}</strong></i>
               </div>
               
               <!-- card body -->
@@ -108,6 +108,7 @@
                 <div class="mc-sa-tiles-variable col-md-12">
                   <span><i class="fa fa-plug"></i> {{item.node.gateway.name}} <i class="fa fa-chevron-right"></i><i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name}}</span>
                 </div>
+                
                 <!-- Sensor type, Last seen -->
                 <div class="mc-sa-tiles-variable col-md-12">
                   <span class="mc-padding"><i class="mc-icon-lg" ng-class="cs.getSensorIcon(item.type)"></i><span>{{item.type ? item.type : 'Undefined'}}</span></span>
@@ -123,7 +124,7 @@
                 <!-- buttons-->
                 <div class="col-md-12">
                   <a class="btn btn-link mc-padding pull-left" ng-model="radioModel" ng-click="refreshSensor(item)"><i class="fa fa-refresh  mc-icon-lg mc-inline-editer-ab" tooltip="Refresh" tooltip-placement="right"></i></a>
-                  <a class="btn btn-link mc-padding pull-right" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right mc-icon-lg" tooltip="View Details" tooltip-placement="left"></i></a>
+                  <a class="btn btn-link mc-padding pull-right" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right mc-icon-lg" tooltip="View details" tooltip-placement="left"></i></a>
                 </div>
               </div>
               
