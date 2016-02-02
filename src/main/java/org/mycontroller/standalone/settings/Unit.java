@@ -56,6 +56,8 @@ public class Unit {
         variables.add(MESSAGE_TYPE_SET_REQ.V_LEVEL);
         variables.add(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL);
         variables.add(MESSAGE_TYPE_SET_REQ.V_PERCENTAGE);
+        variables.add(MESSAGE_TYPE_SET_REQ.V_POSITION);
+        variables.add(MESSAGE_TYPE_SET_REQ.V_PRESSURE);
         variables.add(MESSAGE_TYPE_SET_REQ.V_RAIN);
         variables.add(MESSAGE_TYPE_SET_REQ.V_RAINRATE);
         variables.add(MESSAGE_TYPE_SET_REQ.V_TEMP);

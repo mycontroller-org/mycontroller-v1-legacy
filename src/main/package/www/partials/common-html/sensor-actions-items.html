@@ -54,7 +54,7 @@
 </div>
 
 <!-- Forecast -->
-<div ng-if="variable.type === 'Forecast'" uib-tooltip="Forecast" tooltip-placement="left">
+<div ng-if="variable.type === 'Forecast'" uib-tooltip="Forecast" tooltip-placement="{{tooltipPlacement}}">
   <!-- <span><i class="wi wi-{{getForecastValue(variable.value)}} mc-icon-2x"></i></span> -->
   <span><span class="mc-inline-editer-ab mc-style-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="wi wi-{{cs.getForecastValue(variable.value)}} mc-icon-2x"></i></span>
@@ -62,7 +62,7 @@
 </div>
 
 <!-- Watt -->
-<div ng-if="variable.type === 'Watt'" uib-tooltip="Watt" tooltip-placement="left">
+<div ng-if="variable.type === 'Watt'" uib-tooltip="Watt" tooltip-placement="{{tooltipPlacement}}">
   <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span ng-hide="hideVariableName"><i class="fa fa-bolt mc-icon-2x"></i></span><span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span></span>
   </span>
@@ -192,7 +192,7 @@
 </div>
 
 <!-- Variable 1,2,3,4,5 -->
-<div ng-if="variable.type.indexOf('Variable ') > -1" uib-tooltip="{{variable.type}}" tooltip-placement="left">
+<div ng-if="variable.type.indexOf('Variable ') > -1" uib-tooltip="{{variable.type}}" tooltip-placement="{{tooltipPlacement}}">
   <span><span class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span class="mc-style-ab"><span ng-hide="hideVariableName">{{variable.type.replace('Variable ','V')}}: </span>{{variable.value ||"-"}} {{variable.unit}}</span></span>
   </span>

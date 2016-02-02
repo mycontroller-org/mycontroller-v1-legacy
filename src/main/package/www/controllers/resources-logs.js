@@ -29,6 +29,7 @@ $scope, $filter, ResourcesLogsFactory, $uibModal, $stateParams, mchelper, Common
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
+  $scope.itemsPerPage = "10";
   
   //Get min number
   $scope.getMin = function(item1, item2){
@@ -45,6 +46,7 @@ $scope, $filter, ResourcesLogsFactory, $uibModal, $stateParams, mchelper, Common
 
   //get all items
   $scope.getAllItems = function(){
+    $scope.query.pageLimit = parseInt($scope.itemsPerPage);
     ResourcesLogsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;

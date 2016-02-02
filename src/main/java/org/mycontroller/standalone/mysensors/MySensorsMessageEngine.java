@@ -307,6 +307,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 _logger.debug("Internal Message, Type:I_ID_RESPONSE[{}]", mySensorsRawMessage);
                 return;
             case I_HEARTBEAT:
+            case I_HEARTBEAT_RESPONSE:
                 if (mySensorsRawMessage.isTxMessage()) {
                     return;
                 }

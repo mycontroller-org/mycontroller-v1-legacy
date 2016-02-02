@@ -430,6 +430,14 @@ input.mc-color-steel-blue{
   height:75px;
 }
 
+.mc-sensor-action-tiles{
+  height:340px;
+}
+
+.mc-sa-tiles-variable{
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
 
 
 

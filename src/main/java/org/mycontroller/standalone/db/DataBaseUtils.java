@@ -146,6 +146,7 @@ public class DataBaseUtils {
             // Metric or Imperial to sensors
             ArrayList<Unit> unitVariables = new ArrayList<Unit>();
 
+            //NOTE: do not forget to put entry under "org.mycontroller.standalone.settings.Unit"
             unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_CURRENT.getText(), "A", "A"));
             unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_CUSTOM.getText(), "", ""));
             unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_DIRECTION.getText(), "°", "°"));

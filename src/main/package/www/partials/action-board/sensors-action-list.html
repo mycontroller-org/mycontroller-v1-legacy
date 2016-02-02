@@ -18,11 +18,11 @@
 <div>
   
   <!-- Loading icon disaplay --> 
-  <div ng-hide="queryResponse.$resolved">
+  <div ng-hide="queryResponse.$resolved && !dataLoading">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
   
-  <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
+  <div ng-show="queryResponse.$resolved && !dataLoading"> <!-- Main Message -->
 
     <!-- top tool bar -->
     <div class="col-md-12 mc-top-space" ng-show="queryResponse.query.totalItems > 0">
@@ -35,9 +35,9 @@
     <!-- Display When no data on table -->
     <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
     
-    <!-- list view -->
     <div ng-show="filteredList.length > 0">
     
+      <!-- list view -->
       <div class="col-md-12" ng-if="viewType == 'listView'" > <!-- items container -->
         <div class="data-list-pf"> <!-- data-list-pf -->
           <div class="list-group-item mc-list-align" dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"> <!-- ng-repeat -->
@@ -87,21 +87,54 @@
       </div><!-- data-list-pf -->
       <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
     </div><!-- items container -->
-  
-  
-    <!-- box view -->
-    <div class="col-md-12 tiles-view-container" ng-if="viewType == 'tilesView'">
-      <legend></legend>
-      <div class="blank-slate-pf" >
-        <div class="blank-slate-pf-icon">
-          <i class="fa fa-exclamation-triangle"></i>
-        </div>
-        <h1>Tiles view not implemented.</h1>
-      </div>
-    </div>
-  
-  </div><!-- items display container -->
 
   
+    <!-- box view -->
+    <div class="col-md-12 container-cards-pf" ng-if="viewType == 'tilesView'">
+      <div class="row row-cards-pf" >
+        <!-- sensors ng-repeat -->
+        <div dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage">
+          <div class="col-xs-12 col-sm-6 col-md-4" ng-class="{'col-lg-3': colLg3, 'col-lg-2': !colLg3}">
+            <div class="card-pf card-pf-aggregate-status card-pf-accented mc-sensor-action-tiles">
+              
+              <!-- card title -->
+              <div class="card-pf-title col-md-12">
+                  <i class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name}}</strong></i>
+              </div>
+              
+              <!-- card body -->
+              <div class="card-pf-body col-md-12">
+                <!-- node name -->
+                <div class="mc-sa-tiles-variable col-md-12">
+                  <span><i class="fa fa-plug"></i> {{item.node.gateway.name}} <i class="fa fa-chevron-right"></i><i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name}}</span>
+                </div>
+                <!-- Sensor type, Last seen -->
+                <div class="mc-sa-tiles-variable col-md-12">
+                  <span class="mc-padding"><i class="mc-icon-lg" ng-class="cs.getSensorIcon(item.type)"></i><span>{{item.type ? item.type : 'Undefined'}}</span></span>
+                  <span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="top"><span class="text-left"><i class="fa fa-clock-o fa-lg" ></i><span> {{item.lastSeen.inString  || 'Never'}}</span></span></span>
+                </div>
+                <legend style="margin:3px"></legend>
+                <!-- Variables, selects only one-->
+                <div ng-repeat="variable in item.variables | limitTo:6" ng-init="vItems = cs.getMin(6,item.variables.length)" class="col-md-12 mc-sa-tiles-variable" style="height:{{210/vItems}}px;vertical-align: middle;line-height: {{210/vItems}}px;"> <!-- variables ng-repeat -->
+                  <!-- Sensor variables -->
+                  <div ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
+                </div><!-- variables ng-repeat -->
+                <legend style="margin:3px"></legend>
+                <!-- buttons-->
+                <div class="col-md-12">
+                  <a class="btn btn-link mc-padding pull-left" ng-model="radioModel" ng-click="refreshSensor(item)"><i class="fa fa-refresh  mc-icon-lg mc-inline-editer-ab" tooltip="Refresh" tooltip-placement="right"></i></a>
+                  <a class="btn btn-link mc-padding pull-right" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right mc-icon-lg" tooltip="View Details" tooltip-placement="left"></i></a>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <legend style="margin:0px"></legend>
+      <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+
+    </div><!-- items display container -->
+
 
 </div>

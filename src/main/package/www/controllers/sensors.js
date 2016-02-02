@@ -286,6 +286,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     };
   
   //pre select, should be updated from server
+  $scope.tooltipPlacement = 'top';
   $scope.chartEnableMinMax = true;
   $scope.chartFromTimestamp = "3600000";
   $scope.chartTimeFormat = mchelper.cfg.dateFormat;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionControllerList', function(
-  alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, $uibModal, displayRestError, mchelper, CommonServices, pfViewUtils, $filter) {
+  alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, $uibModal, displayRestError, mchelper, CommonServices, pfViewUtils, $filter, $window) {
   
   //GUI page settings
   //$scope.headerStringList = "Sesnors detail";
@@ -38,12 +38,15 @@ myControllerModule.controller('SensorsActionControllerList', function(
   
   //get all Sensors
   $scope.getAllItems = function(){
+    $scope.dataLoading = true;
     SensorsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
+      $scope.dataLoading = false;
     },function(error){
       displayRestError.display(error);
+      $scope.dataLoading = false;
     });
   }
 
@@ -105,7 +108,17 @@ myControllerModule.controller('SensorsActionControllerList', function(
   
   //View selection
   var viewSelected = function(viewId) {
-    $scope.viewType = viewId
+    if(viewId === 'tilesView'){
+      $scope.query.pageLimit = 12;
+      $scope.tooltipPlacement = 'top';
+    }else if(viewId === 'listView'){
+      $scope.query.pageLimit = 10;
+      $scope.tooltipPlacement = 'left';
+    }
+    $scope.currentPage = 1;
+    $scope.query.page=1;
+    $scope.getAllItems();
+    $scope.viewType = viewId;
   };
   
   //View configuration
@@ -198,8 +211,21 @@ myControllerModule.controller('SensorsActionControllerList', function(
   
   //Pre load
   $scope.viewsConfig.currentView = $scope.viewsConfig.views[0].id;
+  $scope.tooltipPlacement = 'left';
   $scope.viewType = $scope.viewsConfig.currentView;
   //Update list table
   //getAllItems();
+  
+  
+  //fix for layout tiles
+  var isInnterWidth = function(minWidth, maxWidth, value){
+    return (minWidth <= value) && (maxWidth >= value);
+  };
+  $scope.$watch(function(){
+       return $window.innerWidth;
+    }, function(value) {
+      $scope.colLg3 = isInnterWidth(1200,1600, value);
+  });
+
 
 });
