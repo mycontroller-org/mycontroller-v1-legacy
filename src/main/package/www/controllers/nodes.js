@@ -355,6 +355,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
       $scope.chartTimeFormat = response.timeFormat;
       $scope.chartOptions.chart.type = response.chartData[0].type;
       $scope.chartOptions.chart.interpolate = response.chartData[0].interpolate;
+      $scope.fetching = false;
     });
   });
   $scope.chartTimeFormat = mchelper.cfg.dateFormat;

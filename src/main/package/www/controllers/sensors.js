@@ -290,7 +290,10 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     $scope.metricsSettings = response;
     $scope.chartEnableMinMax = $scope.metricsSettings.enabledMinMax;
     $scope.chartFromTimestamp = $scope.metricsSettings.defaultTimeRange.toString();
-    $scope.chartData = MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp});
+    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp},function(response){
+      $scope.chartData = response;
+      $scope.fetching = false;
+    });
   });
   $scope.tooltipPlacement = 'top';
   $scope.chartTimeFormat = mchelper.cfg.dateFormat;
