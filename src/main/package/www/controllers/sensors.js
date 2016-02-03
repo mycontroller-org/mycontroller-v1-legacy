@@ -251,7 +251,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
             noErrorCheck: true,
             height: 270,
             margin : {
-                top: 0,
+                top: 5,
                 right: 20,
                 bottom: 60,
                 left: 65
@@ -262,7 +262,6 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
             y: function(d){return d[1];},
             useVoronoi: false,
             clipEdge: false,
-            transitionDuration: 500,
             useInteractiveGuideline: true,
             xAxis: {
                 showMaxMin: false,
@@ -276,8 +275,9 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
                 tickFormat: function(d){
                     return d3.format(',.2f')(d);
                 },
+                axisLabelDistance: -10,
                 //axisLabel: ''
-            }
+            },
         },
           title: {
             enable: false,

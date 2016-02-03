@@ -40,7 +40,7 @@
       <!-- list view -->
       <div class="col-md-12" ng-if="viewType == 'listView'" > <!-- items container -->
         <div class="data-list-pf"> <!-- data-list-pf -->
-          <div class="list-group-item mc-list-align" dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"> <!-- ng-repeat -->
+          <div class="list-group-item mc-list-align" dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.filteredCount" current-page="currentPage"> <!-- ng-repeat -->
             <div class="list-row"><!-- list-row -->
   
               <!-- Sensor name -->
@@ -55,8 +55,10 @@
               </div>
   
               <!-- Last seen -->
-              <div class="col-md-1">
-                <span class="text-left"><i class="fa fa-clock-o mc-icon-lg" ></i><span  uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.lastSeen.inString  || 'Never'}}</span></span>
+              <div class="col-md-1" uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">
+                <span class="text-left">
+                  <i class="fa fa-clock-o mc-icon-lg" ></i><span>{{item.lastSeen.inString  || 'Never'}}</span>
+                </span>
               </div>
             
               <!-- Variables, selects only one-->
@@ -85,7 +87,13 @@
           </div><!-- list-row -->
         </div><!-- ng-repeat -->
       </div><!-- data-list-pf -->
-      <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+      
+      <div class="btn-group mc-side-space" ng-show="filteredList.length > 0">
+        <label class="mc-align-center mc-top-space-5px">Showing {{(query.pageLimit * (query.page - 1))+1}} to {{getMin(getMin(query.pageLimit * query.page, queryResponse.query.totalItems), queryResponse.query.filteredCount)}} of {{queryResponse.query.totalItems}} items</label>
+      </div>
+      <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)">
+      
+      </dir-pagination-controls>
     </div><!-- items container -->
 
   
@@ -93,20 +101,23 @@
     <div class="col-md-12 container-cards-pf" ng-if="viewType == 'tilesView'">
       <div class="row row-cards-pf" >
         <!-- sensors ng-repeat -->
-        <div dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage">
+        <div dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.filteredCount" current-page="currentPage">
           <div class="col-xs-12 col-sm-6 col-md-4" ng-class="{'col-lg-3': colLg3, 'col-lg-2': !colLg3}">
             <div class="card-pf card-pf-aggregate-status card-pf-accented mc-sensor-action-tiles">
               
               <!-- card title -->
               <div class="card-pf-title col-md-12">
-                  <i tooltip-enable="item.name.length > 24" uib-tooltip="{{item.name}}" class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name ? item.name : '-' | limitTo:24}}{{item.name.length > 24 ? '...' : ''}}</strong></i>
+                  <i tooltip-enable="item.name.length > 21" uib-tooltip="{{item.name}}" class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name ? item.name : '-' | limitTo:21}}{{item.name.length > 21 ? '...' : ''}}</strong></i>
               </div>
               
               <!-- card body -->
               <div class="card-pf-body col-md-12">
                 <!-- node name -->
                 <div class="mc-sa-tiles-variable col-md-12">
-                  <span><i class="fa fa-plug"></i> {{item.node.gateway.name}} <i class="fa fa-chevron-right"></i><i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name}}</span>
+                  <span tooltip-enable="(item.node.gateway.name.length + item.node.name.length) > 25" uib-tooltip="[G]:{{item.node.gateway.name}} >> [N]:{{item.node.eui}}:{{item.node.name}}">
+                    <i class="fa fa-plug"></i> {{item.node.gateway.name ? item.node.gateway.name : '-' | limitTo:25}}{{item.node.gateway.name.length > 25 ? '...' : ''}}
+                    <span ng-show="item.node.gateway.name.length < 25">  <i class="fa fa-chevron-right"></i><i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name ? item.node.name : '-' | limitTo:(25-item.node.gateway.name.length)}}{{item.node.name.length > (25-item.node.gateway.name.length) ? '...' : ''}}</span>
+                  </span>
                 </div>
                 
                 <!-- Sensor type, Last seen -->
@@ -114,12 +125,16 @@
                   <span class="mc-padding"><i class="mc-icon-lg" ng-class="cs.getSensorIcon(item.type)"></i><span>{{item.type ? item.type : 'Undefined'}}</span></span>
                   <span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="top"><span class="text-left"><i class="fa fa-clock-o fa-lg" ></i><span> {{item.lastSeen.inString  || 'Never'}}</span></span></span>
                 </div>
-                <legend style="margin:3px"></legend>
+                <legend style="margin:3px" ng-init="variableMaxSize=200"></legend>
                 <!-- Variables, selects only one-->
-                <div ng-repeat="variable in item.variables | limitTo:6" ng-init="vItems = cs.getMin(6,item.variables.length)" class="col-md-12 mc-sa-tiles-variable" style="height:{{210/vItems}}px;vertical-align: middle;line-height: {{210/vItems}}px;"> <!-- variables ng-repeat -->
+                <div ng-repeat="variable in item.variables | limitTo:6" ng-init="vItems = cs.getMin(6,item.variables.length)" class="col-md-12 mc-sa-tiles-variable" style="height:{{variableMaxSize/vItems}}px;vertical-align: middle;line-height: {{variableMaxSize/vItems}}px;"> <!-- variables ng-repeat -->
                   <!-- Sensor variables -->
                   <div ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
                 </div><!-- variables ng-repeat -->
+                <!-- if there is no variable add this one -->
+                <div ng-if="item.variables == 0" class="col-md-12 mc-sa-tiles-variable" style="height: {{variableMaxSize}}px;vertical-align: middle;line-height: {{variableMaxSize}}px;">
+                  
+                </div>
                 <legend style="margin:3px"></legend>
                 <!-- buttons-->
                 <div class="col-md-12">
@@ -133,6 +148,10 @@
         </div>
       </div>
       <legend style="margin:0px"></legend>
+      
+      <div class="btn-group mc-side-space" ng-show="filteredList.length > 0">
+        <label class="mc-align-center mc-top-space-5px">Showing {{(query.pageLimit * (query.page - 1))+1}} to {{getMin(getMin(query.pageLimit * query.page, queryResponse.query.totalItems), queryResponse.query.filteredCount)}} of {{queryResponse.query.totalItems}} items</label>
+      </div>
       <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
 
     </div><!-- items display container -->

@@ -348,25 +348,25 @@ input.mc-color-steel-blue{
 .mc-icon{
   font-size:15px; 
   vertical-align: middle;
-  margin-right: 5%;
+  margin-right: 5px;
 }
 
 .mc-icon{
   font-size:100%; 
   vertical-align: middle;
-  margin-right: 5%;
+  margin-right: 5px;
 }
 
 .mc-icon-md-1{
   font-size:110%; 
   vertical-align: middle;
-  margin-right: 5%;
+  margin-right: 5px;
 }
 
 .mc-icon-md-3{
   font-size:130%; 
   vertical-align: middle;
-  margin-right: 5%;
+  margin-right: 5px;
 }
 
 .mc-icon-lg{
@@ -378,7 +378,7 @@ input.mc-color-steel-blue{
 .mc-icon-2x{
   font-size:200%;
   vertical-align: middle;
-  margin-right: 5%;
+  margin-right: 5px;
 }
 
 .mc-inline-editer-ab{
@@ -431,7 +431,7 @@ input.mc-color-steel-blue{
 }
 
 .mc-sensor-action-tiles{
-  height:340px;
+  height:330px;
 }
 
 .mc-sa-tiles-variable{
