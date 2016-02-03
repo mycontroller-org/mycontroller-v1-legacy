@@ -233,24 +233,24 @@ public class MetricsAggregationBase {
             //One minute should handle raw data also
                 case ONE_MINUTE:
                     metricsSettings = MetricsSettings.builder()
-                            .lastAggregationOneMinute(toTimestamp)
-                            .lastAggregationRawData(toTimestamp)
+                            .lastAggregationOneMinute((fromTimestamp + bucketDuration))
+                            .lastAggregationRawData((fromTimestamp + bucketDuration))
                             .build();
                     break;
                 case FIVE_MINUTES:
-                    metricsSettings = MetricsSettings.builder().lastAggregationFiveMinutes(toTimestamp).build();
+                    metricsSettings = MetricsSettings.builder().lastAggregationFiveMinutes((fromTimestamp + bucketDuration)).build();
                     break;
                 case ONE_HOUR:
-                    metricsSettings = MetricsSettings.builder().lastAggregationOneHour(toTimestamp).build();
+                    metricsSettings = MetricsSettings.builder().lastAggregationOneHour((fromTimestamp + bucketDuration)).build();
                     break;
                 case SIX_HOURS:
-                    metricsSettings = MetricsSettings.builder().lastAggregationSixHours(toTimestamp).build();
+                    metricsSettings = MetricsSettings.builder().lastAggregationSixHours((fromTimestamp + bucketDuration)).build();
                     break;
                 case TWELVE_HOURS:
-                    metricsSettings = MetricsSettings.builder().lastAggregationTwelveHours(toTimestamp).build();
+                    metricsSettings = MetricsSettings.builder().lastAggregationTwelveHours((fromTimestamp + bucketDuration)).build();
                     break;
                 case ONE_DAY:
-                    metricsSettings = MetricsSettings.builder().lastAggregationOneDay(toTimestamp).build();
+                    metricsSettings = MetricsSettings.builder().lastAggregationOneDay((fromTimestamp + bucketDuration)).build();
                     break;
                 default:
                     break;
@@ -259,7 +259,16 @@ public class MetricsAggregationBase {
                 metricsSettings.updateInternal();
                 metricsSettings = MetricsSettings.get();
                 ObjectFactory.getAppProperties().setMetricsSettings(metricsSettings);
-                _logger.debug("Metrics settings update successfully! new settings:{}", metricsSettings);
+                _logger.debug(
+                        "Metrics settings update successfully! New referances, Last aggregation:[Raw:{}, "
+                                + "OneMinute:{}, FiveMinute:{}, OneHour:{}, SixHours:{}, TwelveHours:{}, OneDay:{}]",
+                        metricsSettings.getLastAggregationRawData(),
+                        metricsSettings.getLastAggregationOneMinute(),
+                        metricsSettings.getLastAggregationFiveMinutes(),
+                        metricsSettings.getLastAggregationOneHour(),
+                        metricsSettings.getLastAggregationSixHours(),
+                        metricsSettings.getLastAggregationTwelveHours(),
+                        metricsSettings.getLastAggregationOneDay());
             } else {
                 _logger.warn("metricsSettings is null cannot update");
             }
