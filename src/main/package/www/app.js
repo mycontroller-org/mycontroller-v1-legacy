@@ -38,6 +38,9 @@ var myControllerModule = angular.module('myController',[
   'xeditable',
   'angularUtils.directives.dirPagination',
   'frapontillo.bootstrap-duallistbox',
+  'adf',
+  'adf.structures.base',
+  'adf.widget.clock',
 ]);
 
 myControllerModule.constant("mchelper", {
