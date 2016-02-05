@@ -17,13 +17,15 @@
 -->
 <form role="form">
   <div class="form-group">
-    <label>Grid size</label>
-    <select id="panelSize" class="form-control" pf-select ng-model="config.gridSize"> 
+    <label>Items per row</label>
+    <select id="panelSize" class="form-control" pf-select ng-model="config.itemsPerRow"> 
       <option value="" ng-hide="true"></option>
-      <option value="1">4</option>
-      <option value="2">6</option>
-      <option value="3">9</option>
-      <option value="4">12</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="6">6</option>
+      <option value="12">12</option>
     </select>
   </div>
   <div class="form-group">

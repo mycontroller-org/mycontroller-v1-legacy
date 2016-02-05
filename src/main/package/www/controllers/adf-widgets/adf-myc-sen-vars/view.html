@@ -23,7 +23,7 @@
 <div ng-hide="mycSenVars.isSyncing">
   <!-- variables ng-repeat -->
   <div ng-repeat="variable in mycSenVars.variables"> 
-    <div class="col-md-{{12/config.gridSize}}">
+    <div class="col-md-{{12/config.itemsPerRow}}">
       <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented mc-sensor-variable-detail">
         <h2 class="card-pf-title">{{variable.type}}</h2>
         <div class="card-pf-body">

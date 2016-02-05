@@ -30,7 +30,7 @@ angular.module('adf.widget.myc-sen-vars', [])
         controllerAs: 'mycSenVars',
         config: {
           variableIds:[],
-          gridSize:"3",
+          itemsPerRow:"3",
           refreshTime:30,
         },
         edit: {
