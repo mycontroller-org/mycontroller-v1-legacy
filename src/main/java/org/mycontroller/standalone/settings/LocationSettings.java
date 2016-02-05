@@ -18,7 +18,6 @@ package org.mycontroller.standalone.settings;
 import org.mycontroller.standalone.NumericUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +34,6 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeName("locationSettings")
 public class LocationSettings {
     public static final String KEY_LOCATION = "location";
     public static final String SKEY_NAME = "name";

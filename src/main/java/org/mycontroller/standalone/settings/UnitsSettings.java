@@ -21,8 +21,6 @@ import java.util.List;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.db.tables.Settings;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +36,6 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeName("unitSettings")
 public class UnitsSettings {
     public static final String KEY_VARIABLE_UNIT = "variableUnit";
 

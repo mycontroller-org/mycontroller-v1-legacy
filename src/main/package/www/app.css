@@ -421,6 +421,11 @@ input.mc-color-steel-blue{
     padding-right:5px;
 }
 
+.mc-margin {
+  margin-left:3px;
+  margin-right:3px;
+}
+
 
 .dl-horizontal dt {
     white-space: normal;

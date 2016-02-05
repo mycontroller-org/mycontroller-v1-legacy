@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
@@ -48,13 +49,27 @@ public class SettingsDaoImpl extends BaseAbstractDaoImpl<Settings, Integer> impl
     }
 
     @Override
-    public Settings get(String key, String subKey) {
+    public Settings get(Integer userId, String key, String subKey) {
         try {
+            Where<Settings, Integer> where = this.getDao().queryBuilder().where();
+            int andCount = 0;
+            if (userId == null) {
+                where.isNull(Settings.KEY_USER_ID);
+                andCount++;
+            } else {
+                where.eq(Settings.KEY_USER_ID, userId);
+                andCount++;
+            }
+            where.eq(Settings.KEY_KEY, key);
+            andCount++;
+            where.eq(Settings.KEY_SUB_KEY, subKey);
+            andCount++;
+            where.and(andCount);
             QueryBuilder<Settings, Integer> queryBuilder = this.getDao().queryBuilder();
-            queryBuilder.where().eq(Settings.KEY_KEY, key).and().eq(Settings.KEY_SUB_KEY, subKey);
+            queryBuilder.setWhere(where);
             return queryBuilder.queryForFirst();
         } catch (SQLException ex) {
-            _logger.error("unable to get item for key:{}, subKey:{}", key, subKey, ex);
+            _logger.error("unable to get item for userId:{}, key:{}, subKey:{}", userId, key, subKey, ex);
             return null;
         }
     }
@@ -91,8 +106,19 @@ public class SettingsDaoImpl extends BaseAbstractDaoImpl<Settings, Integer> impl
     }
 
     private void createIfNotAvailable(String key, String subKey) {
-        if (get(key, subKey) == null) {
+        if (get(null, key, subKey) == null) {
             create(Settings.builder().key(key).subKey(subKey).build());
+        }
+    }
+
+    @Override
+    public List<Settings> getAll(Integer userId, String key) {
+        try {
+            return this.getDao().queryBuilder().where().eq(Settings.KEY_USER_ID, userId).and()
+                    .eq(Settings.KEY_KEY, key).query();
+        } catch (SQLException ex) {
+            _logger.error("unable to get item for userId:{}, Key:{}", userId, key, ex);
+            return null;
         }
     }
 

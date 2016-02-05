@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.settings;
 
 import java.io.File;
+import java.util.List;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.About;
@@ -42,20 +43,50 @@ public class SettingsUtils {
     }
 
     public static String getValue(String key, String subKey) {
-        Settings settings = DaoUtils.getSettingsDao().get(key, subKey);
+        Settings settings = DaoUtils.getSettingsDao().get(null, key, subKey);
         return settings != null ? settings.getValue() : null;
     }
 
     public static void updateSettings(Settings settings) {
-        if (getSettings(settings.getKey(), settings.getSubKey()) == null) {
-            DaoUtils.getSettingsDao().create(settings);
+        updateSettings(settings, false);
+    }
+
+    public static void updateSettings(Settings settings, boolean forceCreate) {
+        Settings oldSettings = null;
+        if (settings.getId() != null) {
+            oldSettings = DaoUtils.getSettingsDao().getById(settings.getId());
+            if (oldSettings.getUserId() != settings.getUserId()) {
+                //different user id? trying to hack?
+                _logger.warn("Cannot update this settings, different user id'd found!"
+                        + " Old settings:[{}], new settings:[{}]", oldSettings, settings);
+            } else {
+                DaoUtils.getSettingsDao().update(settings);
+            }
         } else {
-            DaoUtils.getSettingsDao().update(settings);
+            if(forceCreate){
+                DaoUtils.getSettingsDao().create(settings);
+            }else{
+                oldSettings = getSettings(settings.getUserId(), settings.getKey(), settings.getSubKey());
+                if (oldSettings == null) {
+                    DaoUtils.getSettingsDao().create(settings);
+                } else {
+                    settings.setId(oldSettings.getId());
+                    DaoUtils.getSettingsDao().update(settings);
+                }
+            }            
         }
     }
 
+    public static Settings getSettings(Integer userId, String key, String subKey) {
+        return DaoUtils.getSettingsDao().get(userId, key, subKey);
+    }
+
     public static Settings getSettings(String key, String subKey) {
-        return DaoUtils.getSettingsDao().get(key, subKey);
+        return getSettings(null, key, subKey);
+    }
+
+    public static List<Settings> getSettingsList(Integer userId, String key) {
+        return DaoUtils.getSettingsDao().getAll(userId, key);
     }
 
     public static void updateValue(String key, Object value) {

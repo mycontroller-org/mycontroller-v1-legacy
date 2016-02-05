@@ -27,6 +27,7 @@ import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
+import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
 import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesGroupHandler;
@@ -139,6 +140,7 @@ public class StartApp {
         resources.add(SettingsHandler.class.getName());
         resources.add(GatewayHandler.class.getName());
         resources.add(ResourcesGroupHandler.class.getName());
+        resources.add(DashboardHandler.class.getName());
 
         //Add PreFlight handler
         //resources.add(OptionsHandler.class.getName());

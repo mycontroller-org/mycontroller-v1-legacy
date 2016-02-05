@@ -17,8 +17,6 @@ package org.mycontroller.standalone.settings;
 
 import org.mycontroller.standalone.NumericUtils;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +33,6 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeName("emailSettings")
 public class EmailSettings {
     public static final String KEY_EMAIL = "email";
     public static final String SKEY_SMTP_HOST = "smtpHost";

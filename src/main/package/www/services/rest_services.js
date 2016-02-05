@@ -348,3 +348,14 @@ myControllerModule.factory('ReadFileFactory', function ($resource) {
    getConfigFile: { method: 'GET', isArray: false, params: {fileName:'configMyController.json'} },
   })
 });
+
+//Dashboard Services
+myControllerModule.factory('DashboardFactory', function ($resource) {
+  return $resource('/mc/rest/dashboard/:id', {}, {
+    getAll: { method: 'GET', isArray: true},
+    get:    { method: 'GET',isArray: false},
+    update: { method: 'PUT'},
+    delete: { method: 'DELETE'},
+  })
+});
+

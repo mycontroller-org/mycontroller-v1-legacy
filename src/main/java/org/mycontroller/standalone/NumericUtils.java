@@ -19,6 +19,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
@@ -33,6 +35,14 @@ public class NumericUtils {
 
     private NumericUtils() {
 
+    }
+
+    public static String getRandomAlphanumeric() {
+        return getRandomAlphanumeric(12);
+    }
+
+    public static String getRandomAlphanumeric(int count) {
+        return RandomStringUtils.randomAlphanumeric(count);
     }
 
     public static double round(double value, int places) {

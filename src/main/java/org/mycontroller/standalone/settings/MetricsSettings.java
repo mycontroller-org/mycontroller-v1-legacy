@@ -23,7 +23,6 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.db.tables.Settings;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import lombok.Data;
 
@@ -41,7 +40,6 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeName("metricsSettings")
 public class MetricsSettings {
     public static final String KEY_METRICS = "metrics";
     public static final String SKEY_LAST_AGGREGATION_RAW_DATA = "lastAggregationRawData";

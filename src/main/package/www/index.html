@@ -141,6 +141,7 @@
     <script src="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.js"></script>
     <script src="libs/adf-structures-base/dist/adf-structures-base.min.js"></script>
     <script src="libs/adf-widget-clock/dist/adf-widget-clock.min.js"></script>
+    <script src="libs/adf-widget-news/dist/adf-widget-news.min.js"></script>
     
     
     <!-- Application js-->
@@ -235,9 +236,9 @@
         <ul class="nav navbar-nav navbar-primary persistent-secondary">
           <!-- Dashboard -->
           <li ng-class="{ active: $state.current.url.indexOf('/dashboard') == 0 }">
-            <a ui-sref="dashboard"><i class="fa fa-tachometer fa-lg"></i> {{ 'MENU.DASHBOARD' | translate }}</a>
+            <a ui-sref="dashboard"><i class="fa fa-tachometer fa-lg"></i> Dashboards</a>
             <ul class="nav navbar-nav navbar-persistent">
-              <li ng-class="{ active: $state.current.name.indexOf('dashboard') == 0 }"><a ui-sref="dashboard">Dashboard</a></li>
+              <li ui-view="dashboardList" ng-class="{ active: $state.current.url.indexOf('/dashboard') == 0 }"><a ui-sref="dashboard" >Dashboards</a></li>
             </ul>
           </li>
           <!-- Resources -->

@@ -40,6 +40,7 @@ import lombok.NoArgsConstructor;
 public class Settings {
 
     public static final String KEY_ID = "id";
+    public static final String KEY_USER_ID = "userId";
     public static final String KEY_KEY = "key";
     public static final String KEY_SUB_KEY = "subKey";
     public static final String KEY_VALUE = "value";
@@ -51,6 +52,8 @@ public class Settings {
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
+    @DatabaseField(canBeNull = true, uniqueCombo = true, columnName = KEY_USER_ID)
+    private Integer userId;
     @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_KEY)
     private String key;
     @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_SUB_KEY)
@@ -59,7 +62,7 @@ public class Settings {
     private String value;
     @DatabaseField(canBeNull = true, columnName = KEY_ALT_VALUE)
     private String altValue;
-    @DatabaseField(canBeNull = true, columnName = KEY_VALUE2)
+    @DatabaseField(canBeNull = true, columnName = KEY_VALUE2, width = 5000)
     private String value2;
     @DatabaseField(canBeNull = true, columnName = KEY_VALUE3)
     private String value3;

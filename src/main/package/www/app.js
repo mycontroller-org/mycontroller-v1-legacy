@@ -41,6 +41,7 @@ var myControllerModule = angular.module('myController',[
   'adf',
   'adf.structures.base',
   'adf.widget.clock',
+  'adf.widget.news',
 ]);
 
 myControllerModule.constant("mchelper", {
@@ -57,7 +58,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
     .state('dashboard', {
       url:"/dashboard",
       templateUrl: "partials/dashboard/dashboard.html",
-      controller: "DashboardController",
+      controller: "DashboardListController",
        data: {
         requireLogin: true
       }
@@ -446,13 +447,33 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
 
 
 //McNavCtrl
-myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $rootScope, $state, mchelper, SettingsFactory, $cookieStore) {
+myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $rootScope, $state, mchelper, SettingsFactory, $cookieStore, DashboardFactory) {
     $scope.isCollapsed = true;
     $scope.mchelper = mchelper;
     $scope.$state = $state;
+    /*
+    $scope.dashboards = mchelper.dashboards;
+          console.log(angular.toJson($scope.dashboards));
+          console.log("M"+angular.toJson(mchelper.dashboards));
 
+    /*
+     * $scope.selectedDashboard;
+    //update dashboards
+    DashboardFactory.getAll({'lessInfo':true}, function(response){
+      $scope.dashboards = response;
+      if(!$scope.selectedDashboard){
+        $scope.selectedDashboard = $scope.dashboards[0].id;
+      }
+      $state.go("dashboard", {'id': $scope.selectedDashboard});
+    });
+*/
     $scope.isAuthenticated = function () { 
         return $rootScope.globals.currentUser;
+    };
+
+    $scope.changeDashboard = function (item){
+      $scope.selectedDashboard = item.id;
+      $state.go("dashboard", {'id': $scope.selectedDashboard});
     };
 
     $scope.changeLanguage = function (lang) {
@@ -630,8 +651,8 @@ myControllerModule.config(function($translateProvider) {
 //Items Delete Modal
 myControllerModule.controller('ControllerDeleteModal', function ($scope, $uibModalInstance, $sce) {
   $scope.header = "Delete items";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete a Sensor"
-    +"<br>Deletion process will remove complete trace of this resource!" 
+  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete an item"
+    +"<br>Deletion process will remove complete trace of this item!" 
     +"<br>Click 'Delete' to proceed.");
   $scope.remove = function() {
     $uibModalInstance.close();

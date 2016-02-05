@@ -15,6 +15,30 @@
     limitations under the License.
 
 -->
-<div class="container-fluid mc-top-space">
-  <div adf-dashboard name="mydashboard" collapsible="true" structure="6-6" adf-model="model" ></div>
+<div class="container-fluid row mc-top-space">
+  
+  <!-- Loading icon disaplay -->
+  <div ng-hide="dashboards.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-if="dashboards.$resolved"> <!-- Main Message -->
+
+    <ul class="nav nav-tabs nav-tabs-pf">
+      <li ng-repeat="item in dashboards | orderBy:'id'" ng-class="{'active' : item.id === dId}"><a href="" ng-click="changeDashboard(item)">{{item.title}}</a></li>
+      <li class="pull-right"><span ng-disabled="dashboards.length == 5" class="btn btn-primary mc-margin" style="margin-top:5px;" type="button" ng-click="createNewDashboad()">New dashboard</span></li>
+      <li class="pull-right"><span ng-disabled="dashboards.length == 1 && dId" class="btn btn-danger mc-margin" style="margin-top:5px;" type="button" ng-click="deleteDashboad()">Delete dashboard</span></li>
+    </ul>
+    
+      <!-- Loading icon disaplay --> 
+    <div ng-show="showLoading">
+      <div ng-include src="'partials/common-html/loading.html'"></div>
+    </div>
+    
+    <div ng-hide="showLoading">
+      <div ng-if="model" adf-dashboard name="{{model.name}}" collapsible="true" adf-model="model"></div>
+    </div>
+
+  </div>
+  
 </div>

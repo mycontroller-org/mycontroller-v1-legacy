@@ -39,6 +39,7 @@ import org.mycontroller.standalone.db.tables.Role;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.User;
+import org.mycontroller.standalone.settings.Dashboard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +79,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixInAnnotations(Timer.class, TimerMixin.class);
         mapper.addMixInAnnotations(Role.class, RoleMixin.class);
         mapper.addMixInAnnotations(User.class, UserMixin.class);
+        mapper.addMixInAnnotations(Dashboard.class, DashboardMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
         super.writeTo(value, type, genericType, annotations, mediaType, httpHeaders, entityStream);
@@ -100,6 +102,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixInAnnotations(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
         mapper.addMixInAnnotations(Timer.class, TimerMixin.class);
         mapper.addMixInAnnotations(User.class, UserMixin.class);
+        mapper.addMixInAnnotations(Dashboard.class, DashboardMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
 

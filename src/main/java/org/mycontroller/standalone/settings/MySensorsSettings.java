@@ -17,8 +17,6 @@ package org.mycontroller.standalone.settings;
 
 import org.mycontroller.standalone.NumericUtils;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +32,6 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeName("mySensorsSettings")
 public class MySensorsSettings {
     public static final String KEY_MY_SENSORS = "mySensors";
     public static final String SKEY_DEFAULT_FIRMWARE = "defaultFirmware";

@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.db.dao;
 
+import java.util.List;
+
 import org.mycontroller.standalone.db.tables.Settings;
 
 /**
@@ -23,7 +25,9 @@ import org.mycontroller.standalone.db.tables.Settings;
  */
 public interface SettingsDao extends BaseDao<Settings, Integer> {
 
-    Settings get(String key, String subKey);
+    Settings get(Integer userId, String key, String subKey);
+
+    List<Settings> getAll(Integer userId, String key);
 
     void update(String key, String subKey, String value);
 

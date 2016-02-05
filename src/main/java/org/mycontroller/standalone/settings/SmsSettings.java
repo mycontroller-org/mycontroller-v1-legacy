@@ -15,8 +15,6 @@
  */
 package org.mycontroller.standalone.settings;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +30,6 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeName("smsSettings")
 public class SmsSettings {
     public static final String KEY_SMS = "sms";
     public static final String SKEY_VENDOR = "vendor";
