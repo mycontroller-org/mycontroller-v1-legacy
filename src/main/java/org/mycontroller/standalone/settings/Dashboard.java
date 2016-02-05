@@ -1,6 +1,5 @@
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 
 import lombok.Data;
@@ -47,9 +46,6 @@ public class Dashboard {
     }
 
     public void update(boolean forceCreate) {
-        if (name == null) {
-            name = NumericUtils.getRandomAlphanumeric();
-        }
         SettingsUtils.updateSettings(Settings.builder()
                 .id(id)
                 .key(KEY_DASHBOARD)

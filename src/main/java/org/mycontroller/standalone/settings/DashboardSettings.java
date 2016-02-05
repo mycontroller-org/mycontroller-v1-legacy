@@ -3,6 +3,7 @@ package org.mycontroller.standalone.settings;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.User;
@@ -47,10 +48,13 @@ public class DashboardSettings {
         if (title == null) {
             title = "Default dashboard";
         }
+        String name = NumericUtils.getRandomAlphanumeric(5) + "_" + System.currentTimeMillis();
+
         Dashboard dashboard = Dashboard.builder()
                 .userId(user.getId())
                 .title(title)
                 .structure("3-9 (12/6-6)")
+                .name(name)
                 .rows("[{\"columns\":[{\"styleClass\":\"col-md-3\",\"widgets\":[{\"type\":\"clock\",\"config\":"
                         + "{\"timePattern\":\"HH:mm:ss\",\"datePattern\":\"YYYY-MM-DD\"},\"title\":\"Clock\","
                         + "\"titleTemplateUrl\":\"../src/templates/widget-title.html\",\"wid\":\"1454574618763-3\"}],"
@@ -61,7 +65,7 @@ public class DashboardSettings {
                         + "\"cid\":\"1454574625330-5\"}]}]")
                 .build();
         dashboard.update(true);
-        return getDashboard(user, title);
+        return getDashboard(user, name);
 
     }
 }
