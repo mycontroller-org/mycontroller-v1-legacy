@@ -395,6 +395,14 @@ public class AppProperties {
         }
     }
 
+    public String getTimeFormatWithoutSeconds() {
+        if (is12HoursSelected()) {
+            return "hh:mm a";
+        } else {
+            return "HH:mm";
+        }
+    }
+
     public String getTimeFormat() {
         if (is12HoursSelected()) {
             return "hh:mm:ss a";

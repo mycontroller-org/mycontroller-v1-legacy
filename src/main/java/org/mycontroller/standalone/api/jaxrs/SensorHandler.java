@@ -17,6 +17,7 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -155,6 +156,21 @@ public class SensorHandler {
 
     }
 
+    @GET
+    @Path("/getVariables")
+    public Response getVariables(@QueryParam("ids") List<Integer> ids) {
+        updateVariableIds(ids);
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(ids);
+        List<VariableStatusModel> variableStatusModels = new ArrayList<VariableStatusModel>();
+        //Convert to VariableStatusModel
+        if (sensorVariables != null) {
+            for (SensorVariable sensorVariable : sensorVariables) {
+                variableStatusModels.add(new VariableStatusModel(sensorVariable));
+            }
+        }
+        return RestUtils.getResponse(Status.OK, variableStatusModels);
+    }
+
     @PUT
     @Path("/updateVariable")
     public Response sendpayload(VariableStatusModel variableStatusModel) {
@@ -185,6 +201,16 @@ public class SensorHandler {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
             if (!AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds().contains(id)) {
                 throw new ForbiddenException("You do not have access for this resource!");
+            }
+        }
+    }
+
+    private void updateVariableIds(List<Integer> ids) {
+        if (!AuthUtils.isSuperAdmin(securityContext)) {
+            for (Integer id : ids) {
+                if (!AuthUtils.getUser(securityContext).getAllowedResources().getSensorVariableIds().contains(id)) {
+                    ids.remove(id);
+                }
             }
         }
     }

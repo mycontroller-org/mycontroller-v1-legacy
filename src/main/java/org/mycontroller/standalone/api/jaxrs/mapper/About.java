@@ -44,6 +44,7 @@ public class About {
     private String dateFormat;
     private String dateFormatWithoutSeconds;
     private String timeFormat;
+    private String timeFormatWithoutSeconds;
     private String timeFormatSet;
     private String loginMessage;
 
@@ -61,6 +62,7 @@ public class About {
         this.dateFormat = ObjectFactory.getAppProperties().getDateFormat();
         this.dateFormatWithoutSeconds = ObjectFactory.getAppProperties().getDateFormatWithoutSeconds();
         this.timeFormat = ObjectFactory.getAppProperties().getTimeFormat();
+        this.timeFormatWithoutSeconds = ObjectFactory.getAppProperties().getTimeFormatWithoutSeconds();
         this.timeFormatSet = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
     }
 }

@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.mycontroller.standalone.settings;
 
 import java.util.ArrayList;
@@ -55,14 +70,16 @@ public class DashboardSettings {
                 .title(title)
                 .structure("3-9 (12/6-6)")
                 .name(name)
-                .rows("[{\"columns\":[{\"styleClass\":\"col-md-3\",\"widgets\":[{\"type\":\"clock\",\"config\":"
-                        + "{\"timePattern\":\"HH:mm:ss\",\"datePattern\":\"YYYY-MM-DD\"},\"title\":\"Clock\","
-                        + "\"titleTemplateUrl\":\"../src/templates/widget-title.html\",\"wid\":\"1454574618763-3\"}],"
-                        + "\"cid\":\"1454574625329-4\"},{\"styleClass\":\"col-md-9\",\"rows\":[{\"columns\":"
-                        + "[{\"styleClass\":\"col-md-12\",\"widgets\":[],\"cid\":\"1454574625351-6\"}]},{\"columns\":"
-                        + "[{\"styleClass\":\"col-md-6\",\"widgets\":[],\"cid\":\"1454574625352-7\"},{\"styleClass\":"
-                        + "\"col-md-6\",\"widgets\":[],\"cid\":\"1454574625354-8\"}]}],\"widgets\":[],"
-                        + "\"cid\":\"1454574625330-5\"}]}]")
+                .rows("[{\"columns\":[{\"styleClass\":\"col-md-3\",\"widgets\":[{\"type\":\"mycTime\","
+                        + "\"config\":{\"datePattern\":\"MMM dd, yyyy\"},\"title\":\"MyController time\","
+                        + "\"titleTemplateUrl\":\"../src/templates/widget-title.html\",\"wid\":\"1454676806001-1\"},"
+                        + "{\"type\":\"mycSunriseTime\",\"config\":{},\"title\":\"Sunrise and sunset time\","
+                        + "\"titleTemplateUrl\":\"../src/templates/widget-title.html\",\"wid\":\"1454685464871-1\"}],"
+                        + "\"cid\":\"1454699630217-7\"},{\"styleClass\":\"col-md-9\",\"rows\":[{\"columns\":"
+                        + "[{\"styleClass\":\"col-md-12\",\"widgets\":[],\"cid\":\"1454699630245-9\"}]},{\"columns\":"
+                        + "[{\"styleClass\":\"col-md-6\",\"widgets\":[],\"cid\":\"1454699630246-10\"},"
+                        + "{\"styleClass\":\"col-md-6\",\"widgets\":[],\"cid\":\"1454699630247-11\"}]}],"
+                        + "\"widgets\":[],\"cid\":\"1454699630217-8\"}]}]")
                 .build();
         dashboard.update(true);
         return getDashboard(user, name);

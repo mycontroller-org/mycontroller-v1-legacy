@@ -1,0 +1,40 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<form role="form">
+  <div class="form-group">
+    <label>Grid size</label>
+    <select id="panelSize" class="form-control" pf-select ng-model="config.gridSize"> 
+      <option value="" ng-hide="true"></option>
+      <option value="1" ng-selected="config.gridSize === '1'">4</option>
+      <option value="2" ng-selected="config.gridSize === '2'">6</option>
+      <option value="3" ng-selected="config.gridSize === '3'">9</option>
+      <option value="4" ng-selected="config.gridSize === '4'">12</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Refresh time(seconds)</label>
+    <input type="text" class="form-control" id="refreshTime" ng-model="config.refreshTime">
+  </div>
+  <div class="form-group">
+    <label>Sensor variables</label>
+    <select id="senVars" class="form-control" multiple pf-select data-live-search="true" ng-model="config.variableIds"> 
+      <option value="" ng-hide="true"></option>
+      <option ng-repeat="res in mycSenVarsEdit.variables" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="config.variableIds.indexOf(res.id.toString()) != -1"></option>
+    </select>
+  </div>
+</form>

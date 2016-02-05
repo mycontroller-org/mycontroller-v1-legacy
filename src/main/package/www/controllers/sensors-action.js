@@ -212,6 +212,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
   //Pre load
   $scope.viewsConfig.currentView = $scope.viewsConfig.views[0].id;
   $scope.tooltipPlacement = 'left';
+  $scope.tooltipEnabled = true;
   $scope.viewType = $scope.viewsConfig.currentView;
   //Update list table
   //getAllItems();

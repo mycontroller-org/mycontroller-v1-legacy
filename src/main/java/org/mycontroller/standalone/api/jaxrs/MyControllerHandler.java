@@ -68,19 +68,19 @@ public class MyControllerHandler {
     @GET
     @Path("/ping")
     public Response ping() {
-        return RestUtils.getResponse(Status.OK, "Hello!");
+        return RestUtils.getResponse(Status.OK,  "{\"message\":\"Hello!\"}");
     }
 
     @GET
     @Path("/timestamp")
     public Response timestamp() {
-        return RestUtils.getResponse(Status.OK, System.currentTimeMillis());
+        return RestUtils.getResponse(Status.OK, "{\"timestamp\":" + System.currentTimeMillis() + "}");
     }
 
     @GET
     @Path("/time")
     public Response time() {
-        return RestUtils.getResponse(Status.OK, new Date().toString());
+        return RestUtils.getResponse(Status.OK, "{\"time\":" + new Date().toString() + "}");
     }
 
     @GET

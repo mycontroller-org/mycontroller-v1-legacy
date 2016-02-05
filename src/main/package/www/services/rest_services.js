@@ -26,6 +26,7 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     deleteIds: { method: 'POST', params: {sensorId: 'deleteIds'} },
     getSensorVariable: { method: 'GET', params: {sensorId: 'sensorVariable'}},
     updateVariable: { method: 'PUT', params: {sensorId: 'updateVariable', id:null}},
+    getVariables: { method: 'GET', isArray: true, params: {sensorId: 'getVariables', id:null}},
 
     getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
     sendPayload: { method: 'POST'},
@@ -297,6 +298,8 @@ myControllerModule.factory('StatusFactory', function ($resource) {
    getOsStatus: { method: 'GET', params: {type:'osStatus'} },
    getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
    getConfig: { method: 'GET', params: {type:'about'} },
+   getTimestamp: { method: 'GET', params: {type:'timestamp'} },
+   
    getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
    sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
   })

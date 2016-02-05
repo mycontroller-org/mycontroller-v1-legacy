@@ -448,9 +448,59 @@ input.mc-color-steel-blue{
 
 
 
+/* ADF css */
+.adf-myct {
+  text-align: center;
+}
 
+.adf-myct-time {
+  font-size: 300%;
+}
 
+.adf-myct-date {
+  font-size: 200%;
+}
 
+.adf-myct-timezone {
+  font-size: 80%;
+}
+
+/* sunrise sun set*/
+.adf-mycsr {
+  text-align: center;
+}
+
+.adf-mycsr-time {
+  font-size: 200%;
+}
+
+.adf-mycsr-time > i{
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom:10px;
+  font-size: 150%;
+  vertical-align: middle;
+}
+
+.adf-mycsr-location {
+  font-size: 150%;
+}
+
+.adf-mycsr-location > i{
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 120%;
+  vertical-align: middle;
+}
+
+.adf-myc-sen-var{
+  height:75px;
+  width:250px;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
 
 
 

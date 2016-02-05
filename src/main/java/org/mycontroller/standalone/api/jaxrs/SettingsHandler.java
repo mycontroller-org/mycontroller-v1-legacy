@@ -56,6 +56,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class SettingsHandler {
     private static final Logger _logger = LoggerFactory.getLogger(SettingsHandler.class.getName());
 
+    @RolesAllowed({"User"})
     @GET
     @Path("/location")
     public Response getLocation() {

@@ -34,14 +34,14 @@
             <div class="form-group">
               <label class="col-sm-2 control-label"><i class="wi wi-sunrise mc-icon-2x" uib-tooltip="Sunrise" tooltip-placement="left"></i></label>
               <div class="col-sm-10">
-                <span class="mc-icon">{{locationSettings.sunriseTime | date:mchelper.cfg.timeFormat : mchelper.cfg.timezone}}</span>
+                <span class="mc-icon">{{locationSettings.sunriseTime | date:mchelper.cfg.timeFormatWithoutSeconds : mchelper.cfg.timezone}}</span>
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label"><i class="wi wi-sunset mc-icon-2x" uib-tooltip="Sunset" tooltip-placement="left"></i></label>
               <div class="col-sm-10">
-                <span class="mc-icon">{{locationSettings.sunsetTime | date:mchelper.cfg.timeFormat : mchelper.cfg.timezone}}</span>
+                <span class="mc-icon">{{locationSettings.sunsetTime | date:mchelper.cfg.timeFormatWithoutSeconds : mchelper.cfg.timezone}}</span>
               </div>
             </div>
             
