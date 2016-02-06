@@ -507,4 +507,8 @@ public class AppProperties {
         this.metricsSettings = metricsSettings;
     }
 
+    public void setLocationSettings(LocationSettings locationSettings) {
+        this.locationSettings = locationSettings;
+    }
+
 }

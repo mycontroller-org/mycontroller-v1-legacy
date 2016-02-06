@@ -165,21 +165,27 @@ public class TimerUtils {
 
     public static void updateSunriseSunset() throws Exception {
         Date tmpSunriseTime = sunriseTime;
+        Date tmpSunsetTime = sunsetTime;
         //https://github.com/mikereedell/sunrisesunsetlib-java
-        LocationSettings locationSettings = LocationSettings.get();
-        Location location = new Location(locationSettings.getLatitude(), locationSettings.getLongitude());
+        Location location = new Location(
+                ObjectFactory.getAppProperties().getLocationSettings().getLatitude(),
+                ObjectFactory.getAppProperties().getLocationSettings().getLongitude());
         SunriseSunsetCalculator sunriseSunsetCalculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
 
         sunriseTime = sunriseSunsetCalculator.getOfficialSunriseCalendarForDate(Calendar.getInstance()).getTime();
         sunsetTime = sunriseSunsetCalculator.getOfficialSunsetCalendarForDate(Calendar.getInstance()).getTime();
 
-        //Update Sunrise, sunset in db
+        //Update Sunrise, sunset in to database
         LocationSettings.builder().sunriseTime(sunriseTime.getTime()).sunsetTime(sunsetTime.getTime()).build()
                 .updateInternal();
+        //update location settings to object factory
+        ObjectFactory.getAppProperties().setLocationSettings(LocationSettings.get());
+        _logger.debug("Location settings after updated:{}", ObjectFactory.getAppProperties().getLocationSettings());
 
         if (!(tmpSunriseTime == null || sunriseTime == null)) {
             //call Manage sun rise sun set jobs, if value changed
-            if (tmpSunriseTime.getTime() != sunriseTime.getTime()) {
+            if ((tmpSunriseTime.getTime() != sunriseTime.getTime())
+                    || (tmpSunsetTime.getTime() != sunsetTime.getTime())) {
                 new Thread(new ManageSunRiseSetJobs()).start();
             }
         }
