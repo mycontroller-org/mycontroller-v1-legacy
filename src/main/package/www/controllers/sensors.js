@@ -236,7 +236,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
 });
 
 //item Detail
-myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory, $filter, CommonServices, TypesFactory, $timeout, $window) {
+myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory, $filter, CommonServices, TypesFactory, $timeout, $window, displayRestError) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.node = {};
@@ -342,6 +342,15 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
       displayRestError.display(error);
     });
   };
+  
+  //update variable unit
+  $scope.updateVariableUnit = function(variable){
+    SensorsFactory.updateVariableUnit(variable, function(){
+      //update Success
+    },function(error){
+      displayRestError.display(error);
+    });
+  }
   
   //HVAC heater options - HVAC flow state
   $scope.hvacOptionsFlowState = TypesFactory.getHvacOptionsFlowState();  

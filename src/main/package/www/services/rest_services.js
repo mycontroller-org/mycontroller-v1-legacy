@@ -26,6 +26,7 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     deleteIds: { method: 'POST', params: {sensorId: 'deleteIds'} },
     getSensorVariable: { method: 'GET', params: {sensorId: 'sensorVariable'}},
     updateVariable: { method: 'PUT', params: {sensorId: 'updateVariable', id:null}},
+    updateVariableUnit:  { method: 'PUT', params: {sensorId: 'updateVariableUnit', id:null}},
     getVariables: { method: 'GET', isArray: true, params: {sensorId: 'getVariables', id:null}},
 
     getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },

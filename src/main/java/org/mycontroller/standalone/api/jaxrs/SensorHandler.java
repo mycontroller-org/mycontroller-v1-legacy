@@ -187,6 +187,21 @@ public class SensorHandler {
         return RestUtils.getResponse(Status.OK);
     }
 
+    @PUT
+    @Path("/updateVariableUnit")
+    public Response updateVariableUnit(VariableStatusModel variableStatusModel) {
+        SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(variableStatusModel.getId());
+        if (sensorVariable != null) {
+            this.hasAccess(sensorVariable.getSensor().getId());
+            sensorVariable.setUnit(variableStatusModel.getUnit());
+            //Update sensor unit
+            DaoUtils.getSensorVariableDao().update(sensorVariable);
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST);
+        }
+        return RestUtils.getResponse(Status.OK);
+    }
+
     private void updateIds(List<Integer> ids) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
             for (Integer id : ids) {
