@@ -33,13 +33,13 @@ public interface SensorDao extends BaseDao<Sensor, Integer> {
 
     void create(Integer nodeId, Sensor sensor);
 
-    void create(Integer gatewayId, String nodeEui, Integer sensorId);
+    void create(Integer gatewayId, String nodeEui, String sensorId);
 
     void createOrUpdate(Integer gatewayId, String nodeEui, Sensor sensor);
 
     void createOrUpdate(Integer nodeId, Sensor sensor);
 
-    void delete(Integer gatewayId, String nodeEui, Integer sensorId);
+    void delete(Integer gatewayId, String nodeEui, String sensorId);
 
     void update(Integer nodeId, Sensor sensor);
 
@@ -57,9 +57,9 @@ public interface SensorDao extends BaseDao<Sensor, Integer> {
 
     QueryResponse getAll(Query query);
 
-    Sensor get(Integer nodeId, Integer sensorId);
+    Sensor get(Integer nodeId, String sensorId);
 
-    Sensor get(Integer gatewayId, String nodeEui, Integer sensorId);
+    Sensor get(Integer gatewayId, String nodeEui, String sensorId);
 
     Dao<Sensor, Integer> getDao();
 

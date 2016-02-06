@@ -148,7 +148,7 @@ public class MySensorsIActionEngine implements IActionEngine {
         mySensorsRawMessage = new MySensorsRawMessage(
                 sensorVariable.getSensor().getNode().getGateway().getId(),
                 sensorVariable.getSensor().getNode().getEuiInt(),
-                sensorVariable.getSensor().getSensorId(),
+                sensorVariable.getSensor().getSensorIdInt(),
                 MESSAGE_TYPE.C_SET.ordinal(), //messageType
                 MySensorsUtils.NO_ACK, //ack
                 sensorVariable.getVariableType().ordinal(),//subType
@@ -205,7 +205,7 @@ public class MySensorsIActionEngine implements IActionEngine {
         MySensorsRawMessage mySensorsRawMessage = new MySensorsRawMessage(
                 forwardPayload.getDestination().getSensor().getNode().getGateway().getId(),
                 forwardPayload.getDestination().getSensor().getNode().getEuiInt(),
-                forwardPayload.getDestination().getSensor().getSensorId(),
+                forwardPayload.getDestination().getSensor().getSensorIdInt(),
                 MESSAGE_TYPE.C_SET.ordinal(), //messageType
                 MySensorsUtils.NO_ACK, //ack
                 forwardPayload.getDestination().getVariableType().ordinal(),//subType
@@ -263,7 +263,7 @@ public class MySensorsIActionEngine implements IActionEngine {
         MySensorsRawMessage mySensorsRawMessage = new MySensorsRawMessage(
                 sensor.getNode().getGateway().getId(),
                 sensor.getNode().getEuiInt(),
-                sensor.getSensorId(),
+                sensor.getSensorIdInt(),
                 MESSAGE_TYPE.C_SET.ordinal(), // messageType
                 MySensorsUtils.NO_ACK, // ack
                 payload.getVariableType().ordinal(), // subType
@@ -304,7 +304,7 @@ public class MySensorsIActionEngine implements IActionEngine {
         MySensorsRawMessage mySensorsRawMessage = new MySensorsRawMessage(
                 sensorVariable.getSensor().getNode().getGateway().getId(),
                 sensorVariable.getSensor().getNode().getEuiInt(),
-                sensorVariable.getSensor().getSensorId(),
+                sensorVariable.getSensor().getSensorIdInt(),
                 MESSAGE_TYPE.C_SET.ordinal(), // messageType
                 MySensorsUtils.NO_ACK, // ack
                 sensorVariable.getVariableType().ordinal(), // subType

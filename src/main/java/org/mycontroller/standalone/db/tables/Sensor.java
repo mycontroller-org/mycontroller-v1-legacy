@@ -17,6 +17,7 @@ package org.mycontroller.standalone.db.tables;
 
 import java.util.List;
 
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.SensorUtils;
@@ -55,7 +56,7 @@ public class Sensor {
     private Integer id;
 
     @DatabaseField(canBeNull = false, index = true, uniqueCombo = true, columnName = KEY_SENSOR_ID)
-    private Integer sensorId;
+    private String sensorId;
 
     @DatabaseField(dataType = DataType.ENUM_STRING, columnName = KEY_TYPE)
     private MESSAGE_TYPE_PRESENTATION type;
@@ -85,6 +86,10 @@ public class Sensor {
     @JsonGetter
     private Integer getIdforVariables() {
         return this.id;
+    }
+
+    public Integer getSensorIdInt() {
+        return NumericUtils.getInteger(sensorId);
     }
 
 }

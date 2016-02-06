@@ -147,10 +147,10 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
             updateNode(node);
         } else {
             Node node = getNode(mySensorsRawMessage);
-            Sensor sensor = DaoUtils.getSensorDao().get(node.getId(), mySensorsRawMessage.getChildSensorId());
+            Sensor sensor = DaoUtils.getSensorDao().get(node.getId(), mySensorsRawMessage.getChildSensorIdString());
             if (sensor == null) {
                 sensor = Sensor.builder()
-                        .sensorId(mySensorsRawMessage.getChildSensorId())
+                        .sensorId(String.valueOf(mySensorsRawMessage.getChildSensorId()))
                         .type(MESSAGE_TYPE_PRESENTATION.get(mySensorsRawMessage.getSubType()))
                         .name(mySensorsRawMessage.getPayload())
                         .build();
@@ -613,18 +613,18 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
         Sensor sensor = DaoUtils.getSensorDao().get(
                 mySensorsRawMessage.getGatewayId(),
                 mySensorsRawMessage.getNodeEui(),
-                mySensorsRawMessage.getChildSensorId());
+                mySensorsRawMessage.getChildSensorIdString());
         if (sensor == null) {
             getNode(mySensorsRawMessage);
             _logger.debug("This sensor[{} from Node:{}] not available in our DB, Adding...",
                     mySensorsRawMessage.getChildSensorId(), mySensorsRawMessage.getNodeEui());
-            sensor = Sensor.builder().sensorId(mySensorsRawMessage.getChildSensorId()).build();
+            sensor = Sensor.builder().sensorId(String.valueOf(mySensorsRawMessage.getChildSensorId())).build();
             sensor.setNode(this.getNode(mySensorsRawMessage));
             DaoUtils.getSensorDao().create(sensor);
             sensor = DaoUtils.getSensorDao().get(
                     mySensorsRawMessage.getGatewayId(),
                     mySensorsRawMessage.getNodeEui(),
-                    mySensorsRawMessage.getChildSensorId());
+                    mySensorsRawMessage.getChildSensorIdString());
         }
         return sensor;
     }
@@ -769,7 +769,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                     mySensorsRawMessage.getPayload(), extraMessage);
         } else {
             Sensor sensor = DaoUtils.getSensorDao().get(mySensorsRawMessage.getGatewayId(),
-                    mySensorsRawMessage.getNodeEui(), mySensorsRawMessage.getChildSensorId());
+                    mySensorsRawMessage.getNodeEui(), mySensorsRawMessage.getChildSensorIdString());
             //TODO: For now creating sensor, if it's not available, we should remove this once this issue resolved
             //http://forum.mysensors.org/topic/2669/gateway-ready-message-with-sensor-id-0-v-1-6-beta
             //-----------------------------------------

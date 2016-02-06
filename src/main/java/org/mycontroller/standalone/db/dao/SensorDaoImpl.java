@@ -67,7 +67,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     }
 
     @Override
-    public void create(Integer gatewayId, String nodeEui, Integer sensorId) {
+    public void create(Integer gatewayId, String nodeEui, String sensorId) {
         this.create(DaoUtils.getNodeDao().get(gatewayId, nodeEui).getId(), Sensor.builder().sensorId(sensorId).build());
 
     }
@@ -89,7 +89,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     }
 
     @Override
-    public void delete(Integer gatewayId, String nodeEui, Integer sensorId) {
+    public void delete(Integer gatewayId, String nodeEui, String sensorId) {
         Sensor sensor = Sensor.builder().sensorId(sensorId).build();
         sensor.setNode(DaoUtils.getNodeDao().get(gatewayId, nodeEui));
         this.delete(sensor);
@@ -191,7 +191,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     }
 
     @Override
-    public Sensor get(Integer nodeId, Integer sensorId) {
+    public Sensor get(Integer nodeId, String sensorId) {
         try {
             nodeIdSensorIdnullCheck(nodeId, sensorId);
             return this.getDao().queryForFirst(
@@ -207,7 +207,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     }
 
     @Override
-    public Sensor get(Integer gatewayId, String nodeEui, Integer sensorId) {
+    public Sensor get(Integer gatewayId, String nodeEui, String sensorId) {
         Node node = DaoUtils.getNodeDao().get(gatewayId, nodeEui);
         if (node != null) {
             return this.get(node.getId(), sensorId);
@@ -227,7 +227,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
         }
     }
 
-    private void nodeIdSensorIdnullCheck(Integer nodeId, Integer sensorId) throws DbException {
+    private void nodeIdSensorIdnullCheck(Integer nodeId, String sensorId) throws DbException {
         if (nodeId != null && sensorId != null) {
             return;
         } else {

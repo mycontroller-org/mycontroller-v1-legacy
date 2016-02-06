@@ -91,7 +91,7 @@ public class MySensorsUtils {
     }
 
     public static void addUpdateSensor(Sensor sensor, boolean isAdd) {
-        if (sensor.getSensorId() < 255 && sensor.getSensorId() >= 0) {
+        if (sensor.getSensorIdInt() < 255 && sensor.getSensorIdInt() >= 0) {
             if (isAdd) {
                 DaoUtils.getSensorDao().create(sensor);
             } else {

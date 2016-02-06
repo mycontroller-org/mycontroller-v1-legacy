@@ -68,7 +68,7 @@ public class ExecuteUidTag implements Runnable {
         MySensorsRawMessage mySensorsRawMessage = new MySensorsRawMessage(
                 sensor.getNode().getGateway().getId(),
                 sensor.getNode().getEuiInt(),
-                sensor.getSensorId(),
+                sensor.getSensorIdInt(),
                 MESSAGE_TYPE.C_SET.ordinal(), //messageType
                 0, //ack
                 MESSAGE_TYPE_SET_REQ.V_VAR5.ordinal(),//subType
@@ -92,7 +92,7 @@ public class ExecuteUidTag implements Runnable {
             MySensorsRawMessage rawMessageToDevice = new MySensorsRawMessage(
                     uidTag.getSensor().getNode().getGateway().getId(),
                     uidTag.getSensor().getNode().getEuiInt(),
-                    uidTag.getSensor().getSensorId(),
+                    uidTag.getSensor().getSensorIdInt(),
                     MESSAGE_TYPE.C_SET.ordinal(), //messageType
                     0, //ack
                     MESSAGE_TYPE_SET_REQ.V_VAR5.ordinal(),//subType

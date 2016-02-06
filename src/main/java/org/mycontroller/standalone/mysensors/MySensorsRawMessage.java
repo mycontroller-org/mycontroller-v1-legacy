@@ -140,6 +140,10 @@ public class MySensorsRawMessage {
         return childSensorId;
     }
 
+    public String getChildSensorIdString() {
+        return String.valueOf(childSensorId);
+    }
+
     public void setChildSensorId(int childSensorId) {
         this.childSensorId = childSensorId;
     }
