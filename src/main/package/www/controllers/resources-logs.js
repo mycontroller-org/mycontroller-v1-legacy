@@ -17,8 +17,8 @@ myControllerModule.controller('ResourcesLogsController', function(alertService,
 $scope, $filter, ResourcesLogsFactory, $uibModal, $stateParams, mchelper, CommonServices) {
   
   //GUI page settings
-  $scope.headerStringList = "Resources logs detail";
-  $scope.noItemsSystemMsg = "No logs available.";
+  $scope.headerStringList = $filter('translate')('RESOURCES_LOGS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_LOGS_AVAILABLE');
   $scope.noItemsSystemIcon = "fa fa-list";
 
   //load empty, configuration, etc.,
@@ -157,7 +157,7 @@ $scope, $filter, ResourcesLogsFactory, $uibModal, $stateParams, mchelper, Common
 
     modalInstance.result.then(function () {
       ResourcesLogsFactory.delete($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -178,12 +178,12 @@ myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, 
   $scope.item = {};
   
   //GUI page settings
-  $scope.headerStringAdd = "Purge resources logs";
+  $scope.headerStringAdd = $filter('translate')('PURGE_RESOURCES_LOGS');
   $scope.cancelButtonState = "resourcesLogsList"; //Cancel button state
   $scope.saveProgress = false;
-  $scope.saveButtonName = 'Purge';
-  $scope.savingButtonName = 'Purging...';
-  $scope.saveButtonTooltip = "WARNING: If you don't select any parameter, This process will delete everything!";
+  $scope.saveButtonName = $filter('translate')('PURGE');
+  $scope.savingButtonName = $filter('translate')('PURGING');
+  $scope.saveButtonTooltip = $filter('translate')('PURGE_WARNING');
   //$scope.isSettingChange = false;
   
   //Pre load
@@ -214,7 +214,7 @@ myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, 
     
     $scope.saveProgress = true;
     ResourcesLogsFactory.purge($scope.resourcesLogs,function(response) {
-      alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+      alertService.success($filter('translate')('PURGE_DONE_SUCCESSFULLY'));
       $scope.saveProgress = false;
     },function(error){
       displayRestError.display(error);

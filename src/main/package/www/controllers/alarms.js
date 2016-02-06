@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 myControllerModule.controller('AlarmsController', function(alertService,
-$scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices) {
+$scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices, $filter) {
   
   //GUI page settings
-  $scope.headerStringList = "Alarms detail";
-  $scope.noItemsSystemMsg = "No alarms set up.";
+  $scope.headerStringList = $filter('translate')('ALARMS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_ALARMS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-bell-o";
 
   //load empty, configuration, etc.,
@@ -157,7 +157,7 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
 
     modalInstance.result.then(function () {
       AlarmsFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -175,7 +175,7 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
       AlarmsFactory.enableIds($scope.itemIds, function(response) {
-        alertService.success('Enabled '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_ENABLED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -189,7 +189,7 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
       AlarmsFactory.disableIds($scope.itemIds, function(response) {
-        alertService.success('Disabled '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DISABLED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -300,8 +300,8 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
 
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add alarm";
-  $scope.headerStringUpdate = "Update alarm";
+  $scope.headerStringAdd = $filter('translate')('ADD_ALARM');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_ALARM');
   $scope.cancelButtonState = "alarmsList"; //Cancel button url
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -320,7 +320,7 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
       $scope.saveProgress = true;
     if($stateParams.id){
       AlarmsFactory.update($scope.alarm,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("alarmsList");
       },function(error){
         displayRestError.display(error);
@@ -328,7 +328,7 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
       });
     }else{
       AlarmsFactory.create($scope.alarm,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("alarmsList");
       },function(error){
         displayRestError.display(error);

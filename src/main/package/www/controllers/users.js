@@ -15,11 +15,11 @@
  */
  
  myControllerModule.controller('UsersControllerList', function(alertService,
-$scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonServices) {
+$scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $filter) {
 
   //GUI page settings
-  $scope.headerStringList = "Users detail";
-    $scope.noItemsSystemMsg = "No users set up.";
+  $scope.headerStringList = $filter('translate')('USERS_DETAIL');
+    $scope.noItemsSystemMsg = $filter('translate')('NO_USERS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-users";
 
   //load empty, configuration, etc.,
@@ -142,12 +142,12 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
 
     modalInstance.result.then(function () {
       SecurityFactory.deleteUserIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       }); 
     }), 
     function () {
@@ -176,8 +176,8 @@ myControllerModule.controller('UsersControllerAddEdit', function ($scope, $state
 
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add user";
-  $scope.headerStringUpdate = "Update user";
+  $scope.headerStringAdd = $filter('translate')('ADD_USER');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_USER');
   $scope.cancelButtonState = "settingsUsersList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -189,7 +189,7 @@ myControllerModule.controller('UsersControllerAddEdit', function ($scope, $state
     $scope.saveProgress = true;
     if($stateParams.id){
       SecurityFactory.updateUser($scope.item,function(response) {
-        alertService.success("Item updated successfully");
+        alertService.success($filter('translate')('ITME_UPDATED_SUCCESSFULLY'));
         $state.go("settingsUsersList");
       },function(error){
         displayRestError.display(error);
@@ -197,7 +197,7 @@ myControllerModule.controller('UsersControllerAddEdit', function ($scope, $state
       });
     }else{
       SecurityFactory.createUser($scope.item,function(response) {
-        alertService.success("Item created successfully");
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("settingsUsersList");
       },function(error){
         displayRestError.display(error);
@@ -225,8 +225,8 @@ myControllerModule.controller('ProfileControllerUpdate', function ($scope, $stat
 
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Profile";
-  $scope.headerStringUpdate = "Profile";
+  $scope.headerStringAdd = $filter('translate')('PROFILE');
+  $scope.headerStringUpdate = $filter('translate')('PROFILE');
   $scope.cancelButtonState = "dashboard"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -237,7 +237,7 @@ myControllerModule.controller('ProfileControllerUpdate', function ($scope, $stat
   $scope.save = function(){
     $scope.saveProgress = true;
     SecurityFactory.updateProfile($scope.item,function(response) {
-      alertService.success("Item updated successfully");
+      alertService.success($filter('translate')('PROFILE_UPDATED_SUCCESSFULLY'));
       $scope.saveProgress = false;
       $scope.editEnable.profile = false;
       $scope.resetProfile();

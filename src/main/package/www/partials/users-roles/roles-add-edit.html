@@ -32,22 +32,22 @@
         <div class="col-md-8">
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Name</label>
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
             <div class="col-sm-10">
-              <input class="form-control" placeholder="Name" ng-model="item.name"/>
+              <input class="form-control" placeholder="{{ 'NAME' | translate }}" ng-model="item.name"/>
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Description</label>
+            <label class="col-sm-2 control-label">{{ 'DESCRIPTION' | translate }}</label>
             <div class="col-sm-10">
-              <textarea class="form-control" ng-model="item.description" placeholder="Description" rows="3"></textarea>
+              <textarea class="form-control" ng-model="item.description" placeholder="{{ 'DESCRIPTION' | translate }}" rows="3"></textarea>
             </div>
           </div>
   
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Permission</label>
+            <label class="col-sm-2 control-label">{{ 'PERMISSION' | translate }}</label>
             <div class="col-sm-5">
               <div ng-show="item.permission === 'Super admin'">
                 <label>{{item.permission}}</label>
@@ -62,14 +62,14 @@
           
           <div ng-show="item.permission === 'MQTT user'">
             <div class="form-group">
-              <label class="col-sm-2 control-label">Topics publish</label>
+              <label class="col-sm-2 control-label">{{ 'TOPICS_PUBLISH' | translate }}</label>
               <div class="col-sm-10">
                 <textarea class="form-control" ng-model="item.topicsPublish" placeholder="topics publish comma separated" rows="3"></textarea>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Topics subscribe</label>
+              <label class="col-sm-2 control-label">{{ 'TOPICS_SUBSCRIBE' | translate }}</label>
               <div class="col-sm-10">
                 <textarea class="form-control" ng-model="item.topicsSubscribe" placeholder="topics subscribe comma separated" rows="3"></textarea>
               </div>
@@ -78,15 +78,15 @@
           
           <div ng-show="item.permission !== undefined">
             <div class="form-group">
-              <label class="col-sm-2 control-label">Resources</label>
+              <label class="col-sm-2 control-label">{{ 'RESOURCES' | translate }}</label>
               <div class="col-sm-10">
                 <div class="card-pf card-pf-accented">
                   <div class="card-pf-body">
                     <ul class="nav nav-tabs" ng-init="showResource = 'users'" >
-                      <li ng-class="{'active' : showResource === 'users'}"><a href="" ng-click="showResource = 'users'">Users</a></li>
-                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'gateways'}"><a href="" ng-click="showResource = 'gateways'">Gateways</a></li>
-                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'nodes'}"><a href="" ng-click="showResource = 'nodes'">Nodes</a></li>
-                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'sensors'}"><a href="" ng-click="showResource = 'sensors'">Sensors</a></li>
+                      <li ng-class="{'active' : showResource === 'users'}"><a href="" ng-click="showResource = 'users'">{{ 'USERS' | translate }}</a></li>
+                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'gateways'}"><a href="" ng-click="showResource = 'gateways'">{{ 'GATEWAYS' | translate }}</a></li>
+                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'nodes'}"><a href="" ng-click="showResource = 'nodes'">{{ 'NODES' | translate }}</a></li>
+                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'sensors'}"><a href="" ng-click="showResource = 'sensors'">{{ 'SENSORS' | translate }}</a></li>
                     </ul>
                     <div ng-show="showResource === 'users'">
                       <select ng-options="ls.id as ls.displayName for ls in users" multiple 

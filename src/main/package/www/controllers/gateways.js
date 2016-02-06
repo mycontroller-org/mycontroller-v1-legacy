@@ -17,8 +17,8 @@ myControllerModule.controller('GatewaysController', function(alertService,
 $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper, CommonServices) {
     
   //GUI page settings
-  $scope.headerStringList = "Gateways detail";
-  $scope.noItemsSystemMsg = "No gateways set up.";
+  $scope.headerStringList = $filter('translate')('GATEWAYS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_GATEWAYS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-plug";
 
   //load empty, configuration, etc.,
@@ -72,28 +72,28 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title: $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text',
       },
       {
         id: 'type',
-        title:  'Type',
-        placeholder: 'Filter by Type',
+        title:  $filter('translate')('TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_TYPE'),
         filterType: 'select',
         filterValues: ['Serial','Ethernet','MQTT'],
       },
       {
         id: 'networkType',
-        title:  'Network Type',
-        placeholder: 'Filter by Network Type',
+        title:  $filter('translate')('NETWORK_TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_NETWORK_TYPE'),
         filterType: 'select',
         filterValues: ['MySensors'],
       },
       {
         id: 'statusMessage',
-        title:  'Status Message',
-        placeholder: 'Filter by Status Message',
+        title:  $filter('translate')('STATUS_MESSAGE'),
+        placeholder: $filter('translate')('FILTER_BY_STATUS_MESSAGE'),
         filterType: 'text',
       }
     ],
@@ -112,32 +112,32 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
     fields: [
       {
         id: 'name',
-        title:  'Name',
+        title:  $filter('translate')('NAME'),
         sortType: 'text',
       },
       {
         id: 'state',
-        title:  'Status',
+        title:  $filter('translate')('STATUS'),
         sortType: 'text',
       },
       {
         id: 'type',
-        title:  'Type',
+        title:  $filter('translate')('TYPE'),
         sortType: 'text',
       },
       {
         id: 'networkType',
-        title:  'Network type',
+        title:  $filter('translate')('NETWORK_TYPE'),
         sortType: 'text',
       },
       {
         id: 'statusMessage',
-        title:  'Status message',
+        title:  $filter('translate')('STATUS_MESSAGE'),
         sortType: 'text',
       },
       {
         id: 'statusSince',
-        title:  'Status since',
+        title:  $filter('translate')('STATUS_SINCE'),
         sortType: 'text',
       }
     ],
@@ -156,7 +156,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
       GatewaysFactory.enable($scope.itemIds, function(response) {
-        alertService.success('Enabled '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_ENABLED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -170,7 +170,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
       GatewaysFactory.disable($scope.itemIds, function(response) {
-        alertService.success('Disabled '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DISABLED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -184,7 +184,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
   $scope.discover = function () {
     if($scope.itemIds.length > 0){
       GatewaysFactory.discover($scope.itemIds, function(response) {
-        alertService.success('Discover started successfully for '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('DISCOVER_INITIATED_SUCCESSFULLY'));
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -196,7 +196,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
   $scope.reload = function () {
     if($scope.itemIds.length > 0){
       GatewaysFactory.reload($scope.itemIds, function(response) {
-        alertService.success('Reloaded '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('RELOAD_INITIATED_SUCCESSFULLY'));
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -215,7 +215,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
 
     modalInstance.result.then(function () {
       GatewaysFactory.delete($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -232,7 +232,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
 });
 
 
-myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService) {
+myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService, $filter) {
   $scope.gateway = {};
   $scope.gateway.enabled = true;
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
@@ -259,8 +259,8 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add gateway";
-  $scope.headerStringUpdate = "Update gateway";
+  $scope.headerStringAdd = $filter('translate')('ADD_GATEWAY');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_GATEWAY');
   $scope.cancelButtonState = "gatewaysList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -270,7 +270,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.saveProgress = true;
     if($stateParams.id){
       GatewaysFactory.update($scope.gateway,function(response) {
-        alertService.success("Gateway Updated");
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("gatewaysList");
       },function(error){
         displayRestError.display(error);
@@ -278,7 +278,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       });
     }else{
       GatewaysFactory.create($scope.gateway,function(response) {
-        alertService.success("Gateway Created");
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("gatewaysList");
       },function(error){
         displayRestError.display(error);
@@ -291,11 +291,11 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
 
 
 //item Detail
-myControllerModule.controller('GatewaysControllerDetail', function ($scope, $stateParams, mchelper, GatewaysFactory, MetricsFactory) {
+myControllerModule.controller('GatewaysControllerDetail', function ($scope, $stateParams, mchelper, GatewaysFactory, MetricsFactory, $filter) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.node = {};
-  $scope.headerStringList = "Gateway details";
+  $scope.headerStringList = $filter('translate')('GATEWAY_DETAILS');
   
   $scope.item = GatewaysFactory.get({"gatewayId":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"Gateway", "resourceId":$stateParams.id});

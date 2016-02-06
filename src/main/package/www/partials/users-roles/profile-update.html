@@ -27,12 +27,12 @@
     <!-- Email settings -->
     <div class="col-md-12">
       <div class="card-pf card-pf-accented">
-        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="pficon pficon-user fa-lg"></i> Profile</h2></div>
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="pficon pficon-user fa-lg"></i> {{ 'PROFILE' | translate }}</h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal">
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Username</label>
+              <label class="col-sm-2 control-label">{{ 'USERNAME' | translate }}</label>
               <div class="col-sm-7">
                 <span>{{item.user.username}}</span>
               </div>
@@ -40,7 +40,7 @@
             
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Full name</label>
+              <label class="col-sm-2 control-label">{{ 'FULL_NAME' | translate }}</label>
               <div class="col-sm-7">
                 <input ng-show="editEnable.profile" class="form-control" ng-model="item.user.fullName"/>
                 <span ng-hide="editEnable.profile">{{item.user.fullName}}</span>
@@ -48,7 +48,7 @@
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Email</label>
+              <label class="col-sm-2 control-label">{{ 'EMAIL' | translate }}</label>
               <div class="col-sm-7">
                 <input ng-show="editEnable.profile" class="form-control" ng-model="item.user.email"/>
                 <span ng-hide="editEnable.profile">{{item.user.email}}</span>
@@ -57,16 +57,16 @@
             
             <div ng-show="editEnable.profile">
               <div class="form-group">
-                <label class="col-sm-2 control-label">Current password</label>
+                <label class="col-sm-2 control-label">{{ 'CURRENT_PASSWORD' | translate }}</label>
                 <div class="col-sm-7">
-                  <input type="password" class="form-control" placeholder="Current password" ng-model="item.currentPassword"/>
+                  <input type="password" class="form-control" placeholder="{{ 'CURRENT_PASSWORD' | translate }}" ng-model="item.currentPassword"/>
                 </div>
               </div>
               
               <div class="form-group">
-                <label class="col-sm-2 control-label">New password</label>
+                <label class="col-sm-2 control-label">{{ 'NEW_PASSWORD' | translate }}</label>
                 <div class="col-sm-7">
-                  <input type="password" class="form-control" placeholder="New password" ng-model="item.user.password"/>
+                  <input type="password" class="form-control" placeholder="{{ 'NEW_PASSWORD' | translate }}" ng-model="item.user.password"/>
                 </div>
               </div>
             </div>
@@ -75,11 +75,11 @@
           </form>
 
           <div class="form-actions text-right">
-            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.profile" ng-click="editEnable.profile = true">Edit</button>
-            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.profile" ng-click="resetProfile();editEnable.profile = false">Cancel</button>
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.profile" ng-click="editEnable.profile = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.profile" ng-click="resetProfile();editEnable.profile = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="save()"  ng-show="editEnable.profile" ng-disabled="saveProgress">
               <div ng-show="saveProgress" class="spinner spinner-xs"></div>
-              Save
+              {{ 'SAVE' | translate }}
             </button>
           </div>
         </div>

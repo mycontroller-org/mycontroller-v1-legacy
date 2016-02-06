@@ -37,20 +37,20 @@
           <!-- Single button -->
           <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="itemIds.length == 0">
-              Actions <span class="caret"></span>
+              {{ 'ACTIONS' | translate }} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || delete()" class="text-danger"><i class="fa fa-lg fa-trash"></i> Delete</a></li>
-              <li ng-class="{'disabled': itemIds.length != 1}"><a href='' ng-click="itemIds.length != 1 || edit()" class="text-default"><i class="fa fa-lg fa-edit"></i> Edit</a></li>
-              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || eraseConfiguration()" class="text-default"><i class="fa fa-lg fa-eraser"></i> Erase Configuration</a></li>
-              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || reboot()" class="text-default"><i class="fa fa-lg fa-undo"></i> Reboot</a></li>
-              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || uploadFirmware()" class="text-default"><i class="fa fa-lg fa-upload"></i> Upload Firmware</a></li>
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || delete()" class="text-danger"><i class="fa fa-lg fa-trash"></i> {{ 'DELETE' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length != 1}"><a href='' ng-click="itemIds.length != 1 || edit()" class="text-default"><i class="fa fa-lg fa-edit"></i> {{ 'EDIT' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || eraseConfiguration()" class="text-default"><i class="fa fa-lg fa-eraser"></i> {{ 'ERASE_CONFIGURATION' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || reboot()" class="text-default"><i class="fa fa-lg fa-undo"></i> {{ 'REBOOT' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || uploadFirmware()" class="text-default"><i class="fa fa-lg fa-upload"></i> {{ 'UPLOAD_FIRMWARE' | translate }}</a></li>
             </ul>
           </div>
         </div>
         
         <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group">
-          <a class="btn btn-primary" type="button" ui-sref="nodesAddEdit">Add Node</a>
+          <a class="btn btn-primary" type="button" ui-sref="nodesAddEdit">{{ 'ADD_NODE' | translate }}</a>
         </div>
 
       </div>
@@ -73,16 +73,16 @@
       <table class="table table-hover table-bordered table-striped mc-table">
         <thead>
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
-          <th>Status</th>
-          <th>Gateway</th>
-          <th>Network</th>
-          <th>EUI</th>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Battery level</th>
-          <th>Version</th>
-          <th>Library version</th>
-          <th>Firmware</th>
+          <th>{{ 'STATUS' | translate }}</th>
+          <th>{{ 'GATEWAY' | translate }}</th>
+          <th>{{ 'NETWORK' | translate }}</th>
+          <th>{{ 'EUI' | translate }}</th>
+          <th>{{ 'NAME' | translate }}</th>
+          <th>{{ 'TYPE' | translate }}</th>
+          <th>{{ 'BATTERY_LEVEL' | translate }}</th>
+          <th>{{ 'VERSION' | translate }}</th>
+          <th>{{ 'LIBRARY_VERSION' | translate }}</th>
+          <th>{{ 'FIRMWARE' | translate }}</th>
           <th></th>
         </thead>
         <tbody>
@@ -90,9 +90,9 @@
             ng-class="{'mc-selected': itemIds.indexOf(item.id) != -1}" ng-click="selectItem(item)">
             <td class="mc-align-center"><input type="checkbox" ng-checked="itemIds.indexOf(item.id) != -1"></td>
             <td class="text-center">
-              <i ng-show="item.state.toLowerCase() === 'unavailable'" class="pficon pficon-help text-color-gray fa-lg" uib-tooltip="Unavailable"></i>
-              <i ng-show="item.state.toLowerCase() === 'down'" class="pficon pficon-error-circle-o fa-lg" uib-tooltip="Down"></i>
-              <i ng-show="item.state.toLowerCase() === 'up'" class="pficon pficon-ok fa-lg" uib-tooltip="Up"></i>
+              <i ng-show="item.state.toLowerCase() === 'unavailable'" class="pficon pficon-help text-color-gray fa-lg" uib-tooltip="{{ 'UNAVAILABLE' | translate }}"></i>
+              <i ng-show="item.state.toLowerCase() === 'down'" class="pficon pficon-error-circle-o fa-lg" uib-tooltip="{{ 'DOWN' | translate }}"></i>
+              <i ng-show="item.state.toLowerCase() === 'up'" class="pficon pficon-ok fa-lg" uib-tooltip="{{ 'UP' | translate }}"></i>
             </td>
             <td>{{item.gateway.name}} [{{item.gateway.type}}]</td>
             <td>{{item.gateway.networkType}}</td>
@@ -105,9 +105,9 @@
             </td>
             <td>{{item.version}}</td>
             <td>{{item.libVersion}}</td>
-            <td at-implicit at-attribute="firmware.firmwareName" at-title="Firmware"></td>
+            <td at-implicit at-attribute="firmware.firmwareName"></td>
             <td class="mc-align-center">
-              <a class="btn btn-link" ui-sref="nodesDetail({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="View Details" tooltip-trigger tooltip-placement="top"></i></a>
+              <a class="btn btn-link" ui-sref="nodesDetail({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-placement="top"></i></a>
             </td>
           </tr>
         </tbody>

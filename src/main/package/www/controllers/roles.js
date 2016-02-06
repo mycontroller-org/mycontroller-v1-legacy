@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 myControllerModule.controller('RolesControllerList', function(alertService,
-$scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonServices) {
+$scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $filter) {
 
   //GUI page settings
-  $scope.headerStringList = "Roles detail";
-    $scope.noItemsSystemMsg = "No roles set up.";
+  $scope.headerStringList = $filter('translate')('ROLES_DETAIL');
+    $scope.noItemsSystemMsg = $filter('translate')('NO_ROLES_SETUP');
   $scope.noItemsSystemIcon = "pficon pficon-registry";
 
   //load empty, configuration, etc.,
@@ -141,7 +141,7 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
 
     modalInstance.result.then(function () {
       SecurityFactory.deleteRoleIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -171,8 +171,8 @@ myControllerModule.controller('RolesControllerAddEdit', function ($scope, $state
 
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add role";
-  $scope.headerStringUpdate = "Update role";
+  $scope.headerStringAdd = $filter('translate')('ADD_ROLE');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_ROLE');
   $scope.cancelButtonState = "settingsRolesList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -189,7 +189,7 @@ myControllerModule.controller('RolesControllerAddEdit', function ($scope, $state
     $scope.saveProgress = true;
     if($stateParams.id){
       SecurityFactory.updateRole($scope.item,function(response) {
-        alertService.success("Item updated successfully");
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("settingsRolesList");
       },function(error){
         displayRestError.display(error);
@@ -197,7 +197,7 @@ myControllerModule.controller('RolesControllerAddEdit', function ($scope, $state
       });
     }else{
       SecurityFactory.createRole($scope.item,function(response) {
-        alertService.success("Item created successfully");
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("settingsRolesList");
       },function(error){
         displayRestError.display(error);

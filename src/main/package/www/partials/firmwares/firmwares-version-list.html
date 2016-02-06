@@ -37,7 +37,7 @@
           <!-- Single button -->
           <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="itemIds.length == 0">
-              Actions <span class="caret"></span>
+              {{ 'ACTIONS' | translate }} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
               <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || delete()" class="text-danger"><i class="fa fa-lg fa-trash"></i> Delete</a></li>
@@ -47,12 +47,12 @@
         </div>
         
         <div class="btn-group" role="group">
-          <a class="btn btn-default" type="button" ui-sref="firmwaresTypeList">Types</a>
-          <a class="btn btn-default" ng-disabled="true" type="button" ui-sref="firmwaresVersionList">Versions</a>
-          <a class="btn btn-default" type="button" ui-sref="firmwaresList">Firmwares</a>
+          <a class="btn btn-default" type="button" ui-sref="firmwaresTypeList">{{ 'TYPES' | translate }}</a>
+          <a class="btn btn-default" ng-disabled="true" type="button" ui-sref="firmwaresVersionList">{{ 'VERSIONS' | translate }}</a>
+          <a class="btn btn-default" type="button" ui-sref="firmwaresList">{{ 'FIRMWARES' | translate }}</a>
         </div>
         <div class="btn-group" role="group">
-          <a class="btn btn-primary" type="button" ui-sref="firmwaresVersionAddEdit">Add firware version</a>
+          <a class="btn btn-primary" type="button" ui-sref="firmwaresVersionAddEdit">{{ 'ADD_FIRMWARE_VERSION' | translate }}</a>
         </div>
       </div>
 
@@ -74,8 +74,8 @@
       <table class="table table-hover table-bordered table-striped mc-table">
         <thead>
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
-          <th>Version id</th>
-          <th>Version</th>
+          <th>{{ 'VERSION_ID' | translate }}</th>
+          <th>{{ 'VERSION' | translate }}</th>
         </thead>
         <tbody>
           <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"

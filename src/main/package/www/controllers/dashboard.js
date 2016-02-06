@@ -55,7 +55,7 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
   
   $scope.createNewDashboad = function(){
     if($scope.dashboards.length < 5){
-      DashboardFactory.get({'getNew':true,'title':'New dashboard'},function(response){
+      DashboardFactory.get({'getNew':true,'title':$filter('translate')('NEW_DASHBOARD')},function(response){
         //Update items
         $scope.updateDashboard();
       });

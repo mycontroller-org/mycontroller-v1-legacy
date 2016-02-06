@@ -569,7 +569,11 @@ myControllerModule.controller('LoginController',
                     //$state.go('dashboard'); 
                     $state.go($state.params.toState, $state.params.toParams);
                 } else {
-                    alertService.danger(authResponse.message);
+                    if(authResponse.message){
+                      alertService.danger(authResponse.message);
+                    }else{
+                      alertService.danger($filter('translate')('INVALID_USERNAME_OR_PASSWORD'));
+                    }
                     $scope.dataLoading = false;
                 }
             });
@@ -651,11 +655,9 @@ myControllerModule.config(function($translateProvider) {
 
 
 //Items Delete Modal
-myControllerModule.controller('ControllerDeleteModal', function ($scope, $uibModalInstance, $sce) {
-  $scope.header = "Delete items";
-  $scope.deleteMsg = $sce.trustAsHtml("You are about to delete an item"
-    +"<br>Deletion process will remove complete trace of this item!" 
-    +"<br>Click 'Delete' to proceed.");
+myControllerModule.controller('ControllerDeleteModal', function ($scope, $uibModalInstance, $sce, $filter) {
+  $scope.header = $filter('translate')('DELETE_ITEMS');
+  $scope.deleteMsg = $filter('translate')('DELETE_MESSAGE');
   $scope.remove = function() {
     $uibModalInstance.close();
   };

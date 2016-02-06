@@ -33,54 +33,54 @@
         <div class="col-xs-6 col-sm-6 col-lg-6">
           <div class="card-pf card-pf-utilization">
             <div class="card-pf-heading">
-              <h2 class="card-pf-title">Details <a class="btn btn-link pull-right" ui-sref="gatewaysAddEdit({ id: item.id })"><i class="fa fa-edit"></i> Edit </a></h2>
+              <h2 class="card-pf-title">{{ 'DETAILS' | translate }} <a class="btn btn-link pull-right" ui-sref="gatewaysAddEdit({ id: item.id })"><i class="fa fa-edit"></i> {{ 'EDIT' | translate }} </a></h2>
             </div>
             <div class="card-pf-body">
               <dl class="dl-horizontal">
-                <dt>Name</dt> <dd>{{item.name}}</dd>
-                <dt>Enabled</dt> <dd>{{item.enabled?"Enabled":"Disabled"}}</dd>
-                <dt>Type</dt> <dd>{{item.type}}</dd>
-                <dt>Network type</dt> <dd>{{item.networkType}}</dd>
-                <dt>Connection detail</dt> <dd>{{item.connectionDetails}}</dd>
-                <dt>Status</dt> 
+                <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
+                <dt>{{ 'ENABLED' | translate }}</dt> <dd>{{item.enabled?"Enabled":"Disabled"}}</dd>
+                <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
+                <dt>{{ 'NETWORK_TYPE' | translate }}</dt> <dd>{{item.networkType}}</dd>
+                <dt>{{ 'CONNECTION_DETAILS' | translate }}</dt> <dd>{{item.connectionDetails}}</dd>
+                <dt>{{ 'STATUS' | translate }}</dt> 
                 <dd>
                   <span class="card-pf-aggregate-status-notification">
                     <span ng-show="item.state.toLowerCase() === 'up'">
-                      Up <i class="fa fa-arrow-circle-o-up text-color-green fa-lg"></i>
+                      {{ 'UP' | translate }} <i class="fa fa-arrow-circle-o-up text-color-green fa-lg"></i>
                     </span>
                     <span ng-show="item.state.toLowerCase() === 'down'">
-                      Down <i class="fa fa-arrow-circle-o-down text-color-red fa-lg"></i>
+                      {{ 'DOWN' | translate }} <i class="fa fa-arrow-circle-o-down text-color-red fa-lg"></i>
                     </span>
                      <span ng-show="item.state.toLowerCase() === 'unavailable'">
-                      Unavailable <i class="fa fa-question-circle text-color-gray fa-lg"></i>
+                      {{ 'UNAVAILABLE' | translate }} <i class="fa fa-question-circle text-color-gray fa-lg"></i>
                     </span>
                   </span>
                 </dd>
-                <dt>Status since</dt> <dd>{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</dd>
-                <dt>Status message</dt> <dd>{{item.statusMessage}}</dd>
+                <dt>{{ 'STATUS_SINCE' | translate }}</dt> <dd>{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</dd>
+                <dt>{{ 'STATUS_MESSAGE' | translate }}</dt> <dd>{{item.statusMessage}}</dd>
                 
-                <legend><small>Resources</small></legend>
-                <dt><span class="fa fa-sitemap mc-icon-md-3"></span>Nodes</dt> 
+                <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
+                <dt><span class="fa fa-sitemap mc-icon-md-3"></span>{{ 'NODES' | translate }}</dt> 
                 <dd>
                   <a  ng-hide="resourceCount.sensors == 0" ui-sref="nodesList({ gatewayId: item.id})">{{resourceCount.nodes}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.nodes}}</span>
                 </dd>
-                <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt> 
+                <dt><span class="fa fa-eye mc-icon-md-3"></span>{{ 'SENSORS' | translate }}</dt> 
                 <dd>
                   <a  ng-hide="resourceCount.sensors == 0" >{{resourceCount.sensors}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
                 </dd>
-                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>Timers</dt> 
+                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt> 
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
-                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>Alarm Definitions</dt> 
+                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt> 
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
-                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>Resources groups</dt> 
+                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt> 
                 <dd>
                   <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
                   <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>

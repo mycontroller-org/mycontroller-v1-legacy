@@ -18,7 +18,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
   
   //GUI page settings
   //$scope.headerStringList = "Sesnors detail";
-  $scope.noItemsSystemMsg = "No sensors set up.";
+  $scope.noItemsSystemMsg = $filter('translate')('NO_SENSORS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-eye";
 
   //load empty, configuration, etc.,

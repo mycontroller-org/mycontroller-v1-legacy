@@ -17,7 +17,7 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
   
   
   //GUI page settings
-  $scope.headerStringList = "Sensors and variables mapping";
+  $scope.headerStringList = $filter('translate')('SENSORS_AND_VARIABLES_MAPPING');
 
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
@@ -85,7 +85,7 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
 myControllerModule.controller('VariablesMapperEditController', function ($scope, TypesFactory, $filter, $stateParams, mchelper, alertService) {
 
   //GUI page settings
-  $scope.headerStringAdd = "Modify sensor variables mapping";
+  $scope.headerStringAdd = $filter('translate')('MODIFIY_SENSOR_VARIABLES_MAPPING');
   $scope.cancelButtonState = "settingsVariablesMapperList"; //Cancel button state
   $scope.saveProgress = false;
   
@@ -114,7 +114,7 @@ myControllerModule.controller('VariablesMapperEditController', function ($scope,
     $scope.saveProgress = true;
     TypesFactory.updateSensorVariableMapper($scope.item,function(response) {
       $scope.saveProgress = false;
-      alertService.success('Variable map updated');
+      alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
     },function(error){
       $scope.saveProgress = false;
       displayRestError.display(error);

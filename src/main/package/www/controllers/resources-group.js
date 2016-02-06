@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 myControllerModule.controller('ResourcesGroupController', function(alertService,
-$scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, CommonServices) {
+$scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $filter) {
 
   //GUI page settings
-  $scope.headerStringList = "Resource groups detail";
-  $scope.noItemsSystemMsg = "No resource groups set up.";
+  $scope.headerStringList = $filter('translate')('RESOURCE_GROUPS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_RESOURCE_GROUPS_SETUP');
   $scope.noItemsSystemIcon = "pficon pficon-replicator";
 
   //load empty, configuration, etc.,
@@ -42,7 +42,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
     },function(error){
-      displayRestError.display(error);            
+      displayRestError.display(error);
     });
   }
 
@@ -136,19 +136,19 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
     var itemArray = [item.id];
     if(state){
       ResourcesGroupFactory.turnOnIds(itemArray, function(response) {
-        alertService.success('Turned ON '+item.name+' group.');
+        alertService.success('RESOURCE_GROUP_TURNED_ON');
         //Update display table
-        //$scope.getAllItems()();
+        //$scope.getAllItems();
       },function(error){
         displayRestError.display(error);            
       });
     }else{
       ResourcesGroupFactory.turnOffIds(itemArray, function(response) {
-        alertService.success('Turned OFF '+item.name+' group.');
+        alertService.success('RESOURCE_GROUP_TURNED_OFF');
         //Update display table
-        //$scope.getAllItems()();
+        //$scope.getAllItems();
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       });
     }
   }
@@ -164,9 +164,9 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
   $scope.turnOn = function () {
     if($scope.itemIds.length > 0){
       ResourcesGroupFactory.turnOnIds($scope.itemIds, function(response) {
-        alertService.success('Turned ON '+$scope.itemIds.length+' items(s).');
+        alertService.success('RESOURCE_GROUPS_TURNED_ON');
         //Update display table
-        $scope.getAllItems()();
+        $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -178,9 +178,9 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
   $scope.turnOff = function () {
     if($scope.itemIds.length > 0){
       ResourcesGroupFactory.turnOffIds($scope.itemIds, function(response) {
-        alertService.success('Turned OFF '+$scope.itemIds.length+' items(s).');
+        alertService.success('RESOURCE_GROUPS_TURNED_OFF');
         //Update display table
-        $scope.getAllItems()();
+        $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -199,12 +199,12 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
 
     modalInstance.result.then(function () {
       ResourcesGroupFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success('ITEMS_DELETED_SUCCESSFULLY');
         //Update display table
-        $scope.getAllItems()();
+        $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       }); 
     }), 
     function () {
@@ -219,8 +219,8 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
 myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scope, $stateParams, $state, ResourcesGroupFactory,  mchelper, alertService, displayRestError, $filter) {
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add resources group";
-  $scope.headerStringUpdate = "Update resources group";
+  $scope.headerStringAdd = $filter('translate')('ADD_RESOURCES_GROUP');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_RESOURCES_GROUP');
   $scope.cancelButtonState = "resourcesGroupList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -242,7 +242,7 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
     $scope.saveProgress = true;
     if($stateParams.id){
       ResourcesGroupFactory.update($scope.group,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.group));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("resourcesGroupList");
       },function(error){
         displayRestError.display(error);
@@ -250,7 +250,7 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
       });
     }else{
       ResourcesGroupFactory.create($scope.group,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.group));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("resourcesGroupList");
       },function(error){
         displayRestError.display(error);
@@ -265,11 +265,11 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
 //------------------------------------------------------------------------------
 
 myControllerModule.controller('ResourcesGroupMapController', function(alertService,
-$scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
+$scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams, $filter) {
 
   //GUI page settings
-  $scope.headerStringList = "Resource groups maps detail";
-  $scope.noItemsSystemMsg = "No resource groups map set up.";
+  $scope.headerStringList = $filter('translate')('RESOURCE_GROUPS_MAPS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_RESOURCE_GROUPS_MAP_SETUP');
   $scope.noItemsSystemIcon = "pficon pficon-replicator";
 
   //load empty, configuration, etc.,
@@ -399,9 +399,9 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
 
     modalInstance.result.then(function () {
       ResourcesGroupMapFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success('ITEMS_DELETED_SUCCESSFULLY');
         //Update display table
-        $scope.getAllItems()();
+        $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -445,8 +445,8 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add an entry";
-  $scope.headerStringUpdate = "Update an entry";
+  $scope.headerStringAdd = $filter('translate')('ADD_AN_ENTRY');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_AN_ENTRY');
   $scope.cancelButtonState = "resourcesGroupMapList({id:"+$stateParams.groupId+"})"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -455,7 +455,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
     $scope.saveProgress = true;
     if($stateParams.id){
       ResourcesGroupMapFactory.update($scope.groupMap,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.group));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("resourcesGroupMapList",{id:$stateParams.groupId});
       },function(error){
         displayRestError.display(error);
@@ -463,7 +463,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
       });
     }else{
       ResourcesGroupMapFactory.create($scope.groupMap,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.group));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("resourcesGroupMapList",{id:$stateParams.groupId});
       },function(error){
         displayRestError.display(error);

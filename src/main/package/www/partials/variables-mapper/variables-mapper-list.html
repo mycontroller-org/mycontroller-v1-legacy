@@ -32,7 +32,7 @@
       <div class="btn-toolbar pull-right" role="toolbar">
         <!-- Single button -->
         <div class="btn-group" role="group">
-          <a ng-class="{'disabled': !itemName}" class="btn btn-primary" type="button" ng-click="editItem()"><i class="fa fa-lg fa-edit"></i> Edit</a></a>
+          <a ng-class="{'disabled': !itemName}" class="btn btn-primary" type="button" ng-click="editItem()"><i class="fa fa-lg fa-edit"></i> {{ 'EDIT' | translate }}</a></a>
         </div>
       </div>
       <div pf-simple-filter id="itemsFilter" config="filterConfig" ng-show="orgList.length > 0"></div>
@@ -53,8 +53,8 @@
       <!-- Table -->
       <table class="table table-hover table-bordered table-striped mc-table">
         <thead>
-          <th class="col-md-1">Sensor type</th>
-          <th class="col-md-11">Variables</th>
+          <th class="col-md-1">{{ 'SENSOR_TYPE' | translate }}</th>
+          <th class="col-md-11">{{ 'VARIABLES' | translate }}</th>
         </thead>
         <tbody>
           <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" ng-click="selectItem(item)" ng-class="{'mc-selected': itemName === item.displayName}" >

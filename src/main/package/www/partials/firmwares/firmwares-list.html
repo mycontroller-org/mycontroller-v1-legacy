@@ -37,22 +37,22 @@
           <!-- Single button -->
           <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="itemIds.length == 0">
-              Actions <span class="caret"></span>
+              {{ 'ACTIONS' | translate }} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || delete()" class="text-danger"><i class="fa fa-lg fa-trash"></i> Delete</a></li>
-              <li ng-class="{'disabled': itemIds.length != 1}"><a href='' ng-click="itemIds.length != 1 || edit()" class="text-default"><i class="fa fa-lg fa-edit"></i> Edit</a></li>
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || delete()" class="text-danger"><i class="fa fa-lg fa-trash"></i> {{ 'DELETE' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length != 1}"><a href='' ng-click="itemIds.length != 1 || edit()" class="text-default"><i class="fa fa-lg fa-edit"></i> {{ 'EDIT' | translate }}</a></li>
             </ul>
           </div>
         </div>
         
         <div class="btn-group" role="group">
-          <a class="btn btn-default" type="button" ui-sref="firmwaresTypeList">Types</a>
-          <a class="btn btn-default" type="button" ui-sref="firmwaresVersionList">Versions</a>
-          <a class="btn btn-default" ng-disabled="true" type="button" ui-sref="firmwaresList">Firmwares</a>
+          <a class="btn btn-default" type="button" ui-sref="firmwaresTypeList">{{ 'TYPES' | translate }}</a>
+          <a class="btn btn-default" type="button" ui-sref="firmwaresVersionList">{{ 'VERSIONS' | translate }}</a>
+          <a class="btn btn-default" ng-disabled="true" type="button" ui-sref="firmwaresList">{{ 'FIRMWARES' | translate }}</a>
         </div>
         <div class="btn-group" role="group">
-          <a class="btn btn-primary" type="button" ui-sref="firmwaresAddEdit">Add firmware</a>
+          <a class="btn btn-primary" type="button" ui-sref="firmwaresAddEdit">{{ 'ADD_FIRMWARE' | translate }}</a>
         </div>
 
       </div>
@@ -75,11 +75,11 @@
       <table class="table table-hover table-bordered table-striped mc-table">
         <thead>
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
-          <th>Firmware</th>
-          <th>Version</th>
-          <th>Blocks</th>
-          <th>CRC</th>
-          <th>Uploaded on</th>
+          <th>{{ 'FIRMWARE' | translate }}</th>
+          <th>{{ 'VERSION' | translate }}</th>
+          <th>{{ 'BLOCKS' | translate }}</th>
+          <th>{{ 'CRC' | translate }}</th>
+          <th>{{ 'UPLOADED_ON' | translate }}</th>
         </thead>
         <tbody>
           <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"

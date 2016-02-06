@@ -34,7 +34,7 @@
           
           <!-- type -->
           <div class="form-group">
-            <label class="col-sm-2 control-label">Type</label>
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-options="item.id as item.displayName for item in firmwareTypes" ng-model="item.type.id">
                 <option value="" ng-hide="true"></option>
@@ -44,7 +44,7 @@
           
           <!-- version -->
           <div class="form-group">
-            <label class="col-sm-2 control-label">Version</label>
+            <label class="col-sm-2 control-label">{{ 'VERSION' | translate }}</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-options="item.id as item.displayName for item in firmwareVersions" ng-model="item.version.id">
                 <option value="" ng-hide="true"></option>
@@ -54,7 +54,7 @@
           
           <!-- Firmware -->
           <div class="form-group">
-            <label class="col-sm-2 control-label">File</label>
+            <label class="col-sm-2 control-label">{{ 'FILE' | translate }}</label>
             <div class="col-sm-10">
               <input type="file" class="form-control" id="firmware.file" on-read-file="displayFileContents(contents)" ng-accept="'.hex'" ng-model="file">
             </div>
@@ -62,7 +62,7 @@
           
           <!-- Firmware list -->
           <div class="form-group">
-            <label class="col-sm-2 control-label">Content</label>
+            <label class="col-sm-2 control-label">{{ 'CONTENT' | translate }}</label>
             <div class="col-sm-10">
               <textarea  class="form-control" rows="21" style="resize:none" ng-model="item.fileString" readonly required></textarea>
             </div>

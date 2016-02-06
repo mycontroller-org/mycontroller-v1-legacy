@@ -34,29 +34,29 @@
         <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
           <div class="card-pf card-pf-utilization card-pf-accented">
             <div class="card-pf-heading">
-              <h2 class="card-pf-title">Details <a class="btn btn-link pull-right" ui-sref="sensorsAddEdit({ id: item.id })"><i class="fa fa-edit"></i> Edit </a></h2>
+              <h2 class="card-pf-title">{{ 'DETAILS' | translate }} <a class="btn btn-link pull-right" ui-sref="sensorsAddEdit({ id: item.id })"><i class="fa fa-edit"></i> {{ 'EDIT' | translate }} </a></h2>
             </div>
             <div class="card-pf-body">
               <dl class="dl-horizontal">
-                <dt>Name</dt> <dd>{{item.name}}</dd>
-                <dt>Sensor id</dt> <dd>{{item.sensorId}}</dd>
-                <dt>Type</dt> <dd>{{item.type}}</dd>
-                <dt>Variable types</dt> <dd>{{item.variableTypes.join(", ")}}</dd>
-                <dt>Node EUI</dt> <dd>{{item.node.eui}}</dd>
-                <dt>Node name</dt> <dd>{{item.node.name}}</dd>
-                <dt>Node type</dt> <dd>{{item.node.type}}</dd>
-                <dt>Gateway name</dt> <dd>{{item.node.gateway.name}}</dd>
-                <dt>Gateway type</dt> <dd>{{item.node.gateway.type}}</dd>
-                <dt>Network</dt> <dd>{{item.node.gateway.networkType}}</dd>
-                <dt>Last seen</dt> <dd><span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right">{{item.lastSeen.inString  || "Never"}}</span></dd>
+                <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
+                <dt>{{ 'SENSOR_ID' | translate }}</dt> <dd>{{item.sensorId}}</dd>
+                <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
+                <dt>{{ 'VARIABLE_TYPES' | translate }}</dt> <dd>{{item.variableTypes.join(", ")}}</dd>
+                <dt>{{ 'NODE_EUI' | translate }}</dt> <dd>{{item.node.eui}}</dd>
+                <dt>{{ 'NODE_NAME' | translate }}</dt> <dd>{{item.node.name}}</dd>
+                <dt>{{ 'NODE_TYPE' | translate }}</dt> <dd>{{item.node.type}}</dd>
+                <dt>{{ 'GATEWAY_NAME' | translate }}</dt> <dd>{{item.node.gateway.name}}</dd>
+                <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.node.gateway.type}}</dd>
+                <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.node.gateway.networkType}}</dd>
+                <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right">{{item.lastSeen.inString  || 'NEVER' | translate }}</span></dd>
                 
-                <legend><small>Resources</small></legend>
-                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>Timers</dt> 
+                <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
+                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt> 
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
-                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>Alarm Definitions</dt> 
+                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt> 
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
@@ -124,21 +124,21 @@
               <div class="dropdown card-pf-time-frame-filter">
                 <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"
                     switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="" switch-label-width="70px"
-                    switch-label="Min / Max" ng-true-value="true" ng-false-value="false" switch-on-text="Enabled" switch-off-text="Disabled" >
+                    switch-label="{{ 'MIN_MAX' | translate }}" ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}" >
                 <select pf-select ng-model="chartFromTimestamp" ng-change="updateChart()">
                   <option value="" ng-hide="true"></option>
-                  <option value="3600000">Last hour</option>
-                  <option value="21600000">Last 6 hours</option>
-                  <option value="43200000">Last 12 hours</option>
-                  <option value="86400000">Last day</option>
-                  <option value="604800000">Last week</option>
-                  <option value="2419200000">Last month</option>
-                  <option value="31536000000">Last year</option>
-                  <option value="0" ng-hide="true">Custom</option>
+                  <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
+                  <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
+                  <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>
+                  <option value="86400000">{{ 'LAST_DAY' | translate }}</option>
+                  <option value="604800000">{{ 'LAST_WEEK' | translate }}</option>
+                  <option value="2419200000">{{ 'LAST_MONTH' | translate }}</option>
+                  <option value="31536000000">{{ 'LAST_YEAR' | translate }}</option>
+                  <option value="0" ng-hide="true">{{ 'CUSTOM' | translate }}</option>
                 </select>
               </div>
               <h2 class="card-pf-title">
-                <i class="fa fa-area-chart fa-lg"></i> Variables graphical view
+                <i class="fa fa-area-chart fa-lg"></i> {{ 'VARIABLES_GRAPHICAL_VIEW' | translate }}
               </h2>
             </div>
             <div class="card-pf-body">

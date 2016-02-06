@@ -27,12 +27,12 @@
     <!-- Units -->
     <div class="col-md-12">
       <div class="card-pf">
-        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-area-chart fa-lg"></i> Metrics for graphs</i></h2></div>
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-area-chart fa-lg"></i> {{ 'METRICS_FOR_GRAPHS' | translate }}</i></h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal">
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Enable Min/Max</label>
+              <label class="col-sm-2 control-label">{{ 'ENABLE_MIN_MAX' | translate }}</label>
               <div class="col-sm-10">
                 <input ng-change="editEnable.metrics = true" bs-switch ng-change="updateChart()" ng-model="metricsSettings.enabledMinMax" type="checkbox"
                     switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="60px" switch-label-width="5px"
@@ -40,45 +40,45 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-2 control-label">Default time range</label>
+              <label class="col-sm-2 control-label">{{ 'DEFAULT_TIME_RANGE' | translate }}</label>
               <div class="col-sm-10">
                 <select ng-disabled="!editEnable.metrics" pf-select ng-model="metricsSettings.defaultTimeRange">
                   <option value="" ng-hide="true"></option>
-                  <option value="3600000">Last hour</option>
-                  <option value="21600000">Last 6 hours</option>
-                  <option value="43200000">Last 12 hours</option>
-                  <option value="86400000">Last day</option>
-                  <option value="604800000">Last week</option>
-                  <option value="2419200000">Last month</option>
-                  <option value="31536000000">Last year</option>
+                  <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
+                  <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
+                  <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>
+                  <option value="86400000">{{ 'LAST_DAY' | translate }}</option>
+                  <option value="604800000">{{ 'LAST_WEEK' | translate }}</option>
+                  <option value="2419200000">{{ 'LAST_MONTH' | translate }}</option>
+                  <option value="31536000000">{{ 'LAST_YEAR' | translate }}</option>
                 </select>
               </div>
             </div>
             <!-- Battery -->
             <div class="form-group">
-              <label class="col-sm-2 control-label">Battery</label>
+              <label class="col-sm-2 control-label">{{ 'BATTERY' | translate }}</label>
               <div class="col-sm-3">
                 <select ng-disabled="!editEnable.metrics" pf-select ng-model="metricsSettings.battery.type">
                   <option value="" ng-hide="true"></option>
-                  <option value="lineChart">Line chart</option>
-                  <option value="historicalBarChart">Historical bar chart</option>
-                  <option value="stackedAreaChart">Stacked area chart</option>
+                  <option value="lineChart">{{ 'LINE_CHART' | translate }}</option>
+                  <option value="historicalBarChart">{{ 'HISTORICAL_BAR_CHART' | translate }}</option>
+                  <option value="stackedAreaChart">{{ 'STACKED_AREA_CHART' | translate }}</option>
                 </select>
               </div>
               <div class="col-sm-3">
                 <select ng-disabled="!editEnable.metrics" pf-select ng-model="metricsSettings.battery.interpolate">
                   <option value="" ng-hide="true"></option>
-                  <option value="linear">Linear</option>
-                  <option value="basis">Basis</option>
-                  <option value="cardinal">Cardinal</option>
-                  <option value="monotone">Monotone</option>
-                  <option value="bundle">Bundle</option>
-                  <option value="step-before">Step before</option>
-                  <option value="step-after">Step after</option>
-                  <option value="basis-open">Basis open</option>
-                  <option value="basis-closed">Basis closed</option>
-                  <option value="cardinal-open">Cardinal open</option>
-                  <option value="cardinal-closed">Cardinal closed</option>
+                  <option value="linear">{{ 'LINEAR' | translate }}</option>
+                  <option value="basis">{{ 'BASIS' | translate }}</option>
+                  <option value="cardinal">{{ 'CARDINAL' | translate }}</option>
+                  <option value="monotone">{{ 'MONOTONE' | translate }}</option>
+                  <option value="bundle">{{ 'BUNDLE' | translate }}</option>
+                  <option value="step-before">{{ 'STEP_BEFORE' | translate }}</option>
+                  <option value="step-after">{{ 'STEP_AFTER' | translate }}</option>
+                  <option value="basis-open">{{ 'BASIS_OPEN' | translate }}</option>
+                  <option value="basis-closed">{{ 'BASIS_CLOSED' | translate }}</option>
+                  <option value="cardinal-open">{{ 'CARDINAL_OPEN' | translate }}</option>
+                  <option value="cardinal-closed">{{ 'CARDINAL_CLOSED' | translate }}</option>
                 </select>
               </div>
               <div class="col-sm-1">
@@ -87,15 +87,15 @@
               </div>
               <div class="col-sm-2">
                 <label class="mc-padding">
-                  <input ng-disabled="!editEnable.metrics" type="checkbox" ng-model="metricsSettings.battery.area" /> Area
+                  <input ng-disabled="!editEnable.metrics" type="checkbox" ng-model="metricsSettings.battery.area" /> {{ 'AREA' | translate }}
                 </label> 
                 <label class="mc-padding">
-                  <input ng-disabled="!editEnable.metrics" type="checkbox" ng-model="metricsSettings.battery.bar" /> Bar
+                  <input ng-disabled="!editEnable.metrics" type="checkbox" ng-model="metricsSettings.battery.bar" /> {{ 'BAR' | translate }}
                 </label>
               </div>
             </div>
             
-            <legend>Individual settings</legend>
+            <legend>{{ 'INDIVIDUAL_SETTINGS' | translate }}</legend>
 
             <div ng-repeat="item in metricsSettings.metrics">
               <div class="form-group">
@@ -103,25 +103,25 @@
                 <div class="col-sm-3">
                   <select ng-disabled="!editEnable.metrics" pf-select ng-model="item.type">
                     <option value="" ng-hide="true"></option>
-                    <option value="lineChart">Line chart</option>
-                    <option value="historicalBarChart">Historical bar chart</option>
-                    <option value="stackedAreaChart">Stacked area chart</option>
+                    <option value="lineChart">{{ 'LINE_CHART' | translate }}</option>
+                    <option value="historicalBarChart">{{ 'HISTORICAL_BAR_CHART' | translate }}</option>
+                    <option value="stackedAreaChart">{{ 'STACKED_AREA_CHART' | translate }}</option>
                   </select>
                 </div>
                 <div class="col-sm-3">
                   <select ng-disabled="!editEnable.metrics" pf-select ng-model="item.interpolate">
                     <option value="" ng-hide="true"></option>
-                    <option value="linear">Linear</option>
-                    <option value="basis">Basis</option>
-                    <option value="cardinal">Cardinal</option>
-                    <option value="monotone">Monotone</option>
-                    <option value="bundle">Bundle</option>
-                    <option value="step-before">Step before</option>
-                    <option value="step-after">Step after</option>
-                    <option value="basis-open">Basis open</option>
-                    <option value="basis-closed">Basis closed</option>
-                    <option value="cardinal-open">Cardinal open</option>
-                    <option value="cardinal-closed">Cardinal closed</option>
+                    <option value="linear">{{ 'LINEAR' | translate }}</option>
+                    <option value="basis">{{ 'BASIS' | translate }}</option>
+                    <option value="cardinal">{{ 'CARDINAL' | translate }}</option>
+                    <option value="monotone">{{ 'MONOTONE' | translate }}</option>
+                    <option value="bundle">{{ 'BUNDLE' | translate }}</option>
+                    <option value="step-before">{{ 'STEP_BEFORE' | translate }}</option>
+                    <option value="step-after">{{ 'STEP_AFTER' | translate }}</option>
+                    <option value="basis-open">{{ 'BASIS_OPEN' | translate }}</option>
+                    <option value="basis-closed">{{ 'BASIS_CLOSED' | translate }}</option>
+                    <option value="cardinal-open">{{ 'CARDINAL_OPEN' | translate }}</option>
+                    <option value="cardinal-closed">{{ 'CARDINAL_CLOSED' | translate }}</option>
                   </select>
                 </div>
                 <div class="col-sm-1">
@@ -130,10 +130,10 @@
                 </div>
                 <div class="col-sm-2">
                   <label class="mc-padding">
-                    <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="checkbox" ng-model="item.area" /> Area
+                    <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="checkbox" ng-model="item.area" /> {{ 'AREA' | translate }}
                   </label> 
                   <label class="mc-padding">
-                    <input ng-disabled="!editEnable.metrics" id="bar-{{item.id}}"type="checkbox" ng-model="item.bar" /> Bar
+                    <input ng-disabled="!editEnable.metrics" id="bar-{{item.id}}"type="checkbox" ng-model="item.bar" /> {{ 'BAR' | translate }}
                   </label>
                 </div>
               </div>
@@ -144,11 +144,11 @@
           </form>
 
           <div class="form-actions text-right">
-            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metrics" ng-click="editEnable.metrics = true">Edit</button>
-            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metrics" ng-click="updateSettingsMetrics();editEnable.metrics = false">Cancel</button>
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metrics" ng-click="editEnable.metrics = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metrics" ng-click="updateSettingsMetrics();editEnable.metrics = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveMetrics()"  ng-show="editEnable.metrics" ng-disabled="saveProgress.metrics">
               <div ng-show="saveProgress.metrics" class="spinner spinner-xs"></div>
-              Save
+              {{ 'SAVE' | translate }}
             </button>
           </div>
         </div>

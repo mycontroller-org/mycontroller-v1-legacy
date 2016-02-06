@@ -31,21 +31,21 @@
       <form class="form-horizontal">
         <div class="col-md-5">
           <div class="form-group">
-            <label class="col-sm-2 control-label">Enabled</label>
+            <label class="col-sm-2 control-label">{{ 'ENABLED' | translate }}</label>
             <div class="col-sm-10">
              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="gateway.enabled" checked>
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Name</label>
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
             <div class="col-sm-10">
               <input class="form-control" ng-model="gateway.name"/>
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Network Type</label>
+            <label class="col-sm-2 control-label">{{ 'NETWORK_TYPE' | translate }}</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-options="gatewayNetworkType.displayName as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes" ng-model="gateway.networkType">
                 <option value="" ng-hide="true"></option>
@@ -54,7 +54,7 @@
           </div>
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Type</label>
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-options="gatewayType.displayName as gatewayType.displayName for gatewayType in gatewayTypes" ng-model="gateway.type" ng-change="updateTypeChange()">
                 <option value="" ng-hide="true"></option>
@@ -65,7 +65,7 @@
           <!-- Serial Gateway -->
           <div ng-show="gateway.type.toLowerCase() === 'serial'">            
             <div class="form-group">
-              <label class="col-sm-2 control-label">Driver</label>
+              <label class="col-sm-2 control-label">{{ 'DRIVER' | translate }}</label>
               <div class="col-sm-5">
                 <select class="form-control" pf-select ng-options="gatewaySerialDriver.displayName as gatewaySerialDriver.displayName for gatewaySerialDriver in gatewaySerialDrivers" ng-model="gateway.variable1">
                 <option value="" ng-hide="true"></option>
@@ -74,21 +74,21 @@
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Port name</label>
+              <label class="col-sm-2 control-label">{{ 'PORT_NAME' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable2"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Baud Rate</label>
+              <label class="col-sm-2 control-label">{{ 'BAUD_RATE' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable3"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Retry Frequency(sec)</label>
+              <label class="col-sm-2 control-label">{{ 'RETRY_FREQUENCY' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable4"/>
               </div>
@@ -99,21 +99,21 @@
           <!-- Ethernet Gateway -->
           <div ng-show="gateway.type.toLowerCase() === 'ethernet'">
             <div class="form-group">
-              <label class="col-sm-2 control-label">Host name</label>
+              <label class="col-sm-2 control-label">{{ 'HOST_NAME' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable1"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Port</label>
+              <label class="col-sm-2 control-label">{{ 'PORT' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable2"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Alive Test Frequency (secs)</label>
+              <label class="col-sm-2 control-label">{{ 'ALIVE_TEST_FREQUENCY' | translate }})</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable3"/>
               </div>
@@ -125,42 +125,42 @@
           <!-- MQTT Gateway -->
           <div ng-show="gateway.type.toLowerCase() === 'mqtt'">
             <div class="form-group">
-              <label class="col-sm-2 control-label">Broker Host</label>
+              <label class="col-sm-2 control-label">{{ 'BROKET_HOST' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable1"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Client Id</label>
+              <label class="col-sm-2 control-label">{{ 'CLIENT_ID' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable2"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Topic publish</label>
+              <label class="col-sm-2 control-label">{{ 'TOPIC_PUBLISH' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable3"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Topic subscribe</label>
+              <label class="col-sm-2 control-label">{{ 'TOPIC_SUBSCRIBE' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable4"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Username</label>
+              <label class="col-sm-2 control-label">{{ 'USERNAME' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable5"/>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">Password</label>
+              <label class="col-sm-2 control-label">{{ 'PASSWORD' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" ng-model="gateway.variable6"/>
               </div>

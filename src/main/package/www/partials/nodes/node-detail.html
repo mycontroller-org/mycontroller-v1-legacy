@@ -33,56 +33,56 @@
         <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
           <div class="card-pf card-pf-utilization card-pf-accented"  style="min-height:450px">
             <div class="card-pf-heading">
-              <h2 class="card-pf-title">Details <a class="btn btn-link pull-right" ui-sref="nodesAddEdit({ id: item.id })"><i class="fa fa-edit"></i> Edit </a></h2>
+              <h2 class="card-pf-title">{{ 'DETAILS' | translate }} <a class="btn btn-link pull-right" ui-sref="nodesAddEdit({ id: item.id })"><i class="fa fa-edit"></i> {{ 'EDIT' | translate }} </a></h2>
             </div>
             <div class="card-pf-body">
               <dl class="dl-horizontal">
-                <dt>Name</dt> <dd>{{item.name}}</dd>
-                <dt>EUI</dt> <dd>{{item.eui}}</dd>
-                <dt>Type</dt> <dd>{{item.type}}</dd>
-                <dt>Gateway name</dt> <dd>{{item.gateway.name}}</dd>
-                <dt>Gateway type</dt> <dd>{{item.gateway.type}}</dd>
-                <dt>Network</dt> <dd>{{item.gateway.networkType}}</dd>
-                <dt>RSSI</dt> <dd>{{item.rssi}}</dd>
-                <dt>Version</dt> <dd>{{item.version}}</dd>
-                <dt>Library version</dt> <dd>{{item.libVersion}}</dd>
-                <dt>Status</dt> 
+                <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
+                <dt>{{ 'EUI' | translate }}</dt> <dd>{{item.eui}}</dd>
+                <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
+                <dt>{{ 'GATEWAY_NAME' | translate }}</dt> <dd>{{item.gateway.name}}</dd>
+                <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.gateway.type}}</dd>
+                <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.gateway.networkType}}</dd>
+                <dt>{{ 'RSSI' | translate }}</dt> <dd>{{item.rssi}}</dd>
+                <dt>{{ 'VERSION' | translate }}</dt> <dd>{{item.version}}</dd>
+                <dt>{{ 'LIBRARY_VERSION' | translate }}</dt> <dd>{{item.libVersion}}</dd>
+                <dt>{{ 'STATUS' | translate }}</dt> 
                 <dd>
                   <span class="card-pf-aggregate-status-notification">
                     <span ng-show="item.state.toLowerCase() === 'up'">
-                      Up <i class="fa fa-arrow-circle-o-up text-color-green fa-lg"></i>
+                      {{ 'UP' | translate }} <i class="fa fa-arrow-circle-o-up text-color-green fa-lg"></i>
                     </span>
                     <span ng-show="item.state.toLowerCase() === 'down'">
-                      Down <i class="fa fa-arrow-circle-o-down text-color-red fa-lg"></i>
+                      {{ 'DOWN' | translate }} <i class="fa fa-arrow-circle-o-down text-color-red fa-lg"></i>
                     </span>
                      <span ng-show="item.state.toLowerCase() === 'unavailable'">
-                      Unavailable <i class="fa fa-question-circle text-color-gray fa-lg"></i>
+                      {{ 'UNAVAILABLE' | translate }} <i class="fa fa-question-circle text-color-gray fa-lg"></i>
                     </span>
                   </span>
                 </dd>
-                <dt>Battery</dt> 
+                <dt>{{ 'BATTERY' | translate }}</dt> 
                 <dd>
                   <span ng-show="item.batteryLevel"><i class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}"></i> {{item.batteryLevel}} %</span>
                   <label ng-hide="item.batteryLevel">-</label>
                 </dd>                
                 
-                <legend><small>Resources</small></legend>
+                <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
                 <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt> 
                 <dd>
                   <a  ng-hide="resourceCount.sensors == 0" ui-sref="sensorsList({ nodeId: item.id})">{{resourceCount.sensors}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
                 </dd>
-                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>Timers</dt> 
+                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt> 
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
-                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>Alarm Definitions</dt> 
+                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt> 
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
-                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>Resources groups</dt> 
+                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt> 
                 <dd>
                   <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
                   <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
@@ -99,27 +99,27 @@
               <div ng-show="item.batteryLevel" class="dropdown card-pf-time-frame-filter">
                 <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"
                     switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="" switch-label-width="70px"
-                    switch-label="Min / Max" ng-true-value="true" ng-false-value="false" switch-on-text="Enabled" switch-off-text="Disabled" >
+                    switch-label="{{ 'MIN_MAX' | translate }}" ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}" >
                 <select pf-select ng-model="chartFromTimestamp" ng-change="updateChart()">
                   <option value="" ng-hide="true"></option>
-                  <option value="3600000">Last hour</option>
-                  <option value="21600000">Last 6 hours</option>
-                  <option value="43200000">Last 12 hours</option>
-                  <option value="86400000">Last day</option>
-                  <option value="604800000">Last week</option>
-                  <option value="2419200000">Last month</option>
-                  <option value="31536000000">Last year</option>
-                  <option value="0" ng-hide="true">Custom</option>
+                  <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
+                  <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
+                  <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>
+                  <option value="86400000">{{ 'LAST_DAY' | translate }}</option>
+                  <option value="604800000">{{ 'LAST_WEEK' | translate }}</option>
+                  <option value="2419200000">{{ 'LAST_MONTH' | translate }}</option>
+                  <option value="31536000000">{{ 'LAST_YEAR' | translate }}</option>
+                  <option value="0" ng-hide="true">{{ 'CUSTOM' | translate }}</option>
                 </select>
               </div>
-              <h2 class="card-pf-title"><i class="fa fa-battery-full"></i> Battery usage</h2>
+              <h2 class="card-pf-title"><i class="fa fa-battery-full"></i> {{ 'BATTERY_USAGE' | translate }}</h2>
             </div>
             <div class="card-pf-body">
               <div class="blank-slate-pf" ng-hide="item.batteryLevel">
                 <div class="blank-slate-pf-icon">
                   <i class="fa fa-exclamation-triangle"></i>
                 </div>
-                <h1>Data unavailable!</h1>
+                <h1>{{ 'DATA_UNAVAILABLE' | translate }}</h1>
               </div>
               <div ng-show="item.batteryLevel">
                 <nvd3 options='chartOptions' data="batteryChartData.chartData" id="fetching"></nvd3>

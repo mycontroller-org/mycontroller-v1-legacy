@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsController', function(alertService,
-$scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
+$scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams, $filter) {
 
   //GUI page settings
-  $scope.headerStringList = "Sesnors detail";
-  $scope.noItemsSystemMsg = "No sensors set up.";
+  $scope.headerStringList = $filter('translate')('SENSORS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_SENSORS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-eye";
 
   //load empty, configuration, etc.,
@@ -205,8 +205,8 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add sensor";
-  $scope.headerStringUpdate = "Update sensor";
+  $scope.headerStringAdd = $filter('translate')('ADD_SENSOR');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_SENSOR');
   $scope.cancelButtonState = "sensorsList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -240,7 +240,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.node = {};
-  $scope.headerStringList = "Sensor details";
+  $scope.headerStringList = $filter('translate')('SENSOR_DETAILS');
   $scope.cs = CommonServices;
   
   $scope.item = SensorsFactory.get({"id":$stateParams.id});

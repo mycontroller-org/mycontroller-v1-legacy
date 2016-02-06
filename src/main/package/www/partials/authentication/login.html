@@ -18,45 +18,45 @@
     <span id="badge">
       <!-- Should update this logo <img src="images/mc_logo_.gif" alt="MyController.org logo" /> --> 
     </span>
-    <div class="container">
+    <div class="container" >
       <div class="row">
         <div class="col-sm-12">
           <div id="brand">
-            <h1>LOG IN TO <strong>MYCONTROLLER.ORG</strong></h1>
+            <h1 ng-bind-html="'APP.LOG_IN_TO_MESSAGE' | translate"></h1>
           </div><!--/#brand-->
         </div><!--/.col-*-->
         
         <div class="col-sm-7 col-md-6 col-lg-6 login">
           <div class="alert alert-danger" ng-show="">
             <span class="pficon pficon-error-circle-o"></span>
-            <p class="mc-text-red">Invalid username or password.</p>
+            <p class="mc-text-red">{{ 'INVALID_USERNAME_OR_PASSWORD' | translate }}</p>
           </div>
           <form class="form-horizontal" role="form" ng-submit="login()">
             <div class="form-group">
-              <label for="inputUsername" class="col-sm-2 col-md-2 control-label">{{ 'USERS.USERNAME' | translate }}</label>
+              <label for="inputUsername" class="col-sm-2 col-md-2 control-label">{{ 'USERNAME' | translate }}</label>
               <div class="col-sm-10 col-md-10">
-                <input type="text" class="form-control" name="username" id="username" ng-model="username" placeholder="" tabindex="1" required>
+                <input type="text" class="form-control" name="username" id="username" ng-model="username" placeholder="{{ 'USERNAME' | translate }}" tabindex="1" required>
               </div>
             </div>
             <div class="form-group">
-              <label for="inputPassword" class="col-sm-2 col-md-2 control-label">{{ 'USERS.PASSWORD' | translate }}</label>
+              <label for="inputPassword" class="col-sm-2 col-md-2 control-label">{{ 'PASSWORD' | translate }}</label>
               <div class="col-sm-10 col-md-10">
-                <input type="password" class="form-control" name="password" id="password" ng-model="password" placeholder="" tabindex="2" required>
+                <input type="password" class="form-control" name="password" id="password" ng-model="password" placeholder="{{ 'PASSWORD' | translate }}" tabindex="2" required>
               </div>
             </div>
             <div class="form-group">
               <div class="col-xs-8 col-sm-offset-2 col-sm-6 col-md-offset-2 col-md-6">
               </div>
               <div class="col-xs-4 col-sm-4 col-md-4 submit">
-                <button type="submit" ng-disabled="form.$invalid || dataLoading" class="btn btn-primary btn-lg" tabindex="4">Log In</button>
+                <button type="submit" ng-disabled="form.$invalid || dataLoading" class="btn btn-primary btn-lg" tabindex="4">{{ 'LOG_IN' | translate }}</button>
                 <span ng-if="dataLoading" class="spinner spinner-inverse spinner-inline mc-align-center"></span>
               </div>
             </div>
           </form>
         </div><!--/.col-*-->
         <div class="col-sm-5 col-md-6 col-lg-6 details">
-          <p>Welcome to <strong>MyController.org!</strong>! The Open Source Controller.</p>
-          <p>Version: <strong>{{mchelper.cfg.appVersion}}</strong></p>
+          <p ng-bind-html="'APP.WELCOME_MESSAGE' | translate"></p>
+          <p>{{ 'VERSION' | translate }}: <strong>{{mchelper.cfg.appVersion}}</strong></p>
           <p ng-bind-html="mchelper.cfg.loginMessage"></p>
         </div><!--/.col-*-->
       </div><!--/.row-->

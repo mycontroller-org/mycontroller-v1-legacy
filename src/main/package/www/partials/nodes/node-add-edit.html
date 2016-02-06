@@ -32,7 +32,7 @@
         <div class="col-md-5">
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Gateway</label>
+            <label class="col-sm-2 control-label">{{ 'GATEWAY' | translate }}</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-model="node.gateway.id" ng-disabled="node.id">
                 <option value="" ng-hide="true"></option>
@@ -42,7 +42,7 @@
           </div>
   
           <div class="form-group">
-            <label class="col-sm-2 control-label">Type</label>
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-options="nodeType.displayName as nodeType.displayName for nodeType in nodeTypes" ng-model="node.type">
                 <option value="" ng-hide="true"></option>
@@ -51,35 +51,35 @@
           </div>
   
           <div class="form-group">
-            <label class="col-sm-2 control-label">Name</label>
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
             <div class="col-sm-10">
               <input class="form-control" ng-model="node.name"/>
             </div>
           </div>
   
           <div class="form-group">
-            <label class="col-sm-2 control-label">EUI</label>
+            <label class="col-sm-2 control-label">{{ 'EUI' | translate }}</label>
             <div class="col-sm-10">
               <input class="form-control" ng-model="node.eui" />
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Version</label>
+            <label class="col-sm-2 control-label">{{ 'VERSION' | translate }}</label>
             <div class="col-sm-10">
               <input class="form-control" ng-model="node.version" />
             </div>
           </div>
   
           <div class="form-group">
-            <label class="col-sm-2 control-label">Library Version</label>
+            <label class="col-sm-2 control-label">{{ 'LIBRARY_VERSION' | translate }}</label>
             <div class="col-sm-10">
               <input class="form-control" ng-model="node.libVersion" />
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Firmware</label>
+            <label class="col-sm-2 control-label">{{ 'FIRMWARE' | translate }}</label>
             <div class="col-sm-10">
               <select class="form-control" pf-select data-live-search="true" ng-options="firmware.id as firmware.displayName for firmware in firmwares" ng-model="node.firmware.id">
                 <option value="" ng-hide="true"></option>

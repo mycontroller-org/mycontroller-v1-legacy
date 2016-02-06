@@ -17,8 +17,8 @@ myControllerModule.controller('NodesController', function(alertService,
 $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter) {
 
   //GUI page settings
-  $scope.headerStringList = "Nodes detail";
-  $scope.noItemsSystemMsg = "No nodes set up.";
+  $scope.headerStringList = $filter('translate')('NODES_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_NODES_SETUP');
   $scope.noItemsSystemIcon = "fa fa-sitemap";
 
   //load empty, configuration, etc.,
@@ -72,14 +72,14 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title: $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text'
       },
       {
         id: 'state',
-        title:  'Status',
-        placeholder: 'Filter by Status',
+        title:  $filter('translate')('STATUS'),
+        placeholder: $filter('translate')('FILTER_BY_STATUS'),
         filterType: 'select',
         filterValues: ['Up','Down','Unavailable'],
       },
@@ -170,9 +170,9 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
 
     modalInstance.result.then(function () {
       NodesFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' node(s).');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
-        $scope.getAllNodes();
+        $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);            
@@ -194,7 +194,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
   $scope.uploadFirmware = function (size) {
     if($scope.itemIds.length > 0){
       NodesFactory.uploadFirmware($scope.itemIds,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_FIRMWARE_UPDATE',  $scope.itemIds));
+        alertService.success($filter('translate')('FIRMWARE_UPLOADED_SUCCESSFULLY'));
       },function(error){
         displayRestError.display(error);
       });  
@@ -212,7 +212,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
 
     addModalInstance.result.then(function () {
       NodesFactory.reboot($scope.itemIds, function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_REBOOT', $scope.itemIds));
+        alertService.success($filter('translate')('NODE_REBOTTED_SUCCESSFULLY'));
       },function(error){
         displayRestError.display(error);
       });      
@@ -233,7 +233,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
 
     addModalInstance.result.then(function () {
       NodesFactory.eraseConfiguration($scope.itemIds, function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_EEPROM_ERASE', node));
+        alertService.success($filter('translate')('ERASE_EEPROM_TRIGGERED'));
       },function(error){
         displayRestError.display(error);            
       });
@@ -263,8 +263,8 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add node";
-  $scope.headerStringUpdate = "Update node";
+  $scope.headerStringAdd = $filter('translate')('ADD_NODE');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_NODE');
   $scope.cancelButtonState = "nodesList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -274,7 +274,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
       $scope.saveProgress = true;
     if($stateParams.id){
       NodesFactory.update($scope.node,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("nodesList");
       },function(error){
         displayRestError.display(error);
@@ -282,7 +282,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
       });
     }else{
       NodesFactory.create($scope.node,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("nodesList");
       },function(error){
         displayRestError.display(error);
@@ -298,7 +298,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.item = {};
-  $scope.headerStringList = "Node details";
+  $scope.headerStringList = $filter('translate')('NODE_DETAILS');
   
   $scope.item = NodesFactory.get({"nodeId":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"NODE", "resourceId":$stateParams.id});
@@ -381,15 +381,6 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
   
 });
 
-//Nodes Modal - Delete
-myControllerModule.controller('NodesControllerDelete', function ($scope, $uibModalInstance, $filter) {
-  $scope.header = $filter('translate')('NODE.TITLE_DELETE');
-  $scope.deleteMsg = $filter('translate')('NODE.MESSAGE_DELETE', $scope.nodeIds);
-  $scope.remove = function() {
-    $uibModalInstance.close();
-  };
-  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
-});
 
 //Erase Configuration Modal
 myControllerModule.controller('NodesControllerEraseConfiguration', function ($scope, $uibModalInstance, $filter) {

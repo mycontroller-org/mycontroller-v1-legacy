@@ -26,51 +26,51 @@
 
     <div class="col-lg-12">
       <div class="card-pf card-pf-utilization">
-        <div class="card-pf-heading"><h2 class="card-pf-title">{{ 'SYSTEM_STATUS.JAVA_JAVA_VIRTUAL_MACHINE_SPECIFICATION' | translate }}</h2></div>
+        <div class="card-pf-heading"><h2 class="card-pf-title">{{ 'JAVA_VIRTUAL_MACHINE_SPECIFICATION' | translate }}</h2></div>
         <div class="card-pf-body">
           <dl class="dl-horizontal">
-            <dt>{{ 'SYSTEM_STATUS.JAVA_HOME' | translate }}</dt> <dd>{{osStatus.javaHome}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.JAVA_VENDOR_URL' | translate }}</dt> <dd>{{osStatus.javaVendorUrl}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.VM_NAME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmName}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.VM_VENDOR' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmVendor}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.VM_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmVersion}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.SPECIFICATION_VENDOR' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.specVendor}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.SPECIFICATION_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.specVersion}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.MANAGEMENT_SPECIFICATION_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.managementSpecVersion}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.UP_TIME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.uptime | millSecondsToTimeString}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.HEAP_MEMORY' | translate }}</dt>
+            <dt>{{ 'JAVA_HOME' | translate }}</dt> <dd>{{osStatus.javaHome}}</dd>
+            <dt>{{ 'JAVA_VENDOR_URL' | translate }}</dt> <dd>{{osStatus.javaVendorUrl}}</dd>
+            <dt>{{ 'VM_NAME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmName}}</dd>
+            <dt>{{ 'VM_VENDOR' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmVendor}}</dd>
+            <dt>{{ 'VM_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmVersion}}</dd>
+            <dt>{{ 'SPECIFICATION_VENDOR' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.specVendor}}</dd>
+            <dt>{{ 'SPECIFICATION_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.specVersion}}</dd>
+            <dt>{{ 'MANAGEMENT_SPECIFICATION_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.managementSpecVersion}}</dd>
+            <dt>{{ 'UP_TIME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.uptime | millSecondsToTimeString}}</dd>
+            <dt>{{ 'HEAP_MEMORY' | translate }}</dt>
                 <dd>
-                  {{ 'SYSTEM_STATUS.USED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.used | byteToMBsizeConvertor}}, 
-                  {{ 'SYSTEM_STATUS.COMMITTED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.committed | byteToMBsizeConvertor}}, 
-                  {{ 'SYSTEM_STATUS.INIT' | translate }}: {{jvmStatus.memory.heapMemoryUsage.init | byteToMBsizeConvertor}}, 
-                  {{ 'SYSTEM_STATUS.MAX' | translate }}: {{jvmStatus.memory.heapMemoryUsage.max | byteToMBsizeConvertor}}
+                  {{ 'USED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.used | byteToMBsizeConvertor}}, 
+                  {{ 'COMMITTED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.committed | byteToMBsizeConvertor}}, 
+                  {{ 'INIT' | translate }}: {{jvmStatus.memory.heapMemoryUsage.init | byteToMBsizeConvertor}}, 
+                  {{ 'MAX' | translate }}: {{jvmStatus.memory.heapMemoryUsage.max | byteToMBsizeConvertor}}
                 </dd>
-            <dt>{{ 'SYSTEM_STATUS.NON_HEAP_MEMORY' | translate }}</dt>
+            <dt>{{ 'NON_HEAP_MEMORY' | translate }}</dt>
                 <dd>
-                  {{ 'SYSTEM_STATUS.USED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.used | byteToMBsizeConvertor}}, 
-                  {{ 'SYSTEM_STATUS.COMMITTED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.committed | byteToMBsizeConvertor}}, 
-                  {{ 'SYSTEM_STATUS.INIT' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.init | byteToMBsizeConvertor}}, 
-                  {{ 'SYSTEM_STATUS.MAX' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.max | byteToMBsizeConvertor}}
+                  {{ 'USED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.used | byteToMBsizeConvertor}}, 
+                  {{ 'COMMITTED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.committed | byteToMBsizeConvertor}}, 
+                  {{ 'INIT' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.init | byteToMBsizeConvertor}}, 
+                  {{ 'MAX' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.max | byteToMBsizeConvertor}}
                 </dd>
-            <dt>{{ 'SYSTEM_STATUS.THREADS_COUNT' | translate }}</dt>
+            <dt>{{ 'THREADS_COUNT' | translate }}</dt>
                 <dd>
-                  {{ 'SYSTEM_STATUS.CURRENT' | translate }}: {{jvmStatus.thread.threadCount}}, 
-                  {{ 'SYSTEM_STATUS.PEAK' | translate }}: {{jvmStatus.thread.peakThreadCount}}, 
-                  {{ 'SYSTEM_STATUS.TOTAL_STARTED' | translate }}: {{jvmStatus.thread.totalStartedThreadCount}}, 
-                  {{ 'SYSTEM_STATUS.DAEMON' | translate }}: {{jvmStatus.thread.daemonThreadCount}}
+                  {{ 'CURRENT' | translate }}: {{jvmStatus.thread.threadCount}}, 
+                  {{ 'PEAK' | translate }}: {{jvmStatus.thread.peakThreadCount}}, 
+                  {{ 'TOTAL_STARTED' | translate }}: {{jvmStatus.thread.totalStartedThreadCount}}, 
+                  {{ 'DAEMON' | translate }}: {{jvmStatus.thread.daemonThreadCount}}
                 </dd>
-            <dt>{{ 'SYSTEM_STATUS.CLASS_LOADING_DETAILS' | translate }}</dt>
+            <dt>{{ 'CLASS_LOADING_DETAILS' | translate }}</dt>
                 <dd>
-                  {{ 'SYSTEM_STATUS.LOADED' | translate }}: {{jvmStatus.classLoadingDetail.loadedClassCount}}, 
-                  {{ 'SYSTEM_STATUS.UNLOADED' | translate }}: {{jvmStatus.classLoadingDetail.unloadedClassCount}}, 
-                  {{ 'SYSTEM_STATUS.TOTAL_LOADED' | translate }}: {{jvmStatus.classLoadingDetail.totalLoadedClassCount}}
+                  {{ 'LOADED' | translate }}: {{jvmStatus.classLoadingDetail.loadedClassCount}}, 
+                  {{ 'UNLOADED' | translate }}: {{jvmStatus.classLoadingDetail.unloadedClassCount}}, 
+                  {{ 'TOTAL_LOADED' | translate }}: {{jvmStatus.classLoadingDetail.totalLoadedClassCount}}
                 </dd>
             <span ng-repeat="garbageCollector in jvmStatus.garbageCollectors">
-              <dt>{{ 'SYSTEM_STATUS.GARBAGE_COLLECTOR' | translate }} - {{garbageCollector.name}}</dt>
+              <dt>{{ 'GARBAGE_COLLECTOR' | translate }} - {{garbageCollector.name}}</dt>
                 <dd>
-                  {{ 'SYSTEM_STATUS.COLLECTION_TIME' | translate }}: {{garbageCollector.collectionTime}}, 
-                  {{ 'SYSTEM_STATUS.COLLECTION_COUNT' | translate }}: {{garbageCollector.collectionCount}}, 
-                  {{ 'SYSTEM_STATUS.LAST_GARBAGECOLLECTOR_DURATION' | translate }}: {{garbageCollector.lastGcDuration}}
+                  {{ 'COLLECTION_TIME' | translate }}: {{garbageCollector.collectionTime}}, 
+                  {{ 'COLLECTION_COUNT' | translate }}: {{garbageCollector.collectionCount}}, 
+                  {{ 'LAST_GARBAGECOLLECTOR_DURATION' | translate }}: {{garbageCollector.lastGcDuration}}
                 </dd>
             </span>
           </dl>
@@ -80,28 +80,28 @@
 
     <div class="col-lg-12">
       <div class="card-pf card-pf-utilization">
-        <div class="card-pf-heading"><h2 class="card-pf-title">{{ 'SYSTEM_STATUS.OPERATING_SYSTEM' | translate }}</h2></div>
+        <div class="card-pf-heading"><h2 class="card-pf-title">{{ 'OPERATING_SYSTEM' | translate }}</h2></div>
         <div class="card-pf-body">
           <dl class="dl-horizontal">
-            <dt>{{ 'SYSTEM_STATUS.OPERATING_SYSTEM' | translate }}</dt> <dd>{{osStatus.name}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.ARCHITECTURE' | translate }}</dt> <dd>{{osStatus.arch}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.VERSION_KERNEL' | translate }}</dt> <dd>{{osStatus.version}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.AVAILABLE_PROCESS' | translate }}</dt> <dd>{{osStatus.availableProcess}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.SYSTEM_LOAD_AVERAGE' | translate }}</dt> <dd>{{osStatus.systemLoadAverage}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.SYSTEM_CPU_LOAD' | translate }}</dt> <dd>{{osStatus.systemCpuLoad}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.PROCESS_CPU' | translate }}</dt> <dd>{{ 'SYSTEM_STATUS.LOAD' | translate }}: {{osStatus.processCpuLoad}}, {{ 'SYSTEM_STATUS.TIME' | translate }}: {{osStatus.processCpuTime}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.PHYSICAL_MEMORY' | translate }}</dt>
+            <dt>{{ 'OPERATING_SYSTEM' | translate }}</dt> <dd>{{osStatus.name}}</dd>
+            <dt>{{ 'ARCHITECTURE' | translate }}</dt> <dd>{{osStatus.arch}}</dd>
+            <dt>{{ 'VERSION_KERNEL' | translate }}</dt> <dd>{{osStatus.version}}</dd>
+            <dt>{{ 'AVAILABLE_PROCESS' | translate }}</dt> <dd>{{osStatus.availableProcess}}</dd>
+            <dt>{{ 'SYSTEM_LOAD_AVERAGE' | translate }}</dt> <dd>{{osStatus.systemLoadAverage}}</dd>
+            <dt>{{ 'SYSTEM_CPU_LOAD' | translate }}</dt> <dd>{{osStatus.systemCpuLoad}}</dd>
+            <dt>{{ 'PROCESS_CPU' | translate }}</dt> <dd>{{ 'LOAD' | translate }}: {{osStatus.processCpuLoad}}, {{ 'TIME' | translate }}: {{osStatus.processCpuTime}}</dd>
+            <dt>{{ 'PHYSICAL_MEMORY' | translate }}</dt>
               <dd>
-                {{ 'SYSTEM_STATUS.FREE' | translate }}: {{osStatus.freePhysicalMemorySize | byteToMBsizeConvertor}}, 
-                {{ 'SYSTEM_STATUS.TOTAL' | translate }}: {{osStatus.totalPhysicalMemorySize | byteToMBsizeConvertor}}
+                {{ 'FREE' | translate }}: {{osStatus.freePhysicalMemorySize | byteToMBsizeConvertor}}, 
+                {{ 'TOTAL' | translate }}: {{osStatus.totalPhysicalMemorySize | byteToMBsizeConvertor}}
               </dd>
-            <dt>{{ 'SYSTEM_STATUS.SWAP_SPACE' | translate }}</dt>
+            <dt>{{ 'SWAP_SPACE' | translate }}</dt>
               <dd>
-                {{ 'SYSTEM_STATUS.FREE' | translate }}: {{osStatus.freeSwapSpaceSize | byteToMBsizeConvertor}}, 
-                {{ 'SYSTEM_STATUS.TOTAL' | translate }}: {{osStatus.totalSwapSpaceSize | byteToMBsizeConvertor}}
+                {{ 'FREE' | translate }}: {{osStatus.freeSwapSpaceSize | byteToMBsizeConvertor}}, 
+                {{ 'TOTAL' | translate }}: {{osStatus.totalSwapSpaceSize | byteToMBsizeConvertor}}
               </dd>
-            <dt>{{ 'SYSTEM_STATUS.COMMITTED_VIRTUAL_MEMORY_SIZE' | translate }}</dt> <dd>{{osStatus.committedVirtualMemorySize | byteToMBsizeConvertor}}</dd>
-            <dt>{{ 'SYSTEM_STATUS.USER_WORKING_DIRECTORY' | translate }}</dt> <dd>{{osStatus.userWorkingDir}}</dd>
+            <dt>{{ 'COMMITTED_VIRTUAL_MEMORY_SIZE' | translate }}</dt> <dd>{{osStatus.committedVirtualMemorySize | byteToMBsizeConvertor}}</dd>
+            <dt>{{ 'USER_WORKING_DIRECTORY' | translate }}</dt> <dd>{{osStatus.userWorkingDir}}</dd>
           </dl>
         </div>
       </div>

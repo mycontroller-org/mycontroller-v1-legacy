@@ -32,14 +32,14 @@
         <div class="col-md-5">
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Type</label>
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
               <label>{{item.displayName}}</label>
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Variable types</label>
+            <label class="col-sm-2 control-label">{{ 'VARIABLE_TYPES' | translate }}</label>
             <div class="col-sm-5">
               <select class="form-control" multiple data-live-search="true" pf-select ng-options="svt.displayName as svt.displayName for svt in sensorVariableTypes" ng-model="item.value">
                 <option value="" ng-hide="true"></option>

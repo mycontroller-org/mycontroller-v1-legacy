@@ -33,16 +33,16 @@
         <div class="col-md-5">
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Id</label>
+            <label class="col-sm-2 control-label">{{ 'ID' | translate }}</label>
             <div class="col-sm-10">
-              <input class="form-control" placeholder="{{ 'FIREWARE.AUTO_GENERATE' | translate }}" ng-model="item.id"/>
+              <input class="form-control" placeholder="{{ 'AUTO_GENERATE' | translate }}" ng-model="item.id"/>
             </div>
           </div>
           
           <div class="form-group">
-            <label class="col-sm-2 control-label">Version</label>
+            <label class="col-sm-2 control-label">{{ 'VERSION' | translate }}</label>
             <div class="col-sm-10">
-              <input class="form-control" placeholder="Firmware version" ng-model="item.version"/>
+              <input class="form-control" placeholder="{{ 'FIRMWARE_VERSION' | translate }}" ng-model="item.version"/>
             </div>
           </div>
           

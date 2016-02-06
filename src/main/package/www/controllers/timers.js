@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 myControllerModule.controller('TimersController', function(alertService,
-$scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices) {
+$scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices, $filter) {
   
   //GUI page settings
-  $scope.headerStringList = "Timers detail";
-  $scope.noItemsSystemMsg = "No timers set up.";
+  $scope.headerStringList = $filter('translate')('TIMERS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_TIMERS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-clock-o";
 
   //load empty, configuration, etc.,
@@ -145,7 +145,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
 
     modalInstance.result.then(function () {
       TimersFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success('ITEMS_DELETED_SUCCESSFULLY');
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -163,7 +163,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
       TimersFactory.enableIds($scope.itemIds, function(response) {
-        alertService.success('Enabled '+$scope.itemIds.length+' items(s).');
+        alertService.success('ITEMS_ENABLED_SUCCESSFULLY');
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -177,7 +177,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
       TimersFactory.disableIds($scope.itemIds, function(response) {
-        alertService.success('Disabled '+$scope.itemIds.length+' items(s).');
+        alertService.success('ITEMS_DISABLED_SUCCESSFULLY');
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -271,8 +271,8 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add timer";
-  $scope.headerStringUpdate = "Update timer";
+  $scope.headerStringAdd = $filter('translate')('ADD_TIMER');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_TIMER');
   $scope.cancelButtonState = "timersList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -320,7 +320,7 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
       $scope.saveProgress = true;
     if($stateParams.id){
       TimersFactory.update($scope.timer,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("timersList");
       },function(error){
         $scope.saveProgress = false;
@@ -328,7 +328,7 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
       });
     }else{
       TimersFactory.create($scope.timer,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("timersList");
       },function(error){
         $scope.saveProgress = false;

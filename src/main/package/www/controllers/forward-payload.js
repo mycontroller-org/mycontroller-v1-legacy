@@ -16,8 +16,8 @@
 myControllerModule.controller('ForwardPayloadController', function(alertService,
 $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
   //GUI page settings
-  $scope.headerStringList = "Forward payloads detail";
-  $scope.noItemsSystemMsg = "No forward payloads set up.";
+  $scope.headerStringList = $filter('translate')('FORWARD_PAYLOADS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_FORWARD_PAYLOADS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-forward";
 
   //load empty, configuration, etc.,
@@ -138,7 +138,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
 
     modalInstance.result.then(function () {
       ForwardPayloadFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success('ITEMS_DELETED_SUCCESSFULLY');
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -155,7 +155,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
       ForwardPayloadFactory.enableIds($scope.itemIds, function(response) {
-        alertService.success('Enabled '+$scope.itemIds.length+' items(s).');
+        alertService.success('ITEMS_ENABLED_SUCCESSFULLY');
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -169,7 +169,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
       ForwardPayloadFactory.disableIds($scope.itemIds, function(response) {
-        alertService.success('Disabled '+$scope.itemIds.length+' items(s).');
+        alertService.success('ITEMS_DISABLED_SUCCESSFULLY');
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -182,7 +182,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
 });
 
 //add edit item
-myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scope, CommonServices, alertService, ForwardPayloadFactory, mchelper, $stateParams, $state, $filter) {
+myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scope, CommonServices, alertService, ForwardPayloadFactory, mchelper, $stateParams, $state, $filter, displayRestError) {
   $scope.fpayload = {};
   $scope.fpayload.enabled=true;
   $scope.fpayload.source={};
@@ -207,8 +207,8 @@ myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scop
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add forward payload entry";
-  $scope.headerStringUpdate = "Update forward payload entry";
+  $scope.headerStringAdd = $filter('translate')('ADD_FORWARD_PAYLOAD_ENTRY');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_FORWARD_PAYLOAD_ENTRY');
   $scope.cancelButtonState = "forwardPayloadList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -219,7 +219,7 @@ myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scop
     $scope.saveProgress = true;
     if($stateParams.id){
       ForwardPayloadFactory.update($scope.fpayload,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("forwardPayloadList");
       },function(error){
         displayRestError.display(error);
@@ -227,7 +227,7 @@ myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scop
       });
     }else{
       ForwardPayloadFactory.create($scope.fpayload,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("forwardPayloadList");
       },function(error){
         displayRestError.display(error);

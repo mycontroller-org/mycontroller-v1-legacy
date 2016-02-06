@@ -27,7 +27,7 @@
     <!-- Units -->
     <div class="col-md-12">
       <div class="card-pf">
-        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> Units [Metric/Imperial]</i></h2></div>
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> {{ 'UNITS_METRICS_IMPERIAL' | translate }}</i></h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal">
         
@@ -48,11 +48,11 @@
           </form>
 
           <div class="form-actions text-right">
-            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.units" ng-click="editEnable.units = true">Edit</button>
-            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.units" ng-click="updateSettingsUnits();editEnable.units = false">Cancel</button>
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.units" ng-click="editEnable.units = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.units" ng-click="updateSettingsUnits();editEnable.units = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveUnits()"  ng-show="editEnable.units" ng-disabled="saveProgress.units">
               <div ng-show="saveProgress.units" class="spinner spinner-xs"></div>
-              Save
+              {{ 'SAVE' | translate }}
             </button>
           </div>
         </div>

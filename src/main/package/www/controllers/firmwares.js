@@ -18,8 +18,8 @@ myControllerModule.controller('FirmwaresTypeController', function(
   alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
   
   //GUI page settings
-  $scope.headerStringList = "Firmware types detail";
-  $scope.noItemsSystemMsg = "No firmware types set up.";
+  $scope.headerStringList = $filter('translate')('FIRMWARE_TYPES_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_FIRMWARE_TYPES_SETUP');
   $scope.noItemsSystemIcon = "fa fa-file-code-o";
 
   //load empty, configuration, etc.,
@@ -127,7 +127,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
 
     modalInstance.result.then(function () {
       FirmwaresFactory.deleteFirmwareTypes($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEM_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -147,8 +147,8 @@ myControllerModule.controller('FirmwaresTypeController', function(
 myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter, $state) {
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add firmware type";
-  $scope.headerStringUpdate = "Update firmware type";
+  $scope.headerStringAdd = $filter('translate')('ADD_FIRMWARE_TYPE');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_FIRMWARE_TYPE');
   $scope.cancelButtonState = "firmwaresTypeList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -170,7 +170,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
     $scope.saveProgress = true;
     if($stateParams.id){
       FirmwaresFactory.updateFirmwareType($scope.firmwareType,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("firmwaresTypeList");
       },function(error){
         displayRestError.display(error);
@@ -178,7 +178,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
       });
     }else{
       FirmwaresFactory.createFirmwareType($scope.firmwareType,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("firmwaresTypeList");
       },function(error){
         displayRestError.display(error);
@@ -196,8 +196,8 @@ myControllerModule.controller('FirmwaresVersionController', function(
   alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
   
   //GUI page settings
-  $scope.headerStringList = "Firmware versions detail";
-  $scope.noItemsSystemMsg = "No firmware versions set up.";
+  $scope.headerStringList = $filter('translate')('FIRMWARE_VERSIONS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_FIRMWARE_VERSIONS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-file-code-o";
 
   //load empty, configuration, etc.,
@@ -305,7 +305,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
 
     modalInstance.result.then(function () {
       FirmwaresFactory.deleteFirmwareVersions($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEM_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -324,8 +324,8 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add firmware version";
-  $scope.headerStringUpdate = "Update firmware version";
+  $scope.headerStringAdd = $filter('translate')('ADD_FIRMWARE_VERSION');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_FIRMWARE_VERSION');
   $scope.cancelButtonState = "firmwaresVersionList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -347,7 +347,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
     $scope.saveProgress = true;
     if($stateParams.id){
       FirmwaresFactory.updateFirmwareVersion($scope.item,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("firmwaresVersionList");
       },function(error){
         displayRestError.display(error);
@@ -355,7 +355,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
       });
     }else{
       FirmwaresFactory.createFirmwareVersion($scope.item,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("firmwaresVersionList");
       },function(error){
         displayRestError.display(error);
@@ -375,8 +375,8 @@ myControllerModule.controller('FirmwaresController', function(
   alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {  
   
   //GUI page settings
-  $scope.headerStringList = "Firmwares detail";
-  $scope.noItemsSystemMsg = "No firmwares set up.";
+  $scope.headerStringList = $filter('translate')('FIRMWARES_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_FIRMWARES_SETUP');
   $scope.noItemsSystemIcon = "fa fa-file-code-o";
 
   //load empty, configuration, etc.,
@@ -496,7 +496,7 @@ $scope.filterConfig = {
 
     modalInstance.result.then(function () {
       FirmwaresFactory.deleteFirmwares($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -518,8 +518,8 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = "Add firmware";
-  $scope.headerStringUpdate = "Update firmware";
+  $scope.headerStringAdd = $filter('translate')('ADD_FIRMWARE');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_FIRMWARE');
   $scope.cancelButtonState = "firmwaresList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
@@ -546,7 +546,7 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
     $scope.saveProgress = true;
     if($stateParams.id){
       FirmwaresFactory.updateFirmware($scope.item,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("firmwaresList");
       },function(error){
         displayRestError.display(error);
@@ -554,7 +554,7 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
       });
     }else{
       FirmwaresFactory.createFirmware($scope.item,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("firmwaresList");
       },function(error){
         displayRestError.display(error);
