@@ -71,10 +71,11 @@ public class DashboardSettings {
                 .structure("3-9 (12/6-6)")
                 .name(name)
                 .rows("[{\"columns\":[{\"styleClass\":\"col-md-3\",\"widgets\":[{\"type\":\"mycTime\","
-                        + "\"config\":{\"datePattern\":\"MMM dd, yyyy\"},\"title\":\"MyController time\","
-                        + "\"titleTemplateUrl\":\"../src/templates/widget-title.html\",\"wid\":\"1454676806001-1\"},"
-                        + "{\"type\":\"mycSunriseTime\",\"config\":{},\"title\":\"Sunrise and sunset time\","
-                        + "\"titleTemplateUrl\":\"../src/templates/widget-title.html\",\"wid\":\"1454685464871-1\"}],"
+                        + "\"config\":{\"datePattern\":\"MMM dd, yyyy\",\"refreshTime\":\"120\"},\"title\":"
+                        + "\"MyController time\",\"titleTemplateUrl\":\"../src/templates/widget-title.html\","
+                        + "\"wid\":\"1454676806001-1\"},{\"type\":\"mycSunriseTime\",\"config\":"
+                        + "{\"refreshTime\":\"300\"},\"title\":\"Sunrise and sunset time\",\"titleTemplateUrl\":"
+                        + "\"../src/templates/widget-title.html\",\"wid\":\"1454685464871-1\"}],"
                         + "\"cid\":\"1454699630217-7\"},{\"styleClass\":\"col-md-9\",\"rows\":[{\"columns\":"
                         + "[{\"styleClass\":\"col-md-12\",\"widgets\":[],\"cid\":\"1454699630245-9\"}]},{\"columns\":"
                         + "[{\"styleClass\":\"col-md-6\",\"widgets\":[],\"cid\":\"1454699630246-10\"},"

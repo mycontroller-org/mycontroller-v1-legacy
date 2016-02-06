@@ -43,6 +43,7 @@ angular.module('adf.widget.myc-sen-vars', [])
   .controller('mycSenVarsController', function($scope, $interval, config, mchelper, $filter, SensorsFactory, TypesFactory, CommonServices){
     var mycSenVars = this;
     
+    mycSenVars.showLoading = true;
     mycSenVars.isSyncing = true;
     mycSenVars.variables = {};
     $scope.tooltipEnabled = false;
@@ -68,11 +69,12 @@ angular.module('adf.widget.myc-sen-vars', [])
   };
     
     function loadVariables(){
-      //mycSenVars.isSyncing = true;
+      mycSenVars.isSyncing = true;
       SensorsFactory.getVariables({'ids':config.variableIds}, function(response){
           mycSenVars.variables = response;
-          if(mycSenVars.isSyncing){
-            mycSenVars.isSyncing = false;
+          mycSenVars.isSyncing = false;
+          if(mycSenVars.showLoading){
+            mycSenVars.showLoading = false;
           }
       });
     };

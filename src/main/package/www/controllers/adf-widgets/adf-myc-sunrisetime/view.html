@@ -16,11 +16,11 @@
 
 -->
 <!-- Loading icon disaplay -->
-<div ng-show="mycSunriseTime.isSyncing">
+<div ng-show="mycSunriseTime.showLoading">
   <div ng-include src="'partials/common-html/loading-sm.html'"></div>
 </div>
 
-<div ng-hide="mycSunriseTime.isSyncing">
+<div ng-hide="mycSunriseTime.showLoading">
   <div class="adf-mycsr">
     <div class="adf-mycsr-time"><i class="wi wi-sunrise"></i>{{mycSunriseTime.sunriseTime}}<i class="wi wi-sunset"></i>{{mycSunriseTime.sunsetTime}}</div>
     <div class="adf-mycsr-location"><i class="fa fa-map-marker"></i>{{mycSunriseTime.latitude}}, {{mycSunriseTime.longitude}}</div>

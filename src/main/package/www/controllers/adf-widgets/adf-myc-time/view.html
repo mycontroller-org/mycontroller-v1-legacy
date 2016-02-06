@@ -16,11 +16,11 @@
 
 -->
 <!-- Loading icon disaplay -->
-<div ng-show="mycTime.isSyncing">
+<div ng-show="mycTime.showLoading">
   <div ng-include src="'partials/common-html/loading-sm.html'"></div>
 </div>
 
-<div ng-hide="mycTime.isSyncing">
+<div ng-hide="mycTime.showLoading">
   <div class="adf-myct">
     <div class="adf-myct-time">{{mycTime.time}}</div>
     <div class="adf-myct-date">{{mycTime.date}},<span class="adf-myct-timezone"> {{mycTime.timezoneString}} ({{mycTime.timezone}})</span></div>

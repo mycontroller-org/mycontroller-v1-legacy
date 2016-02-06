@@ -29,7 +29,8 @@ angular.module('adf.widget.myc-time', [])
         controller: 'mycTimeController',
         controllerAs: 'mycTime',
         config: {
-          datePattern: 'MMM dd, yyyy'
+          datePattern: 'MMM dd, yyyy',
+          refreshTime:120,
         },
         edit: {
           templateUrl: 'controllers/adf-widgets/adf-myc-time/edit.html'
@@ -40,6 +41,7 @@ angular.module('adf.widget.myc-time', [])
     var mycTime = this;
     
     mycTime.isSyncing = false;
+    mycTime.showLoading = true;
     mycTime.mycTimestamp = {};
     
     
@@ -56,6 +58,9 @@ angular.module('adf.widget.myc-time', [])
           mycTime.mycTimestamp = response;
           updateDateTime();
           mycTime.isSyncing = false;
+          if(mycTime.showLoading){
+            mycTime.showLoading = false;
+          }
       });
     };
     
@@ -63,7 +68,7 @@ angular.module('adf.widget.myc-time', [])
       if(mycTime.isSyncing){
         return;
       }
-      if((mycTime.mycTimestamp.timestamp/1000 | 0) % 120 == 0){
+      if((mycTime.mycTimestamp.timestamp/1000 | 0) % config.refreshTime == 0){
         if(!mycTime.isSyncing){
           getTimestampFromServer();
         }

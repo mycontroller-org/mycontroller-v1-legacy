@@ -28,9 +28,11 @@ angular.module('adf.widget.myc-sunrisetime', [])
         templateUrl: 'controllers/adf-widgets/adf-myc-sunrisetime/view.html',
         controller: 'mycSunriseController',
         controllerAs: 'mycSunriseTime',
-        config: {},
+        config: {
+          refreshTime:300,
+        },
         edit: {
-          templateUrl: 'controllers/adf-widgets/edit-dummy.html'
+          templateUrl: 'controllers/adf-widgets/adf-myc-sunrisetime/edit.html'
         }
       });
   })
@@ -38,6 +40,7 @@ angular.module('adf.widget.myc-sunrisetime', [])
     var mycSunriseTime = this;
     
     mycSunriseTime.isSyncing = false;
+    mycSunriseTime.showLoading = true;
     
     function updateLocationSettings(){
       if(mycSunriseTime.isSyncing){
@@ -50,13 +53,16 @@ angular.module('adf.widget.myc-sunrisetime', [])
           mycSunriseTime.latitude = response.latitude;
           mycSunriseTime.longitude = response.longitude;
           mycSunriseTime.isSyncing = false;
+          if(mycSunriseTime.showLoading){
+            mycSunriseTime.showLoading = false;
+          }
       });
     };
     
     updateLocationSettings();
 
     // refresh every five minutes
-    var promise = $interval(updateLocationSettings, 1000*60*5);
+    var promise = $interval(updateLocationSettings, config.refreshTime*1000);
 
     // cancel interval on scope destroy
     $scope.$on('$destroy', function(){

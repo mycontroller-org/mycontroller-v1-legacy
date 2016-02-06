@@ -15,5 +15,9 @@
     limitations under the License.
 
 -->
-<!-- <li ng-repeat="item in models" ng-class="{'active' : item.name === selectedName}"><a href="" ng-click="changeDashboard(item)">{{item.title}}</a></li> -->
-<li ng-repeat="item in dashboards" ng-class="{'active' : item.id === selectedDashboard}"><a href="" ng-click="changeDashboard(item)">{{item.title}}</a></li>
+<form role="form">
+  <div class="form-group">
+    <label>Refresh time(seconds)</label>
+    <input type="text" class="form-control" id="refreshTime" ng-model="config.refreshTime">
+  </div>
+</form>
