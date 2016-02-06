@@ -24,7 +24,7 @@ angular.module('adf.widget.myc-sen-vars', [])
     dashboardProvider
       .widget('mycSenVars', {
         title: 'Sensor variables',
-        description: 'Monitor and change sensor variables',
+        description: 'Monitor and change sensor variables state',
         templateUrl: 'controllers/adf-widgets/adf-myc-sen-vars/view.html',
         controller: 'mycSenVarsController',
         controllerAs: 'mycSenVars',

@@ -40,10 +40,10 @@ var myControllerModule = angular.module('myController',[
   'frapontillo.bootstrap-duallistbox',
   'adf',
   'adf.structures.base',
-  'adf.widget.news',
+  'adf.widget.myc-sen-vars',
   'adf.widget.myc-time',
   'adf.widget.myc-sunrisetime',
-  'adf.widget.myc-sen-vars',
+  'adf.widget.news',
 ]);
 
 myControllerModule.constant("mchelper", {
