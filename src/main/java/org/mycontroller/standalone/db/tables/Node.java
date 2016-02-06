@@ -54,6 +54,8 @@ public class Node {
     public static final String KEY_BATTERY_LEVEL = "batteryLevel";
     public static final String KEY_ERASE_CONFIG = "eraseConfig";
     public static final String KEY_LAST_SEEN = "laseSeen";
+    public static final String KEY_RSSI = "rssi";
+    public static final String KEY_OTHER_DATA = "otherData";
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -79,6 +81,10 @@ public class Node {
     private STATE state = STATE.UNAVAILABLE;
     @DatabaseField(canBeNull = true, columnName = KEY_LAST_SEEN)
     private Long lastSeen;
+    @DatabaseField(canBeNull = true, columnName = KEY_RSSI)
+    private String rssi;
+    @DatabaseField(canBeNull = true, columnName = KEY_OTHER_DATA)
+    private String otherData;
 
     public Integer getEuiInt() {
         return NumericUtils.getInteger(eui);
