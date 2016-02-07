@@ -471,7 +471,7 @@ public class DataBaseUtils {
             dbVersion = 8;
             // update version information
             MyControllerSettings.builder()
-                    .version("0.0.2-alpha7-SNAPSHOT")
+                    .version("0.0.3-alpha1-SNAPSHOT")
                     .dbVersion(dbVersion)
                     .build().updateInternal();
             _logger.info("MC DB version[{}]", dbVersion);
