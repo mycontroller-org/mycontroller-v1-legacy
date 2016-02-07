@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ResourcesLogsController', function(alertService,
-$scope, $filter, ResourcesLogsFactory, $uibModal, $stateParams, mchelper, CommonServices) {
+$scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams, mchelper, CommonServices) {
   
   //GUI page settings
   $scope.headerStringList = $filter('translate')('RESOURCES_LOGS_DETAIL');
@@ -29,7 +29,7 @@ $scope, $filter, ResourcesLogsFactory, $uibModal, $stateParams, mchelper, Common
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  $scope.itemsPerPage = "10";
+  $scope.itemsPerPage = mchelper.userSettings.resourcesLogsItemsPerPage;
   
   //Get min number
   $scope.getMin = function(item1, item2){
@@ -145,6 +145,12 @@ $scope, $filter, ResourcesLogsFactory, $uibModal, $stateParams, mchelper, Common
     isAscending: false,
   };
   
+  //Update items per page
+  $scope.updateItemsPerPage = function(itemsPerPage){
+    mchelper.userSettings.resourcesLogsItemsPerPage = itemsPerPage;
+    SettingsFactory.saveUserSettings(mchelper.userSettings);
+    $scope.getAllItems();
+  };
   
   //Delete item(s)
   $scope.delete = function (size) {

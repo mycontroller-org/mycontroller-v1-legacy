@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionControllerList', function(
-  alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, $uibModal, displayRestError, mchelper, CommonServices, pfViewUtils, $filter, $window) {
+  alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, SettingsFactory, $uibModal, displayRestError, mchelper, CommonServices, pfViewUtils, $filter, $window) {
   
   //GUI page settings
   //$scope.headerStringList = "Sesnors detail";
@@ -108,6 +108,8 @@ myControllerModule.controller('SensorsActionControllerList', function(
   
   //View selection
   var viewSelected = function(viewId) {
+    mchelper.userSettings.actionBoardView = viewId;
+    SettingsFactory.saveUserSettings(mchelper.userSettings);
     if(viewId === 'tilesView'){
       $scope.query.pageLimit = 12;
       $scope.tooltipPlacement = 'top';
@@ -210,7 +212,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
   
   
   //Pre load
-  $scope.viewsConfig.currentView = $scope.viewsConfig.views[0].id;
+  $scope.viewsConfig.currentView = mchelper.userSettings.actionBoardView;
   $scope.tooltipPlacement = 'left';
   $scope.tooltipEnabled = true;
   $scope.viewType = $scope.viewsConfig.currentView;

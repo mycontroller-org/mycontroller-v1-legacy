@@ -51,6 +51,7 @@ myControllerModule.constant("mchelper", {
     cfg:{},
     languages:{},
     user:{},
+    userSettings:{},
 });
 
 myControllerModule.config(function($stateProvider, $urlRouterProvider) {
@@ -536,7 +537,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, displayRestError, mchelper, $cookieStore, $translate, $filter) {
+    function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, SettingsFactory, displayRestError, mchelper, $cookieStore, $translate, $filter) {
         //Load mchelper to this scope
         $scope.mchelper = mchelper;
         // reset login status
@@ -552,6 +553,7 @@ myControllerModule.controller('LoginController',
             $scope.dataLoading = true;
             AuthenticationService.Login($scope.username, $scope.password, function(authResponse) {
                 if(authResponse.success) {
+                    mchelper.userSettings = SettingsFactory.getUserSettings();
                     AuthenticationService.SetCredentials($scope.username, $scope.password);
                     mchelper.user = authResponse.user;//Update user details
                     StatusFactory.getConfig(function(response) {

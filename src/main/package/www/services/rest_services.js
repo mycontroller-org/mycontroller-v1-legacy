@@ -290,6 +290,8 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     updateLanguage: { method: 'PUT', params: {type:'updateLanguage'} },
     getMetrics: { method: 'GET', isArray: false, params: {type:'metrics'} },
     saveMetrics: { method: 'POST', params: {type:'metrics'} },
+    getUserSettings: { method: 'GET', isArray: false, params: {type:'userSettings'} },
+    saveUserSettings: { method: 'POST', params: {type:'userSettings'} },
   })
 });
 

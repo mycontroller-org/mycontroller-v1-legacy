@@ -38,7 +38,7 @@
         
          <!-- Number of items per page -->
           <div class="btn-group mc-side-space">
-            <select pf-select ng-model="itemsPerPage" ng-change="getAllItems()">
+            <select pf-select ng-model="itemsPerPage" ng-change="updateItemsPerPage(itemsPerPage)">
               <option value="" ng-hide="true"></option>
               <option value="10">10 items per page</option>
               <option value="25">25 items per page</option>

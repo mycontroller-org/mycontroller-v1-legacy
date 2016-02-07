@@ -42,9 +42,13 @@ public class SettingsUtils {
         return getValue(key, key);
     }
 
-    public static String getValue(String key, String subKey) {
-        Settings settings = DaoUtils.getSettingsDao().get(null, key, subKey);
+    public static String getValue(Integer userId, String key, String subKey) {
+        Settings settings = DaoUtils.getSettingsDao().get(userId, key, subKey);
         return settings != null ? settings.getValue() : null;
+    }
+
+    public static String getValue(String key, String subKey) {
+        return getValue(null, key, subKey);
     }
 
     public static void updateSettings(Settings settings) {
@@ -63,9 +67,9 @@ public class SettingsUtils {
                 DaoUtils.getSettingsDao().update(settings);
             }
         } else {
-            if(forceCreate){
+            if (forceCreate) {
                 DaoUtils.getSettingsDao().create(settings);
-            }else{
+            } else {
                 oldSettings = getSettings(settings.getUserId(), settings.getKey(), settings.getSubKey());
                 if (oldSettings == null) {
                     DaoUtils.getSettingsDao().create(settings);
@@ -73,7 +77,7 @@ public class SettingsUtils {
                     settings.setId(oldSettings.getId());
                     DaoUtils.getSettingsDao().update(settings);
                 }
-            }            
+            }
         }
     }
 

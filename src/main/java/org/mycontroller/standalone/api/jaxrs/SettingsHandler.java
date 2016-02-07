@@ -22,13 +22,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsSettings;
@@ -37,6 +40,7 @@ import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
+import org.mycontroller.standalone.settings.UserNativeSettings;
 import org.mycontroller.standalone.sms.SMSUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.slf4j.Logger;
@@ -56,7 +60,25 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class SettingsHandler {
     private static final Logger _logger = LoggerFactory.getLogger(SettingsHandler.class.getName());
 
-    @RolesAllowed({"User"})
+    @Context
+    SecurityContext securityContext;
+
+    @RolesAllowed({ "User" })
+    @GET
+    @Path("/userSettings")
+    public Response getUserNativeSettings() {
+        return RestUtils.getResponse(Status.OK, UserNativeSettings.get(AuthUtils.getUser(securityContext)));
+    }
+
+    @RolesAllowed({ "User" })
+    @POST
+    @Path("/userSettings")
+    public Response saveUserNativeSettings(UserNativeSettings userNativeSettings) {
+        userNativeSettings.save(AuthUtils.getUser(securityContext));
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @RolesAllowed({ "User" })
     @GET
     @Path("/location")
     public Response getLocation() {
