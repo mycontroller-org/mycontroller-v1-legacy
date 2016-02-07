@@ -40,4 +40,5 @@ public class MetricsChartDataGroupNVD3 {
     private String unit;
     private String dataType;
     private String timeFormat;
+    private String resourceName;
 }

@@ -482,23 +482,40 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getSensorVariables(User user, Integer sensorId) {
+    public static ArrayList<TypesIdNameMapper> getSensorVariables(User user, Integer sensorId, Integer sensorVariableId)
+            throws IllegalAccessException {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<SensorVariable> sensorVariables = null;
-        if (AuthUtils.isSuperAdmin(user)) {
-            if (sensorId != null) {
-                sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+        if (!AuthUtils.isSuperAdmin(user)) {
+            if (sensorVariableId != null) {
+                if (!DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId).contains(sensorVariableId)) {
+                    throw new IllegalAccessException("You do not have access for this resource!");
+                }
+            } else if (sensorId != null) {
+                if (!DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId).contains(sensorVariableId)) {
+                    throw new IllegalAccessException("You do not have access for this resource!");
+                }
             } else {
-                sensorVariables = DaoUtils.getSensorVariableDao().getAll();
+                sensorVariables = DaoUtils.getSensorVariableDao().getAll(
+                        user.getAllowedResources().getSensorVariableIds());
             }
-        } else {
+        }
+
+        if (sensorVariableId != null) {
             sensorVariables = DaoUtils.getSensorVariableDao().getAll(
                     user.getAllowedResources().getSensorVariableIds());
+        } else if (sensorId != null) {
+            sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+        } else if (sensorVariables == null) {
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll();
         }
-        for (SensorVariable sensorVariable : sensorVariables) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(sensorVariable.getId()).displayName(
-                    new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
-                    .build());
+
+        if (sensorVariables != null) {
+            for (SensorVariable sensorVariable : sensorVariables) {
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(sensorVariable.getId()).displayName(
+                        new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
+                        .build());
+            }
         }
         return typesIdNameMappers;
     }

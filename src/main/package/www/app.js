@@ -41,6 +41,7 @@ var myControllerModule = angular.module('myController',[
   'adf',
   'adf.structures.base',
   'adf.widget.myc-sen-vars',
+  'adf.widget.myc-sen-var-graph',
   'adf.widget.myc-time',
   'adf.widget.myc-sunrisetime',
   'adf.widget.news',

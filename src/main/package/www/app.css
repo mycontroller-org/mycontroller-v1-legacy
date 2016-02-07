@@ -495,13 +495,13 @@ input.mc-color-steel-blue{
 
 .adf-myc-sen-var{
   height:75px;
-  width:250px;
-  margin-left: 10px;
-  margin-right: 10px;
-  padding-bottom: 3px;
-  padding-top: 3px;
 }
 
+.adf-myc-sen-var > .card-pf-title > .fa{
+  font-size: 12px;
+  margin-left:2px;
+  margin-right:2px;
+}
 
 
 

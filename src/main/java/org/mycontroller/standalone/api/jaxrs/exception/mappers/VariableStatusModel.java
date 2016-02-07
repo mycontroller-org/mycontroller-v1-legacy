@@ -15,8 +15,10 @@
  */
 package org.mycontroller.standalone.api.jaxrs.exception.mappers;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.model.ResourceModel;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -36,6 +38,8 @@ public class VariableStatusModel {
     private Object value;
     private String friendlyValue;
     private Long timestamp;
+    private String sensorName;
+    private String resourceName;
 
     @JsonCreator
     private VariableStatusModel() {
@@ -54,6 +58,8 @@ public class VariableStatusModel {
         this.value = sensorVariable.getValue();
         this.friendlyValue = SensorUtils.getValue(sensorVariable);
         this.timestamp = sensorVariable.getTimestamp();
+        this.sensorName = sensorVariable.getSensor().getSensorId() + ":" + sensorVariable.getSensor().getName();
+        this.resourceName = new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails();
     }
 
     public Integer getId() {
@@ -111,4 +117,13 @@ public class VariableStatusModel {
     public void setMetricType(String metricType) {
         this.metricType = metricType;
     }
+
+    public String getSensorName() {
+        return sensorName;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
 }

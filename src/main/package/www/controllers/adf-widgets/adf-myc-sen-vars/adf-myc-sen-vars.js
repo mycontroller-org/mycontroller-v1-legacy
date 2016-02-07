@@ -23,14 +23,14 @@ angular.module('adf.widget.myc-sen-vars', [])
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('mycSenVars', {
-        title: 'Sensor variables',
-        description: 'Monitor and change sensor variables state',
+        title: 'Sensors',
+        description: 'Monitor and change sensors state',
         templateUrl: 'controllers/adf-widgets/adf-myc-sen-vars/view.html',
         controller: 'mycSenVarsController',
         controllerAs: 'mycSenVars',
         config: {
           variableIds:[],
-          itemsPerRow:"3",
+          itemsPerRow:"2",
           refreshTime:30,
         },
         edit: {

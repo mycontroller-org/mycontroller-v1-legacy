@@ -17,6 +17,10 @@
 -->
 <form role="form">
   <div class="form-group">
+    <label>{{ 'REFRESH_TIME_SECONDS' | translate }}</label>
+    <input type="text" class="form-control" id="refreshTime" ng-model="config.refreshTime">
+  </div>
+  <div class="form-group">
     <label>{{ 'ITEMS_PER_ROW' | translate }}</label>
     <select id="panelSize" class="form-control" pf-select ng-model="config.itemsPerRow"> 
       <option value="" ng-hide="true"></option>
@@ -27,10 +31,6 @@
       <option value="6">6</option>
       <option value="12">12</option>
     </select>
-  </div>
-  <div class="form-group">
-    <label>{{ 'REFRESH_TIME_SECONDS' | translate }}</label>
-    <input type="text" class="form-control" id="refreshTime" ng-model="config.refreshTime">
   </div>
   <div class="form-group">
     <label>{{ 'SENSOR_VARIABLES' | translate }}</label>

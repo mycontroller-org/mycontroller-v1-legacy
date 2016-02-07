@@ -44,6 +44,7 @@ import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
 import org.mycontroller.standalone.model.ResourceCountModel;
+import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsSettings;
 
@@ -75,11 +76,14 @@ public class MetricsHandler {
     @Path("/metricsData")
     public Response getMetricsData(
             @QueryParam("sensorId") Integer sensorId,
+            @QueryParam("variableId") Integer variableId,
             @QueryParam("timestampFrom") Long timestampFrom,
             @QueryParam("timestampTo") Long timestampTo,
             @QueryParam("withMinMax") Boolean withMinMax) {
-        return RestUtils.getResponse(Status.OK,
-                getMetricsDataJsonNVD3(sensorId, timestampFrom, timestampTo, withMinMax != null ? withMinMax : false));
+        return RestUtils.getResponse(
+                Status.OK,
+                getMetricsDataJsonNVD3(sensorId, variableId, timestampFrom, timestampTo,
+                        withMinMax != null ? withMinMax : false));
     }
 
     @GET
@@ -126,6 +130,7 @@ public class MetricsHandler {
                 minMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMin() });
                 maxMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMax() });
             }
+
         }
         MetricsGraph metricBattery = ObjectFactory.getAppProperties().getMetricsSettings().getBattery();
         preDoubleData.add(MetricsChartDataNVD3.builder()
@@ -157,20 +162,35 @@ public class MetricsHandler {
                     .color(COLOR_MAXIMUM)
                     .build());
         }
+
         return MetricsChartDataGroupNVD3.builder()
                 .metricsChartDataNVD3(preDoubleData)
                 .unit("%")
                 .timeFormat(getTimeFormat(timestampFrom))
-                .id(nodeId).build();
+                .id(nodeId)
+                .resourceName(new ResourceModel(RESOURCE_TYPE.NODE, nodeId).getResourceLessDetails())
+                .build();
     }
 
-    private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3(Integer sensorId, Long timestampFrom,
+    private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3(
+            Integer sensorId,
+            Integer variableId,
+            Long timestampFrom,
             Long timestampTo, Boolean withMinMax) {
         //Get sensor variables
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+        List<SensorVariable> sensorVariables = null;
+        if (variableId != null) {
+            SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(variableId);
+            if (sensorVariable != null) {
+                sensorVariables = new ArrayList<SensorVariable>();
+                sensorVariables.add(sensorVariable);
+            }
+        } else {
+            sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+        }
         //Return if no data available
-        if (sensorVariables == null || sensorVariables.size() == 0) {
-            return null;
+        if (sensorVariables == null) {
+            return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
         MetricsSettings metricsSettings = ObjectFactory.getAppProperties().getMetricsSettings();
@@ -228,13 +248,17 @@ public class MetricsHandler {
                                 .color(COLOR_MAXIMUM)
                                 .build());
                     }
-                    finalData.add(MetricsChartDataGroupNVD3.builder()
+                    finalData.add(MetricsChartDataGroupNVD3
+                            .builder()
                             .metricsChartDataNVD3(preDoubleData)
                             .id(sensorVariable.getId())
                             .unit(sensorVariable.getUnit())
                             .timeFormat(getTimeFormat(timestampFrom))
                             .variableType(sensorVariable.getVariableType().getText())
-                            .dataType(sensorVariable.getMetricType().getText()).build());
+                            .dataType(sensorVariable.getMetricType().getText())
+                            .resourceName(new ResourceModel(
+                                    RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
+                            .build());
 
                     break;
                 case BINARY:
@@ -265,7 +289,10 @@ public class MetricsHandler {
                             .unit(sensorVariable.getUnit())
                             .timeFormat(getTimeFormat(timestampFrom))
                             .variableType(sensorVariable.getVariableType().getText())
-                            .dataType(sensorVariable.getMetricType().getText()).build());
+                            .dataType(sensorVariable.getMetricType().getText())
+                            .resourceName(new ResourceModel(
+                                    RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
+                            .build());
                     break;
                 default:
                     //no need to do anything here

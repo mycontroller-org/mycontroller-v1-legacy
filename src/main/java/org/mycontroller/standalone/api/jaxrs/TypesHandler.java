@@ -31,6 +31,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
@@ -109,9 +110,14 @@ public class TypesHandler {
 
     @GET
     @Path("/sensorVariables")
-    public Response getSensorVaribles(@QueryParam("sensorId") Integer sensorId) {
-        return RestUtils.getResponse(Status.OK,
-                TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId));
+    public Response getSensorVaribles(@QueryParam("sensorId") Integer sensorId,
+            @QueryParam("sensorVariableId") Integer sensorVariableId) {
+        try {
+            return RestUtils.getResponse(Status.OK,
+                    TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId, sensorVariableId));
+        } catch (IllegalAccessException ex) {
+            return RestUtils.getResponse(Status.FORBIDDEN, new ApiError(ex.getMessage()));
+        }
     }
 
     @GET
