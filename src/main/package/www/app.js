@@ -48,6 +48,7 @@ var myControllerModule = angular.module('myController',[
 ]);
 
 myControllerModule.constant("mchelper", {
+    internal:{},
     cfg:{},
     languages:{},
     user:{},
@@ -451,28 +452,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
 
 
 //McNavCtrl
-myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $rootScope, $state, mchelper, SettingsFactory, $cookieStore, DashboardFactory) {
+myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $state, mchelper, SettingsFactory, CommonServices) {
     $scope.isCollapsed = true;
     $scope.mchelper = mchelper;
     $scope.$state = $state;
-    /*
-    $scope.dashboards = mchelper.dashboards;
-          console.log(angular.toJson($scope.dashboards));
-          console.log("M"+angular.toJson(mchelper.dashboards));
-
-    /*
-     * $scope.selectedDashboard;
-    //update dashboards
-    DashboardFactory.getAll({'lessInfo':true}, function(response){
-      $scope.dashboards = response;
-      if(!$scope.selectedDashboard){
-        $scope.selectedDashboard = $scope.dashboards[0].id;
-      }
-      $state.go("dashboard", {'id': $scope.selectedDashboard});
-    });
-*/
+    
     $scope.isAuthenticated = function () { 
-        return $rootScope.globals.currentUser;
+        return mchelper.internal.currentUser;
     };
 
     $scope.changeDashboard = function (item){
@@ -489,29 +475,27 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
       if(mchelper.user.permission === 'Super admin'){
         SettingsFactory.updateLanguage(lang.displayName);
       }
-      //Update cookie store
-      $cookieStore.put('mchelper', mchelper);
+      //Update mchelper
+      CommonServices.saveMchelper(mchelper);
     };
 });
 
-myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, mchelper, $translate, editableOptions) {
-  
+myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper, $translate, editableOptions, CommonServices) {
+  //Load mchelper from cookies
+  CommonServices.loadMchelper();
+
   // keep user logged in after page refresh
-  $rootScope.globals = $cookieStore.get('globals') || {};
-  var mchelperLocal = $cookieStore.get('mchelper') || {};
-  //Update mchelper
-  mchelper.cfg = mchelperLocal.cfg;
-  mchelper.user = mchelperLocal.user;
-  mchelper.languages = mchelperLocal.languages;
-  mchelper.userSettings = mchelperLocal.userSettings;
+  if(!mchelper){
+    CommonServices.saveMchelper(CommonServices.loadMchelper());
+  };
   
   if(mchelper.cfg){
     $translate.use(mchelper.cfg.languageId);
   }
 
   
-  if ($rootScope.globals.currentUser) {
-      $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+  if (mchelper.internal.currentUser) {
+      $http.defaults.headers.common['Authorization'] = 'Basic ' + mchelper.internal.currentUser.authdata; // jshint ignore:line
   }
 
   $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
@@ -525,7 +509,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
     }
     var requireLogin = toState.data.requireLogin;
     // redirect to login page if not logged in
-    if (requireLogin && !$rootScope.globals.currentUser) {
+    if (requireLogin && !mchelper.internal.currentUser) {
       event.preventDefault();
       //return $state.go('login');
       return $state.go('login', {'toState': toState.name, 'toParams': toParams});
@@ -538,16 +522,18 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, SettingsFactory, displayRestError, mchelper, $cookieStore, $translate, $filter) {
-        //Load mchelper to this scope
-        $scope.mchelper = mchelper;
+    function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, SettingsFactory, displayRestError, CommonServices, mchelper, $translate, $filter) {
+        // load login page settings
+        $scope.loginSettings = {};
         // reset login status
         AuthenticationService.ClearCredentials();
+        // remove mchelper cookies
+        //CommonServices.clearCookies();
         //Update login page details
         ReadFileFactory.getConfigFile(function(configFile){
-          $scope.mchelper.cfg = configFile;
+          $scope.loginSettings = configFile;
           //Update language
-          $translate.use(mchelper.cfg.languageId);
+          $translate.use($scope.loginSettings.languageId);
         });
 
         $scope.login = function () {
@@ -565,13 +551,12 @@ myControllerModule.controller('LoginController',
                         SettingsFactory.getUserSettings(function(userNativeSettings){
                           mchelper.userSettings = userNativeSettings;
                           //Store all the configurations locally
-                          $cookieStore.put('mchelper', mchelper);
+                          CommonServices.saveMchelper(mchelper);
                         });
                       });
                     },function(error){
                       displayRestError.display(error);            
                     });
-                    //alertService.success($filter('translate')('SYSTEM.LOGIN_NOTIFY_SUCCESS'));
                     //$state.go('dashboard'); 
                     $state.go($state.params.toState, $state.params.toParams);
                 } else {

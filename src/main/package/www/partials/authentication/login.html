@@ -56,8 +56,8 @@
         </div><!--/.col-*-->
         <div class="col-sm-5 col-md-6 col-lg-6 details">
           <p ng-bind-html="'APP.WELCOME_MESSAGE' | translate"></p>
-          <p>{{ 'VERSION' | translate }}: <strong>{{mchelper.cfg.appVersion}}</strong></p>
-          <p ng-bind-html="mchelper.cfg.loginMessage"></p>
+          <p>{{ 'VERSION' | translate }}: <strong>{{loginSettings.appVersion}}</strong></p>
+          <p ng-bind-html="loginSettings.loginMessage"></p>
         </div><!--/.col-*-->
       </div><!--/.row-->
     </div><!--/.container-->

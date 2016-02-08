@@ -152,7 +152,7 @@ myControllerModule.factory('AuthenticationFactory', function ($resource) {
 
 
 myControllerModule.factory('AuthenticationService',
-    function (AuthenticationFactory,$base64, $http, $cookieStore, $rootScope) {
+    function (AuthenticationFactory,$base64, $http, CommonServices, mchelper) {
         var service = {};
         
         service.Login = function (username, password, callback) {
@@ -171,21 +171,22 @@ myControllerModule.factory('AuthenticationService',
         service.SetCredentials = function (username, password) {
             var authdata = $base64.encode(username + ':' + password);
  
-            $rootScope.globals = {
+            mchelper.internal = {
                 currentUser: {
                     username: username,
                     authdata: authdata
                 }
             };
- 
             $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
-            $cookieStore.put('globals', $rootScope.globals);
+            //Save in cookies
+            CommonServices.saveMchelper(mchelper);
         };
  
         service.ClearCredentials = function () {
-            $rootScope.globals = {};
-            $cookieStore.remove('globals');
             $http.defaults.headers.common.Authorization = 'Basic ';
+            //clear mchelper auth record
+            mchelper.internal = {};
+            CommonServices.clearCookies();
         };
  
         return service;

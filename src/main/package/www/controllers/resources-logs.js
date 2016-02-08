@@ -168,7 +168,7 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
   $scope.updateItemsPerPage = function(itemsPerPage){
     mchelper.userSettings.resourcesLogsItemsPerPage = itemsPerPage;
     SettingsFactory.saveUserSettings(mchelper.userSettings);
-    CommonServices.updateMchelper(mchelper);
+    CommonServices.saveMchelper(mchelper);
     $scope.getAllItems();
   };
   

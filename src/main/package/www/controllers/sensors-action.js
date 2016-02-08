@@ -98,7 +98,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
   var viewSelected = function(viewId) {
     mchelper.userSettings.actionBoardView = viewId;
     SettingsFactory.saveUserSettings(mchelper.userSettings);
-    CommonServices.updateMchelper(mchelper);
+    CommonServices.saveMchelper(mchelper);
     if(viewId === 'tilesView'){
       $scope.query.pageLimit = 12;
       $scope.tooltipPlacement = 'top';

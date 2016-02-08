@@ -17,12 +17,38 @@
 //http://js2.coffee/#coffee2js
 //https://coderwall.com/p/r_bvhg/angular-ui-bootstrap-alert-service-for-angular-js
 
-myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $cookieStore) {
+myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $cookies, mchelper) {
   var commonService = {};
   
+  //get mchelper configurations
+  commonService.loadMchelper = function(){
+    var mchelperLocal = $cookies.getObject('mchelper');
+    if(mchelperLocal){
+      mchelper.cfg = mchelperLocal.cfg || {};
+      mchelper.user = mchelperLocal.user || {};
+      mchelper.languages = mchelperLocal.languages || {};
+      mchelper.userSettings = mchelperLocal.userSettings || {};
+      mchelper.internal = mchelperLocal.internal || {};
+    }    
+    return mchelper;
+  };
+  
   //restore store all the configurations locally
-  commonService.updateMchelper = function(mchelper){
-    $cookieStore.put('mchelper', mchelper);
+  commonService.saveMchelper = function(mchelperRemote){
+    mchelper.cfg = mchelperRemote.cfg;
+    mchelper.user = mchelperRemote.user;
+    mchelper.languages = mchelperRemote.languages;
+    mchelper.userSettings = mchelperRemote.userSettings;
+    mchelper.internal = mchelperRemote.internal;
+    $cookies.putObject('mchelper', mchelper);
+  };
+  
+  //remove cookies
+  commonService.clearCookies = function(){
+    var cookies = $cookies.getAll();
+    angular.forEach(cookies, function (v, k) {
+      $cookies.remove(k);
+    });
   };
   
   //Get value nested supported
