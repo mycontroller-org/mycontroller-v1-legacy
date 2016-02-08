@@ -193,7 +193,7 @@ myControllerModule.controller('UsersControllerAddEdit', function ($scope, $state
     $scope.saveProgress = true;
     if($stateParams.id){
       SecurityFactory.updateUser($scope.item,function(response) {
-        alertService.success($filter('translate')('ITME_UPDATED_SUCCESSFULLY'));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("settingsUsersList");
       },function(error){
         displayRestError.display(error);
