@@ -88,27 +88,31 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
       },
       {
         id: 'resourceType',
-        title:  $filter('translate')('RESOURCE_TYPE'),
-        placeholder: $filter('translate')('FILTER_BY_RESOURCE_TYPE'),
-        filterType: 'text'
+        title:  $filter('translate')('TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_TYPE'),
+        filterType: 'select',
+        filterValues:['Gateway','Node','Sensor','Sensor variable','Resources group','Alarm definition','Timer'],
       },
       {
         id: 'logLevel',
         title:  $filter('translate')('LEVEL'),
         placeholder: $filter('translate')('FILTER_BY_LEVEL'),
-        filterType: 'text',
+        filterType: 'select',
+        filterValues: ['Trace','Notice','Info','Warning','Error'],
       },
       {
         id: 'messageType',
-        title: $filter('translate')('TYPE'),
-        placeholder: $filter('translate')('FILTER_BY_TYPE'),
-        filterType: 'text',
+        title: $filter('translate')('MESSAGE_TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_MESSGAE_TYPE'),
+        filterType: 'select',
+        filterValues: ['Presentation','Set','Request','Internal','Stream'],
       },
       {
         id: 'logDirection',
         title: $filter('translate')('DIRECTION'),
         placeholder: $filter('translate')('FILTER_BY_DIRECTION'),
-        filterType: 'text',
+        filterType: 'select',
+        filterValues: ['Internal','Sent','Received'],
       }
     ],
     resultsCount: $scope.filteredList.length,
@@ -137,7 +141,22 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
       },
       {
         id: 'resourceType',
-        title: $filter('translate')('RESOURCE_TYPE'),
+        title: $filter('translate')('TYPE'),
+        sortType: 'alpha'
+      },
+      {
+        id: 'messageType',
+        title: $filter('translate')('MESSAGE_TYPE'),
+        sortType: 'alpha'
+      },
+      {
+        id: 'logDirection',
+        title: $filter('translate')('DIRECTION'),
+        sortType: 'alpha'
+      },
+      {
+        id: 'message',
+        title: $filter('translate')('MESSAGE'),
         sortType: 'alpha'
       }
     ],

@@ -42,6 +42,7 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
+import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
 
 /**
@@ -64,6 +65,7 @@ public class ResourcesLogsHandler {
             @QueryParam(ResourcesLogs.KEY_RESOURCE_TYPE) String resourceType,
             @QueryParam(ResourcesLogs.KEY_RESOURCE_ID) Integer resourceId,
             @QueryParam(ResourcesLogs.KEY_MESSAGE_TYPE) String messageType,
+            @QueryParam(ResourcesLogs.KEY_LOG_LEVEL) String logLevel,
             @QueryParam(ResourcesLogs.KEY_MESSAGE) List<String> message,
             @QueryParam(ResourcesLogs.KEY_LOG_DIRECTION) String logDirection,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
@@ -75,6 +77,7 @@ public class ResourcesLogsHandler {
         filters.put(ResourcesLogs.KEY_RESOURCE_TYPE, RESOURCE_TYPE.fromString(resourceType));
         filters.put(ResourcesLogs.KEY_RESOURCE_ID, resourceId);
         filters.put(ResourcesLogs.KEY_MESSAGE_TYPE, MESSAGE_TYPE.fromString(messageType));
+        filters.put(ResourcesLogs.KEY_LOG_LEVEL, LOG_LEVEL.fromString(logLevel));
         filters.put(ResourcesLogs.KEY_MESSAGE, message);
         filters.put(ResourcesLogs.KEY_LOG_DIRECTION, LOG_DIRECTION.fromString(logDirection));
 

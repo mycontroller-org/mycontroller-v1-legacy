@@ -15,7 +15,6 @@
  */
 package org.mycontroller.standalone.interfaces;
 
-import org.mycontroller.standalone.api.jaxrs.mapper.PayloadJson;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
@@ -48,9 +47,6 @@ public interface IActionEngine {
     void uploadFirmware(Node node);
 
     void discover(Integer gateway);
-
-    //TODO: you have to remove this
-    void sendPayload(Sensor sensor, PayloadJson payload);
 
     void sendPayload(SensorVariable sensorVariable);
 

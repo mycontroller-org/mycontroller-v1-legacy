@@ -117,6 +117,7 @@
   "FILTER_BY_LEVEL": "Filter by Level",
   "FILTER_BY_LIBRARY_VERSION": "Filter by Library version",
   "FILTER_BY_MESSAGE": "Filter by Message",
+  "FILTER_BY_MESSGAE_TYPE": "Filter by Message type",
   "FILTER_BY_NAME": "Filter by Name",
   "FILTER_BY_NETWORK_TYPE": "Filter by Network type",
   "FILTER_BY_NODE_ID": "Filter by Node id",

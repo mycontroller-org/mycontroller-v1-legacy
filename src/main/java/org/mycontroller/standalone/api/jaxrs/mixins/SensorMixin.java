@@ -19,14 +19,12 @@ import java.util.List;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.VariableStatusModel;
-import org.mycontroller.standalone.api.jaxrs.mapper.SensorsGuiButton;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.SensorTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LastSeenSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorVariableSerializer;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -49,9 +47,6 @@ abstract class SensorMixin {
     @JsonGetter(value = "variables")
     @JsonSerialize(using = SensorVariableSerializer.class)
     abstract public List<VariableStatusModel> getIdforVariables();
-
-    @JsonIgnore
-    abstract public SensorsGuiButton getGuiButtons();
 
     @JsonGetter(value = "lastSeen")
     @JsonSerialize(using = LastSeenSerializer.class)

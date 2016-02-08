@@ -79,6 +79,7 @@
           <th>{{ 'EUI' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
           <th>{{ 'TYPE' | translate }}</th>
+          <th>{{ 'RSSI' | translate }}</th>
           <th>{{ 'BATTERY_LEVEL' | translate }}</th>
           <th>{{ 'VERSION' | translate }}</th>
           <th>{{ 'LIBRARY_VERSION' | translate }}</th>
@@ -99,6 +100,7 @@
             <td>{{item.eui}}</td>
             <td>{{item.name}}</td>
             <td>{{item.type}}</td>
+            <td>{{item.rssi}}</td>
             <td>
               <span ng-show="item.batteryLevel"><i class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}"></i> {{item.batteryLevel}} %</span>
               <label ng-hide="item.batteryLevel">-</label>

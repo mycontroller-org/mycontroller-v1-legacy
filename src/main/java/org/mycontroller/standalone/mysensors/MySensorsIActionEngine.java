@@ -20,7 +20,6 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.api.jaxrs.mapper.PayloadJson;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.PayloadOperationUtils;
@@ -256,20 +255,6 @@ public class MySensorsIActionEngine implements IActionEngine {
         } else {
             new Thread(new MySensorsNodeDiscover(gatewayId)).start();
         }
-    }
-
-    @Override
-    public void sendPayload(Sensor sensor, PayloadJson payload) {
-        MySensorsRawMessage mySensorsRawMessage = new MySensorsRawMessage(
-                sensor.getNode().getGateway().getId(),
-                sensor.getNode().getEuiInt(),
-                sensor.getSensorIdInt(),
-                MESSAGE_TYPE.C_SET.ordinal(), // messageType
-                MySensorsUtils.NO_ACK, // ack
-                payload.getVariableType().ordinal(), // subType
-                payload.getPayload(),
-                true);// isTxMessage
-        ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
     }
 
     @Override

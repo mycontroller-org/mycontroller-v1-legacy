@@ -25,10 +25,8 @@ import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson.TYPE;
-import org.mycontroller.standalone.api.jaxrs.mapper.SensorsGuiButton;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.settings.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,130 +53,6 @@ public class SensorUtils {
             }
         }
         return variableTypes;
-    }
-
-    public static SensorsGuiButton getGuiButtonsStatus(Sensor sensor) {
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId());
-        SensorsGuiButton guiButton = new SensorsGuiButton();
-        for (SensorVariable sensorVariable : sensorVariables) {
-            setGuiButton(sensorVariable, guiButton);
-        }
-        return guiButton;
-    }
-
-    public static void setGuiButton(SensorVariable sensorVariable, SensorsGuiButton guiButton) {
-        //Update Graphical Report Status
-        if (sensorVariable.getMetricType() != METRIC_TYPE.NONE) {
-            guiButton.getGraph().setShow(true);
-        }
-        switch (sensorVariable.getVariableType()) {
-            case V_TEMP:
-            case V_HUM:
-                break;
-            case V_STATUS:
-                guiButton.getOnOff().setShow(true);
-                guiButton.getOnOff().setValue(
-                        sensorVariable.getValue() == null ? "0" : sensorVariable.getValue());
-                break;
-            case V_PERCENTAGE:
-                guiButton.getIncreaseDecrease().setShow(true);
-                guiButton.getIncreaseDecrease().setValue(sensorVariable.getValue());
-                guiButton.getIncreaseDecrease().setVariableType(MESSAGE_TYPE_SET_REQ.V_PERCENTAGE.ordinal());
-                break;
-            case V_PRESSURE:
-            case V_FORECAST:
-            case V_RAIN:
-            case V_RAINRATE:
-            case V_WIND:
-            case V_GUST:
-            case V_DIRECTION:
-            case V_UV:
-            case V_WEIGHT:
-            case V_DISTANCE:
-            case V_IMPEDANCE:
-                break;
-            case V_ARMED:
-                guiButton.getArmed().setShow(true);
-                guiButton.getArmed().setValue(
-                        sensorVariable.getValue() == null ? "0" : sensorVariable.getValue());
-                break;
-            case V_TRIPPED:
-                guiButton.getTripped().setShow(true);
-                guiButton.getTripped().setValue(
-                        sensorVariable.getValue() == null ? "0" : sensorVariable.getValue());
-                break;
-            case V_WATT:
-            case V_KWH:
-            case V_SCENE_ON:
-            case V_SCENE_OFF:
-                break;
-            case V_HVAC_FLOW_STATE:
-                guiButton.getHvacFlowState().setShow(true);
-                guiButton.getHvacFlowState().setValue(sensorVariable.getValue());
-                break;
-            case V_HVAC_SPEED:
-                guiButton.getHvacSpeed().setShow(true);
-                guiButton.getHvacSpeed().setValue(sensorVariable.getValue());
-                break;
-            case V_LIGHT_LEVEL:
-                guiButton.getIncreaseDecrease().setShow(true);
-                guiButton.getIncreaseDecrease().setValue(sensorVariable.getValue());
-                guiButton.getIncreaseDecrease().setVariableType(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL.ordinal());
-                break;
-            case V_VAR1:
-            case V_VAR2:
-            case V_VAR3:
-            case V_VAR4:
-            case V_VAR5:
-                break;
-            case V_UP:
-            case V_DOWN:
-            case V_STOP:
-                guiButton.getCover().setShow(true);
-                guiButton.getCover().setValue(sensorVariable.getValue());
-                break;
-            case V_IR_SEND:
-            case V_IR_RECEIVE:
-            case V_FLOW:
-            case V_VOLUME:
-                break;
-            case V_LOCK_STATUS:
-                guiButton.getLockStatus().setShow(true);
-                guiButton.getLockStatus().setValue(sensorVariable.getValue());
-                break;
-            case V_LEVEL:
-                guiButton.getIncreaseDecrease().setShow(true);
-                guiButton.getIncreaseDecrease().setValue(sensorVariable.getValue());
-                guiButton.getIncreaseDecrease().setVariableType(MESSAGE_TYPE_SET_REQ.V_LEVEL.ordinal());
-                break;
-            case V_VOLTAGE:
-            case V_CURRENT:
-                break;
-            case V_RGB:
-                guiButton.getRgb().setShow(true);
-                guiButton.getRgb().setValue(
-                        sensorVariable.getValue() != null ? "#" + sensorVariable.getValue() : null);
-                guiButton.getRgb().setVariableType(MESSAGE_TYPE_SET_REQ.V_RGB.ordinal());
-                break;
-            case V_RGBW:
-                guiButton.getRgbw().setShow(true);
-                guiButton.getRgbw().setValue(getRgbaFromHex(sensorVariable.getValue()));
-                guiButton.getRgbw().setVariableType(MESSAGE_TYPE_SET_REQ.V_RGBW.ordinal());
-                break;
-            case V_ID:
-            case V_UNIT_PREFIX:
-            case V_HVAC_SETPOINT_COOL:
-            case V_HVAC_SETPOINT_HEAT:
-                break;
-            case V_HVAC_FLOW_MODE:
-                guiButton.getHvacFlowMode().setShow(true);
-                guiButton.getHvacFlowMode().setValue(sensorVariable.getValue());
-                break;
-            case V_TEXT:
-                break;
-            default:
-                break;
-        }
     }
 
     public static String getHexFromRgba(String rgba) {
