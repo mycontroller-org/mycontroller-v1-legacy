@@ -78,32 +78,32 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title:  $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text'
       },
       {
         id: 'resource',
-        title:  'Resource',
-        placeholder: 'Filter by Resource',
+        title:  $filter('translate')('RESOURCE'),
+        placeholder: $filter('translate')('FILTER_BY_RESOURCE'),
         filterType: 'text'
       },
       {
         id: 'conditionString',
-        title:  'Condition',
-        placeholder: 'Filter by Condition',
+        title: $filter('translate')('CONDITION'),
+        placeholder: $filter('translate')('FILTER_BY_CONDITION'),
         filterType: 'text',
       },
       {
         id: 'dampeningString',
-        title:  'Dampening',
-        placeholder: 'Filter by Dampening',
+        title:  $filter('translate')('DAMPENING'),
+        placeholder: $filter('translate')('FILTER_BY_DAMPENING'),
         filterType: 'text',
       },
       {
         id: 'notificationString',
-        title:  'Notification',
-        placeholder: 'Filter by Notification',
+        title:  $filter('translate')('NOTIFICATION'),
+        placeholder: $filter('translate')('FILTER_BY_NOTIFICATION'),
         filterType: 'text',
       }
     ],
@@ -123,22 +123,22 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     fields: [
       {
         id: 'name',
-        title:  'Name',
+        title:  $filter('translate')('NAME'),
         sortType: 'text'
       },
       {
         id: 'enabled',
-        title:  'Enabled',
+        title:  $filter('translate')('ENABLED'),
         sortType: 'text'
       },
       {
         id: 'resourceType',
-        title:  'Resource type',
+        title:  $filter('translate')('RESOURCE_TYPE'),
         sortType: 'text'
       },
       {
         id: 'lastTrigger',
-        title:  'Last trigger',
+        title: $filter('translate')('LAST_TRIGGER'),
         sortType: 'text'
       }
     ],

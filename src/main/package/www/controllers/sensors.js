@@ -77,26 +77,26 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title: $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text'
       },
       {
         id: 'sensorId',
-        title:  'Id',
-        placeholder: 'Filter by Id',
+        title:  $filter('translate')('SENSOR_ID'),
+        placeholder: $filter('translate')('FILTER_BY_SENSOR_ID'),
         filterType: 'integer',
       },
       {
         id: 'type',
-        title:  'Type',
-        placeholder: 'Filter by Type',
+        title: $filter('translate')('TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_TYPE'),
         filterType: 'text',
       },
       {
         id: 'variableTypes',
-        title:  'Variable Types',
-        placeholder: 'Filter by Variable Types',
+        title: $filter('translate')('VARIABLE_TYPES'),
+        placeholder: $filter('translate')('FILTER_BY_VARIABLE_TYPES'),
         filterType: 'text',
       }
     ],
@@ -115,22 +115,22 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        sortType: 'text'
-      },
-      {
-        id: 'nodeId',
-        title:  'Node Id',
+        title: $filter('translate')('NAME'),
         sortType: 'text'
       },
       {
         id: 'sensorId',
-        title:  'Sensor Id',
+        title: $filter('translate')('SENSOR_ID'),
         sortType: 'number'
       },
       {
         id: 'type',
-        title:  'Type',
+        title: $filter('translate')('TYPE'),
+        sortType: 'text'
+      },
+      {
+        id: 'lastSeen',
+        title: $filter('translate')('LAST_SEEN'),
         sortType: 'text'
       }
     ],
@@ -157,7 +157,7 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
 
     modalInstance.result.then(function () {
       SensorsFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('Deleted '+$scope.itemIds.length+' items(s).');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -217,7 +217,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
     $scope.sensor.lastSeen = null;
     if($stateParams.id){
       SensorsFactory.update($scope.sensor,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_UPDATE', $scope.node));
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $state.go("sensorsList");
       },function(error){
         displayRestError.display(error);
@@ -225,7 +225,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
       });
     }else{
       SensorsFactory.create($scope.sensor,function(response) {
-        alertService.success($filter('translate')('NODE.NOTIFY_ADD', $scope.node));
+        alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("sensorsList");
       },function(error){
         displayRestError.display(error);

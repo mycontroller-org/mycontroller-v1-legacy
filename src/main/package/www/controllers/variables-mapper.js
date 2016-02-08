@@ -55,8 +55,8 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
     fields: [
       {
         id: 'displayName',
-        title:  'Sensor type',
-        placeholder: 'Filter by Sensor type',
+        title:  $filter('translate')('SENSOR_TYPE'),
+        placeholder:  $filter('translate')('FILTER_BY_SENSOR_TYPE'),
         filterType: 'text'
       },
     ],

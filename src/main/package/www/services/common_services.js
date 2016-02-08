@@ -17,8 +17,13 @@
 //http://js2.coffee/#coffee2js
 //https://coderwall.com/p/r_bvhg/angular-ui-bootstrap-alert-service-for-angular-js
 
-myControllerModule.factory('CommonServices', function(TypesFactory, $filter) {
+myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $cookieStore) {
   var commonService = {};
+  
+  //restore store all the configurations locally
+  commonService.updateMchelper = function(mchelper){
+    $cookieStore.put('mchelper', mchelper);
+  };
   
   //Get value nested supported
   commonService.getValue = function(item, key){
@@ -32,7 +37,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter) {
         }
     }
     return item;
-  }
+  };
   
   //Match value
   var matchesFilter = function (item, filter) {

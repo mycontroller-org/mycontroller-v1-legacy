@@ -76,14 +76,14 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
     fields: [
       {
         id: 'sourceId',
-        title:  'Source id',
-        placeholder: 'Filter by Source id',
+        title:  $filter('translate')('SOURCE_ID'),
+        placeholder: $filter('translate')('FILTER_BY_SOURCE_ID'),
         filterType: 'text'
       },
       {
         id: 'destinationId',
-        title:  'Destination id',
-        placeholder: 'Filter by Destination id',
+        title:  $filter('translate')('DESTINATION_ID'),
+        placeholder: $filter('translate')('FILTER_BY_DESTINATION_ID'),
         filterType: 'text'
       }
     ],
@@ -102,21 +102,21 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
   $scope.sortConfig = {
     fields: [
       {
+        id: 'enabled',
+        title:  $filter('translate')('ENABLED'),
+        sortType: 'text'
+      },{
         id: 'sourceId',
-        title:  'Source id',
+        title:  $filter('translate')('SOURCE_ID'),
         sortType: 'text'
       },{
         id: 'destinationId',
-        title:  'Destination id',
-        sortType: 'text'
-      },
-      {
-        id: 'enabled',
-        title:  'Enabled',
+        title:  $filter('translate')('DESTINATION_ID'),
         sortType: 'text'
       }
     ],
-    onSortChange: sortChange
+    onSortChange: sortChange,
+    isAscending: false,
   };
   
 

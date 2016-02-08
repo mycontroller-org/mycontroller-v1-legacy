@@ -86,26 +86,26 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
       {
         id: 'type',
         title:  'Type',
-        placeholder: 'Filter by Type',
+        placeholder: $filter('translate')('FILTER_BY_TYPE'),
         filterType: 'select',
         filterValues: ['Node','Repeater node'],
       },
       {
         id: 'eui',
         title:  'EUI',
-        placeholder: 'Filter by EUI',
+        placeholder: $filter('translate')('FILTER_BY_EUI'),
         filterType: 'text',
       },
       {
         id: 'version',
         title:  'Version',
-        placeholder: 'Filter by Version',
+        placeholder: $filter('translate')('FILTER_BY_VERSION'),
         filterType: 'text',
       },
       {
         id: 'libVersion',
         title:  'Library Version',
-        placeholder: 'Filter by Library Version',
+        placeholder: $filter('translate')('FILTER_BY_LIBRARY_VERSION'),
         filterType: 'text',
       }
     ],
@@ -125,32 +125,32 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
     fields: [
       {
         id: 'name',
-        title:  'Name',
+        title:  $filter('translate')('NAME'),
         sortType: 'text'
       },
       {
         id: 'state',
-        title:  'Status',
+        title:  $filter('translate')('STATUS'),
         sortType: 'text'
       },
       {
         id: 'eui',
-        title:  'EUI',
+        title:  $filter('translate')('EUI'),
         sortType: 'text'
       },
       {
         id: 'type',
-        title:  'Type',
+        title:  $filter('translate')('TYPE'),
         sortType: 'text'
       },
       {
         id: 'version',
-        title:  'Version',
+        title:  $filter('translate')('VERSION'),
         sortType: 'text'
       },
       {
         id: 'libVersion',
-        title:  'Library Version',
+        title:  $filter('translate')('LIBRARY_VERSION'),
         sortType: 'text'
       }
     ],
@@ -175,7 +175,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       }); 
     }), 
     function () {
@@ -194,7 +194,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
   $scope.uploadFirmware = function (size) {
     if($scope.itemIds.length > 0){
       NodesFactory.uploadFirmware($scope.itemIds,function(response) {
-        alertService.success($filter('translate')('FIRMWARE_UPLOADED_SUCCESSFULLY'));
+        alertService.success($filter('translate')('FIRMWARE_UPLOAD_INITIATED'));
       },function(error){
         displayRestError.display(error);
       });  
@@ -212,7 +212,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
 
     addModalInstance.result.then(function () {
       NodesFactory.reboot($scope.itemIds, function(response) {
-        alertService.success($filter('translate')('NODE_REBOTTED_SUCCESSFULLY'));
+        alertService.success($filter('translate')('REBOOT_INITIATED'));
       },function(error){
         displayRestError.display(error);
       });      
@@ -233,9 +233,9 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
 
     addModalInstance.result.then(function () {
       NodesFactory.eraseConfiguration($scope.itemIds, function(response) {
-        alertService.success($filter('translate')('ERASE_EEPROM_TRIGGERED'));
+        alertService.success($filter('translate')('ERASE_CONFIGURATION_INITIATED'));
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       });
     }), 
     function () {
@@ -384,16 +384,16 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
 
 //Erase Configuration Modal
 myControllerModule.controller('NodesControllerEraseConfiguration', function ($scope, $uibModalInstance, $filter) {
-  $scope.header = $filter('translate')('NODE.TITLE_ERASE_EEPROM');
-  $scope.eraseMsg = $filter('translate')('NODE.MESSAGE_ERASE_EEPROM', $scope);
+  $scope.header = $filter('translate')('ERASE_CONFIGURATION_CONFIRMATION_TITLE');
+  $scope.eraseMsg = $filter('translate')('ERASE_CONFIGURATION_CONFIRMATION_MESSAGE');
   $scope.eraseNodeConfiguration = function() {$uibModalInstance.close(); };
   $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });
 
 //reboot Modal
 myControllerModule.controller('NodesControllerReboot', function ($scope, $uibModalInstance, $filter) {
-  $scope.header = $filter('translate')('NODE.TITLE_REBOOT');
-  $scope.rebootMsg = $filter('translate')('NODE.MESSAGE_REBOOT', $scope);
+  $scope.header = $filter('translate')('REBOOT_CONFIRMATION_TITLE');
+  $scope.rebootMsg = $filter('translate')('REBOOT_CONFIRMATION_MESSAGE');
   $scope.reboot = function() {$uibModalInstance.close(); };
   $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });

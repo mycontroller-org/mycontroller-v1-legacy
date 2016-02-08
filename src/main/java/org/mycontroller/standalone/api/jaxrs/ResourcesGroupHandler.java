@@ -57,7 +57,10 @@ public class ResourcesGroupHandler {
     @PUT
     @Path("/")
     public Response updateResourcesGroup(ResourcesGroup resourcesGroup) {
-        DaoUtils.getResourcesGroupDao().update(resourcesGroup);
+        ResourcesGroup resourcesGroupOld = DaoUtils.getResourcesGroupDao().get(resourcesGroup.getId());
+        resourcesGroupOld.setDescription(resourcesGroup.getDescription());
+        resourcesGroupOld.setName(resourcesGroup.getName());
+        DaoUtils.getResourcesGroupDao().update(resourcesGroupOld);
         return RestUtils.getResponse(Status.OK);
     }
 

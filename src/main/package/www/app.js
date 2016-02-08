@@ -503,6 +503,7 @@ myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $h
   mchelper.cfg = mchelperLocal.cfg;
   mchelper.user = mchelperLocal.user;
   mchelper.languages = mchelperLocal.languages;
+  mchelper.userSettings = mchelperLocal.userSettings;
   
   if(mchelper.cfg){
     $translate.use(mchelper.cfg.languageId);
@@ -553,7 +554,6 @@ myControllerModule.controller('LoginController',
             $scope.dataLoading = true;
             AuthenticationService.Login($scope.username, $scope.password, function(authResponse) {
                 if(authResponse.success) {
-                    mchelper.userSettings = SettingsFactory.getUserSettings();
                     AuthenticationService.SetCredentials($scope.username, $scope.password);
                     mchelper.user = authResponse.user;//Update user details
                     StatusFactory.getConfig(function(response) {
@@ -562,8 +562,11 @@ myControllerModule.controller('LoginController',
                       $translate.use(mchelper.cfg.languageId);
                       TypesFactory.getLanguages(function(langResponse){
                         mchelper.languages = langResponse;
-                        //Store all the configurations locally
-                        $cookieStore.put('mchelper', mchelper);
+                        SettingsFactory.getUserSettings(function(userNativeSettings){
+                          mchelper.userSettings = userNativeSettings;
+                          //Store all the configurations locally
+                          $cookieStore.put('mchelper', mchelper);
+                        });
                       });
                     },function(error){
                       displayRestError.display(error);            

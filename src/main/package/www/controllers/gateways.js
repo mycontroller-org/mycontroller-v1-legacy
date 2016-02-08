@@ -175,7 +175,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       }); 
     }
   };
@@ -187,7 +187,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         alertService.success($filter('translate')('DISCOVER_INITIATED_SUCCESSFULLY'));
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       }); 
     }
   };
@@ -199,7 +199,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         alertService.success($filter('translate')('RELOAD_INITIATED_SUCCESSFULLY'));
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       }); 
     }
   };
@@ -220,7 +220,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       }); 
     }), 
     function () {

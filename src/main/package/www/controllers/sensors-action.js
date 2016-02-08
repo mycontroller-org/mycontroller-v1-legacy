@@ -65,38 +65,26 @@ myControllerModule.controller('SensorsActionControllerList', function(
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title:  $filter('translate')('SENSOR_NAME'),
+        placeholder: $filter('translate')('FILTER_BY_SENSOR_NAME'),
         filterType: 'text'
       },
       {
-        id: 'node.gateway.name',
-        title:  'Gateway',
-        placeholder: 'Filter by Gateway',
+        id: 'nodeId',
+        title:  $filter('translate')('NODE_ID'),
+        placeholder: $filter('translate')('FILTER_BY_NODE_ID'),
         filterType: 'text'
-      },
-      {
-        id: 'node.eui',
-        title:  'Node EUI',
-        placeholder: 'Filter by Type',
-        filterType: 'text',
       },
       {
         id: 'sensorId',
-        title:  'Id',
-        placeholder: 'Filter by Id',
-        filterType: 'integer',
+        title:  $filter('translate')('SENSOR_ID'),
+        placeholder: $filter('translate')('FILTER_BY_SENSOR_ID'),
+        filterType: 'text'
       },
       {
         id: 'type',
-        title:  'Type',
-        placeholder: 'Filter by Type',
-        filterType: 'text',
-      },
-      {
-        id: 'variableTypes',
-        title:  'Variable Types',
-        placeholder: 'Filter by Variable Types',
+        title:  $filter('translate')('TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_TYPE'),
         filterType: 'text',
       }
     ],
@@ -110,6 +98,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
   var viewSelected = function(viewId) {
     mchelper.userSettings.actionBoardView = viewId;
     SettingsFactory.saveUserSettings(mchelper.userSettings);
+    CommonServices.updateMchelper(mchelper);
     if(viewId === 'tilesView'){
       $scope.query.pageLimit = 12;
       $scope.tooltipPlacement = 'top';
@@ -121,6 +110,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
     $scope.query.page=1;
     $scope.getAllItems();
     $scope.viewType = viewId;
+
   };
   
   //View configuration
@@ -139,27 +129,32 @@ myControllerModule.controller('SensorsActionControllerList', function(
   $scope.sortConfig = {
     fields: [
       {
+        id: 'lastSeen',
+        title:  $filter('translate')('LAST_SEEN'),
+        sortType: 'text'
+      },{
         id: 'name',
-        title:  'Name',
+        title:  $filter('translate')('SENSOR_NAME'),
         sortType: 'text'
       },
       {
         id: 'nodeId',
-        title:  'Node Id',
+        title:  $filter('translate')('NODE_ID'),
         sortType: 'text'
       },
       {
         id: 'sensorId',
-        title:  'Sensor Id',
+        title:  $filter('translate')('SENSOR_ID'),
         sortType: 'number'
       },
       {
         id: 'type',
-        title:  'Type',
+        title:  $filter('translate')('TYPE'),
         sortType: 'text'
       }
     ],
-    onSortChange: sortChange
+    onSortChange: sortChange,
+    isAscending: false,
   };
   
   

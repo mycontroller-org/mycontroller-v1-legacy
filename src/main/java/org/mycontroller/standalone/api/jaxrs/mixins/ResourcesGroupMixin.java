@@ -19,6 +19,7 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.StateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
@@ -27,10 +28,22 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 abstract class ResourcesGroupMixin {
 
+    @JsonIgnore
+    private STATE state;
+    @JsonIgnore
+    private Long stateSince;
+
+    @JsonProperty("state")
     @JsonSerialize(using = StateSerializer.class)
     abstract public String getState();
 
+    @JsonProperty("stateSince")
+    abstract public String getStateSince();
+
     @JsonIgnore
     abstract public void setState(STATE state);
+
+    @JsonIgnore
+    abstract public void setStateSince(Long stateSince);
 
 }

@@ -30,5 +30,5 @@ abstract class UserMixin {
     abstract String getPassword();
 
     @JsonSetter("password")
-    abstract String setPassword(String password);
+    abstract void setPassword(String password);
 }

@@ -72,20 +72,20 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title:  $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text'
       },
       {
         id: 'description',
-        title:  'Description',
-        placeholder: 'Filter by description',
+        title:  $filter('translate')('DESCRIPTION'),
+        placeholder: $filter('translate')('FILTER_BY_DESCRIPTION'),
         filterType: 'text',
       },
       {
         id: 'permission',
-        title:  'Permission',
-        placeholder: 'Filter by permission',
+        title:  $filter('translate')('PERMISSION'),
+        placeholder: $filter('translate')('FILTER_BY_PERMISSION'),
         filterType: 'select',
         filterValues: ['Super admin','User','MQTT user'],
       }
@@ -105,17 +105,17 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     fields: [
       {
         id: 'name',
-        title:  'Name',
+        title: $filter('translate')('NAME'),
         sortType: 'text'
       },
       {
         id: 'description',
-        title:  'Description',
+        title: $filter('translate')('DESCRIPTION'),
         sortType: 'text'
       },
       {
         id: 'permission',
-        title:  'Permission',
+        title: $filter('translate')('PERMISSION'),
         sortType: 'text'
       }
     ],

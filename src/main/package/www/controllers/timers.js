@@ -78,14 +78,14 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title:  $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text'
       },
       {
         id: 'resourceType',
-        title:  'Resource type',
-        placeholder: 'Filter by Resource type',
+        title:  $filter('translate')('RESOURCE_TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_RESOURCE_TYPE'),
         filterType: 'text'
       }
     ],
@@ -105,22 +105,22 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     fields: [
       {
         id: 'name',
-        title:  'Name',
+        title:  $filter('translate')('NAME'),
         sortType: 'text'
       },
       {
         id: 'enabled',
-        title:  'Enabled',
+        title:  $filter('translate')('ENABLED'),
         sortType: 'text'
       },
       {
         id: 'resourceType',
-        title:  'Resource type',
+        title:  $filter('translate')('RESOURCE_TYPE'),
         sortType: 'text'
       },
       {
         id: 'lastFired',
-        title:  'Last fired',
+        title:  $filter('translate')('LAST_FIRED'),
         sortType: 'text'
       }
     ],

@@ -72,27 +72,15 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title: $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text'
       },
       {
-        id: 'sensorId',
-        title:  'Id',
-        placeholder: 'Filter by Id',
+        id: 'description',
+        title: $filter('translate')('DESCRIPTION'),
+        placeholder: $filter('translate')('FILTER_BY_DESCRIPTION'),
         filterType: 'integer',
-      },
-      {
-        id: 'type',
-        title:  'Type',
-        placeholder: 'Filter by Type',
-        filterType: 'text',
-      },
-      {
-        id: 'variableTypes',
-        title:  'Variable Types',
-        placeholder: 'Filter by Variable Types',
-        filterType: 'text',
       }
     ],
     resultsCount: $scope.filteredList.length,
@@ -110,19 +98,19 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
     fields: [
       {
         id: 'name',
-        title:  'Name',
+        title:  $filter('translate')('NAME'),
         sortType: 'text'
       },{
         id: 'description',
-        title:  'Description',
+        title:  $filter('translate')('DESCRIPTION'),
         sortType: 'text'
       },{
         id: 'state',
-        title:  'Status',
+        title:  $filter('translate')('STATUS'),
         sortType: 'text'
       },{
         id: 'stateSince',
-        title:  'Status since',
+        title:  $filter('translate')('STATUS_SINCE'),
         sortType: 'text'
       }
     ],
@@ -136,7 +124,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
     var itemArray = [item.id];
     if(state){
       ResourcesGroupFactory.turnOnIds(itemArray, function(response) {
-        alertService.success('RESOURCE_GROUP_TURNED_ON');
+        alertService.success($filter('translate')('RESOURCE_GROUP_TURNED_ON'));
         //Update display table
         //$scope.getAllItems();
       },function(error){
@@ -144,7 +132,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
       });
     }else{
       ResourcesGroupFactory.turnOffIds(itemArray, function(response) {
-        alertService.success('RESOURCE_GROUP_TURNED_OFF');
+        alertService.success($filter('translate')('RESOURCE_GROUP_TURNED_OFF'));
         //Update display table
         //$scope.getAllItems();
       },function(error){
@@ -164,7 +152,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
   $scope.turnOn = function () {
     if($scope.itemIds.length > 0){
       ResourcesGroupFactory.turnOnIds($scope.itemIds, function(response) {
-        alertService.success('RESOURCE_GROUPS_TURNED_ON');
+        alertService.success($filter('translate')('RESOURCE_GROUPS_TURNED_ON'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -178,7 +166,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
   $scope.turnOff = function () {
     if($scope.itemIds.length > 0){
       ResourcesGroupFactory.turnOffIds($scope.itemIds, function(response) {
-        alertService.success('RESOURCE_GROUPS_TURNED_OFF');
+        alertService.success($filter('translate')('RESOURCE_GROUPS_TURNED_OFF'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -199,7 +187,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
 
     modalInstance.result.then(function () {
       ResourcesGroupFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('ITEMS_DELETED_SUCCESSFULLY');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -333,20 +321,20 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
     fields: [
       {
         id: 'resourceType',
-        title:  'Resource type',
-        placeholder: 'Filter by Resource type',
+        title:  $filter('translate')('RESOURCE_TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_RESOURCE_TYPE'),
         filterType: 'text'
       },
       {
         id: 'payloadOn',
-        title:  'Payload ON',
-        placeholder: 'Filter by Payload ON',
+        title:  $filter('translate')('PAYLOAD_ON'),
+        placeholder: $filter('translate')('FILTER_BY_PAYLOAD_ON'),
         filterType: 'integer',
       },
       {
         id: 'payloadOff',
-        title:  'Payload OFF',
-        placeholder: 'Filter by Payload OFF',
+        title:  $filter('translate')('PAYLOAD_OFF'),
+        placeholder: $filter('translate')('FILTER_BY_PAYLOAD_OFF'),
         filterType: 'text',
       }
     ],
@@ -365,16 +353,16 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
     fields: [
       {
         id: 'resourceType',
-        title:  'Resource type',
+        title:  $filter('translate')('RESOURCE_TYPE'),
         sortType: 'text'
       },{
         id: 'payloadOn',
-        title:  'Payload ON',
+        title:  $filter('translate')('PAYLOAD_ON'),
         sortType: 'text'
       },
       {
         id: 'payloadOff',
-        title:  'Payload OFF',
+        title:  $filter('translate')('PAYLOAD_OFF'),
         sortType: 'text'
       }
     ],
@@ -399,7 +387,7 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
 
     modalInstance.result.then(function () {
       ResourcesGroupMapFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('ITEMS_DELETED_SUCCESSFULLY');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];

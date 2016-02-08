@@ -72,23 +72,22 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
   $scope.filterConfig = {
     fields: [
       {
-        id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        id: 'username',
+        title:  $filter('translate')('USERNAME'),
+        placeholder: $filter('translate')('FILTER_BY_USERNAME'),
         filterType: 'text'
       },
       {
-        id: 'description',
-        title:  'Description',
-        placeholder: 'Filter by description',
+        id: 'fullName',
+        title:  $filter('translate')('FULL_NAME'),
+        placeholder: $filter('translate')('FILTER_BY_FULL_NAME'),
         filterType: 'text',
       },
       {
-        id: 'permission',
-        title:  'Permission',
-        placeholder: 'Filter by permission',
-        filterType: 'select',
-        filterValues: ['Super admin','User','MQTT user'],
+        id: 'email',
+        title:  $filter('translate')('EMAIL'),
+        placeholder: $filter('translate')('FILTER_BY_EMAIL'),
+        filterType: 'text',
       }
     ],
     resultsCount: $scope.filteredList.length,
@@ -106,17 +105,22 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     fields: [
       {
         id: 'username',
-        title:  'Username',
+        title:  $filter('translate')('USERNAME'),
         sortType: 'text'
       },
       {
-        id: 'description',
-        title:  'Description',
+        id: 'fullName',
+        title:  $filter('translate')('FULL_NAME'),
         sortType: 'text'
       },
       {
-        id: 'permission',
-        title:  'Permission',
+        id: 'email',
+        title:  $filter('translate')('EMAIL'),
+        sortType: 'text'
+      },
+      {
+        id: 'enabled',
+        title:  $filter('translate')('ENABLED'),
         sortType: 'text'
       }
     ],

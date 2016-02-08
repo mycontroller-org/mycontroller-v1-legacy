@@ -73,13 +73,13 @@ myControllerModule.controller('FirmwaresTypeController', function(
     fields: [
       {
         id: 'name',
-        title:  'Name',
-        placeholder: 'Filter by Name',
+        title:  $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text'
       },{
         id: 'id',
-        title:  'Type id',
-        placeholder: 'Filter by Type id',
+        title:  $filter('translate')('TYPE_ID'),
+        placeholder: $filter('translate')('FILTER_BY_TYPE_ID'),
         filterType: 'text'
       }
     ],
@@ -98,11 +98,11 @@ myControllerModule.controller('FirmwaresTypeController', function(
     fields: [
       {
         id: 'name',
-        title:  'Name',
+        title:  $filter('translate')('NAME'),
         sortType: 'text'
       },{
         id: 'id',
-        title:  'Type id',
+        title:  $filter('translate')('TYPE_ID'),
         sortType: 'text'
       }
     ],
@@ -251,13 +251,13 @@ myControllerModule.controller('FirmwaresVersionController', function(
     fields: [
       {
         id: 'version',
-        title:  'Version',
-        placeholder: 'Filter by Name',
+        title:  $filter('translate')('VERSION'),
+        placeholder: $filter('translate')('FILTER_BY_VERSION'),
         filterType: 'text'
       },{
         id: 'id',
-        title:  'Version id',
-        placeholder: 'Filter by Version id',
+        title:  $filter('translate')('VERSION_ID'),
+        placeholder: $filter('translate')('FILTER_BY_VERSION_ID'),
         filterType: 'text'
       }
     ],
@@ -276,11 +276,11 @@ myControllerModule.controller('FirmwaresVersionController', function(
     fields: [
       {
         id: 'version',
-        title:  'Version',
+        title:  $filter('translate')('VERSION'),
         sortType: 'text'
       },{
         id: 'id',
-        title:  'Version id',
+        title:  $filter('translate')('VERSION_ID'),
         sortType: 'text'
       }
     ],
@@ -433,9 +433,19 @@ myControllerModule.controller('FirmwaresController', function(
 $scope.filterConfig = {
     fields: [
       {
+        id: 'typeId',
+        title:  $filter('translate')('TYPE_ID'),
+        placeholder: $filter('translate')('FILTER_BY_TYPE_ID'),
+        filterType: 'text'
+      },{
+        id: 'versionId',
+        title:  $filter('translate')('VERSION_ID'),
+        placeholder: $filter('translate')('FILTER_BY_VERSION_ID'),
+        filterType: 'text'
+      },{
         id: 'blocks',
-        title:  'Blocks',
-        placeholder: 'Filter by Blocks',
+        title: $filter('translate')('BLOCKS'),
+        placeholder: $filter('translate')('FILTER_BY_BLOCKS'),
         filterType: 'text'
       }
     ],
@@ -454,23 +464,23 @@ $scope.filterConfig = {
     fields: [
       {
         id: 'typeId',
-        title:  'Type id',
+        title:  $filter('translate')('TYPE_ID'),
         sortType: 'text'
       },{
         id: 'versionId',
-        title:  'Version id',
+        title: $filter('translate')('VERSION_ID'),
         sortType: 'text'
       },{
         id: 'blocks',
-        title:  'Blocks',
+        title: $filter('translate')('BLOCKS'),
         sortType: 'text'
       },{
         id: 'timestamp',
-        title:  'Uploaded on',
+        title: $filter('translate')('UPLOADED_ON'),
         sortType: 'text'
       },{
         id: 'crc',
-        title:  'CRC',
+        title: $filter('translate')('CRC'),
         sortType: 'text'
       },
     ],

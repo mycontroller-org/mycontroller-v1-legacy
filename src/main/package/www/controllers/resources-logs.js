@@ -82,32 +82,32 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
     fields: [
       {
         id: 'message',
-        title:  'Message',
-        placeholder: 'Filter by Message',
+        title:  $filter('translate')('MESSAGE'),
+        placeholder: $filter('translate')('FILTER_BY_MESSAGE'),
         filterType: 'text'
       },
       {
-        id: 'resource',
-        title:  'Resource',
-        placeholder: 'Filter by Resource',
+        id: 'resourceType',
+        title:  $filter('translate')('RESOURCE_TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_RESOURCE_TYPE'),
         filterType: 'text'
       },
       {
-        id: 'conditionString',
-        title:  'Condition',
-        placeholder: 'Filter by Condition',
+        id: 'logLevel',
+        title:  $filter('translate')('LEVEL'),
+        placeholder: $filter('translate')('FILTER_BY_LEVEL'),
         filterType: 'text',
       },
       {
-        id: 'dampeningString',
-        title:  'Dampening',
-        placeholder: 'Filter by Dampening',
+        id: 'messageType',
+        title: $filter('translate')('TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_TYPE'),
         filterType: 'text',
       },
       {
-        id: 'notificationString',
-        title:  'Notification',
-        placeholder: 'Filter by Notification',
+        id: 'logDirection',
+        title: $filter('translate')('DIRECTION'),
+        placeholder: $filter('translate')('FILTER_BY_DIRECTION'),
         filterType: 'text',
       }
     ],
@@ -127,17 +127,17 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
     fields: [
       {
         id: 'timestamp',
-        title:  'Time',
+        title:  $filter('translate')('TIME'),
         sortType: 'alpha'
       },
       {
         id: 'logLevel',
-        title:  'Level',
+        title:  $filter('translate')('LEVEL'),
         sortType: 'alpha'
       },
       {
         id: 'resourceType',
-        title:  'Resource type',
+        title: $filter('translate')('RESOURCE_TYPE'),
         sortType: 'alpha'
       }
     ],
@@ -149,6 +149,7 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
   $scope.updateItemsPerPage = function(itemsPerPage){
     mchelper.userSettings.resourcesLogsItemsPerPage = itemsPerPage;
     SettingsFactory.saveUserSettings(mchelper.userSettings);
+    CommonServices.updateMchelper(mchelper);
     $scope.getAllItems();
   };
   
