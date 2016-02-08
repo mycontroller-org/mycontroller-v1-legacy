@@ -185,7 +185,7 @@ myControllerModule.factory('AuthenticationService',
         service.ClearCredentials = function () {
             $http.defaults.headers.common.Authorization = 'Basic ';
             //clear mchelper auth record
-            mchelper.internal = {};
+            CommonServices.clearMchelper();
             CommonServices.clearCookies();
         };
  

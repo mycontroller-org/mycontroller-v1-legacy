@@ -43,6 +43,16 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     $cookies.putObject('mchelper', mchelper);
   };
   
+  //clear local mchelper
+  commonService.clearMchelper = function(){
+    mchelper.selectedDashboard = undefined;
+    mchelper.cfg = {};
+    mchelper.user = {};
+    mchelper.languages = {};
+    mchelper.userSettings = {};
+    mchelper.internal = {};
+  };
+  
   //remove cookies
   commonService.clearCookies = function(){
     var cookies = $cookies.getAll();

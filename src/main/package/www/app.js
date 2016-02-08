@@ -461,11 +461,6 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
         return mchelper.internal.currentUser;
     };
 
-    $scope.changeDashboard = function (item){
-      $scope.selectedDashboard = item.id;
-      $state.go("dashboard", {'id': $scope.selectedDashboard});
-    };
-
     $scope.changeLanguage = function (lang) {
       $translate.use(lang.id);
       $scope.languageId = lang.id;
