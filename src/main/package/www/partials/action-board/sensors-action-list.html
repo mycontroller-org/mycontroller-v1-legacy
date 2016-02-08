@@ -114,7 +114,7 @@
               <div class="card-pf-body col-md-12">
                 <!-- node name -->
                 <div class="mc-sa-tiles-variable col-md-12">
-                  <span tooltip-enable="(item.node.gateway.name.length + item.node.name.length) > 25" uib-tooltip="[G]:{{item.node.gateway.name}} >> [N]:{{item.node.eui}}:{{item.node.name}}">
+                  <span tooltip-enable="(item.node.gateway.name.length + item.node.name.length) > 25" uib-tooltip-html="'[G]:'+item.node.gateway.name+' >> [N]:'+item.node.eui+':'+item.node.name | mcResourceRepresentation">
                     <i class="fa fa-plug"></i> {{item.node.gateway.name ? item.node.gateway.name : '-' | limitTo:25}}{{item.node.gateway.name.length > 25 ? '...' : ''}}
                     <span ng-show="item.node.gateway.name.length < 25">  <i class="fa fa-chevron-right"></i><i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name ? item.node.name : '-' | limitTo:(25-item.node.gateway.name.length)}}{{item.node.name.length > (25-item.node.gateway.name.length) ? '...' : ''}}</span>
                   </span>
