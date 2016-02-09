@@ -18,21 +18,22 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
   $scope.dId;
   $scope.dashboards ={};
   $scope.showLoading = false;
+  $scope.showLoadingMain = false;
   
   $scope.updateDashboard = function(){
-    DashboardFactory.getAll({'lessInfo':true}, function(response){
-      $scope.dashboards = response;
+    DashboardFactory.getAll({'lessInfo':true}, function(responseDashboards){
+      $scope.dashboards = $filter('orderBy')(responseDashboards, 'id', false);
       if(!mchelper.selectedDashboard){
-        mchelper.selectedDashboard = response[0].id;
+        mchelper.selectedDashboard = $scope.dashboards[0].id;
         $scope.dId = mchelper.selectedDashboard;
       }else{
         $scope.dId = mchelper.selectedDashboard;
       }
-      DashboardFactory.get({'dId':$scope.dId}, function(response){
-        $scope.model = response;
+      $scope.showLoadingMain = false;
+      DashboardFactory.get({'dId':$scope.dId}, function(responseDashboard){
+        $scope.model = responseDashboard;
         $scope.model.titleTemplateUrl = "partials/dashboard/dashboard-title.html";
         $scope.selectedName = $scope.model.name;
-        //console.log(angular.toJson($scope.model));
       });
     });  
   };
