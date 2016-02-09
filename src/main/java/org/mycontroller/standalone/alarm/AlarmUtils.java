@@ -366,4 +366,39 @@ public class AlarmUtils {
             disableAlarmDefinition(alarmDefinition);
         }
     }
+
+    public static void addAlarmDefinition(AlarmDefinition alarmDefinition) {
+        alarmDefinition.setTimestamp(System.currentTimeMillis()); //Set current time
+        DaoUtils.getAlarmDefinitionDao().create(alarmDefinition);
+        if (alarmDefinition.getEnabled()) {
+            enableAlarmDefinition(alarmDefinition);
+        }
+    }
+
+    public static void updateAlarmDefinition(AlarmDefinition alarmDefinition) {
+        //Remove delay timer if any
+        disableAlarmDefinition(DaoUtils.getAlarmDefinitionDao().getById(alarmDefinition.getId()));
+        alarmDefinition.setTimestamp(System.currentTimeMillis()); //Set current time
+        alarmDefinition.setTriggered(false);
+        alarmDefinition.setDampeningInternal1(null);
+        alarmDefinition.setDampeningInternal2(null);
+        switch (alarmDefinition.getDampeningType()) {
+            case NONE:
+                alarmDefinition.setDampeningVar1(null);
+                alarmDefinition.setDampeningVar2(null);
+                break;
+            case CONSECUTIVE:
+                alarmDefinition.setDampeningVar2(null);
+                break;
+            case LAST_N_EVALUATIONS:
+                break;
+
+            default:
+                break;
+        }
+        DaoUtils.getAlarmDefinitionDao().update(alarmDefinition);
+        if (alarmDefinition.getEnabled()) {
+            enableAlarmDefinition(alarmDefinition);
+        }
+    }
 }

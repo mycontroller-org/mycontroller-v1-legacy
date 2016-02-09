@@ -113,8 +113,7 @@ public class AlarmHandler {
     @Path("/")
     public Response add(AlarmDefinition alarmDefinition) {
         hasAccess(alarmDefinition);
-        alarmDefinition.setTimestamp(System.currentTimeMillis()); //Set current time
-        DaoUtils.getAlarmDefinitionDao().create(alarmDefinition);
+        AlarmUtils.updateAlarmDefinition(alarmDefinition);
         return RestUtils.getResponse(Status.CREATED);
     }
 
@@ -122,25 +121,7 @@ public class AlarmHandler {
     @Path("/")
     public Response update(AlarmDefinition alarmDefinition) {
         hasAccess(alarmDefinition);
-        alarmDefinition.setTimestamp(System.currentTimeMillis()); //Set current time
-        alarmDefinition.setTriggered(false);
-        alarmDefinition.setDampeningInternal1(null);
-        alarmDefinition.setDampeningInternal2(null);
-        switch (alarmDefinition.getDampeningType()) {
-            case NONE:
-                alarmDefinition.setDampeningVar1(null);
-                alarmDefinition.setDampeningVar2(null);
-                break;
-            case CONSECUTIVE:
-                alarmDefinition.setDampeningVar2(null);
-                break;
-            case LAST_N_EVALUATIONS:
-                break;
-
-            default:
-                break;
-        }
-        DaoUtils.getAlarmDefinitionDao().update(alarmDefinition);
+        AlarmUtils.updateAlarmDefinition(alarmDefinition);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 

@@ -45,10 +45,12 @@ public class DampeningConsecutive implements IDampening {
 
     public void setConsecutiveCount(int consecutiveCount) {
         this.consecutiveCount = consecutiveCount;
+        update();//update value to database
     }
 
     public void incrementConsecutiveCount() {
         this.consecutiveCount++;
+        update();//update value to database
     }
 
     @Override
@@ -62,7 +64,7 @@ public class DampeningConsecutive implements IDampening {
     @Override
     public void reset() {
         this.consecutiveCount = 0;
-        this.update();
+        this.update();//update value to database
     }
 
     public String toString() {

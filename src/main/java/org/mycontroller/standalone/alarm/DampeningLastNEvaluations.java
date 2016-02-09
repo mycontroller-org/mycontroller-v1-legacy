@@ -56,6 +56,7 @@ public class DampeningLastNEvaluations implements IDampening {
 
     public void setOccurrencesCount(int occurrencesCount) {
         this.occurrencesCount = occurrencesCount;
+        update();//update value to database
     }
 
     public int getEvaluationsCount() {
@@ -64,33 +65,36 @@ public class DampeningLastNEvaluations implements IDampening {
 
     public void setEvaluationsCount(int evaluationsCount) {
         this.evaluationsCount = evaluationsCount;
+        update();//update value to database
     }
 
     public void incrementOccurrencesCount() {
         this.occurrencesCount++;
+        update();//update value to database
     }
 
     public void incrementEvaluationsCount() {
         this.evaluationsCount++;
+        update();//update value to database
     }
 
     @Override
     public void reset() {
         this.occurrencesCount = 0;
         this.evaluationsCount = 0;
-        update();
+        update();//update value to database
     }
 
     @Override
     public void update() {
         this.alarmDefinition.setDampeningInternal1(String.valueOf(this.occurrencesCount));
-        this.alarmDefinition.setDampeningInternal1(String.valueOf(this.evaluationsCount));
+        this.alarmDefinition.setDampeningInternal2(String.valueOf(this.evaluationsCount));
         DaoUtils.getAlarmDefinitionDao().update(alarmDefinition);
     }
 
     @Override
     public boolean evaluate() {
-        if (this.evaluationsCount >= this.evaluationsMax) {
+        if (isExecutable()) {
             if (this.occurrencesCount >= this.occurrencesMax) {
                 return true;
             }
@@ -114,8 +118,8 @@ public class DampeningLastNEvaluations implements IDampening {
         StringBuilder builder = new StringBuilder();
         builder.append(DAMPENING_TYPE.CONSECUTIVE.getText());
         builder.append("=").append("occurrencesCount:").append(this.occurrencesCount);
-        builder.append(", occurrencesMax:").append(this.occurrencesMax);
         builder.append(", evaluationsCount:").append(this.evaluationsCount);
+        builder.append(", occurrencesMax:").append(this.occurrencesMax);
         builder.append(", evaluationsMax:").append(this.evaluationsMax);
         return builder.toString();
     }
