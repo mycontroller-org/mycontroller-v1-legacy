@@ -28,13 +28,13 @@
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
   
     <div>
-      <form class="form-horizontal">
+      <form class="form-horizontal" name="mcForm">
         <div class="col-md-8">
           
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
             <div class="col-sm-10">
-              <input class="form-control" placeholder="{{ 'NAME' | translate }}" ng-model="item.name"/>
+              <input class="form-control" placeholder="{{ 'NAME' | translate }}" ng-model="item.name" required />
             </div>
           </div>
           
@@ -52,8 +52,8 @@
               <div ng-show="item.permission === 'Super admin'">
                 <label>{{item.permission}}</label>
               </div>
-              <div ng-hide="item.permission === 'Super admin'">
-                <select class="form-control" pf-select ng-options="permission.displayName as permission.displayName for permission in rolePermissions" ng-change="refreshVariableTypes(sensor.type)" ng-model="item.permission">
+              <div ng-if="item.permission !== 'Super admin'">
+                <select class="form-control" pf-select ng-options="permission.displayName as permission.displayName for permission in rolePermissions" ng-change="refreshVariableTypes(sensor.type)" ng-model="item.permission" required >
                   <option value="" ng-hide="true"></option>
                 </select>
               </div>

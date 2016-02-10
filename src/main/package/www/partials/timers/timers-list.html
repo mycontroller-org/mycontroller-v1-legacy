@@ -75,8 +75,8 @@
           <th>{{ 'ENABLED' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
           <th>{{ 'RESOURCE' | translate }}</th>
-          <th>{{ 'TYPE' | translate }}</th>
           <th>{{ 'PAYLOAD' | translate }}</th>
+          <th>{{ 'TYPE' | translate }}</th>
           <th>{{ 'VALIDITY' | translate }}</th>
           <th>{{ 'LAST_FIRED' | translate }}</th>
         </thead>
@@ -90,8 +90,8 @@
             </td>
             <td>{{item.name}}</td>
             <td ng-bind-html="item.resource | mcResourceRepresentation"></td>
-            <td>{{item.timerDataString}}</td>
             <td>{{item.payloadFormatted}}</td>
+            <td>{{item.timerDataString}}</td>
             <td>{{item.validityString}}</td>
             <td>{{item.lastFired | date: mchelper.cfg.dateFormat : mchelper.cfg.timezone}}</td>
           </tr>

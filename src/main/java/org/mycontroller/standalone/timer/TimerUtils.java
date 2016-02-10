@@ -26,8 +26,10 @@ import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
+import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.jobs.ManageSunRiseSetJobs;
+import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.slf4j.Logger;
@@ -217,10 +219,18 @@ public class TimerUtils {
             default:
                 break;
         }
-        builder.append("], [Time: ")
-                .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getTimeFormat()).format(new Date(
-                        timer.getTriggerTime())))
-                .append("]");
+        if (timer.getTimerType() == TIMER_TYPE.NORMAL) {
+            builder.append("], [Time: ")
+                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getTimeFormat()).format(new Date(
+                            timer.getTriggerTime())))
+                    .append("]");
+        } else {
+            builder.append("], [Time offset: ")
+                    .append(new SimpleDateFormat("HH:mm:ss").format(new Date(
+                            timer.getTriggerTime())))
+                    .append("]");
+        }
+
         return builder.toString();
     }
 
@@ -370,6 +380,21 @@ public class TimerUtils {
     public static synchronized void deleteTimers(List<Integer> ids) {
         for (Integer id : ids) {
             deleteTimer(id);
+        }
+    }
+
+    public static void executeTimerOperation(ResourceModel resourceModel, PayloadOperation operation) {
+        switch (operation.getOperationType()) {
+            case ENABLE:
+                enableTimer((Timer) resourceModel.getResource());
+                break;
+            case DISABLE:
+                disableTimer((Timer) resourceModel.getResource());
+                break;
+            default:
+                _logger.warn("Timer not support for this operation!:[{}]",
+                        operation.getOperationType().getText());
+                break;
         }
     }
 

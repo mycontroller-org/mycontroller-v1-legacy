@@ -25,6 +25,7 @@ import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.slf4j.Logger;
@@ -65,11 +66,14 @@ public class AlarmEngine implements Runnable {
             case SENSOR_VARIABLE:
                 actualValue = ((SensorVariable) actualValueObject).getValue();
                 break;
+            /* NOTE: not using other than sensor variable, below code may not hit when we configure GUI */
             case NODE:
                 actualValue = ((Node) actualValueObject).getState().getText();
                 break;
             case GATEWAY:
                 actualValue = ((Gateway) actualValueObject).getState().getText();
+            case RESOURCES_GROUP:
+                actualValue = ((ResourcesGroup) actualValueObject).getState().getText();
                 break;
             default:
                 break;
@@ -85,6 +89,7 @@ public class AlarmEngine implements Runnable {
                     thresholdValue = thresholdSensorValue.getValue();
                 }
                 break;
+            /* NOTE: not using other than sensor variable, below code may not hit when we configure GUI */
             case GATEWAY_STATE:
                 Gateway gateway = DaoUtils.getGatewayDao().getById(
                         NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
@@ -220,6 +225,9 @@ public class AlarmEngine implements Runnable {
                     _logger.warn("Notification didn't executed for AlarmDefination:[{}]", alarmDefinition);
                 }
                 alarmDefinition.setTriggered(true);
+                if (alarmDefinition.getDisableWhenTrigger()) {
+                    alarmDefinition.setEnabled(false);
+                }
                 //AlarmDefinition Triggered Message, ResourcesLogs message data
                 ResourcesLogsUtils.setAlarmLog(LOG_LEVEL.INFO, alarmDefinition, triggerAlarm, null);
                 //Update Last Trigger Time

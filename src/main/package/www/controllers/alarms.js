@@ -281,6 +281,11 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
         }else{
           $scope.updateThresholdValueTypes($scope.alarm.resourceType);
         }
+        
+        //Update delay time
+        if($scope.alarm.variable4){
+          $scope.alarm.variable4 = $scope.alarm.variable4/1000;
+        }
           
         //Update dampening value
         if($scope.alarm.dampeningType === 'Active time'){
@@ -323,6 +328,11 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
     //Update Threshold type
     if(!$scope.alarm.thresholdType){
       $scope.alarm.thresholdType = 'Value';
+    }
+    
+    //Update delay time
+    if($scope.alarm.variable4){
+      $scope.alarm.variable4 = $scope.alarm.variable4*1000;
     }
     
     //Update dampening value

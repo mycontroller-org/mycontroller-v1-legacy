@@ -194,6 +194,10 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       return TypesFactory.getNodes();
     }else if(resourceType === 'Resources group'){
       return TypesFactory.getResourcesGroups();
+    }else if(resourceType === 'Alarm definition'){
+      return TypesFactory.getAlarmDefinitions();
+    }else if(resourceType === 'Timer'){
+      return TypesFactory.getTimers();
     }else{
       return null;
     }

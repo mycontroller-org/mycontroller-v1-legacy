@@ -37,13 +37,13 @@ public class TimerSimple {
         if (repeat.length != 2) {
             throw new RuntimeException("Invalid format:" + timer.getFrequencyData());
         }
-        this.repeatCount = Integer.valueOf(repeat[0]);
-        this.repeatInterval = Long.valueOf(repeat[1]);
+        this.repeatInterval = Long.valueOf(repeat[0]);
+        this.repeatCount = Integer.valueOf(repeat[1]);
         this.executedCount = timer.getInternalVariable1() == null ? 0 : Integer.valueOf(timer.getInternalVariable1());
     }
 
     public TimerSimple(String name, RESOURCE_TYPE resourceType, Integer resourceId, String payload,
-            Integer repeatCount, Long repeatInterval) {
+            Long repeatInterval, Integer repeatCount) {
         this.timer = new Timer();
         this.timer.setTimerType(TIMER_TYPE.SIMPLE);
         this.timer.setEnabled(true);
@@ -53,7 +53,7 @@ public class TimerSimple {
         this.timer.setPayload(payload);
         this.repeatCount = repeatCount;
         this.repeatInterval = repeatInterval;
-        this.timer.setFrequencyData(repeatCount + VALUE_SPLITTER + this.repeatInterval);
+        this.timer.setFrequencyData(this.repeatInterval + VALUE_SPLITTER + this.repeatCount);
     }
 
     public Timer getTimer() {

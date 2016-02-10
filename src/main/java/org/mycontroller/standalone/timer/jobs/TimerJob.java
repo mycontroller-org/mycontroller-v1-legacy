@@ -16,14 +16,16 @@
 package org.mycontroller.standalone.timer.jobs;
 
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.gateway.GatewayUtils;
+import org.mycontroller.standalone.group.ResourcesGroupUtils;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.timer.TimerSimple;
+import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,13 +54,24 @@ public class TimerJob extends Job {
         PayloadOperation payloadOperation = new PayloadOperation(timer.getPayload());
         ResourceModel resourceModel = new ResourceModel(timer.getResourceType(), timer.getResourceId());
 
-        if (resourceModel.getResourceType() == RESOURCE_TYPE.GATEWAY) { //If it's gateway task we should handle this
-            GatewayUtils.executeGatewayOperation(resourceModel, payloadOperation);
-        } else {
-            ObjectFactory.getIActionEngine(resourceModel.getNetworkType()).executeSendPayload(resourceModel,
-                    payloadOperation);
+        //we have to handle gateway,alarm,resource groups and timer operations
+        switch (resourceModel.getResourceType()) {
+            case GATEWAY:
+                GatewayUtils.executeGatewayOperation(resourceModel, payloadOperation);
+                break;
+            case ALARM_DEFINITION:
+                AlarmUtils.executeAlarmDefinitionOperation(resourceModel, payloadOperation);
+                break;
+            case TIMER:
+                TimerUtils.executeTimerOperation(resourceModel, payloadOperation);
+            case RESOURCES_GROUP:
+                ResourcesGroupUtils.executeResourceGroupsOperation(resourceModel, payloadOperation);
+                break;
+            default:
+                ObjectFactory.getIActionEngine(
+                        resourceModel.getNetworkType()).executeSendPayload(resourceModel, payloadOperation);
+                break;
         }
-        //ObjectFactory.getIActionEngine(resourceModel.getNetworkType()).executeTimer(resourceModel, timer);
     }
 
     @Override

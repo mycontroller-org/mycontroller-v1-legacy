@@ -28,7 +28,7 @@
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
   
     <div>
-      <form class="form-horizontal">
+      <form class="form-horizontal" name="mcForm">
         <div class="col-md-5">
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'ENABLED' | translate }}</label>
@@ -40,14 +40,14 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
             <div class="col-sm-10">
-              <input class="form-control" placeholder="{{ 'GATEWAY_NAME' | translate }}" ng-model="gateway.name"/>
+              <input class="form-control" placeholder="{{ 'GATEWAY_NAME' | translate }}" ng-model="gateway.name" required />
             </div>
           </div>
           
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'NETWORK_TYPE' | translate }}</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select ng-options="gatewayNetworkType.displayName as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes" ng-model="gateway.networkType">
+              <select class="form-control" pf-select ng-options="gatewayNetworkType.displayName as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes" ng-model="gateway.networkType" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
@@ -56,18 +56,18 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select ng-options="gatewayType.displayName as gatewayType.displayName for gatewayType in gatewayTypes" ng-model="gateway.type" ng-change="updateTypeChange()">
+              <select class="form-control" pf-select ng-options="gatewayType.displayName as gatewayType.displayName for gatewayType in gatewayTypes" ng-model="gateway.type" ng-change="updateTypeChange()" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
           </div>
           
           <!-- Serial Gateway -->
-          <div ng-show="gateway.type.toLowerCase() === 'serial'">
+          <div ng-if="gateway.type.toLowerCase() === 'serial'">
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'DRIVER' | translate }}</label>
               <div class="col-sm-5">
-                <select class="form-control" pf-select ng-options="gatewaySerialDriver.displayName as gatewaySerialDriver.displayName for gatewaySerialDriver in gatewaySerialDrivers" ng-model="gateway.variable1">
+                <select class="form-control" pf-select ng-options="gatewaySerialDriver.displayName as gatewaySerialDriver.displayName for gatewaySerialDriver in gatewaySerialDrivers" ng-model="gateway.variable1" required >
                 <option value="" ng-hide="true"></option>
                 </select>
               </div>
@@ -76,46 +76,46 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'PORT_NAME' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'SERIAL_PORT_NAME_EXAMPLE' | translate }}" ng-model="gateway.variable2"/>
+                <input class="form-control" placeholder="{{ 'SERIAL_PORT_NAME_EXAMPLE' | translate }}" ng-model="gateway.variable2" required />
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'BAUD_RATE' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'SERIAL_BAUD_RATE_EXAMPLE' | translate }}" ng-model="gateway.variable3"/>
+                <input class="form-control" placeholder="{{ 'SERIAL_BAUD_RATE_EXAMPLE' | translate }}" ng-model="gateway.variable3" required />
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'RETRY_FREQUENCY' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'SERIAL_RETRY_FREQUENCY_EXAMPLE' | translate }}" ng-model="gateway.variable4"/>
+                <input class="form-control" placeholder="{{ 'SERIAL_RETRY_FREQUENCY_EXAMPLE' | translate }}" ng-model="gateway.variable4" required />
               </div>
             </div>
           
           </div>
           
           <!-- Ethernet Gateway -->
-          <div ng-show="gateway.type.toLowerCase() === 'ethernet'">
+          <div ng-if="gateway.type.toLowerCase() === 'ethernet'">
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'HOST_NAME' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'ETHERNET_HOST_NAME_EXAMPLE' | translate }}" ng-model="gateway.variable1"/>
+                <input class="form-control" placeholder="{{ 'ETHERNET_HOST_NAME_EXAMPLE' | translate }}" ng-model="gateway.variable1" required />
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'PORT' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'ETHERNET_PORT_EXAMPLE' | translate }}" ng-model="gateway.variable2"/>
+                <input class="form-control" placeholder="{{ 'ETHERNET_PORT_EXAMPLE' | translate }}" ng-model="gateway.variable2" required />
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'ALIVE_TEST_FREQUENCY' | translate }})</label>
+              <label class="col-sm-2 control-label">{{ 'ALIVE_TEST_FREQUENCY' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'ETHERNET_ALIVE_TEST_FREQUENCY_EXAMPLE' | translate }}" ng-model="gateway.variable3"/>
+                <input class="form-control" placeholder="{{ 'ETHERNET_ALIVE_TEST_FREQUENCY_EXAMPLE' | translate }}" ng-model="gateway.variable3" required />
               </div>
             </div>
           
@@ -123,18 +123,18 @@
           
           
           <!-- MQTT Gateway -->
-          <div ng-show="gateway.type.toLowerCase() === 'mqtt'">
+          <div ng-if="gateway.type.toLowerCase() === 'mqtt'">
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'BROKET_HOST' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'MQTT_BROKER_HOST_EXAMPLE' | translate }}" ng-model="gateway.variable1"/>
+                <input class="form-control" placeholder="{{ 'MQTT_BROKER_HOST_EXAMPLE' | translate }}" ng-model="gateway.variable1" required />
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'CLIENT_ID' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'MQTT_CLIENT_ID_EXAMPLE' | translate }}" ng-model="gateway.variable2"/>
+                <input class="form-control" placeholder="{{ 'MQTT_CLIENT_ID_EXAMPLE' | translate }}" ng-model="gateway.variable2" required />
               </div>
             </div>
             

@@ -29,7 +29,7 @@
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
   
     <div><!-- div-main -->
-      <form class="form-horizontal">
+      <form class="form-horizontal" name="mcForm">
         <div class="col-md-5">
           
           <div class="form-group">
@@ -43,7 +43,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'SOURCE' | translate }}</label>
             <div class="col-sm-10">
-              <select class="form-control" pf-select data-live-search="true" ng-model="fpayload.source.id">
+              <select class="form-control" pf-select data-live-search="true" ng-model="fpayload.source.id" required >
                 <option value="" ng-hide="true"></option>
                 <option ng-repeat="res in resources" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="res.id == fpayload.source.id"></option>
               </select>
@@ -53,7 +53,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'DESTINATION' | translate }}</label>
             <div class="col-sm-10">
-              <select class="form-control" pf-select data-live-search="true" ng-model="fpayload.destination.id">
+              <select class="form-control" pf-select data-live-search="true" ng-model="fpayload.destination.id" required >
                 <option value="" ng-hide="true"></option>
                 <option ng-repeat="res in resources" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="res.id == fpayload.destination.id"></option>
               </select>

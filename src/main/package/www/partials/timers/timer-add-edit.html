@@ -28,13 +28,13 @@
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
   
     <div><!-- div-main -->
-      <form class="form-horizontal">
+      <form class="form-horizontal" name="mcForm">
         <div class="col-md-6">
           
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
             <div class="col-sm-10 mc-form-fixer-left">
-              <input class="form-control" placeholder="{{ 'TIMER_NAME' | translate }}" ng-model="timer.name"/>
+              <input class="form-control" placeholder="{{ 'TIMER_NAME' | translate }}" ng-model="timer.name" required />
             </div>
           </div>
           
@@ -50,56 +50,63 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TIMER_TYPE' | translate }}</label>
             <div class="col-sm-3 mc-form-fixer-left">
-              <select class="form-control" pf-select ng-options="tt.displayName as tt.displayName for tt in timerTypes" ng-model="timer.timerType">
+              <select class="form-control" pf-select ng-change="timer.frequencyType=rpInterval=rpCount=''" ng-options="tt.displayName as tt.displayName for tt in timerTypes" ng-model="timer.timerType" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
             
-            <div ng-show="timer.timerType === 'Normal' || timer.timerType === 'Before sunrise' || timer.timerType === 'After sunrise' || timer.timerType === 'Before sunset' || timer.timerType === 'After sunset'">
-            <div class="col-sm-2 mc-form-fixer">
-              <select class="form-control" pf-select ng-options="tft.displayName as tft.displayName for tft in timerFrequencyTypes" ng-change="updateFrequency()" ng-model="timer.frequencyType">
+            <div class="col-sm-2 mc-form-fixer" ng-if="timer.timerType === 'Normal' || timer.timerType === 'Before sunrise' || timer.timerType === 'After sunrise' || timer.timerType === 'Before sunset' || timer.timerType === 'After sunset'">
+              <select class="form-control" pf-select ng-options="tft.displayName as tft.displayName for tft in timerFrequencyTypes" ng-change="updateFrequency()" ng-model="timer.frequencyType" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-5 mc-form-fixer" ng-show="timer.frequencyType === 'Daily'">
-              <select class="form-control" pf-select multiple ng-options="twd.displayName as twd.displayName for twd in timerWeekDays" ng-model="dailyFrequencyData">
+            <div class="col-sm-5 mc-form-fixer" ng-if="timer.frequencyType === 'Daily'">
+              <select class="form-control" pf-select multiple ng-options="twd.displayName as twd.displayName for twd in timerWeekDays" ng-model="$parent.dailyFrequencyData" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-3 mc-form-fixer" ng-show="timer.frequencyType === 'Weekly'">
-              <select class="form-control" pf-select ng-options="twd.displayName as twd.displayName for twd in timerWeekDays" ng-model="weeklyFrequencyData">
+            <div class="col-sm-3 mc-form-fixer" ng-if="timer.frequencyType === 'Weekly'">
+              <select class="form-control" pf-select ng-options="twd.displayName as twd.displayName for twd in timerWeekDays" ng-model="$parent.weeklyFrequencyData" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-2 mc-form-fixer" ng-show="timer.frequencyType === 'Monthly'">
-              <select class="form-control" pf-select ng-options="monthDay for monthDay in monthDays" ng-model="monthlyFrequencyData">
-                <option value="" ng-hide="true">dd</option>
+            <div class="col-sm-2 mc-form-fixer" ng-if="timer.frequencyType === 'Monthly'">
+              <select class="form-control" pf-select ng-options="monthDay for monthDay in monthDays" ng-model="$parent.monthlyFrequencyData" required >
+                <option value="" ng-hide="true">{{ 'DAY' | translate }}</option>
               </select>
             </div>
-          </div>
           
-            <div class="col-sm-7 mc-form-fixer" ng-show="timer.timerType === 'Cron'">
-              <input class="form-control" placeholder="{{ 'CRON_EXPRESSION' | translate }}" ng-model="cronFrequencyData"/>
+            <div class="col-sm-7 mc-form-fixer" ng-if="timer.timerType === 'Cron'">
+              <input class="form-control" placeholder="{{ 'CRON_EXPRESSION' | translate }}" ng-model="$parent.cronFrequencyData" required />
             </div>
             
             
-            <div ng-show="timer.timerType === 'Simple'">
+            <div ng-if="timer.timerType === 'Simple'">
               <div class="col-sm-4 mc-form-fixer">
-                <input class="form-control" placeholder="{{ 'INTERVAL' | translate }}" ng-model="rpInterval"/>
+                <input class="form-control" placeholder="{{ 'INTERVAL_IN_SECONDS' | translate }}" ng-model="$parent.rpInterval" required />
               </div>
               <div class="col-sm-3 mc-form-fixer">
-                <input class="form-control" placeholder="{{ 'COUNT' | translate }}" ng-model="rpCount"/>
+                <input class="form-control" placeholder="{{ 'COUNT' | translate }}" ng-model="$parent.rpCount" required />
               </div>
             </div>
             
           </div>
           
           <!-- Time -->
-          <div ng-hide="timer.timerType === 'Simple' || timer.timerType === 'Cron' || timer.timerType === undefined">
+          <div ng-if="timer.timerType === 'Normal'">
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'TIME_HH_MM_SS' | translate }}</label>
-              <div class="col-sm-2 mc-form-fixer-left">
-                 <uib-timepicker ng-model="lTriggerTime"  show-seconds="true"  show-spinners="false" second-step="1" ng-change="changed()" hour-step="1" minute-step="1" show-meridian="showMeridian"></uib-timepicker>
+              <div class="col-sm-2 mc-form-fixer-left" ng-init="setTriggerTime(false)">
+                 <uib-timepicker ng-model="$parent.lTriggerTime"  show-seconds="true"  show-spinners="false" second-step="1" ng-change="changed()" hour-step="1" minute-step="1" show-meridian="showMeridian"></uib-timepicker>
+              </div>
+            </div>
+          </div>
+          
+          <div ng-if="timer.timerType === 'Before sunrise' || timer.timerType === 'Before sunset' || timer.timerType === 'After sunrise' || timer.timerType === 'After sunset'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TIME_OFFSET_HH_MM_SS' | translate }}</label>
+              <div class="col-sm-2 mc-form-fixer-left" ng-init="setTriggerTime(true)">
+                 <uib-timepicker ng-model="$parent.lTriggerTime"  show-seconds="true"  show-spinners="false" second-step="1" ng-change="changed()" hour-step="1" minute-step="1" show-meridian="false"></uib-timepicker>
               </div>
             </div>
           </div>
@@ -109,12 +116,13 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'RESOURCE' | translate }}</label>
             <div class="col-sm-3 mc-form-fixer-left">
-              <select class="form-control" pf-select  ng-options="rT.displayName as rT.displayName for rT in resourceTypes" ng-change="dspResources=getResources(timer.resourceType);timer.resourceId = ''" ng-model="timer.resourceType">
+              <select class="form-control" pf-select  ng-options="rT.displayName as rT.displayName for rT in resourceTypes" 
+                ng-change="dspResources=getResources(timer.resourceType);timer.resourceId = timer.payload='';updatePayloadOperations(timer.resourceType)" ng-model="timer.resourceType" required>
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-7 mc-form-fixer" ng-hide="timer.resourceType === '' || timer.resourceType === undefined ">
-              <select class="form-control" pf-select data-live-search="true" ng-model="timer.resourceId">
+            <div class="col-sm-7 mc-form-fixer" ng-if="timer.resourceType">
+              <select class="form-control" pf-select data-live-search="true" ng-model="timer.resourceId" required>
                 <option value="" ng-hide="true"></option>
                 <option ng-repeat="res in dspResources" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == timer.resourceId"></option>
               </select>
@@ -123,12 +131,18 @@
           
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'PAYLOAD' | translate }}</label>
-            <div class="col-sm-10 mc-form-fixer-left">
-              <input class="form-control" placeholder="Payload" ng-model="timer.payload"/>
+            <div class="col-sm-10 mc-form-fixer-left" ng-if="timer.resourceType === 'Sensor variable'">
+              <input class="form-control" placeholder="{{ 'PAYLOAD' | translate }}" ng-model="timer.payload" required />
+            </div>
+            <div class="col-sm-3 mc-form-fixer-left" ng-if="timer.resourceType !== 'Sensor variable'">
+              <select class="form-control" pf-select  ng-options="pos.displayName as pos.displayName for pos in payloadOperations" ng-model="timer.payload" required> 
+                <option value="" ng-hide="true"></option>
+              </select>
             </div>
           </div>
+
           
-          <legend><small>{{ 'VALIDITY' | translate }}</small></legend>          
+          <legend><small>{{ 'VALIDITY' | translate }}</small></legend>
           <!-- Validity -->
           <div class="form-group">
             <label class="col-sm-2 control-label"></label>

@@ -29,7 +29,7 @@
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
   
     <div><!-- div-main -->
-      <form class="form-horizontal">
+      <form class="form-horizontal" name="mcForm">
         <div class="col-md-5">
           
           <div class="form-group">
@@ -42,7 +42,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'VERSION' | translate }}</label>
             <div class="col-sm-10">
-              <input class="form-control" placeholder="{{ 'FIRMWARE_VERSION' | translate }}" ng-model="item.version"/>
+              <input class="form-control" placeholder="{{ 'FIRMWARE_VERSION' | translate }}" ng-model="item.version" required />
             </div>
           </div>
           

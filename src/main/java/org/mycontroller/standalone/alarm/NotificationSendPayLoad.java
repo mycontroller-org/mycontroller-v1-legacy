@@ -19,9 +19,11 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.gateway.GatewayUtils;
+import org.mycontroller.standalone.group.ResourcesGroupUtils;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerSimple;
+import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.slf4j.Logger;
@@ -66,7 +68,7 @@ public class NotificationSendPayLoad implements INotification {
         ResourceModel resourceModel = new ResourceModel(this.resourceType, this.resourceId);
         builder.append("Target=[").append(resourceModel.getResourceLessDetails()).append("]");
         builder.append(", Payload=").append(this.payload);
-        builder.append(", Delay=").append(this.delayTime).append(" Seconds");
+        builder.append(", Delay=").append(this.delayTime / 1000).append(" Seconds");
         return builder.toString();
     }
 
@@ -93,12 +95,23 @@ public class NotificationSendPayLoad implements INotification {
             ResourceModel resourceModel = new ResourceModel(this.getResourceType(),
                     this.getResourceId());
             PayloadOperation payloadOperation = new PayloadOperation(this.getPayload());
-            //You have to handle gateway operations
-            if (resourceModel.getResourceType() == RESOURCE_TYPE.GATEWAY) {
-                GatewayUtils.executeGatewayOperation(resourceModel, payloadOperation);
-            } else {
-                ObjectFactory.getIActionEngine(resourceModel.getNetworkType()).executeSendPayload(resourceModel,
-                        payloadOperation);
+            //we have to handle gateway,alarm,resource groups and timer operations
+            switch (resourceModel.getResourceType()) {
+                case GATEWAY:
+                    GatewayUtils.executeGatewayOperation(resourceModel, payloadOperation);
+                    break;
+                case ALARM_DEFINITION:
+                    AlarmUtils.executeAlarmDefinitionOperation(resourceModel, payloadOperation);
+                    break;
+                case TIMER:
+                    TimerUtils.executeTimerOperation(resourceModel, payloadOperation);
+                case RESOURCES_GROUP:
+                    ResourcesGroupUtils.executeResourceGroupsOperation(resourceModel, payloadOperation);
+                    break;
+                default:
+                    ObjectFactory.getIActionEngine(
+                            resourceModel.getNetworkType()).executeSendPayload(resourceModel, payloadOperation);
+                    break;
             }
         } else {  //Create timer to send payload
             TimerSimple timerSimple = new TimerSimple(
@@ -106,8 +119,9 @@ public class NotificationSendPayLoad implements INotification {
                     this.getResourceType(),
                     this.getResourceId(),
                     this.getPayload(),
-                    1,//Repeat count
-                    this.getDelayTime());
+                    this.getDelayTime(),
+                    1//Repeat count
+            );
             SchedulerUtils.loadTimerJob(timerSimple.getTimer());//Adding a job to send payload with specified delay
         }
         _logger.debug("Executed 'Send payload' notification, AlarmDefinition:[{}]", this.alarmDefinition);

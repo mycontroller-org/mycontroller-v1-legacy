@@ -418,7 +418,7 @@ public class AlarmUtils {
                 disableAlarmDefinition((AlarmDefinition) resourceModel.getResource());
                 break;
             default:
-                _logger.warn("AlarmDefinition will not support for this operation!:[{}]",
+                _logger.warn("AlarmDefinition not support for this operation!:[{}]",
                         operation.getOperationType().getText());
                 break;
         }

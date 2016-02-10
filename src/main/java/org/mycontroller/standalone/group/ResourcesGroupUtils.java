@@ -20,18 +20,24 @@ import java.util.List;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.alarm.AlarmEngine;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
+import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.ResourcesGroupMap;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
 public class ResourcesGroupUtils {
+    private static final Logger _logger = LoggerFactory.getLogger(ResourcesGroupUtils.class);
+
     private ResourcesGroupUtils() {
 
     }
@@ -90,7 +96,30 @@ public class ResourcesGroupUtils {
         resourcesGroup.setStateSince(System.currentTimeMillis());
         DaoUtils.getResourcesGroupDao().update(resourcesGroup);
 
+        //Trigger AlarmDefinition for this resourcesGroup
+        List<AlarmDefinition> alarmDefinitions = DaoUtils.getAlarmDefinitionDao().getAllEnabled(
+                RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId());
+        if (alarmDefinitions.size() > 0 && alarmDefinitions != null) {
+            AlarmEngine alarmEngine = new AlarmEngine(alarmDefinitions, resourcesGroup);
+            new Thread(alarmEngine).run();
+        }
+
         //TODO: add it in to log message
+    }
+
+    public static void executeResourceGroupsOperation(ResourceModel resourceModel, PayloadOperation operation) {
+        switch (operation.getOperationType()) {
+            case ON:
+                turnONresourcesGroup(resourceModel.getResourceId());
+                break;
+            case OFF:
+                turnOFFresourcesGroup(resourceModel.getResourceId());
+                break;
+            default:
+                _logger.warn("ResourcesGroup not support for this operation!:[{}]",
+                        operation.getOperationType().getText());
+                break;
+        }
     }
 
 }

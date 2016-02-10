@@ -135,6 +135,8 @@ public class SchedulerUtils {
             return;
         }
 
+        _logger.debug("Timer loading:{}", timer);
+
         //Check Valid To, if available 
         if (timer.getValidityTo() != null) {
             if (timer.getValidityTo() <= System.currentTimeMillis()) {

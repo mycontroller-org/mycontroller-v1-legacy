@@ -190,7 +190,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   
 });
 
-myControllerModule.controller('TimersControllerAddEdit', function ($scope, TypesFactory, CommonServices, alertService, TimersFactory, mchelper, $stateParams, $state, $filter) {
+myControllerModule.controller('TimersControllerAddEdit', function ($scope, TypesFactory, CommonServices, alertService, TimersFactory, mchelper, $stateParams, $state, $filter, displayRestError) {
   $scope.timer = {};
   $scope.timer.enabled=true;
   $scope.showMeridian = angular.equals(mchelper.cfg.timeFormatSet, "12 hours");
@@ -205,8 +205,8 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
         //Update frequency data
         if($scope.timer.timerType === 'Simple'){
           var array = $scope.timer.frequencyData.split(',');
-          $scope.rpCount = array[0];
-          $scope.rpInterval = array[1];
+          $scope.rpInterval = array[0]/1000;
+          $scope.rpCount = array[1];
         }else if($scope.timer.timerType === 'Cron'){
           $scope.cronFrequencyData = $scope.timer.frequencyData;
         }else{
@@ -217,6 +217,11 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
           }else if($scope.timer.frequencyType === 'Monthly'){
             $scope.monthlyFrequencyData = $scope.timer.frequencyData;
           } 
+        }
+        
+         //Update payload operations
+        if($scope.timer.resourceType !== 'Sensor variable'){
+          $scope.updatePayloadOperations($scope.timer.resourceType);
         }
         
         //Update date    
@@ -248,12 +253,46 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   $scope.timerFrequencyTypes = TypesFactory.getTimerFrequencies();
   $scope.timerWeekDays = TypesFactory.getTimerWeekDays();
   
-  $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "timer"});
+  $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "timer", "isSendPayload":true});
   
   //Get resources
   $scope.getResources = function(resourceType){
     return CommonServices.getResources(resourceType);
   }
+  
+  //Update Payload operations
+  $scope.updatePayloadOperations= function(resourceType){
+    $scope.payloadOperations = TypesFactory.getPayloadOperations({"resourceType":resourceType}); 
+  }
+  
+  //Get trigger time
+  $scope.setTriggerTime = function(isDefault){
+    if(!$scope.lTriggerTime){
+      $scope.lTriggerTime = new Date();
+      if(isDefault){
+        $scope.lTriggerTime.setHours(00,00,00,00);
+      }
+    }    
+    $scope.lTriggerTime.setFullYear(0000,00,00);
+  };
+  
+  $scope.frequencyData;
+  //Update Frequency Data    
+  $scope.updateFrequencyData = function(value1,value2){
+    if($scope.timer.timerType === 'Simple'){
+    }else if($scope.timer.timerType === 'Cron'){
+      $scope.frequencyData = value1;
+    }else{
+      if($scope.timer.frequencyType === 'Daily'){
+        $scope.frequencyData = value1.join();
+      }else if($scope.timer.frequencyType === 'Weekly'){
+        $scope.frequencyData = value1;
+      }else if($scope.timer.frequencyType === 'Monthly'){
+        $scope.frequencyData = value1;
+      } 
+    }
+    console.log('FrequencyData:'+$scope.frequencyData);
+  };
   
   //Update daily frequency
   $scope.updateFrequency = function() {
@@ -291,9 +330,9 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
       $scope.timer.validityTo = $scope.vToDate.getTime();
     }
     
-    //Update Frequency Data    
+    //Update Frequency Data
     if($scope.timer.timerType === 'Simple'){
-      $scope.timer.frequencyData = $scope.rpCount+','+$scope.rpInterval;
+      $scope.timer.frequencyData = ($scope.rpInterval*1000)+','+$scope.rpCount;
     }else if($scope.timer.timerType === 'Cron'){
       $scope.timer.frequencyData = $scope.cronFrequencyData;
     }else{
