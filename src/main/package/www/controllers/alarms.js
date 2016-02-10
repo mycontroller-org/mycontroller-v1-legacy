@@ -216,6 +216,7 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
   $scope.alarm = {};
   $scope.alarm.ignoreDuplicate = true;
   $scope.alarm.enabled = true;
+  $scope.alarm.disableWhenTrigger = false;
   
   // Update resources list
   $scope.getResources= function(resourceType){
