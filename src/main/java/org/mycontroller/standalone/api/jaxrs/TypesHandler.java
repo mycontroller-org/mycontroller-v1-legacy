@@ -78,9 +78,14 @@ public class TypesHandler {
 
     @GET
     @Path("/resourceTypes")
-    public Response getResourceTypes(@QueryParam("resourceType") String resourceType) {
+    public Response getResourceTypes(
+            @QueryParam("resourceType") String resourceType,
+            @QueryParam("isSendPayload") Boolean isSendPayload) {
+        if (isSendPayload == null) {
+            isSendPayload = false;
+        }
         return RestUtils.getResponse(Status.OK,
-                TypesUtils.getResourceTypes(AuthUtils.getUser(securityContext), resourceType));
+                TypesUtils.getResourceTypes(AuthUtils.getUser(securityContext), resourceType, isSendPayload));
     }
 
     @GET
@@ -129,13 +134,13 @@ public class TypesHandler {
     @GET
     @Path("/timers")
     public Response getTimers() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimers());
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimers(AuthUtils.getUser(securityContext)));
     }
 
     @GET
     @Path("/alarmDefinitions")
     public Response getAlarmDefinitions() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDefinitions());
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDefinitions(AuthUtils.getUser(securityContext)));
     }
 
     @GET
@@ -178,8 +183,8 @@ public class TypesHandler {
 
     @GET
     @Path("/alarmThresholdTypes")
-    public Response getAlarmThresholdTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmThresholdTypes());
+    public Response getAlarmThresholdTypes(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmThresholdTypes(resourceType));
     }
 
     @GET
@@ -192,6 +197,12 @@ public class TypesHandler {
     @Path("/alarmDampeningTypes")
     public Response getAlarmDampeningTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDampeningTypes());
+    }
+
+    @GET
+    @Path("/payloadOperations")
+    public Response getPayloadOperations(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getPayloadOperations(resourceType));
     }
 
     @GET

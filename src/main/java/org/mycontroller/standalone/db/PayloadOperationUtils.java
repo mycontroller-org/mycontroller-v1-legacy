@@ -25,7 +25,7 @@ public class PayloadOperationUtils {
 
     //http://www.tutorialspoint.com/cprogramming/c_operators.htm
     public enum SEND_PAYLOAD_OPERATIONS {
-        TOGGLE("toggle"),
+        TOGGLE("Toggle"),
         INCREMENT("++"),
         DECREMENT("--"),
         ADD("+"),
@@ -33,12 +33,14 @@ public class PayloadOperationUtils {
         MULTIPLIE("*"),
         DIVIDE("/"),
         MODULUS("%"),
-        START("start"),
-        STOP("stop"),
-        REBOOT("reboot"),
-        RELOAD("reload"),
-        ENABLE("enable"),
-        DISABLE("disable");
+        START("Start"),
+        STOP("Stop"),
+        REBOOT("Reboot"),
+        RELOAD("Reload"),
+        ENABLE("Enable"),
+        DISABLE("Disable"),
+        ON("On"),
+        OFF("Off");
 
         public static SEND_PAYLOAD_OPERATIONS get(int id) {
             for (SEND_PAYLOAD_OPERATIONS type : values()) {

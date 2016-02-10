@@ -605,11 +605,12 @@ myControllerModule.filter('mcResourceRepresentation', function() {
       return undefined;
     }
     return text.replace(/>>/g, '<i class="fa fa-chevron-right"></i>')
-               .replace(/\[RG\]:/g, '<i class="pficon pficon-replicator fa-lg"></i> ')
+               .replace(/\[RG\]:/g, '<i class="pficon pficon-replicator fa-lg mc-margin-icon"></i> ')
                .replace(/\[G\]:/g, '<i class="fa fa-plug"></i> ')
                .replace(/\[N\]:/g, '<i class="fa fa-sitemap"></i> ')
                .replace(/\[S\]:/g, '<i class="fa fa-eye"></i> ')
                .replace(/\[SV\]:/g, '')
+               .replace(/\[T\]:/g, '<i class="fa fa-clock-o"></i> ')
                .replace(/\[AD\]:/g, '<i class="fa fa-bell-o"></i> ');
   }
 });

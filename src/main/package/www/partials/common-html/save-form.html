@@ -17,7 +17,7 @@
 -->
 <div class="form-actions mc-form-actions-separator text-right">
   <a type="button" class="btn btn-default" ui-sref="{{cancelButtonState}}" class="button">{{ 'CANCEL' | translate }}</a>
-  <button type="button" class="btn btn-primary" ng-click="save()" ng-disabled="saveProgress || isSettingChange"
+  <button type="button" class="btn btn-primary" ng-click="save()" ng-disabled="saveProgress || isSettingChange || mcForm.$invalid"
     uib-tooltip="{{saveButtonTooltip}}" tooltip-placement="left">
     <div ng-show="saveProgress" class="spinner spinner-xs hk-modal-spinner"></div>
     {{saveProgress? (savingButtonName? savingButtonName: 'SAVING' | translate):(saveButtonName? saveButtonName: 'SAVE' | translate)}}

@@ -20,6 +20,7 @@ import java.util.List;
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
@@ -27,6 +28,8 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -34,6 +37,7 @@ import org.mycontroller.standalone.scheduler.SchedulerUtils;
  */
 public class AlarmUtils {
     public static final String ALARM_TIMER_JOB = "timer_by_alarm_definition_";
+    private static final Logger _logger = LoggerFactory.getLogger(AlarmUtils.class);
 
     private AlarmUtils() {
 
@@ -336,6 +340,9 @@ public class AlarmUtils {
     }
 
     public static void enableAlarmDefinition(AlarmDefinition alarmDefinition) {
+        if (alarmDefinition.getEnabled()) {
+            _logger.debug("This alarm definition already in enabled state. Nothing to do.[{}]", alarmDefinition);
+        }
         alarmDefinition.setEnabled(true);
         alarmDefinition.setTriggered(false);
         alarmDefinition.setDampeningInternal1(null);
@@ -399,6 +406,21 @@ public class AlarmUtils {
         DaoUtils.getAlarmDefinitionDao().update(alarmDefinition);
         if (alarmDefinition.getEnabled()) {
             enableAlarmDefinition(alarmDefinition);
+        }
+    }
+
+    public static void executeAlarmDefinitionOperation(ResourceModel resourceModel, PayloadOperation operation) {
+        switch (operation.getOperationType()) {
+            case ENABLE:
+                enableAlarmDefinition((AlarmDefinition) resourceModel.getResource());
+                break;
+            case DISABLE:
+                disableAlarmDefinition((AlarmDefinition) resourceModel.getResource());
+                break;
+            default:
+                _logger.warn("AlarmDefinition will not support for this operation!:[{}]",
+                        operation.getOperationType().getText());
+                break;
         }
     }
 }

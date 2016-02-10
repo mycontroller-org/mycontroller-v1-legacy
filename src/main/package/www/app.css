@@ -410,6 +410,10 @@ input.mc-color-steel-blue{
   margin-right: 8px;
 }
 
+.mc-margin-icon{
+  margin-right: 3px;
+}
+
 
 .mc-v-margin > div {
   padding:0 20px;

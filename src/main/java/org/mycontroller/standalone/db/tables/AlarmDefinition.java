@@ -48,6 +48,7 @@ import lombok.Data;
 public class AlarmDefinition {
     public static final String KEY_ID = "id";
     public static final String KEY_ENABLED = "enabled";
+    public static final String KEY_DISABLE_WHEN_TRIGGER = "disableWhenTrigger";
     public static final String KEY_NAME = "name";
     public static final String KEY_TRIGGERED = "triggered";
     public static final String KEY_RESOURCE_TYPE = "resourceType";
@@ -60,6 +61,9 @@ public class AlarmDefinition {
 
     @DatabaseField(canBeNull = false, columnName = KEY_ENABLED)
     private Boolean enabled;
+
+    @DatabaseField(canBeNull = false, columnName = KEY_DISABLE_WHEN_TRIGGER)
+    private Boolean disableWhenTrigger;
 
     @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_NAME)
     private String name;

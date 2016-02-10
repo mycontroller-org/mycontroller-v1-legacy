@@ -113,7 +113,7 @@ public class AlarmHandler {
     @Path("/")
     public Response add(AlarmDefinition alarmDefinition) {
         hasAccess(alarmDefinition);
-        AlarmUtils.updateAlarmDefinition(alarmDefinition);
+        AlarmUtils.addAlarmDefinition(alarmDefinition);
         return RestUtils.getResponse(Status.CREATED);
     }
 

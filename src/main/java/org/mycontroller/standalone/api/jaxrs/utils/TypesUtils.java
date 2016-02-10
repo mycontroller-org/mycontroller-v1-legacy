@@ -39,6 +39,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.PayloadOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
@@ -153,12 +154,36 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getAlarmThresholdTypes() {
+    public static ArrayList<TypesIdNameMapper> getAlarmThresholdTypes(String resourceTypeString) {
         THRESHOLD_TYPE[] types = THRESHOLD_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        RESOURCE_TYPE resourceType = RESOURCE_TYPE.fromString(resourceTypeString);
+        if (resourceType == null) {
+            resourceType = RESOURCE_TYPE.SENSOR_VARIABLE;
+        }
         for (THRESHOLD_TYPE type : types) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText())
-                    .build());
+            switch (resourceType) {
+                case GATEWAY:
+                case NODE:
+                case RESOURCES_GROUP:
+                    if (type == THRESHOLD_TYPE.VALUE) {
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                .displayName(type.getText()).build());
+                    }
+                    break;
+                case SENSOR_VARIABLE:
+                    if (type == THRESHOLD_TYPE.VALUE || type == THRESHOLD_TYPE.SENSOR_VARIABLE) {
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                .displayName(type.getText()).build());
+                    }
+                    break;
+
+                default:
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                            .displayName(type.getText()).build());
+                    break;
+            }
+
         }
         return typesIdNameMappers;
     }
@@ -173,9 +198,61 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
+    public static ArrayList<TypesIdNameMapper> getPayloadOperations(String resourceTypeString) {
+        SEND_PAYLOAD_OPERATIONS[] types = SEND_PAYLOAD_OPERATIONS.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        RESOURCE_TYPE resourceType = RESOURCE_TYPE.fromString(resourceTypeString);
+        if (resourceType == null) {
+            resourceType = RESOURCE_TYPE.SENSOR_VARIABLE;
+        }
+        for (SEND_PAYLOAD_OPERATIONS type : types) {
+            switch (resourceType) {
+                case ALARM_DEFINITION:
+                case TIMER:
+                    if (type == SEND_PAYLOAD_OPERATIONS.ENABLE || type == SEND_PAYLOAD_OPERATIONS.DISABLE) {
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                .displayName(type.getText()).build());
+                    }
+                    break;
+                case GATEWAY:
+                    if (type == SEND_PAYLOAD_OPERATIONS.ENABLE || type == SEND_PAYLOAD_OPERATIONS.DISABLE
+                            || type == SEND_PAYLOAD_OPERATIONS.RELOAD || type == SEND_PAYLOAD_OPERATIONS.START
+                            || type == SEND_PAYLOAD_OPERATIONS.STOP) {
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                .displayName(type.getText()).build());
+                    }
+                    break;
+                case NODE:
+                    if (type == SEND_PAYLOAD_OPERATIONS.REBOOT) {
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                .displayName(type.getText()).build());
+                    }
+                    break;
+                case RESOURCES_GROUP:
+                    if (type == SEND_PAYLOAD_OPERATIONS.ON || type == SEND_PAYLOAD_OPERATIONS.OFF) {
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                .displayName(type.getText()).build());
+                    }
+                    break;
+                case SENSOR_VARIABLE:
+                    if (type == SEND_PAYLOAD_OPERATIONS.TOGGLE || type == SEND_PAYLOAD_OPERATIONS.INCREMENT
+                            || type == SEND_PAYLOAD_OPERATIONS.DECREMENT) {
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                .displayName(type.getText()).build());
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+        return typesIdNameMappers;
+    }
+
     public static ArrayList<TypesIdNameMapper> getStateTypes(String resourceTypeString) {
         STATE[] types = STATE.values();
-        RESOURCE_TYPE resourceType = resourceTypeString != null ? RESOURCE_TYPE.fromString(resourceTypeString) : null;
+        RESOURCE_TYPE resourceType = RESOURCE_TYPE.fromString(resourceTypeString);
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (STATE type : types) {
             if (resourceType != null) {
@@ -188,6 +265,13 @@ public class TypesUtils {
                         }
                         break;
                     case RESOURCES_GROUP:
+                        if (type == STATE.ON || type == STATE.OFF) {
+                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                    .displayName(type.getText()).build());
+                        }
+                        break;
+                    case ALARM_DEFINITION:
+                    case TIMER:
                         if (type == STATE.ON || type == STATE.OFF) {
                             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
                                     .displayName(type.getText()).build());
@@ -236,7 +320,7 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getResourceTypes(User user, String resourceType) {
+    public static ArrayList<TypesIdNameMapper> getResourceTypes(User user, String resourceType, Boolean isSendPayload) {
         RESOURCE_TYPE[] types = RESOURCE_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         RESOURCE_TYPE resourceTypeFilter = null;
@@ -254,11 +338,16 @@ public class TypesUtils {
                 switch (resourceTypeFilter) {
                     case ALARM_DEFINITION:
                     case TIMER:
-                        if (type != RESOURCE_TYPE.ALARM_DEFINITION && type != RESOURCE_TYPE.TIMER
-                                && type != RESOURCE_TYPE.SENSOR) {
+                        if (isSendPayload && type != RESOURCE_TYPE.SENSOR) {
+                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
+                                    .displayName(type.getText()).build());
+                        } else if (type != RESOURCE_TYPE.SENSOR
+                                && type != RESOURCE_TYPE.ALARM_DEFINITION
+                                && type != RESOURCE_TYPE.TIMER) {
                             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
                                     .displayName(type.getText()).build());
                         }
+
                         break;
                     case RESOURCES_GROUP:
                         if (type != RESOURCE_TYPE.ALARM_DEFINITION && type != RESOURCE_TYPE.TIMER
@@ -407,9 +496,15 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getTimers() {
+    public static ArrayList<TypesIdNameMapper> getTimers(User user) {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        List<Timer> timers = DaoUtils.getTimerDao().getAll();
+        List<Timer> timers = null;
+        if (AuthUtils.isSuperAdmin(user)) {
+            timers = DaoUtils.getTimerDao().getAll();
+        } else {
+            //TODO: filter resource based on users role
+            return typesIdNameMappers;
+        }
         for (Timer timer : timers) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(timer.getId())
                     .displayName(new ResourceModel(RESOURCE_TYPE.TIMER, timer).getResourceLessDetails()).build());
@@ -447,9 +542,15 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getAlarmDefinitions() {
+    public static ArrayList<TypesIdNameMapper> getAlarmDefinitions(User user) {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        List<AlarmDefinition> alarmDefinitions = DaoUtils.getAlarmDefinitionDao().getAll();
+        List<AlarmDefinition> alarmDefinitions = null;
+        if (AuthUtils.isSuperAdmin(user)) {
+            alarmDefinitions = DaoUtils.getAlarmDefinitionDao().getAll();
+        } else {
+            //TODO: filter resource based on users role
+            return typesIdNameMappers;
+        }
         for (AlarmDefinition alarmDefinition : alarmDefinitions) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(alarmDefinition.getId())
                     .displayName(new ResourceModel(RESOURCE_TYPE.ALARM_DEFINITION, alarmDefinition)

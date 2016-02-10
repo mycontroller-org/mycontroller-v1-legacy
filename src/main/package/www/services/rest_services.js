@@ -87,6 +87,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getNodes:  { method: 'GET', isArray: true, params: {type: 'nodes'}  },
     getSensors:  { method: 'GET', isArray: true, params: {type: 'sensors'} },
     getSensorVariables:  { method: 'GET', isArray: true, params: {type: 'sensorVariables'} },
+    getAlarmDefinitions:  { method: 'GET', isArray: true, params: {type: 'alarmDefinitions'} },
+    getTimers:  { method: 'GET', isArray: true, params: {type: 'timers'} },
     getSensorValueTypes:  { method: 'GET', isArray: true, params: {type: 'sensorValueTypes'}  },
     getResourcesGroups:  { method: 'GET', isArray: true, params: {type: 'resourcesGroups'}  },
     getAlarmNotificationTypes:  { method: 'GET', isArray: true, params: {type: 'alarmNotificationTypes'}  },
@@ -94,6 +96,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getAlarmThresholdTypes:  { method: 'GET', isArray: true, params: {type: 'alarmThresholdTypes'}  },
     getAlarmDampeningTypes:  { method: 'GET', isArray: true, params: {type: 'alarmDampeningTypes'}  },
     getStateTypes:  { method: 'GET', isArray: true, params: {type: 'stateTypes'}  },
+    getPayloadOperations:  { method: 'GET', isArray: true, params: {type: 'payloadOperations'}  },
     //Timers
     getTimerTypes:  { method: 'GET', isArray: true, params: {type: 'timerTypes'}  },
     getTimerFrequencies:  { method: 'GET', isArray: true, params: {type: 'timerFrequencyTypes'}  },

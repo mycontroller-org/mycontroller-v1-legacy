@@ -227,6 +227,10 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
       return TypesFactory.getNodes();
     }else if(resourceType === 'Resources group'){
       return TypesFactory.getResourcesGroups();
+    }else if(resourceType === 'Alarm definition'){
+      return TypesFactory.getAlarmDefinitions();
+    }else if(resourceType === 'Timer'){
+      return TypesFactory.getTimers();
     }else if(resourceType === 'Value'){
       $scope.updateThresholdValueTypes($scope.alarm.resourceType);
       return null;
@@ -240,10 +244,16 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
     $scope.alarmTriggerTypes = TypesFactory.getAlarmTriggerTypes({"resourceType":resourceType}); 
   }
   
-  //Update Threshold types
+  //Update Threshold types value
   $scope.updateThresholdValueTypes= function(resourceType){
     $scope.stateTypes = TypesFactory.getStateTypes({"resourceType":resourceType}); 
   }
+
+  //Update Payload operations
+  $scope.updatePayloadOperations= function(resourceType){
+    $scope.payloadOperations = TypesFactory.getPayloadOperations({"resourceType":resourceType}); 
+  }
+
   
   if($stateParams.id){
     AlarmsFactory.get({"id":$stateParams.id},function(response) {
@@ -252,7 +262,11 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
         if($scope.alarm.notificationType === 'Send payload'){
           $scope.plResourcesList = $scope.getResources($scope.alarm.variable1);
           $scope.plResourceId = parseInt($scope.alarm.variable2);
-        }       
+          //Update payload operations
+          if($scope.alarm.variable1 !== 'Sensor variable'){
+            $scope.updatePayloadOperations($scope.alarm.variable1);
+          }
+        }
         
         //Update trigger types
         $scope.updateTriggerTypes($scope.alarm.resourceType);
@@ -261,7 +275,7 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
         $scope.rsResourcesList = $scope.getResources($scope.alarm.resourceType);        
         
         //Update Threshold Type        
-        if($scope.alarm.thresholdType === 'Sensor variable' || $scope.alarm.thresholdType === 'Gateway state' || $scope.alarm.thresholdType === 'Node state'){
+        if($scope.alarm.thresholdType === 'Sensor variable'){
           $scope.thResourcesList = $scope.getResources($scope.alarm.thresholdType);
           $scope.alarm.thresholdValue = parseInt($scope.alarm.thresholdValue);
         }else{
@@ -292,9 +306,8 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
 
   //--------------pre load -----------
   $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "Alarm definition"});
-  //$scope.alarmTriggerTypes = TypesFactory.getAlarmTriggerTypes();
+  $scope.spResourceTypes = TypesFactory.getResourceTypes({"resourceType": "Alarm definition", "isSendPayload":true});
   $scope.alarmThresholdTypes = TypesFactory.getAlarmThresholdTypes();
-  //$scope.stateTypes = TypesFactory.getStateTypes();
   $scope.dampeningTypes = TypesFactory.getAlarmDampeningTypes();
   $scope.notificationTypes = TypesFactory.getAlarmNotificationTypes();
 
@@ -307,9 +320,9 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
   //$scope.isSettingChange = false;
 
   $scope.save = function(){
-    //Update Notification Type
-    if($scope.alarm.notificationType === 'Send payload'){
-       $scope.alarm.variable2 = $scope.plResourceId;
+    //Update Threshold type
+    if(!$scope.alarm.thresholdType){
+      $scope.alarm.thresholdType = 'Value';
     }
     
     //Update dampening value
