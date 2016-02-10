@@ -364,7 +364,7 @@
     "TIMER_NAME": "Имя таймера",
     "TIMER_TYPE": "Тип таймера",
     "TIME_FORMAT": "Формат времени",
-    "TIME_HH_MM_SS": "Time(HH:mm:ss)",
+    "TIME_HH_MM_SS": "Время (HH:mm:ss)",
     "TIME_OFFSET_HH_MM_SS": "Time offset (HH:mm:ss)",
     "TIME_RANGE": "Диапазон времени",
     "TOPICS_PUBLISH": "Публикация топиков",
