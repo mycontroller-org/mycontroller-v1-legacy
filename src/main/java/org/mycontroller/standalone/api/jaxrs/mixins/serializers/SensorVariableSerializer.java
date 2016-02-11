@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.exception.mappers.VariableStatusModel;
+import org.mycontroller.standalone.api.jaxrs.mapper.VariableStatusModel;
 import org.mycontroller.standalone.db.ComparatorSensorVariable;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SensorVariable;

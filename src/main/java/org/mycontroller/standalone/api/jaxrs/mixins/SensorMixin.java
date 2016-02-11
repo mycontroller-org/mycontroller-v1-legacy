@@ -18,7 +18,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 import java.util.List;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
-import org.mycontroller.standalone.api.jaxrs.exception.mappers.VariableStatusModel;
+import org.mycontroller.standalone.api.jaxrs.mapper.VariableStatusModel;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.SensorTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LastSeenSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorTypeSerializer;
