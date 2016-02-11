@@ -21,16 +21,24 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 
-@Path("/rest/{path : .*}")
+@Path("/{path : .*}")
 public class OptionsHandler {
+    private static final Logger _logger = LoggerFactory.getLogger(OptionsHandler.class);
+
+    //https://gist.github.com/tganzarolli/8520728
+    //http://stackoverflow.com/questions/21221688/angularjs-resource-makes-http-options-request-instead-of-http-post-for-save-me
     @OPTIONS
     public Response sendPreFlightResponse() {
+        _logger.trace("Called pre flight options...");
         return RestUtils.getResponse(Status.OK);
     }
+
 }

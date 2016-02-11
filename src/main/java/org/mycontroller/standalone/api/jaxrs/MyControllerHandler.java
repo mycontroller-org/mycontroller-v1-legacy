@@ -20,7 +20,6 @@ import java.util.Date;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -36,8 +35,6 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
 import org.mycontroller.standalone.mysensors.MySensorsRawMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -51,24 +48,14 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
 public class MyControllerHandler {
-    private static final Logger _logger = LoggerFactory.getLogger(MyControllerHandler.class);
 
     @Context
     SecurityContext securityContext;
 
-    //https://gist.github.com/tganzarolli/8520728
-    //http://stackoverflow.com/questions/21221688/angularjs-resource-makes-http-options-request-instead-of-http-post-for-save-me
-    @OPTIONS
-    @Path("/{path:.*}")
-    public Response sendPreFlightResponse() {
-        _logger.trace("Called sendPreFlightResponse...");
-        return RestUtils.getResponse(Status.OK);
-    }
-
     @GET
     @Path("/ping")
     public Response ping() {
-        return RestUtils.getResponse(Status.OK,  "{\"message\":\"Hello!\"}");
+        return RestUtils.getResponse(Status.OK, "{\"message\":\"Hello!\"}");
     }
 
     @GET

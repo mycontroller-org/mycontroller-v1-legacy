@@ -30,6 +30,7 @@ import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
 import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
+import org.mycontroller.standalone.api.jaxrs.OptionsHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesGroupHandler;
 import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
 import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
@@ -143,7 +144,7 @@ public class StartApp {
         resources.add(DashboardHandler.class.getName());
 
         //Add PreFlight handler
-        //resources.add(OptionsHandler.class.getName());
+        resources.add(OptionsHandler.class.getName());
 
         //Add Exception mapper(providers)
         ArrayList<Object> providers = new ArrayList<Object>();
