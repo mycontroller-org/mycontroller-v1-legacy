@@ -232,11 +232,12 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
 });
 
 
-myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService, $filter) {
+myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService, $filter, CommonServices) {
   $scope.gateway = {};
   $scope.gateway.enabled = true;
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
   $scope.gatewayTypes = TypesFactory.getGatewayTypes();
+  $scope.cs = CommonServices;
   
   if($stateParams.id){
     $scope.gateway = GatewaysFactory.get({"gatewayId":$stateParams.id});
@@ -264,7 +265,6 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   $scope.cancelButtonState = "gatewaysList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
   
   $scope.save = function(){
       $scope.saveProgress = true;

@@ -175,7 +175,7 @@
   </head>
   
   <body ng-controller="McNavBarCtrl">
-    <nav ng-show="isAuthenticated()" class="navbar navbar-default navbar-fixed-top navbar-pf" role="navigation">
+    <nav ng-if="isAuthenticated()" class="navbar navbar-default navbar-fixed-top navbar-pf" role="navigation">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">

@@ -210,13 +210,14 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
 
 
 //Add Edit alarm defination controller
-myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stateParams, $state, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, AlarmsFactory, mchelper, alertService, displayRestError, $filter) {
+myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stateParams, $state, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, AlarmsFactory, mchelper, alertService, displayRestError, $filter, CommonServices) {
  
   $scope.mchelper = mchelper;
   $scope.alarm = {};
   $scope.alarm.ignoreDuplicate = true;
   $scope.alarm.enabled = true;
   $scope.alarm.disableWhenTrigger = false;
+  $scope.cs = CommonServices;
   
   // Update resources list
   $scope.getResources= function(resourceType){

@@ -120,15 +120,18 @@
                 </select>
               </div>
               <div class="col-sm-3 mc-form-fixer"  ng-if="alarm.dampeningType === 'Consecutive' || alarm.dampeningType === 'Last N evaluations'">
-                <input class="form-control" placeholder="{{ 'OCCURRENCES' | translate }}" ng-model="alarm.dampeningVar1" required />
+                <input class="form-control" placeholder="{{ 'OCCURRENCES' | translate }}" ng-model="alarm.dampeningVar1" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
               <div class="col-sm-3 mc-form-fixer" ng-if="alarm.dampeningType === 'Last N evaluations'">
-                <input class="form-control" placeholder="{{ 'EVALUATIONS' | translate }}" ng-model="alarm.dampeningVar2" required />
+                <input class="form-control" placeholder="{{ 'EVALUATIONS' | translate }}" ng-model="alarm.dampeningVar2" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
               
               <div ng-if="alarm.dampeningType === 'Active time'">
                 <div class="col-sm-3 mc-form-fixer">
-                  <input class="form-control" placeholder="{{ 'TIME' | translate }}" ng-model="alarm.dampeningTime" required />
+                  <input class="form-control" placeholder="{{ 'TIME' | translate }}" ng-model="alarm.dampeningTime" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
                 </div>
                 
                 <div class="col-sm-3 mc-form-fixer">
@@ -214,7 +217,8 @@
                   </select>
                 </div>
                 <div class="col-sm-6 mc-form-fixer">
-                  <input class="form-control" placeholder="{{ 'DELAY_TIME_IN_SECONDS' | translate }}" ng-model="alarm.variable4"/>
+                  <input class="form-control" placeholder="{{ 'DELAY_TIME_IN_SECONDS' | translate }}" ng-model="alarm.variable4" pf-validation="cs.isNumber(input)" />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
                 </div>
               </div>
             </div> <!-- List send payload -->

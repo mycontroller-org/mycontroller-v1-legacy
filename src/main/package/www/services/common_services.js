@@ -379,6 +379,25 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       animate:true,
       size:"small",
     };
+    
+  //validation methods
+  //-----------------------
+  
+  //Number validation
+  commonService.isNumber = function (value) {
+    if (isNaN(value)) {
+      return false;
+    } 
+    return true;
+  };
+  
+  //is contains space validation
+  commonService.isContainsSpace = function (value) {
+    if(value !== undefined){
+      return !value.match(/\s/g);
+    }
+    return true;    
+  };
   
  return commonService;
 

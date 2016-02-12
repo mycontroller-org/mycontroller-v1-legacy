@@ -83,10 +83,12 @@
             
             <div ng-if="timer.timerType === 'Simple'">
               <div class="col-sm-4 mc-form-fixer">
-                <input class="form-control" placeholder="{{ 'INTERVAL_IN_SECONDS' | translate }}" ng-model="$parent.rpInterval" required />
+                <input class="form-control" placeholder="{{ 'INTERVAL_IN_SECONDS' | translate }}" ng-model="$parent.rpInterval" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
               <div class="col-sm-3 mc-form-fixer">
-                <input class="form-control" placeholder="{{ 'COUNT' | translate }}" ng-model="$parent.rpCount" required />
+                <input class="form-control" placeholder="{{ 'COUNT' | translate }}" ng-model="$parent.rpCount" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
             </div>
             

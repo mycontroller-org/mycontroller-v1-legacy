@@ -17,16 +17,19 @@
 -->
 <legend>
   <span style="font-size: 16px" class="pull-right">
-    <a href="" ng-if="editMode" title="add new widget" ng-click="addWidgetDialog()">
+    <a href="" ng-if="editMode" uib-tooltip="{{ 'ADD_NEW_WIDGET' | translate }}" tooltip-placement="left" ng-click="addWidgetDialog()">
       <i class="glyphicon glyphicon-plus-sign"></i>
     </a>
-    <a href="" ng-if="editMode" title="edit dashboard" ng-click="editDashboardDialog()">
+    <a href="" ng-if="editMode" uib-tooltip="{{ 'EDIT_DASHBOARD' | translate }}" tooltip-placement="left" ng-click="editDashboardDialog()">
       <i class="glyphicon glyphicon-cog"></i>
     </a>
-    <a href="" ng-if="options.editable" title="{{editMode ? 'save changes' : 'enable edit mode'}}" ng-click="toggleEditMode()">
-      <i class="glyphicon" x-ng-class="{'glyphicon-edit' : !editMode, 'glyphicon-save' : editMode}"></i>
+    <a href="" ng-if="editMode" uib-tooltip="{{'SAVE_CHANGES' | translate}}" tooltip-placement="left" ng-click="toggleEditMode()">
+      <i class="glyphicon glyphicon-save"></i>
     </a>
-    <a href="" ng-if="editMode" title="undo changes" ng-click="cancelEditMode()">
+    <a href="" ng-if="!editMode" uib-tooltip="{{'ENABLE_EDIT_MODE' | translate}}" tooltip-placement="left" ng-click="toggleEditMode()">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a href="" ng-if="editMode" uib-tooltip="{{ 'UNDO_CHANGES' | translate }}" tooltip-placement="left"  ng-click="cancelEditMode()">
       <i class="glyphicon glyphicon-repeat adf-flip"></i>
     </a>
   </span>

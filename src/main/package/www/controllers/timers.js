@@ -194,6 +194,7 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   $scope.timer = {};
   $scope.timer.enabled=true;
   $scope.showMeridian = angular.equals(mchelper.cfg.timeFormatSet, "12 hours");
+  $scope.cs = CommonServices;
 
     if($stateParams.id){
       TimersFactory.get({"id":$stateParams.id},function(response) {
