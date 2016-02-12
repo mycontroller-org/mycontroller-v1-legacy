@@ -170,6 +170,7 @@
     "GATEWAY_DETAILS": "Детали шлюза",
     "GATEWAY_NAME": "Имя Шлюза",
     "GATEWAY_TYPE": "Тип Шлюза",
+    "GLOBAL_PAGE_REFRESH_TIME": "Global page refresh time",
     "GRANT_ACCESS_TO_CHILD_RESOURCES_IN_ROLES": "Предоставить доступ к дочерним ресурсам (в роли)",
     "GROUPS": "Группы",
     "GROUP_NAME": "Название группы",

@@ -45,6 +45,7 @@ public class MyControllerSettings {
     public static final String SKEY_LOGIN_MESSAGE = "loginMessage";
     public static final String SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES = "grantAccessToChildResources";
     public static final String SKEY_RESOURCES_LOG_LEVEL = "resourcesLogLevel";
+    public static final String SKEY_GLOBAL_PAGE_REFRESH_TIME = "globalPageRefreshTime";
 
     private String language;
     private String timeFormat;
@@ -55,6 +56,7 @@ public class MyControllerSettings {
     private String loginMessage;
     private Boolean grantAccessToChildResources;
     private String resourcesLogLevel;
+    private Long globalPageRefreshTime;
 
     public static MyControllerSettings get() {
         return MyControllerSettings.builder()
@@ -67,6 +69,7 @@ public class MyControllerSettings {
                 .loginMessage(getValue(SKEY_LOGIN_MESSAGE))
                 .grantAccessToChildResources(NumericUtils.getBoolean(getValue(SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES)))
                 .resourcesLogLevel(getValue(SKEY_RESOURCES_LOG_LEVEL))
+                .globalPageRefreshTime(NumericUtils.getLong(getValue(SKEY_GLOBAL_PAGE_REFRESH_TIME)))
                 .build();
     }
 
@@ -91,6 +94,10 @@ public class MyControllerSettings {
         }
         if (resourcesLogLevel != null) {
             updateValue(SKEY_RESOURCES_LOG_LEVEL, resourcesLogLevel);
+        }
+
+        if (globalPageRefreshTime != null) {
+            updateValue(SKEY_GLOBAL_PAGE_REFRESH_TIME, globalPageRefreshTime);
         }
     }
 

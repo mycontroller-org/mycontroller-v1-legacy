@@ -308,6 +308,7 @@ public class DataBaseUtils {
                     .loginMessage("Default username: <b>admin</b>, password: <b>admin<b>")
                     .grantAccessToChildResources(true)
                     .resourcesLogLevel(LOG_LEVEL.NOTICE.getText())
+                    .globalPageRefreshTime(TIME_REF.ONE_SECOND * 30)
                     .build().save();
 
             // Update Sensor Type and Variables Type mapping
@@ -467,6 +468,9 @@ public class DataBaseUtils {
             // Gas meter, V_FLOW, V_VOLUME
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_GAS, MESSAGE_TYPE_SET_REQ.V_FLOW);
             createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_GAS, MESSAGE_TYPE_SET_REQ.V_VOLUME);
+
+            //GPS
+            createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_GPS, MESSAGE_TYPE_SET_REQ.V_POSITION);
 
             dbVersion = 8;
             // update version information

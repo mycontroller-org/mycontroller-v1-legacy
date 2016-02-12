@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionControllerList', function(
-  alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, SettingsFactory, $uibModal, displayRestError, mchelper, CommonServices, pfViewUtils, $filter, $window) {
+  alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, SettingsFactory, $uibModal, displayRestError, mchelper, CommonServices, pfViewUtils, $filter, $window, $interval) {
   
   //GUI page settings
   //$scope.headerStringList = "Sesnors detail";
@@ -36,17 +36,27 @@ myControllerModule.controller('SensorsActionControllerList', function(
     return CommonServices.getMin(item1, item2);
   };
   
-  //get all Sensors
-  $scope.getAllItems = function(){
-    $scope.dataLoading = true;
+  //Stop if an request sent already
+  var updateInprogress = false;  
+  //get all items
+  $scope.getAllItems = function(hideLoading){
+    if(updateInprogress){
+      return;
+    }
+    updateInprogress = true;    
+    if(!hideLoading){
+      $scope.dataLoading = true;
+    }
     SensorsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
       $scope.dataLoading = false;
+      updateInprogress = false;
     },function(error){
       displayRestError.display(error);
       $scope.dataLoading = false;
+      updateInprogress = false;
     });
   }
 
@@ -225,5 +235,16 @@ myControllerModule.controller('SensorsActionControllerList', function(
       $scope.colLg3 = isInnterWidth(1200,1600, value);
   });
 
+  function updatePage(){
+    $scope.getAllItems(true);
+  };
+
+  // global page refresh
+  var promise = $interval(updatePage, mchelper.cfg.globalPageRefreshTime);
+  
+  // cancel interval on scope destroy
+  $scope.$on('$destroy', function(){
+    $interval.cancel(promise);
+  });
 
 });

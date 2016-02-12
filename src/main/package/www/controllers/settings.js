@@ -33,6 +33,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
     SettingsFactory.getController(function(resource){
       $scope.controllerSettings = resource;
       $scope.aliveCheckMinutes = $scope.controllerSettings.aliveCheckInterval / 60000;
+      $scope.globalPageRefreshTime = $scope.controllerSettings.globalPageRefreshTime / 1000;
     });
   };
   
@@ -46,6 +47,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.updateSettingsLocation();
   $scope.updateSettingsController();
   $scope.aliveCheckMinutes = null;
+  $scope.globalPageRefreshTime = null;
    
   //Save functions
   
@@ -65,6 +67,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.saveController = function(){
     $scope.saveProgress.controller = true;
     $scope.controllerSettings.aliveCheckInterval = $scope.aliveCheckMinutes * 60000;
+    $scope.controllerSettings.globalPageRefreshTime = $scope.globalPageRefreshTime * 1000;
     SettingsFactory.saveController($scope.controllerSettings,function(response) {
           StatusFactory.getConfig(function(response) {
             mchelper.cfg = response;//Update config

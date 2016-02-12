@@ -170,6 +170,7 @@
     "GATEWAY_DETAILS": "Gateway details",
     "GATEWAY_NAME": "Gateway name",
     "GATEWAY_TYPE": "Gateway Typ",
+    "GLOBAL_PAGE_REFRESH_TIME": "Global page refresh time",
     "GRANT_ACCESS_TO_CHILD_RESOURCES_IN_ROLES": "Grant access to child resources(in roles)",
     "GROUPS": "Gruppen",
     "GROUP_NAME": "Gruppenname",

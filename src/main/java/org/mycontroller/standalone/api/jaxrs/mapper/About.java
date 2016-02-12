@@ -47,6 +47,7 @@ public class About {
     private String timeFormatWithoutSeconds;
     private String timeFormatSet;
     private String loginMessage;
+    private Long globalPageRefreshTime;
 
     public About() {
         Date date = new Date();
@@ -64,5 +65,7 @@ public class About {
         this.timeFormat = ObjectFactory.getAppProperties().getTimeFormat();
         this.timeFormatWithoutSeconds = ObjectFactory.getAppProperties().getTimeFormatWithoutSeconds();
         this.timeFormatSet = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
+        this.globalPageRefreshTime = ObjectFactory.getAppProperties().getControllerSettings()
+                .getGlobalPageRefreshTime();
     }
 }
