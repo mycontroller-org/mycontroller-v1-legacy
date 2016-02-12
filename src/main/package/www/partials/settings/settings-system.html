@@ -29,7 +29,7 @@
       <div class="card-pf">
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-map-marker fa-lg"></i> {{ 'LOCATION' | translate }}</h2></div>
         <div class="card-pf-body">
-          <form class="form-horizontal">
+          <form class="form-horizontal" name="mcForm">
             
             <div class="form-group">
               <label class="col-sm-2 control-label"><i class="wi wi-sunrise mc-icon-2x" uib-tooltip="{{ 'SUNRISE' | translate }}" tooltip-placement="left"></i></label>
@@ -49,7 +49,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'LATITUDE' | translate }}</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.latitude"/>
+                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.latitude" required />
                 <span ng-hide="editEnable.location">{{locationSettings.latitude}}</span>
               </div>
             </div>
@@ -57,7 +57,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'LONGITUDE' | translate }}</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.longitude"/>
+                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.longitude" required />
                 <span ng-hide="editEnable.location">{{locationSettings.longitude}}</span>
               </div>
             </div>
@@ -67,7 +67,7 @@
           <div class="form-actions text-right">
             <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.location" ng-click="editEnable.location = true">{{ 'EDIT' | translate }}</button>
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.location" ng-click="updateSettingsLocation();editEnable.location = false">{{ 'CANCEL' | translate }}</button>
-            <button type="button" class="btn btn-primary" ng-click="saveLocation()"  ng-show="editEnable.location" ng-disabled="saveProgress.location">
+            <button type="button" class="btn btn-primary" ng-click="saveLocation()"  ng-show="editEnable.location" ng-disabled="saveProgress.location || mcForm.$invalid">
               <div ng-show="saveProgress.location" class="spinner spinner-xs"></div>
               {{ 'SAVE' | translate }}
             </button>
@@ -81,7 +81,7 @@
       <div class="card-pf">
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> {{ 'MY_CONTROLLER' | translate }}</h2></div>
         <div class="card-pf-body">
-          <form class="form-horizontal">
+          <form class="form-horizontal" name="mcFormController">
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'VERSION' | translate }}</label>
@@ -105,7 +105,7 @@
               </div>
               <div  ng-show="editEnable.controller">
                 <div class="col-sm-2">
-                  <input class="form-control" ng-model="aliveCheckMinutes"/>
+                  <input class="form-control" ng-model="aliveCheckMinutes" required />
                 </div>
                 <div class="col-sm-3 mc-form-fixer">
                   <span>Minutes</span>
@@ -134,7 +134,7 @@
                     <option value="24 hours">{{ '24_HOURS' | translate }}</option>
                   </select>
                 </div>
-                <span ng-hide="editEnable.controller">{{controllerSettings.timeFormat}}</span>
+                <span ng-hide="editEnable.controller">{{controllerSettings.timeFormat.toUpperCase().replace(" ", "_") | translate}}</span>
               </div>
             </div>
             
@@ -147,7 +147,7 @@
                     <option value="Imperial">{{ 'IMPERIAL' | translate }}</option>
                   </select>
                 </div>
-                <span ng-hide="editEnable.controller">{{controllerSettings.unitConfig}}</span>
+                <span ng-hide="editEnable.controller">{{controllerSettings.unitConfig.toUpperCase() | translate}}</span>
               </div>
             </div>
             
@@ -187,7 +187,7 @@
           <div class="form-actions text-right">
             <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.controller" ng-click="editEnable.controller = true">{{ 'EDIT' | translate }}</button>
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.controller" ng-click="updateSettingsController();editEnable.controller = false">{{ 'CANCEL' | translate }}</button>
-            <button type="button" class="btn btn-primary" ng-click="saveController()"  ng-show="editEnable.controller" ng-disabled="saveProgress.controller">
+            <button type="button" class="btn btn-primary" ng-click="saveController()"  ng-show="editEnable.controller" ng-disabled="saveProgress.controller || mcFormController.$invalid">
               <div ng-show="saveProgress.controller" class="spinner spinner-xs"></div>
               {{ 'SAVE' | translate }}
             </button>

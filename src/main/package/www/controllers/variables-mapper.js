@@ -58,6 +58,11 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
         title:  $filter('translate')('SENSOR_TYPE'),
         placeholder:  $filter('translate')('FILTER_BY_SENSOR_TYPE'),
         filterType: 'text'
+      },{
+        id: 'value',
+        title:  $filter('translate')('SENSOR_VARIABLES'),
+        placeholder:  $filter('translate')('FILTER_BY_SENSOR_VARIABLES'),
+        filterType: 'array'
       },
     ],
     resultsCount: $scope.filteredList.length,

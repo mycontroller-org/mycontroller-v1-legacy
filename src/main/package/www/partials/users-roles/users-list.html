@@ -67,7 +67,7 @@
     <!-- Display When no data on table -->
     <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
 
-    <div ng-show="filteredList.length > 0">
+    <div ng-if="filteredList.length > 0">
       <!-- Table -->
       <table class="table table-hover table-bordered table-striped mc-table">
         <thead>

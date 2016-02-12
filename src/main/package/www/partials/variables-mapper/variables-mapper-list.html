@@ -19,11 +19,11 @@
 <div class="container-fluid"> <!-- Container-fluid -->
   
   <!-- Loading icon disaplay --> 
-  <div ng-hide="orgList.$resolved">
+  <div ng-if="!orgList.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
-  <div ng-show="orgList.$resolved"> <!-- Main Message -->
+  <div ng-if="orgList.$resolved"> <!-- Main Message -->
     
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
@@ -39,17 +39,17 @@
     </div>
 
     <!-- Display When no data on table -->
-    <div ng-show="orgList.length > 0 && filteredList.length == 0">
+    <div ng-if="orgList.length > 0 && filteredList.length == 0">
       <legend></legend>
       <div class="blank-slate-pf" >
         <div class="blank-slate-pf-icon">
           <i class="fa fa-exclamation-triangle"></i>
         </div>
-        <h1>Oops! No results found. Modify your query.</h1>
+        <h1>{{ 'NO_ITEMS_IN_FILTER' | translate }}</h1>
       </div>
     </div>
 
-    <div ng-show="filteredList.length > 0">
+    <div ng-if="filteredList.length > 0">
       <!-- Table -->
       <table class="table table-hover table-bordered table-striped mc-table">
         <thead>
@@ -57,13 +57,13 @@
           <th class="col-md-11">{{ 'VARIABLES' | translate }}</th>
         </thead>
         <tbody>
-          <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" ng-click="selectItem(item)" ng-class="{'mc-selected': itemName === item.displayName}" >
+          <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" pagination-id="variable-mapper" ng-click="selectItem(item)" ng-class="{'mc-selected': itemName === item.displayName}" >
             <td class="col-md-1">{{item.displayName}}</td>
             <td class="col-md-11">{{item.value.join(', ')}}</td>
           </tr>
         </tbody>
       </table>
-      <dir-pagination-controls class="pull-right" boundary-links="true"></dir-pagination-controls>
+      <dir-pagination-controls class="pull-right" boundary-links="true" pagination-id="variable-mapper"></dir-pagination-controls>
     </div>
     
   </div> <!-- Main Message -->

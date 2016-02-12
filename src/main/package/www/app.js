@@ -651,3 +651,9 @@ myControllerModule.controller('ControllerDeleteModal', function ($scope, $uibMod
   $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });
 
+//Global exception handler
+myControllerModule.factory('$exceptionHandler', function () {
+  return function errorCatcherHandler(exception, cause) {
+    throw exception;
+  };
+});

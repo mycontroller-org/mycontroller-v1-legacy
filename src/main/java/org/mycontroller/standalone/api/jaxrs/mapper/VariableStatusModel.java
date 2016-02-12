@@ -58,7 +58,7 @@ public class VariableStatusModel {
         this.value = sensorVariable.getValue();
         this.friendlyValue = SensorUtils.getValue(sensorVariable);
         this.timestamp = sensorVariable.getTimestamp();
-        this.sensorName = sensorVariable.getSensor().getSensorId() + ":" + sensorVariable.getSensor().getName();
+        this.sensorName = sensorVariable.getSensor().getName();
         this.resourceName = new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails();
     }
 

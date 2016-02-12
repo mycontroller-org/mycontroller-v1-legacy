@@ -223,7 +223,11 @@ myControllerModule.controller('ProfileControllerUpdate', function ($scope, $stat
         $scope.item = response;
         mchelper.user = angular.copy(response.user);
       },function(error){
-        displayRestError.display(error);
+        if(error.statusText === 'Unauthorized'){
+          $state.go("login");
+        }else{
+          displayRestError.display(error);
+        }
       });
   }
 

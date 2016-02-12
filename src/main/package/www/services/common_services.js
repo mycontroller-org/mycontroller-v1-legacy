@@ -96,6 +96,8 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       }else{
         match = false;
       }
+    }else if(filter.type === 'array'){
+      return value.indexOf(filter.value) > -1;
     }else{
         match = angular.equals(value, filter.value);
     }
