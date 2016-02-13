@@ -199,6 +199,15 @@ public class StartApp {
                 ObjectFactory.getAppProperties().getWebHttpPort());
     }
 
+    private static void stopHTTPWebServer() {
+        if (server != null) {
+            server.stop();
+            _logger.debug("Web server stopped.");
+        } else {
+            _logger.debug("Web server is not running.");
+        }
+    }
+
     private static boolean startServices() throws ClassNotFoundException, SQLException {
         //Start order..
         // - Add Shutdown hook
@@ -248,12 +257,14 @@ public class StartApp {
 
     public static synchronized void stopServices() {
         //Stop order..
+        // - stop web server
         // - Stop scheduler
         // - Stop Gateway Listener
         // - Stop MQTT broker
         // - Stop message Monitor Thread
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
+        stopHTTPWebServer();
         SchedulerUtils.stop();
         GatewayUtils.unloadAllGateways();
         MoquetteMqttBroker.stop();

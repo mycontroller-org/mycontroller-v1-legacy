@@ -111,11 +111,11 @@ public class MyControllerSettings {
 
     @JsonIgnore
     public void updateInternal() {
-        if (this.version != null) {
-            updateValue(SKEY_VERSION, this.version);
+        if (version != null) {
+            updateValue(SKEY_VERSION, version);
         }
-        if (this.dbVersion != null) {
-            updateValue(SKEY_DB_VERSION, this.dbVersion);
+        if (dbVersion != null) {
+            updateValue(SKEY_DB_VERSION, dbVersion);
         }
     }
 }

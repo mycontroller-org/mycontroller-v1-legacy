@@ -154,6 +154,7 @@ public class SettingsHandler {
     @Path("/sms")
     public Response saveSms(SmsSettings smsSettings) {
         smsSettings.save();
+        SMSUtils.clearClients();//Clear clients when SMS updated
         SettingsUtils.updateAllSettings();
         //When update sms notification settings, clear clients
         SMSUtils.clearClients();

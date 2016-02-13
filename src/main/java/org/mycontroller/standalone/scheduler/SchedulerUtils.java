@@ -82,6 +82,8 @@ public class SchedulerUtils {
     }
 
     public static void stop() {
+        //Stop NodeAliveStatusJob, which has thread sleep
+        NodeAliveStatusJob.setTerminateAliveCheck(true);
         SundialJobScheduler.shutdown();
         _logger.debug("Scheduler stopped...");
     }

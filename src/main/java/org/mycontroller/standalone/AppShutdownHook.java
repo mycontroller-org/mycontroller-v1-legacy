@@ -32,6 +32,7 @@ public class AppShutdownHook {
                 this.setName(AppProperties.APPLICATION_NAME + " Shutdown-Hook");
                 _logger.debug("Shutdown hook called. Running stop services...");
                 StartApp.stopServices();
+                _logger.debug("Shutdown hook completed...");
             }
         });
         _logger.debug("Shutdown hook attached...");

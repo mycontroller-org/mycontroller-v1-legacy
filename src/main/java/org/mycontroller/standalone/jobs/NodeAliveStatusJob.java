@@ -39,12 +39,21 @@ public class NodeAliveStatusJob extends Job {
     private static final Logger _logger = LoggerFactory.getLogger(NodeAliveStatusJob.class);
     private static final long WAIT_TIME_TO_CHECK_ALIVE_STATUS = NumericUtils.SECOND * 30;
     public static final long DEFAULT_ALIVE_CHECK_INTERVAL = 30 * NumericUtils.MINUTE;
+    private static boolean terminateAliveCheck = false;
 
     @Override
     public void doRun() throws JobInterruptException {
         try {
             this.sendHearbeat();
-            Thread.sleep(WAIT_TIME_TO_CHECK_ALIVE_STATUS);
+            long referenceTimestamp = 0;
+            while (referenceTimestamp <= WAIT_TIME_TO_CHECK_ALIVE_STATUS) {
+                if (terminateAliveCheck) {
+                    _logger.debug("Termination issued for NodeAliveStatusJob.");
+                    return;
+                }
+                Thread.sleep(100);
+                referenceTimestamp += 100;
+            }
             this.checkHearbeat();
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
@@ -80,5 +89,9 @@ public class NodeAliveStatusJob extends Job {
                 _logger.debug("Node is in not reachable state, Node:[{}]", node);
             }
         }
+    }
+
+    public static synchronized void setTerminateAliveCheck(boolean terminateAliveCheck) {
+        NodeAliveStatusJob.terminateAliveCheck = terminateAliveCheck;
     }
 }
