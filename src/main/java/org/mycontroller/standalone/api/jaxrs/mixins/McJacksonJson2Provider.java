@@ -68,18 +68,18 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         //AddMixIns
-        mapper.addMixInAnnotations(Gateway.class, GatewayMixin.class);
-        mapper.addMixInAnnotations(Node.class, NodeMixin.class);
-        mapper.addMixInAnnotations(Sensor.class, SensorMixin.class);
-        mapper.addMixInAnnotations(ForwardPayload.class, ForwardPayloadMixin.class);
-        mapper.addMixInAnnotations(ResourcesLogs.class, ResourcesLogsMixin.class);
-        mapper.addMixInAnnotations(AlarmDefinition.class, AlarmDefinitionMixin.class);
-        mapper.addMixInAnnotations(ResourcesGroup.class, ResourcesGroupMixin.class);
-        mapper.addMixInAnnotations(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
-        mapper.addMixInAnnotations(Timer.class, TimerMixin.class);
-        mapper.addMixInAnnotations(Role.class, RoleMixin.class);
-        mapper.addMixInAnnotations(User.class, UserMixin.class);
-        mapper.addMixInAnnotations(Dashboard.class, DashboardMixin.class);
+        mapper.addMixIn(Gateway.class, GatewayMixin.class);
+        mapper.addMixIn(Node.class, NodeMixin.class);
+        mapper.addMixIn(Sensor.class, SensorMixin.class);
+        mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
+        mapper.addMixIn(ResourcesLogs.class, ResourcesLogsMixin.class);
+        mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixIn(ResourcesGroup.class, ResourcesGroupMixin.class);
+        mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
+        mapper.addMixIn(Timer.class, TimerMixin.class);
+        mapper.addMixIn(Role.class, RoleMixin.class);
+        mapper.addMixIn(User.class, UserMixin.class);
+        mapper.addMixIn(Dashboard.class, DashboardMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
         super.writeTo(value, type, genericType, annotations, mediaType, httpHeaders, entityStream);
@@ -93,16 +93,16 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         //AddMixIns
-        mapper.addMixInAnnotations(Gateway.class, GatewayMixin.class);
-        mapper.addMixInAnnotations(Node.class, NodeMixin.class);
-        mapper.addMixInAnnotations(Sensor.class, SensorMixin.class);
-        mapper.addMixInAnnotations(ForwardPayload.class, ForwardPayloadMixin.class);
-        mapper.addMixInAnnotations(AlarmDefinition.class, AlarmDefinitionMixin.class);
-        mapper.addMixInAnnotations(ResourcesGroup.class, ResourcesGroupMixin.class);
-        mapper.addMixInAnnotations(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
-        mapper.addMixInAnnotations(Timer.class, TimerMixin.class);
-        mapper.addMixInAnnotations(User.class, UserMixin.class);
-        mapper.addMixInAnnotations(Dashboard.class, DashboardMixin.class);
+        mapper.addMixIn(Gateway.class, GatewayMixin.class);
+        mapper.addMixIn(Node.class, NodeMixin.class);
+        mapper.addMixIn(Sensor.class, SensorMixin.class);
+        mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
+        mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixIn(ResourcesGroup.class, ResourcesGroupMixin.class);
+        mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
+        mapper.addMixIn(Timer.class, TimerMixin.class);
+        mapper.addMixIn(User.class, UserMixin.class);
+        mapper.addMixIn(Dashboard.class, DashboardMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
 
