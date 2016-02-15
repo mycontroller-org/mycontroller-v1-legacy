@@ -171,4 +171,8 @@ public class ResourcesLogsUtils {
         DaoUtils.getResourcesLogsDao().add(resourcesLogs);
     }
 
+    public static void deleteResourcesLog(RESOURCE_TYPE resourceType, Integer resourceId) {
+        DaoUtils.getResourcesLogsDao().deleteAll(resourceType, resourceId);
+    }
+
 }

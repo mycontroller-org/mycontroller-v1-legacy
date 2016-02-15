@@ -65,7 +65,7 @@ public class TimerHandler {
     @Path("/{id}")
     public Response get(@PathParam("id") int id) {
         hasAccess(id);
-        return RestUtils.getResponse(Status.OK, DaoUtils.getTimerDao().get(id));
+        return RestUtils.getResponse(Status.OK, DaoUtils.getTimerDao().getById(id));
     }
 
     @GET
@@ -169,7 +169,7 @@ public class TimerHandler {
 
     private void hasAccess(Integer id) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
-            Timer timer = DaoUtils.getTimerDao().get(id);
+            Timer timer = DaoUtils.getTimerDao().getById(id);
             if (!AuthUtils.hasAccess(securityContext, timer.getResourceType(), timer.getResourceId())) {
                 throw new ForbiddenException("You do not have access for this resource!");
             }

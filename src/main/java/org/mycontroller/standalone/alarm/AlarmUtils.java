@@ -21,6 +21,7 @@ import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
+import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
@@ -409,6 +410,24 @@ public class AlarmUtils {
         }
     }
 
+    public static void deleteAlarmDefinition(AlarmDefinition alarmDefinition) {
+        //Unload timer job
+        Timer timer = new Timer();
+        timer.setName(getAlarmTimerJobName(alarmDefinition));
+        SchedulerUtils.unloadTimerJob(timer);
+        //Delete from resources log
+        ResourcesLogsUtils.deleteResourcesLog(RESOURCE_TYPE.ALARM_DEFINITION, alarmDefinition.getId());
+        //Delete alarm
+        DaoUtils.getAlarmDefinitionDao().deleteById(alarmDefinition.getId());
+        _logger.debug("Item removed:{}", alarmDefinition);
+    }
+
+    public static void deleteAlarmDefinitionIds(List<Integer> ids) {
+        for (AlarmDefinition alarmDefinition : DaoUtils.getAlarmDefinitionDao().getAll(ids)) {
+            deleteAlarmDefinition(alarmDefinition);
+        }
+    }
+
     public static void executeAlarmDefinitionOperation(ResourceModel resourceModel, PayloadOperation operation) {
         switch (operation.getOperationType()) {
             case ENABLE:
@@ -423,4 +442,5 @@ public class AlarmUtils {
                 break;
         }
     }
+
 }

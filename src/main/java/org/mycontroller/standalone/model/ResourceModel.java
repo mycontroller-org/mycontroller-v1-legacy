@@ -71,7 +71,7 @@ public class ResourceModel {
                 resource = DaoUtils.getAlarmDefinitionDao().getById(resourceId);
                 break;
             case TIMER:
-                resource = DaoUtils.getTimerDao().get(resourceId);
+                resource = DaoUtils.getTimerDao().getById(resourceId);
                 break;
             default:
                 throw new RuntimeException("Not supported KEY_RESOURCE_TYPE:" + resourceType);

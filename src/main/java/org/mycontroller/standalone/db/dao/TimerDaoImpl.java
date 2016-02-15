@@ -23,9 +23,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.scheduler.SchedulerUtils;
 
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -38,66 +36,6 @@ import com.j256.ormlite.support.ConnectionSource;
 public class TimerDaoImpl extends BaseAbstractDaoImpl<Timer, Integer> implements TimerDao {
     public TimerDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, Timer.class);
-    }
-
-    @Override
-    public void create(Timer timer) {
-        try {
-            int count = this.getDao().create(timer);
-            _logger.debug("Created Timer:[{}], Create count:{}", timer, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to add Timer:[{}]", timer, ex);
-        }
-    }
-
-    @Override
-    public void createOrUpdate(Timer timer) {
-        try {
-            CreateOrUpdateStatus status = this.getDao().createOrUpdate(timer);
-            SchedulerUtils.reloadTimerJob(timer);
-            _logger.debug("CreateOrUpdate Timer:[{}],Create:{},Update:{},Lines Changed:{}",
-                    timer, status.isCreated(), status.isUpdated(),
-                    status.getNumLinesChanged());
-        } catch (SQLException ex) {
-            _logger.error("unable to CreateOrUpdate Timer:[{}]", timer, ex);
-        }
-    }
-
-    @Override
-    public void delete(Timer timer) {
-        try {
-            int count = this.getDao().delete(timer);
-            SchedulerUtils.unloadTimerJob(timer);
-            _logger.debug("Timer:[{}] deleted, Delete count:{}", timer, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to delete timer:[{}]", timer, ex);
-        }
-    }
-
-    @Override
-    public void delete(int id) {
-        delete(get(id));
-    }
-
-    @Override
-    public void update(Timer timer) {
-        try {
-            int count = this.getDao().update(timer);
-            _logger.debug("Updated Timer:[{}], Update count:{}", timer, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to update timer:[{}]", timer, ex);
-        }
-
-    }
-
-    @Override
-    public List<Timer> getAll() {
-        try {
-            return this.getDao().queryForAll();
-        } catch (SQLException ex) {
-            _logger.error("unable to get all Nodes", ex);
-            return null;
-        }
     }
 
     @Override
@@ -152,16 +90,6 @@ public class TimerDaoImpl extends BaseAbstractDaoImpl<Timer, Integer> implements
     }
 
     @Override
-    public Timer get(int id) {
-        try {
-            return this.getDao().queryForId(id);
-        } catch (SQLException ex) {
-            _logger.error("unable to get Timer[id:{}]", id, ex);
-            return null;
-        }
-    }
-
-    @Override
     public long countOf(RESOURCE_TYPE resourceType, Integer resourceId) {
         try {
             /*
@@ -196,6 +124,11 @@ public class TimerDaoImpl extends BaseAbstractDaoImpl<Timer, Integer> implements
     @Override
     public List<Timer> getAll(List<Integer> ids) {
         return getAll(Timer.KEY_ID, ids);
+    }
+
+    @Override
+    public Timer get(Timer timer) {
+        return super.getById(timer.getId());
     }
 
 }

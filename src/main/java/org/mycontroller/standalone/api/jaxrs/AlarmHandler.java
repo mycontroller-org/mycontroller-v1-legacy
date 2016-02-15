@@ -45,7 +45,6 @@ import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +128,7 @@ public class AlarmHandler {
     @Path("/delete")
     public Response deleteIds(List<Integer> ids) {
         updateIds(ids);
-        DeleteResourceUtils.deleteAlarmDefinitions(ids);
+        AlarmUtils.deleteAlarmDefinitionIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 

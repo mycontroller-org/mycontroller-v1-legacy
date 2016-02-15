@@ -24,9 +24,10 @@ import java.util.TimeZone;
 
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
+import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.jobs.ManageSunRiseSetJobs;
 import org.mycontroller.standalone.model.ResourceModel;
@@ -305,7 +306,7 @@ public class TimerUtils {
 
     public static synchronized void updateTimer(Timer timer) {
         //Unload timer
-        Timer timerOld = DaoUtils.getTimerDao().get(timer.getId());
+        Timer timerOld = DaoUtils.getTimerDao().getById(timer.getId());
         SchedulerUtils.unloadTimerJob(timerOld);
 
         //update details of timer and reload it
@@ -356,23 +357,28 @@ public class TimerUtils {
     }
 
     public static synchronized void deleteTimer(Integer id) {
-        DeleteResourceUtils.deleteTimer(id);
+        deleteTimer(DaoUtils.getTimerDao().getById(id));
     }
 
     public static synchronized void deleteTimer(Timer timer) {
-        DeleteResourceUtils.deleteTimer(timer);
+        SchedulerUtils.unloadTimerJob(timer);
+        //Delete from resources log
+        ResourcesLogsUtils.deleteResourcesLog(RESOURCE_TYPE.TIMER, timer.getId());
+        //Delete alarm
+        DaoUtils.getTimerDao().deleteById(timer.getId());
+        _logger.debug("Item removed:{}", timer);
     }
 
     public static synchronized void enableTimers(List<Integer> ids) {
         for (Integer id : ids) {
-            Timer timer = DaoUtils.getTimerDao().get(id);
+            Timer timer = DaoUtils.getTimerDao().getById(id);
             enableTimer(timer);
         }
     }
 
     public static synchronized void disableTimers(List<Integer> ids) {
         for (Integer id : ids) {
-            Timer timer = DaoUtils.getTimerDao().get(id);
+            Timer timer = DaoUtils.getTimerDao().getById(id);
             disableTimer(timer);
         }
     }

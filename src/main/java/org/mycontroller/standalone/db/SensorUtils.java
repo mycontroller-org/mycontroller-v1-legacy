@@ -228,7 +228,7 @@ public class SensorUtils {
             for (String removeVariable : sensorOld.getVariableTypes()) {
                 if (!sensor.getVariableTypes().contains(removeVariable)) {
                     _logger.debug("Removing entry for variable:{}", removeVariable);
-                    DeleteResourceUtils.deleteSensorValue(DaoUtils.getSensorVariableDao().get(sensor.getId(),
+                    DeleteResourceUtils.deleteSensorVariable(DaoUtils.getSensorVariableDao().get(sensor.getId(),
                             MESSAGE_TYPE_SET_REQ.fromString(removeVariable)));
                 }
             }

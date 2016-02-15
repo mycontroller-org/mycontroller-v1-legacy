@@ -20,13 +20,13 @@ import java.util.List;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
+import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.gateway.GatewayUtils;
-import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,21 +46,59 @@ public class DeleteResourceUtils {
         deleteSensor(DaoUtils.getSensorDao().getById(sensorId));
     }
 
-    public static void deleteSensor(Sensor sensor) {
-        //Delete from timer
-        List<Timer> timers = DaoUtils.getTimerDao().getAll(RESOURCE_TYPE.SENSOR, sensor.getId());
-        SchedulerUtils.unloadTimerJobs(timers);
-        DaoUtils.getTimerDao().delete(RESOURCE_TYPE.SENSOR, sensor.getId());
-
-        //Delete AlarmDefinition list
-        DaoUtils.getAlarmDefinitionDao().delete(RESOURCE_TYPE.SENSOR, sensor.getId());
-        //TODO: Delete timer created by alarmDefinition
-
-        //Delete all variable Types
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId());
-        for (SensorVariable sensorVariable : sensorVariables) {
-            deleteSensorValue(sensorVariable);
+    /* delete timers */
+    public static void deleteTimers(RESOURCE_TYPE resourceType, Integer resourceId) {
+        List<Timer> timers = DaoUtils.getTimerDao().getAll(resourceType, resourceId);
+        for (Timer timer : timers) {
+            TimerUtils.deleteTimer(timer);
         }
+    }
+
+    /* delete alarm definitions */
+    public static void deleteAlarmDefinitions(RESOURCE_TYPE resourceType, Integer resourceId) {
+        List<AlarmDefinition> alarmDefinitions = DaoUtils.getAlarmDefinitionDao().getAll(resourceType, resourceId);
+        for (AlarmDefinition alarmDefinition : alarmDefinitions) {
+            AlarmUtils.deleteAlarmDefinition(alarmDefinition);
+        }
+    }
+
+    public static void deleteSensorVariable(SensorVariable sensorVariable) {
+        //Delete timers
+        deleteTimers(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId());
+
+        //Delete alarmDefinitions
+        deleteAlarmDefinitions(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId());
+
+        //Delete from metrics table
+        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
+        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorValueRefId(sensorVariable.getId());
+
+        //Delete from resources log
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId());
+
+        //Clear Forward Payload Table
+        DaoUtils.getForwardPayloadDao().delete(ForwardPayload.KEY_SOURCE_ID, sensorVariable.getId());
+        DaoUtils.getForwardPayloadDao().delete(ForwardPayload.KEY_DESTINATION_ID, sensorVariable.getId());
+
+        //Delete UID tags
+        //TODO: complete this, when UUID is enabled
+
+        //Delete SensorVariable entry
+        DaoUtils.getSensorVariableDao().delete(sensorVariable);
+        _logger.debug("Item removed:{}", sensorVariable);
+    }
+
+    public static void deleteSensor(Sensor sensor) {
+        //Delete all variable Types
+        for (SensorVariable sensorVariable : DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId())) {
+            deleteSensorVariable(sensorVariable);
+        }
+
+        //Delete timers
+        deleteTimers(RESOURCE_TYPE.SENSOR, sensor.getId());
+
+        //Delete AlarmDefinitions
+        deleteAlarmDefinitions(RESOURCE_TYPE.SENSOR, sensor.getId());
 
         //Clear Forward Payload Table
         DaoUtils.getForwardPayloadDao().deleteBySensorId(sensor.getId());
@@ -73,35 +111,72 @@ public class DeleteResourceUtils {
 
         //Delete Sensor
         DaoUtils.getSensorDao().delete(sensor);
-        _logger.debug("Deleted sensor trace for sensor:[{}]", sensor);
-
-    }
-
-    public static void deleteSensorValue(SensorVariable sensorVariable) {
-        //Delete from metrics table
-        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
-        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorValueRefId(sensorVariable.getId());
-
-        //Delete SensorVariable entry
-        DaoUtils.getSensorVariableDao().delete(sensorVariable);
+        _logger.debug("Item removed:{}", sensor);
     }
 
     public static void deleteNode(Node node) {
-        List<Sensor> sensors = DaoUtils.getSensorDao().getAllByNodeId(node.getId());
-        for (Sensor sensor : sensors) {
+        //Delete sensors
+        for (Sensor sensor : DaoUtils.getSensorDao().getAllByNodeId(node.getId())) {
             deleteSensor(sensor);
         }
+
+        //Delete timers
+        deleteTimers(RESOURCE_TYPE.NODE, node.getId());
+
+        //Delete AlarmDefinitions
+        deleteAlarmDefinitions(RESOURCE_TYPE.NODE, node.getId());
+
+        //Delete from resources logs
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.NODE, node.getId());
+
         DaoUtils.getNodeDao().deleteById(node.getId());
-        _logger.debug("Deleted node trace for node:[{}]", node);
+        _logger.debug("Item removed:{}", node);
+    }
+
+    public static void deleteGateway(Integer id) {
+        //Unload gateway
+        GatewayUtils.unloadGateway(id);
+
+        //Delete nodes
+        for (Node node : DaoUtils.getNodeDao().getAllByGatewayId(id)) {
+            deleteNode(node);
+        }
+
+        //Delete timers
+        deleteTimers(RESOURCE_TYPE.GATEWAY, id);
+
+        //Delete AlarmDefinitions
+        deleteAlarmDefinitions(RESOURCE_TYPE.GATEWAY, id);
+
+        //Delete resources logs
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.GATEWAY, id);
+
+        //Delete gateway
+        DaoUtils.getGatewayDao().deleteById(id);
+        _logger.debug("Item removed, gatewayId:{}", id);
+    }
+
+    public static synchronized void deleteResourcesGroup(Integer id) {
+        ResourcesGroup resourcesGroup = DaoUtils.getResourcesGroupDao().get(id);
+        //Delete timers
+        deleteTimers(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId());
+
+        //Delete AlarmDefinitions
+        deleteAlarmDefinitions(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId());
+
+        //Delete from resources logs
+        DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId());
+
+        //Delete resourceGroupMap and resourcesGroup
+        DaoUtils.getResourcesGroupMapDao().delete(ResourcesGroup.builder().id(id).build());
+        DaoUtils.getResourcesGroupDao().delete(id);
+        _logger.debug("Item removed:{}", resourcesGroup);
     }
 
     public static void deleteNodes(List<Integer> nodeIds) {
-        List<Sensor> sensors = DaoUtils.getSensorDao().getAllByNodeIds(nodeIds);
-        for (Sensor sensor : sensors) {
-            deleteSensor(sensor);
+        for (Node node : DaoUtils.getNodeDao().getAll(nodeIds)) {
+            deleteNode(node);
         }
-        DaoUtils.getNodeDao().deleteByIds(nodeIds);
-        _logger.debug("Deleted node trace for nodeIds:[{}]", nodeIds);
     }
 
     public static void deleteSensors(List<Integer> sensorIds) {
@@ -111,90 +186,15 @@ public class DeleteResourceUtils {
         }
     }
 
-    public static void deleteGateway(Integer id) {
-        GatewayUtils.unloadGateway(id);
-        List<Node> nodes = DaoUtils.getNodeDao().getAllByGatewayId(id);
-        for (Node node : nodes) {
-            deleteNode(node);
-        }
-        DaoUtils.getGatewayDao().deleteById(id);
-    }
-
     public static void deleteGateways(List<Integer> ids) {
         for (Integer id : ids) {
             deleteGateway(id);
         }
     }
 
-    public static void deleteAlarmDefinitions(List<Integer> ids) {
-        for (Integer id : ids) {
-            deleteAlarmDefinition(id);
-        }
-    }
-
-    public static synchronized void deleteAlarmDefinition(AlarmDefinition alarmDefinition) {
-        //Unload timer job if any
-        Timer timer = new Timer();
-        timer.setName(AlarmUtils.getAlarmTimerJobName(alarmDefinition));
-        SchedulerUtils.unloadTimerJob(timer);
-
-        //Remove log entries
-        //TODO: add code to remove logs
-
-        //TODO: remove timers loaded by alarm
-
-        //Delete alarm definition
-        DaoUtils.getAlarmDefinitionDao().deleteById(alarmDefinition.getId());
-    }
-
-    public static synchronized void deleteAlarmDefinition(Integer id) {
-        deleteAlarmDefinition(DaoUtils.getAlarmDefinitionDao().getById(id));
-
-    }
-
-    public static synchronized void deleteTimer(Timer timer) {
-        //Unload timer job if any
-        SchedulerUtils.unloadTimerJob(timer);
-
-        //Remove log entries
-        //TODO: add code to remove logs
-
-        //Delete alarm definition
-        DaoUtils.getTimerDao().delete(timer.getId());
-    }
-
-    public static synchronized void deleteTimer(Integer id) {
-        deleteTimer(DaoUtils.getTimerDao().get(id));
-    }
-
     public static synchronized void deleteResourcesGroup(List<Integer> ids) {
         for (Integer id : ids) {
             deleteResourcesGroup(id);
         }
-    }
-
-    public static synchronized void deleteResourcesGroup(Integer id) {
-        ResourcesGroup resourcesGroup = DaoUtils.getResourcesGroupDao().get(id);
-
-        //Delete all timers
-        List<Timer> timers = DaoUtils.getTimerDao().getAll(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId());
-        for (Timer timer : timers) {
-            TimerUtils.deleteTimer(timer);
-        }
-
-        //Delete all alarmDefinition references
-        List<AlarmDefinition> alarmDefinitions = DaoUtils.getAlarmDefinitionDao().getAll(
-                RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId());
-
-        for (AlarmDefinition alarmDefinition : alarmDefinitions) {
-            deleteAlarmDefinition(alarmDefinition);
-        }
-
-        //Remove log entries
-        //TODO: add code to remove logs
-
-        //Delete resourceGroupMap and resourcesGroup
-        DaoUtils.getResourcesGroupMapDao().delete(ResourcesGroup.builder().id(id).build());
-        DaoUtils.getResourcesGroupDao().delete(id);
     }
 }

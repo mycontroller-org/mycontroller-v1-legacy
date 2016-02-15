@@ -26,30 +26,15 @@ import org.mycontroller.standalone.db.tables.Timer;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface TimerDao {
-    void create(Timer timer);
-
-    void createOrUpdate(Timer timer);
-
-    void delete(Timer timer);
-
-    void delete(int id);
+public interface TimerDao extends BaseDao<Timer, Integer> {
 
     void delete(RESOURCE_TYPE resourceType, Integer resourceId);
-
-    void update(Timer timer);
-
-    List<Timer> getAll();
 
     List<Timer> getAll(RESOURCE_TYPE resourceType, Integer resourceId);
 
     List<Timer> getAll(RESOURCE_TYPE resourceType);
 
-    List<Timer> getAll(List<Integer> ids);
-
     List<Timer> getAllEnabled();
-
-    Timer get(int id);
 
     long countOf(RESOURCE_TYPE resourceType, Integer resourceId);
 
