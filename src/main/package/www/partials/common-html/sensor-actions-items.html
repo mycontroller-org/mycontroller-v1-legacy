@@ -59,7 +59,7 @@
 </div>
 
 <!-- Forecast -->
-<div ng-if="variable.type === 'Forecast'" uib-tooltip="Forecast" tooltip-placement="{{tooltipPlacement}}">
+<div ng-if="variable.type === 'Forecast'">
   <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-style-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="wi wi-{{cs.getForecastValue(variable.value)}} mc-icon-2x"></i>
   </span>
