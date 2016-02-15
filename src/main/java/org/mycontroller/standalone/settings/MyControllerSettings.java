@@ -50,7 +50,7 @@ public class MyControllerSettings {
     private String language;
     private String timeFormat;
     private String version;
-    private Integer dbVersion;
+    private String dbVersion;
     private Long aliveCheckInterval;
     private String unitConfig;
     private String loginMessage;
@@ -63,7 +63,7 @@ public class MyControllerSettings {
                 .language(getValue(SKEY_LANGUAGE))
                 .timeFormat(getValue(SKEY_TIME_FORMAT))
                 .version(getValue(SKEY_VERSION))
-                .dbVersion(NumericUtils.getInteger(getValue(SKEY_DB_VERSION)))
+                .dbVersion(getValue(SKEY_DB_VERSION))
                 .aliveCheckInterval(NumericUtils.getLong(getValue(SKEY_ALIVE_CHECK_INTERVAL)))
                 .unitConfig(getValue(SKEY_UNIT_CONFIG))
                 .loginMessage(getValue(SKEY_LOGIN_MESSAGE))

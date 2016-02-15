@@ -73,6 +73,7 @@
     <version.org.apache.shiro>1.2.4</version.org.apache.shiro>
     <version.apache.httpclient>4.5.1</version.apache.httpclient>
     <version.apache.httpcore>4.4.4</version.apache.httpcore>
+    <version.org.flywaydb>3.2.1</version.org.flywaydb>
 
     <!-- plugins version -->
     <version.com.mycila.license-maven-plugin>2.11</version.com.mycila.license-maven-plugin>
@@ -253,6 +254,12 @@
       <version>${version.apache.httpcore}</version>
     </dependency>
 
+    <!-- FlyWay database migration -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>${version.org.flywaydb}</version>
+    </dependency>
 
   </dependencies>
 

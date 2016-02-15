@@ -40,6 +40,9 @@ public class AppProperties {
     public static final String APPLICATION_NAME = "MyController.org";
     public static final String EMAIL_TEMPLATE_ALARM = "../conf/templates/emailTemplateAlarm.html";
 
+    private String tmpLocation;
+    private String backupLocation;
+
     private String dbH2DbLocation;
     private String webFileLocation;
     private boolean isWebHttpsEnabled = false;
@@ -323,6 +326,14 @@ public class AppProperties {
     }
 
     public void loadProperties(Properties properties) {
+        this.tmpLocation = getValue(properties, "mcc.tmp.location");
+        if (!this.tmpLocation.endsWith("/")) {
+            this.tmpLocation = this.tmpLocation + "/";
+        }
+        this.backupLocation = getValue(properties, "mcc.backup.location");
+        if (!this.backupLocation.endsWith("/")) {
+            this.backupLocation = this.backupLocation + "/";
+        }
         this.dbH2DbLocation = getValue(properties, "mcc.db.h2db.location");
         this.webFileLocation = getValue(properties, "mcc.web.file.location");
         if (!this.webFileLocation.endsWith("/")) {
@@ -422,6 +433,14 @@ public class AppProperties {
 
     public static String getOsVersion() {
         return System.getProperties().getProperty("os.version");
+    }
+
+    public String getTmpLocation() {
+        return tmpLocation;
+    }
+
+    public String getBackupLocation() {
+        return backupLocation;
     }
 
     public String getDbH2DbLocation() {

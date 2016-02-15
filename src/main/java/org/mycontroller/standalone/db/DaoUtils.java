@@ -87,6 +87,8 @@ public class DaoUtils {
 
     private static final Logger _logger = LoggerFactory.getLogger(DaoUtils.class);
 
+    private static boolean isDaoInitialized = false;
+
     private static NodeDao nodeDao = null;
     private static SensorDao sensorDao = null;
     private static SensorVariableDao sensorVariableDao = null;
@@ -117,6 +119,10 @@ public class DaoUtils {
     private static RoleMqttMapDao roleMqttMapDao = null;
 
     public static void loadAllDao() {
+        if (isDaoInitialized) {
+            _logger.warn("DAO already initialized. Nothing to do now.");
+            return;
+        }
         try {
             nodeDao = new NodeDaoImpl(DataBaseUtils.getConnectionSource());
             sensorDao = new SensorDaoImpl(DataBaseUtils.getConnectionSource());
@@ -146,6 +152,8 @@ public class DaoUtils {
             roleNodeMapDao = new RoleNodeMapDaoImpl(DataBaseUtils.getConnectionSource());
             roleSensorMapDao = new RoleSensorMapDaoImpl(DataBaseUtils.getConnectionSource());
             roleMqttMapDao = new RoleMqttMapDaoImpl(DataBaseUtils.getConnectionSource());
+            //Initialized dao
+            isDaoInitialized = true;
         } catch (SQLException sqlEx) {
             _logger.error("Unable to load Dao,", sqlEx);
         } catch (DbException dbEx) {
@@ -263,6 +271,10 @@ public class DaoUtils {
 
     public static RoleMqttMapDao getRoleMqttMapDao() {
         return roleMqttMapDao;
+    }
+
+    public static synchronized boolean isDaoInitialized() {
+        return isDaoInitialized;
     }
 
 }

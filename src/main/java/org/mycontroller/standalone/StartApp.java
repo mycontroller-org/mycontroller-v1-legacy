@@ -96,7 +96,7 @@ public class StartApp {
             gateway.setPortName("/dev/ttyUSB0");
             gateway.setBaudRate(115200);
             gateway.setDriver(GatewayUtils.SERIAL_PORT_DRIVER.AUTO);
-            gateway.setRetryFrequency(60);
+            gateway.setRetryFrequency(60 * 60);
             DaoUtils.getGatewayDao().create(gateway.getGateway());
         }
 
