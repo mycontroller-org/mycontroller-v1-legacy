@@ -15,8 +15,10 @@
  */
 package org.mycontroller.standalone;
 
+import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsSettings;
@@ -334,6 +336,14 @@ public class AppProperties {
         if (!this.backupLocation.endsWith("/")) {
             this.backupLocation = this.backupLocation + "/";
         }
+        //Create backup location
+        try {
+            FileUtils.forceMkdir(FileUtils.getFile(this.backupLocation));
+            _logger.debug("backup location created.");
+        } catch (IOException e) {
+            _logger.error("Unable to create backup location");
+        }
+
         this.dbH2DbLocation = getValue(properties, "mcc.db.h2db.location");
         this.webFileLocation = getValue(properties, "mcc.web.file.location");
         if (!this.webFileLocation.endsWith("/")) {
