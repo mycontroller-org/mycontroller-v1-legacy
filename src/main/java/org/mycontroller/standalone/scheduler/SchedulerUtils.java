@@ -27,6 +27,7 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
+import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.timer.TimerSimple;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
@@ -34,7 +35,6 @@ import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
 import org.mycontroller.standalone.timer.jobs.TimerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.knowm.sundial.SundialJobScheduler;
 
 /**
@@ -70,6 +70,9 @@ public class SchedulerUtils {
                 _logger.error("Unable to load timer[{}]", timer, ex);
             }
         }
+
+        //Load system backup job
+        BackupSettings.reloadJob();//Reload backup job
 
         //Update all other jobs
         //MySensorsSettings heartbeat job
@@ -154,7 +157,7 @@ public class SchedulerUtils {
         String jobName = getTimerJobName(timer);
         SundialJobScheduler.addJob(
                 jobName,
-                TimerJob.class.getName(),
+                timer.getTargetClass() != null ? timer.getTargetClass() : TimerJob.class.getName(),
                 jobData,
                 false);
 

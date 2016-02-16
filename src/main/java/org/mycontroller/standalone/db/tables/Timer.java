@@ -97,6 +97,8 @@ public class Timer {
     @DatabaseField(canBeNull = true)
     private String internalVariable1;
 
+    private String targetClass;
+
     public String getTimerDataString() {
         try {
             return TimerUtils.getTimerDataString(this);

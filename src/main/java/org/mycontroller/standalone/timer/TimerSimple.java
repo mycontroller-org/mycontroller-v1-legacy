@@ -42,6 +42,12 @@ public class TimerSimple {
         this.executedCount = timer.getInternalVariable1() == null ? 0 : Integer.valueOf(timer.getInternalVariable1());
     }
 
+    public TimerSimple(String name, boolean enabled, String targetClass, Long repeatInterval, Integer repeatCount) {
+        this(name, null, null, null, repeatInterval, repeatCount);
+        timer.setTargetClass(targetClass);
+        timer.setEnabled(enabled);
+    }
+
     public TimerSimple(String name, RESOURCE_TYPE resourceType, Integer resourceId, String payload,
             Long repeatInterval, Integer repeatCount) {
         this.timer = new Timer();

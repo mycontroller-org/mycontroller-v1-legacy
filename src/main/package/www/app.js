@@ -368,6 +368,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('settingsBackupAuto', {
+      url:"/settings/backup/settings",
+      templateUrl: "partials/backup/automatic-backup-settings.html",
+      controller: "BackupControllerAutoSettings",
+       data: {
+        requireLogin: true
+      }
     })
     
     

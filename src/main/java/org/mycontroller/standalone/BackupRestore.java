@@ -49,7 +49,7 @@ public class BackupRestore {
 
     private static boolean isbackupRestoreRunning = false;
 
-    public static synchronized void backup() {
+    public static synchronized void backup(String prefix) {
         //backup database
         //backup configuration file
         //backup certificates
@@ -60,8 +60,8 @@ public class BackupRestore {
         }
 
         isbackupRestoreRunning = true;
-        String applicationBackupDir = ObjectFactory.getAppProperties().getBackupLocation() + "mycontroller_backup-"
-                + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
+        String applicationBackupDir = ObjectFactory.getAppProperties().getBackupSettings().getBackupLocation()
+                + prefix + "_mc_backup-" + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
         //Create parent dir if not exist
         try {
             FileUtils.forceMkdir(FileUtils.getFile(applicationBackupDir));

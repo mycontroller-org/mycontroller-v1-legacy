@@ -31,6 +31,7 @@ import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.BackupFile;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.mycontroller.standalone.settings.BackupSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class BackupHandler {
     public Response getBackupList() {
         String[] filter = { "zip" };
         Collection<File> zipFiles = FileUtils.listFiles(
-                FileUtils.getFile(ObjectFactory.getAppProperties().getBackupLocation()),
+                FileUtils.getFile(ObjectFactory.getAppProperties().getBackupSettings().getBackupLocation()),
                 filter, true);
         List<BackupFile> backupFiles = new ArrayList<BackupFile>();
         for (File zipFile : zipFiles) {
@@ -78,12 +79,27 @@ public class BackupHandler {
         return RestUtils.getResponse(Status.OK, backupFiles);
     }
 
+    @GET
+    @Path("/backupSettings")
+    public Response getBackupSettings() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getBackupSettings());
+    }
+
+    @PUT
+    @Path("/backupSettings")
+    public Response updateBackupSettings(BackupSettings backupSettings) {
+        backupSettings.save();
+        BackupSettings.reloadJob();//Reload backup job
+        ObjectFactory.getAppProperties().setBackupSettings(BackupSettings.get());
+        return RestUtils.getResponse(Status.OK);
+    }
+
     @PUT
     @Path("/backupNow")
     public Response backupNow() {
         try {
             _logger.debug("Backup triggered.");
-            BackupRestore.backup();
+            BackupRestore.backup("on-demand");
         } catch (Exception ex) {
             _logger.error("Error,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

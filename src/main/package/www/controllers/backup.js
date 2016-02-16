@@ -15,8 +15,6 @@
  */
  
 myControllerModule.controller('BackupControllerList', function(alertService, $scope, $filter, displayRestError, BackupRestoreFactory, $filter, mchelper, CommonServices, $uibModal) {
-  
-  
   //GUI page settings
   $scope.headerStringList = $filter('translate')('BACKUPS_DETAIL');
 
@@ -135,8 +133,6 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-
-
 });
 
 //restore Modal
@@ -145,4 +141,56 @@ myControllerModule.controller('BackupControllerRestore', function ($scope, $uibM
   $scope.rebootMsg = $filter('translate')('RESTORE_CONFIRMATION_MESSAGE', backupFile);
   $scope.restore = function() {$uibModalInstance.close(); };
   $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
+});
+
+//Automatice backup settings
+myControllerModule.controller('BackupControllerAutoSettings', function ($scope, BackupRestoreFactory, mchelper, alertService, displayRestError, $filter, CommonServices) {
+  $scope.mchelper = mchelper;
+  $scope.item = {};
+  $scope.item.enabled = false;
+  $scope.cs = CommonServices;
+  
+  $scope.resetSettings = function(){
+    BackupRestoreFactory.getBackupSettings(function(response) {
+        $scope.item = response;
+         //Update dropdown
+        if($scope.item.interval % 86400000  == 0){
+          $scope.intervalLocal = $scope.item.interval / 86400000;
+          $scope.intervalTimeConstant = "86400000";
+          $scope.intervalTimeConstantString = $filter('translate')('DAYS');
+        }else if($scope.item.interval % 3600000  == 0){
+          $scope.intervalLocal = $scope.item.interval / 3600000;
+          $scope.intervalTimeConstant = "3600000";
+          $scope.intervalTimeConstantString = $filter('translate')('Hours');
+        }else if($scope.item.interval % 60000  == 0){
+          $scope.intervalLocal = $scope.item.interval / 60000;
+          $scope.intervalTimeConstant = "60000";
+          $scope.intervalTimeConstantString = $filter('translate')('Minutes');
+        }
+      },function(error){
+        displayRestError.display(error);
+      });
+  }
+
+  //GUI page settings
+  $scope.saveProgress = false;
+  
+  //Load details
+  $scope.resetSettings();
+
+  $scope.save = function(){
+    if($scope.item.enabled){
+      //Update time
+      $scope.item.interval = $scope.intervalLocal * $scope.intervalTimeConstant;
+    }    
+    $scope.saveProgress = true;
+    BackupRestoreFactory.updateBackupSettings($scope.item,function(response) {
+      $scope.saveProgress = false;
+      $scope.editEnable.backupSettings = false;
+      $scope.resetSettings();
+    },function(error){
+      displayRestError.display(error);
+      $scope.saveProgress = false;
+    });
+  }
 });

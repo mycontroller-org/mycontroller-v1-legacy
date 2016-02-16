@@ -41,7 +41,7 @@ public class BackupFile implements Comparable<BackupFile> {
 
     @Override
     public int compareTo(BackupFile file) {
-        return this.name.compareTo(file.getName());
+        return this.timestamp.compareTo(file.getTimestamp());
     }
 
     public String getFriendlyTime() {

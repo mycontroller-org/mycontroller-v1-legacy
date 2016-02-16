@@ -376,6 +376,8 @@ myControllerModule.factory('BackupRestoreFactory', function ($resource) {
     backupNow:  { method: 'PUT', params: {type: 'backupNow'}},
     restore:  { method: 'POST', params: {type: 'restore'}},
     delete:  { method: 'POST', params: {type: 'delete'}},
+    getBackupSettings:  { method: 'GET', params: {type: 'backupSettings'}},
+    updateBackupSettings:  { method: 'PUT', params: {type: 'backupSettings'}},
 
   })
 });

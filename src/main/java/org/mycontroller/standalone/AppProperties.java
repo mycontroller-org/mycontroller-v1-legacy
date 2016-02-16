@@ -15,10 +15,9 @@
  */
 package org.mycontroller.standalone;
 
-import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsSettings;
@@ -43,7 +42,6 @@ public class AppProperties {
     public static final String EMAIL_TEMPLATE_ALARM = "../conf/templates/emailTemplateAlarm.html";
 
     private String tmpLocation;
-    private String backupLocation;
 
     private String dbH2DbLocation;
     private String webFileLocation;
@@ -67,6 +65,7 @@ public class AppProperties {
     UnitsSettings unitsSettings;
     LocationSettings locationSettings;
     MetricsSettings metricsSettings;
+    BackupSettings backupSettings;
 
     public enum MC_LANGUAGE {
         EN_US("English (US)"),
@@ -332,17 +331,6 @@ public class AppProperties {
         if (!this.tmpLocation.endsWith("/")) {
             this.tmpLocation = this.tmpLocation + "/";
         }
-        this.backupLocation = getValue(properties, "mcc.backup.location");
-        if (!this.backupLocation.endsWith("/")) {
-            this.backupLocation = this.backupLocation + "/";
-        }
-        //Create backup location
-        try {
-            FileUtils.forceMkdir(FileUtils.getFile(this.backupLocation));
-            _logger.debug("backup location created.");
-        } catch (IOException e) {
-            _logger.error("Unable to create backup location");
-        }
 
         this.dbH2DbLocation = getValue(properties, "mcc.db.h2db.location");
         this.webFileLocation = getValue(properties, "mcc.web.file.location");
@@ -392,6 +380,7 @@ public class AppProperties {
         smsSettings = SmsSettings.get();
         unitsSettings = UnitsSettings.get();
         metricsSettings = MetricsSettings.get();
+        backupSettings = BackupSettings.get();
     }
 
     private boolean is12HoursSelected() {
@@ -447,10 +436,6 @@ public class AppProperties {
 
     public String getTmpLocation() {
         return tmpLocation;
-    }
-
-    public String getBackupLocation() {
-        return backupLocation;
     }
 
     public String getDbH2DbLocation() {
@@ -539,6 +524,14 @@ public class AppProperties {
 
     public void setLocationSettings(LocationSettings locationSettings) {
         this.locationSettings = locationSettings;
+    }
+
+    public BackupSettings getBackupSettings() {
+        return backupSettings;
+    }
+
+    public void setBackupSettings(BackupSettings backupSettings) {
+        this.backupSettings = backupSettings;
     }
 
 }
