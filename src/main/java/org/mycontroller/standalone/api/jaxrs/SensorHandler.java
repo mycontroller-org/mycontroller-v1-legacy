@@ -98,6 +98,9 @@ public class SensorHandler {
                             .pageLimit(Query.MAX_ITEMS_UNLIMITED)
                             .page(1l)
                             .build());
+            if (nodeIds.size() == 0) {
+                nodeIds.add(-1);//If there is no node available, return empty
+            }
 
             //Add nodeIds
             filters.put(Sensor.KEY_NODE_ID, nodeIds);
