@@ -67,7 +67,7 @@ public class SensorHandler {
     @GET
     @Path("/")
     public Response getAllSensors(
-            @QueryParam(Sensor.KEY_NODE_ID) Integer nodeId,
+            @QueryParam(Sensor.KEY_NODE_ID) List<Integer> nodeIds,
             @QueryParam(Sensor.KEY_NODE_NAME) List<String> nodeName,
             @QueryParam(Sensor.KEY_NODE_EUI) List<String> nodeEui,
             @QueryParam(Sensor.KEY_TYPE) String type,
@@ -80,31 +80,31 @@ public class SensorHandler {
 
         HashMap<String, Object> filters = new HashMap<String, Object>();
 
-        filters.put(Sensor.KEY_NODE_ID, nodeId);
         filters.put(Sensor.KEY_TYPE, MESSAGE_TYPE_PRESENTATION.fromString(type));
         filters.put(Sensor.KEY_SENSOR_ID, sensorId);
         filters.put(Sensor.KEY_NAME, name);
 
         //If nodeName or nodeEui is not null, fetch nodeIds
-        if (nodeName != null || nodeEui != null) {
+        if (nodeName.size() > 0 || nodeEui.size() > 0) {
             HashMap<String, Object> nodeFilters = new HashMap<String, Object>();
             nodeFilters.put(Node.KEY_NAME, nodeName);
             nodeFilters.put(Node.KEY_EUI, nodeEui);
-            List<Integer> nodeIds = DaoUtils.getNodeDao().getAllIds(
+            nodeFilters.put(Node.KEY_ID, nodeIds);
+            nodeIds = DaoUtils.getNodeDao().getAllIds(
                     Query.builder()
                             .order(Query.ORDER_ASC)
                             .orderBy(Node.KEY_ID)
-                            .filters(filters)
+                            .filters(nodeFilters)
                             .pageLimit(Query.MAX_ITEMS_UNLIMITED)
                             .page(1l)
                             .build());
             if (nodeIds.size() == 0) {
                 nodeIds.add(-1);//If there is no node available, return empty
             }
-
-            //Add nodeIds
-            filters.put(Sensor.KEY_NODE_ID, nodeIds);
         }
+
+        //Add nodeIds
+        filters.put(Sensor.KEY_NODE_ID, nodeIds);
 
         //Add id filter if he is non-admin
         if (!AuthUtils.isSuperAdmin(securityContext)) {
