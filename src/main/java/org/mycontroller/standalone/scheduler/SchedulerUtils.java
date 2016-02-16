@@ -35,7 +35,7 @@ import org.mycontroller.standalone.timer.jobs.TimerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xeiam.sundial.SundialJobScheduler;
+import org.knowm.sundial.SundialJobScheduler;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -77,15 +77,17 @@ public class SchedulerUtils {
 
     }
 
-    public static List<String> getJobs() {
-        return SundialJobScheduler.getAllJobNames();
-    }
-
     public static void stop() {
         //Stop NodeAliveStatusJob, which has thread sleep
         NodeAliveStatusJob.setTerminateAliveCheck(true);
-        SundialJobScheduler.shutdown();
+        if (SundialJobScheduler.getScheduler() != null) {
+            SundialJobScheduler.shutdown();
+        }
         _logger.debug("Scheduler stopped...");
+    }
+
+    public static List<String> getJobs() {
+        return SundialJobScheduler.getAllJobNames();
     }
 
     public static String getSystemJobName(SystemJob systemJob) {

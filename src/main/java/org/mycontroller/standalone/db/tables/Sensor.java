@@ -48,6 +48,7 @@ public class Sensor {
     public static final String KEY_SENSOR_ID = "sensorId";
     public static final String KEY_NODE_ID = "nodeId";
     public static final String KEY_NODE_NAME = "nodeName";
+    public static final String KEY_NODE_EUI = "nodeEui";
     public static final String KEY_NAME = "name";
     public static final String KEY_LAST_SEEN = "lastSeen";
     public static final String KEY_TYPE = "type";

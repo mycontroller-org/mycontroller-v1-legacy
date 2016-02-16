@@ -361,6 +361,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('settingsBackupList', {
+      url:"/settings/backup/list",
+      templateUrl: "partials/backup/backup-list.html",
+      controller: "BackupControllerList",
+       data: {
+        requireLogin: true
+      }
     })
     
     
@@ -596,6 +603,21 @@ myControllerModule.filter('byteToMBsizeConvertor', function() {
       return "n/a";
     }
     return Math.floor(sizeInByte /(1024 * 1024)) + " MB";
+  }
+});
+
+myControllerModule.filter('byteToFriendlyConvertor', function() {
+  return function(sizeInByte) {
+    if(sizeInByte < 0){
+      return "n/a";
+    }else if((sizeInByte /(1024 * 1024)) > 1024){
+      return (sizeInByte /(1024 * 1024 * 1024)).toFixed(2) + " GB";
+    }else if((sizeInByte /(1024)) > 1024){
+      return (sizeInByte /(1024 * 1024)).toFixed(2) + " MB";
+    }else if(sizeInByte > 1024){
+    return (sizeInByte /1024).toFixed(2) + " KB";
+    }
+    return sizeInByte + " Bytes";
   }
 });
 

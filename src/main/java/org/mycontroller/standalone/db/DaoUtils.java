@@ -277,4 +277,8 @@ public class DaoUtils {
         return isDaoInitialized;
     }
 
+    public static synchronized void setIsDaoInitialized(boolean state) {
+        isDaoInitialized = state;
+    }
+
 }

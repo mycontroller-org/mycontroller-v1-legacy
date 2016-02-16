@@ -33,6 +33,8 @@ public interface NodeDao extends BaseDao<Node, Integer> {
 
     QueryResponse getAll(Query query);
 
+    List<Integer> getAllIds(Query query);
+
     long countOf(Integer gatewayId);
 
     List<Integer> getNodeIdsByGatewayIds(List<Integer> ids);

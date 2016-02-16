@@ -68,9 +68,10 @@ public class SensorHandler {
     @Path("/")
     public Response getAllSensors(
             @QueryParam(Sensor.KEY_NODE_ID) Integer nodeId,
-            @QueryParam(Sensor.KEY_NODE_NAME) String nodeName,
+            @QueryParam(Sensor.KEY_NODE_NAME) List<String> nodeName,
+            @QueryParam(Sensor.KEY_NODE_EUI) List<String> nodeEui,
             @QueryParam(Sensor.KEY_TYPE) String type,
-            @QueryParam(Sensor.KEY_SENSOR_ID) Integer sensorId,
+            @QueryParam(Sensor.KEY_SENSOR_ID) List<Integer> sensorId,
             @QueryParam(Sensor.KEY_NAME) List<String> name,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
@@ -83,6 +84,24 @@ public class SensorHandler {
         filters.put(Sensor.KEY_TYPE, MESSAGE_TYPE_PRESENTATION.fromString(type));
         filters.put(Sensor.KEY_SENSOR_ID, sensorId);
         filters.put(Sensor.KEY_NAME, name);
+
+        //If nodeName or nodeEui is not null, fetch nodeIds
+        if (nodeName != null || nodeEui != null) {
+            HashMap<String, Object> nodeFilters = new HashMap<String, Object>();
+            nodeFilters.put(Node.KEY_NAME, nodeName);
+            nodeFilters.put(Node.KEY_EUI, nodeEui);
+            List<Integer> nodeIds = DaoUtils.getNodeDao().getAllIds(
+                    Query.builder()
+                            .order(Query.ORDER_ASC)
+                            .orderBy(Node.KEY_ID)
+                            .filters(filters)
+                            .pageLimit(Query.MAX_ITEMS_UNLIMITED)
+                            .page(1l)
+                            .build());
+
+            //Add nodeIds
+            filters.put(Sensor.KEY_NODE_ID, nodeIds);
+        }
 
         //Add id filter if he is non-admin
         if (!AuthUtils.isSuperAdmin(securityContext)) {

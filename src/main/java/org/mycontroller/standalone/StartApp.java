@@ -27,6 +27,7 @@ import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
+import org.mycontroller.standalone.api.jaxrs.BackupHandler;
 import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
 import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
@@ -73,13 +74,7 @@ public class StartApp {
 
     public static void main(String[] args) {
         try {
-            start = System.currentTimeMillis();
-            loadInitialProperties();
-            _logger.debug("App Properties: {}", ObjectFactory.getAppProperties().toString());
-            _logger.debug("Operating System detail:[os:{},arch:{},version:{}]",
-                    AppProperties.getOsName(), AppProperties.getOsArch(), AppProperties.getOsVersion());
-            startServices();
-            _logger.info("MyController.org server started in [{}] ms", System.currentTimeMillis() - start);
+            startMycontroller();
         } catch (Exception ex) {
             _logger.error("Unable to start application, refer error log,", ex);
             System.exit(1);//Terminate jvm, with non zero
@@ -100,6 +95,16 @@ public class StartApp {
             DaoUtils.getGatewayDao().create(gateway.getGateway());
         }
 
+    }
+
+    public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException {
+        start = System.currentTimeMillis();
+        loadInitialProperties();
+        _logger.debug("App Properties: {}", ObjectFactory.getAppProperties().toString());
+        _logger.debug("Operating System detail:[os:{},arch:{},version:{}]",
+                AppProperties.getOsName(), AppProperties.getOsArch(), AppProperties.getOsVersion());
+        startServices();
+        _logger.info("MyController.org server started in [{}] ms", System.currentTimeMillis() - start);
     }
 
     private static void loadStartingValues() {
@@ -142,6 +147,7 @@ public class StartApp {
         resources.add(GatewayHandler.class.getName());
         resources.add(ResourcesGroupHandler.class.getName());
         resources.add(DashboardHandler.class.getName());
+        resources.add(BackupHandler.class.getName());
 
         //Add PreFlight handler
         resources.add(OptionsHandler.class.getName());
@@ -190,10 +196,10 @@ public class StartApp {
         server.setSecurityDomain(new BasicAthenticationSecurityDomain());
         server.getDeployment().setSecurityEnabled(true);
 
-        // Start TJWS server
         server.setRootResourcePath("/mc");
-
+        // Start TJWS server
         server.start();
+
         _logger.info("TJWS server started successfully, HTTPS Enabled?:{}, HTTP(S) Port: [{}]",
                 ObjectFactory.getAppProperties().isWebHttpsEnabled(),
                 ObjectFactory.getAppProperties().getWebHttpPort());
@@ -270,11 +276,12 @@ public class StartApp {
         MoquetteMqttBroker.stop();
         MessageMonitorThread.setTerminationIssued(true);
         DataBaseUtils.stop();
-        _logger.debug("All services stopped. Shutting down...");
-        _logger.info("Bye, Have a nice day! See you soon");
+        _logger.debug("All services stopped.");
+        //Remove references
+        ObjectFactory.clearAllReferences();
     }
 
-    private static boolean loadInitialProperties() {
+    public static boolean loadInitialProperties() {
         String propertiesFile = System.getProperty("mc.conf.file");
         try {
             Properties properties = new Properties();

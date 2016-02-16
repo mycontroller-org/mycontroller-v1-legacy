@@ -76,4 +76,12 @@ public class ObjectFactory {
     public synchronized static void addIActionEngine(NETWORK_TYPE networktype, IActionEngine actionEngine) {
         iActionEngine.put(networktype, actionEngine);
     }
+
+    /* This method is used for restore operation, never call on normal time */
+    public synchronized static void clearAllReferences() {
+        appProperties = null;
+        rawMessageQueue = null;
+        gateways = new HashMap<Integer, IGateway>();
+        iActionEngine = new HashMap<NETWORK_TYPE, IActionEngine>();
+    }
 }

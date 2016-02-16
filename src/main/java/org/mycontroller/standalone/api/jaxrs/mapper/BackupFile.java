@@ -15,40 +15,36 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
-import java.util.HashMap;
+import org.mycontroller.standalone.NumericUtils;
 
 import lombok.ToString;
-import lombok.NonNull;
+import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.2
+ * @since 0.0.3
  */
+
 @Builder
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @ToString(includeFieldNames = true)
-public class Query {
-    public static final Long MAX_ITEMS_PER_PAGE = 10l;
-    public static final Long MAX_ITEMS_UNLIMITED = 100l;
-    public static final String PAGE_LIMIT = "pageLimit";
-    public static final String PAGE = "page";
-    public static final String ORDER = "order";
-    public static final String ORDER_BY = "orderBy";
-    public static final String ORDER_ASC = "asc";
+public class BackupFile implements Comparable<BackupFile> {
+    private String name;
+    private String absolutePath;
+    private Long timestamp;
+    private Long size;
 
-    private Long totalItems;
-    private Long filteredCount;
-    private long pageLimit;
-    private long page;
-    private String orderBy;
+    @Override
+    public int compareTo(BackupFile file) {
+        return this.name.compareTo(file.getName());
+    }
 
-    @NonNull
-    private String order;//asc or desc
-    private HashMap<String, Object> filters;
-
-    public Long getStartingRow() {
-        return (getPage() - 1) * getPageLimit();
+    public String getFriendlyTime() {
+        return NumericUtils.getDifferenceFriendlyTime(timestamp);
     }
 }

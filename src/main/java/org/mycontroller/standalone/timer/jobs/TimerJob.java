@@ -30,9 +30,9 @@ import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xeiam.sundial.Job;
-import com.xeiam.sundial.JobContext;
-import com.xeiam.sundial.exceptions.JobInterruptException;
+import org.knowm.sundial.Job;
+import org.knowm.sundial.JobContext;
+import org.knowm.sundial.exceptions.JobInterruptException;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

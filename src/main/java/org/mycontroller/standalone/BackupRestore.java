@@ -28,7 +28,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import javax.ws.rs.BadRequestException;
+
 import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.api.jaxrs.mapper.BackupFile;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +44,10 @@ public class BackupRestore {
     private static final Logger _logger = LoggerFactory.getLogger(BackupRestore.class.getName());
     private static final String DATABASE_FILENAME = "database_backup.zip";
     private static final String APP_PROPERTIES_FILENAME = "mycontroller.properties";
+    private static final String APP_CONF_LOCATION = "../conf/";
     private static String KEY_STORE_FILE = null;
+
+    private static boolean isbackupRestoreRunning = false;
 
     public static synchronized void backup() {
         //backup database
@@ -49,6 +55,11 @@ public class BackupRestore {
         //backup certificates
         //backup logback xml file
 
+        if (isbackupRestoreRunning) {
+            throw new BadRequestException("A backup or restore is running");
+        }
+
+        isbackupRestoreRunning = true;
         String applicationBackupDir = ObjectFactory.getAppProperties().getBackupLocation() + "mycontroller_backup-"
                 + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
         //Create parent dir if not exist
@@ -78,15 +89,84 @@ public class BackupRestore {
                 _logger.debug("zip file creation done");
                 //clean temporary files
                 FileUtils.deleteDirectory(FileUtils.getFile(applicationBackupDir));
-                //Restore test
-                restore(applicationBackupDir + ".zip");
             } else {
                 //Throw exception
             }
         } catch (IOException ex) {
             _logger.error("Exception,", ex);
+        } finally {
+            isbackupRestoreRunning = false;
         }
 
+    }
+
+    public static void restore(BackupFile backupFile) throws IOException {
+        if (isbackupRestoreRunning) {
+            throw new BadRequestException("A backup or restore is running");
+        }
+
+        isbackupRestoreRunning = true;
+
+        String extractedLocation = ObjectFactory.getAppProperties().getTmpLocation()
+                + backupFile.getName().replaceAll(".zip", "");
+        try {
+
+            String oldDatabaseLocation = ObjectFactory.getAppProperties().getDbH2DbLocation();
+            //Extract zip file
+            _logger.debug("Zip file:{}", backupFile.getAbsolutePath());
+
+            extractZipFile(backupFile.getAbsolutePath(), extractedLocation);
+            _logger.debug("All the files extracted to '{}'", extractedLocation);
+
+            //Validate required files
+            if (!FileUtils.getFile(extractedLocation + "/" + DATABASE_FILENAME).exists()) {
+                _logger.error("Unable to continue restore opration! selected file not found! File:{}",
+                        extractedLocation + "/" + DATABASE_FILENAME);
+                return;
+            }
+
+            //Stop all services
+            StartApp.stopServices();
+
+            //Remove old properties file
+            FileUtils.deleteQuietly(FileUtils.getFile(APP_CONF_LOCATION + APP_PROPERTIES_FILENAME));
+
+            //Restore properties file
+            FileUtils.moveFile(
+                    FileUtils.getFile(extractedLocation + "/" + APP_PROPERTIES_FILENAME),
+                    FileUtils.getFile(APP_CONF_LOCATION + APP_PROPERTIES_FILENAME));
+            //Load initial properties
+            StartApp.loadInitialProperties();
+
+            //Remove old files
+            FileUtils.deleteQuietly(FileUtils.getFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile()));
+
+            if (ObjectFactory.getAppProperties().isWebHttpsEnabled()) {
+                //restore key store file
+                FileUtils.moveFile(
+                        FileUtils.getFile(extractedLocation + "/" + FileUtils.getFile(
+                                ObjectFactory.getAppProperties().getWebSslKeystoreFile()).getName()),
+                        FileUtils.getFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile()));
+            }
+
+            //remove old database
+            if (FileUtils.deleteQuietly(FileUtils.getFile(oldDatabaseLocation + ".h2.db"))) {
+                _logger.debug("Old database removed successfully");
+            } else {
+                _logger.warn("Unable to remove old database");
+            }
+            //restore database
+            DataBaseUtils.restoreDatabase(extractedLocation + "/" + DATABASE_FILENAME);
+
+            _logger.info("Resore files completed successfully. Start application manually");
+        } finally {
+            //clean tmp file
+            FileUtils.deleteQuietly(FileUtils.getFile(extractedLocation));
+            _logger.debug("Tmp location[{}] clean success", extractedLocation);
+            isbackupRestoreRunning = false;
+        }
+        //Stop application
+        System.exit(0);
     }
 
     private static void copyStaticFiles(String applicationBackupDir) {
@@ -123,15 +203,6 @@ public class BackupRestore {
 
         zos.closeEntry();
         fis.close();
-    }
-
-    private static void restore(String zipFileName) throws IOException {
-        FileUtils.getFile(zipFileName).getName();
-        _logger.debug("Zip file name:{}", FileUtils.getFile(zipFileName).getName());
-        String extractedLocation = ObjectFactory.getAppProperties().getTmpLocation()
-                + FileUtils.getFile(zipFileName).getName().replaceAll(".zip", "");
-        extractZipFile(zipFileName, extractedLocation);
-        _logger.debug("All the files extracted to '{}'", extractedLocation);
     }
 
     private static void extractZipFile(String zipFileName, String destination)

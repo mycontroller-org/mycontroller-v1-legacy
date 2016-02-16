@@ -51,7 +51,7 @@ public class DataBaseUtils {
     private static JdbcPooledConnectionSource connectionPooledSource = null;
     // this uses h2 by default but change to match your database
     // private static String databaseUrl = "jdbc:h2:mem:account";
-    private static final String DB_URL = "jdbc:h2:file:" + ObjectFactory.getAppProperties().getDbH2DbLocation();
+    private static String DB_URL = null;
     private static final String DB_USERNAME = "mycontroller";
     private static final String DB_PASSWORD = "mycontroller";
     private static final String DB_MIGRATION_LOCATION = "org/mycontroller/standalone/db/migration";
@@ -81,6 +81,10 @@ public class DataBaseUtils {
              * // create a connection source to our database connectionSource =
              * new JdbcConnectionSource(databaseUrl);
              */
+
+            //Update Database url
+            DB_URL = "jdbc:h2:file:" + ObjectFactory.getAppProperties().getDbH2DbLocation();
+
             // pooled connection source
             connectionPooledSource = new JdbcPooledConnectionSource(DB_URL, DB_USERNAME, DB_PASSWORD);
             // only keep the connections open for 5 minutes
@@ -132,9 +136,6 @@ public class DataBaseUtils {
 
             //create or update static json file used for GUI before login
             SettingsUtils.updateStaticJsonInformationFile();
-
-            //Backup 
-            // BackupRestore.backup();
         } else {
             _logger.warn("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", DB_URL);
         }
@@ -146,6 +147,7 @@ public class DataBaseUtils {
                 connectionPooledSource.close();
                 _logger.debug("Database service stopped.");
                 isDbLoaded = false;
+                DaoUtils.setIsDaoInitialized(false);
             } catch (SQLException sqlEx) {
                 _logger.error("Unable to stop database service, ", sqlEx);
             }
@@ -165,7 +167,6 @@ public class DataBaseUtils {
                         .build());
     }
 
-    // http://www.h2database.com/html/tutorial.html#upgrade_backup_restore
     public static synchronized boolean backupDatabase(String databaseBackup) {
         Connection conn = null;
         try {
@@ -185,6 +186,31 @@ public class DataBaseUtils {
             _logger.error("Exception, backup failed!", ex);
         } catch (IOException ex) {
             _logger.error("Parent folder creation failed", ex);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    _logger.error("Unable to close backup database connection!", ex);
+                }
+                _logger.debug("Database connection closed...");
+            }
+        }
+        return false;
+    }
+
+    public static synchronized boolean restoreDatabase(String databaseRestoreScript) {
+        Connection conn = null;
+        try {
+            _logger.debug("database backup triggered...");
+            conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            PreparedStatement statement = conn.prepareStatement("RUNSCRIPT FROM ? COMPRESSION ZIP");
+            statement.setString(1, databaseRestoreScript);
+            statement.execute();
+            _logger.info("database restore completed. File name:{}", databaseRestoreScript);
+            return true;
+        } catch (SQLException ex) {
+            _logger.error("Exception, backup failed!", ex);
         } finally {
             if (conn != null) {
                 try {

@@ -76,6 +76,22 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Integer> getAllIds(Query query) {
+        List<Integer> ids = new ArrayList<Integer>();
+        try {
+            QueryResponse queryResponse = this.getQueryResponse(query, Node.KEY_ID);
+            for (Node node : (List<Node>) queryResponse.getData()) {
+                ids.add(node.getId());
+            }
+        } catch (SQLException ex) {
+            _logger.error("unable to run query:[{}]", query, ex);
+            return null;
+        }
+        return ids;
+    }
+
     @Override
     public List<Node> getAll(List<Integer> ids) {
         return super.getAll(Node.KEY_ID, ids);

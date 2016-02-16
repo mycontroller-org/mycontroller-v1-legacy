@@ -25,8 +25,8 @@ import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xeiam.sundial.Job;
-import com.xeiam.sundial.exceptions.JobInterruptException;
+import org.knowm.sundial.Job;
+import org.knowm.sundial.exceptions.JobInterruptException;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
