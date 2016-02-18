@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.gateway.ethernet;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import org.mycontroller.standalone.ObjectFactory;
@@ -42,14 +43,16 @@ public class EthernetGatewayActionThread implements Runnable {
     private Thread ethernetGatewayListenerThread = null;
     public static final long RETRY_WAIT_TIME = TIME_REF.ONE_SECOND * 5;
     public static final long THREAD_TERMINATION_WAIT_TIME = TIME_REF.ONE_SECOND * 5;
+    public static final int SOCKET_TIMEOUT = (int) (TIME_REF.ONE_SECOND * 7);
     private GatewayEthernet gateway = null;
 
     public EthernetGatewayActionThread(GatewayEthernet gateway) {
         this.gateway = gateway;
         try {
-            //Update Gateway Info
-            socket = new Socket(this.gateway.getHost(), this.gateway.getPort());
+            socket = new Socket();
             socket.setKeepAlive(true);
+            socket.connect(new InetSocketAddress(this.gateway.getHost(), this.gateway.getPort()), SOCKET_TIMEOUT);
+
             ethernetGatewayListener = new EthernetGatewayListener(socket, this.gateway);
             ethernetGatewayListenerThread = new Thread(ethernetGatewayListener);
             ethernetGatewayListenerThread.start();
@@ -83,11 +86,13 @@ public class EthernetGatewayActionThread implements Runnable {
         if (waitTime <= 0) {
             _logger.warn("Terminating abnormally EthernetGatewayActionThread!");
         }
-        try {
-            socket.close();
-            _logger.info("EthernetGateway[{}:{}] closed", this.gateway.getHost(), this.gateway.getPort());
-        } catch (Exception ex) {
-            _logger.error("Exception,", ex);
+        if (socket != null) {
+            try {
+                socket.close();
+                _logger.info("EthernetGateway[{}:{}] closed", this.gateway.getHost(), this.gateway.getPort());
+            } catch (Exception ex) {
+                _logger.error("Exception,", ex);
+            }
         }
     }
 

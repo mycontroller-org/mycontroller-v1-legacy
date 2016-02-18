@@ -16,17 +16,17 @@
 
 -->
 <!-- Loading icon disaplay -->
-<div ng-show="mycSenVars.showLoading">
+<div ng-show="mycSensorsMixedGraph.showLoading">
   <div ng-include src="'partials/common-html/loading-sm.html'"></div>
 </div>
 
-<div ng-show="mycSenVarGraph.showError">
+<div ng-show="mycSensorsMixedGraph.showError">
   <div ng-include src="'partials/common-html/error-sm.html'"></div>
 </div>
 
-<div ng-hide="mycSenVars.showLoading || mycSenVarGraph.showError">
-  <span ng-bind-html="mycSenVarGraph.resourceName | mcResourceRepresentation"></span>
-  <nvd3 options='mycSenVarGraph.chartOptions' data="mycSenVarGraph.chartData"></nvd3>
-  <div ng-if="config.variableId === null" ng-include src="'partials/common-html/no-items-filter-sm.html'"></div>
+<div ng-if="!(mycSensorsMixedGraph.showLoading || mycSensorsMixedGraph.showError)">
+  <!-- <span ng-bind-html="mycSensorsMixedGraph.resourceName | mcResourceRepresentation"></span> -->
+  <nvd3 options='mycSensorsMixedGraph.chartOptions' data="mycSensorsMixedGraph.chartData"></nvd3>
+  <div ng-if="config.variableId.length === 0" ng-include src="'partials/common-html/no-items-filter-sm.html'"></div>
 </div>
 

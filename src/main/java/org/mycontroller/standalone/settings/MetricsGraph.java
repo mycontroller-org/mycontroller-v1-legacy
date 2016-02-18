@@ -41,9 +41,46 @@ public class MetricsGraph {
     private String metricName;
     private String type;
     private String interpolate;
-    private Boolean area;
-    private Boolean bar;
+    private String subType;
     private String color;
+
+    public enum CHART_TYPE {
+        LINE_CHART("lineChart"),
+        HISTORICAL_BAR_CHART("historicalBarChart"),
+        STACKED_AREA_CHART("stackedAreaChart"),
+        MULTI_CHART("multiChart"),
+        LINE_PLUS_BAR_CHART("linePlusBarChart");
+
+        private final String name;
+
+        private CHART_TYPE(String name) {
+            this.name = name;
+        }
+
+        public String getText() {
+            return this.name;
+        }
+
+        public static CHART_TYPE get(int id) {
+            for (CHART_TYPE type : values()) {
+                if (type.ordinal() == id) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
+
+        public static CHART_TYPE fromString(String text) {
+            if (text != null) {
+                for (CHART_TYPE type : CHART_TYPE.values()) {
+                    if (text.equalsIgnoreCase(type.getText())) {
+                        return type;
+                    }
+                }
+            }
+            return null;
+        }
+    }
 
     @JsonIgnore
     public static ArrayList<MESSAGE_TYPE_SET_REQ> variables = new ArrayList<MESSAGE_TYPE_SET_REQ>();

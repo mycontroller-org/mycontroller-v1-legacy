@@ -107,7 +107,8 @@ angular.module('adf.widget.myc-sen-vars', [])
     $scope.$on('$destroy', function(){
       $interval.cancel(promise);
     });
-  }).controller('mycSenVarsEditController', function($scope, $interval, config, mchelper, $filter, TypesFactory){
+  }).controller('mycSenVarsEditController', function($scope, $interval, config, mchelper, $filter, TypesFactory, CommonServices){
     var mycSenVarsEdit = this;
+    mycSenVarsEdit.cs = CommonServices;
     mycSenVarsEdit.variables = TypesFactory.getSensorVariables();
   });

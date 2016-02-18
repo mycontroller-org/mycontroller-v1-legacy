@@ -46,6 +46,7 @@ public class BackupRestore {
     private static final String APP_PROPERTIES_FILENAME = "mycontroller.properties";
     private static final String APP_CONF_LOCATION = "../conf/";
     private static String KEY_STORE_FILE = null;
+    public static final String FILE_NAME_IDENTITY = "_mc_backup-";
 
     private static boolean isbackupRestoreRunning = false;
 
@@ -61,7 +62,7 @@ public class BackupRestore {
 
         isbackupRestoreRunning = true;
         String applicationBackupDir = ObjectFactory.getAppProperties().getBackupSettings().getBackupLocation()
-                + prefix + "_mc_backup-" + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
+                + prefix + FILE_NAME_IDENTITY + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
         //Create parent dir if not exist
         try {
             FileUtils.forceMkdir(FileUtils.getFile(applicationBackupDir));

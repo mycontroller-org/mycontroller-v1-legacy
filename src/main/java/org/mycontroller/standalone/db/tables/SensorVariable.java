@@ -47,6 +47,7 @@ public class SensorVariable {
     public static final String KEY_TIMESTAMP = "timestamp";
     public static final String KEY_VARIABLE_TYPE = "variableType";
     public static final String KEY_VALUE = "value";
+    public static final String KEY_PREVIOUS_VALUE = "previousValue";
     public static final String KEY_METRIC = "metricType";
     public static final String KEY_UNIT = "unit";
 
@@ -68,6 +69,9 @@ public class SensorVariable {
 
     @DatabaseField(columnName = KEY_VALUE, canBeNull = true)
     private String value;
+
+    @DatabaseField(columnName = KEY_PREVIOUS_VALUE, canBeNull = true)
+    private String previousValue;
 
     @DatabaseField(columnName = KEY_UNIT, canBeNull = true)
     private String unit;

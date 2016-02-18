@@ -155,8 +155,7 @@ public class MetricsSettings {
                     .metricName(subKey)
                     .type(settings.getValue())
                     .interpolate(settings.getAltValue())
-                    .area(NumericUtils.getBoolean(settings.getValue2()))
-                    .bar(NumericUtils.getBoolean(settings.getValue3()))
+                    .subType(settings.getValue3())
                     .color(settings.getValue4())
                     .build();
         }
@@ -170,8 +169,7 @@ public class MetricsSettings {
                 .subKey(metric.getMetricName())
                 .value(metric.getType())
                 .altValue(metric.getInterpolate())
-                .value2(String.valueOf(metric.getArea()))
-                .value3(String.valueOf(metric.getBar()))
+                .value3(metric.getSubType())
                 .value4(metric.getColor())
                 .build());
     }

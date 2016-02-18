@@ -17,6 +17,11 @@ package org.mycontroller.standalone.api.jaxrs.mapper;
 
 import java.util.ArrayList;
 
+import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
@@ -31,13 +36,59 @@ import lombok.Data;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MetricsChartDataNVD3 {
+    private Integer id;
+    private String resourceName;
     private String key;
     private ArrayList<Object> values;
     private Double mean;
-    private Integer yAxis;
     private String type;
-    private String interpolate;
+    private Integer yAxis;
     private Boolean area;
     private Boolean bar;
     private String color;
+    private String interpolate;
+
+    @JsonProperty("yAxis")
+    @JsonGetter("yAxis")
+    public Integer getYAxis() {
+        return yAxis;
+    }
+
+    private void updateType() {
+        if (type.equalsIgnoreCase("area")) {
+            area = true;
+        } else if (type.equalsIgnoreCase("bar")) {
+            bar = true;
+        }
+        type = null;
+    }
+
+    private void updateYAxis() {
+        if (yAxis == null) {
+            yAxis = 1;
+        }
+    }
+
+    public MetricsChartDataNVD3 updateSubType(String mainType) {
+        switch (CHART_TYPE.fromString(mainType)) {
+            case LINE_CHART:
+                if (type.equalsIgnoreCase("area")) {
+                    area = true;
+                }
+                break;
+            case HISTORICAL_BAR_CHART:
+            case STACKED_AREA_CHART:
+                updateType();
+                break;
+            case LINE_PLUS_BAR_CHART:
+                updateType();
+                updateYAxis();
+                break;
+            case MULTI_CHART:
+                updateYAxis();
+                break;
+            default:
+        }
+        return this;
+    }
 }

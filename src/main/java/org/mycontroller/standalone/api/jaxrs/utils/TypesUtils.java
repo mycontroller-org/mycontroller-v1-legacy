@@ -71,11 +71,11 @@ public class TypesUtils {
 
     }
 
-    public static ArrayList<TypesIdNameMapper> getSensorValueTypes() {
+    public static ArrayList<TypesIdNameMapper> getSensorVariableTypes() {
         MESSAGE_TYPE_SET_REQ[] types = MESSAGE_TYPE_SET_REQ.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (MESSAGE_TYPE_SET_REQ type : types) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.name()).build());
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -583,7 +583,8 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getSensorVariables(User user, Integer sensorId, Integer sensorVariableId)
+    public static ArrayList<TypesIdNameMapper> getSensorVariables(User user, Integer sensorId,
+            Integer sensorVariableId, List<String> variableTypes)
             throws IllegalAccessException {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<SensorVariable> sensorVariables = null;
@@ -613,9 +614,17 @@ public class TypesUtils {
 
         if (sensorVariables != null) {
             for (SensorVariable sensorVariable : sensorVariables) {
-                typesIdNameMappers.add(TypesIdNameMapper.builder().id(sensorVariable.getId()).displayName(
-                        new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
-                        .build());
+                if (!variableTypes.isEmpty()) {
+                    if (variableTypes.contains(sensorVariable.getVariableType().getText())) {
+                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(sensorVariable.getId()).displayName(
+                                new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable)
+                                        .getResourceLessDetails()).build());
+                    }
+                } else {
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(sensorVariable.getId()).displayName(
+                            new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
+                            .build());
+                }
             }
         }
         return typesIdNameMappers;
@@ -649,26 +658,28 @@ public class TypesUtils {
     public static ArrayList<TypesIdNameMapper> getSensorVariableTypes(MESSAGE_TYPE_PRESENTATION sensorType,
             Integer sensorId) {
         if (sensorType == null) {
-            return null;
-        }
-        List<SensorsVariablesMap> variableTypes = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
-        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        for (SensorsVariablesMap variableType : variableTypes) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(variableType.getVariableType().getText())
-                    .displayName(variableType.getVariableType().getText()).ticked(false).build());
-        }
-        if (sensorId != null) {
-            List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
-            for (SensorVariable sensorVariable : sensorVariables) {
-                for (TypesIdNameMapper idNameMapper : typesIdNameMappers) {
-                    if (idNameMapper.getDisplayName().equals(sensorVariable.getVariableType().getText())) {
-                        idNameMapper.setSubId(sensorVariable.getId());
-                        idNameMapper.setTicked(true);
+            return getSensorVariableTypes();
+        } else {
+            ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+            List<SensorsVariablesMap> variableTypes = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
+            for (SensorsVariablesMap variableType : variableTypes) {
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(variableType.getVariableType().getText())
+                        .displayName(variableType.getVariableType().getText()).ticked(false).build());
+            }
+            if (sensorId != null) {
+                List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+                for (SensorVariable sensorVariable : sensorVariables) {
+                    for (TypesIdNameMapper idNameMapper : typesIdNameMappers) {
+                        if (idNameMapper.getDisplayName().equals(sensorVariable.getVariableType().getText())) {
+                            idNameMapper.setSubId(sensorVariable.getId());
+                            idNameMapper.setTicked(true);
+                        }
                     }
                 }
             }
+            return typesIdNameMappers;
         }
-        return typesIdNameMappers;
+
     }
 
     public static ArrayList<TypesIdNameMapper> getGraphSensorVariableTypes(int sensorRefId) {

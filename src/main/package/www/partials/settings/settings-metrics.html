@@ -85,12 +85,15 @@
                 <button ng-show="editEnable.metrics" style="background-color:{{metricsSettings.battery.color}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top" ng-model="metricsSettings.battery.color">{{metricsSettings.battery.color || "-"}}</button>
                 <span ng-hide="editEnable.metrics" style="background-color:{{metricsSettings.battery.color}};width:70px;color:white;" class="btn btn-sm">{{metricsSettings.battery.color}}</span>
               </div>
-              <div class="col-sm-2">
+              <div class="col-sm-3">
                 <label class="mc-padding">
-                  <input ng-disabled="!editEnable.metrics" type="checkbox" ng-model="metricsSettings.battery.area" /> {{ 'AREA' | translate }}
+                  <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="radio" value="line" ng-model="metricsSettings.battery.subType" /> {{ 'LINE' | translate }}
                 </label> 
                 <label class="mc-padding">
-                  <input ng-disabled="!editEnable.metrics" type="checkbox" ng-model="metricsSettings.battery.bar" /> {{ 'BAR' | translate }}
+                  <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="radio" value="area" ng-model="metricsSettings.battery.subType" /> {{ 'AREA' | translate }}
+                </label> 
+                <label class="mc-padding">
+                  <input ng-disabled="!editEnable.metrics" id="bar-{{item.id}}"type="radio" value="bar" ng-model="metricsSettings.battery.subType" /> {{ 'BAR' | translate }}
                 </label>
               </div>
             </div>
@@ -128,12 +131,15 @@
                   <button ng-show="editEnable.metrics" id="color-{{item.id}}" style="background-color:{{item.color}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top" ng-model="item.color">{{item.color || "-"}}</button>
                   <span ng-hide="editEnable.metrics" style="background-color:{{item.color}};width:70px;color:white;" class="btn btn-sm">{{item.color}}</span>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                   <label class="mc-padding">
-                    <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="checkbox" ng-model="item.area" /> {{ 'AREA' | translate }}
+                    <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="radio" value="line" ng-model="item.subType" /> {{ 'LINE' | translate }}
                   </label> 
                   <label class="mc-padding">
-                    <input ng-disabled="!editEnable.metrics" id="bar-{{item.id}}"type="checkbox" ng-model="item.bar" /> {{ 'BAR' | translate }}
+                    <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="radio" value="area" ng-model="item.subType" /> {{ 'AREA' | translate }}
+                  </label> 
+                  <label class="mc-padding">
+                    <input ng-disabled="!editEnable.metrics" id="bar-{{item.id}}"type="radio" value="bar" ng-model="item.subType" /> {{ 'BAR' | translate }}
                   </label>
                 </div>
               </div>

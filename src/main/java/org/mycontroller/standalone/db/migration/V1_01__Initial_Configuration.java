@@ -43,6 +43,7 @@ import org.mycontroller.standalone.metrics.jobs.MetricsAggregationJob;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsGraph;
+import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
 import org.mycontroller.standalone.settings.MetricsSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
@@ -115,30 +116,27 @@ public class V1_01__Initial_Configuration implements JdbcMigration {
             if (MYCMessages.getMetricType(type) == METRIC_TYPE.DOUBLE) {
                 metrics.add(MetricsGraph.builder()
                         .metricName(type.getText())
-                        .type("lineChart")
+                        .type(CHART_TYPE.LINE_CHART.getText())
                         .interpolate("linear")
                         .color("#ff7f0e")
-                        .area(false)
-                        .bar(false)
+                        .subType("line")
                         .build());
             } else if (MYCMessages.getMetricType(type) == METRIC_TYPE.BINARY) {
                 metrics.add(MetricsGraph.builder()
                         .metricName(type.getText())
-                        .type("lineChart")
+                        .type(CHART_TYPE.LINE_CHART.getText())
                         .interpolate("step-after")
                         .color("#ff7f0e")
-                        .area(false)
-                        .bar(false)
+                        .subType("line")
                         .build());
             }
         }
         MetricsGraph batteryGrapth = MetricsGraph.builder()
                 .metricName(MetricsSettings.SKEY_BATTERY)
-                .type("lineChart")
+                .type(CHART_TYPE.LINE_CHART.getText())
                 .interpolate("linear")
                 .color("#ff7f0e")
-                .area(false)
-                .bar(false)
+                .subType("line")
                 .build();
 
         //Update Metrics reference data

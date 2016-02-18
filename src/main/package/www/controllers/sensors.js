@@ -321,8 +321,8 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
 
   $scope.updateChartOptions = function(chData){
     var chOptions = angular.copy($scope.chartOptions);
-    chOptions.chart.type = chData.chartData[0].type;
-    chOptions.chart.interpolate = chData.chartData[0].interpolate;
+    chOptions.chart.type = chData.chartType;
+    chOptions.chart.interpolate = chData.chartInterpolate;
     //Update display time format
     $scope.chartTimeFormat = chData.timeFormat;
     if(chData.dataType === 'Double'){

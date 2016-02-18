@@ -353,8 +353,8 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
       $scope.batteryChartData = response;
       //Update display time format
       $scope.chartTimeFormat = response.timeFormat;
-      $scope.chartOptions.chart.type = response.chartData[0].type;
-      $scope.chartOptions.chart.interpolate = response.chartData[0].interpolate;
+      $scope.chartOptions.chart.type = response.chartType;
+      $scope.chartOptions.chart.interpolate = response.chartInterpolate;
       $scope.fetching = false;
     });
   });

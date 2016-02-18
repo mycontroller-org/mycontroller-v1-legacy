@@ -41,7 +41,9 @@ var myControllerModule = angular.module('myController',[
   'adf',
   'adf.structures.base',
   'adf.widget.myc-sen-vars',
-  'adf.widget.myc-sen-var-graph',
+  'adf.widget.myc-a-sensor-graph',
+  'adf.widget.myc-sensors-grouped-graph',
+  'adf.widget.myc-sensors-mixed-graph',
   'adf.widget.myc-time',
   'adf.widget.myc-sunrisetime',
   'adf.widget.news',
@@ -680,9 +682,12 @@ myControllerModule.controller('ControllerDeleteModal', function ($scope, $uibMod
   $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });
 
+/*
 //Global exception handler
 myControllerModule.factory('$exceptionHandler', function () {
   return function errorCatcherHandler(exception, cause) {
-    throw exception;
+    console.log('Exception cause:'+cause+', Exception:'+angular.toJson(exception));
+    //throw exception;
   };
 });
+*/

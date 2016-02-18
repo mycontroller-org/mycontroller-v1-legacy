@@ -18,7 +18,8 @@
 <form role="form">
   <div class="form-group">
     <label>{{ 'REFRESH_TIME_SECONDS' | translate }}</label>
-    <input type="text" class="form-control" id="refreshTime" ng-model="config.refreshTime">
+    <input type="text" class="form-control" id="refreshTime" placeholder="{{'REFRESH_TIME_SECONDS' | translate}}" ng-model="config.refreshTime" pf-validation="mycSingleSensorGraphEdit.cs.isNumber(input)" required>
+    <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
   </div>
   <div class="form-group">
     <input ng-model="config.withMinMax" type="checkbox"/>
@@ -41,7 +42,7 @@
     <label>{{ 'SENSOR_VARIABLE' | translate }}</label>
     <select id="senVars" class="form-control" pf-select data-live-search="true" ng-model="config.variableId"> 
       <option value="" ng-hide="true"></option>
-      <option ng-repeat="res in mycSenVarGraphEdit.variables" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="config.variableId == res.id"></option>
+      <option ng-repeat="res in mycSingleSensorGraphEdit.variables" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="config.variableId == res.id"></option>
     </select>
   </div>
 </form>

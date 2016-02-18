@@ -15,34 +15,21 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
-import java.util.ArrayList;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 0.0.3
  */
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MetricsChartDataGroupNVD3 {
-    @JsonProperty("chartData")
-    private ArrayList<MetricsChartDataNVD3> metricsChartDataNVD3;
-    private Integer id;
-    private String variableType;
-    private String unit;
-    private String unit2;
-    private String dataType;
-    private String timeFormat;
-    private String resourceName;
-    private String chartType;
-    private String chartInterpolate;
-
+public class MetricsChartDataXY {
+    private Object x;
+    private Object y;
 }

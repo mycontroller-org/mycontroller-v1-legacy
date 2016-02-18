@@ -19,15 +19,15 @@
 
 'use strict';
 
-angular.module('adf.widget.myc-sen-var-graph', [])
+angular.module('adf.widget.myc-a-sensor-graph', [])
   .config(function(dashboardProvider){
     dashboardProvider
-      .widget('mycSenVarGraph', {
-        title: 'Sensor graphical view',
-        description: 'Monitor sensor with graphical support',
-        templateUrl: 'controllers/adf-widgets/adf-myc-sen-var-graph/view.html',
-        controller: 'mycSenVarGraphController',
-        controllerAs: 'mycSenVarGraph',
+      .widget('mycSingleSensorGraph', {
+        title: 'A sensor graphical view',
+        description: 'Displays a sensor graphical view',
+        templateUrl: 'controllers/adf-widgets/adf-myc-a-sg/view.html',
+        controller: 'mycSingleSensorGraphController',
+        controllerAs: 'mycSingleSensorGraph',
         config: {
           variableId:null,
           withMinMax:false,
@@ -35,24 +35,24 @@ angular.module('adf.widget.myc-sen-var-graph', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-sen-var-graph/edit.html',
-          controller: 'mycSenVarGraphEditController',
-          controllerAs: 'mycSenVarGraphEdit',
+          templateUrl: 'controllers/adf-widgets/adf-myc-a-sg/edit.html',
+          controller: 'mycSingleSensorGraphEditController',
+          controllerAs: 'mycSingleSensorGraphEdit',
         }
       });
   })
-  .controller('mycSenVarGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory, TypesFactory, CommonServices){
-    var mycSenVarGraph = this;
+  .controller('mycSingleSensorGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory, TypesFactory, CommonServices){
+    var mycSingleSensorGraph = this;
     
-    mycSenVarGraph.showLoading = true;
-    mycSenVarGraph.showError = false;
-    mycSenVarGraph.isSyncing = true;
-    mycSenVarGraph.variables = {};
+    mycSingleSensorGraph.showLoading = true;
+    mycSingleSensorGraph.showError = false;
+    mycSingleSensorGraph.isSyncing = true;
+    mycSingleSensorGraph.variables = {};
     $scope.tooltipEnabled = false;
     $scope.hideVariableName=true;
     $scope.cs = CommonServices;
     
-    mycSenVarGraph.chartOptions = {
+    mycSingleSensorGraph.chartOptions = {
         chart: {
             type: 'lineChart',
             noErrorCheck: true,
@@ -64,7 +64,7 @@ angular.module('adf.widget.myc-sen-var-graph', [])
                 left: 65
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
-          
+            noData:"No data available.",          
             x: function(d){return d[0];},
             y: function(d){return d[1];},
             useVoronoi: false,
@@ -92,40 +92,40 @@ angular.module('adf.widget.myc-sen-var-graph', [])
         }
     };
     
-    mycSenVarGraph.chartTimeFormat = mchelper.cfg.dateFormat;
-    mycSenVarGraph.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, mycSenVarGraph.chartTimeFormat, mchelper.cfg.timezone)};
+    mycSingleSensorGraph.chartTimeFormat = mchelper.cfg.dateFormat;
+    mycSingleSensorGraph.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, mycSingleSensorGraph.chartTimeFormat, mchelper.cfg.timezone)};
     
     function updateChart(){
-      mycSenVarGraph.isSyncing = true;
+      mycSingleSensorGraph.isSyncing = true;
       MetricsFactory.getMetricsData({"variableId":config.variableId, "withMinMax":config.withMinMax, "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
         if(resource.length > 0){
-           mycSenVarGraph.chartData = resource[0].chartData;
+           mycSingleSensorGraph.chartData = resource[0].chartData;
           //Update display time format
-          mycSenVarGraph.chartTimeFormat = resource[0].timeFormat;
-          mycSenVarGraph.chartOptions.chart.type = resource[0].chartData[0].type;
-          mycSenVarGraph.chartOptions.chart.interpolate = resource[0].chartData[0].interpolate;
+          mycSingleSensorGraph.chartTimeFormat = resource[0].timeFormat;
+          mycSingleSensorGraph.chartOptions.chart.type = resource[0].chartType;
+          mycSingleSensorGraph.chartOptions.chart.interpolate = resource[0].chartInterpolate;
 
           if(resource[0].dataType === 'Double'){
-            mycSenVarGraph.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + resource[0].unit};
+            mycSingleSensorGraph.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + resource[0].unit};
           }else if(resource[0].dataType === 'Binary'){
-            mycSenVarGraph.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.0f')(d)};
+            mycSingleSensorGraph.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.0f')(d)};
           }
-          mycSenVarGraph.chartOptions.title.text = resource[0].variableType;
-          mycSenVarGraph.resourceName = resource[0].resourceName;
+          mycSingleSensorGraph.chartOptions.title.text = resource[0].variableType;
+          mycSingleSensorGraph.resourceName = resource[0].resourceName;
         }else{
           if(config.variableId !== null){
-            mycSenVarGraph.showError = true;
+            mycSingleSensorGraph.showError = true;
           }
         }
-        mycSenVarGraph.isSyncing = false;
-        if(mycSenVarGraph.showLoading){
-          mycSenVarGraph.showLoading = false;
+        mycSingleSensorGraph.isSyncing = false;
+        if(mycSingleSensorGraph.showLoading){
+          mycSingleSensorGraph.showLoading = false;
         }
       });
     }
     
     function updateVariables(){
-      if(mycSenVarGraph.isSyncing){
+      if(mycSingleSensorGraph.isSyncing){
         return;
       }else if(config.variableId !== null){
         updateChart();
@@ -142,7 +142,8 @@ angular.module('adf.widget.myc-sen-var-graph', [])
     $scope.$on('$destroy', function(){
       $interval.cancel(promise);
     });
-  }).controller('mycSenVarGraphEditController', function($scope, $interval, config, mchelper, $filter, TypesFactory){
-    var mycSenVarGraphEdit = this;
-    mycSenVarGraphEdit.variables = TypesFactory.getSensorVariables();
+  }).controller('mycSingleSensorGraphEditController', function($scope, $interval, config, mchelper, $filter, TypesFactory, CommonServices){
+    var mycSingleSensorGraphEdit = this;
+    mycSingleSensorGraphEdit.variables = TypesFactory.getSensorVariables();
+    mycSingleSensorGraphEdit.cs = CommonServices;
   });

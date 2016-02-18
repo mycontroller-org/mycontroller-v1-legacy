@@ -20,12 +20,15 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 public class NumericUtils {
+    private static final Logger _logger = LoggerFactory.getLogger(NumericUtils.class);
     public static final int DOUBLE_ROUND = 3;
     public static final long SECOND = 1000;
     public static final long MINUTE = SECOND * 60;
@@ -64,11 +67,17 @@ public class NumericUtils {
     }
 
     public static String getDoubleAsString(String value) {
-        if (value != null) {
-            return getDoubleAsString(Double.valueOf(value));
-        } else {
-            return "-";
+        try {
+            if (value != null) {
+                return getDoubleAsString(Double.valueOf(value));
+            } else {
+                return "-";
+            }
+        } catch (NumberFormatException nex) {
+            _logger.error("Error on conversion! Input:[{}],", value, nex);
+            return null;
         }
+
     }
 
     public static Integer getInteger(String value) {

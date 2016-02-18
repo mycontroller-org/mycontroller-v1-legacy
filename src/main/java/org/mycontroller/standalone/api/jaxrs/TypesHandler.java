@@ -17,6 +17,8 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -115,11 +117,14 @@ public class TypesHandler {
 
     @GET
     @Path("/sensorVariables")
-    public Response getSensorVaribles(@QueryParam("sensorId") Integer sensorId,
-            @QueryParam("sensorVariableId") Integer sensorVariableId) {
+    public Response getSensorVaribles(
+            @QueryParam("sensorId") Integer sensorId,
+            @QueryParam("sensorVariableId") Integer sensorVariableId,
+            @QueryParam("variableType") List<String> variableTypes) {
         try {
             return RestUtils.getResponse(Status.OK,
-                    TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId, sensorVariableId));
+                    TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId, sensorVariableId,
+                            variableTypes));
         } catch (IllegalAccessException ex) {
             return RestUtils.getResponse(Status.FORBIDDEN, new ApiError(ex.getMessage()));
         }
@@ -326,12 +331,6 @@ public class TypesHandler {
     @Path("/graphInterpolate")
     public Response getGraphInterpolateTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGraphInterpolateTypes());
-    }
-
-    @GET
-    @Path("/sensorVariableTypes")
-    public Response getSensorValueTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorValueTypes());
     }
 
     @GET
