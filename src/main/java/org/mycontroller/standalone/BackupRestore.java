@@ -157,9 +157,13 @@ public class BackupRestore {
                 _logger.warn("Unable to remove old database");
             }
             //restore database
-            DataBaseUtils.restoreDatabase(extractedLocation + "/" + DATABASE_FILENAME);
+            if (DataBaseUtils.restoreDatabase(extractedLocation + "/" + DATABASE_FILENAME)) {
+                _logger.info("Restore completed successfully. Start '{}' server manually",
+                        AppProperties.APPLICATION_NAME);
+            } else {
+                _logger.error("Restore failed!");
+            }
 
-            _logger.info("Resore files completed successfully. Start application manually");
         } finally {
             //clean tmp file
             FileUtils.deleteQuietly(FileUtils.getFile(extractedLocation));

@@ -25,14 +25,15 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Data;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @ToString(includeFieldNames = true)
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

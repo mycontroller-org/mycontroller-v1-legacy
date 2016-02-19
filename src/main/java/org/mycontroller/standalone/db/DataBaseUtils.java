@@ -51,6 +51,7 @@ public class DataBaseUtils {
     private static JdbcPooledConnectionSource connectionPooledSource = null;
     // this uses h2 by default but change to match your database
     // private static String databaseUrl = "jdbc:h2:mem:account";
+    public static final String DB_URL_PREFIX = "jdbc:h2:file:";
     private static String DB_URL = null;
     private static final String DB_USERNAME = "mycontroller";
     private static final String DB_PASSWORD = "mycontroller";
@@ -83,7 +84,7 @@ public class DataBaseUtils {
              */
 
             //Update Database url
-            DB_URL = "jdbc:h2:file:" + ObjectFactory.getAppProperties().getDbH2DbLocation();
+            DB_URL = DB_URL_PREFIX + ObjectFactory.getAppProperties().getDbH2DbLocation();
 
             // pooled connection source
             connectionPooledSource = new JdbcPooledConnectionSource(DB_URL, DB_USERNAME, DB_PASSWORD);
@@ -203,11 +204,13 @@ public class DataBaseUtils {
         Connection conn = null;
         try {
             _logger.debug("database backup triggered...");
-            conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            conn = DriverManager.getConnection(DB_URL_PREFIX + ObjectFactory.getAppProperties().getDbH2DbLocation(),
+                    DB_USERNAME, DB_PASSWORD);
             PreparedStatement statement = conn.prepareStatement("RUNSCRIPT FROM ? COMPRESSION ZIP");
             statement.setString(1, databaseRestoreScript);
             statement.execute();
-            _logger.info("database restore completed. File name:{}", databaseRestoreScript);
+            _logger.info("Database restore completed. Database location:{}, Restored file name:{}",
+                    ObjectFactory.getAppProperties().getDbH2DbLocation(), databaseRestoreScript);
             return true;
         } catch (SQLException ex) {
             _logger.error("Exception, backup failed!", ex);
