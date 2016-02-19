@@ -26,7 +26,7 @@
 
 <div ng-if="!(mycSensorsMixedGraph.showLoading || mycSensorsMixedGraph.showError)">
   <!-- <span ng-bind-html="mycSensorsMixedGraph.resourceName | mcResourceRepresentation"></span> -->
-  <nvd3 options='mycSensorsMixedGraph.chartOptions' data="mycSensorsMixedGraph.chartData"></nvd3>
+  <nvd3 id="msg-{{config.variableId.join('-')}}" options='mycSensorsMixedGraph.chartOptions' data="mycSensorsMixedGraph.chartData"></nvd3>
   <div ng-if="config.variableId.length === 0" ng-include src="'partials/common-html/no-items-filter-sm.html'"></div>
 </div>
 

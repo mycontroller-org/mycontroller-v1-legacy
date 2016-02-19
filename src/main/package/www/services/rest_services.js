@@ -139,6 +139,7 @@ myControllerModule.factory('MetricsFactory', function ($resource) {
     getResourceCount: { method: 'GET', isArray: false, params: {type: 'resourceCount'}},
     getMetricsData: { method: 'GET', isArray: true, params: {type: 'metricsData'}},
     getBatteryMetrics: { method: 'GET', isArray: false, params: {type: 'metricsBattery'}},
+    getBulletChart: { method: 'GET', isArray: true, params: {type: 'bulletChart'}},
 
     getCsvFile: { method: 'GET', isArray: false, params: {type: 'csvFile'}},
     

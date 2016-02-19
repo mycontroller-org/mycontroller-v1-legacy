@@ -257,7 +257,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
                 left: 65
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
-          
+            noData: $filter('translate')('NO_DATA_AVAILABLE'),
             x: function(d){return d[0];},
             y: function(d){return d[1];},
             useVoronoi: false,

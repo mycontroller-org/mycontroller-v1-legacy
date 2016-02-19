@@ -16,15 +16,18 @@
 
 -->
 <form role="form">
+  
   <div class="form-group">
     <label>{{ 'REFRESH_TIME_SECONDS' | translate }}</label>
     <input type="text" class="form-control" id="refreshTime" placeholder="{{'REFRESH_TIME_SECONDS' | translate}}" ng-model="config.refreshTime" pf-validation="mycSensorsGroupedGraphEdit.cs.isNumber(input)" required>
     <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
   </div>
+  
   <div class="form-group">
     <input ng-model="config.useInteractiveGuideline" type="checkbox"/>
     <label class="control-label">{{ 'USE_INTRACTIVE_GUIDE_LINE' | translate }}</label>
   </div>
+  
   <div class="form-group">
     <label>{{ 'TIME_RANGE' | translate }}</label>
     <select id="panelSize" class="form-control" pf-select ng-model="config.chartFromTimestamp"> 
@@ -37,7 +40,7 @@
         <option value="2419200000">{{ 'LAST_MONTH' | translate }}</option>
         <option value="31536000000">{{ 'LAST_YEAR' | translate }}</option>
     </select>
-  </div>
+  </div> 
   
   <div class="form-group">
     <label>{{ 'SENSOR_VARIABLE_TYPE' | translate }}</label>

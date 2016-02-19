@@ -120,11 +120,12 @@ public class TypesHandler {
     public Response getSensorVaribles(
             @QueryParam("sensorId") Integer sensorId,
             @QueryParam("sensorVariableId") Integer sensorVariableId,
-            @QueryParam("variableType") List<String> variableTypes) {
+            @QueryParam("variableType") List<String> variableTypes,
+            @QueryParam("metricType") List<String> metricTypes) {
         try {
             return RestUtils.getResponse(Status.OK,
                     TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId, sensorVariableId,
-                            variableTypes));
+                            variableTypes, metricTypes));
         } catch (IllegalAccessException ex) {
             return RestUtils.getResponse(Status.FORBIDDEN, new ApiError(ex.getMessage()));
         }
@@ -175,9 +176,10 @@ public class TypesHandler {
     @GET
     @Path("/sensorVariableTypes")
     public Response getSensorVariableTypes(@QueryParam("sensorType") String sensorType,
-            @QueryParam("sensorId") Integer sensorId) {
+            @QueryParam("sensorId") Integer sensorId,
+            @QueryParam("metricType") List<String> metricTypes) {
         return RestUtils.getResponse(Status.OK,
-                TypesUtils.getSensorVariableTypes(MESSAGE_TYPE_PRESENTATION.fromString(sensorType), sensorId));
+                TypesUtils.getSensorVariableTypes(MESSAGE_TYPE_PRESENTATION.fromString(sensorType), sensorId, metricTypes));
     }
 
     @GET

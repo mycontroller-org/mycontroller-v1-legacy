@@ -18,6 +18,8 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.slf4j.Logger;
@@ -127,5 +129,90 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             _logger.error("Exception,", ex);
             return null;
         }
+    }
+
+    @Override
+    public MetricsDoubleTypeDevice getMinMaxAvg(Integer sensorVariableId) {
+        StringBuilder query = new StringBuilder();
+        try {
+            //Query sample
+            //SELECT MIN(MINREF) AS MIN FROM (SELECT MIN(MIN) AS MINREF FROM metrics_double_type_device WHERE 
+            //sensorVariableId=7 UNION SELECT MIN(AVG) AS MINREF FROM metrics_double_type_device WHERE 
+            //sensorVariableId=7 AND aggregationType=0) AS TABLE_MIN
+
+            //Query to get minumum
+            query.append("SELECT MIN(MINREF) AS MIN FROM (SELECT MIN(MIN) AS MINREF FROM ")
+                    .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId)
+                    .append(" UNION ")
+                    .append("SELECT MIN(AVG) AS MINREF FROM ").append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
+                    .append(" WHERE ")
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId)
+                    .append(" AND ").append(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE).append("=")
+                    .append(AGGREGATION_TYPE.RAW.ordinal())
+                    .append(") AS TABLE_MIN");
+
+            if (_logger.isTraceEnabled()) {
+                _logger.trace("Minimum sql query:{}", query);
+            }
+            //Get minimum value
+            Double min = NumericUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
+            //reset query
+            query.setLength(0);
+
+            //Query sample
+            //SELECT MAX(MAXREF) AS MAX FROM (SELECT MAX(MAX) AS MAXREF FROM metrics_double_type_device
+            //WHERE sensorVariableId=7 UNION SELECT MAX(AVG) AS MAXREF FROM metrics_double_type_device 
+            //WHERE sensorVariableId=7 AND aggregationType=0) AS TABLE_MAX
+
+            //Query to get maximum
+            query.append("SELECT MAX(MAXREF) AS MAX FROM (SELECT MAX(MAX) AS MAXREF FROM ")
+                    .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId)
+                    .append(" UNION ")
+                    .append("SELECT MAX(AVG) AS MAXREF FROM ").append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
+                    .append(" WHERE ")
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId)
+                    .append(" AND ").append(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE).append("=")
+                    .append(AGGREGATION_TYPE.RAW.ordinal())
+                    .append(") AS TABLE_MAX");
+
+            if (_logger.isTraceEnabled()) {
+                _logger.trace("Maximum sql query:{}", query);
+            }
+
+            //Get maximum value
+            Double max = NumericUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
+            //reset query
+            query.setLength(0);
+
+            //Query sample
+            //SELECT ROUND(SUM(avg * samples) / SUM(samples), 2) AS AVG FROM metrics_double_type_device
+            //WHERE sensorVariableId=7 ) AS MASTER_TABLE
+
+            //Query to get average
+            query.append("SELECT ROUND(SUM(").append(MetricsDoubleTypeDevice.KEY_AVG).append(" * ")
+                    .append(MetricsDoubleTypeDevice.KEY_SAMPLES).append(") / SUM(")
+                    .append(MetricsDoubleTypeDevice.KEY_SAMPLES).append("), 2) AS AVG FROM ")
+                    .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId);
+
+            if (_logger.isTraceEnabled()) {
+                _logger.trace("Average sql query:{}", query);
+            }
+
+            //Get average value
+            Double avg = NumericUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
+
+            return MetricsDoubleTypeDevice.builder()
+                    .min(min)
+                    .max(max)
+                    .avg(avg)
+                    .build();
+        } catch (SQLException ex) {
+            _logger.error("Unable to execute query:{}", query, ex);
+        }
+
+        return null;
     }
 }

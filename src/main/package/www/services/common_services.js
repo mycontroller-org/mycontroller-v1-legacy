@@ -401,6 +401,17 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     return true;    
   };
   
+  //guid helper 
+  var s4 = function() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  //get guid
+  commonService.guid = function() {
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  };
+  
  return commonService;
 
 });

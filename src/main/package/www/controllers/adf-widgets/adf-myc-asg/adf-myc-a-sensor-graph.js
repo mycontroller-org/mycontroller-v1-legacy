@@ -25,7 +25,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
       .widget('mycSingleSensorGraph', {
         title: 'A sensor graphical view',
         description: 'Displays a sensor graphical view',
-        templateUrl: 'controllers/adf-widgets/adf-myc-a-sg/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-asg/view.html',
         controller: 'mycSingleSensorGraphController',
         controllerAs: 'mycSingleSensorGraph',
         config: {
@@ -35,7 +35,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-a-sg/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-asg/edit.html',
           controller: 'mycSingleSensorGraphEditController',
           controllerAs: 'mycSingleSensorGraphEdit',
         }
@@ -144,6 +144,6 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
     });
   }).controller('mycSingleSensorGraphEditController', function($scope, $interval, config, mchelper, $filter, TypesFactory, CommonServices){
     var mycSingleSensorGraphEdit = this;
-    mycSingleSensorGraphEdit.variables = TypesFactory.getSensorVariables();
+    mycSingleSensorGraphEdit.variables = TypesFactory.getSensorVariables({"metricType":["Double","Binary"]});
     mycSingleSensorGraphEdit.cs = CommonServices;
   });

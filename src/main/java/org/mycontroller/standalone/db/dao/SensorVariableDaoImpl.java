@@ -91,6 +91,9 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             if (sensorVariable.getValue() != null) {
                 updateBuilder.updateColumnValue(SensorVariable.KEY_VALUE, sensorVariable.getValue());
             }
+            if (sensorVariable.getPreviousValue() != null) {
+                updateBuilder.updateColumnValue(SensorVariable.KEY_PREVIOUS_VALUE, sensorVariable.getPreviousValue());
+            }
             if (sensorVariable.getTimestamp() != null) {
                 updateBuilder.updateColumnValue(SensorVariable.KEY_TIMESTAMP, sensorVariable.getTimestamp());
             }

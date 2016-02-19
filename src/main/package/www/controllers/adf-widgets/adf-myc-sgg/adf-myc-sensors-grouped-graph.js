@@ -42,12 +42,13 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
         }
       });
   })
-  .controller('mycSensorsGroupedGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory){
+  .controller('mycSensorsGroupedGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory, CommonServices){
     var mycSensorsGroupedGraph = this;    
     mycSensorsGroupedGraph.showLoading = true;
     mycSensorsGroupedGraph.showError = false;
     mycSensorsGroupedGraph.isSyncing = true;
-    
+    mycSensorsGroupedGraph.cs = CommonServices;
+
     mycSensorsGroupedGraph.chartOptions = {
         chart: {
             type: 'lineChart',
@@ -55,18 +56,17 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
             height: 225,
             margin : {
                 top: 5,
+                right: 20,
                 bottom: 60,
-                right: 10,
                 left: 65
             },
             color: d3.scale.category10().range(),
-            duration: 500,
-            noData:"No data available.",
-          
-            x: function(d,i){return d[0];},
-            y: function(d,i){return d[1];},
-            clipEdge: false,
+            noData: $filter('translate')('NO_DATA_AVAILABLE'),
+            x: function(d){return d[0];},
+            y: function(d){return d[1];},
+            useVoronoi: !config.useInteractiveGuideline,
             useInteractiveGuideline: config.useInteractiveGuideline,
+            clipEdge: false,
             xAxis: {
                 showMaxMin: false,
                 tickFormat: function(d) {
@@ -76,9 +76,12 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
                 rotateLabels: -20
             },
             yAxis: {
-               axisLabelDistance: -10,
+                tickFormat: function(d){
+                    return d3.format(',.2f')(d);
+                },
+                axisLabelDistance: -10,
                 //axisLabel: ''
-            }
+            },
         },
           title: {
             enable: false,
@@ -151,7 +154,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
     };
     
     //Load variable types
-    mycSensorsGroupedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes();
+    mycSensorsGroupedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes({"metricType":["Double","Binary"]});
     if(config.variableType){
       var variableIdRef = config.variableId;
       mycSensorsGroupedGraphEdit.onVariableTypeChange();

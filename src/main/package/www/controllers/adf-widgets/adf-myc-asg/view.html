@@ -26,7 +26,7 @@
 
 <div ng-if="!(mycSingleSensorGraph.showLoading || mycSingleSensorGraph.showError)">
   <span ng-bind-html="mycSingleSensorGraph.resourceName | mcResourceRepresentation"></span>
-  <nvd3 options='mycSingleSensorGraph.chartOptions' data="mycSingleSensorGraph.chartData"></nvd3>
+  <nvd3 id="asg-{{config.variableId}}" options='mycSingleSensorGraph.chartOptions' data="mycSingleSensorGraph.chartData"></nvd3>
   <div ng-if="config.variableId === null" ng-include src="'partials/common-html/no-items-filter-sm.html'"></div>
 </div>
 

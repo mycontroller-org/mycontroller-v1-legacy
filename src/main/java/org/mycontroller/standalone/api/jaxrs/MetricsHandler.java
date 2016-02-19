@@ -33,6 +33,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
+import org.mycontroller.standalone.api.jaxrs.mapper.MetricsBulletChartNVD3;
 import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataGroupNVD3;
 import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataNVD3;
 import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataXY;
@@ -90,6 +91,12 @@ public class MetricsHandler {
     }
 
     @GET
+    @Path("/bulletChart")
+    public Response getBulletChart(@QueryParam("variableId") List<Integer> variableIds) {
+        return RestUtils.getResponse(Status.OK, getMetricsBulletChart(variableIds));
+    }
+
+    @GET
     @Path("/csvFile")
     public Response getCsvFile(@QueryParam("variableTypeId") int variableTypeId,
             @QueryParam("aggregationType") int aggregationType) {
@@ -112,6 +119,41 @@ public class MetricsHandler {
         return RestUtils.getResponse(Status.OK,
                 getMetricsBatteryJsonNVD3(nodeId, timestampFrom, timestampTo,
                         withMinMax != null ? withMinMax : false));
+    }
+
+    private List<MetricsBulletChartNVD3> getMetricsBulletChart(List<Integer> variableIds) {
+        ArrayList<MetricsBulletChartNVD3> bulletCharts = new ArrayList<MetricsBulletChartNVD3>();
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(variableIds);
+        for (SensorVariable sensorVariable : sensorVariables) {
+            MetricsDoubleTypeDevice metric = DaoUtils.getMetricsDoubleTypeDeviceDao().getMinMaxAvg(
+                    sensorVariable.getId());
+
+            String unit = sensorVariable.getUnit() != "" ? " (" + sensorVariable.getUnit() + ")" : "";
+
+            //If current value not available, do not allow any value
+            if (sensorVariable.getValue() == null) {
+                bulletCharts.add(MetricsBulletChartNVD3
+                        .builder()
+                        .id(sensorVariable.getId())
+                        .resourceName(new ResourceModel(
+                                RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
+                        .build());
+            } else {
+                bulletCharts.add(MetricsBulletChartNVD3
+                        .builder()
+                        .id(sensorVariable.getId())
+                        //.title(sensorVariable.getVariableType().getText())
+                        //.subtitle(sensorVariable.getUnit())
+                        .ranges(new Object[] { metric.getMin(), metric.getAvg(), metric.getMax() })
+                        .measures(new Object[] { sensorVariable.getValue() })
+                        .markers(new Object[] { sensorVariable.getPreviousValue() })
+                        .resourceName(new ResourceModel(
+                                RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
+                        .build());
+            }
+
+        }
+        return bulletCharts;
     }
 
     private MetricsChartDataGroupNVD3 getMetricsBatteryJsonNVD3(Integer nodeId, Long timestampFrom,
@@ -209,8 +251,8 @@ public class MetricsHandler {
                     chartTypeInternal = chartType;
                 } else if (CHART_TYPE.LINE_CHART == CHART_TYPE.fromString(chartType)) {
                     chartTypeInternal = chartType;
+                    chartInterpolate = metrics.getInterpolate();
                 }
-                chartInterpolate = metrics.getInterpolate();
                 initialLoadDone = true;
             }
 
@@ -256,14 +298,17 @@ public class MetricsHandler {
                             avgMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
                         }
                     }
-                    metricDataValues.add(MetricsChartDataNVD3
-                            .builder()
-                            .key(seriesName)
-                            .values(avgMetricDoubleValues)
-                            .type(metrics.getSubType())
-                            //.interpolate(metrics.getInterpolate())
-                            .yAxis(yAxis)
-                            .build().updateSubType(chartTypeInternal));
+                    if (!doubleMetrics.isEmpty()) {
+                        metricDataValues.add(MetricsChartDataNVD3
+                                .builder()
+                                .key(seriesName)
+                                .values(avgMetricDoubleValues)
+                                .type(metrics.getSubType())
+                                //.interpolate(metrics.getInterpolate())
+                                .yAxis(yAxis)
+                                .build().updateSubType(chartTypeInternal));
+                    }
+
                     break;
                 case BINARY:
                     MetricsBinaryTypeDevice metricQueryBinary = MetricsBinaryTypeDevice.builder()
@@ -282,18 +327,21 @@ public class MetricsHandler {
                             metricBinaryValues.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
                         }
                     }
-                    metricDataValues.add(MetricsChartDataNVD3
-                            .builder()
-                            .key(seriesName)
-                            .values(metricBinaryValues)
-                            .type(metrics.getSubType())
-                            //.interpolate(metrics.getInterpolate())
-                            .yAxis(yAxis)
-                            .id(sensorVariable.getId())
-                            .resourceName(
-                                    new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable)
-                                            .getResourceLessDetails())
-                            .build().updateSubType(chartTypeInternal));
+                    if (!binaryMetrics.isEmpty()) {
+                        metricDataValues.add(MetricsChartDataNVD3
+                                .builder()
+                                .key(seriesName)
+                                .values(metricBinaryValues)
+                                .type(metrics.getSubType())
+                                //.interpolate(metrics.getInterpolate())
+                                .yAxis(yAxis)
+                                .id(sensorVariable.getId())
+                                .resourceName(
+                                        new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable)
+                                                .getResourceLessDetails())
+                                .build().updateSubType(chartTypeInternal));
+                    }
+
                     break;
                 default:
                     //no need to do anything here

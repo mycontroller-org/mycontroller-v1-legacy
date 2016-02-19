@@ -75,6 +75,7 @@ public class MetricsChartDataNVD3 {
                 if (type.equalsIgnoreCase("area")) {
                     area = true;
                 }
+                type = null;
                 break;
             case HISTORICAL_BAR_CHART:
             case STACKED_AREA_CHART:

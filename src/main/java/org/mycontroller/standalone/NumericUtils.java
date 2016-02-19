@@ -58,7 +58,10 @@ public class NumericUtils {
     }
 
     public static Double getDouble(String value) {
-        return round(Double.valueOf(value), DOUBLE_ROUND);
+        if (value != null) {
+            return round(Double.valueOf(value), DOUBLE_ROUND);
+        }
+        return null;
     }
 
     public static String getDoubleAsString(double value) {

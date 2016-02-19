@@ -87,4 +87,9 @@ public class SensorVariable {
         return this;
     }
 
+    public void setValue(String value) {
+        previousValue = this.value;
+        this.value = value;
+    }
+
 }

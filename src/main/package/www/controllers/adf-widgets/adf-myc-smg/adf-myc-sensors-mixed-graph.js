@@ -24,7 +24,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     dashboardProvider
       .widget('mycSensorsMixedGraph', {
         title: 'Mixed sensors graph',
-        description: 'Different type of sensors mixed grpahical view [there is a bug on xaxis mapping]',
+        description: 'Different type of sensors mixed grpahical view [refer document]',
         templateUrl: 'controllers/adf-widgets/adf-myc-smg/view.html',
         controller: 'mycSensorsMixedGraphController',
         controllerAs: 'mycSensorsMixedGraph',
@@ -62,11 +62,12 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
             },
             color: d3.scale.category10().range(),
             duration: 500,
-            noData:"No data available.",
+            noData: $filter('translate')('NO_DATA_AVAILABLE'),
           
             //x: function(d,i){return d[0];},
             //y: function(d,i){return d[1];},
             clipEdge: false,
+            useVoronoi: !config.useInteractiveGuideline,
             useInteractiveGuideline: config.useInteractiveGuideline,
             
             xAxis: {
@@ -108,9 +109,12 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
           if(resource[0].unit === ''){
             mycSensorsMixedGraph.chartOptions.chart.yAxis1.tickFormat = function(d){return d3.format('.0f')(d);};
           }else{
-            //Not displaying properly axis unit
-            //mycSensorsMixedGraph.chartOptions.chart.yAxis1.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + resource[0].unit;};
-            mycSensorsMixedGraph.chartOptions.chart.yAxis1.tickFormat = function(d){return d3.format('.02f')(d)};
+            //Not displaying properly axis unit, there is an issue
+            if(config.useInteractiveGuideline){
+              mycSensorsMixedGraph.chartOptions.chart.yAxis1.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + resource[0].unit;};
+            }else{
+              mycSensorsMixedGraph.chartOptions.chart.yAxis1.tickFormat = function(d){return d3.format('.02f')(d)};
+            }
           }
           
           if(resource[0].unit2 === ''){
@@ -175,7 +179,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     //Pre load
     mycSensorsMixedGraphEdit.cs = CommonServices;
     //Load variable types
-    mycSensorsMixedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes();
+    mycSensorsMixedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes({"metricType":["Double","Binary"]});
     if(config.variableType.length > 0){
       var variableIdRef = config.variableId;
       mycSensorsMixedGraphEdit.onVariableTypeChange();
