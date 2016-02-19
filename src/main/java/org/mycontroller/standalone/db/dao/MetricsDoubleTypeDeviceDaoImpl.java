@@ -132,50 +132,81 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
     }
 
     @Override
-    public MetricsDoubleTypeDevice getMinMaxAvg(Integer sensorVariableId) {
+    public MetricsDoubleTypeDevice getMinMaxAvg(MetricsDoubleTypeDevice metric) {
         StringBuilder query = new StringBuilder();
+        StringBuilder queryTimestamp = new StringBuilder();
+        //timestamp from / to
+        if (metric.getTimestampFrom() != null) {
+            queryTimestamp.append(" AND ").append(MetricsDoubleTypeDevice.KEY_TIMESTAMP).append(" > ")
+                    .append(metric.getTimestampFrom());
+        }
+        if (metric.getTimestampTo() != null) {
+            queryTimestamp.append(" AND ").append(MetricsDoubleTypeDevice.KEY_TIMESTAMP).append(" <= ")
+                    .append(metric.getTimestampTo());
+        }
         try {
             //Query sample
             //SELECT MIN(MINREF) AS MIN FROM (SELECT MIN(MIN) AS MINREF FROM metrics_double_type_device WHERE 
             //sensorVariableId=7 UNION SELECT MIN(AVG) AS MINREF FROM metrics_double_type_device WHERE 
-            //sensorVariableId=7 AND aggregationType=0) AS TABLE_MIN
+            //sensorVariableId=7 AND aggregationType=0 AND timestamp > fromTime AND timestamp <= toTime) AS TABLE_MIN
 
             //Query to get minumum
             query.append("SELECT MIN(MINREF) AS MIN FROM (SELECT MIN(MIN) AS MINREF FROM ")
                     .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId)
-                    .append(" UNION ")
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(metric.getSensorVariable().getId());
+            if (queryTimestamp.length() > 0) {
+                query.append(queryTimestamp);
+            }
+            query.append(" UNION ")
                     .append("SELECT MIN(AVG) AS MINREF FROM ").append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
                     .append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId)
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(metric.getSensorVariable().getId())
                     .append(" AND ").append(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE).append("=")
-                    .append(AGGREGATION_TYPE.RAW.ordinal())
-                    .append(") AS TABLE_MIN");
+                    .append(AGGREGATION_TYPE.RAW.ordinal());
+
+            if (queryTimestamp.length() > 0) {
+                query.append(queryTimestamp);
+            }
+            query.append(") AS TABLE_MIN");
 
             if (_logger.isTraceEnabled()) {
                 _logger.trace("Minimum sql query:{}", query);
             }
             //Get minimum value
             Double min = NumericUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
+            
             //reset query
             query.setLength(0);
 
             //Query sample
             //SELECT MAX(MAXREF) AS MAX FROM (SELECT MAX(MAX) AS MAXREF FROM metrics_double_type_device
             //WHERE sensorVariableId=7 UNION SELECT MAX(AVG) AS MAXREF FROM metrics_double_type_device 
-            //WHERE sensorVariableId=7 AND aggregationType=0) AS TABLE_MAX
+            //WHERE sensorVariableId=7 AND aggregationType=0
+            //AND timestamp > fromTime AND timestamp <= toTime) AS TABLE_MAX
 
             //Query to get maximum
             query.append("SELECT MAX(MAXREF) AS MAX FROM (SELECT MAX(MAX) AS MAXREF FROM ")
                     .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId)
-                    .append(" UNION ")
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(metric.getSensorVariable().getId());
+            if (queryTimestamp.length() > 0) {
+                query.append(queryTimestamp);
+            }
+            query.append(" UNION ")
                     .append("SELECT MAX(AVG) AS MAXREF FROM ").append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
                     .append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId)
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(metric.getSensorVariable().getId())
                     .append(" AND ").append(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE).append("=")
-                    .append(AGGREGATION_TYPE.RAW.ordinal())
-                    .append(") AS TABLE_MAX");
+                    .append(AGGREGATION_TYPE.RAW.ordinal());
+            //timestamp from / to
+            if (queryTimestamp.length() > 0) {
+                query.append(queryTimestamp);
+            }
+
+            query.append(") AS TABLE_MAX");
 
             if (_logger.isTraceEnabled()) {
                 _logger.trace("Maximum sql query:{}", query);
@@ -183,19 +214,25 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
 
             //Get maximum value
             Double max = NumericUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
+            
             //reset query
             query.setLength(0);
-
+            
             //Query sample
             //SELECT ROUND(SUM(avg * samples) / SUM(samples), 2) AS AVG FROM metrics_double_type_device
-            //WHERE sensorVariableId=7 ) AS MASTER_TABLE
+            //WHERE sensorVariableId=7 AND timestamp > fromTime AND timestamp <= toTime) AS MASTER_TABLE
 
             //Query to get average
             query.append("SELECT ROUND(SUM(").append(MetricsDoubleTypeDevice.KEY_AVG).append(" * ")
                     .append(MetricsDoubleTypeDevice.KEY_SAMPLES).append(") / SUM(")
                     .append(MetricsDoubleTypeDevice.KEY_SAMPLES).append("), 2) AS AVG FROM ")
                     .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=").append(sensorVariableId);
+                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(metric.getSensorVariable().getId());
+            //timestamp from / to
+            if (queryTimestamp.length() > 0) {
+                query.append(queryTimestamp.toString());
+            }
 
             if (_logger.isTraceEnabled()) {
                 _logger.trace("Average sql query:{}", query);

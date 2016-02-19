@@ -37,4 +37,5 @@ public class MetricsBulletChartNVD3 {
     private Object measures;
     private Object markers;
     private String resourceName;
+    private String displayName;
 }

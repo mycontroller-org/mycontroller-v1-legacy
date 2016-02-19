@@ -57,6 +57,10 @@ public class NumericUtils {
         return bd.doubleValue();
     }
 
+    public static Double getDouble(Object value) {
+        return getDouble(String.valueOf(value));
+    }
+
     public static Double getDouble(String value) {
         if (value != null) {
             return round(Double.valueOf(value), DOUBLE_ROUND);
@@ -97,6 +101,10 @@ public class NumericUtils {
         } else {
             return null;
         }
+    }
+
+    public static Boolean getBoolean(Object value) {
+        return getBoolean(String.valueOf(value));
     }
 
     public static Boolean getBoolean(String value) {

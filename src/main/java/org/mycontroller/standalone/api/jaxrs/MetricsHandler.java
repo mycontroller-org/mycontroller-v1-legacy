@@ -60,7 +60,7 @@ import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class MetricsHandler {
+public class MetricsHandler extends AccessEngine {
     public static final String MINUMUM = "Minimum";
     public static final String MAXIMUM = "Maximum";
     public static final String AVERAGE = "Average";
@@ -84,6 +84,14 @@ public class MetricsHandler {
             @QueryParam("timestampTo") Long timestampTo,
             @QueryParam("withMinMax") Boolean withMinMax,
             @QueryParam("chartType") String chartType) {
+        if (!variableIds.isEmpty()) {
+            updateSensorVariableIds(variableIds);
+        } else if (sensorId != null) {
+            hasAccessSensor(sensorId);
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Either sensor id or sensor variable id(s) is required!"));
+        }
         return RestUtils.getResponse(
                 Status.OK,
                 getMetricsDataJsonNVD3(variableIds, sensorId, timestampFrom, timestampTo,
@@ -92,8 +100,17 @@ public class MetricsHandler {
 
     @GET
     @Path("/bulletChart")
-    public Response getBulletChart(@QueryParam("variableId") List<Integer> variableIds) {
-        return RestUtils.getResponse(Status.OK, getMetricsBulletChart(variableIds));
+    public Response getBulletChart(
+            @QueryParam("variableId") List<Integer> variableIds,
+            @QueryParam("timestampFrom") Long timestampFrom,
+            @QueryParam("timestampTo") Long timestampTo) {
+        if (!variableIds.isEmpty()) {
+            updateSensorVariableIds(variableIds);
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Sensor variable id(s) is required!"));
+        }
+        return RestUtils.getResponse(Status.OK, getMetricsBulletChart(variableIds, timestampFrom, timestampTo));
     }
 
     @GET
@@ -116,27 +133,36 @@ public class MetricsHandler {
             @QueryParam("timestampFrom") Long timestampFrom,
             @QueryParam("timestampTo") Long timestampTo,
             @QueryParam("withMinMax") Boolean withMinMax) {
+        //Access check
+        hasAccessNode(nodeId);
         return RestUtils.getResponse(Status.OK,
                 getMetricsBatteryJsonNVD3(nodeId, timestampFrom, timestampTo,
                         withMinMax != null ? withMinMax : false));
     }
 
-    private List<MetricsBulletChartNVD3> getMetricsBulletChart(List<Integer> variableIds) {
+    private List<MetricsBulletChartNVD3> getMetricsBulletChart(List<Integer> variableIds,
+            Long timestampFrom, Long timestampTo) {
         ArrayList<MetricsBulletChartNVD3> bulletCharts = new ArrayList<MetricsBulletChartNVD3>();
         List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(variableIds);
+        //Update from/to time
+        MetricsDoubleTypeDevice queryInput = MetricsDoubleTypeDevice.builder().timestampFrom(timestampFrom)
+                .timestampTo(timestampTo).build();
         for (SensorVariable sensorVariable : sensorVariables) {
-            MetricsDoubleTypeDevice metric = DaoUtils.getMetricsDoubleTypeDeviceDao().getMinMaxAvg(
-                    sensorVariable.getId());
+            //Update sensor variable
+            queryInput.setSensorVariable(sensorVariable);
+            MetricsDoubleTypeDevice metric = DaoUtils.getMetricsDoubleTypeDeviceDao().getMinMaxAvg(queryInput);
 
             String unit = sensorVariable.getUnit() != "" ? " (" + sensorVariable.getUnit() + ")" : "";
 
             //If current value not available, do not allow any value
-            if (sensorVariable.getValue() == null) {
+            if (sensorVariable.getValue() == null || metric.getMin() == null) {
                 bulletCharts.add(MetricsBulletChartNVD3
                         .builder()
                         .id(sensorVariable.getId())
                         .resourceName(new ResourceModel(
                                 RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
+                        .displayName(sensorVariable.getSensor().getName() + " >> "
+                                + sensorVariable.getVariableType().getText() + unit)
                         .build());
             } else {
                 bulletCharts.add(MetricsBulletChartNVD3
@@ -149,6 +175,8 @@ public class MetricsHandler {
                         .markers(new Object[] { sensorVariable.getPreviousValue() })
                         .resourceName(new ResourceModel(
                                 RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
+                        .displayName(sensorVariable.getSensor().getName() + " >> "
+                                + sensorVariable.getVariableType().getText() + unit)
                         .build());
             }
 

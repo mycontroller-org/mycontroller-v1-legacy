@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -31,14 +30,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.mapper.VariableStatusModel;
@@ -60,9 +59,7 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class SensorHandler {
-    @Context
-    SecurityContext securityContext;
+public class SensorHandler extends AccessEngine {
 
     @GET
     @Path("/")
@@ -125,7 +122,7 @@ public class SensorHandler {
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") Integer id) {
-        this.hasAccess(id);
+        this.hasAccessSensor(id);
         Sensor sensor = DaoUtils.getSensorDao().getById(id);
         return RestUtils.getResponse(Status.OK, sensor);
     }
@@ -133,7 +130,7 @@ public class SensorHandler {
     @POST
     @Path("/deleteIds")
     public Response deleteIds(List<Integer> ids) {
-        this.updateIds(ids);
+        this.updateSensorIds(ids);
         DeleteResourceUtils.deleteSensors(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -141,7 +138,11 @@ public class SensorHandler {
     @PUT
     @Path("/")
     public Response update(Sensor sensor) {
-        this.hasAccess(sensor.getId());
+        this.hasAccessSensor(sensor.getId());
+        Sensor availabilityCheck = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
+        if (availabilityCheck != null && sensor.getId() != availabilityCheck.getId()) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A sensor available with this sensor id!"));
+        }
         //Add Update sensor will be handled by Network type interface
         Node node = DaoUtils.getNodeDao().getById(sensor.getNode().getId());
         ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).updateSensor(sensor);
@@ -155,6 +156,10 @@ public class SensorHandler {
     @POST
     @Path("/")
     public Response add(Sensor sensor) {
+        Sensor availabilityCheck = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
+        if (availabilityCheck != null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A sensor available with this sensor id!"));
+        }
         List<String> variableTypes = sensor.getVariableTypes();
         //Add Update sensor will be handled by Network type interface
         Node node = DaoUtils.getNodeDao().getById(sensor.getNode().getId());
@@ -174,7 +179,7 @@ public class SensorHandler {
     @GET
     @Path("/getVariables")
     public Response getVariables(@QueryParam("ids") List<Integer> ids) {
-        updateVariableIds(ids);
+        updateSensorVariableIds(ids);
         List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(ids);
         List<VariableStatusModel> variableStatusModels = new ArrayList<VariableStatusModel>();
         //Convert to VariableStatusModel
@@ -191,7 +196,30 @@ public class SensorHandler {
     public Response sendpayload(VariableStatusModel variableStatusModel) {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(variableStatusModel.getId());
         if (sensorVariable != null) {
-            this.hasAccess(sensorVariable.getSensor().getId());
+            this.hasAccessSensor(sensorVariable.getSensor().getId());
+            try {
+                switch (sensorVariable.getMetricType()) {
+                    case BINARY:
+                        if (NumericUtils.getBoolean(variableStatusModel.getValue() == null)) {
+                            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Invalid value: "
+                                    + variableStatusModel.getValue()));
+                        }
+                        break;
+                    case DOUBLE:
+                        if (NumericUtils.getDouble(variableStatusModel.getValue()) == null) {
+                            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Invalid value: "
+                                    + variableStatusModel.getValue()));
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+            } catch (NumberFormatException nfex) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("NumberFormatException: "
+                        + nfex.getMessage()));
+            }
+
             sensorVariable.setValue(String.valueOf(variableStatusModel.getValue()));
             ObjectFactory.getIActionEngine(sensorVariable.getSensor().getNode().getGateway().getNetworkType())
                     .sendPayload(sensorVariable);
@@ -207,7 +235,7 @@ public class SensorHandler {
     public Response updateVariableUnit(VariableStatusModel variableStatusModel) {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(variableStatusModel.getId());
         if (sensorVariable != null) {
-            this.hasAccess(sensorVariable.getSensor().getId());
+            hasAccessSensor(sensorVariable.getSensor().getId());
             sensorVariable.setUnit(variableStatusModel.getUnit());
             //Update sensor unit
             DaoUtils.getSensorVariableDao().update(sensorVariable);
@@ -217,31 +245,4 @@ public class SensorHandler {
         return RestUtils.getResponse(Status.OK);
     }
 
-    private void updateIds(List<Integer> ids) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            for (Integer id : ids) {
-                if (!AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds().contains(id)) {
-                    ids.remove(id);
-                }
-            }
-        }
-    }
-
-    private void hasAccess(Integer id) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            if (!AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds().contains(id)) {
-                throw new ForbiddenException("You do not have access for this resource!");
-            }
-        }
-    }
-
-    private void updateVariableIds(List<Integer> ids) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            for (Integer id : ids) {
-                if (!AuthUtils.getUser(securityContext).getAllowedResources().getSensorVariableIds().contains(id)) {
-                    ids.remove(id);
-                }
-            }
-        }
-    }
 }

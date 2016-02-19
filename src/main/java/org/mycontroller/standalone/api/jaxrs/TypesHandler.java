@@ -27,9 +27,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
@@ -49,11 +47,7 @@ import org.mycontroller.standalone.settings.MetricsSettings;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class TypesHandler {
-
-    @Context
-    SecurityContext securityContext;
-
+public class TypesHandler extends AccessEngine{
     @GET
     @Path("/gatewayTypes")
     public Response getGatewayTypes() {

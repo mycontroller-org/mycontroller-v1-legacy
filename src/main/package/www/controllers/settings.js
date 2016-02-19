@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory,
-  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore) {
+  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore, CommonServices) {
   
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
+  $scope.cs = CommonServices;
   
   //editable settings
   $scope.editEnable = {};
@@ -119,10 +120,11 @@ myControllerModule.controller('SettingsUnitsController', function(alertService, 
 
 });
 
-myControllerModule.controller('SettingsNotificationsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper) {
+myControllerModule.controller('SettingsNotificationsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper, CommonServices) {
   
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
+  $scope.cs = CommonServices;
   
   //editable settings
   $scope.editEnable = {};

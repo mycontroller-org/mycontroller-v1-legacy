@@ -34,7 +34,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
 
 import org.jboss.resteasy.spi.HttpRequest;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
@@ -61,10 +60,7 @@ import org.mycontroller.standalone.db.tables.User;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "admin" })
-public class SecurityHandler {
-
-    @Context
-    SecurityContext securityContext;
+public class SecurityHandler extends AccessEngine {
 
     @GET
     @Path("/roles")

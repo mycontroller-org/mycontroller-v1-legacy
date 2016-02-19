@@ -23,9 +23,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
@@ -49,11 +47,8 @@ import java.util.List;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class DashboardHandler {
+public class DashboardHandler extends AccessEngine {
     private static final Logger _logger = LoggerFactory.getLogger(DashboardHandler.class.getName());
-
-    @Context
-    SecurityContext securityContext;
 
     @GET
     @Path("/")

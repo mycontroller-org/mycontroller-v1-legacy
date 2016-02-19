@@ -31,6 +31,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
         config: {
           colorUp:"#3f9c35",
           colorDown:"#c00000",
+          chartFromTimestamp:'3600000',
           variableIds:[],
           refreshTime:30,
         },
@@ -58,31 +59,31 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
             //color: config.color, //rgb(31, 119, 180)
             noData: $filter('translate')('NO_DATA_AVAILABLE'),
             margin: {
-              top: 18,
+              top: 8,
               right: 10,
-              bottom: 6,
-              left: 10,
+              bottom: 21,
+              left: 5,
             },
         }
       };
       
-    mycSensorsBulletGraph.getChartOptions = function(sensorVariable){
+    mycSensorsBulletGraph.getChartOptions = function(){
       return angular.copy(mycSensorsBulletGraph.chartOptions);
     }
 
     function loadVariables(){
       mycSensorsBulletGraph.isSyncing = true;
-      MetricsFactory.getBulletChart({'variableId':config.variableIds}, function(response){
+      MetricsFactory.getBulletChart({'variableId':config.variableIds, "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(response){
           mycSensorsBulletGraph.sensorVariables = response;
           angular.forEach(mycSensorsBulletGraph.sensorVariables, function(item){
-            if(item.markers[0]){
+            if(item.markers && item.markers[0]){
               if(parseFloat(item.markers[0]) <= parseFloat(item.measures[0])){
                 item.color = config.colorUp;
               }else{
                 item.color = config.colorDown;
               }
             }else{
-              item.color = "#1f77b4";
+              item.color = "#1f77b4";//default color
             }
           });
           mycSensorsBulletGraph.isSyncing = false;

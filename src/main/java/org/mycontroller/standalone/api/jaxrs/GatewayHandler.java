@@ -17,7 +17,6 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -25,9 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.STATE;
@@ -58,15 +55,12 @@ import java.util.List;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class GatewayHandler {
-
-    @Context
-    SecurityContext securityContext;
+public class GatewayHandler extends AccessEngine {
 
     @PUT
     @Path("/")
     public Response updateGateway(Gateway gateway) {
-        this.hasAccess(gateway.getId());
+        this.hasAccessGateway(gateway.getId());
         GatewayUtils.updateGateway(gateway);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
@@ -82,7 +76,7 @@ public class GatewayHandler {
     @GET
     @Path("/{id}")
     public Response getGateway(@PathParam("id") Integer gatewayId) {
-        this.hasAccess(gatewayId);
+        this.hasAccessGateway(gatewayId);
         return RestUtils.getResponse(Status.OK, DaoUtils.getGatewayDao().getById(gatewayId));
     }
 
@@ -124,7 +118,7 @@ public class GatewayHandler {
     @POST
     @Path("/delete")
     public Response deleteGateways(List<Integer> ids) {
-        updateIds(ids);
+        updateGatewayIds(ids);
         DeleteResourceUtils.deleteGateways(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
@@ -132,7 +126,7 @@ public class GatewayHandler {
     @POST
     @Path("/enable")
     public Response enableGateway(List<Integer> ids) {
-        updateIds(ids);
+        updateGatewayIds(ids);
         GatewayUtils.enableGateways(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
@@ -140,7 +134,7 @@ public class GatewayHandler {
     @POST
     @Path("/disable")
     public Response enableGateways(List<Integer> ids) {
-        updateIds(ids);
+        updateGatewayIds(ids);
         GatewayUtils.disableGateways(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
@@ -148,7 +142,7 @@ public class GatewayHandler {
     @POST
     @Path("/reload")
     public Response reloadGateways(List<Integer> ids) {
-        updateIds(ids);
+        updateGatewayIds(ids);
         GatewayUtils.reloadGateways(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
@@ -156,7 +150,7 @@ public class GatewayHandler {
     @POST
     @Path("/discover")
     public Response executeNodeDiscover(List<Integer> ids) {
-        updateIds(ids);
+        updateGatewayIds(ids);
         try {
             for (Integer id : ids) {
                 Gateway gateway = DaoUtils.getGatewayDao().getById(id);
@@ -171,21 +165,4 @@ public class GatewayHandler {
         }
     }
 
-    private void updateIds(List<Integer> ids) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            for (Integer id : ids) {
-                if (!AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds().contains(id)) {
-                    ids.remove(id);
-                }
-            }
-        }
-    }
-
-    private void hasAccess(Integer gatewayId) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            if (!AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds().contains(gatewayId)) {
-                throw new ForbiddenException("You do not have access for this resource!");
-            }
-        }
-    }
 }

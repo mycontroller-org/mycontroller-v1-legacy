@@ -49,16 +49,18 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'LATITUDE' | translate }}</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.latitude" required />
-                <span ng-hide="editEnable.location">{{locationSettings.latitude}}</span>
+                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.latitude" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                <div ng-hide="editEnable.location">{{locationSettings.latitude}}</div>
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'LONGITUDE' | translate }}</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.longitude" required />
-                <span ng-hide="editEnable.location">{{locationSettings.longitude}}</span>
+                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.longitude" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                <div ng-hide="editEnable.location">{{locationSettings.longitude}}</div>
               </div>
             </div>
             
@@ -105,7 +107,8 @@
               </div>
               <div  ng-show="editEnable.controller">
                 <div class="col-sm-2">
-                  <input class="form-control" ng-model="globalPageRefreshTime" required />
+                  <input class="form-control" ng-model="globalPageRefreshTime" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
                 </div>
                 <div class="col-sm-3 mc-form-fixer">
                   <span>{{ 'SECONDS' | translate }}</span>
@@ -120,7 +123,8 @@
               </div>
               <div  ng-show="editEnable.controller">
                 <div class="col-sm-2">
-                  <input class="form-control" ng-model="aliveCheckMinutes" required />
+                  <input class="form-control" ng-model="aliveCheckMinutes" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
                 </div>
                 <div class="col-sm-3 mc-form-fixer">
                   <span>{{ 'MINUTES' | translate }}</span>

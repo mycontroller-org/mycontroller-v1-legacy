@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,9 +29,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.STATE;
@@ -57,10 +54,7 @@ import org.mycontroller.standalone.db.tables.Node;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class NodeHandler {
-
-    @Context
-    SecurityContext securityContext;
+public class NodeHandler extends AccessEngine{
 
     @GET
     @Path("/")
@@ -103,7 +97,7 @@ public class NodeHandler {
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") Integer id) {
-        this.hasAccess(id);
+        hasAccessNode(id);
         Node node = DaoUtils.getNodeDao().getById(id);
         return RestUtils.getResponse(Status.OK, node);
     }
@@ -111,7 +105,7 @@ public class NodeHandler {
     @POST
     @Path("/deleteIds")
     public Response deleteIds(List<Integer> ids) {
-        this.updateIds(ids);
+        updateNodeIds(ids);
         DeleteResourceUtils.deleteNodes(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -119,7 +113,7 @@ public class NodeHandler {
     @PUT
     @Path("/")
     public Response update(Node node) {
-        this.hasAccess(node.getId());
+        hasAccessNode(node.getId());
         ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).updateNode(node);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -137,7 +131,7 @@ public class NodeHandler {
     @POST
     @Path("/reboot")
     public Response reboot(List<Integer> ids) {
-        this.updateIds(ids);
+        updateNodeIds(ids);
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
@@ -153,7 +147,7 @@ public class NodeHandler {
     @POST
     @Path("/uploadFirmware")
     public Response uploadFirmware(List<Integer> ids) {
-        this.updateIds(ids);
+        updateNodeIds(ids);
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
@@ -171,7 +165,7 @@ public class NodeHandler {
     @POST
     @Path("/eraseConfiguration")
     public Response eraseConfig(List<Integer> ids) {
-        this.updateIds(ids);
+        updateNodeIds(ids);
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
@@ -185,22 +179,6 @@ public class NodeHandler {
         }
     }
 
-    private void updateIds(List<Integer> ids) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            for (Integer id : ids) {
-                if (!AuthUtils.getUser(securityContext).getAllowedResources().getNodeIds().contains(id)) {
-                    ids.remove(id);
-                }
-            }
-        }
-    }
 
-    private void hasAccess(Integer nodeId) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            if (!AuthUtils.getUser(securityContext).getAllowedResources().getNodeIds().contains(nodeId)) {
-                throw new ForbiddenException("You do not have access for this resource!");
-            }
-        }
-    }
 
 }

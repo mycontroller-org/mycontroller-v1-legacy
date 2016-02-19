@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,9 +29,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
@@ -56,15 +53,12 @@ import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class TimerHandler {
-
-    @Context
-    SecurityContext securityContext;
+public class TimerHandler extends AccessEngine {
 
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") int id) {
-        hasAccess(id);
+        hasAccessTimer(id);
         return RestUtils.getResponse(Status.OK, DaoUtils.getTimerDao().getById(id));
     }
 
@@ -110,7 +104,7 @@ public class TimerHandler {
     @PUT
     @Path("/")
     public Response update(Timer timer) {
-        hasAccess(timer);
+        hasAccessTimer(timer);
         TimerUtils.updateTimer(timer);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -118,7 +112,7 @@ public class TimerHandler {
     @POST
     @Path("/")
     public Response add(Timer timer) {
-        hasAccess(timer);
+        hasAccessTimer(timer);
         TimerUtils.addTimer(timer);
         return RestUtils.getResponse(Status.CREATED);
     }
@@ -126,7 +120,7 @@ public class TimerHandler {
     @POST
     @Path("/delete")
     public Response delete(List<Integer> ids) {
-        updateIds(ids);
+        updateTimerIds(ids);
         TimerUtils.deleteTimers(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -134,7 +128,7 @@ public class TimerHandler {
     @POST
     @Path("/enable")
     public Response enable(List<Integer> ids) {
-        updateIds(ids);
+        updateTimerIds(ids);
         TimerUtils.enableTimers(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -142,37 +136,9 @@ public class TimerHandler {
     @POST
     @Path("/disable")
     public Response disable(List<Integer> ids) {
-        updateIds(ids);
+        updateTimerIds(ids);
         TimerUtils.disableTimers(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
-    private void updateIds(List<Integer> ids) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            List<Timer> timers = DaoUtils.getTimerDao().getAll(ids);
-            for (Timer timer : timers) {
-                if (!AuthUtils.hasAccess(securityContext, timer.getResourceType(),
-                        timer.getResourceId())) {
-                    ids.remove(timer.getId());
-                }
-            }
-        }
-    }
-
-    private void hasAccess(Timer timer) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            if (!AuthUtils.hasAccess(securityContext, timer.getResourceType(), timer.getResourceId())) {
-                throw new ForbiddenException("You do not have access to add this resource!");
-            }
-        }
-    }
-
-    private void hasAccess(Integer id) {
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            Timer timer = DaoUtils.getTimerDao().getById(id);
-            if (!AuthUtils.hasAccess(securityContext, timer.getResourceType(), timer.getResourceId())) {
-                throw new ForbiddenException("You do not have access for this resource!");
-            }
-        }
-    }
 }
