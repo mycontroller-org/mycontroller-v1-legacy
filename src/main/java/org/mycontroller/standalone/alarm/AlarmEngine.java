@@ -25,9 +25,14 @@ import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.notification.INotificationEngine;
+import org.mycontroller.standalone.notification.NotificationEmail;
+import org.mycontroller.standalone.notification.NotificationSMS;
+import org.mycontroller.standalone.notification.NotificationSendPayLoad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +77,7 @@ public class AlarmEngine implements Runnable {
                 break;
             case GATEWAY:
                 actualValue = ((Gateway) actualValueObject).getState().getText();
+                break;
             case RESOURCES_GROUP:
                 actualValue = ((ResourcesGroup) actualValueObject).getState().getText();
                 break;
@@ -204,25 +210,34 @@ public class AlarmEngine implements Runnable {
             throws Exception {
         if (triggerAlarm) {
             if (!alarmDefinition.getTriggered() || !alarmDefinition.getIgnoreDuplicate()) {
-                INotification notification = null;
-                switch (alarmDefinition.getNotificationType()) {
-                    case SEND_PAYLOAD:
-                        notification = new NotificationSendPayLoad(alarmDefinition);
-                        break;
-                    case SEND_EMAIL:
-                        notification = new NotificationEmail(alarmDefinition);
-                        break;
-                    case SEND_SMS:
-                        notification = new NotificationSMS(alarmDefinition);
-                        break;
-                    default:
-                        _logger.info("Not implemented this type:{}", alarmDefinition.getNotificationType().getText());
-                        break;
-                }
-                if (notification != null) {
-                    notification.execute(actualValue);
-                } else {
-                    _logger.warn("Notification didn't executed for AlarmDefination:[{}]", alarmDefinition);
+                List<Notification> notifications = DaoUtils.getNotificationDao().getByAlarmDefinitionIdEnabled(
+                        alarmDefinition.getId());
+
+                INotificationEngine notificationEngine = null;
+                for (Notification notification : notifications) {
+                    switch (notification.getType()) {
+                        case SEND_PAYLOAD:
+                            notificationEngine = NotificationSendPayLoad.builder().alarmDefinition(alarmDefinition)
+                                    .notification(notification).actualValue(actualValue).build().update();
+                            break;
+                        case SEND_EMAIL:
+                            notificationEngine = NotificationEmail.builder().alarmDefinition(alarmDefinition)
+                                    .notification(notification).actualValue(actualValue).build().update();
+                            break;
+                        case SEND_SMS:
+                            notificationEngine = NotificationSMS.builder().alarmDefinition(alarmDefinition)
+                                    .notification(notification).actualValue(actualValue).build().update();
+                            break;
+                        default:
+                            _logger.info("Not implemented this type:{}", notification.getType()
+                                    .getText());
+                            break;
+                    }
+                    if (notificationEngine != null) {
+                        notificationEngine.execute();
+                    } else {
+                        _logger.warn("Notification did not executed for AlarmDefination:[{}]", alarmDefinition);
+                    }
                 }
                 alarmDefinition.setTriggered(true);
                 if (alarmDefinition.getDisableWhenTrigger()) {

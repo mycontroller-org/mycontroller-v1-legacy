@@ -118,4 +118,10 @@ public class Gateway {
         this.state = state;
     }
 
+    //TODO: review required. how to keep status since?
+    public void setStatusMessage(String statusMessage) {
+        this.setStatusSince(System.currentTimeMillis());
+        this.statusMessage = statusMessage;
+    }
+
 }

@@ -35,11 +35,10 @@ import org.mycontroller.standalone.MYCMessages;
 import org.mycontroller.standalone.NodeIdException;
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.alarm.AlarmEngine;
+import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
-import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
@@ -314,6 +313,8 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 node = getNode(mySensorsRawMessage);
                 node.setState(STATE.UP);
                 updateNode(node);
+                //Trigger alarm definitions for this node
+                AlarmUtils.executeAlarmDefinitions(RESOURCE_TYPE.NODE, node.getId(), node);
                 break;
             default:
                 _logger.warn(
@@ -740,13 +741,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
         }
 
         //Trigger AlarmDefinition for this sensor
-        List<AlarmDefinition> alarmDefinitions = DaoUtils.getAlarmDefinitionDao().getAllEnabled(
-                RESOURCE_TYPE.SENSOR_VARIABLE,
-                sensorVariable.getId());
-        if (alarmDefinitions.size() > 0 && alarmDefinitions != null) {
-            AlarmEngine alarmEngine = new AlarmEngine(alarmDefinitions, sensorVariable);
-            new Thread(alarmEngine).run();
-        }
+        AlarmUtils.executeAlarmDefinitions(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId(), sensorVariable);
     }
 
     private void setSensorVariableData(LOG_LEVEL logLevel, MESSAGE_TYPE type, SensorVariable sensorVariable,

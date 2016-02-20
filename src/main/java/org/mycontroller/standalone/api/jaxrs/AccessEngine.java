@@ -21,12 +21,14 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 
-import org.mycontroller.standalone.alarm.NotificationSendPayLoad;
-import org.mycontroller.standalone.alarm.AlarmUtils.NOTIFICATION_TYPE;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
+import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.db.tables.User;
+import org.mycontroller.standalone.notification.NotificationSendPayLoad;
+import org.mycontroller.standalone.notification.NotificationUtils.NOTIFICATION_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +43,10 @@ public class AccessEngine {
 
     @Context
     SecurityContext securityContext;
+
+    protected User getUser() {
+        return AuthUtils.getUser(securityContext);
+    }
 
     //For sensors
     protected void updateSensorIds(List<Integer> ids) {
@@ -137,10 +143,16 @@ public class AccessEngine {
                     alarmDefinition.getResourceId())) {
                 throw new ForbiddenException(NO_ACCESS_MESSAGE);
             }
-            if (alarmDefinition.getNotificationType() == NOTIFICATION_TYPE.SEND_PAYLOAD) {
-                NotificationSendPayLoad sendPayLoad = new NotificationSendPayLoad(alarmDefinition);
-                if (!AuthUtils.hasAccess(securityContext, sendPayLoad.getResourceType(), sendPayLoad.getResourceId())) {
-                    throw new ForbiddenException(NO_ACCESS_MESSAGE);
+            List<Notification> notifications = DaoUtils.getNotificationDao().getByAlarmDefinitionId(
+                    alarmDefinition.getId());
+            for (Notification notification : notifications) {
+                if (notification.getType() == NOTIFICATION_TYPE.SEND_PAYLOAD) {
+                    NotificationSendPayLoad sendPayLoad = NotificationSendPayLoad.builder()
+                            .alarmDefinition(alarmDefinition).notification(notification).build().update();
+                    if (!AuthUtils.hasAccess(securityContext, sendPayLoad.getResourceType(),
+                            sendPayLoad.getResourceId())) {
+                        throw new ForbiddenException(NO_ACCESS_MESSAGE);
+                    }
                 }
             }
         }

@@ -17,7 +17,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins.deserializers;
 
 import java.io.IOException;
 
-import org.mycontroller.standalone.alarm.AlarmUtils.NOTIFICATION_TYPE;
+import org.mycontroller.standalone.notification.NotificationUtils.NOTIFICATION_TYPE;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

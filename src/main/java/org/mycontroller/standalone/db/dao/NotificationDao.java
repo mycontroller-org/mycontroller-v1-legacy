@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.alarm;
+package org.mycontroller.standalone.db.dao;
 
-import org.mycontroller.standalone.db.tables.AlarmDefinition;
+import java.util.List;
+
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
+import org.mycontroller.standalone.db.tables.Notification;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.2
+ * @since 0.0.3
  */
-public interface INotification {
-    AlarmDefinition getAlarmDefinition();
+public interface NotificationDao extends BaseDao<Notification, Integer> {
 
-    void execute(String actualValue);
+    Notification getByNotificationName(String name);
+
+    QueryResponse getAll(Query query);
+
+    List<Notification> getByAlarmDefinitionId(Integer alarmDefinitionId);
+
+    List<Notification> getByAlarmDefinitionIdEnabled(Integer alarmDefinitionId);
+
 }

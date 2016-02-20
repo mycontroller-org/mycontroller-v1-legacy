@@ -52,12 +52,6 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
     }
 
     @Override
-    public Role getByUserId(Integer userId) {
-        _logger.debug("User is:{}", userId);
-        return null;
-    }
-
-    @Override
     public Role get(Role role) {
         return super.getById(role.getId());
     }

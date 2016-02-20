@@ -18,11 +18,11 @@
 <div class="container-fluid"> <!-- Container-fluid -->
   
   <!-- Loading icon disaplay --> 
-  <div ng-hide="notificationTypes.$resolved">
+  <div ng-if="!notifications.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
-  <div ng-show="notificationTypes.$resolved"> <!-- Main Message -->
+  <div ng-if="notifications.$resolved"> <!-- Main Message -->
     
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
@@ -34,28 +34,28 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
             <div class="col-sm-10 mc-form-fixer-left">
-              <input class="form-control" placeholder="{{ 'ALARM_DEFINITION_NAME' | translate }}" ng-model="alarm.name" required/>
+              <input class="form-control" placeholder="{{ 'ALARM_DEFINITION_NAME' | translate }}" ng-model="item.alarmDefinition.name" required/>
             </div>
           </div>
           
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'ENABLED' | translate }}</label>
             <div class="col-sm-10">
-              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="alarm.enabled" checked>
+              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="item.alarmDefinition.enabled" checked>
             </div>
           </div>
           
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'DISABLE_WHEN_TRIGGER' | translate }}</label>
             <div class="col-sm-10">
-              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="alarm.disableWhenTrigger">
+              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="item.alarmDefinition.disableWhenTrigger">
             </div>
           </div>
           
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'IGNORE_DUPLICATE' | translate }}</label>
             <div class="col-sm-10">
-             <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="alarm.ignoreDuplicate" checked>
+             <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="item.alarmDefinition.ignoreDuplicate" checked>
             </div>
           </div>
           
@@ -64,78 +64,78 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'RESOURCE' | translate }}</label>
             <div class="col-sm-4 mc-form-fixer-left">
-              <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in resourceTypes" ng-model="alarm.resourceType"
-                ng-change="updateTriggerTypes(alarm.resourceType);rsResourcesList = getResources(alarm.resourceType);updateThresholdValueTypes(alarm.resourceType);alarm.resourceId=alarm.thresholdValue=''" required>
+              <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in resourceTypes" ng-model="item.alarmDefinition.resourceType"
+                ng-change="updateTriggerTypes(item.alarmDefinition.resourceType);rsResourcesList = getResources(item.alarmDefinition.resourceType);updateThresholdValueTypes(item.alarmDefinition.resourceType);item.alarmDefinition.resourceId=item.alarmDefinition.thresholdValue=''" required>
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-6 mc-form-fixer" ng-hide="alarm.resourceType === null || alarm.resourceType === undefined"><!-- List Resource -->
-              <select class="form-control" pf-select data-live-search="true" ng-model="alarm.resourceId" required> 
+            <div class="col-sm-6 mc-form-fixer" ng-hide="item.alarmDefinition.resourceType === null || item.alarmDefinition.resourceType === undefined"><!-- List Resource -->
+              <select class="form-control" pf-select data-live-search="true" ng-model="item.alarmDefinition.resourceId" required> 
                 <option value="" ng-hide="true"></option>
-                <option ng-repeat="res in rsResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == alarm.resourceId"></option>
+                <option ng-repeat="res in rsResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == item.alarmDefinition.resourceId"></option>
               </select>
             </div>
               
             
           </div>
 
-          <div class="form-group" ng-if="!(alarm.resourceType === null || alarm.resourceType === undefined)">
+          <div class="form-group" ng-if="!(item.alarmDefinition.resourceType === null || item.alarmDefinition.resourceType === undefined)">
             <label class="col-sm-2 control-label">{{ 'TRIGGER_WHEN' | translate }}</label>
               <div class="col-sm-2 mc-form-fixer-left">
-              <select class="form-control" pf-select ng-options="at.displayName as at.displayName for at in alarmTriggerTypes" ng-model="alarm.triggerType" required>
+              <select class="form-control" pf-select ng-options="at.displayName as at.displayName for at in alarmTriggerTypes" ng-model="item.alarmDefinition.triggerType" required>
                 <option value="" ng-hide="true">{{ 'SELECT' | translate }}</option>
               </select>
             </div>
-            <div class="col-sm-2 mc-form-fixer" ng-if="alarm.resourceType === 'Sensor variable'">
-              <select class="form-control" pf-select  ng-options="at.displayName as at.displayName for at in alarmThresholdTypes" ng-model="alarm.thresholdType" 
-                ng-change="alarm.thresholdValue='';" required>
+            <div class="col-sm-2 mc-form-fixer" ng-if="item.alarmDefinition.resourceType === 'Sensor variable'">
+              <select class="form-control" pf-select  ng-options="at.displayName as at.displayName for at in alarmThresholdTypes" ng-model="item.alarmDefinition.thresholdType" 
+                ng-change="item.alarmDefinition.thresholdValue='';" required>
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-6 mc-form-fixer" ng-if="alarm.resourceType === 'Sensor variable'  && alarm.thresholdType === 'Value'">
-              <input class="form-control" placeholder="{{ 'THRESHOLD_VALUE' | translate }}" ng-model="alarm.thresholdValue" required/>
+            <div class="col-sm-6 mc-form-fixer" ng-if="item.alarmDefinition.resourceType === 'Sensor variable'  && item.alarmDefinition.thresholdType === 'Value'">
+              <input class="form-control" placeholder="{{ 'THRESHOLD_VALUE' | translate }}" ng-model="item.alarmDefinition.thresholdValue" required/>
             </div>
-            <div class="col-sm-2 mc-form-fixer" ng-if="alarm.resourceType !== 'Sensor variable'" ng-init="alarm.thresholdType = 'Value'">
-              <select class="form-control" pf-select  ng-options="st.displayName as st.displayName for st in stateTypes" ng-model="alarm.thresholdValue" required> 
+            <div class="col-sm-2 mc-form-fixer" ng-if="item.alarmDefinition.resourceType !== 'Sensor variable'" ng-init="item.alarmDefinition.thresholdType = 'Value'">
+              <select class="form-control" pf-select  ng-options="st.displayName as st.displayName for st in stateTypes" ng-model="item.alarmDefinition.thresholdValue" required> 
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            <div class="col-sm-6 mc-form-fixer" ng-if="alarm.resourceType === 'Sensor variable' && alarm.thresholdType === 'Sensor variable'">
-              <select class="form-control" pf-select data-live-search="true" ng-model="alarm.thresholdValue" ng-init="thResourcesList = getResources(alarm.thresholdType)" required>
+            <div class="col-sm-6 mc-form-fixer" ng-if="item.alarmDefinition.resourceType === 'Sensor variable' && item.alarmDefinition.thresholdType === 'Sensor variable'">
+              <select class="form-control" pf-select data-live-search="true" ng-model="item.alarmDefinition.thresholdValue" ng-init="thResourcesList = getResources(item.alarmDefinition.thresholdType)" required>
                 <option value="" ng-hide="true"></option>
-                <option ng-repeat="res in thResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == alarm.thresholdValue"></option>
+                <option ng-repeat="res in thResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == item.alarmDefinition.thresholdValue"></option>
               </select>
             </div>
           </div>
     
 
-          <div ng-hide="alarm.resourceType === null || alarm.resourceType === undefined">
+          <div ng-hide="item.alarmDefinition.resourceType === null || item.alarmDefinition.resourceType === undefined">
             <legend><small>{{ 'DAMPENING' | translate }}</small></legend>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'DAMPENING' | translate }}</label>
               <div class="col-sm-4 mc-form-fixer-left">
-                <select class="form-control" pf-select ng-options="adt.displayName as adt.displayName for adt in dampeningTypes" ng-model="alarm.dampeningType" ng-change="alarm.dampeningVar1 = alarm.dampeningVar2 =''" required>
+                <select class="form-control" pf-select ng-options="adt.displayName as adt.displayName for adt in dampeningTypes" ng-model="item.alarmDefinition.dampeningType" ng-change="item.alarmDefinition.dampeningVar1 = item.alarmDefinition.dampeningVar2 =''" required>
                   <option value="" ng-hide="true"></option>
                 </select>
               </div>
-              <div class="col-sm-3 mc-form-fixer"  ng-if="alarm.dampeningType === 'Consecutive' || alarm.dampeningType === 'Last N evaluations'">
-                <input class="form-control" placeholder="{{ 'OCCURRENCES' | translate }}" ng-model="alarm.dampeningVar1" pf-validation="cs.isNumber(input)" required />
+              <div class="col-sm-3 mc-form-fixer"  ng-if="item.alarmDefinition.dampeningType === 'Consecutive' || item.alarmDefinition.dampeningType === 'Last N evaluations'">
+                <input class="form-control" placeholder="{{ 'OCCURRENCES' | translate }}" ng-model="item.alarmDefinition.dampeningVar1" pf-validation="cs.isNumber(input)" required />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
-              <div class="col-sm-3 mc-form-fixer" ng-if="alarm.dampeningType === 'Last N evaluations'">
-                <input class="form-control" placeholder="{{ 'EVALUATIONS' | translate }}" ng-model="alarm.dampeningVar2" pf-validation="cs.isNumber(input)" required />
+              <div class="col-sm-3 mc-form-fixer" ng-if="item.alarmDefinition.dampeningType === 'Last N evaluations'">
+                <input class="form-control" placeholder="{{ 'EVALUATIONS' | translate }}" ng-model="item.alarmDefinition.dampeningVar2" pf-validation="cs.isNumber(input)" required />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
               
-              <div ng-if="alarm.dampeningType === 'Active time'">
+              <div ng-if="item.alarmDefinition.dampeningType === 'Active time'">
                 <div class="col-sm-3 mc-form-fixer">
-                  <input class="form-control" placeholder="{{ 'TIME' | translate }}" ng-model="alarm.dampeningTime" pf-validation="cs.isNumber(input)" required />
+                  <input class="form-control" placeholder="{{ 'TIME' | translate }}" ng-model="item.alarmDefinition.dampeningTime" pf-validation="cs.isNumber(input)" required />
                   <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
                 </div>
                 
                 <div class="col-sm-3 mc-form-fixer">
-                  <select class="form-control" pf-select ng-model="alarm.dampeningTimeConstant" required>
+                  <select class="form-control" pf-select ng-model="item.alarmDefinition.dampeningTimeConstant" required>
                     <option value="" ng-hide="true"></option>
                     <option value="1000" >{{ 'SECONDS' | translate }}</option>
                     <option value="60000">{{ 'MINUTES' | translate }}</option>
@@ -147,83 +147,26 @@
             </div>
   
             
-             <legend><small>{{ 'NOTIFICATION' | translate }}</small></legend>
-  
-            
+             <legend><small>{{ 'NOTIFICATIONS' | translate }}</small></legend>
+             
+             
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'NOTIFICATION_TYPE' | translate }}</label>
-              <div class="col-sm-4 mc-form-fixer-left">
-                <select class="form-control" pf-select ng-options="nt.displayName as nt.displayName for nt in notificationTypes" ng-model="alarm.notificationType" 
-                  ng-change="alarm.variable1 = alarm.variable2 = alarm.variable3 = alarm.variable4 = ''" required>
-                  <option value="" ng-hide="true"></option>
-                </select>
-              </div>
-            </div>
-            
-            <!-- email Notification -->
-    
-            <div class="form-group" ng-if="alarm.notificationType === 'Send email'">
-              <label class="col-sm-2 control-label">{{ 'EMAILS' | translate }}</label>
-              <div class="col-sm-10 mc-form-fixer-left">
-                <input class="form-control" placeholder="{{ 'EMAIL_ADDRESSES_COMMA_SEPARATED' | translate }}" ng-model="alarm.variable1" required />
-              </div>
-            </div>
-            
-            <!-- SMS Notification -->
-            <div ng-if="alarm.notificationType === 'Send SMS'">
-              <div class="form-group">
-                <label class="col-sm-2 control-label">{{ 'PHONE_NUMBERS' | translate }}</label>
-                <div class="col-sm-10 mc-form-fixer-left">
-                  <input class="form-control" placeholder="{{ 'PHONE_NUMBERS_COMMA_SEPARATED' | translate }}" ng-model="alarm.variable1" required />
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label class="col-sm-2 control-label">{{ 'CUSTOM_MESSAGE' | translate }}</label>
-                <div class="col-sm-10 mc-form-fixer-left">
-                  <textarea class="form-control" placeholder="{{ 'CUSTOM_MESSAGE' | translate }}" ng-model="alarm.variable2" rows="3"/>
+              <label class="col-sm-2 control-label"></label>
+              <div class="col-sm-10">
+                <div class="card-pf card-pf-accented">
+                  <div class="card-pf-body">
+                    <div>
+                      <select ng-options="ls.id as ls.displayName for ls in notifications" multiple 
+                        ng-model="item.notifications" bs-duallistbox 
+                        move-on-select="true"
+                        filter="false"
+                        select-min-height="230"
+                        ></select>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            
-            <!-- Send payload Notification -->
-            <div  ng-if="alarm.notificationType === 'Send payload'">
-              <div class="form-group">
-                <label class="col-sm-2 control-label">{{ 'RESOURCE' | translate }}</label>
-                <div class="col-sm-4 mc-form-fixer-left">
-                  <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in spResourceTypes" 
-                    ng-change="plResourcesList = getResources(alarm.variable1);alarm.variable2=alarm.variable3='';updatePayloadOperations(alarm.variable1);" ng-model="alarm.variable1" required>
-                    <option value="" ng-hide="true"></option>
-                  </select>
-                </div>
-                <div class="col-sm-6 mc-form-fixer" ng-hide="alarm.variable1 === null || alarm.variable1 === undefined || alarm.variable1 === ''"><!-- List Resource -->
-                  <select class="form-control" pf-select data-live-search="true" ng-model="alarm.variable2" required>
-                     <option value="" ng-hide="true"></option>
-                     <option ng-repeat="res in plResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="res.id == alarm.variable2"></option>
-                  </select>
-                </div>
-                
-                
-              </div>
-              
-               <div class="form-group">
-                <label class="col-sm-2 control-label">{{ 'PAYLOAD_DELAY' | translate }}</label>
-                <div class="col-sm-4 mc-form-fixer-left" ng-if="alarm.variable1 === 'Sensor variable'">
-                  <input class="form-control" placeholder="{{ 'PAYLOAD' | translate }}" ng-model="alarm.variable3" required />
-                </div>
-                <div class="col-sm-4 mc-form-fixer-left" ng-if="alarm.variable1 !== 'Sensor variable'">
-                  <select class="form-control" pf-select  ng-options="pos.displayName as pos.displayName for pos in payloadOperations" ng-model="alarm.variable3" required> 
-                    <option value="" ng-hide="true"></option>
-                  </select>
-                </div>
-                <div class="col-sm-6 mc-form-fixer">
-                  <input class="form-control" placeholder="{{ 'DELAY_TIME_IN_SECONDS' | translate }}" ng-model="alarm.variable4" pf-validation="cs.isNumber(input)" />
-                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
-                </div>
-              </div>
-            </div> <!-- List send payload -->
-          </div>
-          
 
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>

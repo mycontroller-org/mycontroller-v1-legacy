@@ -13,31 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
+package org.mycontroller.standalone.api.jaxrs.mixins;
 
-import java.io.IOException;
-
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.NotificationTypeDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.NotificationTypeSerializer;
 import org.mycontroller.standalone.notification.NotificationUtils.NOTIFICATION_TYPE;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.2
+ * @since 0.0.3
  */
-public class NotificationTypeSerializer extends JsonSerializer<NOTIFICATION_TYPE> {
+abstract class NotificationMixin {
 
-    @Override
-    public void serialize(NOTIFICATION_TYPE type, JsonGenerator jgen, SerializerProvider provider)
-            throws IOException, JsonProcessingException {
-        if (type != null) {
-            jgen.writeString(type.getText());
-        } else {
-            jgen.writeNull();
-        }
-    }
+    @JsonSerialize(using = NotificationTypeSerializer.class)
+    abstract public String getType();
+
+    @JsonDeserialize(using = NotificationTypeDeserializer.class)
+    abstract public void setType(NOTIFICATION_TYPE notificationType);
 
 }

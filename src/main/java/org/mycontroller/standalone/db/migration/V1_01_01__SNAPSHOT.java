@@ -18,7 +18,6 @@ package org.mycontroller.standalone.db.migration;
 import java.sql.Connection;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -33,19 +32,21 @@ import com.j256.ormlite.dao.Dao;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-public class V1_01_01__SNAPSHOT implements JdbcMigration {
+public class V1_01_01__SNAPSHOT extends MigrationBase implements JdbcMigration {
     private static final Logger _logger = LoggerFactory.getLogger(V1_01_01__SNAPSHOT.class.getName());
 
     @Override
     public void migrate(Connection connection) throws Exception {
         _logger.debug("Migration triggered.");
 
-        //Load Dao's if not loaded already
-        if (!DaoUtils.isDaoInitialized()) {
-            DaoUtils.loadAllDao();
-        }
-        //Load properties from database
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        /* //Load Dao's if not loaded already
+         if (!DaoUtils.isDaoInitialized()) {
+             DaoUtils.loadAllDao();
+         }
+         //Load properties from database
+         ObjectFactory.getAppProperties().loadPropertiesFromDb();*/
+
+        updateDao();
 
         /** Migrations
             1. Added new column 'previousValue' under sensorvariables table

@@ -34,7 +34,6 @@ import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.alarm.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.THRESHOLD_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.TRIGGER_TYPE;
-import org.mycontroller.standalone.alarm.AlarmUtils.NOTIFICATION_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
@@ -48,6 +47,7 @@ import org.mycontroller.standalone.db.tables.FirmwareType;
 import org.mycontroller.standalone.db.tables.FirmwareVersion;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -57,6 +57,7 @@ import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.notification.NotificationUtils.NOTIFICATION_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
 
@@ -927,6 +928,16 @@ public class TypesUtils {
         for (LOG_LEVEL type : LOG_LEVEL.values()) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.ordinal())
                     .displayName(type.getText()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getNotifications() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        List<Notification> notifications = DaoUtils.getNotificationDao().getAll();
+        for (Notification notification : notifications) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(notification.getId())
+                    .displayName(notification.getName()).build());
         }
         return typesIdNameMappers;
     }

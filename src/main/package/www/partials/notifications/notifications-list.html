@@ -49,10 +49,7 @@
         </div>
         
         <div class="btn-group" role="group">
-          <a class="btn btn-primary" type="button" ui-sref="alarmsAddEdit">{{ 'ADD_ALARM' | translate }}</a>
-        </div>
-         <div class="btn-group" role="group">
-          <a class="btn btn-default" type="button" ui-sref="alarmsNotificationsList">{{ 'NOTIFICATIONS' | translate }}</a>
+          <a class="btn btn-primary" type="button" ui-sref="alarmsNotificationsAddEdit">{{ 'ADD_NOTIFICATION' | translate }}</a>
         </div>
 
       </div>
@@ -76,28 +73,26 @@
         <thead>
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
           <th>{{ 'ENABLED' | translate }}</th>
+          <th>{{ 'ACCESS' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
-          <th>{{ 'RESOURCE' | translate }}</th>
-          <th>{{ 'CONDITION' | translate }}</th>
-          <th>{{ 'DAMPENING' | translate }}</th>
-          <th>{{ 'NOTIFICATIONS' | translate }}</th>
-          <th>{{ 'LAST_TRIGGER' | translate }}</th>
+          <th>{{ 'NOTIFICATION' | translate }}</th>
+          <th>{{ 'LAST_EXECUTION' | translate }}</th>
         </thead>
         <tbody>
           <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"
             ng-class="{'mc-selected': itemIds.indexOf(item.id) != -1}" ng-click="selectItem(item)">
             <td class="mc-align-center"><input type="checkbox" ng-checked="itemIds.indexOf(item.id) != -1"></td>
             <td class="text-center">
-              <i ng-show="item.enabled" class="text-success fa fa-circle fa-lg" uib-tooltip="{{ 'ENABLED' | translate }}"></i>
-              <i ng-hide="item.enabled" class="text-danger fa fa-circle-o fa-lg" uib-tooltip="{{ 'DISABLED' | translate }}"></i>
+              <i ng-if="item.enabled" class="text-success fa fa-circle fa-lg" uib-tooltip="{{ 'ENABLED' | translate }}"></i>
+              <i ng-if="!item.enabled" class="text-danger fa fa-circle-o fa-lg" uib-tooltip="{{ 'DISABLED' | translate }}"></i>
+            </td>
+             <td class="text-center">
+              <i ng-if="item.publicAccess" class="fa fa-users fa-lg" uib-tooltip="{{ 'PUBLIC' | translate }}"></i>
+              <i ng-if="!item.publicAccess" class="fa fa-user fa-lg" uib-tooltip="{{ 'PRIVATE' | translate }}"></i>
             </td>
             <td>{{item.name}}</td>
-            <td ng-bind-html="item.resource | mcResourceRepresentation"></td>
-            <td ng-bind-html="item.conditionString | mcResourceRepresentation"></td>
-            <td>{{item.dampeningString}}</td>
-            <!-- <td ng-bind-html="item.notificationString | mcResourceRepresentation"></td> -->
-            <td>{{item.notifications.join(', ')}}</td>
-            <td>{{item.lastTrigger | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</td>
+            <td ng-bind-html="item.notificationString | mcResourceRepresentation"></td>
+            <td>{{item.lastExecution | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</td>
           </tr>
         </tbody>
       </table>

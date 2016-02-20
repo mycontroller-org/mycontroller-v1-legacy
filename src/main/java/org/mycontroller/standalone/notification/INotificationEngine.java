@@ -13,31 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.db.dao;
+package org.mycontroller.standalone.notification;
 
-import java.util.List;
-
-import org.mycontroller.standalone.api.jaxrs.mapper.Query;
-import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
-import org.mycontroller.standalone.db.tables.Role;
+import org.mycontroller.standalone.db.tables.Notification;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-public interface RoleDao extends BaseDao<Role, Integer> {
-    Role getByRoleName(String roleName);
+public interface INotificationEngine {
+    Notification getNotification();
 
-    List<String> getPermissionsByUserId(Integer userId);
-
-    List<Integer> getGatewayIds(Integer userId);
-
-    List<Integer> getNodeIds(Integer userId);
-
-    List<Integer> getSensorIds(Integer userId);
-
-    List<Integer> getSensorVariableIds(Integer userId);
-
-    QueryResponse getAll(Query query);
-
+    void execute();
 }

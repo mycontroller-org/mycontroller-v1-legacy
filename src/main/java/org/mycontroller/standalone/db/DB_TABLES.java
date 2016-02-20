@@ -21,6 +21,8 @@ package org.mycontroller.standalone.db;
  */
 public class DB_TABLES {
     public static final String ALARM_DEFINITION = "alarm_definition";
+    public static final String NOTIFICATION = "notification";
+    public static final String ALARM_NOTIFICATION_MAP = "alarm_notification_map";
     public static final String FIRMWARE = "firmware";
     public static final String FIRMWARE_TYPE = "firmware_type";
     public static final String FIRMWARE_VERSION = "firmware_version";

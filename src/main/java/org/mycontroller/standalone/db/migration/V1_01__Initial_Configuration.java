@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.mycontroller.standalone.MYCMessages;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.AppProperties.MC_TIME_FORMAT;
@@ -57,20 +56,22 @@ import org.slf4j.LoggerFactory;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-public class V1_01__Initial_Configuration implements JdbcMigration {
+public class V1_01__Initial_Configuration extends MigrationBase implements JdbcMigration {
     private static final Logger _logger = LoggerFactory.getLogger(V1_01__Initial_Configuration.class.getName());
 
     @Override
     public void migrate(Connection connection) throws Exception {
         _logger.debug("Migration triggered.");
 
-        //Load Dao's if not loaded already
+        /*//Load Dao's if not loaded already
         if (!DaoUtils.isDaoInitialized()) {
             DaoUtils.loadAllDao();
         }
 
         //Load properties from database
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        ObjectFactory.getAppProperties().loadPropertiesFromDb();*/
+        
+        updateDao();
 
         // Metric or Imperial to sensors
         ArrayList<Unit> unitVariables = new ArrayList<Unit>();

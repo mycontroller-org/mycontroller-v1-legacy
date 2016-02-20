@@ -164,4 +164,13 @@ public class AlarmDefinitionDaoImpl extends BaseAbstractDaoImpl<AlarmDefinition,
         return null;
     }
 
+    @Override
+    public AlarmDefinition getByName(String name) {
+        try {
+            return this.getDao().queryBuilder().where().eq(AlarmDefinition.KEY_NAME, name).queryForFirst();
+        } catch (SQLException ex) {
+            _logger.error("unable to get alarm definition name:{},", name, ex);
+        }
+        return null;
+    }
 }

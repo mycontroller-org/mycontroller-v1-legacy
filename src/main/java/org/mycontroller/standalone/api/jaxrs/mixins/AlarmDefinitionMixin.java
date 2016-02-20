@@ -17,16 +17,13 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.DAMPENING_TYPE;
-import org.mycontroller.standalone.alarm.AlarmUtils.NOTIFICATION_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.THRESHOLD_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.TRIGGER_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.DampeningTypeDeserializer;
-import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.NotificationTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ResourceTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ThresholdTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.TriggerTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.DampeningTypeSerializer;
-import org.mycontroller.standalone.api.jaxrs.mixins.serializers.NotificationTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ResourceTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ThresholdTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.TriggerTypeSerializer;
@@ -45,9 +42,6 @@ abstract class AlarmDefinitionMixin {
     @JsonSerialize(using = ResourceTypeSerializer.class)
     abstract public String getResourceType();
 
-    @JsonSerialize(using = NotificationTypeSerializer.class)
-    abstract public String getNotificationType();
-
     @JsonSerialize(using = TriggerTypeSerializer.class)
     abstract public String getTriggerType();
 
@@ -59,9 +53,6 @@ abstract class AlarmDefinitionMixin {
 
     @JsonDeserialize(using = ResourceTypeDeserializer.class)
     abstract public void setResourceType(RESOURCE_TYPE resourceType);
-
-    @JsonDeserialize(using = NotificationTypeDeserializer.class)
-    abstract public void setNotificationType(NOTIFICATION_TYPE notificationType);
 
     @JsonDeserialize(using = TriggerTypeDeserializer.class)
     abstract public void setTriggerType(TRIGGER_TYPE triggerType);

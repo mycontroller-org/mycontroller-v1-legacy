@@ -16,7 +16,9 @@
 package org.mycontroller.standalone.gateway;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.gateway.GatewayUtils.TYPE;
@@ -34,6 +36,8 @@ public class GatewayBase {
 
     public void updateGateway() {
         DaoUtils.getGatewayDao().update(this.gateway);
+        //Execute alarmDefinitions
+        AlarmUtils.executeAlarmDefinitions(RESOURCE_TYPE.GATEWAY, gateway.getId(), gateway);
     }
 
     public Gateway getGateway() {

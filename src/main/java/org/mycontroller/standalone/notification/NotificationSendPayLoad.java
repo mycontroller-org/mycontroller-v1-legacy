@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.alarm;
+package org.mycontroller.standalone.notification;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
+import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.group.ResourcesGroupUtils;
 import org.mycontroller.standalone.model.ResourceModel;
@@ -29,41 +31,44 @@ import org.mycontroller.standalone.ObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.ToString;
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class NotificationSendPayLoad implements INotification {
+@Builder
+@Data
+@AllArgsConstructor
+@ToString(includeFieldNames = true)
+public class NotificationSendPayLoad implements INotificationEngine {
     private static final Logger _logger = LoggerFactory.getLogger(NotificationSendPayLoad.class);
 
+    private Notification notification;
     private AlarmDefinition alarmDefinition;
     private RESOURCE_TYPE resourceType;
     private Integer resourceId;
     private String payload;
     private long delayTime;
+    private String actualValue;
 
-    public NotificationSendPayLoad(AlarmDefinition alarmDefinition) {
-        this.alarmDefinition = alarmDefinition;
-        this.resourceType = RESOURCE_TYPE.fromString(alarmDefinition.getVariable1());
-        this.resourceId = Integer.valueOf(alarmDefinition.getVariable2());
-        this.payload = alarmDefinition.getVariable3();
-        this.delayTime = alarmDefinition.getVariable4() == null || alarmDefinition.getVariable4().length() == 0
-                ? 0 : Long.valueOf(alarmDefinition.getVariable4());
-    }
-
-    public String getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String payLoad) {
-        this.payload = payLoad;
+    public NotificationSendPayLoad update() {
+        this.resourceType = RESOURCE_TYPE.fromString(notification.getVariable1());
+        this.resourceId = Integer.valueOf(notification.getVariable2());
+        this.payload = notification.getVariable3();
+        this.delayTime = notification.getVariable4() == null || notification.getVariable4().length() == 0
+                ? 0 : Long.valueOf(notification.getVariable4());
+        return this;
     }
 
     public void setPayLoad(Double payLoad) {
         this.payload = NumericUtils.getDoubleAsString(payLoad);
     }
 
-    public String toString() {
+    public String getString() {
         StringBuilder builder = new StringBuilder();
         ResourceModel resourceModel = new ResourceModel(this.resourceType, this.resourceId);
         builder.append("Target=[").append(resourceModel.getResourceLessDetails()).append("]");
@@ -72,25 +77,8 @@ public class NotificationSendPayLoad implements INotification {
         return builder.toString();
     }
 
-    public RESOURCE_TYPE getResourceType() {
-        return resourceType;
-    }
-
-    public Integer getResourceId() {
-        return resourceId;
-    }
-
-    public long getDelayTime() {
-        return delayTime;
-    }
-
     @Override
-    public AlarmDefinition getAlarmDefinition() {
-        return this.alarmDefinition;
-    }
-
-    @Override
-    public void execute(String actualValue) {
+    public void execute() {
         if (this.getDelayTime() == 0) { //Send payload immediately
             ResourceModel resourceModel = new ResourceModel(this.getResourceType(),
                     this.getResourceId());
@@ -115,7 +103,7 @@ public class NotificationSendPayLoad implements INotification {
             }
         } else {  //Create timer to send payload
             TimerSimple timerSimple = new TimerSimple(
-                    AlarmUtils.getAlarmTimerJobName(alarmDefinition),//Job Name
+                    NotificationUtils.getSendPayloadTimerJobName(alarmDefinition, notification),//Job Name
                     this.getResourceType(),
                     this.getResourceId(),
                     this.getPayload(),

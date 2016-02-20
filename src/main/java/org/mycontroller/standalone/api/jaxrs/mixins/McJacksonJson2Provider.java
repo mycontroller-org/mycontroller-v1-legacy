@@ -32,6 +32,7 @@ import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.ResourcesGroupMap;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
@@ -74,6 +75,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixIn(ResourcesLogs.class, ResourcesLogsMixin.class);
         mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixIn(Notification.class, NotificationMixin.class);
         mapper.addMixIn(ResourcesGroup.class, ResourcesGroupMixin.class);
         mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
         mapper.addMixIn(Timer.class, TimerMixin.class);
@@ -98,6 +100,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(Sensor.class, SensorMixin.class);
         mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixIn(Notification.class, NotificationMixin.class);
         mapper.addMixIn(ResourcesGroup.class, ResourcesGroupMixin.class);
         mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
         mapper.addMixIn(Timer.class, TimerMixin.class);

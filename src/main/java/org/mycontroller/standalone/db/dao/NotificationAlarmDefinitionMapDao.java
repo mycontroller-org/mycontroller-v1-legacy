@@ -17,27 +17,21 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.mapper.Query;
-import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
-import org.mycontroller.standalone.db.tables.Role;
+import org.mycontroller.standalone.db.tables.NotificationAlarmDefinitionMap;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.2
+ * @since 0.0.3
  */
-public interface RoleDao extends BaseDao<Role, Integer> {
-    Role getByRoleName(String roleName);
+public interface NotificationAlarmDefinitionMapDao extends BaseDao<NotificationAlarmDefinitionMap, Object> {
 
-    List<String> getPermissionsByUserId(Integer userId);
+    List<NotificationAlarmDefinitionMap> getByAlarmDefinitionId(Integer alarmDefinitionId);
 
-    List<Integer> getGatewayIds(Integer userId);
+    List<NotificationAlarmDefinitionMap> getByNotificationId(Integer notificationId);
 
-    List<Integer> getNodeIds(Integer userId);
+    void deleteByAlarmDefinitionId(Integer alarmDefinitionId);
 
-    List<Integer> getSensorIds(Integer userId);
+    void deleteByNotificationId(Integer notificationId);
 
-    List<Integer> getSensorVariableIds(Integer userId);
-
-    QueryResponse getAll(Query query);
-
+    List<Integer> getNotificationsIdsByAlarmDefinitionId(Integer notificationId);
 }

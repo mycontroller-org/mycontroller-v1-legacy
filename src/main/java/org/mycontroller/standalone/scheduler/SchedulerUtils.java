@@ -113,6 +113,10 @@ public class SchedulerUtils {
         _logger.debug("New job added:{}", systemJob);
     }
 
+    public static List<String> getAllJobNames() {
+        return SundialJobScheduler.getAllJobNames();
+    }
+
     public static void removeSystemJob(SystemJob systemJob) {
         removeJob(getSystemJobName(systemJob));
     }

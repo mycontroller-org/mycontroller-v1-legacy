@@ -147,6 +147,20 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('alarmsNotificationsList', {
+      url:"/resources/notifications/list",
+      templateUrl: "partials/notifications/notifications-list.html",
+      controller: "NotificationsController",
+       data: {
+        requireLogin: true
+      }
+    }).state('alarmsNotificationsAddEdit', {
+      url:"/resources/notifications/addedit/:id",
+      templateUrl: "partials/notifications/notification-add-edit.html",
+      controller: "NotificationsControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
     }).state('timersList', {
       url:"/resources/timers/list/:resourceType/:resourceId",
       templateUrl: "partials/timers/timers-list.html",

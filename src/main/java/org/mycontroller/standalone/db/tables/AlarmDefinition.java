@@ -15,21 +15,22 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import java.util.List;
+
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.alarm.AlarmUtils.DAMPENING_TYPE;
-import org.mycontroller.standalone.alarm.AlarmUtils.NOTIFICATION_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.THRESHOLD_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.TRIGGER_TYPE;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.notification.NotificationUtils;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import lombok.ToString;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
@@ -65,7 +66,7 @@ public class AlarmDefinition {
     @DatabaseField(canBeNull = false, columnName = KEY_DISABLE_WHEN_TRIGGER)
     private Boolean disableWhenTrigger;
 
-    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_NAME)
+    @DatabaseField(canBeNull = false, unique = true, columnName = KEY_NAME)
     private String name;
 
     @DatabaseField(dataType = DataType.ENUM_STRING, columnName = KEY_RESOURCE_TYPE)
@@ -113,32 +114,8 @@ public class AlarmDefinition {
     @DatabaseField(canBeNull = true)
     private String dampeningInternal2;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING)
-    private NOTIFICATION_TYPE notificationType;
-
-    @DatabaseField(canBeNull = true)
-    private String variable1;
-
-    @DatabaseField(canBeNull = true)
-    private String variable2;
-
-    @DatabaseField(canBeNull = true)
-    private String variable3;
-
-    @DatabaseField(canBeNull = true)
-    private String variable4;
-
-    @DatabaseField(canBeNull = true)
-    private String variable5;
-
-    @DatabaseField(canBeNull = true)
-    private String variable6;
-
-    @DatabaseField(canBeNull = true)
-    private String variable7;
-
-    public String getNotificationString() {
-        return AlarmUtils.getNotificationString(this);
+    public List<String> getNotifications() {
+        return NotificationUtils.getNotifications(this);
     }
 
     public String getDampeningString() {

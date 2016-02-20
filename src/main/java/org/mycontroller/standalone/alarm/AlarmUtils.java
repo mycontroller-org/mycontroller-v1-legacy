@@ -26,9 +26,8 @@ import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.model.ResourceModel;
-import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.mycontroller.standalone.notification.NotificationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +36,6 @@ import org.slf4j.LoggerFactory;
  * @since 0.0.1
  */
 public class AlarmUtils {
-    public static final String ALARM_TIMER_JOB = "timer_by_alarm_definition_";
     private static final Logger _logger = LoggerFactory.getLogger(AlarmUtils.class);
 
     private AlarmUtils() {
@@ -71,41 +69,6 @@ public class AlarmUtils {
         public static THRESHOLD_TYPE fromString(String text) {
             if (text != null) {
                 for (THRESHOLD_TYPE type : THRESHOLD_TYPE.values()) {
-                    if (text.equalsIgnoreCase(type.getText())) {
-                        return type;
-                    }
-                }
-            }
-            return null;
-        }
-    }
-
-    public enum NOTIFICATION_TYPE {
-        SEND_PAYLOAD("Send payload"),
-        SEND_SMS("Send SMS"),
-        SEND_EMAIL("Send email");
-        public static NOTIFICATION_TYPE get(int id) {
-            for (NOTIFICATION_TYPE notification_type : values()) {
-                if (notification_type.ordinal() == id) {
-                    return notification_type;
-                }
-            }
-            throw new IllegalArgumentException(String.valueOf(id));
-        }
-
-        private String value;
-
-        private NOTIFICATION_TYPE(String value) {
-            this.value = value;
-        }
-
-        public String getText() {
-            return this.value;
-        }
-
-        public static NOTIFICATION_TYPE fromString(String text) {
-            if (text != null) {
-                for (NOTIFICATION_TYPE type : NOTIFICATION_TYPE.values()) {
                     if (text.equalsIgnoreCase(type.getText())) {
                         return type;
                     }
@@ -190,10 +153,6 @@ public class AlarmUtils {
         }
     }
 
-    public static String getAlarmTimerJobName(AlarmDefinition alarmDefinition) {
-        return ALARM_TIMER_JOB + alarmDefinition.getId();
-    }
-
     public static String getSensorUnit(AlarmDefinition alarmDefinition, boolean isCondition) {
         String unit = "";
         switch (alarmDefinition.getResourceType()) {
@@ -215,28 +174,6 @@ public class AlarmUtils {
         }
 
         return unit;
-    }
-
-    public static String getNotificationString(AlarmDefinition alarmDefinition) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(alarmDefinition.getNotificationType().getText()).append(": ");
-        switch (alarmDefinition.getNotificationType()) {
-            case SEND_PAYLOAD:
-                NotificationSendPayLoad sendPayLoad = new NotificationSendPayLoad(alarmDefinition);
-                builder.append(sendPayLoad.toString());
-                break;
-            case SEND_EMAIL:
-                NotificationEmail notificationEmail = new NotificationEmail(alarmDefinition);
-                builder.append(notificationEmail.getToEmailAddress());
-                break;
-            case SEND_SMS:
-                NotificationSMS notificationSMS = new NotificationSMS(alarmDefinition);
-                builder.append(notificationSMS.getToPhoneNumber());
-                break;
-            default:
-                builder.append("-");
-        }
-        return builder.toString();
     }
 
     //----------------review-----------------
@@ -352,10 +289,8 @@ public class AlarmUtils {
     }
 
     public static void disableAlarmDefinition(AlarmDefinition alarmDefinition) {
-        //Unload timer job
-        Timer timer = new Timer();
-        timer.setName(getAlarmTimerJobName(alarmDefinition));
-        SchedulerUtils.unloadTimerJob(timer);
+        //unload notification timer jobs
+        NotificationUtils.unloadNotificationTimerJobs(alarmDefinition);
         //Disable
         alarmDefinition.setEnabled(false);
         DaoUtils.getAlarmDefinitionDao().update(alarmDefinition);
@@ -411,10 +346,9 @@ public class AlarmUtils {
     }
 
     public static void deleteAlarmDefinition(AlarmDefinition alarmDefinition) {
-        //Unload timer job
-        Timer timer = new Timer();
-        timer.setName(getAlarmTimerJobName(alarmDefinition));
-        SchedulerUtils.unloadTimerJob(timer);
+        //unload notification timer jobs
+        NotificationUtils.unloadNotificationTimerJobs(alarmDefinition);
+
         //Delete from resources log
         ResourcesLogsUtils.deleteResourcesLog(RESOURCE_TYPE.ALARM_DEFINITION, alarmDefinition.getId());
         //Delete alarm
@@ -425,6 +359,21 @@ public class AlarmUtils {
     public static void deleteAlarmDefinitionIds(List<Integer> ids) {
         for (AlarmDefinition alarmDefinition : DaoUtils.getAlarmDefinitionDao().getAll(ids)) {
             deleteAlarmDefinition(alarmDefinition);
+        }
+    }
+
+    public static void executeAlarmDefinitions(RESOURCE_TYPE resourceType, Integer resourceId) {
+        executeAlarmDefinitions(resourceType, resourceId, new ResourceModel(resourceType, resourceId).getResource());
+    }
+
+    public static synchronized void executeAlarmDefinitions(
+            RESOURCE_TYPE resourceType, Integer resourceId, Object resource) {
+        //Trigger AlarmDefinition for this resource
+        List<AlarmDefinition> alarmDefinitions = DaoUtils.getAlarmDefinitionDao()
+                .getAllEnabled(resourceType, resourceId);
+        if (alarmDefinitions.size() > 0 && alarmDefinitions != null) {
+            AlarmEngine alarmEngine = new AlarmEngine(alarmDefinitions, resource);
+            new Thread(alarmEngine).run();
         }
     }
 

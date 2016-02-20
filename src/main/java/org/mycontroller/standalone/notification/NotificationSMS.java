@@ -13,49 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.alarm;
+package org.mycontroller.standalone.notification;
 
+import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
+import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.sms.SMSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class NotificationSMS implements INotification {
+@Builder
+@Data
+@AllArgsConstructor
+@ToString(includeFieldNames = true)
+public class NotificationSMS implements INotificationEngine {
     private static final Logger _logger = LoggerFactory.getLogger(NotificationSMS.class);
 
     private String toPhoneNumber;
     private String customMessage;
+    private Notification notification;
     private AlarmDefinition alarmDefinition;
+    private String actualValue;
 
-    public NotificationSMS(AlarmDefinition alarmDefinition) {
-        this.alarmDefinition = alarmDefinition;
-        this.toPhoneNumber = alarmDefinition.getVariable1();
-        this.customMessage = alarmDefinition.getVariable2();
+    public NotificationSMS update() {
+        this.toPhoneNumber = notification.getVariable1();
+        this.customMessage = notification.getVariable2();
+        return this;
     }
 
-    public String getToPhoneNumber() {
-        return toPhoneNumber;
-    }
-
-    public String toString() {
+    public String getString() {
         return this.toPhoneNumber;
     }
 
     @Override
-    public AlarmDefinition getAlarmDefinition() {
-        return this.alarmDefinition;
-    }
-
-    public String getCustomMessage() {
-        return customMessage;
-    }
-
-    @Override
-    public void execute(String actualValue) {
+    public void execute() {
         if (this.toPhoneNumber == null) {
             throw new RuntimeException("Cannot execute send SMS without phone number! AlarmDefination name: "
                     + this.alarmDefinition.getName());
@@ -79,5 +79,4 @@ public class NotificationSMS implements INotification {
             _logger.error("Exception,", ex);
         }
     }
-
 }

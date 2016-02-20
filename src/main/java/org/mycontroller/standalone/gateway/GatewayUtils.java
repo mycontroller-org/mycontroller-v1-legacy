@@ -17,8 +17,10 @@ package org.mycontroller.standalone.gateway;
 
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.tables.Gateway;
@@ -142,6 +144,8 @@ public class GatewayUtils {
             ObjectFactory.getGateway(gatewayId).close();
             ObjectFactory.removeGateway(gatewayId);
         }
+        //This method will be called on disable/delete. we have to call alarm definitions
+        AlarmUtils.executeAlarmDefinitions(RESOURCE_TYPE.GATEWAY, gatewayId);
     }
 
     public synchronized static void loadAllGateways() {

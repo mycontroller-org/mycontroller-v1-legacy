@@ -31,6 +31,8 @@ public interface AlarmDefinitionDao extends BaseDao<AlarmDefinition, Integer> {
 
     void delete(RESOURCE_TYPE resourceType, Integer resourceId);
 
+    AlarmDefinition getByName(String name);
+
     List<AlarmDefinition> getAll(RESOURCE_TYPE resourceType);
 
     List<AlarmDefinition> getAll(DAMPENING_TYPE dampeningType);

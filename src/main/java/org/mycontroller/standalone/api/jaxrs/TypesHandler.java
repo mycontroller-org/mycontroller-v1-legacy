@@ -47,7 +47,7 @@ import org.mycontroller.standalone.settings.MetricsSettings;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class TypesHandler extends AccessEngine{
+public class TypesHandler extends AccessEngine {
     @GET
     @Path("/gatewayTypes")
     public Response getGatewayTypes() {
@@ -173,7 +173,8 @@ public class TypesHandler extends AccessEngine{
             @QueryParam("sensorId") Integer sensorId,
             @QueryParam("metricType") List<String> metricTypes) {
         return RestUtils.getResponse(Status.OK,
-                TypesUtils.getSensorVariableTypes(MESSAGE_TYPE_PRESENTATION.fromString(sensorType), sensorId, metricTypes));
+                TypesUtils.getSensorVariableTypes(MESSAGE_TYPE_PRESENTATION.fromString(sensorType), sensorId,
+                        metricTypes));
     }
 
     @GET
@@ -311,6 +312,13 @@ public class TypesHandler extends AccessEngine{
         MetricsSettings metricsSettings = MetricsSettings.get();
         metricsSettings.setMetrics(null);
         return RestUtils.getResponse(Status.OK, metricsSettings);
+    }
+
+    //Notifications
+    @GET
+    @Path("/notifications")
+    public Response getNotifications() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNotifications());
     }
 
     //----------------- review required

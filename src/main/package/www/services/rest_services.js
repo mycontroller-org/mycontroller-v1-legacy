@@ -113,6 +113,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getHvacOptionsFlowMode: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFlowMode', id : null}},
     getHvacOptionsFanSpeed: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFanSpeed', id : null}},
     getRolePermissions: { method: 'GET', isArray: true, params: {type: 'rolePermissions', id : null}},
+    //Notifications
+    getNotifications:  { method: 'GET', isArray: true, params: {type: 'notifications'} },
 
     getResources:  { method: 'GET', isArray: true, params: {type: 'resources'} },
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },
@@ -223,6 +225,19 @@ myControllerModule.factory('SecurityFactory', function ($resource) {
 //Alarm Services
 myControllerModule.factory('AlarmsFactory', function ($resource) {
   return $resource('/mc/rest/alarms/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null} },
+    get:    { method: 'GET' },
+    create: { method: 'POST', params: {id: null}},
+    update: { method: 'PUT', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    enableIds: { method: 'POST', params: {id: 'enable'}},
+    disableIds: { method: 'POST', params: {id: 'disable'}},
+  })
+});
+
+//Notification Services
+myControllerModule.factory('NotificationsFactory', function ($resource) {
+  return $resource('/mc/rest/notifications/:id', {id: '@id'}, {
     getAll: { method: 'GET', isArray: false, params: {id: null} },
     get:    { method: 'GET' },
     create: { method: 'POST', params: {id: null}},

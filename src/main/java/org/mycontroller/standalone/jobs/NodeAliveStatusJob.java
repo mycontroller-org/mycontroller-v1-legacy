@@ -18,14 +18,15 @@ package org.mycontroller.standalone.jobs;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.NumericUtils;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
 
@@ -87,6 +88,8 @@ public class NodeAliveStatusJob extends Job {
                 node.setState(STATE.DOWN);
                 DaoUtils.getNodeDao().update(node);
                 _logger.debug("Node is in not reachable state, Node:[{}]", node);
+                //Trigger alarm definitions for this node
+                AlarmUtils.executeAlarmDefinitions(RESOURCE_TYPE.NODE, node.getId(), node);
             }
         }
     }

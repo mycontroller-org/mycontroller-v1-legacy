@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('AlarmsController', function(alertService,
-$scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices, $filter) {
+myControllerModule.controller('NotificationsController', function(alertService,
+$scope, NotificationsFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices, $filter) {
   
   //GUI page settings
-  $scope.headerStringList = $filter('translate')('ALARMS_DETAIL');
-  $scope.noItemsSystemMsg = $filter('translate')('NO_ALARMS_SETUP');
+  $scope.headerStringList = $filter('translate')('NOTIFICATIONS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_NOTIFICATIONS_SETUP');
   $scope.noItemsSystemIcon = "fa fa-bell-o";
 
   //load empty, configuration, etc.,
@@ -43,12 +43,12 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
 
   //get all Sensors
   $scope.getAllItems = function(){
-    AlarmsFactory.getAll($scope.query, function(response) {
+    NotificationsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
     },function(error){
-      displayRestError.display(error);            
+      displayRestError.display(error);
     });
   }
 
@@ -83,28 +83,25 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
         filterType: 'text'
       },
       {
-        id: 'resource',
-        title:  $filter('translate')('RESOURCE'),
-        placeholder: $filter('translate')('FILTER_BY_RESOURCE'),
-        filterType: 'text'
+        id: 'enabled',
+        title:  $filter('translate')('ENABLED'),
+        placeholder: $filter('translate')('FILTER_BY_ENABLED'),
+        filterType: 'select',
+        filterValues: ['True','False'],
       },
       {
-        id: 'conditionString',
-        title: $filter('translate')('CONDITION'),
-        placeholder: $filter('translate')('FILTER_BY_CONDITION'),
-        filterType: 'text',
+        id: 'publicAccess',
+        title: $filter('translate')('PUBLIC_ACCESS'),
+        placeholder: $filter('translate')('FILTER_BY_PUBLIC_ACCESS'),
+        filterType: 'select',
+        filterValues: ['True','False'],
       },
       {
-        id: 'dampeningString',
-        title:  $filter('translate')('DAMPENING'),
-        placeholder: $filter('translate')('FILTER_BY_DAMPENING'),
-        filterType: 'text',
-      },
-      {
-        id: 'notificationString',
-        title:  $filter('translate')('NOTIFICATION'),
-        placeholder: $filter('translate')('FILTER_BY_NOTIFICATION'),
-        filterType: 'text',
+        id: 'type',
+        title:  $filter('translate')('NOTIFICATION_TYPE'),
+        placeholder: $filter('translate')('FILTER_BY_NOTIFICATION_TYPE'),
+        filterType: 'select',
+        filterValues: ['Send payload','Send SMS','Send email'],
       }
     ],
     resultsCount: $scope.filteredList.length,
@@ -132,13 +129,18 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
         sortType: 'text'
       },
       {
-        id: 'resourceType',
-        title:  $filter('translate')('RESOURCE_TYPE'),
+        id: 'type',
+        title:  $filter('translate')('NOTIFICATION_TYPE'),
         sortType: 'text'
       },
       {
-        id: 'lastTrigger',
-        title: $filter('translate')('LAST_TRIGGER'),
+        id: 'publicAccess',
+        title:  $filter('translate')('PUBLIC_ACCESS'),
+        sortType: 'text'
+      },
+      {
+        id: 'lastExecution',
+        title: $filter('translate')('LAST_EXECUTION'),
         sortType: 'text'
       }
     ],
@@ -156,7 +158,7 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     });
 
     modalInstance.result.then(function () {
-      AlarmsFactory.deleteIds($scope.itemIds, function(response) {
+      NotificationsFactory.deleteIds($scope.itemIds, function(response) {
         alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
@@ -174,7 +176,7 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   //Enable items
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
-      AlarmsFactory.enableIds($scope.itemIds, function(response) {
+      NotificationsFactory.enableIds($scope.itemIds, function(response) {
         alertService.success($filter('translate')('ITEMS_ENABLED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
@@ -188,7 +190,7 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   //Disable items
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
-      AlarmsFactory.disableIds($scope.itemIds, function(response) {
+      NotificationsFactory.disableIds($scope.itemIds, function(response) {
         alertService.success($filter('translate')('ITEMS_DISABLED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
@@ -202,22 +204,19 @@ $scope, AlarmsFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
-      $state.go("alarmsAddEdit",{'id':$scope.itemIds[0]});
+      $state.go("alarmsNotificationsAddEdit",{'id':$scope.itemIds[0]});
     }
   };
 
 });
 
 
-//Add Edit alarm defination controller
-myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stateParams, $state, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, AlarmsFactory, mchelper, alertService, displayRestError, $filter, CommonServices) {
- 
+//Add Edit notification controller
+myControllerModule.controller('NotificationsControllerAddEdit', function ($scope, $stateParams, $state, GatewaysFactory, NodesFactory, SensorsFactory, TypesFactory, NotificationsFactory, mchelper, alertService, displayRestError, $filter, CommonServices) {
   $scope.mchelper = mchelper;
-  $scope.item = {};
-  $scope.item.alarmDefinition = {};
-  $scope.item.alarmDefinition.ignoreDuplicate = true;
-  $scope.item.alarmDefinition.enabled = true;
-  $scope.item.alarmDefinition.disableWhenTrigger = false;
+  $scope.notification = {};
+  $scope.notification.enabled = true;
+  $scope.notification.publicAccess = false;
   $scope.cs = CommonServices;
   
   // Update resources list
@@ -235,21 +234,11 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
     }else if(resourceType === 'Timer'){
       return TypesFactory.getTimers();
     }else if(resourceType === 'Value'){
-      $scope.updateThresholdValueTypes($scope.item.alarmDefinition.resourceType);
+      $scope.updateThresholdValueTypes($scope.notification.resourceType);
       return null;
     }else{
       return null;
     }
-  }
-  
-  //Update trigger types
-  $scope.updateTriggerTypes = function(resourceType){
-    $scope.alarmTriggerTypes = TypesFactory.getAlarmTriggerTypes({"resourceType":resourceType}); 
-  }
-  
-  //Update Threshold types value
-  $scope.updateThresholdValueTypes= function(resourceType){
-    $scope.stateTypes = TypesFactory.getStateTypes({"resourceType":resourceType}); 
   }
 
   //Update Payload operations
@@ -259,45 +248,23 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
 
   
   if($stateParams.id){
-    AlarmsFactory.get({"id":$stateParams.id},function(response) {
-        $scope.item = response;
-
-        //Update trigger types
-        $scope.updateTriggerTypes($scope.item.alarmDefinition.resourceType);
-        
-        //Update Resource Type
-        $scope.rsResourcesList = $scope.getResources($scope.item.alarmDefinition.resourceType);        
-        
-        //Update Threshold Type        
-        if($scope.item.alarmDefinition.thresholdType === 'Sensor variable'){
-          $scope.thResourcesList = $scope.getResources($scope.item.alarmDefinition.thresholdType);
-          $scope.item.alarmDefinition.thresholdValue = parseInt($scope.item.alarmDefinition.thresholdValue);
-        }else{
-          $scope.updateThresholdValueTypes($scope.item.alarmDefinition.resourceType);
+    NotificationsFactory.get({"id":$stateParams.id},function(response) {
+        $scope.notification = response;
+        //Update Notification Type
+        if($scope.notification.type === 'Send payload'){
+          $scope.plResourcesList = $scope.getResources($scope.notification.variable1);
+          $scope.plResourceId = parseInt($scope.notification.variable2);
+          //Update payload operations
+          if($scope.notification.variable1 !== 'Sensor variable'){
+            $scope.updatePayloadOperations($scope.notification.variable1);
+          }
         }
         
         //Update delay time
-        if($scope.item.alarmDefinition.variable4){
-          $scope.item.alarmDefinition.variable4 = $scope.item.alarmDefinition.variable4/1000;
+        if($scope.notification.variable4){
+          $scope.notification.variable4 = $scope.notification.variable4/1000;
         }
 
-        //Update dampening value
-        if($scope.item.alarmDefinition.dampeningType === 'Active time'){
-          if($scope.item.alarmDefinition.dampeningVar1 % 86400000  == 0){
-            $scope.item.alarmDefinition.dampeningTime = $scope.item.alarmDefinition.dampeningVar1 / 86400000;
-            $scope.item.alarmDefinition.dampeningTimeConstant = "86400000";
-          }else if($scope.item.alarmDefinition.dampeningVar1 % 3600000  == 0){
-            $scope.item.alarmDefinition.dampeningTime = $scope.item.alarmDefinition.dampeningVar1 / 3600000;
-            $scope.item.alarmDefinition.dampeningTimeConstant = "3600000";
-          }else if($scope.item.alarmDefinition.dampeningVar1 % 60000  == 0){
-            $scope.item.alarmDefinition.dampeningTime = $scope.item.alarmDefinition.dampeningVar1 / 60000;
-            $scope.item.alarmDefinition.dampeningTimeConstant = "60000";
-          }else{
-            $scope.item.alarmDefinition.dampeningTime = $scope.item.alarmDefinition.dampeningVar1;
-            $scope.item.alarmDefinition.dampeningTimeConstant = "1000";
-          }
-          $scope.item.alarmDefinition.dampeningVar1 = $scope.item.alarmDefinition.dampeningTime * $scope.item.alarmDefinition.dampeningTimeConstant;
-        }
       },function(error){
         displayRestError.display(error);
       });
@@ -306,42 +273,35 @@ myControllerModule.controller('AlarmsControllerAddEdit', function ($scope, $stat
   //--------------pre load -----------
   $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "Alarm definition"});
   $scope.spResourceTypes = TypesFactory.getResourceTypes({"resourceType": "Alarm definition", "isSendPayload":true});
-  $scope.alarmThresholdTypes = TypesFactory.getAlarmThresholdTypes();
-  $scope.dampeningTypes = TypesFactory.getAlarmDampeningTypes();
-  $scope.notifications = TypesFactory.getNotifications();
+  $scope.notificationTypes = TypesFactory.getAlarmNotificationTypes();
 
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
-  $scope.headerStringAdd = $filter('translate')('ADD_ALARM');
-  $scope.headerStringUpdate = $filter('translate')('UPDATE_ALARM');
-  $scope.cancelButtonState = "alarmsList"; //Cancel button url
+  $scope.headerStringAdd = $filter('translate')('ADD_NOTIFICATION');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_NOTIFICATION');
+  $scope.cancelButtonState = "alarmsNotificationsList"; //Cancel button url
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
 
-  $scope.save = function(){
-    //Update Threshold type
-    if(!$scope.item.alarmDefinition.thresholdType){
-      $scope.item.alarmDefinition.thresholdType = 'Value';
+  $scope.save = function(){    
+    //Update delay time
+    if($scope.notification.variable4){
+      $scope.notification.variable4 = $scope.notification.variable4*1000;
     }
     
-    //Update dampening value
-    if($scope.item.alarmDefinition.dampeningType === 'Active time'){
-      $scope.item.alarmDefinition.dampeningVar1 = $scope.item.alarmDefinition.dampeningTime * $scope.item.alarmDefinition.dampeningTimeConstant;
-    }
-    $scope.saveProgress = true;
-
+      $scope.saveProgress = true;
     if($stateParams.id){
-      AlarmsFactory.update($scope.item,function(response) {
+      NotificationsFactory.update($scope.notification, function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
-        $state.go("alarmsList");
+        $state.go("alarmsNotificationsList");
       },function(error){
         displayRestError.display(error);
           $scope.saveProgress = false;
       });
     }else{
-      AlarmsFactory.create($scope.item,function(response) {
+      NotificationsFactory.create($scope.notification, function(response) {
         alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
-        $state.go("alarmsList");
+        $state.go("alarmsNotificationsList");
       },function(error){
         displayRestError.display(error);
           $scope.saveProgress = false;

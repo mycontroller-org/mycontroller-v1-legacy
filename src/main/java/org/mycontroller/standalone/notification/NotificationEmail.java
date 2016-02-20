@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.alarm;
+package org.mycontroller.standalone.notification;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -25,44 +25,48 @@ import java.util.Date;
 import org.apache.commons.mail.EmailException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
+import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.email.EmailUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class NotificationEmail implements INotification {
+@Builder
+@Data
+@AllArgsConstructor
+@ToString(includeFieldNames = true)
+public class NotificationEmail implements INotificationEngine {
     private static final Logger _logger = LoggerFactory.getLogger(NotificationEmail.class);
 
     private String toEmailAddress;
+    private Notification notification;
     private AlarmDefinition alarmDefinition;
+    private String actualValue;
 
-    public NotificationEmail(AlarmDefinition alarmDefinition) {
-        this.alarmDefinition = alarmDefinition;
-        this.toEmailAddress = alarmDefinition.getVariable1();
+    public NotificationEmail update() {
+        this.toEmailAddress = notification.getVariable1();
+        return this;
     }
 
-    public String getToEmailAddress() {
-        return toEmailAddress;
-    }
-
-    public String toString() {
+    public String getString() {
         return this.toEmailAddress;
     }
 
     @Override
-    public AlarmDefinition getAlarmDefinition() {
-        return this.alarmDefinition;
-    }
-
-    @Override
-    public void execute(String actualValue) {
+    public void execute() {
 
         if (this.toEmailAddress == null) {
-            throw new RuntimeException("Cannot execute send email without email address! AlarmDefination name: "
+            throw new RuntimeException("Cannot execute send email without email address! AlarmDefinition name: "
                     + this.alarmDefinition.getName());
         }
 

@@ -37,6 +37,10 @@ import org.mycontroller.standalone.db.dao.NodeDao;
 import org.mycontroller.standalone.db.dao.NodeDaoImpl;
 import org.mycontroller.standalone.db.dao.ForwardPayloadDao;
 import org.mycontroller.standalone.db.dao.ForwardPayloadDaoImpl;
+import org.mycontroller.standalone.db.dao.NotificationAlarmDefinitionMapDao;
+import org.mycontroller.standalone.db.dao.NotificationAlarmDefinitionMapDaoImpl;
+import org.mycontroller.standalone.db.dao.NotificationDao;
+import org.mycontroller.standalone.db.dao.NotificationDaoImpl;
 import org.mycontroller.standalone.db.dao.RoleDao;
 import org.mycontroller.standalone.db.dao.RoleDaoImpl;
 import org.mycontroller.standalone.db.dao.RoleGatewayMapDao;
@@ -117,6 +121,8 @@ public class DaoUtils {
     private static RoleNodeMapDao roleNodeMapDao = null;
     private static RoleSensorMapDao roleSensorMapDao = null;
     private static RoleMqttMapDao roleMqttMapDao = null;
+    private static NotificationDao notificationDao = null;
+    private static NotificationAlarmDefinitionMapDao notificationAlarmDefinitionMapDao = null;
 
     public static void loadAllDao() {
         if (isDaoInitialized) {
@@ -152,6 +158,9 @@ public class DaoUtils {
             roleNodeMapDao = new RoleNodeMapDaoImpl(DataBaseUtils.getConnectionSource());
             roleSensorMapDao = new RoleSensorMapDaoImpl(DataBaseUtils.getConnectionSource());
             roleMqttMapDao = new RoleMqttMapDaoImpl(DataBaseUtils.getConnectionSource());
+            notificationDao = new NotificationDaoImpl(DataBaseUtils.getConnectionSource());
+            notificationAlarmDefinitionMapDao = new NotificationAlarmDefinitionMapDaoImpl(
+                    DataBaseUtils.getConnectionSource());
             //Initialized dao
             isDaoInitialized = true;
         } catch (SQLException sqlEx) {
@@ -279,6 +288,14 @@ public class DaoUtils {
 
     public static synchronized void setIsDaoInitialized(boolean state) {
         isDaoInitialized = state;
+    }
+
+    public static NotificationDao getNotificationDao() {
+        return notificationDao;
+    }
+
+    public static NotificationAlarmDefinitionMapDao getNotificationAlarmDefinitionMapDao() {
+        return notificationAlarmDefinitionMapDao;
     }
 
 }

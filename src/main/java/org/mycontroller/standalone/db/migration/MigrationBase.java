@@ -13,31 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.db.dao;
+package org.mycontroller.standalone.db.migration;
 
-import java.util.List;
-
-import org.mycontroller.standalone.api.jaxrs.mapper.Query;
-import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
-import org.mycontroller.standalone.db.tables.Role;
+import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.db.DaoUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.2
+ * @since 0.0.3
  */
-public interface RoleDao extends BaseDao<Role, Integer> {
-    Role getByRoleName(String roleName);
+public class MigrationBase {
 
-    List<String> getPermissionsByUserId(Integer userId);
+    protected void updateDao() {
+        //Load Dao's if not loaded already
+        if (!DaoUtils.isDaoInitialized()) {
+            DaoUtils.loadAllDao();
+        }
 
-    List<Integer> getGatewayIds(Integer userId);
-
-    List<Integer> getNodeIds(Integer userId);
-
-    List<Integer> getSensorIds(Integer userId);
-
-    List<Integer> getSensorVariableIds(Integer userId);
-
-    QueryResponse getAll(Query query);
-
+        //Load properties from database
+        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+    }
 }

@@ -123,7 +123,7 @@ public class ResourcesLogsUtils {
         builder.append("Name: ").append(alarmDefinition.getName())
                 .append(", Condition: ").append(AlarmUtils.getConditionString(alarmDefinition))
                 .append(", Resource:").append(AlarmUtils.getResourceString(alarmDefinition, true))
-                .append(", Notification: ").append(alarmDefinition.getNotificationString());
+                .append(", Notifications: ").append(alarmDefinition.getNotifications());
 
         if (errorMsg != null) {
             builder.append(", Error: ").append(errorMsg);
