@@ -33,7 +33,7 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.MYCMessages.PAYLOAD_TYPE;
 import org.mycontroller.standalone.MYCMessages;
 import org.mycontroller.standalone.NodeIdException;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -313,8 +313,6 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 node = getNode(mySensorsRawMessage);
                 node.setState(STATE.UP);
                 updateNode(node);
-                //Trigger alarm definitions for this node
-                AlarmUtils.executeAlarmDefinitions(RESOURCE_TYPE.NODE, node.getId(), node);
                 break;
             default:
                 _logger.warn(
@@ -696,7 +694,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                                 .sensorVariable(sensorVariable)
                                 .aggregationType(AGGREGATION_TYPE.RAW)
                                 .timestamp(System.currentTimeMillis())
-                                .avg(NumericUtils.getDouble(mySensorsRawMessage.getPayload()))
+                                .avg(MycUtils.getDouble(mySensorsRawMessage.getPayload()))
                                 .samples(1).build());
 
                 break;

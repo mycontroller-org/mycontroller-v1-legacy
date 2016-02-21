@@ -18,7 +18,7 @@ package org.mycontroller.standalone.alarm;
 import java.util.Date;
 import java.util.List;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
@@ -90,7 +90,7 @@ public class AlarmEngine implements Runnable {
                 break;
             case SENSOR_VARIABLE:
                 SensorVariable thresholdSensorValue = DaoUtils.getSensorVariableDao().get(
-                        NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
+                        MycUtils.getInteger(alarmDefinition.getThresholdValue()));
                 if (thresholdSensorValue != null) {
                     thresholdValue = thresholdSensorValue.getValue();
                 }
@@ -98,14 +98,14 @@ public class AlarmEngine implements Runnable {
             /* NOTE: not using other than sensor variable, below code may not hit when we configure GUI */
             case GATEWAY_STATE:
                 Gateway gateway = DaoUtils.getGatewayDao().getById(
-                        NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
+                        MycUtils.getInteger(alarmDefinition.getThresholdValue()));
                 if (gateway != null) {
                     thresholdValue = gateway.getState().getText();
                 }
                 break;
             case NODE_STATE:
                 Node node = DaoUtils.getNodeDao()
-                        .getById(NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
+                        .getById(MycUtils.getInteger(alarmDefinition.getThresholdValue()));
                 if (node != null) {
                     thresholdValue = node.getState().getText();
                 }
@@ -259,7 +259,11 @@ public class AlarmEngine implements Runnable {
 
     @Override
     public void run() {
-        for (AlarmDefinition alarmDefinition : this.alarmDefinitions) {
+        if (alarmDefinitions == null) {
+            _logger.debug("Nothing to do with alarm definitions with null referance");
+            return;
+        }
+        for (AlarmDefinition alarmDefinition : alarmDefinitions) {
             try {
                 if (alarmDefinition.getEnabled()) {
                     runAlarm(alarmDefinition);

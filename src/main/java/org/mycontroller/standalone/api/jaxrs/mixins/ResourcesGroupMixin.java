@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LastSeenSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.StateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,6 +39,7 @@ abstract class ResourcesGroupMixin {
     abstract public String getState();
 
     @JsonProperty("stateSince")
+    @JsonSerialize(using = LastSeenSerializer.class)
     abstract public String getStateSince();
 
     @JsonIgnore

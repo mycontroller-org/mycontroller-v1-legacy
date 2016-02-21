@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -53,8 +53,8 @@ public class LocationSettings {
                 .name(getValue(SKEY_NAME))
                 .latitude(getValue(SKEY_LATITUDE))
                 .longitude(getValue(SKEY_LONGITUDE))
-                .sunriseTime(NumericUtils.getLong(getValue(SKEY_SUNRISE_TIME)))
-                .sunsetTime(NumericUtils.getLong(getValue(SKEY_SUNSET_TIME))).build();
+                .sunriseTime(MycUtils.getLong(getValue(SKEY_SUNRISE_TIME)))
+                .sunsetTime(MycUtils.getLong(getValue(SKEY_SUNSET_TIME))).build();
     }
 
     public void save() {

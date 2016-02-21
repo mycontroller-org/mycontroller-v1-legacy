@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class NumericUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(NumericUtils.class);
+public class MycUtils {
+    private static final Logger _logger = LoggerFactory.getLogger(MycUtils.class);
     public static final int DOUBLE_ROUND = 3;
     public static final long SECOND = 1000;
     public static final long MINUTE = SECOND * 60;
@@ -36,7 +36,7 @@ public class NumericUtils {
     public static final long DAY = HOUR * 24;
     public static final DecimalFormat decimalFormat = new DecimalFormat("#.###");
 
-    private NumericUtils() {
+    private MycUtils() {
 
     }
 

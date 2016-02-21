@@ -24,11 +24,14 @@ import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ResourceTypeDe
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ThresholdTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.TriggerTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.DampeningTypeSerializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LastSeenSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ResourceTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ThresholdTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.TriggerTypeSerializer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -38,6 +41,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @JsonIgnoreProperties({ "dampeningInternal1", "dampeningInternal2" })
 abstract class AlarmDefinitionMixin {
+
+    @JsonIgnore
+    private Long lastTrigger;
 
     @JsonSerialize(using = ResourceTypeSerializer.class)
     abstract public String getResourceType();
@@ -62,5 +68,12 @@ abstract class AlarmDefinitionMixin {
 
     @JsonDeserialize(using = DampeningTypeDeserializer.class)
     abstract public void setDampeningType(DAMPENING_TYPE dampningType);
+
+    @JsonProperty("lastTrigger")
+    @JsonSerialize(using = LastSeenSerializer.class)
+    abstract public String getLastTrigger();
+
+    @JsonIgnore
+    abstract public void setLastTrigger(Long lastTrigger);
 
 }

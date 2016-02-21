@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.gateway;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.gateway.GatewayUtils.SERIAL_PORT_DRIVER;
 
@@ -50,7 +50,7 @@ public class GatewaySerial extends GatewayBase {
     }
 
     public Integer getBaudRate() {
-        return NumericUtils.getInteger(super.getVariable3());
+        return MycUtils.getInteger(super.getVariable3());
     }
 
     public void setBaudRate(Integer baudRate) {
@@ -58,7 +58,7 @@ public class GatewaySerial extends GatewayBase {
     }
 
     public Integer getRetryFrequency() {
-        return NumericUtils.getInteger(super.getVariable4());
+        return MycUtils.getInteger(super.getVariable4());
     }
 
     public void setRetryFrequency(Integer retryFrequency) {

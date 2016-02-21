@@ -16,9 +16,12 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.NotificationTypeDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LastSeenSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.NotificationTypeSerializer;
 import org.mycontroller.standalone.notification.NotificationUtils.NOTIFICATION_TYPE;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -28,10 +31,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 abstract class NotificationMixin {
 
+    @JsonIgnore
+    private Long lastExecution;
+
     @JsonSerialize(using = NotificationTypeSerializer.class)
     abstract public String getType();
 
     @JsonDeserialize(using = NotificationTypeDeserializer.class)
     abstract public void setType(NOTIFICATION_TYPE notificationType);
 
+    @JsonProperty("lastExecution")
+    @JsonSerialize(using = LastSeenSerializer.class)
+    abstract public String getLastExecution();
+
+    @JsonIgnore
+    abstract public void setLastExecution(Long lastExecution);
 }

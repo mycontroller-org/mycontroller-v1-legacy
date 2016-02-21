@@ -31,6 +31,7 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
+import org.mycontroller.standalone.api.jaxrs.mapper.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -158,7 +159,8 @@ public class GatewayHandler extends AccessEngine {
                     ObjectFactory.getIActionEngine(gateway.getNetworkType()).discover(id);
                 }
             }
-            return RestUtils.getResponse(Status.OK, new ApiError("Node Discover util started successfully"));
+            return RestUtils.getResponse(Status.OK,
+                    ApiMessage.builder().message("Node Discover util started successfully").build());
 
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

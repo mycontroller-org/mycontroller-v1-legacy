@@ -19,7 +19,7 @@ $scope, NotificationsFactory, $state, $uibModal, $stateParams, displayRestError,
   //GUI page settings
   $scope.headerStringList = $filter('translate')('NOTIFICATIONS_DETAIL');
   $scope.noItemsSystemMsg = $filter('translate')('NO_NOTIFICATIONS_SETUP');
-  $scope.noItemsSystemIcon = "fa fa-bell-o";
+  $scope.noItemsSystemIcon = "fa fa-flag-o";
 
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;

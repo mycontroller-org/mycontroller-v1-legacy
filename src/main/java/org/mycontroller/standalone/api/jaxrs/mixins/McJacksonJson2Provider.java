@@ -69,19 +69,19 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         //AddMixIns
+        mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixIn(Dashboard.class, DashboardMixin.class);
+        mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixIn(Gateway.class, GatewayMixin.class);
         mapper.addMixIn(Node.class, NodeMixin.class);
-        mapper.addMixIn(Sensor.class, SensorMixin.class);
-        mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
-        mapper.addMixIn(ResourcesLogs.class, ResourcesLogsMixin.class);
-        mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
         mapper.addMixIn(Notification.class, NotificationMixin.class);
         mapper.addMixIn(ResourcesGroup.class, ResourcesGroupMixin.class);
         mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
-        mapper.addMixIn(Timer.class, TimerMixin.class);
+        mapper.addMixIn(ResourcesLogs.class, ResourcesLogsMixin.class);
         mapper.addMixIn(Role.class, RoleMixin.class);
+        mapper.addMixIn(Sensor.class, SensorMixin.class);
+        mapper.addMixIn(Timer.class, TimerMixin.class);
         mapper.addMixIn(User.class, UserMixin.class);
-        mapper.addMixIn(Dashboard.class, DashboardMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
         super.writeTo(value, type, genericType, annotations, mediaType, httpHeaders, entityStream);
@@ -95,17 +95,18 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         //AddMixIns
+        mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
+        mapper.addMixIn(Dashboard.class, DashboardMixin.class);
+        mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixIn(Gateway.class, GatewayMixin.class);
         mapper.addMixIn(Node.class, NodeMixin.class);
-        mapper.addMixIn(Sensor.class, SensorMixin.class);
-        mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
-        mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
         mapper.addMixIn(Notification.class, NotificationMixin.class);
         mapper.addMixIn(ResourcesGroup.class, ResourcesGroupMixin.class);
         mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
+        mapper.addMixIn(Role.class, RoleMixin.class);
+        mapper.addMixIn(Sensor.class, SensorMixin.class);
         mapper.addMixIn(Timer.class, TimerMixin.class);
         mapper.addMixIn(User.class, UserMixin.class);
-        mapper.addMixIn(Dashboard.class, DashboardMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
 

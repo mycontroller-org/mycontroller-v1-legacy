@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.db;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.PayloadOperationUtils.SEND_PAYLOAD_OPERATIONS;
 
 /**
@@ -35,8 +35,8 @@ public class PayloadOperation {
             this.operationType =
                     PayloadOperationUtils.SEND_PAYLOAD_OPERATIONS.fromString(payload.substring(0, 1).toLowerCase());
             if (this.operationType != null) {
-                this.value = NumericUtils.getDouble(payload.substring(1));
-                this.payload = NumericUtils.getDoubleAsString(this.value);
+                this.value = MycUtils.getDouble(payload.substring(1));
+                this.payload = MycUtils.getDoubleAsString(this.value);
             }
         }
     }

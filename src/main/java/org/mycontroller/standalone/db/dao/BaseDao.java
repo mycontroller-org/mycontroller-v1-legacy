@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.table.TableInfo;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -56,5 +57,7 @@ public interface BaseDao<Tdao, Tid> {
     long countOf(HashMap<String, List<Object>> columnValues);
 
     Dao<Tdao, Tid> getDao();
+
+    TableInfo<Tdao, Tid> getTableInfo();
 
 }

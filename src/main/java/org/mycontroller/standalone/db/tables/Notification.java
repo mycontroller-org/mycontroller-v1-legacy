@@ -47,6 +47,10 @@ public class Notification {
     public static final String KEY_NAME = "name";
     public static final String KEY_LAST_EXECUTION = "lastExecution";
     public static final String KEY_TYPE = "type";
+    public static final String KEY_VARIABLE1 = "variable1";
+    public static final String KEY_VARIABLE2 = "variable2";
+    public static final String KEY_VARIABLE3 = "variable3";
+    public static final String KEY_VARIABLE4 = "variable4";
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -63,32 +67,23 @@ public class Notification {
     @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_NAME)
     private String name;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.ENUM_INTEGER, columnName = KEY_TYPE)
+    @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING, columnName = KEY_TYPE)
     private NOTIFICATION_TYPE type;
 
     @DatabaseField(canBeNull = true, columnName = KEY_LAST_EXECUTION)
     private Long lastExecution;
 
-    @DatabaseField(canBeNull = true)
+    @DatabaseField(canBeNull = true, columnName = KEY_VARIABLE1)
     private String variable1;
 
-    @DatabaseField(canBeNull = true, width = 500)
+    @DatabaseField(canBeNull = true, width = 500, columnName = KEY_VARIABLE2)
     private String variable2;
 
-    @DatabaseField(canBeNull = true)
+    @DatabaseField(canBeNull = true, columnName = KEY_VARIABLE3)
     private String variable3;
 
-    @DatabaseField(canBeNull = true)
+    @DatabaseField(canBeNull = true, columnName = KEY_VARIABLE4)
     private String variable4;
-
-    @DatabaseField(canBeNull = true)
-    private String variable5;
-
-    @DatabaseField(canBeNull = true)
-    private String variable6;
-
-    @DatabaseField(canBeNull = true)
-    private String variable7;
 
     public String getNotificationString() {
         return NotificationUtils.getNotificationString(this);

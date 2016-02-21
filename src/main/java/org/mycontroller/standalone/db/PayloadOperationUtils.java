@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.db;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 
 public class PayloadOperationUtils {
 
@@ -80,33 +80,33 @@ public class PayloadOperationUtils {
         }
         switch (specialOperation.getOperationType()) {
             case TOGGLE:
-                revisedValue = NumericUtils.getDoubleAsString(Double.valueOf(orginalValue) > 0 ? 0.0 : 1.0);
+                revisedValue = MycUtils.getDoubleAsString(Double.valueOf(orginalValue) > 0 ? 0.0 : 1.0);
                 break;
             case INCREMENT:
-                revisedValue = NumericUtils.getDoubleAsString(Double.valueOf(orginalValue) + 1);
+                revisedValue = MycUtils.getDoubleAsString(Double.valueOf(orginalValue) + 1);
                 break;
             case DECREMENT:
-                revisedValue = NumericUtils.getDoubleAsString(Double.valueOf(orginalValue) - 1);
+                revisedValue = MycUtils.getDoubleAsString(Double.valueOf(orginalValue) - 1);
                 break;
             case ADD:
                 revisedValue =
-                        NumericUtils.getDoubleAsString(Double.valueOf(orginalValue) + specialOperation.getValue());
+                        MycUtils.getDoubleAsString(Double.valueOf(orginalValue) + specialOperation.getValue());
                 break;
             case SUBTRACT:
                 revisedValue =
-                        NumericUtils.getDoubleAsString(Double.valueOf(orginalValue) - specialOperation.getValue());
+                        MycUtils.getDoubleAsString(Double.valueOf(orginalValue) - specialOperation.getValue());
                 break;
             case MULTIPLIE:
                 revisedValue =
-                        NumericUtils.getDoubleAsString(Double.valueOf(orginalValue) * specialOperation.getValue());
+                        MycUtils.getDoubleAsString(Double.valueOf(orginalValue) * specialOperation.getValue());
                 break;
             case DIVIDE:
                 revisedValue =
-                        NumericUtils.getDoubleAsString(Double.valueOf(orginalValue) / specialOperation.getValue());
+                        MycUtils.getDoubleAsString(Double.valueOf(orginalValue) / specialOperation.getValue());
                 break;
             case MODULUS:
                 revisedValue =
-                        NumericUtils.getDoubleAsString(Double.valueOf(orginalValue) % specialOperation.getValue());
+                        MycUtils.getDoubleAsString(Double.valueOf(orginalValue) % specialOperation.getValue());
                 break;
             case REBOOT:
                 revisedValue = specialOperation.getOperationType().getText();

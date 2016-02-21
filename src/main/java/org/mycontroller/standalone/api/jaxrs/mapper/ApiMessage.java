@@ -15,36 +15,20 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
-import org.mycontroller.standalone.MycUtils;
-
 import lombok.ToString;
-import lombok.Getter;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
 import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 @ToString(includeFieldNames = true)
-public class BackupFile implements Comparable<BackupFile> {
-    private String name;
-    private String absolutePath;
-    private Long timestamp;
-    private Long size;
-
-    @Override
-    public int compareTo(BackupFile file) {
-        return this.timestamp.compareTo(file.getTimestamp());
-    }
-
-    public String getFriendlyTime() {
-        return MycUtils.getDifferenceFriendlyTime(timestamp);
-    }
+public class ApiMessage {
+    private String message;
 }

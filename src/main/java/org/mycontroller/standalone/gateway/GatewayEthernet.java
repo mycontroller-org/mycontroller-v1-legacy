@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.gateway;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.tables.Gateway;
 
 /**
@@ -41,7 +41,7 @@ public class GatewayEthernet extends GatewayBase {
     }
 
     public Integer getPort() {
-        return NumericUtils.getInteger(super.getVariable2());
+        return MycUtils.getInteger(super.getVariable2());
     }
 
     public void setPort(Integer port) {
@@ -49,7 +49,7 @@ public class GatewayEthernet extends GatewayBase {
     }
 
     public Integer getAliveFrequency() {
-        return NumericUtils.getInteger(super.getVariable3());
+        return MycUtils.getInteger(super.getVariable3());
     }
 
     public void setAliveFrequency(Integer aliveFrequency) {

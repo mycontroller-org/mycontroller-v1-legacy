@@ -17,6 +17,7 @@ package org.mycontroller.standalone.timer.jobs;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.alarm.AlarmUtils;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
@@ -29,7 +30,6 @@ import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.knowm.sundial.Job;
 import org.knowm.sundial.JobContext;
 import org.knowm.sundial.exceptions.JobInterruptException;
@@ -84,6 +84,10 @@ public class TimerJob extends Job {
             //AlarmDefinition Triggered Message, ResourcesLogs message data
             //if you have resource id, it's timer job, other wise it might come from alarm definition, etc.,
             if (timer.getId() != null) {
+                //Update last fire
+                timer.setLastFire(System.currentTimeMillis());
+                DaoUtils.getTimerDao().update(timer);
+                //Update in log file
                 ResourcesLogsUtils.setTimerLog(LOG_LEVEL.INFO, timer, null);
             }
         } catch (Exception ex) {

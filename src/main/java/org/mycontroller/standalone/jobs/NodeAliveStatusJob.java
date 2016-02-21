@@ -18,11 +18,9 @@ package org.mycontroller.standalone.jobs;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
-import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.slf4j.Logger;
@@ -38,8 +36,8 @@ public class NodeAliveStatusJob extends Job {
     public static final String NAME = "node_alive_status_job";
     public static final String TRIGGER_NAME = "node_alive_status_trigger";
     private static final Logger _logger = LoggerFactory.getLogger(NodeAliveStatusJob.class);
-    private static final long WAIT_TIME_TO_CHECK_ALIVE_STATUS = NumericUtils.SECOND * 30;
-    public static final long DEFAULT_ALIVE_CHECK_INTERVAL = 30 * NumericUtils.MINUTE;
+    private static final long WAIT_TIME_TO_CHECK_ALIVE_STATUS = MycUtils.SECOND * 30;
+    public static final long DEFAULT_ALIVE_CHECK_INTERVAL = 30 * MycUtils.MINUTE;
     private static boolean terminateAliveCheck = false;
 
     @Override
@@ -79,8 +77,8 @@ public class NodeAliveStatusJob extends Job {
     private void checkHearbeat() {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
         long aliveCheckInterval = ObjectFactory.getAppProperties().getControllerSettings().getAliveCheckInterval();
-        if (aliveCheckInterval < NumericUtils.MINUTE) {
-            aliveCheckInterval = NumericUtils.MINUTE;
+        if (aliveCheckInterval < MycUtils.MINUTE) {
+            aliveCheckInterval = MycUtils.MINUTE;
         }
         for (Node node : nodes) {
             if (node.getLastSeen() == null
@@ -88,8 +86,6 @@ public class NodeAliveStatusJob extends Job {
                 node.setState(STATE.DOWN);
                 DaoUtils.getNodeDao().update(node);
                 _logger.debug("Node is in not reachable state, Node:[{}]", node);
-                //Trigger alarm definitions for this node
-                AlarmUtils.executeAlarmDefinitions(RESOURCE_TYPE.NODE, node.getId(), node);
             }
         }
     }

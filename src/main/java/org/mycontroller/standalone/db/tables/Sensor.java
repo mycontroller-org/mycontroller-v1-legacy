@@ -17,7 +17,7 @@ package org.mycontroller.standalone.db.tables;
 
 import java.util.List;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.SensorUtils;
@@ -90,7 +90,7 @@ public class Sensor {
     }
 
     public Integer getSensorIdInt() {
-        return NumericUtils.getInteger(sensorId);
+        return MycUtils.getInteger(sensorId);
     }
 
 }

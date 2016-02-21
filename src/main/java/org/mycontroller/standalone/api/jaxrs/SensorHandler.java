@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
@@ -200,13 +200,13 @@ public class SensorHandler extends AccessEngine {
             try {
                 switch (sensorVariable.getMetricType()) {
                     case BINARY:
-                        if (NumericUtils.getBoolean(variableStatusModel.getValue() == null)) {
+                        if (MycUtils.getBoolean(variableStatusModel.getValue() == null)) {
                             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Invalid value: "
                                     + variableStatusModel.getValue()));
                         }
                         break;
                     case DOUBLE:
-                        if (NumericUtils.getDouble(variableStatusModel.getValue()) == null) {
+                        if (MycUtils.getDouble(variableStatusModel.getValue()) == null) {
                             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Invalid value: "
                                     + variableStatusModel.getValue()));
                         }

@@ -18,7 +18,7 @@ package org.mycontroller.standalone.settings;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.db.tables.Settings;
 
@@ -74,17 +74,17 @@ public class MetricsSettings {
             metrics.add(getMetricsGraph(sVariable.getText()));
         }
         return MetricsSettings.builder()
-                .lastAggregationRawData(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_RAW_DATA)))
-                .lastAggregationOneMinute(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_MINUTE)))
-                .lastAggregationFiveMinutes(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_FIVE_MINUTES)))
-                .lastAggregationOneHour(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_HOUR)))
-                .lastAggregationSixHours(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_SIX_HOURS)))
-                .lastAggregationTwelveHours(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_TWELVE_HOURS)))
-                .lastAggregationOneDay(NumericUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_DAY)))
+                .lastAggregationRawData(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_RAW_DATA)))
+                .lastAggregationOneMinute(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_MINUTE)))
+                .lastAggregationFiveMinutes(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_FIVE_MINUTES)))
+                .lastAggregationOneHour(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_HOUR)))
+                .lastAggregationSixHours(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_SIX_HOURS)))
+                .lastAggregationTwelveHours(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_TWELVE_HOURS)))
+                .lastAggregationOneDay(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_DAY)))
                 .metrics(metrics)
                 .battery(getMetricsGraph(SKEY_BATTERY))
-                .enabledMinMax(NumericUtils.getBoolean(getValue(SKEY_ENABLED_MIN_MAX)))
-                .defaultTimeRange(NumericUtils.getLong(getValue(SKEY_DEFAULT_TIME_RANGE)))
+                .enabledMinMax(MycUtils.getBoolean(getValue(SKEY_ENABLED_MIN_MAX)))
+                .defaultTimeRange(MycUtils.getLong(getValue(SKEY_DEFAULT_TIME_RANGE)))
                 .build();
     }
 

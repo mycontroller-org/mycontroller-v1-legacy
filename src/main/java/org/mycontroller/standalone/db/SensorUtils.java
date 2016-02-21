@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson.TYPE;
@@ -98,26 +98,26 @@ public class SensorUtils {
         switch (sensorVariable.getVariableType()) {
             case V_TEMP:
             case V_HUM:
-                data = NumericUtils.getDoubleAsString(sensorVariable.getValue());
+                data = MycUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
             case V_STATUS:
-                data = NumericUtils.getStatusAsString(sensorVariable.getValue());
+                data = MycUtils.getStatusAsString(sensorVariable.getValue());
                 break;
             case V_PERCENTAGE:
             case V_PRESSURE:
-                data = NumericUtils.getDoubleAsString(sensorVariable.getValue());
+                data = MycUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
             case V_FORECAST:
                 data = sensorVariable.getValue();
                 break;
             case V_RAIN:
-                data = NumericUtils.getDoubleAsString(sensorVariable.getValue());
+                data = MycUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
             case V_RAINRATE:
                 data = sensorVariable.getValue();
                 break;
             case V_WIND:
-                data = NumericUtils.getDoubleAsString(sensorVariable.getValue());
+                data = MycUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
             case V_GUST:
             case V_DIRECTION:
@@ -127,17 +127,17 @@ public class SensorUtils {
             case V_WEIGHT:
             case V_DISTANCE:
             case V_IMPEDANCE:
-                data = NumericUtils.getDoubleAsString(sensorVariable.getValue());
+                data = MycUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
             case V_ARMED:
-                data = NumericUtils.getArmedAsString(sensorVariable.getValue());
+                data = MycUtils.getArmedAsString(sensorVariable.getValue());
                 break;
             case V_TRIPPED:
-                data = NumericUtils.getTrippedAsString(sensorVariable.getValue());
+                data = MycUtils.getTrippedAsString(sensorVariable.getValue());
                 break;
             case V_WATT:
             case V_KWH:
-                data = NumericUtils.getDoubleAsString(sensorVariable.getValue());
+                data = MycUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
             case V_SCENE_ON:
             case V_SCENE_OFF:
@@ -146,7 +146,7 @@ public class SensorUtils {
                 data = sensorVariable.getValue();
                 break;
             case V_LIGHT_LEVEL:
-                data = NumericUtils.getDoubleAsString(sensorVariable.getValue());
+                data = MycUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
             case V_VAR1:
             case V_VAR2:
@@ -165,12 +165,12 @@ public class SensorUtils {
                 data = sensorVariable.getValue();
                 break;
             case V_LOCK_STATUS:
-                data = NumericUtils.getLockStatusAsString(sensorVariable.getValue());
+                data = MycUtils.getLockStatusAsString(sensorVariable.getValue());
                 break;
             case V_LEVEL:
             case V_VOLTAGE:
             case V_CURRENT:
-                data = NumericUtils.getDoubleAsString(sensorVariable.getValue());
+                data = MycUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
             case V_RGB:
             case V_RGBW:
@@ -203,7 +203,7 @@ public class SensorUtils {
 
     public static String getLastSeen(Long timestamp) {
         if (timestamp != null) {
-            return NumericUtils.getDifferenceFriendlyTime(timestamp);
+            return MycUtils.getDifferenceFriendlyTime(timestamp);
         }
         return "Never";
 

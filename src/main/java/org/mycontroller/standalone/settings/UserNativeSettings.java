@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.User;
 
@@ -45,7 +45,7 @@ public class UserNativeSettings {
     private Boolean isCongifured;
 
     public static UserNativeSettings get(User user) {
-        Boolean isCongifured = NumericUtils.getBoolean(getValue(user, SKEY_IS_CONFIGURED));
+        Boolean isCongifured = MycUtils.getBoolean(getValue(user, SKEY_IS_CONFIGURED));
         if (isCongifured == null || !isCongifured) {
             UserNativeSettings.builder()
                     .actionBoardView("listView")

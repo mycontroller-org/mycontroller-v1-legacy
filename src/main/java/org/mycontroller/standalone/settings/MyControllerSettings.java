@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -64,12 +64,12 @@ public class MyControllerSettings {
                 .timeFormat(getValue(SKEY_TIME_FORMAT))
                 .version(getValue(SKEY_VERSION))
                 .dbVersion(getValue(SKEY_DB_VERSION))
-                .aliveCheckInterval(NumericUtils.getLong(getValue(SKEY_ALIVE_CHECK_INTERVAL)))
+                .aliveCheckInterval(MycUtils.getLong(getValue(SKEY_ALIVE_CHECK_INTERVAL)))
                 .unitConfig(getValue(SKEY_UNIT_CONFIG))
                 .loginMessage(getValue(SKEY_LOGIN_MESSAGE))
-                .grantAccessToChildResources(NumericUtils.getBoolean(getValue(SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES)))
+                .grantAccessToChildResources(MycUtils.getBoolean(getValue(SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES)))
                 .resourcesLogLevel(getValue(SKEY_RESOURCES_LOG_LEVEL))
-                .globalPageRefreshTime(NumericUtils.getLong(getValue(SKEY_GLOBAL_PAGE_REFRESH_TIME)))
+                .globalPageRefreshTime(MycUtils.getLong(getValue(SKEY_GLOBAL_PAGE_REFRESH_TIME)))
                 .build();
     }
 

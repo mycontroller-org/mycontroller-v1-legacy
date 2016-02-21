@@ -16,6 +16,7 @@
 package org.mycontroller.standalone.notification;
 
 import org.mycontroller.standalone.alarm.AlarmUtils;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.sms.SMSUtils;
@@ -78,5 +79,8 @@ public class NotificationSMS implements INotificationEngine {
         } catch (Exception ex) {
             _logger.error("Exception,", ex);
         }
+        //Update last execution
+        notification.setLastExecution(System.currentTimeMillis());
+        DaoUtils.getNotificationDao().update(notification);
     }
 }

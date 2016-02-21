@@ -16,7 +16,7 @@
 package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.PayloadOperationUtils.SEND_PAYLOAD_OPERATIONS;
@@ -53,7 +53,7 @@ public class Timer {
     public static final String KEY_RESOURCE_ID = "resourceId";
     public static final String KEY_TIMER_TYPE = "timerType";
     public static final String KEY_FREQUENCY = "frequency";
-    public static final String KEY_LAST_FIRED = "lastFired";
+    public static final String KEY_LAST_FIRE = "lastFire";
 
     @DatabaseField(generatedId = true)
     private Integer id;
@@ -91,8 +91,8 @@ public class Timer {
     @DatabaseField(canBeNull = false)
     private String payload;
 
-    @DatabaseField(canBeNull = true, columnName = KEY_LAST_FIRED)
-    private Long lastFired;
+    @DatabaseField(canBeNull = true, columnName = KEY_LAST_FIRE)
+    private Long lastFire;
 
     @DatabaseField(canBeNull = true)
     private String internalVariable1;
@@ -136,7 +136,7 @@ public class Timer {
                     builder.append(" {resource.value} ")
                             .append(specialOperation.getOperationType().getText())
                             .append(" ")
-                            .append(NumericUtils.getDoubleAsString(specialOperation.getValue()));
+                            .append(MycUtils.getDoubleAsString(specialOperation.getValue()));
                 } else {
                     builder.append(specialOperation.getOperationType().getText());
                 }

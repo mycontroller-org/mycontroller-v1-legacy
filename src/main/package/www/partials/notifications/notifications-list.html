@@ -92,7 +92,9 @@
             </td>
             <td>{{item.name}}</td>
             <td ng-bind-html="item.notificationString | mcResourceRepresentation"></td>
-            <td>{{item.lastExecution | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</td>
+            <td>
+              <span uib-tooltip="{{item.lastExecution.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.lastExecution.inString  || 'Never'}}</span>
+            </td>
           </tr>
         </tbody>
       </table>

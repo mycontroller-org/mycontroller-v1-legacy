@@ -18,7 +18,7 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
@@ -175,7 +175,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                 _logger.trace("Minimum sql query:{}", query);
             }
             //Get minimum value
-            Double min = NumericUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
+            Double min = MycUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
             
             //reset query
             query.setLength(0);
@@ -213,7 +213,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             }
 
             //Get maximum value
-            Double max = NumericUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
+            Double max = MycUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
             
             //reset query
             query.setLength(0);
@@ -239,7 +239,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             }
 
             //Get average value
-            Double avg = NumericUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
+            Double avg = MycUtils.getDouble(this.getDao().queryRaw(query.toString()).getResults().get(0)[0]);
 
             return MetricsDoubleTypeDevice.builder()
                     .min(min)

@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -246,7 +246,7 @@ public class TimerUtils {
             case SIMPLE:
                 TimerSimple timerSimple = new TimerSimple(timer);
                 stringBuilder.append("Repeat[Interval:")
-                        .append(NumericUtils.getFriendlyTime(timerSimple.getRepeatInterval(), true))
+                        .append(MycUtils.getFriendlyTime(timerSimple.getRepeatInterval(), true))
                         .append(", Count:").append(timerSimple.getRepeatCount()).append("], ")
                         .append("Executed count:").append(timerSimple.getExecutedCount());
                 break;
@@ -310,7 +310,7 @@ public class TimerUtils {
         SchedulerUtils.unloadTimerJob(timerOld);
 
         //update details of timer and reload it
-        timer.setLastFired(null); //clear last fired
+        timer.setLastFire(null); //clear last fired
         if (timer.getEnabled()) {
             timer.setInternalVariable1(null);
         }
@@ -322,7 +322,7 @@ public class TimerUtils {
         //add timer
         DaoUtils.getTimerDao().create(timer);
         //update details of timer and load it
-        timer.setLastFired(null); //clear last fired
+        timer.setLastFire(null); //clear last fired
         if (timer.getEnabled()) {
             timer.setInternalVariable1(null);
             SchedulerUtils.loadTimerJob(timer);

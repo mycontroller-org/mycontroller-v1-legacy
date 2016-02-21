@@ -27,6 +27,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
@@ -34,6 +35,7 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableInfo;
 import com.j256.ormlite.table.TableUtils;
 
 /**
@@ -44,6 +46,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
     public static final Logger _logger = LoggerFactory.getLogger(BaseAbstractDaoImpl.class);
 
     private Dao<Tdao, Tid> dao;
+    private TableInfo<Tdao, Tid> tableInfo;
 
     @SuppressWarnings("unchecked")
     public BaseAbstractDaoImpl(ConnectionSource connectionSource, Class<Tdao> entity) throws SQLException {
@@ -53,10 +56,17 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         //Create Table if not exists
         TableUtils.createTableIfNotExists(connectionSource, entity);
         _logger.debug("Create Table If Not Exists, executed for {}", entity.getName());
+
+        //Create TableInfo object
+        tableInfo = new TableInfo<Tdao, Tid>(connectionSource, (BaseDaoImpl<Tdao, Tid>) dao, entity);
     }
 
     public Dao<Tdao, Tid> getDao() {
         return dao;
+    }
+
+    public TableInfo<Tdao, Tid> getTableInfo() {
+        return tableInfo;
     }
 
     private void addResourcesFilter(AllowedResources allowedResources, Where<Tdao, Tid> where) throws SQLException {

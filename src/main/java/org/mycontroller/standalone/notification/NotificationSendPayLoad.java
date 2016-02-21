@@ -17,6 +17,7 @@ package org.mycontroller.standalone.notification;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Notification;
@@ -26,7 +27,7 @@ import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerSimple;
 import org.mycontroller.standalone.timer.TimerUtils;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class NotificationSendPayLoad implements INotificationEngine {
     }
 
     public void setPayLoad(Double payLoad) {
-        this.payload = NumericUtils.getDoubleAsString(payLoad);
+        this.payload = MycUtils.getDoubleAsString(payLoad);
     }
 
     public String getString() {
@@ -112,6 +113,10 @@ public class NotificationSendPayLoad implements INotificationEngine {
             );
             SchedulerUtils.loadTimerJob(timerSimple.getTimer());//Adding a job to send payload with specified delay
         }
+
+        //Update last execution
+        notification.setLastExecution(System.currentTimeMillis());
+        DaoUtils.getNotificationDao().update(notification);
         _logger.debug("Executed 'Send payload' notification, AlarmDefinition:[{}]", this.alarmDefinition);
     }
 }

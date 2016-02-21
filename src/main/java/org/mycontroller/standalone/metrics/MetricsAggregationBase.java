@@ -17,7 +17,7 @@ package org.mycontroller.standalone.metrics;
 
 import java.util.List;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -116,9 +116,9 @@ public class MetricsAggregationBase {
                 MetricsDoubleTypeDevice metric = MetricsDoubleTypeDevice.builder()
                         .aggregationType(aggregationType)
                         .sensorVariable(sensorVariable.getSensorVariable())
-                        .min(NumericUtils.round(min, NumericUtils.DOUBLE_ROUND))
-                        .max(NumericUtils.round(max, NumericUtils.DOUBLE_ROUND))
-                        .avg(NumericUtils.round(avg, NumericUtils.DOUBLE_ROUND))
+                        .min(MycUtils.round(min, MycUtils.DOUBLE_ROUND))
+                        .max(MycUtils.round(max, MycUtils.DOUBLE_ROUND))
+                        .avg(MycUtils.round(avg, MycUtils.DOUBLE_ROUND))
                         .samples(samples)
                         .timestamp(toTimestamp)
                         .build();
@@ -199,9 +199,9 @@ public class MetricsAggregationBase {
                 MetricsBatteryUsage metric = MetricsBatteryUsage.builder()
                         .aggregationType(aggregationType)
                         .node(node.getNode())
-                        .min(NumericUtils.round(min, NumericUtils.DOUBLE_ROUND))
-                        .max(NumericUtils.round(max, NumericUtils.DOUBLE_ROUND))
-                        .avg(NumericUtils.round(avg, NumericUtils.DOUBLE_ROUND))
+                        .min(MycUtils.round(min, MycUtils.DOUBLE_ROUND))
+                        .max(MycUtils.round(max, MycUtils.DOUBLE_ROUND))
+                        .avg(MycUtils.round(avg, MycUtils.DOUBLE_ROUND))
                         .samples(samples)
                         .timestamp(toTimestamp)
                         .build();

@@ -90,7 +90,9 @@
             </td>
             <td>{{item.name}}</td>
             <td>{{item.description}}</td>
-            <td>{{item.stateSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</td>
+            <td>
+              <span uib-tooltip="{{item.stateSince.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.stateSince.inString  || 'Never'}}</span>
+            </td>
             <td class="mc-align-center">
               <a class="btn btn-link" ui-sref="resourcesGroupMapList({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-placement="top"></i></a>
             </td>

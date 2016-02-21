@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,8 +43,8 @@ public class MySensorsSettings {
     public static MySensorsSettings get() {
         return MySensorsSettings
                 .builder()
-                .defaultFirmware(NumericUtils.getInteger(getValue(SKEY_DEFAULT_FIRMWARE)))
-                .enbaledDefaultOnNoFirmware(NumericUtils.getBoolean(getValue(SKEY_ENABLE_DEFAULT_ON_NO_FIRMWARE)))
+                .defaultFirmware(MycUtils.getInteger(getValue(SKEY_DEFAULT_FIRMWARE)))
+                .enbaledDefaultOnNoFirmware(MycUtils.getBoolean(getValue(SKEY_ENABLE_DEFAULT_ON_NO_FIRMWARE)))
                 .build();
     }
 

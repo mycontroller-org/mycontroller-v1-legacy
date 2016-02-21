@@ -18,7 +18,7 @@ package org.mycontroller.standalone.settings;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.User;
@@ -63,7 +63,7 @@ public class DashboardSettings {
         if (title == null) {
             title = "Default dashboard";
         }
-        String name = NumericUtils.getRandomAlphanumeric(5) + "_" + System.currentTimeMillis();
+        String name = MycUtils.getRandomAlphanumeric(5) + "_" + System.currentTimeMillis();
 
         Dashboard dashboard = Dashboard.builder()
                 .userId(user.getId())

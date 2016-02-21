@@ -97,7 +97,9 @@
             <td>{{item.dampeningString}}</td>
             <!-- <td ng-bind-html="item.notificationString | mcResourceRepresentation"></td> -->
             <td>{{item.notifications.join(', ')}}</td>
-            <td>{{item.lastTrigger | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</td>
+            <td>
+              <span uib-tooltip="{{item.lastTrigger.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.lastTrigger.inString  || 'Never'}}</span>
+            </td>
           </tr>
         </tbody>
       </table>

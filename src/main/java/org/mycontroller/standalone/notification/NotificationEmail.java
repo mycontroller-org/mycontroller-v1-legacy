@@ -26,6 +26,7 @@ import org.apache.commons.mail.EmailException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.alarm.AlarmUtils;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.email.EmailUtils;
@@ -138,5 +139,9 @@ public class NotificationEmail implements INotificationEngine {
         } catch (EmailException ex) {
             _logger.error("Error on sending email, ", ex);
         }
+
+        //Update last execution
+        notification.setLastExecution(System.currentTimeMillis());
+        DaoUtils.getNotificationDao().update(notification);
     }
 }

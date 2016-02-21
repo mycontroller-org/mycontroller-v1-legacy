@@ -18,7 +18,7 @@ package org.mycontroller.standalone.db.tables;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.db.DB_TABLES;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -87,7 +87,7 @@ public class Node {
     private String otherData;
 
     public Integer getEuiInt() {
-        return NumericUtils.getInteger(eui);
+        return MycUtils.getInteger(eui);
     }
 
 }

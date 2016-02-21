@@ -93,7 +93,9 @@
             <td>{{item.payloadFormatted}}</td>
             <td>{{item.timerDataString}}</td>
             <td>{{item.validityString}}</td>
-            <td>{{item.lastFired | date: mchelper.cfg.dateFormat : mchelper.cfg.timezone}}</td>
+            <td>
+              <span uib-tooltip="{{item.lastFire.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.lastFire.inString  || 'Never'}}</span>
+            </td>
           </tr>
         </tbody>
       </table>

@@ -17,7 +17,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
 
 import java.io.IOException;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,7 +35,7 @@ public class LastSeenSerializer extends JsonSerializer<Long> {
             throws IOException, JsonProcessingException {
         if (timestamp != null) {
             jgen.writeStartObject();
-            provider.defaultSerializeField("inString", NumericUtils.getDifferenceFriendlyTime(timestamp), jgen);
+            provider.defaultSerializeField("inString", MycUtils.getDifferenceFriendlyTime(timestamp), jgen);
             provider.defaultSerializeField("timestamp", timestamp, jgen);
             jgen.writeEndObject();
         } else {

@@ -17,7 +17,7 @@ package org.mycontroller.standalone.alarm;
 
 import java.util.List;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
@@ -195,7 +195,7 @@ public class AlarmUtils {
             case ACTIVE_TIME:
                 DampeningActiveTime dampeningActiveTime = new DampeningActiveTime(alarmDefinition);
                 builder.append(": ").append(
-                        dampeningActiveTime.getActiveTime() != 0 ? NumericUtils.getFriendlyTime(
+                        dampeningActiveTime.getActiveTime() != 0 ? MycUtils.getFriendlyTime(
                                 dampeningActiveTime.getActiveTime(), true) : "-");
                 break;
             default:
@@ -257,17 +257,17 @@ public class AlarmUtils {
                 break;
             case SENSOR_VARIABLE:
                 ResourceModel resourceModel = new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE,
-                        NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
+                        MycUtils.getInteger(alarmDefinition.getThresholdValue()));
                 builder.append(resourceModel.getResourceLessDetails());
                 break;
             case GATEWAY_STATE:
                 resourceModel = new ResourceModel(RESOURCE_TYPE.GATEWAY,
-                        NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
+                        MycUtils.getInteger(alarmDefinition.getThresholdValue()));
                 builder.append(resourceModel.getResourceLessDetails());
                 break;
             case NODE_STATE:
                 resourceModel = new ResourceModel(RESOURCE_TYPE.NODE,
-                        NumericUtils.getInteger(alarmDefinition.getThresholdValue()));
+                        MycUtils.getInteger(alarmDefinition.getThresholdValue()));
                 builder.append(resourceModel.getResourceLessDetails());
                 break;
             default:

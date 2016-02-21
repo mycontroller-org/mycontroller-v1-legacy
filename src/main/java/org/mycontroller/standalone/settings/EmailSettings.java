@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,9 +51,9 @@ public class EmailSettings {
 
     public static EmailSettings get() {
         return EmailSettings.builder().smtpHost(getValue(SKEY_SMTP_HOST))
-                .smtpPort(NumericUtils.getInteger(getValue(SKEY_SMTP_PORT)))
+                .smtpPort(MycUtils.getInteger(getValue(SKEY_SMTP_PORT)))
                 .fromAddress(getValue(SKEY_FROM_ADDRESS))
-                .enableSsl(NumericUtils.getBoolean(getValue(SKEY_ENABLE_SSL)))
+                .enableSsl(MycUtils.getBoolean(getValue(SKEY_ENABLE_SSL)))
                 .smtpUsername(getValue(SKEY_SMTP_USERNAME))
                 .smtpPassword(getValue(SKEY_SMTP_PASSWORD)).build();
     }

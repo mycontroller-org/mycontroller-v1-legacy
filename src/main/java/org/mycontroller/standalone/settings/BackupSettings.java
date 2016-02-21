@@ -18,7 +18,7 @@ package org.mycontroller.standalone.settings;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.NumericUtils;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.jobs.SystemBackupJob;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
@@ -87,10 +87,10 @@ public class BackupSettings {
 
     public static BackupSettings get() {
         return BackupSettings.builder()
-                .enabled(NumericUtils.getBoolean(getValue(SKEY_ENABLED)))
+                .enabled(MycUtils.getBoolean(getValue(SKEY_ENABLED)))
                 .prefix(getValue(SKEY_PREFIX))
-                .interval(NumericUtils.getLong(getValue(SKEY_INTERVAL)))
-                .retainMax(NumericUtils.getInteger(getValue(SKEY_RETAIN_MAX)))
+                .interval(MycUtils.getLong(getValue(SKEY_INTERVAL)))
+                .retainMax(MycUtils.getInteger(getValue(SKEY_RETAIN_MAX)))
                 .backupLocation(getValue(SKEY_BACKUP_LOCATION))
                 .build();
     }

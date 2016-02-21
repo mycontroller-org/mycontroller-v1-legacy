@@ -16,17 +16,19 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.FrequencyTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ResourceTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.TimerTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.FrequencyTypeSerializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.LastSeenSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ResourceTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.TimerTypeSerializer;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -34,8 +36,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@JsonIgnoreProperties({ "internalVariable1" })
+@JsonIgnoreProperties({ "internalVariable1", "targetClass" })
 abstract class TimerMixin {
+
+    @JsonIgnore
+    private Long lastFire;
 
     @JsonSerialize(using = ResourceTypeSerializer.class)
     abstract public String getResourceType();
@@ -55,4 +60,10 @@ abstract class TimerMixin {
     @JsonDeserialize(using = FrequencyTypeDeserializer.class)
     abstract public void setFrequencyType(FREQUENCY_TYPE frequencyType);
 
+    @JsonProperty("lastFire")
+    @JsonSerialize(using = LastSeenSerializer.class)
+    abstract public String getLastFire();
+
+    @JsonIgnore
+    abstract public void setLastFire(Long lastFire);
 }
