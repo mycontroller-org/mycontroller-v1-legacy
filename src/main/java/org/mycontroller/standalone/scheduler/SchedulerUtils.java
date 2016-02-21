@@ -151,7 +151,12 @@ public class SchedulerUtils {
         //Check Valid To, if available 
         if (timer.getValidityTo() != null) {
             if (timer.getValidityTo() <= System.currentTimeMillis()) {
-                _logger.warn("This timer job expired! Timer:[{}]", timer);
+                _logger.warn("This timer expired! Timer:[{}]", timer);
+                if (timer.getId() != null) {
+                    _logger.warn("Disabling this timer now. Timer name:", timer.getName());
+                    timer.setEnabled(false);
+                    DaoUtils.getTimerDao().update(timer);
+                }
                 return;
             }
         }
@@ -222,7 +227,8 @@ public class SchedulerUtils {
 
         //Check Valid from, if available and active,
         //Change valid from as future seconds to avoid immediate trigger
-        if (timer.getValidityFrom() != null) {
+        //For simple job validity from should from current time + interval
+        if (TIMER_TYPE.SIMPLE != timer.getTimerType() && timer.getValidityFrom() != null) {
             if (timer.getValidityFrom() <= System.currentTimeMillis()) {
                 timer.setValidityFrom(System.currentTimeMillis() + FROM_TIME_DELAY);
             }
@@ -239,7 +245,7 @@ public class SchedulerUtils {
                         timer.getValidityFrom() != null ? new Date(timer.getValidityFrom()) :
                                 new Date(System.currentTimeMillis() + timerSimple.getRepeatInterval()),
                         timer.getValidityTo() != null ? new Date(timer.getValidityTo()) : null);
-                _logger.debug("New simple timer job added:[{}], CornExpression:[{}]", timer, cronExpression);
+                _logger.debug("New simple timer job added:[{}], simple timer:[{}]", timer, timerSimple);
             } else {
                 _logger.warn("Invalid timer job:[{}]", timer);
             }

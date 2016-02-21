@@ -25,6 +25,7 @@ import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.group.ResourcesGroupUtils;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerSimple;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
@@ -48,6 +49,12 @@ public class TimerJob extends Job {
                 TimerSimple timerSimple = new TimerSimple(timer);
                 timerSimple.incrementExecutedCount();
                 timerSimple.update();
+            }
+        } else if (timer.getTimerType() == TIMER_TYPE.SIMPLE) {
+            TimerSimple timerSimple = new TimerSimple(timer);
+            //Do not allow to run than one time, if it's repeat count set to 1
+            if (timerSimple.getRepeatCount() == 1) {
+                SchedulerUtils.unloadTimerJob(timer);
             }
         }
 

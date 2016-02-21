@@ -57,8 +57,8 @@ public class TimerSimple {
         this.timer.setResourceType(resourceType);
         this.timer.setResourceId(resourceId);
         this.timer.setPayload(payload);
-        this.repeatCount = repeatCount;
         this.repeatInterval = repeatInterval;
+        this.repeatCount = repeatCount;
         this.timer.setFrequencyData(this.repeatInterval + VALUE_SPLITTER + this.repeatCount);
     }
 
