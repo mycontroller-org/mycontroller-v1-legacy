@@ -32,8 +32,6 @@ import org.mycontroller.standalone.db.tables.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.j256.ormlite.dao.Dao;
-
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
@@ -127,14 +125,8 @@ public class V1_01_02__SNAPSHOT extends MigrationBase implements JdbcMigration {
 
         //Migration #3
         String oldColumnName = "lastFired";
-        if (DaoUtils.getTimerDao().getTableInfo().hasColumnName(oldColumnName)) {
-            Dao<Timer, Integer> timerDao = DaoUtils.getTimerDao().getDao();
-            sqlQuery.setLength(0);
-            //build SQL query
-            sqlQuery.append("ALTER TABLE ").append(DB_TABLES.TIMER).append(" ALTER ").append(oldColumnName)
-                    .append(" RENAME TO ").append(Timer.KEY_LAST_FIRE).append(";");
-            int alterCount = timerDao.executeRaw(sqlQuery.toString());
-            _logger.debug("Alter count:{}", alterCount);
+        if (hasColumn(DB_TABLES.TIMER, oldColumnName)) {
+            renameColumn(DB_TABLES.TIMER, oldColumnName, Timer.KEY_LAST_FIRE);
         }
 
         //Migration #4

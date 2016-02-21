@@ -55,4 +55,17 @@ public class MigrationBase {
                 "ALTER TABLE " + tableName.toUpperCase() + " DROP COLUMN IF EXISTS " + columnName.toUpperCase());
         _logger.debug("Droupped column:{}, Table:{}, Drop count:{}", columnName, tableName, dropCount);
     }
+
+    protected void renameColumn(String tableName, String oldColumnName, String newColumnName) throws SQLException {
+        if (hasColumn(tableName, oldColumnName)){
+            int dropCount = DaoUtils.getUserDao().getDao().executeRaw(
+                    "ALTER TABLE " + tableName.toUpperCase() + " ALTER COLUMN " + oldColumnName.toUpperCase()
+                            + " RENAME TO " + newColumnName.toUpperCase());
+            _logger.debug("Renamed OldColumn:{}, NewColumn:{}, Table:{}, Drop count:{}", oldColumnName, newColumnName,
+                    tableName, dropCount);
+        }else{
+            _logger.warn("Slected column[{}] not found! Table:{}",oldColumnName,tableName);
+        }
+       
+    }
 }
