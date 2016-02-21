@@ -145,7 +145,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
 
     modalInstance.result.then(function () {
       TimersFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('ITEMS_DELETED_SUCCESSFULLY');
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -163,7 +163,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
       TimersFactory.enableIds($scope.itemIds, function(response) {
-        alertService.success('ITEMS_ENABLED_SUCCESSFULLY');
+        alertService.success($filter('translate')('ITEMS_ENABLED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -177,7 +177,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
       TimersFactory.disableIds($scope.itemIds, function(response) {
-        alertService.success('ITEMS_DISABLED_SUCCESSFULLY');
+        alertService.success($filter('translate')('ITEMS_DISABLED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];

@@ -326,6 +326,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Limpieza finalizada correctamente",
     "PURGE_RESOURCES_LOGS": "Limpiar registro de recursos",
     "PURGE_WARNING": "ATENCIÓN: Si no seleccionas ningún parámetro, este proceso eliminará todo!",
+    "PURGING": "Purging",
     "REBOOT": "Reiniciar",
     "REBOOT_CONFIRMATION_MESSAGE": "Estás por reiniciar lo items seleccionado<br>Presiona 'Reiniciar' para proceder.",
     "REBOOT_CONFIRMATION_TITLE": "Reiniciar",

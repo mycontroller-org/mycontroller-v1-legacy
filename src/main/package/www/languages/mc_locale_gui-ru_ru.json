@@ -326,6 +326,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Очистка успешно завершена.",
     "PURGE_RESOURCES_LOGS": "Журналы производительности",
     "PURGE_WARNING": "ВНИМАНИЕ: Если вы не выбрать ни один параметр, этот процесс удалит все!",
+    "PURGING": "Purging",
     "REBOOT": "Перезагрузка",
     "REBOOT_CONFIRMATION_MESSAGE": "Вы собираетесь перезагрузить выбранные элементы <br> Нажмите \"Reboot\", чтобы продолжить",
     "REBOOT_CONFIRMATION_TITLE": "Перезагрузка",

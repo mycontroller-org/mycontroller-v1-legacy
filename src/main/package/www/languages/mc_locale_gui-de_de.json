@@ -326,6 +326,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Purge completed successfully.",
     "PURGE_RESOURCES_LOGS": "Purge resources logs",
     "PURGE_WARNING": "WARNING: If you don't select any parameter, This process will delete everything!",
+    "PURGING": "Purging",
     "REBOOT": "Neustart",
     "REBOOT_CONFIRMATION_MESSAGE": "You are about to reboot selected items<br>Click 'Reboot' to proceed.",
     "REBOOT_CONFIRMATION_TITLE": "Neustart",
