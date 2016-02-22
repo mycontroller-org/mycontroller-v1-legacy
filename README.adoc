@@ -25,8 +25,8 @@ Primarly this project started to support http://www.mysensors.org/[MySensors]. B
 MyController.org supports multiple languages. If you have interest to add/translate your native language for MyController.org send a request on https://www.transifex.com
 
 ====== For localization Contribute to the Transifex Project
-===== https://www.transifex.com/mycontrollerorg/gui-angularjs/[Web GUI Project]
-===== https://www.transifex.com/mycontrollerorg/core-java/[Core Java]
+* https://www.transifex.com/mycontrollerorg/gui-angularjs/[Web GUI Project]
+* https://www.transifex.com/mycontrollerorg/core-java/[Core Java]
 
 == System Requirement
 
