@@ -48,6 +48,7 @@ public class About {
     private String timeFormatSet;
     private String loginMessage;
     private Long globalPageRefreshTime;
+    private Integer dashboardLimit;
 
     public About() {
         Date date = new Date();
@@ -67,5 +68,6 @@ public class About {
         this.timeFormatSet = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
         this.globalPageRefreshTime = ObjectFactory.getAppProperties().getControllerSettings()
                 .getGlobalPageRefreshTime();
+        this.dashboardLimit = ObjectFactory.getAppProperties().getControllerSettings().getDashboardLimit();
     }
 }

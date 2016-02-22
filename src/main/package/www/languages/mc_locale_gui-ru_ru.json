@@ -78,6 +78,7 @@
     "DAEMON": "Демон",
     "DAMPENING": "Усреднить",
     "DASHBOARDS": "Панель управления",
+    "DASHBOARD_LIMIT": "Maximum dashboards allowed",
     "DATABASE_VERSION": "Версия базы",
     "DATA_UNAVAILABLE": "Недоступные данные!",
     "DATE_PATTERN": "Образец даты",

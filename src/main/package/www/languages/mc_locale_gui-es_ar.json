@@ -78,6 +78,7 @@
     "DAEMON": "Demonio",
     "DAMPENING": "Dampening",
     "DASHBOARDS": "Tableros",
+    "DASHBOARD_LIMIT": "Maximum dashboards allowed",
     "DATABASE_VERSION": "Versión de base de datos",
     "DATA_UNAVAILABLE": "Datos no disponibles!",
     "DATE_PATTERN": "Patrón de datos",

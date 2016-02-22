@@ -78,6 +78,7 @@
     "DAEMON": "Dämon",
     "DAMPENING": "Befeuchtung",
     "DASHBOARDS": "Dashboards",
+    "DASHBOARD_LIMIT": "Maximum dashboards allowed",
     "DATABASE_VERSION": "Datenbankversion",
     "DATA_UNAVAILABLE": "Data unavailable!",
     "DATE_PATTERN": "Date pattern",

@@ -19,6 +19,7 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
   $scope.dashboards ={};
   $scope.showLoading = false;
   $scope.showLoadingMain = false;
+  $scope.mchelper = mchelper;
   
   $scope.updateDashboard = function(){
     DashboardFactory.getAll({'lessInfo':true}, function(responseDashboards){
@@ -55,7 +56,7 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
   };
   
   $scope.createNewDashboad = function(){
-    if($scope.dashboards.length < 5){
+    if($scope.dashboards.length < mchelper.cfg.dashboardLimit){
       DashboardFactory.get({'getNew':true,'title':$filter('translate')('NEW_DASHBOARD')},function(response){
         //Update items
         $scope.updateDashboard();

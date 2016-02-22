@@ -46,6 +46,7 @@ public class MyControllerSettings {
     public static final String SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES = "grantAccessToChildResources";
     public static final String SKEY_RESOURCES_LOG_LEVEL = "resourcesLogLevel";
     public static final String SKEY_GLOBAL_PAGE_REFRESH_TIME = "globalPageRefreshTime";
+    public static final String SKEY_DASHBOARD_LIMIT = "dashboardLimit";
 
     private String language;
     private String timeFormat;
@@ -57,6 +58,7 @@ public class MyControllerSettings {
     private Boolean grantAccessToChildResources;
     private String resourcesLogLevel;
     private Long globalPageRefreshTime;
+    private Integer dashboardLimit;
 
     public static MyControllerSettings get() {
         return MyControllerSettings.builder()
@@ -70,6 +72,7 @@ public class MyControllerSettings {
                 .grantAccessToChildResources(MycUtils.getBoolean(getValue(SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES)))
                 .resourcesLogLevel(getValue(SKEY_RESOURCES_LOG_LEVEL))
                 .globalPageRefreshTime(MycUtils.getLong(getValue(SKEY_GLOBAL_PAGE_REFRESH_TIME)))
+                .dashboardLimit(MycUtils.getInteger(getValue(SKEY_DASHBOARD_LIMIT)))
                 .build();
     }
 
@@ -95,9 +98,11 @@ public class MyControllerSettings {
         if (resourcesLogLevel != null) {
             updateValue(SKEY_RESOURCES_LOG_LEVEL, resourcesLogLevel);
         }
-
         if (globalPageRefreshTime != null) {
             updateValue(SKEY_GLOBAL_PAGE_REFRESH_TIME, globalPageRefreshTime);
+        }
+        if (dashboardLimit != null) {
+            updateValue(SKEY_DASHBOARD_LIMIT, dashboardLimit);
         }
     }
 

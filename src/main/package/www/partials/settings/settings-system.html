@@ -99,6 +99,19 @@
               </div>
             </div>
             
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'DASHBOARD_LIMIT' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{controllerSettings.dashboardLimit}}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="controllerSettings.dashboardLimit" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'GLOBAL_PAGE_REFRESH_TIME' | translate }}</label>
