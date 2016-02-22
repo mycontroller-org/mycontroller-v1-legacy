@@ -20,7 +20,8 @@ import java.util.Properties;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
-import org.mycontroller.standalone.settings.MetricsSettings;
+import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
@@ -64,7 +65,8 @@ public class AppProperties {
     SmsSettings smsSettings;
     UnitsSettings unitsSettings;
     LocationSettings locationSettings;
-    MetricsSettings metricsSettings;
+    MetricsGraphSettings metricsGraphSettings;
+    MetricsDataRetentionSettings metricsDataRetentionSettings;
     BackupSettings backupSettings;
 
     public enum MC_LANGUAGE {
@@ -379,7 +381,8 @@ public class AppProperties {
         emailSettings = EmailSettings.get();
         smsSettings = SmsSettings.get();
         unitsSettings = UnitsSettings.get();
-        metricsSettings = MetricsSettings.get();
+        metricsGraphSettings = MetricsGraphSettings.get();
+        metricsDataRetentionSettings = MetricsDataRetentionSettings.get();
         backupSettings = BackupSettings.get();
     }
 
@@ -514,12 +517,8 @@ public class AppProperties {
         return locationSettings;
     }
 
-    public MetricsSettings getMetricsSettings() {
-        return metricsSettings;
-    }
-
-    public void setMetricsSettings(MetricsSettings metricsSettings) {
-        this.metricsSettings = metricsSettings;
+    public MetricsGraphSettings getMetricsGraphSettings() {
+        return metricsGraphSettings;
     }
 
     public void setLocationSettings(LocationSettings locationSettings) {
@@ -532,6 +531,14 @@ public class AppProperties {
 
     public void setBackupSettings(BackupSettings backupSettings) {
         this.backupSettings = backupSettings;
+    }
+
+    public MetricsDataRetentionSettings getMetricsDataRetentionSettings() {
+        return metricsDataRetentionSettings;
+    }
+
+    public void setMetricsDataRetentionSettings(MetricsDataRetentionSettings metricsDataRetentionSettings) {
+        this.metricsDataRetentionSettings = metricsDataRetentionSettings;
     }
 
 }

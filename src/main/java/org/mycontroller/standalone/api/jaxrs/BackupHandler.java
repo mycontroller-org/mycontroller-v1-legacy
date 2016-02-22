@@ -58,25 +58,31 @@ public class BackupHandler {
     @GET
     @Path("/backupList")
     public Response getBackupList() {
-        String[] filter = { "zip" };
-        Collection<File> zipFiles = FileUtils.listFiles(
-                FileUtils.getFile(ObjectFactory.getAppProperties().getBackupSettings().getBackupLocation()),
-                filter, true);
-        List<BackupFile> backupFiles = new ArrayList<BackupFile>();
-        for (File zipFile : zipFiles) {
-            backupFiles.add(BackupFile.builder()
-                    .name(zipFile.getName())
-                    .size(zipFile.length())
-                    .timestamp(zipFile.lastModified())
-                    .absolutePath(zipFile.getAbsolutePath())
-                    .build()
+        try {
+            String[] filter = { "zip" };
+            Collection<File> zipFiles = FileUtils.listFiles(
+                    FileUtils.getFile(ObjectFactory.getAppProperties().getBackupSettings().getBackupLocation()),
+                    filter, true);
+            List<BackupFile> backupFiles = new ArrayList<BackupFile>();
+            for (File zipFile : zipFiles) {
+                if (zipFile.getName().contains(BackupRestore.FILE_NAME_IDENTITY)) {
+                    backupFiles.add(BackupFile.builder()
+                            .name(zipFile.getName())
+                            .size(zipFile.length())
+                            .timestamp(zipFile.lastModified())
+                            .absolutePath(zipFile.getAbsolutePath())
+                            .build());
+                }
 
-                    );
-
+            }
+            //Do order reverse
+            Collections.sort(backupFiles, Collections.reverseOrder());
+            return RestUtils.getResponse(Status.OK, backupFiles);
+        } catch (Exception ex) {
+            _logger.error("Error,", ex);
+            return RestUtils.getResponse(Status.INTERNAL_SERVER_ERROR, new ApiError(ex.getMessage()));
         }
-        //Do order reverse
-        Collections.sort(backupFiles, Collections.reverseOrder());
-        return RestUtils.getResponse(Status.OK, backupFiles);
+
     }
 
     @GET

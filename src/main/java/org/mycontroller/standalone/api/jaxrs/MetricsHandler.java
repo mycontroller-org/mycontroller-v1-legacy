@@ -48,7 +48,7 @@ import org.mycontroller.standalone.metrics.MetricsCsvEngine;
 import org.mycontroller.standalone.model.ResourceCountModel;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.settings.MetricsGraph;
-import org.mycontroller.standalone.settings.MetricsSettings;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
 import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
 
 /**
@@ -205,7 +205,7 @@ public class MetricsHandler extends AccessEngine {
             }
 
         }
-        MetricsGraph metricBattery = ObjectFactory.getAppProperties().getMetricsSettings().getBattery();
+        MetricsGraph metricBattery = ObjectFactory.getAppProperties().getMetricsGraphSettings().getBattery();
         preDoubleData.add(MetricsChartDataNVD3.builder()
                 .key(AVERAGE)
                 .values(avgMetricValues)
@@ -255,7 +255,7 @@ public class MetricsHandler extends AccessEngine {
             return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
-        MetricsSettings metricsSettings = ObjectFactory.getAppProperties().getMetricsSettings();
+        MetricsGraphSettings metricsGraphSettings = ObjectFactory.getAppProperties().getMetricsGraphSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         SensorVariable yaxis1Variable = null;
@@ -270,7 +270,7 @@ public class MetricsHandler extends AccessEngine {
         boolean isMultiChart = false;
 
         for (SensorVariable sensorVariable : sensorVariables) {
-            MetricsGraph metrics = metricsSettings.getMetric(sensorVariable.getVariableType().getText());
+            MetricsGraph metrics = metricsGraphSettings.getMetric(sensorVariable.getVariableType().getText());
             //Load initial settings
             if (!initialLoadDone) {
                 if (CHART_TYPE.MULTI_CHART == CHART_TYPE.fromString(chartType)) {
@@ -415,11 +415,11 @@ public class MetricsHandler extends AccessEngine {
             return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
-        MetricsSettings metricsSettings = ObjectFactory.getAppProperties().getMetricsSettings();
+        MetricsGraphSettings metricsGraphSettings = ObjectFactory.getAppProperties().getMetricsGraphSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         for (SensorVariable sensorVariable : sensorVariables) {
-            MetricsGraph metrics = metricsSettings.getMetric(sensorVariable.getVariableType().getText());
+            MetricsGraph metrics = metricsGraphSettings.getMetric(sensorVariable.getVariableType().getText());
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
                     ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();

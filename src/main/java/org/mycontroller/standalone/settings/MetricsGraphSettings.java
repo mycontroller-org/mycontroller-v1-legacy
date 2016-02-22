@@ -22,8 +22,6 @@ import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.db.tables.Settings;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 import lombok.AllArgsConstructor;
@@ -40,27 +38,12 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MetricsSettings {
+public class MetricsGraphSettings {
     public static final String KEY_METRICS = "metrics";
-    public static final String SKEY_LAST_AGGREGATION_RAW_DATA = "lastAggregationRawData";
-    public static final String SKEY_LAST_AGGREGATION_ONE_MINUTE = "lastAggregationOneMinute";
-    public static final String SKEY_LAST_AGGREGATION_FIVE_MINUTES = "lastAggregationFiveMinutes";
-    public static final String SKEY_LAST_AGGREGATION_ONE_HOUR = "lastAggregationOneHour";
-    public static final String SKEY_LAST_AGGREGATION_SIX_HOURS = "lastAggregationSixHours";
-    public static final String SKEY_LAST_AGGREGATION_TWELVE_HOURS = "lastAggregationTwelveHours";
-    public static final String SKEY_LAST_AGGREGATION_ONE_DAY = "lastAggregationOneDay";
 
     public static final String SKEY_ENABLED_MIN_MAX = "enabledMinMax";
     public static final String SKEY_DEFAULT_TIME_RANGE = "defaultTimeRange";
     public static final String SKEY_BATTERY = "battery";
-
-    private Long lastAggregationRawData;
-    private Long lastAggregationOneMinute;
-    private Long lastAggregationFiveMinutes;
-    private Long lastAggregationOneHour;
-    private Long lastAggregationSixHours;
-    private Long lastAggregationTwelveHours;
-    private Long lastAggregationOneDay;
 
     private Boolean enabledMinMax;
     private Long defaultTimeRange;
@@ -68,19 +51,12 @@ public class MetricsSettings {
 
     private List<MetricsGraph> metrics;
 
-    public static MetricsSettings get() {
+    public static MetricsGraphSettings get() {
         ArrayList<MetricsGraph> metrics = new ArrayList<MetricsGraph>();
         for (MESSAGE_TYPE_SET_REQ sVariable : MetricsGraph.variables) {
             metrics.add(getMetricsGraph(sVariable.getText()));
         }
-        return MetricsSettings.builder()
-                .lastAggregationRawData(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_RAW_DATA)))
-                .lastAggregationOneMinute(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_MINUTE)))
-                .lastAggregationFiveMinutes(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_FIVE_MINUTES)))
-                .lastAggregationOneHour(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_HOUR)))
-                .lastAggregationSixHours(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_SIX_HOURS)))
-                .lastAggregationTwelveHours(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_TWELVE_HOURS)))
-                .lastAggregationOneDay(MycUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_DAY)))
+        return MetricsGraphSettings.builder()
                 .metrics(metrics)
                 .battery(getMetricsGraph(SKEY_BATTERY))
                 .enabledMinMax(MycUtils.getBoolean(getValue(SKEY_ENABLED_MIN_MAX)))
@@ -112,31 +88,6 @@ public class MetricsSettings {
             }
         }
         return null;
-    }
-
-    @JsonIgnore
-    public void updateInternal() {
-        if (lastAggregationRawData != null) {
-            updateValue(SKEY_LAST_AGGREGATION_RAW_DATA, lastAggregationRawData);
-        }
-        if (lastAggregationOneMinute != null) {
-            updateValue(SKEY_LAST_AGGREGATION_ONE_MINUTE, lastAggregationOneMinute);
-        }
-        if (lastAggregationFiveMinutes != null) {
-            updateValue(SKEY_LAST_AGGREGATION_FIVE_MINUTES, lastAggregationFiveMinutes);
-        }
-        if (lastAggregationOneHour != null) {
-            updateValue(SKEY_LAST_AGGREGATION_ONE_HOUR, lastAggregationOneHour);
-        }
-        if (lastAggregationSixHours != null) {
-            updateValue(SKEY_LAST_AGGREGATION_SIX_HOURS, lastAggregationSixHours);
-        }
-        if (lastAggregationTwelveHours != null) {
-            updateValue(SKEY_LAST_AGGREGATION_TWELVE_HOURS, lastAggregationTwelveHours);
-        }
-        if (lastAggregationOneDay != null) {
-            updateValue(SKEY_LAST_AGGREGATION_ONE_DAY, lastAggregationOneDay);
-        }
     }
 
     private static String getValue(String subKey) {

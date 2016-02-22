@@ -28,6 +28,7 @@ public class MetricsUtils {
     public static final long ONE_HOUR_MAX_RETAIN_TIME = TIME_REF.ONE_DAY * 30;      // 30 days
     public static final long SIX_HOURS_MAX_RETAIN_TIME = TIME_REF.ONE_DAY * 90;      // 90 days
     public static final long TWELVE_HOURS_MAX_RETAIN_TIME = TIME_REF.ONE_DAY * 180;  // 180 days
+    public static final long ONE_DAY_MAX_RETAIN_TIME = TIME_REF.ONE_YEAR * 5;  // 5 years
 
     public static final long MILLISECONDS_2015 = 1420050600000l;
 

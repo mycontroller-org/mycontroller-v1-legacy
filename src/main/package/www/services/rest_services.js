@@ -308,8 +308,10 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     getUnits: { method: 'GET', isArray: false, params: {type:'units'} },
     saveUnits: { method: 'POST', params: {type:'units'} },
     updateLanguage: { method: 'PUT', params: {type:'updateLanguage'} },
-    getMetrics: { method: 'GET', isArray: false, params: {type:'metrics'} },
-    saveMetrics: { method: 'POST', params: {type:'metrics'} },
+    getMetrics: { method: 'GET', isArray: false, params: {type:'metricsGraph'} },
+    saveMetrics: { method: 'POST', params: {type:'metricsGraph'} },
+    getMetricsRetention: { method: 'GET', isArray: false, params: {type:'metricsRetention'} },
+    saveMetricsRetention: { method: 'POST', params: {type:'metricsRetention'} },
     getUserSettings: { method: 'GET', isArray: false, params: {type:'userSettings'} },
     saveUserSettings: { method: 'POST', params: {type:'userSettings'} },
   })

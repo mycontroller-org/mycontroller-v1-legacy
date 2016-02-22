@@ -33,7 +33,8 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
-import org.mycontroller.standalone.settings.MetricsSettings;
+import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
@@ -190,15 +191,29 @@ public class SettingsHandler extends AccessEngine {
     }
 
     @GET
-    @Path("/metrics")
+    @Path("/metricsGraph")
     public Response getMetrics() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMetricsSettings());
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMetricsGraphSettings());
     }
 
     @POST
-    @Path("/metrics")
-    public Response saveMetrics(MetricsSettings metricsSettings) {
-        metricsSettings.save();
+    @Path("/metricsGraph")
+    public Response saveMetrics(MetricsGraphSettings metricsGraphSettings) {
+        metricsGraphSettings.save();
+        SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/metricsRetention")
+    public Response getMetricsRetention() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMetricsDataRetentionSettings());
+    }
+
+    @POST
+    @Path("/metricsRetention")
+    public Response saveMetricsRetention(MetricsDataRetentionSettings metricsDataRetentionSettings) {
+        metricsDataRetentionSettings.save();
         SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
     }

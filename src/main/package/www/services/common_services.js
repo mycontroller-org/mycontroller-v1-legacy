@@ -412,6 +412,34 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   };
   
+  //get friendly time
+  commonService.getTimestampJson = function(timestamp){
+    var timestampJson = {};
+    if(timestamp % 31536000000  == 0){
+      timestampJson.timestamp = timestamp / 31536000000;
+      timestampJson.timeConstant = "31536000000";
+      timestampJson.timeConstantString = $filter('translate')('YEARS');
+    }else if(timestamp % 86400000  == 0){
+      timestampJson.timestamp = timestamp / 86400000;
+      timestampJson.timeConstant = "86400000";
+      timestampJson.timeConstantString = $filter('translate')('DAYS');
+    }else if(timestamp % 3600000  == 0){
+      timestampJson.timestamp = timestamp / 3600000;
+      timestampJson.timeConstant = "3600000";
+      timestampJson.timeConstantString = $filter('translate')('Hours');
+    }else if(timestamp % 60000  == 0){
+      timestampJson.timestamp = timestamp / 60000;
+      timestampJson.timeConstant = "60000";
+      timestampJson.timeConstantString = $filter('translate')('Minutes');
+    }
+    return timestampJson;
+  };
+  
+  //get timestamp
+  commonService.getTimestamp = function(timestampJson){
+    return timestampJson.timeConstant * timestampJson.timestamp;
+  };
+  
  return commonService;
 
 });

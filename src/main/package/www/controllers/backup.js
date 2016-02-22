@@ -36,9 +36,11 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
       $scope.filterConfig.resultsCount = $scope.filteredList.length;
     },function(error){
       displayRestError.display(error);
+      $scope.orgList = {};
+      $scope.orgList.$resolved = true;
     });
   }
-  
+
   //Pre load
   $scope.getAllItems();
   $scope.itemName = null;

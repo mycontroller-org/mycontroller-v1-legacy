@@ -22,7 +22,7 @@ import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.settings.MetricsGraph;
-import org.mycontroller.standalone.settings.MetricsSettings;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,12 +61,12 @@ public class V1_01_01__SNAPSHOT extends MigrationBase implements JdbcMigration {
 
         //Migration #2
         String defaultSubType = "line";
-        MetricsSettings metricsSettings = MetricsSettings.get();
-        for (MetricsGraph metricsGraph : metricsSettings.getMetrics()) {
+        MetricsGraphSettings metricsGraphSettings = MetricsGraphSettings.get();
+        for (MetricsGraph metricsGraph : metricsGraphSettings.getMetrics()) {
             metricsGraph.setSubType(defaultSubType);
         }
-        metricsSettings.getBattery().setSubType(defaultSubType);
-        metricsSettings.save();
+        metricsGraphSettings.getBattery().setSubType(defaultSubType);
+        metricsGraphSettings.save();
 
         _logger.info("Migration completed successfully.");
     }

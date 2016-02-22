@@ -36,7 +36,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
-import org.mycontroller.standalone.settings.MetricsSettings;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -309,9 +309,9 @@ public class TypesHandler extends AccessEngine {
     @GET
     @Path("/metricsSettings")
     public Response getMetricsSettings() {
-        MetricsSettings metricsSettings = MetricsSettings.get();
-        metricsSettings.setMetrics(null);
-        return RestUtils.getResponse(Status.OK, metricsSettings);
+        MetricsGraphSettings metricsGraphSettings = MetricsGraphSettings.get();
+        metricsGraphSettings.setMetrics(null);
+        return RestUtils.getResponse(Status.OK, metricsGraphSettings);
     }
 
     //Notifications

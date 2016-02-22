@@ -106,6 +106,11 @@ public class BackupRestore {
             throw new BadRequestException("A backup or restore is running");
         }
 
+        if (!backupFile.getName().contains(FILE_NAME_IDENTITY)) {
+            throw new BadRequestException("backup file name should contain '" + FILE_NAME_IDENTITY + "'. Your input:"
+                    + backupFile.getName());
+        }
+
         isbackupRestoreRunning = true;
 
         String extractedLocation = ObjectFactory.getAppProperties().getTmpLocation()

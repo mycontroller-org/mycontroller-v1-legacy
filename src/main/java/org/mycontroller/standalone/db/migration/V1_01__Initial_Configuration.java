@@ -41,9 +41,10 @@ import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.metrics.jobs.MetricsAggregationJob;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
+import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
-import org.mycontroller.standalone.settings.MetricsSettings;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
@@ -70,7 +71,7 @@ public class V1_01__Initial_Configuration extends MigrationBase implements JdbcM
 
         //Load properties from database
         ObjectFactory.getAppProperties().loadPropertiesFromDb();*/
-        
+
         updateDao();
 
         // Metric or Imperial to sensors
@@ -133,7 +134,7 @@ public class V1_01__Initial_Configuration extends MigrationBase implements JdbcM
             }
         }
         MetricsGraph batteryGrapth = MetricsGraph.builder()
-                .metricName(MetricsSettings.SKEY_BATTERY)
+                .metricName(MetricsGraphSettings.SKEY_BATTERY)
                 .type(CHART_TYPE.LINE_CHART.getText())
                 .interpolate("linear")
                 .color("#ff7f0e")
@@ -141,7 +142,15 @@ public class V1_01__Initial_Configuration extends MigrationBase implements JdbcM
                 .build();
 
         //Update Metrics reference data
-        MetricsSettings metricsSettings = MetricsSettings.builder()
+        MetricsGraphSettings.builder()
+                .enabledMinMax(true)
+                .defaultTimeRange(TIME_REF.ONE_HOUR * 6)
+                .metrics(metrics)
+                .battery(batteryGrapth)
+                .build().save();
+
+        //Update Metrics retention data reference
+        MetricsDataRetentionSettings.builder()
                 .lastAggregationRawData(System.currentTimeMillis())
                 .lastAggregationOneMinute(System.currentTimeMillis())
                 .lastAggregationFiveMinutes(System.currentTimeMillis())
@@ -149,13 +158,7 @@ public class V1_01__Initial_Configuration extends MigrationBase implements JdbcM
                 .lastAggregationSixHours(System.currentTimeMillis())
                 .lastAggregationTwelveHours(System.currentTimeMillis())
                 .lastAggregationOneDay(System.currentTimeMillis())
-                .enabledMinMax(true)
-                .defaultTimeRange(TIME_REF.ONE_HOUR * 6)
-                .metrics(metrics)
-                .battery(batteryGrapth)
-                .build();
-        metricsSettings.updateInternal();
-        metricsSettings.save();
+                .build().updateInternal();
 
         //Update location settings
         LocationSettings.builder()
@@ -435,5 +438,4 @@ public class V1_01__Initial_Configuration extends MigrationBase implements JdbcM
 
         _logger.info("Migration completed successfully.");
     }
-
 }
