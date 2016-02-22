@@ -29,7 +29,7 @@ Primarly this project started to support http://www.mysensors.org/[MySensors]. B
 
 MyController.org is a very lightweight server, It required very less resource, believe me ;)
 
-  * Disk        : ~30 MB (can require more if you store metrics data for long time)
+  * Disk        : ~30 MB (may require more space, when we store metrics data for long time)
   * Memory(RAM) : 40 MB
   * Java        : 1.8 or later
 
