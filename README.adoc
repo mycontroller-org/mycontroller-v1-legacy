@@ -14,7 +14,7 @@ Master: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branch=mas
 Development: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branch=development["Build Status", link="https://travis-ci.org/mycontroller-org/mycontroller"]
 
 ====== Project website: http://www.mycontroller.org
-====== Want to try now? http://demo.mycontroller.org[Go to demo server]
+====== Want to try now? http://demo.mycontroller.org[Demo server] Authentication: demo/demo
 
 == About
 
