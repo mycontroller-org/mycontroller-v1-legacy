@@ -16,6 +16,7 @@
 package org.mycontroller.standalone;
 
 import java.util.HashMap;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
@@ -36,6 +37,7 @@ public class ObjectFactory {
     private static RawMessageQueue rawMessageQueue;
     private static HashMap<Integer, IGateway> gateways = new HashMap<Integer, IGateway>();
     private static HashMap<NETWORK_TYPE, IActionEngine> iActionEngine = new HashMap<NETWORK_TYPE, IActionEngine>();
+    private static ResourceBundle mcLocale;
 
     public static AppProperties getAppProperties() {
         return appProperties;
@@ -83,5 +85,13 @@ public class ObjectFactory {
         rawMessageQueue = null;
         gateways = new HashMap<Integer, IGateway>();
         iActionEngine = new HashMap<NETWORK_TYPE, IActionEngine>();
+    }
+
+    public static ResourceBundle getMcLocale() {
+        return mcLocale;
+    }
+
+    public static void setMcLocale(ResourceBundle mcLocale) {
+        ObjectFactory.mcLocale = mcLocale;
     }
 }

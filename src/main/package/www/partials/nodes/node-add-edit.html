@@ -44,7 +44,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select ng-options="nodeType.displayName as nodeType.displayName for nodeType in nodeTypes" ng-model="node.type">
+              <select class="form-control" pf-select ng-options="nodeType.id as nodeType.displayName for nodeType in nodeTypes" ng-model="node.type">
                 <option value="" ng-hide="true"></option>
               </select>
             </div>

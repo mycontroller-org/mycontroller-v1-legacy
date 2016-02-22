@@ -17,6 +17,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
 
 import java.io.IOException;
 
+import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -34,7 +35,7 @@ public class SensorTypeSerializer extends JsonSerializer<MESSAGE_TYPE_PRESENTATI
     public void serialize(MESSAGE_TYPE_PRESENTATION type, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonProcessingException {
         if (type != null) {
-            jgen.writeString(type.getText());
+            jgen.writeString(ObjectFactory.getMcLocale().getString(type.name()));
         } else {
             jgen.writeNull();
         }

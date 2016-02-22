@@ -18,8 +18,11 @@ package org.mycontroller.standalone;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +38,7 @@ public class MycUtils {
     public static final long HOUR = MINUTE * 60;
     public static final long DAY = HOUR * 24;
     public static final DecimalFormat decimalFormat = new DecimalFormat("#.###");
+    public static final String MC_LOCALE_FILE_NAME = "mc_locale/mc_locale_java";
 
     private MycUtils() {
 
@@ -231,6 +235,16 @@ public class MycUtils {
             builder.append("Now");
         }
         return builder.toString();
+    }
+
+    public static void updateLocale(MC_LANGUAGE mcLanguage) {
+        String[] locale = mcLanguage.name().split("_");
+        ObjectFactory.setMcLocale(ResourceBundle.getBundle(MC_LOCALE_FILE_NAME,
+                new Locale(locale[0].toLowerCase(), locale[1].toUpperCase())));
+    }
+
+    public static void updateLocale() {
+        updateLocale(MC_LANGUAGE.fromString(ObjectFactory.getAppProperties().getControllerSettings().getLanguage()));
     }
 
 }

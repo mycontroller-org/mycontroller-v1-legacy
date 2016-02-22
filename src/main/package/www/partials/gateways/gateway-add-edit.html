@@ -47,7 +47,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'NETWORK_TYPE' | translate }}</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select ng-options="gatewayNetworkType.displayName as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes" ng-model="gateway.networkType" required >
+              <select class="form-control" pf-select ng-options="gatewayNetworkType.id as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes" ng-model="gateway.networkType" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
@@ -56,7 +56,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select ng-options="gatewayType.displayName as gatewayType.displayName for gatewayType in gatewayTypes" ng-model="gateway.type" ng-change="updateTypeChange()" required >
+              <select class="form-control" pf-select ng-options="gatewayType.id as gatewayType.displayName for gatewayType in gatewayTypes" ng-model="gateway.type" ng-change="updateTypeChange()" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
@@ -67,7 +67,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'DRIVER' | translate }}</label>
               <div class="col-sm-5">
-                <select class="form-control" pf-select ng-options="gatewaySerialDriver.displayName as gatewaySerialDriver.displayName for gatewaySerialDriver in gatewaySerialDrivers" ng-model="gateway.variable1" required >
+                <select class="form-control" pf-select ng-options="gatewaySerialDriver.id as gatewaySerialDriver.displayName for gatewaySerialDriver in gatewaySerialDrivers" ng-model="gateway.variable1" required >
                 <option value="" ng-hide="true"></option>
                 </select>
               </div>

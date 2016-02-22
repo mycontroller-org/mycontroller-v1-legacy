@@ -25,6 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
@@ -55,7 +56,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "admin" })
-public class SettingsHandler extends AccessEngine{
+public class SettingsHandler extends AccessEngine {
     private static final Logger _logger = LoggerFactory.getLogger(SettingsHandler.class.getName());
 
     @RolesAllowed({ "User" })
@@ -105,6 +106,8 @@ public class SettingsHandler extends AccessEngine{
     public Response saveController(MyControllerSettings myControllerSettings) {
         myControllerSettings.save();
         SettingsUtils.updateAllSettings();
+        //update locale
+        MycUtils.updateLocale();
         //Update sunriuse and sun set timings
         try {
             TimerUtils.updateSunriseSunset();
@@ -120,6 +123,8 @@ public class SettingsHandler extends AccessEngine{
         if (language != null && MC_LANGUAGE.fromString(language) != null) {
             MyControllerSettings.builder().language(language).build().save();
             SettingsUtils.updateAllSettings();
+            //update locale
+            MycUtils.updateLocale();
             return RestUtils.getResponse(Status.OK);
         }
         return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Unknown language: " + language));

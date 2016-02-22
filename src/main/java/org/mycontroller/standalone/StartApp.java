@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
+import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
@@ -218,8 +219,10 @@ public class StartApp {
 
     private static boolean startServices() throws ClassNotFoundException, SQLException {
         //Start order..
+        // - set to default locale
         // - Add Shutdown hook
         // - Start DB service
+        // - Set to locale actual
         // - Start message Monitor Thread
         // - Load starting values
         // - Start MQTT Broker
@@ -227,11 +230,18 @@ public class StartApp {
         // - Start scheduler
         // - Start Web Server
 
+        //Set to default locale
+        MycUtils.updateLocale(MC_LANGUAGE.EN_US);
+
         //Add Shutdown hook
         new AppShutdownHook().attachShutDownHook();
 
         //Start DB service
         DataBaseUtils.loadDatabase();
+
+        //Set to locale actual
+        MycUtils.updateLocale(MC_LANGUAGE.fromString(ObjectFactory.getAppProperties().getControllerSettings()
+                .getLanguage()));
 
         //Start message Monitor Thread
         //Create RawMessageQueue, which is required for MessageMonitorThread
