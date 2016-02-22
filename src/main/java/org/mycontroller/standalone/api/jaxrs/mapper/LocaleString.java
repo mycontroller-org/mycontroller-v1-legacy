@@ -13,15 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone;
+package org.mycontroller.standalone.api.jaxrs.mapper;
+
+import lombok.ToString;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Builder;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-public class MC_LOCALE {
-    public static final String BYE_HAVE_A_NICE_DAY = "BYE_HAVE_A_NICE_DAY";
-    public static final String MINUMUM = "MINIMUM";
-    public static final String MAXIMUM = "MAXIMUM";
-    public static final String AVERAGE = "AVERAGE";
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(includeFieldNames = true)
+public class LocaleString {
+    private String en;
+    private String locale;
+
 }

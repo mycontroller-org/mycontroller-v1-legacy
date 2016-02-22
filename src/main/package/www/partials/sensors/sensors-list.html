@@ -89,8 +89,8 @@
             <td>{{item.node.eui}}</td>
             <td>{{item.sensorId}}</td>
             <td>{{item.name}}</td>
-            <td>{{item.type}}</td>
-            <td>{{item.variableTypes.join(', ')}}</td>
+            <td>{{item.type.locale}}</td>
+            <td>{{getSensorVariableTypes(item.variables)}}</td>
             <td><span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.lastSeen.inString  || 'NEVER' | translate }}</span></td>
             <td class="mc-align-center">
               <a class="btn btn-link" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-trigger tooltip-placement="top"></i></a>

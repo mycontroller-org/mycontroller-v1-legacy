@@ -40,8 +40,8 @@
               <dl class="dl-horizontal">
                 <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
                 <dt>{{ 'SENSOR_ID' | translate }}</dt> <dd>{{item.sensorId}}</dd>
-                <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
-                <dt>{{ 'VARIABLE_TYPES' | translate }}</dt> <dd>{{item.variableTypes.join(", ")}}</dd>
+                <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type.locale}}</dd>
+                <dt>{{ 'VARIABLE_TYPES' | translate }}</dt> <dd>{{getSensorVariableTypes(item.variables)}}</dd>
                 <dt>{{ 'NODE_EUI' | translate }}</dt> <dd>{{item.node.eui}}</dd>
                 <dt>{{ 'NODE_NAME' | translate }}</dt> <dd>{{item.node.name}}</dd>
                 <dt>{{ 'NODE_TYPE' | translate }}</dt> <dd>{{item.node.type}}</dd>
@@ -95,7 +95,7 @@
         <div ng-repeat="variable in item.variables"> 
           <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
             <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented mc-sensor-variable-detail">
-              <h2 class="card-pf-title">{{variable.type}}</h2>
+              <h2 class="card-pf-title">{{variable.type.locale}}</h2>
               <div class="card-pf-body">
                 <!-- Sensor variables -->
                 <div ng-init="variable.showVariable = true">

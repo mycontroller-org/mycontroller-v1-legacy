@@ -683,13 +683,14 @@ public class TypesUtils {
             List<SensorsVariablesMap> variableTypes = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
             for (SensorsVariablesMap variableType : variableTypes) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(variableType.getVariableType().getText())
-                        .displayName(variableType.getVariableType().getText()).ticked(false).build());
+                        .displayName(ObjectFactory.getMcLocale().getString(variableType.getVariableType().name()))
+                        .ticked(false).build());
             }
             if (sensorId != null) {
                 List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
                 for (SensorVariable sensorVariable : sensorVariables) {
                     for (TypesIdNameMapper idNameMapper : typesIdNameMappers) {
-                        if (idNameMapper.getDisplayName().equals(sensorVariable.getVariableType().getText())) {
+                        if (idNameMapper.getId().equals(sensorVariable.getVariableType().getText())) {
                             idNameMapper.setSubId(sensorVariable.getId());
                             idNameMapper.setTicked(true);
                         }

@@ -102,7 +102,11 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
     }
     
     //load variables initially
-    loadVariables();
+    if(config.variableIds.length > 0){
+      loadVariables();
+    }else{
+      mycSensorsBulletGraph.showLoading = false;
+    }
     //updateVariables();
     
     //Update Variable / Send Payload

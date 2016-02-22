@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.model;
 
+import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -166,7 +167,8 @@ public class ResourceModel {
                         .append(", Gateway:").append(sensorVariable.getSensor().getNode().getGateway().getName())
                         .append(", NodeEui:").append(sensorVariable.getSensor().getNode().getEui())
                         .append(", SensorId:").append(sensorVariable.getSensor().getSensorId())
-                        .append(", VariableType:").append(sensorVariable.getVariableType().getText());
+                        .append(", VariableType:")
+                        .append(ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name()));
                 break;
             case RESOURCES_GROUP:
                 ResourcesGroup resourcesGroup = (ResourcesGroup) this.resource;
@@ -219,7 +221,7 @@ public class ResourceModel {
                         .append(" >> ").append(DISPLAY_KEY_SENSOR).append(sensorVariable.getSensor().getSensorId())
                         .append(":").append(sensorVariable.getSensor().getName())
                         .append(" >> ").append(DISPLAY_KEY_SENSOR_VARIABLE)
-                        .append(sensorVariable.getVariableType().getText());
+                        .append(ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name()));
                 break;
             case RESOURCES_GROUP:
                 ResourcesGroup resourcesGroup = (ResourcesGroup) this.resource;

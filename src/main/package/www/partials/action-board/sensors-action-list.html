@@ -51,7 +51,7 @@
   
               <!-- Sensor type -->
               <div class="col-md-1">
-                <span><i class="mc-icon-2x" ng-class="cs.getSensorIcon(item.type)"></i><span>{{item.type ? item.type : 'Undefined'}}</span></span>
+                <span><i class="mc-icon-2x" ng-class="cs.getSensorIcon(item.type.en)"></i><span>{{item.type.locale ? item.type.locale : 'Undefined'}}</span></span>
               </div>
   
               <!-- Last seen -->
@@ -122,7 +122,7 @@
                 
                 <!-- Sensor type, Last seen -->
                 <div class="mc-sa-tiles-variable col-md-12">
-                  <span class="mc-padding"><i class="mc-icon-lg" ng-class="cs.getSensorIcon(item.type)"></i><span>{{item.type ? item.type : 'Undefined'}}</span></span>
+                  <span class="mc-padding"><i class="mc-icon-lg" ng-class="cs.getSensorIcon(item.type.en)"></i><span>{{item.type.locale ? item.type.locale : 'Undefined'}}</span></span>
                   <span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="top"><span class="text-left"><i class="fa fa-clock-o fa-lg" ></i><span> {{item.lastSeen.inString  || 'Never'}}</span></span></span>
                 </div>
                 <legend style="margin:3px" ng-init="variableMaxSize=200"></legend>

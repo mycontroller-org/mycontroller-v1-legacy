@@ -54,7 +54,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select data-live-search="true" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes" ng-change="refreshVariableTypes(sensor.type)" ng-model="sensor.type">
+              <select class="form-control" pf-select data-live-search="true" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes" ng-change="refreshVariableTypes(sensor.type.en)" ng-model="sensor.type.en">
                 <option value="" ng-hide="true"></option>
               </select>
             </div>

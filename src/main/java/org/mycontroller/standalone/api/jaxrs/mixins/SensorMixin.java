@@ -26,6 +26,7 @@ import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorVariableSe
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -38,6 +39,7 @@ abstract class SensorMixin {
     @JsonSerialize(using = SensorTypeSerializer.class)
     abstract public String getType();
 
+    @JsonProperty("type")
     @JsonDeserialize(using = SensorTypeDeserializer.class)
     abstract public void setType(MESSAGE_TYPE_PRESENTATION type);
 

@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.api.jaxrs.mapper.LocaleString;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,10 +36,10 @@ public class SensorTypeSerializer extends JsonSerializer<MESSAGE_TYPE_PRESENTATI
     public void serialize(MESSAGE_TYPE_PRESENTATION type, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonProcessingException {
         if (type != null) {
-            jgen.writeString(ObjectFactory.getMcLocale().getString(type.name()));
+            jgen.writeObject(LocaleString.builder().en(type.getText())
+                    .locale(ObjectFactory.getMcLocale().getString(type.name())).build());
         } else {
             jgen.writeNull();
         }
     }
-
 }

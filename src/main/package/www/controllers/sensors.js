@@ -162,13 +162,22 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       }); 
     }), 
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
+  
+  //Get sensor variable types
+  $scope.getSensorVariableTypes = function(variables){
+    var types = [];
+    angular.forEach(variables, function(variable){
+      types.push(variable.type.locale);
+    });
+    return types.join(', ');
+  }
   
 });
 
@@ -381,5 +390,14 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
         }, 1000);
       }
     });
+    
+  //Get sensor variable types
+  $scope.getSensorVariableTypes = function(variables){
+    var types = [];
+    angular.forEach(variables, function(variable){
+      types.push(variable.type.locale);
+    });
+    return types.join(', ');
+  }
   
 });
