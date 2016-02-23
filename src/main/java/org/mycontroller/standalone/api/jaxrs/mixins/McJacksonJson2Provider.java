@@ -83,7 +83,9 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(Timer.class, TimerMixin.class);
         mapper.addMixIn(User.class, UserMixin.class);
 
-        _logger.debug("Request: Headers:{}", httpHeaders);
+        _logger.debug("Response: Headers:{}", httpHeaders);
+        _logger.debug("Response: Value:{}", value);
+
         super.writeTo(value, type, genericType, annotations, mediaType, httpHeaders, entityStream);
     }
 

@@ -74,7 +74,8 @@ public class AppProperties {
         TA_IN("தமிழ் (IN)"),
         DE_DE("Deutsch (DE)"),
         RU_RU("русский (RU)"),
-        ES_AR("Español (ES)");
+        ES_AR("Español (AR)"),
+        CA_ES("català (ES)");
 
         private final String name;
 

@@ -15,10 +15,13 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
+import lombok.ToString;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@ToString
 public class ApiError {
     private String errorMessage;
 
