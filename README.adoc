@@ -22,11 +22,7 @@ Development: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branc
 Primarly this project started to support http://www.mysensors.org/[MySensors]. But later it expands support to other network also. Considered system resources in mind on development, as a outcome even we can run it on Raspberry PI (256 MB) very first model.
 
 == Localization
-MyController.org supports multiple languages. If you have interest to add/translate your native language for MyController.org send a request on https://www.transifex.com
-
-====== For localization Contribute to the Transifex Project
-* https://www.transifex.com/mycontrollerorg/gui-angularjs/[Web GUI Project]
-* https://www.transifex.com/mycontrollerorg/core-java/[Core Java]
+MyController.org supports multiple languages. If you have interest to add/translate your native language for MyController.org send a request on https://www.transifex.com/mycontrollerorg/multi-locale/[Transifex MyController.org locale project]
 
 == System Requirement
 
