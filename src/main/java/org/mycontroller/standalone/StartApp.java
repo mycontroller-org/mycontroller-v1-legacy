@@ -39,6 +39,7 @@ import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
 import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
 import org.mycontroller.standalone.api.jaxrs.NodeHandler;
 import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
+import org.mycontroller.standalone.api.jaxrs.RoomHandler;
 import org.mycontroller.standalone.api.jaxrs.SensorHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesLogsHandler;
 import org.mycontroller.standalone.api.jaxrs.SettingsHandler;
@@ -151,6 +152,7 @@ public class StartApp {
         resources.add(DashboardHandler.class.getName());
         resources.add(BackupHandler.class.getName());
         resources.add(NotificationHandler.class.getName());
+        resources.add(RoomHandler.class.getName());
 
         //Add PreFlight handler
         resources.add(OptionsHandler.class.getName());

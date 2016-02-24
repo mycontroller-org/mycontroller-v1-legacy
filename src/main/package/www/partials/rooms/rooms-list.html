@@ -17,7 +17,7 @@
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
   
-  <!-- Loading icon disaplay --> 
+    <!-- Loading icon disaplay --> 
   <div ng-hide="queryResponse.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
@@ -46,8 +46,8 @@
           </div>
         </div>
         
-        <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group">
-          <a class="btn btn-primary" type="button" ui-sref="sensorsAddEdit">{{ 'ADD_SENSOR' | translate }}</a>
+        <div class="btn-group" role="group">
+          <a class="btn btn-primary" type="button" ui-sref="roomsAddEdit">{{ 'ADD_ROOM' | translate }}</a>
         </div>
 
       </div>
@@ -66,42 +66,23 @@
     <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
 
     <div ng-show="filteredList.length > 0">
-     <!-- Table -->
+      <!-- Table -->
       <table class="table table-hover table-bordered table-striped mc-table">
         <thead>
-          <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
-          <th>{{ 'NETWORK_TYPE' | translate }}</th>
-          <th>{{ 'GATEWAY' | translate }}</th>
-          <th>{{ 'NODE_EUI' | translate }}</th>
-          <th>{{ 'SENSOR_ID' | translate }}</th>
+          <th class="mc-align-center col-md-1"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
           <th>{{ 'NAME' | translate }}</th>
-          <th>{{ 'TYPE' | translate }}</th>
-          <th>{{ 'VARIABLE_TYPES' | translate }}</th>
-          <th>{{ 'ROOM' | translate }}</th>
-          <th>{{ 'LAST_SEEN' | translate }}</th>
-          <th></th>
+          <th>{{ 'DESCRIPTION' | translate }}</th>
         </thead>
         <tbody>
           <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"
             ng-class="{'mc-selected': itemIds.indexOf(item.id) != -1}" ng-click="selectItem(item)">
             <td class="mc-align-center"><input type="checkbox" ng-checked="itemIds.indexOf(item.id) != -1"></td>
-            <td>{{item.node.gateway.networkType}}</td>
-            <td>{{item.node.gateway.name}} [{{item.node.gateway.type}}]</td>
-            <td>{{item.node.eui}}</td>
-            <td>{{item.sensorId}}</td>
             <td>{{item.name}}</td>
-            <td>{{item.type.locale}}</td>
-            <td>{{getSensorVariableTypes(item.variables)}}</td>
-            <td>{{item.room.name}}</td>
-            <td><span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.lastSeen.inString  || 'NEVER' | translate }}</span></td>
-            <td class="mc-align-center">
-              <a class="btn btn-link" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-trigger tooltip-placement="top"></i></a>
-            </td>
+            <td>{{item.description}}</td>
           </tr>
         </tbody>
       </table>
       <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
-     
     </div>
     
   </div> <!-- Main Message -->

@@ -19,7 +19,7 @@
 <!-- Status -->
 <div ng-if="variable.type.en === 'Status'">
   <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
-    <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = cs.getInteger(variable.value)" type="checkbox"
+    <input class="onoffswitch" bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = cs.getInteger(variable.value)" type="checkbox"
     switch-animate="{{cs.mcbStyle.animate}}" switch-handle-width="{{cs.mcbStyle.stateHandleWidth}}" switch-label-width="{{cs.mcbStyle.labelWidth}}"
     switch-off-color="default" switch-on-color="primary" switch-size="{{cs.mcbStyle.size}}"
     ng-true-value="1" ng-false-value="0" switch-on-text="ON" switch-off-text="OFF"

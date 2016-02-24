@@ -49,6 +49,7 @@ import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
+import org.mycontroller.standalone.db.tables.Room;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
@@ -568,9 +569,13 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getSensors(User user, Integer nodeId) {
+    public static ArrayList<TypesIdNameMapper> getSensors(User user, Integer nodeId, Integer roomId,
+            Boolean enableNoRoomFilter) {
         List<Node> nodes = new ArrayList<Node>();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        if (enableNoRoomFilter == null) {
+            enableNoRoomFilter = false;
+        }
         List<Sensor> sensors = null;
         if (AuthUtils.isSuperAdmin(user)) {
             if (nodeId != null) {
@@ -583,11 +588,39 @@ public class TypesUtils {
             sensors = DaoUtils.getSensorDao().getAll(user.getAllowedResources().getSensorIds());
         }
 
+        boolean include = false;
         for (Sensor sensor : sensors) {
-            typesIdNameMappers
-                    .add(TypesIdNameMapper.builder().id(sensor.getId()).subId(sensor.getSensorId())
-                            .displayName(new ResourceModel(RESOURCE_TYPE.SENSOR, sensor).getResourceLessDetails())
-                            .build());
+            include = false;
+            if (enableNoRoomFilter) {
+                if (sensor.getRoom() == null) {
+                    include = true;
+                } else if (roomId != null && roomId.equals(sensor.getRoom().getId())) {
+                    include = true;
+                }
+            } else if (roomId != null && roomId.equals(sensor.getRoom().getId())) {
+                include = true;
+            } else {
+                include = true;
+            }
+
+            if (include) {
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(sensor.getId()).subId(sensor.getSensorId())
+                        .displayName(new ResourceModel(RESOURCE_TYPE.SENSOR, sensor).getResourceLessDetails())
+                        .build());
+            }
+
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getRooms() {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        List<Room> rooms = DaoUtils.getRoomDao().getAll();
+        if (rooms != null) {
+            for (Room room : rooms) {
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(room.getId())
+                        .displayName(room.getName()).build());
+            }
         }
         return typesIdNameMappers;
     }

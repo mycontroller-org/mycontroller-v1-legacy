@@ -39,7 +39,6 @@ import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.Gateway;
@@ -54,7 +53,7 @@ import org.mycontroller.standalone.db.tables.Node;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
-public class NodeHandler extends AccessEngine{
+public class NodeHandler extends AccessEngine {
 
     @GET
     @Path("/")
@@ -79,8 +78,8 @@ public class NodeHandler extends AccessEngine{
         filters.put(Node.KEY_NAME, name);
 
         //Add id filter if he is non-admin
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            filters.put(Node.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getNodeIds());
+        if (!isSuperAdmin()) {
+            filters.put(Node.KEY_ID, getUser().getAllowedResources().getNodeIds());
         }
 
         QueryResponse queryResponse = DaoUtils.getNodeDao().getAll(
@@ -114,6 +113,10 @@ public class NodeHandler extends AccessEngine{
     @Path("/")
     public Response update(Node node) {
         hasAccessNode(node.getId());
+        Node availabilityCheck = DaoUtils.getNodeDao().get(node.getGateway().getId(), node.getEui());
+        if (availabilityCheck != null && availabilityCheck.getId() != node.getId()) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A node available with this EUI."));
+        }
         ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).updateNode(node);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
@@ -122,6 +125,9 @@ public class NodeHandler extends AccessEngine{
     @POST
     @Path("/")
     public Response add(Node node) {
+        if (DaoUtils.getNodeDao().get(node.getGateway().getId(), node.getEui()) != null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A node available with this EUI."));
+        }
         Gateway gateway = DaoUtils.getGatewayDao().getById(node.getGateway().getId());
         node.setGateway(gateway);
         ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).addNode(node);
@@ -178,7 +184,5 @@ public class NodeHandler extends AccessEngine{
                     new ApiError("Selected Node not available! Node Ids:[" + ids + "]"));
         }
     }
-
-
 
 }

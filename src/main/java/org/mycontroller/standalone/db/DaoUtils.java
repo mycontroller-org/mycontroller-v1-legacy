@@ -53,6 +53,8 @@ import org.mycontroller.standalone.db.dao.RoleSensorMapDao;
 import org.mycontroller.standalone.db.dao.RoleSensorMapDaoImpl;
 import org.mycontroller.standalone.db.dao.RoleUserMapDao;
 import org.mycontroller.standalone.db.dao.RoleUserMapDaoImpl;
+import org.mycontroller.standalone.db.dao.RoomDao;
+import org.mycontroller.standalone.db.dao.RoomDaoImpl;
 import org.mycontroller.standalone.db.dao.SensorDao;
 import org.mycontroller.standalone.db.dao.SensorDaoImpl;
 import org.mycontroller.standalone.db.dao.ResourcesLogsDao;
@@ -123,6 +125,7 @@ public class DaoUtils {
     private static RoleMqttMapDao roleMqttMapDao = null;
     private static NotificationDao notificationDao = null;
     private static NotificationAlarmDefinitionMapDao notificationAlarmDefinitionMapDao = null;
+    private static RoomDao roomDao = null;
 
     public static void loadAllDao() {
         if (isDaoInitialized) {
@@ -161,6 +164,7 @@ public class DaoUtils {
             notificationDao = new NotificationDaoImpl(DataBaseUtils.getConnectionSource());
             notificationAlarmDefinitionMapDao = new NotificationAlarmDefinitionMapDaoImpl(
                     DataBaseUtils.getConnectionSource());
+            roomDao = new RoomDaoImpl(DataBaseUtils.getConnectionSource());
             //Initialized dao
             isDaoInitialized = true;
         } catch (SQLException sqlEx) {
@@ -296,6 +300,10 @@ public class DaoUtils {
 
     public static NotificationAlarmDefinitionMapDao getNotificationAlarmDefinitionMapDao() {
         return notificationAlarmDefinitionMapDao;
+    }
+
+    public static RoomDao getRoomDao() {
+        return roomDao;
     }
 
 }

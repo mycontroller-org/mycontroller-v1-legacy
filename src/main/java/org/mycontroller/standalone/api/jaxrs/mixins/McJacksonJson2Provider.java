@@ -23,12 +23,15 @@ import java.lang.reflect.Type;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
+import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
@@ -59,6 +62,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class McJacksonJson2Provider extends ResteasyJackson2Provider {
     private static final Logger _logger = LoggerFactory.getLogger(McJacksonJson2Provider.class);
 
+    @Context
+    HttpHeaders headers;
+
     @Override
     public void writeTo(Object value, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException {
@@ -71,6 +77,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         //AddMixIns
         mapper.addMixIn(AlarmDefinition.class, AlarmDefinitionMixin.class);
         mapper.addMixIn(Dashboard.class, DashboardMixin.class);
+        mapper.addMixIn(Firmware.class, FirmwareMixin.class);
         mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixIn(Gateway.class, GatewayMixin.class);
         mapper.addMixIn(Node.class, NodeMixin.class);
@@ -85,6 +92,8 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
 
         _logger.debug("Response: Headers:{}", httpHeaders);
         _logger.debug("Response: Value:{}", value);
+
+        _logger.debug("Request headers:{}", headers.getRequestHeaders());
 
         super.writeTo(value, type, genericType, annotations, mediaType, httpHeaders, entityStream);
     }

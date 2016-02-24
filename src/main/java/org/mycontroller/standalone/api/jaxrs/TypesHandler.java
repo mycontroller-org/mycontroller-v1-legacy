@@ -105,8 +105,11 @@ public class TypesHandler extends AccessEngine {
 
     @GET
     @Path("/sensors")
-    public Response getSensors(@QueryParam("nodeId") Integer nodeId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(AuthUtils.getUser(securityContext), nodeId));
+    public Response getSensors(
+            @QueryParam("nodeId") Integer nodeId,
+            @QueryParam("roomId") Integer roomId,
+            @QueryParam("enableNoRoomFilter") Boolean enableNoRoomFilter) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(getUser(), nodeId, roomId, enableNoRoomFilter));
     }
 
     @GET
@@ -319,6 +322,12 @@ public class TypesHandler extends AccessEngine {
     @Path("/notifications")
     public Response getNotifications() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getNotifications());
+    }
+
+    @GET
+    @Path("/rooms")
+    public Response getRooms() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getRooms());
     }
 
     //----------------- review required

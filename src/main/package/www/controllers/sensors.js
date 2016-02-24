@@ -203,6 +203,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
   $scope.sensorTypes = TypesFactory.getSensorTypes();
   
   $scope.nodes = TypesFactory.getNodes();
+  $scope.rooms = TypesFactory.getRooms();
 /*  
   $scope.updateNodes= function(gatewayId){
     $scope.nodes = TypesFactory.getNodes({"gatewayId":gatewayId});

@@ -153,6 +153,8 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
   
+  $scope.cs = CommonServices;
+  
   $scope.firmwareType = {};
   $scope.ftypeId = $stateParams.id;
 
@@ -320,7 +322,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
 });
 
 //add edit item
-myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter, $state) {
+myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter, $state, CommonServices) {
   
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
@@ -332,6 +334,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
   
   $scope.item = {};
   $scope.itemId = $stateParams.id;
+  $scope.cs = CommonServices;
 
     if($stateParams.id){
       FirmwaresFactory.getFirmwareVersion({"refId":$stateParams.id},function(response) {

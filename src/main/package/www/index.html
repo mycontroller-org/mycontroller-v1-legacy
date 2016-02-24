@@ -175,6 +175,7 @@
     <script src="controllers/sensors-action.js"></script>
     <script src="controllers/roles.js"></script>
     <script src="controllers/backup.js"></script>
+    <script src="controllers/rooms.js"></script>
     
     
   </head>
@@ -257,6 +258,7 @@
               <li ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> {{ 'TIMERS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('forwardPayload') == 0 }"><a ui-sref="forwardPayloadList"><i class="fa fa-forward fa-lg"></i> {{ 'FORWARD_PAYLOAD' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>{{ 'GROUPS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rooms') == 0 }"><a ui-sref="roomsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('resourcesLogs') == 0 }"><a ui-sref="resourcesLogsList"><i class="fa fa-list fa-lg"></i> {{ 'LOGS' | translate }}</a></li>
             </ul>

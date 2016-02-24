@@ -65,6 +65,7 @@
                   <span ng-show="item.batteryLevel"><i class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}"></i> {{item.batteryLevel}} %</span>
                   <label ng-hide="item.batteryLevel">-</label>
                 </dd>                
+                <dt>{{ 'FIRMWARE' | translate }}</dt> <dd>{{item.firmware.firmwareName}}</dd>
                 
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
                 <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt> 
@@ -94,7 +95,7 @@
   
         <!-- custom buttons -->
         <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8">
-          <div class="card-pf card-pf-accented" style="min-height:450px">
+          <div class="card-pf card-pf-accented" style="min-height:471px">
             <div class="card-pf-heading">
               <div ng-show="item.batteryLevel" class="dropdown card-pf-time-frame-filter">
                 <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"

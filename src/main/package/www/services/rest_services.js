@@ -115,6 +115,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getRolePermissions: { method: 'GET', isArray: true, params: {type: 'rolePermissions', id : null}},
     //Notifications
     getNotifications:  { method: 'GET', isArray: true, params: {type: 'notifications'} },
+    //Rooms
+    getRooms:  { method: 'GET', isArray: true, params: {type: 'rooms'} },
 
     getResources:  { method: 'GET', isArray: true, params: {type: 'resources'} },
     getUserRoles:  { method: 'GET', isArray: true, params: {type: 'roles'}  },
@@ -397,5 +399,16 @@ myControllerModule.factory('BackupRestoreFactory', function ($resource) {
     getBackupSettings:  { method: 'GET', params: {type: 'backupSettings'}},
     updateBackupSettings:  { method: 'PUT', params: {type: 'backupSettings'}},
 
+  })
+});
+
+//Rooms Services
+myControllerModule.factory('RoomsFactory', function ($resource) {
+  return $resource('/mc/rest/rooms/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null} },
+    get:    { method: 'GET' },
+    create: { method: 'POST', params: {id: null}},
+    update: { method: 'PUT', params: {id: null} },
+    deleteIds: { method: 'POST', params: {id: 'delete'} },
   })
 });

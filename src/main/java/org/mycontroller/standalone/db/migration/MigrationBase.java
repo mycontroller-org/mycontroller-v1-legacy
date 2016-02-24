@@ -57,15 +57,23 @@ public class MigrationBase {
     }
 
     protected void renameColumn(String tableName, String oldColumnName, String newColumnName) throws SQLException {
-        if (hasColumn(tableName, oldColumnName)){
+        if (hasColumn(tableName, oldColumnName)) {
             int dropCount = DaoUtils.getUserDao().getDao().executeRaw(
                     "ALTER TABLE " + tableName.toUpperCase() + " ALTER COLUMN " + oldColumnName.toUpperCase()
                             + " RENAME TO " + newColumnName.toUpperCase());
             _logger.debug("Renamed OldColumn:{}, NewColumn:{}, Table:{}, Drop count:{}", oldColumnName, newColumnName,
                     tableName, dropCount);
-        }else{
-            _logger.warn("Slected column[{}] not found! Table:{}",oldColumnName,tableName);
+        } else {
+            _logger.warn("Slected column[{}] not found! Table:{}", oldColumnName, tableName);
         }
-       
+
+    }
+
+    protected void addColumn(String tableName, String columnName, String columnDefinition) throws SQLException {
+        int addCount = DaoUtils.getUserDao().getDao().executeRaw(
+                "ALTER TABLE " + tableName.toUpperCase() + " ADD COLUMN IF NOT EXISTS "
+                        + columnName.toUpperCase() + " " + columnDefinition);
+        _logger.debug("Added column:{}, columnDefinition:{}, table:{}, add count:{}",
+                columnName, columnDefinition, tableName, addCount);
     }
 }

@@ -48,6 +48,7 @@
                 <dt>{{ 'GATEWAY_NAME' | translate }}</dt> <dd>{{item.node.gateway.name}}</dd>
                 <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.node.gateway.type}}</dd>
                 <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.node.gateway.networkType}}</dd>
+                <dt>{{ 'ROOM' | translate }}</dt> <dd>{{item.room.name}}</dd>
                 <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right">{{item.lastSeen.inString  || 'NEVER' | translate }}</span></dd>
                 
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>

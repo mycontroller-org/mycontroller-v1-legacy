@@ -52,6 +52,7 @@ public class Sensor {
     public static final String KEY_NAME = "name";
     public static final String KEY_LAST_SEEN = "lastSeen";
     public static final String KEY_TYPE = "type";
+    public static final String KEY_ROOM_ID = "roomId";
 
     @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
@@ -71,6 +72,10 @@ public class Sensor {
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_NODE_ID,
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Node node;
+
+    @DatabaseField(canBeNull = true, foreign = true, columnName = KEY_ROOM_ID,
+            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
+    private Room room;
 
     private List<String> variableTypes;
 

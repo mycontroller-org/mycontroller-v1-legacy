@@ -114,6 +114,12 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
                 updateBuilder.updateColumnValue(Sensor.KEY_SENSOR_ID, sensor.getSensorId());
             }
 
+            if (sensor.getRoom() != null && sensor.getRoom().getId() == null) {
+                updateBuilder.updateColumnValue(Sensor.KEY_ROOM_ID, null);
+            } else {
+                updateBuilder.updateColumnValue(Sensor.KEY_ROOM_ID, sensor.getRoom());
+            }
+
             updateBuilder.where().eq(Sensor.KEY_ID, sensor.getId());
             int updateCount = updateBuilder.update();
             _logger.debug("Updated senosor:[{}], update count:{}", sensor, updateCount);
@@ -305,5 +311,18 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             sensorIds.add(sensor.getId());
         }
         return sensorIds;
+    }
+
+    @Override
+    public List<Sensor> getAllByRoomId(Integer roomId) {
+        try {
+            if (roomId == null) {
+                return null;
+            }
+            return this.getDao().queryForEq(Sensor.KEY_ROOM_ID, roomId);
+        } catch (SQLException ex) {
+            _logger.error("unable to get all list with room id:{}", roomId, ex);
+            return null;
+        }
     }
 }

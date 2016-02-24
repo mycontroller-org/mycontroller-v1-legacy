@@ -210,6 +210,20 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('roomsList', {
+      url:"/resources/rooms/list",
+      templateUrl: "partials/rooms/rooms-list.html",
+      controller: "RoomsControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('roomsAddEdit', {
+      url:"/resources/rooms/addedit/:id",
+      templateUrl: "partials/rooms/rooms-add-edit.html",
+      controller: "RoomsControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
     }).state('forwardPayloadList', {
       url:"/resources/forwardpayload/list/:sensorId",
       templateUrl: "partials/forward-payload/forward-payload-list.html",

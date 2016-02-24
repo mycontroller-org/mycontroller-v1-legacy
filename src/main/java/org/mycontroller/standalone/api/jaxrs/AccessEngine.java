@@ -48,6 +48,10 @@ public class AccessEngine {
         return AuthUtils.getUser(securityContext);
     }
 
+    protected boolean isSuperAdmin() {
+        return AuthUtils.isSuperAdmin(securityContext);
+    }
+
     //For sensors
     protected void updateSensorIds(List<Integer> ids) {
         if (!AuthUtils.isSuperAdmin(securityContext)) {
