@@ -520,12 +520,15 @@ input.mc-color-steel-blue{
 }
 
 /* on-off button*/
-.bootstrap-switch-handle-on{
+.bootstrap-switch-on{
   font-weight: 600;
 }
-.bootstrap-switch-handle-off {
+.bootstrap-switch-off {
   font-weight: 500;
 }
+
+
+
 
 
 
