@@ -109,7 +109,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
     mchelper.userSettings.actionBoardView = viewId;
     SettingsFactory.saveUserSettings(mchelper.userSettings);
     CommonServices.saveMchelper(mchelper);
-    if(viewId === 'tilesView'){
+    if(viewId === 'cardView'){
       $scope.query.pageLimit = 12;
       $scope.tooltipPlacement = 'top';
     }else if(viewId === 'listView'){
@@ -125,7 +125,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
   
   //View configuration
   $scope.viewsConfig = {
-      views: [pfViewUtils.getListView(), pfViewUtils.getTilesView()],
+      views: [pfViewUtils.getListView(), pfViewUtils.getCardView()],
       onViewSelect: viewSelected,
     };
   

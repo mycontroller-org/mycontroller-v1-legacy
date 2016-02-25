@@ -26,7 +26,7 @@
 
     <!-- top tool bar -->
     <div class="col-md-12 mc-top-space" ng-show="queryResponse.query.totalItems > 0">
-      <div pf-data-toolbar id="sensorsDataToolbar" config="sensorsToolbarConfig"></div>
+      <div pf-toolbar id="sensorsDataToolbar" config="sensorsToolbarConfig"></div>
     </div>
     
     <!-- Display No Items on system -->
@@ -96,9 +96,10 @@
       </dir-pagination-controls>
     </div><!-- items container -->
 
+
   
     <!-- box view -->
-    <div class="col-md-12 container-cards-pf" ng-if="viewType == 'tilesView'">
+    <div class="col-md-12 container-cards-pf" ng-if="viewType == 'cardView'">
       <div class="row row-cards-pf" >
         <!-- sensors ng-repeat -->
         <div dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.filteredCount" current-page="currentPage">

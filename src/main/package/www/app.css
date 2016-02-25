@@ -317,7 +317,92 @@ input.mc-color-steel-blue{
 
 
 
+/* on angular-patternfly upgrade from 2.x to 3.x introduced issue on sensors-action page. 
+ * To overcome this issue copied style from old version. 
+ * following style used only on sensors-action page.
+ * */
+.data-list-pf {
+  background: #fff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 1px;
+}
+.data-list-pf .list-row {
+  margin-right: 0px;
+  position: relative;
+  padding-right: 0px;
+  width: 100%;
+}
+.data-list-pf .list-content {
+  left: 15px;
+  position: relative;
+}
+.data-list-pf .list-content.with-check-box {
+  border-left: solid 2px #d2d2d2;
+  left: 30px;
+  margin-left: 10px;
+}
+.data-list-pf .list-content.with-menu {
+  margin-right: 30px;
+  right: 15px;
+}
+.data-list-pf .list-check-box {
+  bottom: 0px;
+  left: 20px;
+  position: absolute;
+  top: 0px;
+  width: 20px;
+}
+.data-list-pf .data-list-loading {
+  background: rgba(0, 0, 0, 0.05);
+}
+.data-list-pf .list-group-item:first-of-type {
+  margin-top: 0;
+}
+.data-list-pf .list-group-item .list-column {
+  float: left;
+  padding: 5px 0px;
+}
+.data-list-pf .list-group-item .pficon {
+  -webkit-align-items: center;
+  align-items: center;
+  color: #1186C1;
+  font-size: 26px;
+  width: 26px;
+}
+
+.data-list-pf .list-group-item.active,
+.data-list-pf .list-group-item.active:hover,
+.data-list-pf .list-group-item.active:focus {
+  background-color: #def3ff;
+  border-color: #def3ff;
+  color: #000000;
+}
+
+.data-list-pf .list-group-item:hover,
+.data-list-pf .list-group-item:focus {
+  background-color: #ededed;
+  border-color: #ededed;
+}
+
+.data-list-pf .list-group-item.active .pficon,
+.data-list-pf .list-group-item.active:hover .pficon,
+.data-list-pf .list-group-item.active:focus .pficon {
+  color: #ffffff;
+}
+.data-list-pf .row-column {
+  padding-right: 5px;
+}
+
 /* used in sensors action board list items */
+.mc-list-align {
+  display: flex;
+  border-bottom: 2px solid #f5f5f5;
+  border-top: 2px solid #f5f5f5;
+  line-height: 33px;
+}
+
+
 .mc-list-align {
   display: flex;
   border-bottom: 2px solid #f5f5f5;
@@ -440,7 +525,7 @@ input.mc-color-steel-blue{
 }
 
 .mc-sensor-action-tiles{
-  height:330px;
+  height:333px;
 }
 
 .mc-sa-tiles-variable{

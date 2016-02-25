@@ -34,6 +34,7 @@ var myControllerModule = angular.module('myController',[
   'patternfly.views',
   'patternfly.filters',
   'patternfly.card',
+  'patternfly.toolbars',
   'frapontillo.bootstrap-switch',
   'xeditable',
   'angularUtils.directives.dirPagination',

@@ -35,7 +35,7 @@
           <a ng-class="{'disabled': !itemName}" class="btn btn-primary" type="button" ng-click="editItem()"><i class="fa fa-lg fa-edit"></i> {{ 'EDIT' | translate }}</a></a>
         </div>
       </div>
-      <div pf-simple-filter id="itemsFilter" config="filterConfig" ng-show="orgList.length > 0"></div>
+      <div pf-filter id="itemsFilter" config="filterConfig" ng-show="orgList.length > 0"></div>
     </div>
 
     <!-- Display When no data on table -->

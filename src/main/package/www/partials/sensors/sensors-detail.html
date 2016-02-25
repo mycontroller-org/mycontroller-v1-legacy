@@ -145,8 +145,8 @@
             <div class="card-pf-body">
               <div ng-repeat="chData in chartData">
                 <legend><small>{{chData.variableType}}</small></legend>
-              <!-- Refer this one https://github.com/krispo/angular-nvd3/issues/40 -->
-              <nvd3 options='chOptions' data="chData.chartData" ng-init="chOptions = updateChartOptions(chData)"></nvd3>
+                <!-- Refer this one https://github.com/krispo/angular-nvd3/issues/40 -->
+                <nvd3 options='chOptions' data="chData.chartData" ng-init="chOptions = updateChartOptions(chData)"></nvd3>
             </div>
           </div>
         </div>

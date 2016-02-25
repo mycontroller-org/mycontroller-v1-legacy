@@ -18,72 +18,92 @@
 //https://coderwall.com/p/r_bvhg/angular-ui-bootstrap-alert-service-for-angular-js
 
 myControllerModule.factory('alertService', function() {
+    
+    var alertCfg = {};
+    
+    alertCfg.displayTemplate = '<div class="col-xs-11 col-sm-3 toast-pf alert alert-{0}  alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" data-notify="dismiss" aria-hidden="true">' +
+                              '<span class="pficon pficon-close"></span>' +
+                            '</button>'+
+                            '<span data-notify="icon"></span>' +
+                            '<strong>{1}</strong> {2}' +
+                            '<a href="{3}" target="{4}" data-notify="url"></a>'+
+                          '</div>';
+    alertCfg.placement = "top";
+    alertCfg.delay = 1000;
+    alertCfg.timer = 1000;
+    
     return alertService = {
       default: function(msg) {
           $.notify({
-            icon: 'fa fa-info-circle fa-lg',
+            icon: 'pficon pficon-info',
             message: msg
           },{
-            delay: 1000,
-            timer: 1000,
+            type: 'info',
+            delay: alertCfg.delay,
+            timer: alertCfg.timer,
             placement: {
-              from: "bottom"
+              from: alertCfg.placement,
             },
             animate: {
               enter: 'animated lightSpeedIn',
               exit: 'animated lightSpeedOut'
-            }
+            },
+            template: alertCfg.displayTemplate,
           });
         },
     success: function(msg){
         $.notify({
-            icon: 'fa fa-thumbs-o-up fa-lg',
+            icon: 'pficon pficon-ok',
             message: msg
           },{
             type: 'success',
-            delay: 1000,
-            timer: 1000,
+            delay: alertCfg.delay,
+            timer: alertCfg.timer,
             placement: {
-              from: "bottom"
+              from: alertCfg.placement,
             },
             animate: {
               enter: 'animated lightSpeedIn',
               exit: 'animated lightSpeedOut'
-            }
+            },
+            template: alertCfg.displayTemplate,
           });
         },
     warning: function(msg){
         $.notify({
-            icon: 'fa fa-warning fa-lg',
+            icon: 'pficon pficon-warning-triangle-o',
             message: msg
           },{
             type: 'warning',
-            delay: 1000,
-            timer: 1000,
+            delay: alertCfg.delay,
+            timer: alertCfg.timer,
             placement: {
-              from: "bottom"
+              from: alertCfg.placement,
             },
             animate: {
               enter: 'animated lightSpeedIn',
               exit: 'animated lightSpeedOut'
-            }
+            },
+            template: alertCfg.displayTemplate,
           });
         },
     danger: function(msg){
         $.notify({
-            icon: 'fa fa-ban fa-lg',
+            icon: 'pficon pficon-error-circle-o',
             message: msg
           },{
             type: 'danger',
-            delay: 1000,
-            timer: 1000,
+            delay: alertCfg.delay,
+            timer: alertCfg.timer,
             placement: {
-              from: "bottom"
+              from: alertCfg.placement,
             },
             animate: {
               enter: 'animated lightSpeedIn',
               exit: 'animated lightSpeedOut'
-            }
+            },
+            template: alertCfg.displayTemplate,
           });
         }
     };
@@ -96,7 +116,7 @@ myControllerModule.factory('displayRestError', function(alertService){
       //alertService.danger(angular.toJson(error));
       var displayMessage = '';
       if(error.status === 0){
-        displayMessage = '0 : NO RESPONSE, Check your network connection [or] Server status!';
+        displayMessage = 'NO RESPONSE, Check your network connection [or] Server status!';
       }else if(error.data != null){
         if(error.data.errorMessage != null){
           displayMessage = error.status +': '+ error.statusText+'<br>'+error.data.errorMessage;
