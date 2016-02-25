@@ -195,7 +195,7 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
   if($stateParams.id){
     SensorsFactory.get({"sensorId":$stateParams.id},function(response) {
         $scope.sensor = response;
-        $scope.sensorVariableTypes = TypesFactory.getSensorVariableTypes({'sensorType': $scope.sensor.type, 'sensorId': $scope.sensor.id});
+        $scope.sensorVariableTypes = TypesFactory.getSensorVariableTypes({'sensorType': $scope.sensor.type.en, 'sensorId': $scope.sensor.id});
       },function(error){
         displayRestError.display(error);
       });

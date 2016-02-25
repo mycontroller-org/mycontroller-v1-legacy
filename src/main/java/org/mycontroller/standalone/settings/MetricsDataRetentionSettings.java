@@ -36,6 +36,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class MetricsDataRetentionSettings {
     public static final String KEY_METRICS_DATA_RETENTION = "metricsDataRetention";
+
     public static final String SKEY_RETENTION_RAW_DATA = "aggregationRawData";
     public static final String SKEY_RETENTION_ONE_MINUTE = "aggregationOneMinute";
     public static final String SKEY_RETENTION_FIVE_MINUTES = "aggregationFiveMinutes";

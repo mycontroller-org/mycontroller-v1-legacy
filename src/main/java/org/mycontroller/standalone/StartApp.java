@@ -32,6 +32,7 @@ import org.mycontroller.standalone.api.jaxrs.BackupHandler;
 import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
 import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
+import org.mycontroller.standalone.api.jaxrs.ImperiHomeISSHandler;
 import org.mycontroller.standalone.api.jaxrs.NotificationHandler;
 import org.mycontroller.standalone.api.jaxrs.OptionsHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesGroupHandler;
@@ -153,6 +154,7 @@ public class StartApp {
         resources.add(BackupHandler.class.getName());
         resources.add(NotificationHandler.class.getName());
         resources.add(RoomHandler.class.getName());
+        resources.add(ImperiHomeISSHandler.class.getName());
 
         //Add PreFlight handler
         resources.add(OptionsHandler.class.getName());

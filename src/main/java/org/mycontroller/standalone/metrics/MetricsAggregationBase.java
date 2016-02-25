@@ -15,6 +15,7 @@
  */
 package org.mycontroller.standalone.metrics;
 
+import java.util.Date;
 import java.util.List;
 
 import org.mycontroller.standalone.MycUtils;
@@ -50,10 +51,10 @@ public class MetricsAggregationBase {
             _logger.warn("Should create object with valid aggregation type!");
             return;
         }
-
-        _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp, toTimestamp,
-                aggregationType);
-
+        if (_logger.isDebugEnabled()) {
+            _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp,
+                    toTimestamp, aggregationType);
+        }
         List<MetricsDoubleTypeDevice> variableIds = DaoUtils.getMetricsDoubleTypeDeviceDao()
                 .getAggregationRequiredVariableIds(sourceAggregationType, fromTimestamp, toTimestamp);
 
@@ -73,7 +74,9 @@ public class MetricsAggregationBase {
                             .sensorVariable(sensorVariable.getSensorVariable())
                             .timestampFrom(fromTimestamp)
                             .timestampTo(toTimestamp).build());
-            _logger.debug("Metrics:{}", metrics);
+            if (_logger.isDebugEnabled()) {
+                _logger.debug("Metrics:{}", metrics);
+            }
             //Calculate Metrics
             if (metrics.size() > 0) {
                 int samples = 0;
@@ -133,9 +136,10 @@ public class MetricsAggregationBase {
             _logger.warn("Should create object with valid aggregation type!");
             return;
         }
-
-        _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp, toTimestamp,
-                aggregationType);
+        if (_logger.isDebugEnabled()) {
+            _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp,
+                    toTimestamp, aggregationType);
+        }
 
         List<MetricsBatteryUsage> nodeIds = DaoUtils.getMetricsBatteryUsageDao()
                 .getAggregationRequiredNodeIds(sourceAggregationType, fromTimestamp, toTimestamp);
@@ -156,7 +160,9 @@ public class MetricsAggregationBase {
                             .node(node.getNode())
                             .timestampFrom(fromTimestamp)
                             .timestampTo(toTimestamp).build());
-            _logger.debug("Metrics:{}", metrics);
+            if (_logger.isDebugEnabled()) {
+                _logger.debug("Metrics:{}", metrics);
+            }
             //Calculate Metrics
             if (metrics.size() > 0) {
                 int samples = 0;
@@ -211,8 +217,12 @@ public class MetricsAggregationBase {
     }
 
     private void executeBucketByBucket(AGGREGATION_TYPE aggregationType, AGGREGATION_TYPE sourceAggregationType,
-            Long fromTimestamp, Long toTimestamp,
-            Long bucketDuration) {
+            Long fromTimestamp, Long toTimestamp, Long bucketDuration) {
+        if (_logger.isDebugEnabled()) {
+            _logger.debug("Aggregation Type:{}, FromTime:{}, ToTime:{}, bucketDuration:{}", aggregationType, new Date(
+                    fromTimestamp), new Date(toTimestamp), MycUtils.getFriendlyTime(bucketDuration, true));
+        }
+
         //Complete for all missed and current time
         while ((fromTimestamp + bucketDuration) <= toTimestamp) {
 
@@ -264,16 +274,18 @@ public class MetricsAggregationBase {
                 dataRetentionSettings.updateInternal();
                 dataRetentionSettings = MetricsDataRetentionSettings.get();
                 ObjectFactory.getAppProperties().setMetricsDataRetentionSettings(dataRetentionSettings);
-                _logger.debug(
-                        "Metrics settings update successfully! New referances, Last aggregation:[Raw:{}, "
-                                + "OneMinute:{}, FiveMinute:{}, OneHour:{}, SixHours:{}, TwelveHours:{}, OneDay:{}]",
-                        dataRetentionSettings.getLastAggregationRawData(),
-                        dataRetentionSettings.getLastAggregationOneMinute(),
-                        dataRetentionSettings.getLastAggregationFiveMinutes(),
-                        dataRetentionSettings.getLastAggregationOneHour(),
-                        dataRetentionSettings.getLastAggregationSixHours(),
-                        dataRetentionSettings.getLastAggregationTwelveHours(),
-                        dataRetentionSettings.getLastAggregationOneDay());
+                if (_logger.isDebugEnabled()) {
+                    _logger.debug(
+                            "Metrics settings update successfully! New referances, Last aggregation:[Raw:{}, "
+                                    + "OneMinute:{}, FiveMinute:{}, OneHour:{}, SixHours:{}, TwelveHours:{}, OneDay:{}]",
+                            dataRetentionSettings.getLastAggregationRawData(),
+                            dataRetentionSettings.getLastAggregationOneMinute(),
+                            dataRetentionSettings.getLastAggregationFiveMinutes(),
+                            dataRetentionSettings.getLastAggregationOneHour(),
+                            dataRetentionSettings.getLastAggregationSixHours(),
+                            dataRetentionSettings.getLastAggregationTwelveHours(),
+                            dataRetentionSettings.getLastAggregationOneDay());
+                }
             } else {
                 _logger.warn("metricsSettings is null cannot update");
             }
@@ -290,6 +302,10 @@ public class MetricsAggregationBase {
             _logger.warn("Already a aggregation is running. Cannot run now!");
             return;
         }
+        if (_logger.isDebugEnabled()) {
+            _logger.debug("Data retention settings:{}", ObjectFactory.getAppProperties()
+                    .getMetricsDataRetentionSettings());
+        }
         try {
             //set aggregation started
             setAggregationRunning(true);
@@ -297,8 +313,7 @@ public class MetricsAggregationBase {
             //run aggregation for one minute
             executeBucketByBucket(AGGREGATION_TYPE.ONE_MINUTE, AGGREGATION_TYPE.RAW, ObjectFactory.getAppProperties()
                     .getMetricsDataRetentionSettings().getLastAggregationOneMinute(),
-                    getToTime(AGGREGATION_TYPE.ONE_MINUTE),
-                    TIME_REF.ONE_MINUTE);
+                    getToTime(AGGREGATION_TYPE.ONE_MINUTE), TIME_REF.ONE_MINUTE);
             //run aggregation for five minutes
             executeBucketByBucket(AGGREGATION_TYPE.FIVE_MINUTES, AGGREGATION_TYPE.ONE_MINUTE, ObjectFactory
                     .getAppProperties().getMetricsDataRetentionSettings().getLastAggregationFiveMinutes(),

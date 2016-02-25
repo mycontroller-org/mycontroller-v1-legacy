@@ -18,10 +18,11 @@ package org.mycontroller.standalone.db.migration;
 import java.sql.Connection;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
+import org.mycontroller.standalone.settings.SettingsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,28 +42,54 @@ public class V1_01_04__SNAPSHOT extends MigrationBase implements JdbcMigration {
 
         /** Migration comments
          *  Description: add option to control metrics data retention
-         *  1. remove old history from settings table 
+         *  1. copy old aggregations reference to new location
+         *  2. remove old history from settings table 
          *  (last aggregation status moved under MetricsDataRetentionSettings)
-         *  2. Metrics data retention limit available for user - add default options
-         *  3. add default for last aggregation
+         *  3. Metrics data retention limit available for user - add default options
          **/
 
         //Migration #1
-        //Remove old history.       
-        DaoUtils.getSettingsDao().delete(Settings.KEY_SUB_KEY,
-                MetricsDataRetentionSettings.SKEY_LAST_AGGREGATION_RAW_DATA);
-        DaoUtils.getSettingsDao().delete(Settings.KEY_SUB_KEY,
-                MetricsDataRetentionSettings.SKEY_LAST_AGGREGATION_ONE_MINUTE);
-        DaoUtils.getSettingsDao().delete(Settings.KEY_SUB_KEY,
-                MetricsDataRetentionSettings.SKEY_LAST_AGGREGATION_FIVE_MINUTES);
-        DaoUtils.getSettingsDao().delete(Settings.KEY_SUB_KEY,
-                MetricsDataRetentionSettings.SKEY_LAST_AGGREGATION_ONE_HOUR);
-        DaoUtils.getSettingsDao().delete(Settings.KEY_SUB_KEY,
-                MetricsDataRetentionSettings.SKEY_LAST_AGGREGATION_SIX_HOURS);
-        DaoUtils.getSettingsDao().delete(Settings.KEY_SUB_KEY,
-                MetricsDataRetentionSettings.SKEY_LAST_AGGREGATION_TWELVE_HOURS);
-        DaoUtils.getSettingsDao().delete(Settings.KEY_SUB_KEY,
-                MetricsDataRetentionSettings.SKEY_LAST_AGGREGATION_ONE_DAY);
+        //copy old aggregations reference to new location
+        boolean doDelete = false;
+        if (SettingsUtils.getValue("metrics", "lastAggregationRawData") != null) {
+            MetricsDataRetentionSettings
+                    .builder()
+                    .lastAggregationRawData(
+                            MycUtils.getLong(SettingsUtils.getValue("metrics", "lastAggregationRawData")))
+                    .lastAggregationOneMinute(
+                            MycUtils.getLong(SettingsUtils.getValue("metrics", "lastAggregationOneMinute")))
+                    .lastAggregationFiveMinutes(
+                            MycUtils.getLong(SettingsUtils.getValue("metrics", "lastAggregationFiveMinutes")))
+                    .lastAggregationOneHour(
+                            MycUtils.getLong(SettingsUtils.getValue("metrics", "lastAggregationOneHour")))
+                    .lastAggregationSixHours(
+                            MycUtils.getLong(SettingsUtils.getValue("metrics", "lastAggregationSixHours")))
+                    .lastAggregationTwelveHours(
+                            MycUtils.getLong(SettingsUtils.getValue("metrics", "lastAggregationTwelveHours")))
+                    .lastAggregationOneDay(
+                            MycUtils.getLong(SettingsUtils.getValue("metrics", "lastAggregationOneDay")))
+                    .build().updateInternal();
+            doDelete = true;
+        }
+
+        //Migration #2
+        //Remove old history.
+        if (doDelete) {
+            DaoUtils.getSettingsDao().deleteById(
+                    SettingsUtils.getSettings("metrics", "lastAggregationRawData").getId());
+            DaoUtils.getSettingsDao().deleteById(
+                    SettingsUtils.getSettings("metrics", "lastAggregationOneMinute").getId());
+            DaoUtils.getSettingsDao().deleteById(
+                    SettingsUtils.getSettings("metrics", "lastAggregationFiveMinutes").getId());
+            DaoUtils.getSettingsDao().deleteById(
+                    SettingsUtils.getSettings("metrics", "lastAggregationOneHour").getId());
+            DaoUtils.getSettingsDao().deleteById(
+                    SettingsUtils.getSettings("metrics", "lastAggregationSixHours").getId());
+            DaoUtils.getSettingsDao().deleteById(
+                    SettingsUtils.getSettings("metrics", "lastAggregationTwelveHours").getId());
+            DaoUtils.getSettingsDao()
+                    .deleteById(SettingsUtils.getSettings("metrics", "lastAggregationOneDay").getId());
+        }
 
         //Migration #2
         // Metrics data retention limit available for user
@@ -76,18 +103,6 @@ public class V1_01_04__SNAPSHOT extends MigrationBase implements JdbcMigration {
                 .retentionTwelveHours(MetricsUtils.TWELVE_HOURS_MAX_RETAIN_TIME)
                 .retentionOneDay(MetricsUtils.ONE_DAY_MAX_RETAIN_TIME)
                 .build().save();
-
-        //Migration #3
-        //Update Metrics retention data reference
-        MetricsDataRetentionSettings.builder()
-                .lastAggregationRawData(System.currentTimeMillis())
-                .lastAggregationOneMinute(System.currentTimeMillis())
-                .lastAggregationFiveMinutes(System.currentTimeMillis())
-                .lastAggregationOneHour(System.currentTimeMillis())
-                .lastAggregationSixHours(System.currentTimeMillis())
-                .lastAggregationTwelveHours(System.currentTimeMillis())
-                .lastAggregationOneDay(System.currentTimeMillis())
-                .build().updateInternal();
 
         _logger.info("Migration completed successfully.");
     }
