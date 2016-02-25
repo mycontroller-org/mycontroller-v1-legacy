@@ -282,14 +282,14 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     }).state('resourcesLogsList', {
-      url:"/resources/logs/:resourceType/:resourceId",
+      url:"/status/resourceslogs/:resourceType/:resourceId",
       templateUrl: "partials/resources-logs/resources-logs-list.html",
       controller: "ResourcesLogsController",
       data: {
         requireLogin: true
       }
     }).state('resourcesLogsPurge', {
-      url:"/resources/logs/purge",
+      url:"/status/resourceslogs/purge",
       templateUrl: "partials/resources-logs/resources-logs-purge.html",
       controller: "ResourcesLogsPurgeController",
       data: {

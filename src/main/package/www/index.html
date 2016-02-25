@@ -260,7 +260,6 @@
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>{{ 'GROUPS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rooms') == 0 }"><a ui-sref="roomsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('resourcesLogs') == 0 }"><a ui-sref="resourcesLogsList"><i class="fa fa-list fa-lg"></i> {{ 'LOGS' | translate }}</a></li>
             </ul>
           </li>
           <!-- Action Board -->
@@ -275,6 +274,7 @@
             <a ui-sref="statusSystem"><i class="fa fa-file-text-o fa-lg"></i> {{ 'STATUS' | translate }}</a>
             <ul class="nav navbar-nav navbar-persistent">
               <li ng-class="{ active: $state.current.name.indexOf('statusSystem') == 0 }"><a ui-sref="statusSystem"><i class="fa fa-heartbeat fa-lg"></i> {{ 'SYSTEM_STATUS' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('resourcesLogs') == 0 }"><a ui-sref="resourcesLogsList"><i class="fa fa-list fa-lg"></i> {{ 'RESOURCES_LOGS' | translate }}</a></li>
             </ul>
           </li>
           <!-- Settings -->
