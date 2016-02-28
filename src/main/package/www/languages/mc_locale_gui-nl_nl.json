@@ -342,6 +342,7 @@
     "REBOOT_CONFIRMATION_MESSAGE": "You are about to reboot selected items<br>Click 'Reboot' to proceed.",
     "REBOOT_CONFIRMATION_TITLE": "Reboot",
     "REBOOT_INITIATED": "Reboot initiated for selected items.",
+    "REFRESH": "Refresh",
     "REFRESH_TIME_SECONDS": "Refresh time(seconds)",
     "RELEASES": "Releases",
     "RELOAD": "Reload",

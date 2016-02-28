@@ -38,6 +38,13 @@ $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
   $scope.logData = [];
   $scope.logLevel = null;
   
+  //Refresh
+  $scope.refreshLogs = function(){
+    $scope.initialLog = StatusFactory.getMcServerLog(function(response){
+      $scope.logData = response.data;
+    });
+  };
+  
   //Get log level string
   /*
   $scope.getLogLevel = function(log){

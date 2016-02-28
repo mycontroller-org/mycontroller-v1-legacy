@@ -16,7 +16,6 @@
 package org.mycontroller.standalone;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -78,12 +77,12 @@ public class BackupRestore {
                 final ZipOutputStream outZip = new ZipOutputStream(
                         new FileOutputStream(applicationBackupDir + ".zip"));
                 //add database file
-                addToZipFile(applicationBackupDir + "/" + DATABASE_FILENAME, outZip);
+                MycUtils.addToZipFile(applicationBackupDir + "/" + DATABASE_FILENAME, outZip);
                 //add properties file
-                addToZipFile(applicationBackupDir + "/" + APP_PROPERTIES_FILENAME, outZip);
+                MycUtils.addToZipFile(applicationBackupDir + "/" + APP_PROPERTIES_FILENAME, outZip);
                 //add keystore file, if https enabled
                 if (ObjectFactory.getAppProperties().isWebHttpsEnabled() && KEY_STORE_FILE != null) {
-                    addToZipFile(KEY_STORE_FILE, outZip);
+                    MycUtils.addToZipFile(KEY_STORE_FILE, outZip);
                 }
                 //compress all the files
                 outZip.close();
@@ -196,23 +195,6 @@ public class BackupRestore {
         } catch (IOException ex) {
             _logger.error("Static file backup failed!", ex);
         }
-    }
-
-    private static void addToZipFile(String fileName, ZipOutputStream zos) throws FileNotFoundException, IOException {
-        _logger.debug("Writing '{}' to zip file", fileName);
-        File file = FileUtils.getFile(fileName);
-        FileInputStream fis = new FileInputStream(file);
-        ZipEntry zipEntry = new ZipEntry(FileUtils.getFile(fileName).getName());
-        zos.putNextEntry(zipEntry);
-
-        byte[] bytes = new byte[1024];
-        int length;
-        while ((length = fis.read(bytes)) >= 0) {
-            zos.write(bytes, 0, length);
-        }
-
-        zos.closeEntry();
-        fis.close();
     }
 
     private static void extractZipFile(String zipFileName, String destination)

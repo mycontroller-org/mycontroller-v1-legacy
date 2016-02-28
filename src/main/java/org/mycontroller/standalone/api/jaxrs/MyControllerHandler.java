@@ -15,6 +15,9 @@
  */
 package org.mycontroller.standalone.api.jaxrs;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 
 import javax.annotation.security.RolesAllowed;
@@ -24,13 +27,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.About;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
-import org.mycontroller.standalone.api.jaxrs.utils.AppLogFileTail;
+import org.mycontroller.standalone.api.jaxrs.utils.McServerLogFile;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
@@ -78,8 +85,35 @@ public class MyControllerHandler extends AccessEngine {
     @Path("/mcServerLogFile")
     public Response getMcServerLogFile(
             @QueryParam("lastKnownPosition") Long lastKnownPosition,
-            @QueryParam("lastNPosition") Long lastNPosition) {
-        return RestUtils.getResponse(Status.OK, AppLogFileTail.getUpdate(lastKnownPosition, lastNPosition));
+            @QueryParam("lastNPosition") Long lastNPosition,
+            @QueryParam("download") Boolean download) throws IOException {
+
+        if (download != null && download) {
+            String zipFileName = McServerLogFile.getLogsZipFile();
+            String fileName = FileUtils.getFile(zipFileName).getName();
+
+            StreamingOutput fileStream = new StreamingOutput() {
+                @Override
+                public void write(java.io.OutputStream output) throws IOException, WebApplicationException {
+                    try {
+                        java.nio.file.Path path = Paths.get(zipFileName);
+                        byte[] data = Files.readAllBytes(path);
+                        output.write(data);
+                        output.flush();
+                    } catch (Exception ex) {
+                        throw new WebApplicationException("File Not Found !!");
+                    } finally {
+                        FileUtils.deleteQuietly(FileUtils.getFile(zipFileName));
+                    }
+                }
+            };
+            return Response
+                    .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("content-disposition", "attachment; filename = " + fileName)
+                    .build();
+        } else {
+            return RestUtils.getResponse(Status.OK, McServerLogFile.getLogUpdate(lastKnownPosition, lastNPosition));
+        }
     }
 
     //TODO: remove this method, no longer in use

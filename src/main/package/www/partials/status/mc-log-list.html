@@ -27,6 +27,11 @@
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
     
+    <!-- buttons -->
+    <div style="margin-bottom: 10px;">
+        <button class="btn btn-default" ng-click="refreshLogs()" type="button" tooltip="{{ 'REFRESH' | translate }}" tooltip-placement="top"><i class="fa fa-refresh"></i></button> 
+    </div>
+        
     <!-- 
     <span class="mc-log text-{{getLogLevel(log)}}" ng-repeat="log in logData track by $index">
       {{log}}

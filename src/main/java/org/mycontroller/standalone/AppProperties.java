@@ -17,6 +17,7 @@ package org.mycontroller.standalone;
 
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
@@ -334,6 +335,9 @@ public class AppProperties {
         this.tmpLocation = getValue(properties, "mcc.tmp.location");
         if (!this.tmpLocation.endsWith("/")) {
             this.tmpLocation = this.tmpLocation + "/";
+        }
+        if (!FileUtils.getFile(tmpLocation).mkdirs()) {
+            _logger.error("Unable to create tmp location, Location:{}", tmpLocation);
         }
 
         this.dbH2DbLocation = getValue(properties, "mcc.db.h2db.location");

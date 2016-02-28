@@ -15,12 +15,19 @@
  */
 package org.mycontroller.standalone;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.slf4j.Logger;
@@ -245,6 +252,24 @@ public class MycUtils {
 
     public static void updateLocale() {
         updateLocale(MC_LANGUAGE.fromString(ObjectFactory.getAppProperties().getControllerSettings().getLanguage()));
+    }
+
+    /* file utils*/
+    public static void addToZipFile(String fileName, ZipOutputStream zos) throws FileNotFoundException, IOException {
+        _logger.debug("Writing '{}' to zip file", fileName);
+        File file = FileUtils.getFile(fileName);
+        FileInputStream fis = new FileInputStream(file);
+        ZipEntry zipEntry = new ZipEntry(FileUtils.getFile(fileName).getName());
+        zos.putNextEntry(zipEntry);
+
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zos.write(bytes, 0, length);
+        }
+
+        zos.closeEntry();
+        fis.close();
     }
 
 }

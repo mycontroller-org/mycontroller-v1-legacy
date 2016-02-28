@@ -342,6 +342,7 @@
     "REBOOT_CONFIRMATION_MESSAGE": "Вы собираетесь перезагрузить выбранные элементы <br> Нажмите \"Reboot\", чтобы продолжить",
     "REBOOT_CONFIRMATION_TITLE": "Перезагрузка",
     "REBOOT_INITIATED": "Началась перезагрузка выбранных элементов",
+    "REFRESH": "Refresh",
     "REFRESH_TIME_SECONDS": "Время обновления (секунды)",
     "RELEASES": "Релизы",
     "RELOAD": "Перезагрузка",

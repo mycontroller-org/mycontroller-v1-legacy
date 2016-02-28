@@ -79,8 +79,8 @@
             <!-- Quick access buttons -->
             <div class="col-md-1">
               <div class=" pull-right">
-                <a class="btn btn-link mc-padding" ng-model="radioModel" ng-click="refreshSensor(item)"><i class="fa fa-refresh  mc-icon-lg mc-inline-editer-ab" tooltip="Refresh" tooltip-placement="left"></i></a>
-                <a class="btn btn-link mc-padding" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right mc-icon-lg" tooltip="View Details" tooltip-placement="left"></i></a>
+                <a class="btn btn-link mc-padding" ng-model="radioModel" ng-click="refreshSensor(item)"><i class="fa fa-refresh  mc-icon-lg mc-inline-editer-ab" tooltip="{{ 'REFRESH' | translate }}" tooltip-placement="left"></i></a>
+                <a class="btn btn-link mc-padding" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right mc-icon-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-placement="left"></i></a>
               </div>
             </div>
   

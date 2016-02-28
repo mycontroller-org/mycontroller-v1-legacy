@@ -342,6 +342,7 @@
     "REBOOT_CONFIRMATION_MESSAGE": "Está a punto de reiniciar los elementos seleccionado(s) <br>haga clic en 'Reiniciar' para proceder.",
     "REBOOT_CONFIRMATION_TITLE": "Reiniciar",
     "REBOOT_INITIATED": "Reiniciar iniciado para los elementos seleccionados.",
+    "REFRESH": "Refresh",
     "REFRESH_TIME_SECONDS": "Tiempo de refresco (seconds)",
     "RELEASES": "Versiones",
     "RELOAD": "Volver a cargar",

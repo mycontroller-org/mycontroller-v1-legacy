@@ -342,6 +342,7 @@
     "REBOOT_CONFIRMATION_MESSAGE": "Estás por reiniciar lo items seleccionado<br>Presiona 'Reiniciar' para proceder.",
     "REBOOT_CONFIRMATION_TITLE": "Reiniciar",
     "REBOOT_INITIATED": "Reinicio iniciado para los items seleccionados.",
+    "REFRESH": "Refresh",
     "REFRESH_TIME_SECONDS": "Tiempo de refrezco (segundos)",
     "RELEASES": "Lanzamientos",
     "RELOAD": "Recargar",
