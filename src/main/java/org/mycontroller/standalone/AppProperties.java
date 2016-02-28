@@ -74,7 +74,7 @@ public class AppProperties {
         EN_US("English (US)"),
         TA_IN("தமிழ் (IN)"),
         DE_DE("Deutsch (DE)"),
-        RU_RU("русский (RU)"),
+        RU_RU("Русский (RU)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
         CA_ES("català (ES)");
