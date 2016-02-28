@@ -18,39 +18,43 @@ package org.mycontroller.standalone;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Properties;
 
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
-import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
-import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
+
 import org.mycontroller.standalone.api.jaxrs.AlarmHandler;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.BackupHandler;
 import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
+import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
+import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
 import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
 import org.mycontroller.standalone.api.jaxrs.ImperiHomeISSHandler;
+import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
+import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
+import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
+import org.mycontroller.standalone.api.jaxrs.NodeHandler;
 import org.mycontroller.standalone.api.jaxrs.NotificationHandler;
 import org.mycontroller.standalone.api.jaxrs.OptionsHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesGroupHandler;
-import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
-import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
-import org.mycontroller.standalone.api.jaxrs.NodeHandler;
-import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
-import org.mycontroller.standalone.api.jaxrs.RoomHandler;
-import org.mycontroller.standalone.api.jaxrs.SensorHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesLogsHandler;
+import org.mycontroller.standalone.api.jaxrs.RoomHandler;
+import org.mycontroller.standalone.api.jaxrs.SecurityHandler;
+import org.mycontroller.standalone.api.jaxrs.SensorHandler;
 import org.mycontroller.standalone.api.jaxrs.SettingsHandler;
 import org.mycontroller.standalone.api.jaxrs.TimerHandler;
 import org.mycontroller.standalone.api.jaxrs.TypesHandler;
 import org.mycontroller.standalone.api.jaxrs.UidTagHandler;
-import org.mycontroller.standalone.api.jaxrs.SecurityHandler;
-import org.mycontroller.standalone.api.jaxrs.exception.mappers.*;
-import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
+import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
+import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
+import org.mycontroller.standalone.auth.McContainerRequestFilter;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.gateway.GatewaySerial;
@@ -61,6 +65,7 @@ import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.mysensors.MySensorsIActionEngine;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,42 +139,44 @@ public class StartApp {
             deployment = new ResteasyDeployment();
         }
         ArrayList<String> resources = new ArrayList<String>();
-        resources.add(MyControllerHandler.class.getName());
-        resources.add(NodeHandler.class.getName());
-        resources.add(SensorHandler.class.getName());
-        resources.add(TypesHandler.class.getName());
-        resources.add(MetricsHandler.class.getName());
-        resources.add(AuthenticationHandler.class.getName());
-        resources.add(SecurityHandler.class.getName());
         resources.add(AlarmHandler.class.getName());
-        resources.add(ResourcesLogsHandler.class.getName());
-        resources.add(TimerHandler.class.getName());
-        resources.add(ForwardPayloadHandler.class.getName());
-        resources.add(UidTagHandler.class.getName());
-        resources.add(FirmwareHandler.class.getName());
-        resources.add(SettingsHandler.class.getName());
-        resources.add(GatewayHandler.class.getName());
-        resources.add(ResourcesGroupHandler.class.getName());
-        resources.add(DashboardHandler.class.getName());
+        resources.add(AuthenticationHandler.class.getName());
         resources.add(BackupHandler.class.getName());
-        resources.add(NotificationHandler.class.getName());
-        resources.add(RoomHandler.class.getName());
+        resources.add(DashboardHandler.class.getName());
+        resources.add(FirmwareHandler.class.getName());
+        resources.add(ForwardPayloadHandler.class.getName());
+        resources.add(GatewayHandler.class.getName());
         resources.add(ImperiHomeISSHandler.class.getName());
+        resources.add(MetricsHandler.class.getName());
+        resources.add(NodeHandler.class.getName());
+        resources.add(NotificationHandler.class.getName());
+        resources.add(ResourcesGroupHandler.class.getName());
+        resources.add(ResourcesLogsHandler.class.getName());
+        resources.add(RoomHandler.class.getName());
+        resources.add(SecurityHandler.class.getName());
+        resources.add(SensorHandler.class.getName());
+        resources.add(SettingsHandler.class.getName());
+        resources.add(TimerHandler.class.getName());
+        resources.add(TypesHandler.class.getName());
+        resources.add(UidTagHandler.class.getName());
+        resources.add(MyControllerHandler.class.getName());
 
         //Add PreFlight handler
         resources.add(OptionsHandler.class.getName());
 
         //Add Exception mapper(providers)
         ArrayList<Object> providers = new ArrayList<Object>();
+        providers.add(new ApplicationExceptionMapper());
         providers.add(new BadRequestExceptionMapper());
-        providers.add(new NotAcceptableExceptionMapper());
-        providers.add(new NotAllowedExceptionMapper());
-        providers.add(new NotFoundExceptionMapper());
-        providers.add(new NotSupportedExceptionMapper());
         providers.add(new DefaultOptionsMethodExceptionMapper());
         providers.add(new ForbiddenExceptionMapper());
-        providers.add(new ApplicationExceptionMapper());
+        providers.add(new McContainerRequestFilter());//SecurityInterceptor
         providers.add(new McJacksonJson2Provider()); //Mixin provider
+        providers.add(new NotAcceptableExceptionMapper());
+        providers.add(new NotAllowedExceptionMapper());
+        providers.add(new NotAuthorizedExceptionMapper());
+        providers.add(new NotFoundExceptionMapper());
+        providers.add(new NotSupportedExceptionMapper());
 
         //Add all resourceClasses
         deployment.setResourceClasses(resources);
