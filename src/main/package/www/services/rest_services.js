@@ -329,6 +329,7 @@ myControllerModule.factory('StatusFactory', function ($resource) {
    
    getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
    sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
+   getMcServerLog: { method: 'GET', isArray: false, params: {type:'mcServerLogFile'} },
   })
 });
 

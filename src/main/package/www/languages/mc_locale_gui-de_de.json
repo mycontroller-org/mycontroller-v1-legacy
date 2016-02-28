@@ -262,6 +262,7 @@
     "MQTT_CLIENT_ID_EXAMPLE": "Beispiel: mycontroller-mqtt-client",
     "MQTT_TOPIC_PUBLISH_EXAMPLE": "Beispiel: mygateway-in",
     "MQTT_TOPIC_SUBSCRIBE_EXAMPLE": "Beispiel: mygateway-out",
+    "MYCONTROLLER_SERVER_LOG": "MyController server log",
     "MY_CONTROLLER": "MyController",
     "MY_SENSORS": "MySensors",
     "NAME": "Name",

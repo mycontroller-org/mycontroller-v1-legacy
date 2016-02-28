@@ -25,3 +25,48 @@ $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
    $scope.jvmStatus = StatusFactory.getJvmStatus();  
   
 });
+
+myControllerModule.controller('StatusMcLogController', function(alertService,
+$scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
+  
+  //GUI page settings
+  $scope.headerStringList = $filter('translate')('MYCONTROLLER_SERVER_LOG');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_LOGS_AVAILABLE');
+  $scope.noItemsSystemIcon = "fa fa-list";
+  
+  $scope.initialLog = {};
+  $scope.logData = [];
+  $scope.logLevel = null;
+  
+  //Get log level string
+  /*
+  $scope.getLogLevel = function(log){
+    if(log.indexOf(' ERROR ') > -1 ){
+      $scope.logLevel = "danger";
+    }else if(log.indexOf(' INFO ') > -1 ){
+      $scope.logLevel = "info";
+    }else if(log.indexOf(' WARN ') > -1 ){
+      $scope.logLevel = "warning";
+    }else if(log.indexOf(' DEBUG ') > -1 ){
+      $scope.logLevel = "default";
+    }
+    
+    if(!$scope.logLevel){
+      $scope.logLevel = "default";
+    }
+    return $scope.logLevel;
+  }
+  */
+  //Pre load
+  $scope.initialLog = StatusFactory.getMcServerLog(function(response){
+    $scope.logData = response.data;
+    /*
+    if(response.data && response.data.length > 0){
+      $scope.logData = response.data.split('\n');
+    }
+    */
+  });
+ 
+  
+});
+

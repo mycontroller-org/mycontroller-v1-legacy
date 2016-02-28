@@ -295,6 +295,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       data: {
         requireLogin: true
       }
+    }).state('mycontrollerLogList', {
+      url:"/status/log/mycontroller",
+      templateUrl: "partials/status/mc-log-list.html",
+      controller: "StatusMcLogController",
+      data: {
+        requireLogin: true
+      }
     })
     
     
