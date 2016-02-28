@@ -71,13 +71,14 @@ public class AppProperties {
     BackupSettings backupSettings;
 
     public enum MC_LANGUAGE {
-        EN_US("English (US)"),
-        TA_IN("தமிழ் (IN)"),
+        CA_ES("català (ES)"),
         DE_DE("Deutsch (DE)"),
-        RU_RU("Русский (RU)"),
+        EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
-        CA_ES("català (ES)");
+        NL_NL("Nederlands (NL)"),
+        RU_RU("Русский (RU)"),
+        TA_IN("தமிழ் (IN)");
 
         private final String name;
 
