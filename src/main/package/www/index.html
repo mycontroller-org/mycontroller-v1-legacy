@@ -275,7 +275,7 @@
             <ul class="nav navbar-nav navbar-persistent">
               <li ng-class="{ active: $state.current.name.indexOf('statusSystem') == 0 }"><a ui-sref="statusSystem"><i class="fa fa-heartbeat fa-lg"></i> {{ 'SYSTEM_STATUS' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('resourcesLogs') == 0 }"><a ui-sref="resourcesLogsList"><i class="fa fa-list fa-lg"></i> {{ 'RESOURCES_LOGS' | translate }}</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('mycontrollerLogList') == 0 }"><a ui-sref="mycontrollerLogList"><i class="fa fa-list fa-lg"></i> {{ 'MYCONTROLLER_SERVER_LOG' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('mycontrollerLogList') == 0 }"><a ui-sref="mycontrollerLogList"><i class="fa fa-list fa-lg"></i> {{ 'MYCONTROLLER_SERVER_LOG' | translate }}</a></li>
             </ul>
           </li>
           <!-- Settings -->
