@@ -23,12 +23,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.About;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
+import org.mycontroller.standalone.api.jaxrs.utils.AppLogFileTail;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
@@ -69,6 +71,15 @@ public class MyControllerHandler extends AccessEngine {
     @Path("/about")
     public Response about() {
         return RestUtils.getResponse(Status.OK, new About());
+    }
+
+    @RolesAllowed({ "Admin" })
+    @GET
+    @Path("/mcServerLogFile")
+    public Response getMcServerLogFile(
+            @QueryParam("lastKnownPosition") Long lastKnownPosition,
+            @QueryParam("lastNPosition") Long lastNPosition) {
+        return RestUtils.getResponse(Status.OK, AppLogFileTail.getUpdate(lastKnownPosition, lastNPosition));
     }
 
     //TODO: remove this method, no longer in use
