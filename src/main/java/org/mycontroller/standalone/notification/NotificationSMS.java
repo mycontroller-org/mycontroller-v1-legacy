@@ -15,7 +15,6 @@
  */
 package org.mycontroller.standalone.notification;
 
-import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Notification;
@@ -61,19 +60,11 @@ public class NotificationSMS implements INotificationEngine {
                     + this.alarmDefinition.getName());
         }
         try {
+            AlarmNotification alarmNotification = new AlarmNotification(alarmDefinition, actualValue);
             if (customMessage != null && customMessage.trim().length() > 0) {
-                SMSUtils.sendSMS(this.toPhoneNumber, this.customMessage);
+                SMSUtils.sendSMS(toPhoneNumber, alarmNotification.updateReferances(customMessage));
             } else {
-                StringBuilder builder = new StringBuilder();
-                builder.append("AlarmDefinition: [")
-                        .append(alarmDefinition.getName())
-                        .append("], Cond: ").append(AlarmUtils.getConditionString(alarmDefinition))
-                        .append(AlarmUtils.getSensorUnit(alarmDefinition, true))
-                        .append(", Present Value:").append(actualValue)
-                        .append(AlarmUtils.getSensorUnit(alarmDefinition, false))
-                        .append(", ").append(AlarmUtils.getResourceString(alarmDefinition, false))
-                        .append("\nwww.mycontroller.org");
-                SMSUtils.sendSMS(this.toPhoneNumber, builder.toString());
+                SMSUtils.sendSMS(this.toPhoneNumber, alarmNotification.toString());
             }
         } catch (Exception ex) {
             _logger.error("Exception,", ex);

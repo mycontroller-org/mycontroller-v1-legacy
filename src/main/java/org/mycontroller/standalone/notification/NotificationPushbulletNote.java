@@ -15,7 +15,6 @@
  */
 package org.mycontroller.standalone.notification;
 
-import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Notification;
@@ -47,8 +46,8 @@ public class NotificationPushbulletNote implements INotificationEngine {
 
     public NotificationPushbulletNote update() {
         this.idens = notification.getVariable1();
-        this.title = notification.getVariable2();
-        this.body = notification.getVariable3();
+        this.body = notification.getVariable2();
+        this.title = notification.getVariable3();
         return this;
     }
 
@@ -59,19 +58,17 @@ public class NotificationPushbulletNote implements INotificationEngine {
     @Override
     public void execute() {
         try {
+            AlarmNotification alarmNotification = new AlarmNotification(alarmDefinition, actualValue);
             if (body != null && body.trim().length() > 0) {
-                PushbulletUtils.sendNote(idens, title, body);
+                PushbulletUtils.sendNote(
+                        idens,
+                        alarmNotification.updateReferances(title),
+                        alarmNotification.updateReferances(body));
             } else {
-                StringBuilder builder = new StringBuilder();
-                builder.append("AlarmDefinition: [")
-                        .append(alarmDefinition.getName())
-                        .append("], Cond: ").append(AlarmUtils.getConditionString(alarmDefinition))
-                        .append(AlarmUtils.getSensorUnit(alarmDefinition, true))
-                        .append(", Present Value:").append(actualValue)
-                        .append(AlarmUtils.getSensorUnit(alarmDefinition, false))
-                        .append(", ").append(AlarmUtils.getResourceString(alarmDefinition, false))
-                        .append("\nwww.mycontroller.org");
-                PushbulletUtils.sendNote(idens, title, builder.toString());
+                PushbulletUtils.sendNote(
+                        idens,
+                        alarmNotification.updateReferances(title),
+                        alarmNotification.toString());
             }
         } catch (Exception ex) {
             _logger.error("Exception,", ex);

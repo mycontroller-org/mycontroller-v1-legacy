@@ -19,13 +19,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.commons.mail.EmailException;
-import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Notification;
@@ -48,14 +43,18 @@ import lombok.ToString;
 @ToString(includeFieldNames = true)
 public class NotificationEmail implements INotificationEngine {
     private static final Logger _logger = LoggerFactory.getLogger(NotificationEmail.class);
+    public static final String EMAIL_TEMPLATE_ALARM = "../conf/templates/emailTemplateAlarm.html";
 
     private String toEmailAddress;
+    private String emailSubject;
+
     private Notification notification;
     private AlarmDefinition alarmDefinition;
     private String actualValue;
 
     public NotificationEmail update() {
-        this.toEmailAddress = notification.getVariable1();
+        emailSubject = notification.getVariable1();
+        toEmailAddress = notification.getVariable2();
         return this;
     }
 
@@ -65,77 +64,26 @@ public class NotificationEmail implements INotificationEngine {
 
     @Override
     public void execute() {
-
-        if (this.toEmailAddress == null) {
+        if (toEmailAddress == null) {
             throw new RuntimeException("Cannot execute send email without email address! AlarmDefinition name: "
                     + this.alarmDefinition.getName());
         }
 
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("AlarmDefinition: [").append(alarmDefinition.getName()).append("/")
-                .append(alarmDefinition.getResourceType().getText())
-                .append("] triggered!");
-
-        String subject = builder.toString();
-
-        builder.setLength(0);
-
-        builder.append("<table border='0'>");
-
-        builder.append("<tr>");
-        builder.append("<td>").append("AlarmDefinition Name").append("</td>");
-        builder.append("<td>").append(": ").append(alarmDefinition.getName()).append("</td>");
-        builder.append("<tr>");
-
-        builder.append("<tr>");
-        builder.append("<td>").append("Condition").append("</td>");
-        builder.append("<td>").append(": ").append(AlarmUtils.getConditionString(alarmDefinition))
-                .append(AlarmUtils.getSensorUnit(alarmDefinition, true))
-                .append("</td>");
-        builder.append("<tr>");
-
-        builder.append("<tr>");
-        builder.append("<td>").append("Dampening").append("</td>");
-        builder.append("<td>")
-                .append(": ").append(alarmDefinition.getDampeningString()).append("</td>");
-        builder.append("<tr>");
-
-        builder.append("<tr>");
-        builder.append("<td>").append(alarmDefinition.getResourceType().getText()).append("</td>");
-        builder.append("<td>")
-                .append(": ").append(AlarmUtils.getResourceString(alarmDefinition, false)).append("</td>");
-        builder.append("<tr>");
-
-        builder.append("<tr>");
-        builder.append("<td>").append("Sensor Value").append("</td>");
-        builder.append("<td>")
-                .append(": ").append(actualValue).append(AlarmUtils.getSensorUnit(alarmDefinition, false))
-                .append("</td>");
-        builder.append("<tr>");
-
-        builder.append("<tr>");
-        builder.append("<td>").append("Triggered at").append("</td>");
-        builder.append("<td>")
-                .append(": ")
-                .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormat()).format(new Date()))
-                .append("</td>");
-        builder.append("<tr>");
-
-        builder.append("</table>");
-
-        String message = null;
+        AlarmNotification alarmNotification = new AlarmNotification(alarmDefinition, actualValue);
+        String emailBody = null;
         try {
-            message = new String(Files.readAllBytes(Paths.get(AppProperties.EMAIL_TEMPLATE_ALARM)),
+            emailBody = new String(Files.readAllBytes(Paths.get(EMAIL_TEMPLATE_ALARM)),
                     StandardCharsets.UTF_8);
         } catch (IOException ex) {
             _logger.error("Exception, ", ex);
-            message = ex.getMessage();
+            emailBody = ex.getMessage();
         }
 
         try {
-            EmailUtils.sendSimpleEmail(this.toEmailAddress, subject,
-                    message.replaceAll(EmailUtils.ALARM_INFO, builder.toString()));
+            EmailUtils.sendSimpleEmail(
+                    toEmailAddress,
+                    alarmNotification.updateReferances(emailSubject),
+                    alarmNotification.updateReferances(emailBody));
         } catch (EmailException ex) {
             _logger.error("Error on sending email, ", ex);
         }

@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 public class EmailUtils {
     private static final Logger _logger = LoggerFactory.getLogger(EmailUtils.class);
 
-    public static final String ALARM_INFO = "\\$alarmInfo";
-
     private static HtmlEmail email = null;
 
     private EmailUtils() {

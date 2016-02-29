@@ -42,7 +42,6 @@ public class AppProperties {
     private static final Logger _logger = LoggerFactory.getLogger(AppProperties.class.getName());
 
     public static final String APPLICATION_NAME = "MyController.org";
-    public static final String EMAIL_TEMPLATE_ALARM = "../conf/templates/emailTemplateAlarm.html";
 
     private String tmpLocation;
 
@@ -401,6 +400,14 @@ public class AppProperties {
             return true;
         }
         return false;
+    }
+
+    public String getDateFormatWithTimezone() {
+        if (is12HoursSelected()) {
+            return "MMM dd, yyyy hh:mm:ss a z";
+        } else {
+            return "MMM dd, yyyy HH:mm:ss z";
+        }
     }
 
     public String getDateFormat() {

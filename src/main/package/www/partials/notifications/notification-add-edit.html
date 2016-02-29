@@ -66,12 +66,21 @@
           </div>
           
           <!-- email Notification -->
-  
-          <div class="form-group" ng-if="notification.type === 'Send email'">
-            <label class="col-sm-2 control-label">{{ 'EMAILS' | translate }}</label>
-            <div class="col-sm-10">
-              <textarea class="form-control" placeholder="{{ 'EMAIL_ADDRESSES_COMMA_SEPARATED' | translate }}" ng-model="notification.variable1" rows="4" required />
+          <div ng-if="notification.type === 'Send email'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'SUBJECT' | translate }}</label>
+              <div class="col-sm-10 ">
+                <input class="form-control" placeholder="{{ 'SUBJECT' | translate }}" ng-model="notification.variable1" required />
+              </div>
             </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'EMAILS' | translate }}</label>
+              <div class="col-sm-10">
+                <textarea class="form-control" placeholder="{{ 'EMAIL_ADDRESSES_COMMA_SEPARATED' | translate }}" ng-model="notification.variable2" rows="4" required />
+              </div>
+            </div>
+
           </div>
           
           <!-- SMS Notification -->
@@ -103,14 +112,14 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'TITLE' | translate }}</label>
               <div class="col-sm-10 ">
-                <input class="form-control" placeholder="{{ 'TITLE' | translate }}" ng-model="notification.variable2" required />
+                <input class="form-control" placeholder="{{ 'TITLE' | translate }}" ng-model="notification.variable3" required />
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'CUSTOM_MESSAGE' | translate }}</label>
               <div class="col-sm-10">
-                <textarea class="form-control" placeholder="{{ 'CUSTOM_MESSAGE' | translate }}" ng-model="notification.variable3" rows="4"/>
+                <textarea class="form-control" placeholder="{{ 'CUSTOM_MESSAGE' | translate }}" ng-model="notification.variable2" rows="4"/>
               </div>
             </div>
           </div>
