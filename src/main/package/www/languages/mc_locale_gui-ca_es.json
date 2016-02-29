@@ -341,6 +341,7 @@
     "PURGE_RESOURCES_LOGS": "Vuidar els registres de Logs",
     "PURGE_WARNING": "WARNING: If you don't select any parameter, This process will delete everything!",
     "PURGING": "Purging",
+    "PUSHBULLET": "Pushbullet",
     "RAW_DATA": "Raw data",
     "REBOOT": "Reboot",
     "REBOOT_CONFIRMATION_MESSAGE": "You are about to reboot selected items<br>Click 'Reboot' to proceed.",

@@ -341,6 +341,7 @@
     "PURGE_RESOURCES_LOGS": "Vaciado de los registros de Logs",
     "PURGE_WARNING": "ADVERTENCIA: Si no selecciona ningún parámetro, este proceso eliminará todo!",
     "PURGING": "Vaciando",
+    "PUSHBULLET": "Pushbullet",
     "RAW_DATA": "Datos en bruto",
     "REBOOT": "Reiniciar el sistema",
     "REBOOT_CONFIRMATION_MESSAGE": "Está a punto de reiniciar los elementos seleccionado(s) <br>haga clic en 'Reiniciar' para proceder.",
