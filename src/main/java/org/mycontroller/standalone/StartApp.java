@@ -55,9 +55,7 @@ import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.auth.McContainerRequestFilter;
-import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DataBaseUtils;
-import org.mycontroller.standalone.gateway.GatewaySerial;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.message.RawMessageQueue;
@@ -88,22 +86,6 @@ public class StartApp {
             _logger.error("Unable to start application, refer error log,", ex);
             System.exit(1);//Terminate jvm, with non zero
         }
-    }
-
-    private static void addGateway() {
-        if (DaoUtils.getGatewayDao().getAll().isEmpty()) {
-            GatewaySerial gateway = new GatewaySerial();
-            gateway.setEnabled(true);
-            gateway.setType(GatewayUtils.TYPE.SERIAL);
-            gateway.setNetworkType(NETWORK_TYPE.MY_SENSORS);
-            gateway.setName("Serial-gateway");
-            gateway.setPortName("/dev/ttyUSB0");
-            gateway.setBaudRate(115200);
-            gateway.setDriver(GatewayUtils.SERIAL_PORT_DRIVER.AUTO);
-            gateway.setRetryFrequency(60 * 60);
-            DaoUtils.getGatewayDao().create(gateway.getGateway());
-        }
-
     }
 
     public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException {
@@ -267,10 +249,6 @@ public class StartApp {
 
         // - Start MQTT Broker
         MoquetteMqttBroker.start();
-
-        //TODO: ------------------REMOVE BELOW LINE----------------------
-        addGateway();
-        //------------------------REMOVE ABOVE LINE----------------------
 
         //Start all the gateways
         GatewayUtils.loadAllGateways();
