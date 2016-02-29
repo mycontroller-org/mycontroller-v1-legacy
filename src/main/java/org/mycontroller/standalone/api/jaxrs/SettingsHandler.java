@@ -31,17 +31,20 @@ import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.notification.PushbulletUtils;
+import org.mycontroller.standalone.notification.SMSUtils;
+import org.mycontroller.standalone.restclient.pushbullet.model.User;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
+import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
 import org.mycontroller.standalone.settings.UserNativeSettings;
-import org.mycontroller.standalone.sms.SMSUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,6 +163,42 @@ public class SettingsHandler extends AccessEngine {
         //When update sms notification settings, clear clients
         SMSUtils.clearClients();
         return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/pushbullet")
+    public Response getPushbullet() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getPushbulletSettings());
+    }
+
+    @POST
+    @Path("/pushbullet")
+    public Response savePushbullet(PushbulletSettings pushbulletSettings) {
+        try {
+            pushbulletSettings.save();
+            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            //Clear everything
+            PushbulletSettings.builder()
+                    .active(null)
+                    .name(null)
+                    .email(null)
+                    .imageUrl(null)
+                    .iden(null).build().updateInternal();
+            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            PushbulletUtils.clearClient();//Clear client when updated
+
+            User user = PushbulletUtils.getCurrentUser();
+            PushbulletSettings.builder()
+                    .active(user.getActive())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .imageUrl(user.getImageUrl())
+                    .iden(user.getIden()).build().updateInternal();
+            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
     }
 
     @GET

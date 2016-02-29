@@ -98,10 +98,68 @@
     </div>
     
     
+    <!-- Pushbullet settings -->
+    <div class="col-md-12">
+      <div class="card-pf">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-mobile fa-lg"></i> {{ 'PUSHBULLET' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcFormPushbulletNotification">
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ACCESS_TOKEN' | translate }}</label>
+              <div class="col-sm-7">
+                <input ng-show="editEnable.pushbullet" class="form-control" ng-model="pushbulletSettings.accessToken" required />
+                <span ng-hide="editEnable.pushbullet">**********</span>
+              </div>
+            </div>
+            
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'IDEN' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{pushbulletSettings.iden}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ACTIVE' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{pushbulletSettings.active}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{pushbulletSettings.name}}</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'EMAIL' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{pushbulletSettings.email}}</span>
+              </div>
+            </div>
+            
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.pushbullet" ng-click="editEnable.pushbullet = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.pushbullet" ng-click="updateSettingsPushbullet();editEnable.pushbullet = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="savePushbullet()"  ng-show="editEnable.pushbullet" ng-disabled="saveProgress.pushbullet || mcFormPushbulletNotification.$invalid">
+              <div ng-show="saveProgress.sms" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- SMS settings -->
     <div class="col-md-12">
       <div class="card-pf">
-        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-mobile fa-lg"></i> SMS</h2></div>
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-mobile fa-lg"></i> {{ 'SMS' | translate }}</h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal" name="mcFormSMSNotification">
             

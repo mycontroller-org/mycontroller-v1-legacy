@@ -303,6 +303,8 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     saveController: { method: 'POST', params: {type:'controller'} },
     getEmail: { method: 'GET', isArray: false, params: {type:'email'} },
     saveEmail: { method: 'POST', params: {type:'email'} },
+    getPushbullet: { method: 'GET', isArray: false, params: {type:'pushbullet'} },
+    savePushbullet: { method: 'POST', params: {type:'pushbullet'} },
     getSms: { method: 'GET', isArray: false, params: {type:'sms'} },
     saveSms: { method: 'POST', params: {type:'sms'} },
     getMySensors: { method: 'GET', isArray: false, params: {type:'mySensors'} },

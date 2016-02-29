@@ -29,40 +29,38 @@ import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 0.0.3
  */
 @Builder
 @Data
 @AllArgsConstructor
 @ToString(includeFieldNames = true)
-public class NotificationSMS implements INotificationEngine {
-    private static final Logger _logger = LoggerFactory.getLogger(NotificationSMS.class);
+public class NotificationPushbulletNote implements INotificationEngine {
+    private static final Logger _logger = LoggerFactory.getLogger(NotificationPushbulletNote.class);
 
-    private String toPhoneNumber;
-    private String customMessage;
+    private String idens;
+    private String title;
+    private String body;
     private Notification notification;
     private AlarmDefinition alarmDefinition;
     private String actualValue;
 
-    public NotificationSMS update() {
-        this.toPhoneNumber = notification.getVariable1();
-        this.customMessage = notification.getVariable2();
+    public NotificationPushbulletNote update() {
+        this.idens = notification.getVariable1();
+        this.title = notification.getVariable2();
+        this.body = notification.getVariable3();
         return this;
     }
 
     public String getString() {
-        return this.toPhoneNumber;
+        return title;
     }
 
     @Override
     public void execute() {
-        if (this.toPhoneNumber == null) {
-            throw new RuntimeException("Cannot execute send SMS without phone number! AlarmDefination name: "
-                    + this.alarmDefinition.getName());
-        }
         try {
-            if (customMessage != null && customMessage.trim().length() > 0) {
-                SMSUtils.sendSMS(this.toPhoneNumber, this.customMessage);
+            if (body != null && body.trim().length() > 0) {
+                PushbulletUtils.sendNote(idens, title, body);
             } else {
                 StringBuilder builder = new StringBuilder();
                 builder.append("AlarmDefinition: [")
@@ -73,7 +71,7 @@ public class NotificationSMS implements INotificationEngine {
                         .append(AlarmUtils.getSensorUnit(alarmDefinition, false))
                         .append(", ").append(AlarmUtils.getResourceString(alarmDefinition, false))
                         .append("\nwww.mycontroller.org");
-                SMSUtils.sendSMS(this.toPhoneNumber, builder.toString());
+                PushbulletUtils.sendNote(idens, title, builder.toString());
             }
         } catch (Exception ex) {
             _logger.error("Exception,", ex);

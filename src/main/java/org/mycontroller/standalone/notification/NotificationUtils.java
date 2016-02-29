@@ -41,7 +41,8 @@ public class NotificationUtils {
     public enum NOTIFICATION_TYPE {
         SEND_PAYLOAD("Send payload"),
         SEND_SMS("Send SMS"),
-        SEND_EMAIL("Send email");
+        SEND_EMAIL("Send email"),
+        PUSHBULLET_NOTE("Pushbullet note");
         public static NOTIFICATION_TYPE get(int id) {
             for (NOTIFICATION_TYPE notification_type : values()) {
                 if (notification_type.ordinal() == id) {
@@ -109,6 +110,12 @@ public class NotificationUtils {
                 NotificationSMS notificationSMS = NotificationSMS.builder().notification(notification)
                         .build().update();
                 builder.append(notificationSMS.getString());
+                break;
+            case PUSHBULLET_NOTE:
+                NotificationPushbulletNote pushbulletNote = NotificationPushbulletNote.builder()
+                        .notification(notification)
+                        .build().update();
+                builder.append(pushbulletNote.getString());
                 break;
             default:
                 builder.append("-");

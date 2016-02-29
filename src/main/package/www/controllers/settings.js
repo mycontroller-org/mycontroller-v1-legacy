@@ -140,6 +140,11 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
     $scope.smsSettings = SettingsFactory.getSms();
   };
   
+  //settings Pushbullet
+  $scope.updateSettingsPushbullet = function(){
+    $scope.pushbulletSettings = SettingsFactory.getPushbullet();
+  };
+  
   
   
   
@@ -148,6 +153,7 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
   $scope.smsSettings = {};
   $scope.updateSettingsEmail();
   $scope.updateSettingsSms();
+  $scope.updateSettingsPushbullet();
    
   //Save email
   $scope.saveEmail = function(){
@@ -171,6 +177,20 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.sms = false;
+      });
+  };
+  
+  //Save pushbullet
+  $scope.savePushbullet = function(){
+    $scope.saveProgress.pushbullet = true;
+    SettingsFactory.savePushbullet($scope.pushbulletSettings,function(response) {
+        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
+        $scope.saveProgress.pushbullet = false;
+        $scope.updateSettingsPushbullet();
+        $scope.editEnable.pushbullet = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.pushbullet = false;
       });
   };
 

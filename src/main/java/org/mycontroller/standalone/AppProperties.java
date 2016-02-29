@@ -25,6 +25,7 @@ import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
+import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
 import org.slf4j.Logger;
@@ -64,6 +65,7 @@ public class AppProperties {
     EmailSettings emailSettings;
     MySensorsSettings mySensorsSettings;
     SmsSettings smsSettings;
+    PushbulletSettings pushbulletSettings;
     UnitsSettings unitsSettings;
     LocationSettings locationSettings;
     MetricsGraphSettings metricsGraphSettings;
@@ -391,6 +393,7 @@ public class AppProperties {
         metricsGraphSettings = MetricsGraphSettings.get();
         metricsDataRetentionSettings = MetricsDataRetentionSettings.get();
         backupSettings = BackupSettings.get();
+        pushbulletSettings = PushbulletSettings.get();
     }
 
     private boolean is12HoursSelected() {
@@ -546,6 +549,14 @@ public class AppProperties {
 
     public void setMetricsDataRetentionSettings(MetricsDataRetentionSettings metricsDataRetentionSettings) {
         this.metricsDataRetentionSettings = metricsDataRetentionSettings;
+    }
+
+    public PushbulletSettings getPushbulletSettings() {
+        return pushbulletSettings;
+    }
+
+    public void setPushbulletSettings(PushbulletSettings pushbulletSettings) {
+        this.pushbulletSettings = pushbulletSettings;
     }
 
 }

@@ -31,6 +31,7 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.notification.INotificationEngine;
 import org.mycontroller.standalone.notification.NotificationEmail;
+import org.mycontroller.standalone.notification.NotificationPushbulletNote;
 import org.mycontroller.standalone.notification.NotificationSMS;
 import org.mycontroller.standalone.notification.NotificationSendPayLoad;
 import org.slf4j.Logger;
@@ -226,6 +227,10 @@ public class AlarmEngine implements Runnable {
                             break;
                         case SEND_SMS:
                             notificationEngine = NotificationSMS.builder().alarmDefinition(alarmDefinition)
+                                    .notification(notification).actualValue(actualValue).build().update();
+                            break;
+                        case PUSHBULLET_NOTE:
+                            notificationEngine = NotificationPushbulletNote.builder().alarmDefinition(alarmDefinition)
                                     .notification(notification).actualValue(actualValue).build().update();
                             break;
                         default:
