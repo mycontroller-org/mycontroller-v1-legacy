@@ -63,6 +63,7 @@ Features available in https://github.com/mycontroller-org/mycontroller/releases/
   * Send Payload to another sensor
   * Send SMS. Supports https://www.plivo.com/[Plivo] and https://www.twilio.com[Twilio]
   * Send Email
+  * https://www.pushbullet.com[Pushbullet] note
 - Graphical reports
   * you can keep your sensors metrics data as long as you want.
 - Forward payload from one sensor to another sensor
