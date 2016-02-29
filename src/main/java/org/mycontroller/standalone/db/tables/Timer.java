@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,224 +15,130 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import java.util.List;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.MycUtils;
+import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.db.PayloadOperation;
+import org.mycontroller.standalone.db.PayloadOperationUtils.SEND_PAYLOAD_OPERATIONS;
+import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
+import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 
-import org.mycontroller.standalone.NumericUtils;
-import org.mycontroller.standalone.db.PayloadSpecialOperation;
-import org.mycontroller.standalone.db.TimerUtils;
-import org.mycontroller.standalone.db.PayloadSpecialOperationUtils.SEND_PAYLOAD_OPERATIONS;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_SET_REQ;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "timer")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@DatabaseTable(tableName = DB_TABLES.TIMER)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class Timer {
-    public static final String SENSOR_REF_ID = "sensor_ref_id";
-    public static final String SENSOR_VARIABLE_TYPE = "sensor_var_type";
-    public static final String ENABLED = "enabled";
+    public static final String KEY_ID = "id";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_ENABLED = "enabled";
+    public static final String KEY_RESOURCE_TYPE = "resourceType";
+    public static final String KEY_RESOURCE_ID = "resourceId";
+    public static final String KEY_TIMER_TYPE = "timerType";
+    public static final String KEY_FREQUENCY = "frequency";
+    public static final String KEY_LAST_FIRE = "lastFire";
 
     @DatabaseField(generatedId = true)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, columnName = ENABLED)
+    @DatabaseField(canBeNull = false, columnName = KEY_ENABLED)
     private Boolean enabled;
 
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = KEY_NAME)
     private String name;
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID)
-    private Sensor sensor;
+    @DatabaseField(dataType = DataType.ENUM_INTEGER, canBeNull = false, columnName = KEY_RESOURCE_TYPE)
+    private RESOURCE_TYPE resourceType;
 
-    @DatabaseField(canBeNull = false, columnName = SENSOR_VARIABLE_TYPE)
-    private Integer sensorVariableType;
+    @DatabaseField(canBeNull = false, columnName = KEY_RESOURCE_ID)
+    private Integer resourceId;
 
-    @DatabaseField(canBeNull = false)
-    private Integer type;
+    @DatabaseField(dataType = DataType.ENUM_STRING, canBeNull = false, columnName = KEY_TIMER_TYPE)
+    private TIMER_TYPE timerType;
 
-    @DatabaseField(canBeNull = true)
-    private Integer frequency;
+    @DatabaseField(dataType = DataType.ENUM_STRING, canBeNull = true, columnName = KEY_FREQUENCY)
+    private FREQUENCY_TYPE frequencyType;
 
     @DatabaseField(canBeNull = true)
     private String frequencyData;
 
     @DatabaseField(canBeNull = true)
-    private Long time;
+    private Long triggerTime;
 
     @DatabaseField(canBeNull = true)
-    private Long validFrom;
+    private Long validityFrom;
 
     @DatabaseField(canBeNull = true)
-    private Long validTo;
+    private Long validityTo;
 
     @DatabaseField(canBeNull = false)
     private String payload;
 
+    @DatabaseField(canBeNull = true, columnName = KEY_LAST_FIRE)
+    private Long lastFire;
+
     @DatabaseField(canBeNull = true)
-    private Long timestamp;
+    private String internalVariable1;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Sensor getSensor() {
-        return sensor;
-    }
-
-    public Integer getType() {
-        return type;
-    }
+    private String targetClass;
 
     public String getTimerDataString() {
-        return TimerUtils.getTimerDataString(this);
+        try {
+            return TimerUtils.getTimerDataString(this);
+        } catch (Exception ex) {
+            return "Error: " + ex.getMessage();
+        }
     }
 
     public String getValidityString() {
         return TimerUtils.getValidityString(this);
     }
 
-    public Integer getFrequency() {
-        return frequency;
-    }
-
-    public String getFrequencyData() {
-        return frequencyData;
-    }
-
-    public Long getTime() {
-        return time;
-    }
-
-    public Long getValidFrom() {
-        return validFrom;
-    }
-
-    public Long getValidTo() {
-        return validTo;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public void setTypeString() {
-        // To ignore JSON serialization
-    }
-
-    public void setFrequency(Integer frequency) {
-        this.frequency = frequency;
-    }
-
-    public void setFrequencyDataString(String frequencyDataString) {
-        if (frequencyDataString != null && frequencyDataString.length() > 0) {
-            this.frequencyData = frequencyDataString;
+    public void setFrequencyData(String frequencyData) {
+        if (frequencyData != null && frequencyData.length() > 0) {
+            this.frequencyData = frequencyData;
         }
     }
 
-    public void setFrequencyData(List<Integer> frequencyData) {
-        if (frequencyData != null && !frequencyData.isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            for (Integer frequencyD : frequencyData) {
-                if (builder.length() > 0) {
-                    builder.append(",").append(frequencyD);
-                } else {
-                    builder.append(frequencyD);
-                }
-            }
-            this.frequencyData = builder.toString();
-        }
+    public void setValidityFrom(Long validFrom) {
+        this.validityFrom = validFrom;
     }
 
-    public void setTime(Long time) {
-        this.time = time;
-    }
-
-    public void setTimeString(String time) {
-        this.time = TimerUtils.getTime(time);
-    }
-
-    public void setValidFrom(Long validFrom) {
-        this.validFrom = validFrom;
-    }
-
-    public void setValidFromString(String validFromString) {
-        if (validFromString != null) {
-            this.validFrom = TimerUtils.getValidFromToTime(validFromString + ":00");
-        }
-    }
-
-    public void setValidToString(String validToString) {
-        if (validToString != null) {
-            this.validTo = TimerUtils.getValidFromToTime(validToString + ":59");
-        }
-    }
-
-    public void setValidTo(Long validTo) {
-        this.validTo = validTo;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String payload) {
-        this.payload = payload;
+    public void setValidityTo(Long validTo) {
+        this.validityTo = validTo;
     }
 
     public String getPayloadFormatted() {
         StringBuilder builder = new StringBuilder();
-        PayloadSpecialOperation specialOperation = new PayloadSpecialOperation(this.payload);
+        PayloadOperation specialOperation = new PayloadOperation(this.payload);
         if (specialOperation.getOperationType() != null) {
             if (specialOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.REBOOT) {
-                builder.append(" ").append(specialOperation.getOperationType().value());
+                builder.append(" ").append(specialOperation.getOperationType().getText());
             } else {
                 if (specialOperation.getValue() != null) {
-                    builder.append(" {sen.value} ")
-                            .append(specialOperation.getOperationType().value())
+                    builder.append(" {resource.value} ")
+                            .append(specialOperation.getOperationType().getText())
                             .append(" ")
-                            .append(NumericUtils.getDoubleAsString(specialOperation.getValue()));
+                            .append(MycUtils.getDoubleAsString(specialOperation.getValue()));
                 } else {
-                    builder.append(" ")
-                            .append(specialOperation.getOperationType().value())
-                            .append(" {sen.value}");
+                    builder.append(specialOperation.getOperationType().getText());
                 }
             }
         } else {
@@ -241,32 +147,9 @@ public class Timer {
         return builder.toString();
     }
 
-    public void setPayloadFormatted(String payload) {
-        // To ignore JSON serialization
+    public String getResource() {
+        ResourceModel resourceModel = new ResourceModel(resourceType, resourceId);
+        return resourceModel.getResourceLessDetails();
     }
 
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Name:").append(name)
-                .append(", Type:").append(getTimerDataString());
-        builder.append(", Variable Type:").append(this.getSensorVariableTypeString());
-        builder.append(", PayLoad:").append(this.getPayloadFormatted());
-        builder.append(", Validity:").append(getValidityString());
-        return builder.toString();
-    }
-
-    public Integer getSensorVariableType() {
-        return sensorVariableType;
-    }
-
-    public String getSensorVariableTypeString() {
-        if (sensorVariableType != null) {
-            return MESSAGE_TYPE_SET_REQ.get(sensorVariableType).toString();
-        }
-        return "";
-    }
-
-    public void setSensorVariableType(Integer sensorVariableType) {
-        this.sensorVariableType = sensorVariableType;
-    }
 }

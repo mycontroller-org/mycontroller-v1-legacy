@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.mycontroller.standalone.api.jaxrs.mapper.AuthenticationJson;
 import org.mycontroller.standalone.api.jaxrs.mapper.UserCredential;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,18 +46,26 @@ import org.slf4j.LoggerFactory;
 @PermitAll
 public class AuthenticationHandler {
     private static final Logger _logger = LoggerFactory.getLogger(AuthenticationHandler.class);
-    @Context HttpRequest request;
-    
+    @Context
+    HttpRequest request;
+
     @POST
     @Path("/login")
-    public Response login(UserCredential userCredential) {
+    public Response login(UserCredential userCredential) throws InterruptedException {
         _logger.debug("User Detail:{}", RestUtils.getUser(request));
         _logger.debug("Login user: " + userCredential.getUsername());
-        if (BasicAthenticationSecurityDomain.login(userCredential.getUsername(), userCredential.getPassword())) {
-            return RestUtils.getResponse(Status.OK, new AuthenticationJson(true));
-        } else {
-            return RestUtils.getResponse(Status.UNAUTHORIZED, new AuthenticationJson(false,
-                    "Username or password is incorrect"));
+        try {
+            if (BasicAthenticationSecurityDomain.login(userCredential.getUsername(), userCredential.getPassword())) {
+                AuthenticationJson authJson = AuthenticationJson.builder().success(true)
+                        .user(DaoUtils.getUserDao().getByUsername(userCredential.getUsername())).build();
+                return RestUtils.getResponse(Status.OK, authJson);
+            } else {
+                return RestUtils.getResponse(Status.UNAUTHORIZED,
+                        AuthenticationJson.builder().success(false).message("Invalid user or passowrd!").build());
+            }
+        } catch (IllegalAccessException ex) {
+            return RestUtils.getResponse(Status.UNAUTHORIZED,
+                    AuthenticationJson.builder().success(false).message(ex.getMessage()).build());
         }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,8 @@ public class FirmwareUtils {
     }
 
     public static void updateFirmwareFromHexString(Firmware firmware) {
-        if (firmware != null && firmware.getHexFileString() != null) {
-            getFirmware(new BufferedReader(new StringReader(firmware.getHexFileString())), firmware);
+        if (firmware != null && firmware.getFileString() != null) {
+            getFirmware(new BufferedReader(new StringReader(firmware.getFileString())), firmware);
         } else {
             _logger.warn("Invalid Firmware! [{}]", firmware);
         }
@@ -117,7 +117,7 @@ public class FirmwareUtils {
             firmware.setBlocks(blocks);
             firmware.setCrc(crc);
             firmware.setData(fwdata);
-            firmware.setHexFileString(null);
+            firmware.setFileString(null);
 
             return firmware;
         } catch (IOException ex) {
@@ -142,7 +142,7 @@ public class FirmwareUtils {
         for (Firmware firmware : firmwares) {
             DaoUtils.getFirmwareDao().delete(firmware);
         }
-        DaoUtils.getFirmwareTypeDao().delete(id);
+        DaoUtils.getFirmwareTypeDao().deleteById(id);
     }
 
     public static synchronized void deleteFirmwareVersion(int id) {
@@ -150,11 +150,11 @@ public class FirmwareUtils {
         for (Firmware firmware : firmwares) {
             DaoUtils.getFirmwareDao().delete(firmware);
         }
-        DaoUtils.getFirmwareVersionDao().delete(id);
+        DaoUtils.getFirmwareVersionDao().deleteById(id);
     }
 
     public static synchronized void deleteFirmware(int id) {
-        DaoUtils.getFirmwareDao().delete(id);
+        DaoUtils.getFirmwareDao().deleteById(id);
     }
 
     public static synchronized void createFirmware(Firmware firmware) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -27,13 +30,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
-import org.mycontroller.standalone.api.jaxrs.mapper.KeyValueJson;
+import org.mycontroller.standalone.api.jaxrs.mapper.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.USER_ROLE;
-import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -43,17 +46,24 @@ import org.mycontroller.standalone.db.tables.Sensor;
 @Path("/rest/types")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-public class TypesHandler {
+@RolesAllowed({ "User" })
+public class TypesHandler extends AccessEngine {
     @GET
-    @Path("/sensorTypes")
-    public Response getSensorTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorTypes());
+    @Path("/gatewayTypes")
+    public Response getGatewayTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayTypes());
     }
 
     @GET
-    @Path("/sensorValueTypes")
-    public Response getSensorValueTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorValueTypes());
+    @Path("/gatewayNetworkTypes")
+    public Response getGatewaySubTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayNetworkTypes());
+    }
+
+    @GET
+    @Path("/gatewaySerialDrivers")
+    public Response getGatewaySerialDrivers() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewaySerialDrivers());
     }
 
     @GET
@@ -63,21 +73,129 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/roles")
-    public Response getUserRoles() {
-        return RestUtils.getResponse(Status.OK, USER_ROLE.values());
+    @Path("/resourceTypes")
+    public Response getResourceTypes(
+            @QueryParam("resourceType") String resourceType,
+            @QueryParam("isSendPayload") Boolean isSendPayload) {
+        if (isSendPayload == null) {
+            isSendPayload = false;
+        }
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getResourceTypes(AuthUtils.getUser(securityContext), resourceType, isSendPayload));
     }
 
     @GET
-    @Path("/alarmtriggers")
-    public Response getAlarmTriggers() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTriggerTypes());
+    @Path("/resources")
+    public Response getResources(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getResources(AuthUtils.getUser(securityContext), resourceType));
     }
 
     @GET
-    @Path("/alarmtypes")
+    @Path("/gateways")
+    public Response getGateways() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGateways(AuthUtils.getUser(securityContext)));
+    }
+
+    @GET
+    @Path("/nodes")
+    public Response getNodes(@QueryParam("gatewayId") Integer gatewayId) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNodes(AuthUtils.getUser(securityContext), gatewayId));
+    }
+
+    @GET
+    @Path("/sensors")
+    public Response getSensors(
+            @QueryParam("nodeId") Integer nodeId,
+            @QueryParam("roomId") Integer roomId,
+            @QueryParam("enableNoRoomFilter") Boolean enableNoRoomFilter) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(getUser(), nodeId, roomId, enableNoRoomFilter));
+    }
+
+    @GET
+    @Path("/sensorVariables")
+    public Response getSensorVaribles(
+            @QueryParam("sensorId") Integer sensorId,
+            @QueryParam("sensorVariableId") Integer sensorVariableId,
+            @QueryParam("variableType") List<String> variableTypes,
+            @QueryParam("metricType") List<String> metricTypes) {
+        try {
+            return RestUtils.getResponse(Status.OK,
+                    TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId, sensorVariableId,
+                            variableTypes, metricTypes));
+        } catch (IllegalAccessException ex) {
+            return RestUtils.getResponse(Status.FORBIDDEN, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @GET
+    @Path("/resourcesGroups")
+    public Response getResourcesGroups() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourcesGroups());
+    }
+
+    @GET
+    @Path("/timers")
+    public Response getTimers() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimers(AuthUtils.getUser(securityContext)));
+    }
+
+    @GET
+    @Path("/alarmDefinitions")
+    public Response getAlarmDefinitions() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmDefinitions(AuthUtils.getUser(securityContext)));
+    }
+
+    @GET
+    @Path("/firmwares")
+    public Response getFirmwares() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getFirmwares());
+    }
+
+    @GET
+    @Path("/firmwareTypes")
+    public Response getFirmwareTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getFirmwareTypes());
+    }
+
+    @GET
+    @Path("/firmwareVersions")
+    public Response getFirmwareVersions() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getFirmwareVersions());
+    }
+
+    @GET
+    @Path("/sensorTypes")
+    public Response getSensorTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorTypes());
+    }
+
+    @GET
+    @Path("/sensorVariableTypes")
+    public Response getSensorVariableTypes(@QueryParam("sensorType") String sensorType,
+            @QueryParam("sensorId") Integer sensorId,
+            @QueryParam("metricType") List<String> metricTypes) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getSensorVariableTypes(MESSAGE_TYPE_PRESENTATION.fromString(sensorType), sensorId,
+                        metricTypes));
+    }
+
+    @GET
+    @Path("/alarmTriggerTypes")
+    public Response getAlarmTriggers(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTriggerTypes(resourceType));
+    }
+
+    @GET
+    @Path("/alarmThresholdTypes")
+    public Response getAlarmThresholdTypes(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmThresholdTypes(resourceType));
+    }
+
+    @GET
+    @Path("/alarmNotificationTypes")
     public Response getAlarmTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmTypes());
+        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmNotificationTypes());
     }
 
     @GET
@@ -87,10 +205,18 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/alarmThresholdTypes")
-    public Response getAlarmThresholdTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getAlarmThresholdTypes());
+    @Path("/payloadOperations")
+    public Response getPayloadOperations(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getPayloadOperations(resourceType));
     }
+
+    @GET
+    @Path("/stateTypes")
+    public Response getStateTypes(@QueryParam("resourceType") String resourceType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getStateTypes(resourceType));
+    }
+
+    //Timer stuff
 
     @GET
     @Path("/timerTypes")
@@ -99,62 +225,125 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/timerFrequencies")
+    @Path("/timerFrequencyTypes")
     public Response getTimerFrequencies() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerFrequencies());
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerFrequencyTypes());
     }
 
     @GET
-    @Path("/timerDays")
+    @Path("/timerWeekDays")
     public Response getTimerDays(@QueryParam("allDays") Boolean allDays) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerDays(allDays != null ? allDays : false));
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimerWeekDays(allDays != null ? allDays : false));
+    }
+
+    @RolesAllowed({ "admin" })
+    @GET
+    @Path("/sensorVariableMapper")
+    public Response getSensorVariableMapper() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
+    }
+
+    @RolesAllowed({ "admin" })
+    @GET
+    @Path("/sensorVariableMapperByType")
+    public Response getSensorVariableTypesAll(@QueryParam("sensorType") String sensorType) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getSensorVariableMapperByType(MESSAGE_TYPE_PRESENTATION.fromString(sensorType)));
+    }
+
+    @RolesAllowed({ "admin" })
+    @PUT
+    @Path("/sensorVariableMapper")
+    public Response updateSensorVariableMapper(TypesIdNameMapper idNameMapper) {
+        TypesUtils.updateVariableMap(idNameMapper);
+        return RestUtils.getResponse(Status.OK);
     }
 
     @GET
-    @Path("/nodes")
-    public Response getNodes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getNodes());
+    @Path("/languages")
+    public Response getLanguages() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
     }
 
     @GET
-    @Path("/sensors/{nodeId}")
-    public Response getSensors(@PathParam("nodeId") int nodeId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(nodeId));
+    @Path("/hvacOptionsFlowState")
+    public Response getHvacOptionsFlowState() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getHvacOptionsFlowState());
     }
+
+    @GET
+    @Path("/hvacOptionsFlowMode")
+    public Response getHvacOptionsFlowMode() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getHvacOptionsFlowMode());
+    }
+
+    @GET
+    @Path("/hvacOptionsFanSpeed")
+    public Response getHvacOptionsFanSpeed() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getHvacOptionsFanSpeed());
+    }
+
+    //Security
+    @GET
+    @Path("/rolePermissions")
+    public Response getRolePermissions() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getRolePermissions());
+    }
+
+    //Resource logs
+    @GET
+    @Path("/resourceLogsMessageTypes")
+    public Response getResourceLogsMessageTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourceLogsMessageTypes());
+    }
+
+    @GET
+    @Path("/resourceLogsLogDirections")
+    public Response getResourceLogsLogDirections() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourceLogsLogDirections());
+    }
+
+    @GET
+    @Path("/resourceLogsLogLevels")
+    public Response getResourceLogsLogLevels() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getResourceLogsLogLevels());
+    }
+
+    @GET
+    @Path("/metricsSettings")
+    public Response getMetricsSettings() {
+        MetricsGraphSettings metricsGraphSettings = MetricsGraphSettings.get();
+        metricsGraphSettings.setMetrics(null);
+        return RestUtils.getResponse(Status.OK, metricsGraphSettings);
+    }
+
+    //Notifications
+    @GET
+    @Path("/notifications")
+    public Response getNotifications() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNotifications());
+    }
+
+    @GET
+    @Path("/rooms")
+    public Response getRooms() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getRooms());
+    }
+
+    //----------------- review required
+
+    @GET
+    @Path("/configUnitTypes")
+    public Response getMysConfigTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getConfigUnitTypes());
+    }
+
+    //TODO: after this change required
 
     @GET
     @Path("/graphInterpolate")
     public Response getGraphInterpolateTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGraphInterpolateTypes());
-    }
-
-    @GET
-    @Path("/mysConfigTypes")
-    public Response getMysConfigTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMysConfigTypes());
-    }
-
-    @GET
-    @Path("/sensorVariableTypesAll/{sensorType}")
-    public Response getSensorVariableTypesAll(@PathParam("sensorType") int sensorType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypesAll(sensorType));
-    }
-
-    @GET
-    @Path("/sensorVariableTypes/{sensorType}")
-    public Response getSensorVariableTypes(@PathParam("sensorType") int sensorType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypes(sensorType, null));
-    }
-
-    @GET
-    @Path("/sensorVariableTypesBySenRef/{sensorRefId}")
-    public Response getSensorVariableTypesBySensorRefId(@PathParam("sensorRefId") int sensorRefId) {
-        Sensor sensor = DaoUtils.getSensorDao().get(sensorRefId);
-        if (sensor != null && sensor.getType() != null) {
-            return RestUtils.getResponse(Status.OK, TypesUtils.getSensorVariableTypes(sensor.getType(), sensor));
-        }
-        return RestUtils.getResponse(Status.BAD_REQUEST,
-                new ApiError("Requested Sensor[" + sensor.getName() + "] type not available or Sensor not available"));
     }
 
     @GET
@@ -176,28 +365,9 @@ public class TypesHandler {
     }
 
     @GET
-    @Path("/sensorVariableMapper")
-    public Response getSensorVariableMapper() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getVariableMapperList());
-    }
-
-    @GET
-    @Path("/languages")
-    public Response getLanguages() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getLanguages());
-    }
-
-    @GET
-    @Path("/time12h24hformats")
+    @Path("/timeFormats")
     public Response getTime12h24hformats() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getTime12h24hFormats());
-    }
-
-    @PUT
-    @Path("/sensorVariableMapper")
-    public Response updateSensorVariableMapper(KeyValueJson keyValue) {
-        TypesUtils.updateVariableMap(keyValue);
-        return RestUtils.getResponse(Status.OK);
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTimeFormats());
     }
 
 }

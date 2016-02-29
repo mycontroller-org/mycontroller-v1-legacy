@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,16 @@ import org.mycontroller.standalone.db.tables.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class SettingsDaoImpl extends BaseAbstractDao<Settings, Integer> implements SettingsDao {
+public class SettingsDaoImpl extends BaseAbstractDaoImpl<Settings, Integer> implements SettingsDao {
     private static final Logger _logger = LoggerFactory.getLogger(SettingsDaoImpl.class);
 
     public SettingsDaoImpl(ConnectionSource connectionSource) throws SQLException {
@@ -38,101 +39,87 @@ public class SettingsDaoImpl extends BaseAbstractDao<Settings, Integer> implemen
     }
 
     @Override
-    public void create(Settings settings) {
-        try {
-            int count = this.getDao().create(settings);
-            _logger.debug("Created Settings:[{}], Create count:{}", settings, count);
-
-        } catch (SQLException ex) {
-            _logger.error("unable to add Settings:[{}]", settings, ex);
-        }
-    }
-
-    @Override
-    public void createOrUpdate(Settings settings) {
-        try {
-            CreateOrUpdateStatus status = this.getDao().createOrUpdate(settings);
-            _logger.debug("CreateOrUpdate Settings:[{}],Create:{},Update:{},Lines Changed:{}",
-                    settings, status.isCreated(), status.isUpdated(),
-                    status.getNumLinesChanged());
-        } catch (SQLException ex) {
-            _logger.error("unable to CreateOrUpdate Settings:[{}]", settings, ex);
-        }
-    }
-
-    @Override
-    public void delete(Settings settings) {
-        try {
-            int count = this.getDao().delete(settings);
-            _logger.debug("Settings:[{}] deleted, Delete count:{}", settings, count);
-
-        } catch (SQLException ex) {
-            _logger.error("unable to delete Settings:[{}]", settings, ex);
-        }
-    }
-
-    @Override
-    public void delete(String key) {
-        delete(new Settings(key));
-    }
-
-    @Override
-    public void update(Settings settings) {
-        try {
-            this.getDao().update(settings);
-        } catch (SQLException ex) {
-            _logger.error("unable to update Settings:[{}]", settings, ex);
-        }
-
-    }
-
-    @Override
-    public List<Settings> getAll() {
-        try {
-            return this.getDao().queryBuilder().orderBy("key", true).orderBy("id", true).query();
-        } catch (SQLException ex) {
-            _logger.error("unable to get all list", ex);
-            return null;
-        }
-    }
-
-    @Override
-    public List<Settings> get(List<String> keys) {
-        try {
-            QueryBuilder<Settings, Integer> queryBuilder = getDao().queryBuilder();
-            queryBuilder.where().in("key", keys);
-            return queryBuilder.orderBy("id", true).query();
-        } catch (SQLException ex) {
-            _logger.error("unable to get list:[{}]", keys, ex);
-            return null;
-        }
-    }
-
-    public List<Settings> getLike(String key) {
-        try {
-            QueryBuilder<Settings, Integer> queryBuilder = getDao().queryBuilder();
-            queryBuilder.where().like("key", key);
-            return queryBuilder.orderBy("id", true).query();
-        } catch (SQLException ex) {
-            _logger.error("unable to get like:[{}]", key, ex);
-            return null;
-        }
-
-    }
-
-    @Override
     public Settings get(Settings settings) {
-        return this.get(settings.getKey());
+        return getById(settings.getId());
     }
 
     @Override
-    public Settings get(String key) {
+    public List<Settings> getAll(List<Integer> ids) {
+        return getAll(Settings.KEY_ID, ids);
+    }
+
+    @Override
+    public Settings get(Integer userId, String key, String subKey) {
         try {
-            QueryBuilder<Settings, Integer> queryBuilder = getDao().queryBuilder();
-            return queryBuilder.where().eq("key", key).queryForFirst();
+            Where<Settings, Integer> where = this.getDao().queryBuilder().where();
+            int andCount = 0;
+            if (userId == null) {
+                where.isNull(Settings.KEY_USER_ID);
+                andCount++;
+            } else {
+                where.eq(Settings.KEY_USER_ID, userId);
+                andCount++;
+            }
+            where.eq(Settings.KEY_KEY, key);
+            andCount++;
+            where.eq(Settings.KEY_SUB_KEY, subKey);
+            andCount++;
+            where.and(andCount);
+            QueryBuilder<Settings, Integer> queryBuilder = this.getDao().queryBuilder();
+            queryBuilder.setWhere(where);
+            return queryBuilder.queryForFirst();
         } catch (SQLException ex) {
-            _logger.error("unable to get:[key:{}]", key, ex);
+            _logger.error("unable to get item for userId:{}, key:{}, subKey:{}", userId, key, subKey, ex);
             return null;
         }
     }
+
+    @Override
+    public void update(String key, String subKey, String value, String altValue) {
+        try {
+            //Create it if not available
+            createIfNotAvailable(key, subKey);
+            UpdateBuilder<Settings, Integer> updateBuilder = this.getDao().updateBuilder();
+            updateBuilder.where().eq(Settings.KEY_KEY, key).and().eq(Settings.KEY_SUB_KEY, subKey);
+            updateBuilder.updateColumnValue(Settings.KEY_VALUE, value);
+            updateBuilder.updateColumnValue(Settings.KEY_ALT_VALUE, altValue);
+            int count = updateBuilder.update();
+            _logger.debug("update count:{}", count);
+        } catch (SQLException ex) {
+            _logger.error("unable to get item for key:{}, subKey:{}", key, subKey, ex);
+        }
+    }
+
+    @Override
+    public void update(String key, String subKey, String value) {
+        try {
+            //Create it if not available
+            createIfNotAvailable(key, subKey);
+            UpdateBuilder<Settings, Integer> updateBuilder = this.getDao().updateBuilder();
+            updateBuilder.where().eq(Settings.KEY_KEY, key).and().eq(Settings.KEY_SUB_KEY, subKey);
+            updateBuilder.updateColumnValue(Settings.KEY_VALUE, value);
+            int count = updateBuilder.update();
+            _logger.debug("update count:{}", count);
+        } catch (SQLException ex) {
+            _logger.error("unable to get item for key:{}, subKey:{}", key, subKey, ex);
+        }
+    }
+
+    private void createIfNotAvailable(String key, String subKey) {
+        if (get(null, key, subKey) == null) {
+            create(Settings.builder().key(key).subKey(subKey).build());
+        }
+    }
+
+    @Override
+    public List<Settings> getAll(Integer userId, String key) {
+        try {
+            return this.getDao().queryBuilder().where().eq(Settings.KEY_USER_ID, userId).and()
+                    .eq(Settings.KEY_KEY, key).query();
+        } catch (SQLException ex) {
+            _logger.error("unable to get item for userId:{}, Key:{}", userId, key, ex);
+            return null;
+        }
+    }
+
 }

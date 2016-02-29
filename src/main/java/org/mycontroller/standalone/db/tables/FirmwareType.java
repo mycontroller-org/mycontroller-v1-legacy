@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,53 +15,40 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.mycontroller.standalone.db.DB_TABLES;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.ToString;
+
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Data;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "firmware_type")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@DatabaseTable(tableName = DB_TABLES.FIRMWARE_TYPE)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class FirmwareType {
+    public static final String KEY_ID = "id";
+    public static final String KEY_NAME = "name";
 
-    public FirmwareType() {
-
-    }
-
-    public FirmwareType(int id) {
-        this.id = id;
-    }
-
-    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, unique = true)
+    @DatabaseField(canBeNull = false, unique = true, columnName = KEY_NAME)
     private String name;
 
     public Integer getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", Name:").append(this.name);
-        return builder.toString();
     }
 
 }

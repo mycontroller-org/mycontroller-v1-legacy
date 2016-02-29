@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ public class AppShutdownHook {
                 this.setName(AppProperties.APPLICATION_NAME + " Shutdown-Hook");
                 _logger.debug("Shutdown hook called. Running stop services...");
                 StartApp.stopServices();
+                _logger.debug("Shutdown hook completed...");
+                _logger.info(ObjectFactory.getMcLocale().getString(MC_LOCALE.BYE_HAVE_A_NICE_DAY));
             }
         });
         _logger.debug("Shutdown hook attached...");

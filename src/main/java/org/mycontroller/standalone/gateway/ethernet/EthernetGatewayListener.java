@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.mysensors.RawMessage;
-import org.mycontroller.standalone.mysensors.RawMessageException;
+import org.mycontroller.standalone.gateway.GatewayEthernet;
+import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +35,11 @@ public class EthernetGatewayListener implements Runnable {
     private Socket socket = null;
     private boolean terminate = false;
     private boolean terminated = false;
+    private GatewayEthernet gateway = null;
 
-    public EthernetGatewayListener(Socket socket) {
+    public EthernetGatewayListener(Socket socket, GatewayEthernet gateway) {
         this.socket = socket;
+        this.gateway = gateway;
     }
 
     @Override
@@ -53,10 +55,10 @@ public class EthernetGatewayListener implements Runnable {
                 if (buf.ready()) {
                     String message = buf.readLine();
                     _logger.debug("Message Received: {}", message);
-                    ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(message));
+                    ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(gateway.getId(), message));
                 }
                 Thread.sleep(100);
-            } catch (IOException | RawMessageException | InterruptedException ex) {
+            } catch (IOException | InterruptedException ex) {
                 _logger.error("Exception, ", ex);
             }
         }

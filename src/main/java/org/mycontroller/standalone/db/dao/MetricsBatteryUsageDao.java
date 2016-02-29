@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,22 @@ package org.mycontroller.standalone.db.dao;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-public interface MetricsBatteryUsageDao {
-    void create(MetricsBatteryUsage metric);
-    void createOrUpdate(MetricsBatteryUsage metric);
-    void delete(MetricsBatteryUsage metric);
+public interface MetricsBatteryUsageDao extends BaseDao<MetricsBatteryUsage, Object> {
+
     void deletePrevious(MetricsBatteryUsage metric);
-    void deleteByNodeRefId(int nodeRefId);
-    void update(MetricsBatteryUsage metric);
-    List<MetricsBatteryUsage> getAllAfter(MetricsBatteryUsage metric);
-    List<MetricsBatteryUsage> getAll(int nodeRefId);
-    MetricsBatteryUsage get(MetricsBatteryUsage metric);
-    MetricsBatteryUsage getLast(int nodeRefId);
+
+    void deleteByNodeId(int nodeId);
+
+    List<MetricsBatteryUsage> getAll(MetricsBatteryUsage metric);
+
+    List<MetricsBatteryUsage> getAggregationRequiredNodeIds(AGGREGATION_TYPE aggregationType,
+            Long fromTimestamp,
+            Long toTimestamp);
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,181 +15,79 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.MycUtils;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "node")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@DatabaseTable(tableName = DB_TABLES.NODE)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class Node {
-    public static final String FIRMWARE_ID = "firmware_id";
+    public static final String KEY_FIRMWARE_ID = "firmwareId";
+    public static final String KEY_GATEWAY_ID = "gatewayId";
+    public static final String KEY_GATEWAY_NAME = "gatewayName";
+    public static final String KEY_STATE = "state";
+    public static final String KEY_EUI = "eui";
+    public static final String KEY_ID = "id";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_VERSION = "version";
+    public static final String KEY_LIB_VERSION = "libVersion";
+    public static final String KEY_BATTERY_LEVEL = "batteryLevel";
+    public static final String KEY_ERASE_CONFIG = "eraseConfig";
+    public static final String KEY_LAST_SEEN = "laseSeen";
+    public static final String KEY_RSSI = "rssi";
+    public static final String KEY_OTHER_DATA = "otherData";
 
-    public Node() {
-    }
-
-    public Node(Integer id, String name, String version) {
-        this.id = id;
-        this.name = name;
-        this.version = version;
-        this.updateTime = System.currentTimeMillis();
-    }
-
-    public Node(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-        this.updateTime = System.currentTimeMillis();
-    }
-
-    public Node(Integer id) {
-        this.id = id;
-    }
-
-    @DatabaseField(id = true, unique = true)
+    @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
-    @DatabaseField
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_EUI)
+    private String eui;
+    @DatabaseField(uniqueCombo = true, canBeNull = true, columnName = KEY_GATEWAY_ID, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
+    private Gateway gateway;
+    @DatabaseField(columnName = KEY_NAME)
     private String name;
-    @DatabaseField
+    @DatabaseField(columnName = KEY_VERSION)
     private String version;
-    @DatabaseField
-    private Long updateTime;
-    @DatabaseField
-    private Integer type;
-    @DatabaseField
-    private String mySensorsVersion;
-    @DatabaseField
+    @DatabaseField(dataType = DataType.ENUM_STRING, columnName = KEY_TYPE)
+    private MESSAGE_TYPE_PRESENTATION type;
+    @DatabaseField(columnName = KEY_LIB_VERSION)
+    private String libVersion;
+    @DatabaseField(columnName = KEY_BATTERY_LEVEL)
     private String batteryLevel;
-    @DatabaseField(canBeNull = true)
-    private Boolean eraseEEPROM;
-    @DatabaseField(canBeNull = true, columnName = FIRMWARE_ID, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
+    @DatabaseField(canBeNull = true, columnName = KEY_ERASE_CONFIG)
+    private Boolean eraseConfig;
+    @DatabaseField(canBeNull = true, columnName = KEY_FIRMWARE_ID, foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Firmware firmware;
-    @DatabaseField(canBeNull = true)
-    private Boolean reachable;
-    @DatabaseField(canBeNull = true)
-    private Long lastHeartbeat;
+    @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING, columnName = KEY_STATE)
+    private STATE state = STATE.UNAVAILABLE;
+    @DatabaseField(canBeNull = true, columnName = KEY_LAST_SEEN)
+    private Long lastSeen;
+    @DatabaseField(canBeNull = true, columnName = KEY_RSSI)
+    private String rssi;
+    @DatabaseField(canBeNull = true, columnName = KEY_OTHER_DATA)
+    private String otherData;
 
-    public Boolean getReachable() {
-        return reachable;
-    }
-
-    public void setReachable(Boolean reachable) {
-        this.reachable = reachable;
-    }
-
-    public Long getLastHeartbeat() {
-        return lastHeartbeat;
-    }
-
-    public void setLastHeartbeat(Long lastHeartbeat) {
-        this.lastHeartbeat = lastHeartbeat;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getMySensorsVersion() {
-        return mySensorsVersion;
-    }
-
-    public void setMySensorsVersion(String mySensorsVersion) {
-        this.mySensorsVersion = mySensorsVersion;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getTypeString() {
-        if (type != null) {
-            return MESSAGE_TYPE_PRESENTATION.get(type).toString();
-        }
-        return null;
-    }
-
-    //Ignore, for JSON serialization support
-    public void setTypeString(String typeString) {
-
-    }
-
-    public String getBatteryLevel() {
-        if (batteryLevel == null) {
-            return "-";
-        }
-        return batteryLevel;
-    }
-
-    public void setBatteryLevel(String batteryLevel) {
-        this.batteryLevel = batteryLevel;
-    }
-
-    public Firmware getFirmware() {
-        return firmware;
-    }
-
-    public void setFirmware(Firmware firmware) {
-        this.firmware = firmware;
-    }
-
-    public Boolean getEraseEEPROM() {
-        return eraseEEPROM;
-    }
-
-    public void setEraseEEPROM(Boolean eraseEEPROM) {
-        this.eraseEEPROM = eraseEEPROM;
-    }
-
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Id:").append(this.id);
-        builder.append(", Name:").append(this.name);
-        builder.append(", Type:").append(this.type);
-        builder.append(", Version:").append(this.version);
-        builder.append(", MySensorsVersion:").append(this.mySensorsVersion);
-        builder.append(", BatteryLevel:").append(this.batteryLevel);
-        builder.append(", EraseEEPROM:").append(this.eraseEEPROM);
-        builder.append(", Firmware:").append(this.firmware);
-        builder.append(", UpdateTime:").append(this.updateTime);
-        builder.append(", IsReachable:").append(this.reachable);
-        builder.append(", LastHeartbeat:").append(this.lastHeartbeat);
-        return builder.toString();
+    public Integer getEuiInt() {
+        return MycUtils.getInteger(eui);
     }
 
 }

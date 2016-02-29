@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,22 +29,28 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.MC_LOCALE;
+import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
-import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataKeyValuesJson;
+import org.mycontroller.standalone.api.jaxrs.mapper.MetricsBulletChartNVD3;
+import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataGroupNVD3;
+import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataNVD3;
+import org.mycontroller.standalone.api.jaxrs.mapper.MetricsChartDataXY;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.TypeUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.Sensor;
-import org.mycontroller.standalone.db.tables.SensorValue;
-import org.mycontroller.standalone.metrics.MetricsAggregationBase;
+import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
-import org.mycontroller.standalone.mysensors.MyMessages;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mycontroller.standalone.model.ResourceCountModel;
+import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.settings.MetricsGraph;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -53,47 +60,55 @@ import org.slf4j.LoggerFactory;
 @Path("/rest/metrics")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-public class MetricsHandler {
-    private static final Logger _logger = LoggerFactory.getLogger(MetricsHandler.class.getName());
+@RolesAllowed({ "User" })
+public class MetricsHandler extends AccessEngine {
+    public static final String COLOR_MINIMUM = "#2ca02c";
+    public static final String COLOR_MAXIMUM = "#802b00";
 
+    //Get count of resources
     @GET
-    @Path("/rawData")
-    public Response getLastMinute(@QueryParam("variableTypeId") int variableTypeId,
-            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
-        return RestUtils.getResponse(Status.OK,
-                this.getMetrics(AGGREGATION_TYPE.RAW, variableTypeId, lastNmilliSeconds));
+    @Path("/resourceCount")
+    public Response getResourceCount(@QueryParam("resourceType") RESOURCE_TYPE resourceType,
+            @QueryParam("resourceId") Integer resourceId) {
+        return RestUtils.getResponse(Status.OK, new ResourceCountModel(resourceType, resourceId));
     }
 
     @GET
-    @Path("/oneMinuteData")
-    public Response getLast5Minutes(@QueryParam("variableTypeId") int variableTypeId,
-            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
-        return RestUtils.getResponse(Status.OK,
-                this.getMetrics(AGGREGATION_TYPE.ONE_MINUTE, variableTypeId, lastNmilliSeconds));
+    @Path("/metricsData")
+    public Response getMetricsData(
+            @QueryParam("sensorId") Integer sensorId,
+            @QueryParam("variableId") List<Integer> variableIds,
+            @QueryParam("timestampFrom") Long timestampFrom,
+            @QueryParam("timestampTo") Long timestampTo,
+            @QueryParam("withMinMax") Boolean withMinMax,
+            @QueryParam("chartType") String chartType) {
+        if (!variableIds.isEmpty()) {
+            updateSensorVariableIds(variableIds);
+        } else if (sensorId != null) {
+            hasAccessSensor(sensorId);
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Either sensor id or sensor variable id(s) is required!"));
+        }
+        return RestUtils.getResponse(
+                Status.OK,
+                getMetricsDataJsonNVD3(variableIds, sensorId, timestampFrom, timestampTo,
+                        withMinMax != null ? withMinMax : false, chartType));
     }
 
     @GET
-    @Path("/fiveMinutesData")
-    public Response getLastOneHour(@QueryParam("variableTypeId") int variableTypeId,
-            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
-        return RestUtils.getResponse(Status.OK,
-                this.getMetrics(AGGREGATION_TYPE.FIVE_MINUTES, variableTypeId, lastNmilliSeconds));
-    }
-
-    @GET
-    @Path("/oneHourData")
-    public Response getLast24Hours(@QueryParam("variableTypeId") int variableTypeId,
-            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
-        return RestUtils.getResponse(Status.OK,
-                this.getMetrics(AGGREGATION_TYPE.ONE_HOUR, variableTypeId, lastNmilliSeconds));
-    }
-
-    @GET
-    @Path("/oneDayData")
-    public Response getLast30Days(@QueryParam("variableTypeId") int variableTypeId,
-            @QueryParam("lastNmilliSeconds") Long lastNmilliSeconds) {
-        return RestUtils.getResponse(Status.OK,
-                this.getMetrics(AGGREGATION_TYPE.ONE_DAY, variableTypeId, lastNmilliSeconds));
+    @Path("/bulletChart")
+    public Response getBulletChart(
+            @QueryParam("variableId") List<Integer> variableIds,
+            @QueryParam("timestampFrom") Long timestampFrom,
+            @QueryParam("timestampTo") Long timestampTo) {
+        if (!variableIds.isEmpty()) {
+            updateSensorVariableIds(variableIds);
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Sensor variable id(s) is required!"));
+        }
+        return RestUtils.getResponse(Status.OK, getMetricsBulletChart(variableIds, timestampFrom, timestampTo));
     }
 
     @GET
@@ -110,98 +125,414 @@ public class MetricsHandler {
     }
 
     @GET
-    @Path("/batteryUsage")
-    public Response getBatteryUsageDetails(@QueryParam("nodeId") int nodeId) {
-        return RestUtils.getResponse(Status.OK, this.getBatterUsage(nodeId));
+    @Path("/metricsBattery")
+    public Response getMetricsBattery(
+            @QueryParam("nodeId") Integer nodeId,
+            @QueryParam("timestampFrom") Long timestampFrom,
+            @QueryParam("timestampTo") Long timestampTo,
+            @QueryParam("withMinMax") Boolean withMinMax) {
+        //Access check
+        hasAccessNode(nodeId);
+        return RestUtils.getResponse(Status.OK,
+                getMetricsBatteryJsonNVD3(nodeId, timestampFrom, timestampTo,
+                        withMinMax != null ? withMinMax : false));
     }
 
-    private ArrayList<MetricsChartDataKeyValuesJson> getMetrics(AGGREGATION_TYPE aggregationType, int variableTypeId,
-            Long lastNmilliSeconds) {
-        MetricsAggregationBase metricsAggregationBase = new MetricsAggregationBase();
+    private List<MetricsBulletChartNVD3> getMetricsBulletChart(List<Integer> variableIds,
+            Long timestampFrom, Long timestampTo) {
+        ArrayList<MetricsBulletChartNVD3> bulletCharts = new ArrayList<MetricsBulletChartNVD3>();
+        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(variableIds);
+        //Update from/to time
+        MetricsDoubleTypeDevice queryInput = MetricsDoubleTypeDevice.builder().timestampFrom(timestampFrom)
+                .timestampTo(timestampTo).build();
+        for (SensorVariable sensorVariable : sensorVariables) {
+            //Update sensor variable
+            queryInput.setSensorVariable(sensorVariable);
+            MetricsDoubleTypeDevice metric = DaoUtils.getMetricsDoubleTypeDeviceDao().getMinMaxAvg(queryInput);
 
-        ArrayList<MetricsChartDataKeyValuesJson> finalData = new ArrayList<MetricsChartDataKeyValuesJson>();
+            String unit = sensorVariable.getUnit() != "" ? " (" + sensorVariable.getUnit() + ")" : "";
 
-        SensorValue sensorValue = DaoUtils.getSensorValueDao().get(variableTypeId);
-
-        if (sensorValue.getMetricType() == null) {
-            //Sensor pay load type not up to date
-            _logger.debug("Payload type not updated in sensor.");
-            return null;
-        } else if (sensorValue.getMetricType() == TypeUtils.METRIC_TYPE.DOUBLE.ordinal()) {
-            _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_DOUBLE.toString());
-
-            List<MetricsDoubleTypeDevice> metrics = metricsAggregationBase.getMetricsDoubleData(
-                    sensorValue,
-                    aggregationType,
-                    lastNmilliSeconds != null ? System.currentTimeMillis() - lastNmilliSeconds : null);
-
-            if (metrics == null) {
-                //throw new ApiError("No data available");
-                return null;
-            }
-
-            if (aggregationType == AGGREGATION_TYPE.RAW) {
-                MetricsChartDataKeyValuesJson rawChartData = new MetricsChartDataKeyValuesJson(
-                        sensorValue.getVariableTypeString());
-                for (MetricsDoubleTypeDevice metric : metrics) {
-                    rawChartData.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
-                }
-                finalData.add(rawChartData);
+            //If current value not available, do not allow any value
+            if (sensorVariable.getValue() == null || metric.getMin() == null) {
+                bulletCharts.add(MetricsBulletChartNVD3
+                        .builder()
+                        .id(sensorVariable.getId())
+                        .resourceName(new ResourceModel(
+                                RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
+                        .displayName(sensorVariable.getSensor().getName() + " >> "
+                                + sensorVariable.getVariableType().getText() + unit)
+                        .build());
             } else {
-                MetricsChartDataKeyValuesJson minChartData = new MetricsChartDataKeyValuesJson("Minimum");
-                MetricsChartDataKeyValuesJson avgChartData = new MetricsChartDataKeyValuesJson("Average");
-                MetricsChartDataKeyValuesJson maxChartData = new MetricsChartDataKeyValuesJson("Maximum");
+                bulletCharts.add(MetricsBulletChartNVD3
+                        .builder()
+                        .id(sensorVariable.getId())
+                        //.title(sensorVariable.getVariableType().getText())
+                        //.subtitle(sensorVariable.getUnit())
+                        .ranges(new Object[] { metric.getMin(), metric.getAvg(), metric.getMax() })
+                        .measures(new Object[] { sensorVariable.getValue() })
+                        .markers(new Object[] { sensorVariable.getPreviousValue() })
+                        .resourceName(new ResourceModel(
+                                RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
+                        .displayName(sensorVariable.getSensor().getName() + " >> "
+                                + sensorVariable.getVariableType().getText() + unit)
+                        .build());
+            }
 
-                for (MetricsDoubleTypeDevice metric : metrics) {
-                    minChartData.add(new Object[] { metric.getTimestamp(), metric.getMin() });
-                    avgChartData.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
-                    maxChartData.add(new Object[] { metric.getTimestamp(), metric.getMax() });
+        }
+        return bulletCharts;
+    }
+
+    private MetricsChartDataGroupNVD3 getMetricsBatteryJsonNVD3(Integer nodeId, Long timestampFrom,
+            Long timestampTo, Boolean withMinMax) {
+        ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
+
+        MetricsBatteryUsage metricQueryBattery = MetricsBatteryUsage.builder()
+                .timestampFrom(timestampFrom)
+                .timestampTo(timestampTo)
+                .node(Node.builder().id(nodeId).build())
+                .build();
+        List<MetricsBatteryUsage> batteryMetrics = DaoUtils.getMetricsBatteryUsageDao().getAll(metricQueryBattery);
+        ArrayList<Object> avgMetricValues = new ArrayList<Object>();
+        ArrayList<Object> minMetricValues = new ArrayList<Object>();
+        ArrayList<Object> maxMetricValues = new ArrayList<Object>();
+        for (MetricsBatteryUsage metric : batteryMetrics) {
+            avgMetricValues.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
+            if (withMinMax) {
+                minMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMin() });
+                maxMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMax() });
+            }
+
+        }
+        MetricsGraph metricBattery = ObjectFactory.getAppProperties().getMetricsGraphSettings().getBattery();
+        preDoubleData.add(MetricsChartDataNVD3.builder()
+                .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.AVERAGE))
+                .values(avgMetricValues)
+                .color(metricBattery.getColor())
+                .type(metricBattery.getSubType())
+                .build().updateSubType(metricBattery.getType()));
+        if (withMinMax) {
+            preDoubleData.add(MetricsChartDataNVD3.builder()
+                    .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.MINUMUM))
+                    .values(minMetricValues)
+                    .color(COLOR_MINIMUM)
+                    .type(metricBattery.getSubType())
+                    .build().updateSubType(metricBattery.getType()));
+            preDoubleData.add(MetricsChartDataNVD3.builder()
+                    .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.MAXIMUM))
+                    .values(maxMetricValues)
+                    .color(COLOR_MAXIMUM)
+                    .type(metricBattery.getSubType())
+                    .build().updateSubType(metricBattery.getType()));
+        }
+
+        return MetricsChartDataGroupNVD3.builder()
+                .metricsChartDataNVD3(preDoubleData)
+                .unit("%")
+                .timeFormat(getTimeFormat(timestampFrom))
+                .id(nodeId)
+                .resourceName(new ResourceModel(RESOURCE_TYPE.NODE, nodeId).getResourceLessDetails())
+                .chartType(metricBattery.getType())
+                .chartInterpolate(metricBattery.getInterpolate())
+                .build();
+    }
+
+    private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3WithChartType(
+            List<Integer> variableIds,
+            Long timestampFrom,
+            Long timestampTo,
+            String chartType) {
+
+        //Get sensor variables
+        List<SensorVariable> sensorVariables = null;
+        if (!variableIds.isEmpty()) {
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll(variableIds);
+        }
+
+        //Return if no data available
+        if (sensorVariables == null) {
+            return new ArrayList<MetricsChartDataGroupNVD3>();
+        }
+
+        MetricsGraphSettings metricsGraphSettings = ObjectFactory.getAppProperties().getMetricsGraphSettings();
+        ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
+
+        SensorVariable yaxis1Variable = null;
+        boolean initialLoadDone = false;
+        String chartTypeInternal = null;
+
+        ArrayList<MetricsChartDataNVD3> metricDataValues = new ArrayList<MetricsChartDataNVD3>();
+
+        String unit = null;
+        String unit2 = null;
+        String chartInterpolate = null;
+        boolean isMultiChart = false;
+
+        for (SensorVariable sensorVariable : sensorVariables) {
+            MetricsGraph metrics = metricsGraphSettings.getMetric(sensorVariable.getVariableType().getText());
+            //Load initial settings
+            if (!initialLoadDone) {
+                if (CHART_TYPE.MULTI_CHART == CHART_TYPE.fromString(chartType)) {
+                    isMultiChart = true;
+                    yaxis1Variable = sensorVariable;
+                    chartTypeInternal = chartType;
+                } else if (CHART_TYPE.LINE_CHART == CHART_TYPE.fromString(chartType)) {
+                    chartTypeInternal = chartType;
+                    chartInterpolate = metrics.getInterpolate();
                 }
-
-                finalData.add(minChartData);
-                finalData.add(avgChartData);
-                finalData.add(maxChartData);
-            }
-        } else if (sensorValue.getMetricType() == TypeUtils.METRIC_TYPE.BINARY.ordinal()) {
-            _logger.debug("Payload type: {}", MyMessages.PAYLOAD_TYPE.PL_BOOLEAN.toString());
-            List<MetricsBinaryTypeDevice> metrics = metricsAggregationBase.getMetricsBinaryData(
-                    sensorValue,
-                    lastNmilliSeconds != null ? System.currentTimeMillis() - lastNmilliSeconds : null);
-            if (metrics == null) {
-                //throw new ApiError("No data available");
-                return null;
+                initialLoadDone = true;
             }
 
-            Sensor sensor = DaoUtils.getSensorDao().get(sensorValue.getSensor().getId());
-
-            String name = sensor.getName() != null ? sensor.getName() : "State";
-            MetricsChartDataKeyValuesJson minChartData = new MetricsChartDataKeyValuesJson(name);
-
-            for (MetricsBinaryTypeDevice metric : metrics) {
-                minChartData.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
+            Integer yAxis = null;
+            if (yaxis1Variable != null) {
+                if (yaxis1Variable.getVariableType() == sensorVariable.getVariableType()) {
+                    yAxis = 1;
+                    unit = sensorVariable.getUnit();
+                } else {
+                    yAxis = 2;
+                    unit2 = sensorVariable.getUnit();
+                }
+            } else {
+                unit = sensorVariable.getUnit();
             }
 
-            finalData.add(minChartData);
+            if (chartTypeInternal == null) {
+                chartTypeInternal = metrics.getType();
+            }
+
+            String seriesName = null;
+            if (isMultiChart) {
+                seriesName = sensorVariable.getSensor().getName() + "-" + sensorVariable.getVariableType().getText();
+            } else {
+                seriesName = sensorVariable.getSensor().getName();
+            }
+            switch (sensorVariable.getMetricType()) {
+                case DOUBLE:
+
+                    MetricsDoubleTypeDevice metricQueryDouble = MetricsDoubleTypeDevice.builder()
+                            .timestampFrom(timestampFrom)
+                            .timestampTo(timestampTo)
+                            .sensorVariable(sensorVariable)
+                            .build();
+                    List<MetricsDoubleTypeDevice> doubleMetrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(
+                            metricQueryDouble);
+                    ArrayList<Object> avgMetricDoubleValues = new ArrayList<Object>();
+                    for (MetricsDoubleTypeDevice metric : doubleMetrics) {
+                        if (isMultiChart) {
+                            avgMetricDoubleValues.add(MetricsChartDataXY.builder().x(metric.getTimestamp())
+                                    .y(metric.getAvg()).build());
+                        } else {
+                            avgMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
+                        }
+                    }
+                    if (!doubleMetrics.isEmpty()) {
+                        metricDataValues.add(MetricsChartDataNVD3
+                                .builder()
+                                .key(seriesName)
+                                .values(avgMetricDoubleValues)
+                                .type(metrics.getSubType())
+                                //.interpolate(metrics.getInterpolate())
+                                .yAxis(yAxis)
+                                .build().updateSubType(chartTypeInternal));
+                    }
+
+                    break;
+                case BINARY:
+                    MetricsBinaryTypeDevice metricQueryBinary = MetricsBinaryTypeDevice.builder()
+                            .timestampFrom(timestampFrom)
+                            .timestampTo(timestampTo)
+                            .sensorVariable(sensorVariable)
+                            .build();
+                    List<MetricsBinaryTypeDevice> binaryMetrics = DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(
+                            metricQueryBinary);
+                    ArrayList<Object> metricBinaryValues = new ArrayList<Object>();
+                    for (MetricsBinaryTypeDevice metric : binaryMetrics) {
+                        if (isMultiChart) {
+                            metricBinaryValues.add(MetricsChartDataXY.builder().x(metric.getTimestamp())
+                                    .y(metric.getState() ? 1 : 0).build());
+                        } else {
+                            metricBinaryValues.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
+                        }
+                    }
+                    if (!binaryMetrics.isEmpty()) {
+                        metricDataValues.add(MetricsChartDataNVD3
+                                .builder()
+                                .key(seriesName)
+                                .values(metricBinaryValues)
+                                .type(metrics.getSubType())
+                                //.interpolate(metrics.getInterpolate())
+                                .yAxis(yAxis)
+                                .id(sensorVariable.getId())
+                                .resourceName(
+                                        new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable)
+                                                .getResourceLessDetails())
+                                .build().updateSubType(chartTypeInternal));
+                    }
+
+                    break;
+                default:
+                    //no need to do anything here
+                    break;
+            }
+        }
+
+        finalData.add(MetricsChartDataGroupNVD3
+                .builder()
+                .metricsChartDataNVD3(metricDataValues)
+                .unit(unit)
+                .unit2(unit2)
+                .timeFormat(getTimeFormat(timestampFrom))
+                .chartType(chartType)
+                .chartInterpolate(chartInterpolate)
+                .build());
+
+        return finalData;
+    }
+
+    private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3(
+            List<Integer> variableIds,
+            Integer sensorId,
+            Long timestampFrom,
+            Long timestampTo,
+            Boolean withMinMax,
+            String chartType) {
+
+        //if chartType not null, call this
+        if (chartType != null) {
+            return getMetricsDataJsonNVD3WithChartType(variableIds, timestampFrom, timestampTo, chartType);
+        }
+
+        //Get sensor variables
+        List<SensorVariable> sensorVariables = null;
+        if (!variableIds.isEmpty()) {
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll(variableIds);
+        } else {
+            sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+        }
+        //Return if no data available
+        if (sensorVariables == null) {
+            return new ArrayList<MetricsChartDataGroupNVD3>();
+        }
+
+        MetricsGraphSettings metricsGraphSettings = ObjectFactory.getAppProperties().getMetricsGraphSettings();
+        ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
+
+        for (SensorVariable sensorVariable : sensorVariables) {
+            MetricsGraph metrics = metricsGraphSettings.getMetric(sensorVariable.getVariableType().getText());
+            switch (sensorVariable.getMetricType()) {
+                case DOUBLE:
+                    ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
+
+                    MetricsDoubleTypeDevice metricQueryDouble = MetricsDoubleTypeDevice.builder()
+                            .timestampFrom(timestampFrom)
+                            .timestampTo(timestampTo)
+                            .sensorVariable(sensorVariable)
+                            .build();
+                    List<MetricsDoubleTypeDevice> doubleMetrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(
+                            metricQueryDouble);
+                    ArrayList<Object> avgMetricDoubleValues = new ArrayList<Object>();
+                    ArrayList<Object> minMetricDoubleValues = new ArrayList<Object>();
+                    ArrayList<Object> maxMetricDoubleValues = new ArrayList<Object>();
+                    for (MetricsDoubleTypeDevice metric : doubleMetrics) {
+                        avgMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
+                        if (withMinMax) {
+                            minMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getMin() });
+                            maxMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getMax() });
+                        }
+                    }
+                    preDoubleData.add(MetricsChartDataNVD3.builder()
+                            .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.AVERAGE))
+                            .values(avgMetricDoubleValues)
+                            .color(metrics.getColor())
+                            .type(metrics.getSubType())
+                            .build().updateSubType(metrics.getType()));
+                    if (withMinMax) {
+                        preDoubleData.add(MetricsChartDataNVD3.builder()
+                                .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.MINUMUM))
+                                .values(minMetricDoubleValues)
+                                .color(COLOR_MINIMUM)
+                                .type(metrics.getSubType())
+                                .build().updateSubType(metrics.getType()));
+                        preDoubleData.add(MetricsChartDataNVD3.builder()
+                                .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.MAXIMUM))
+                                .values(maxMetricDoubleValues)
+                                .color(COLOR_MAXIMUM)
+                                .type(metrics.getSubType())
+                                .build().updateSubType(metrics.getType()));
+                    }
+                    finalData.add(MetricsChartDataGroupNVD3
+                            .builder()
+                            .metricsChartDataNVD3(preDoubleData)
+                            .id(sensorVariable.getId())
+                            .unit(sensorVariable.getUnit())
+                            .timeFormat(getTimeFormat(timestampFrom))
+                            .variableType(
+                                    ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name()))
+                            .dataType(sensorVariable.getMetricType().getText())
+                            .resourceName(new ResourceModel(
+                                    RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
+                            .chartType(metrics.getType())
+                            .chartInterpolate(metrics.getInterpolate())
+                            .build());
+
+                    break;
+                case BINARY:
+                    ArrayList<MetricsChartDataNVD3> preBinaryData = new ArrayList<MetricsChartDataNVD3>();
+                    MetricsBinaryTypeDevice metricQueryBinary = MetricsBinaryTypeDevice.builder()
+                            .timestampFrom(timestampFrom)
+                            .timestampTo(timestampTo)
+                            .sensorVariable(sensorVariable)
+                            .build();
+                    List<MetricsBinaryTypeDevice> binaryMetrics = DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(
+                            metricQueryBinary);
+                    ArrayList<Object> metricBinaryValues = new ArrayList<Object>();
+                    for (MetricsBinaryTypeDevice metric : binaryMetrics) {
+                        metricBinaryValues.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
+                    }
+                    preBinaryData.add(MetricsChartDataNVD3.builder()
+                            .key(sensorVariable.getVariableType().getText())
+                            .values(metricBinaryValues)
+                            .color(metrics.getColor())
+                            .type(metrics.getSubType())
+                            .build().updateSubType(metrics.getType()));
+                    finalData.add(MetricsChartDataGroupNVD3
+                            .builder()
+                            .metricsChartDataNVD3(preBinaryData)
+                            .id(sensorVariable.getId())
+                            .unit(sensorVariable.getUnit())
+                            .timeFormat(getTimeFormat(timestampFrom))
+                            .variableType(
+                                    ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name()))
+                            .dataType(sensorVariable.getMetricType().getText())
+                            .resourceName(new ResourceModel(
+                                    RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
+                            .chartType(metrics.getType())
+                            .chartInterpolate(metrics.getInterpolate())
+                            .build());
+                    break;
+                default:
+                    //no need to do anything here
+                    break;
+            }
         }
 
         return finalData;
     }
 
-    private ArrayList<MetricsChartDataKeyValuesJson> getBatterUsage(int nodeId) {
-        ArrayList<MetricsChartDataKeyValuesJson> finalData = new ArrayList<MetricsChartDataKeyValuesJson>();
-        List<MetricsBatteryUsage> metrics = DaoUtils.getMetricsBatteryUsageDao().getAll(nodeId);
-        if (metrics == null) {
-            _logger.debug("No data");
-            return null;
-        }
-        else {
-            MetricsChartDataKeyValuesJson chartData = new MetricsChartDataKeyValuesJson("Battery Level");
-            for (MetricsBatteryUsage metric : metrics) {
-                chartData.add(new Object[] { metric.getTimestamp(), metric.getValue() });
+    private String getTimeFormat(Long timestampFrom) {
+        if (timestampFrom != null) {
+            //subtract 5 seconds to get proper timeformat
+            Long timeDifferance = System.currentTimeMillis() - timestampFrom - (TIME_REF.ONE_SECOND * 5);
+            if (timeDifferance > (TIME_REF.ONE_DAY * 365)) {
+                return ObjectFactory.getAppProperties().getDateFormat();
+            } else if (timeDifferance > TIME_REF.ONE_DAY * 7) {
+                return "MMM dd, " + ObjectFactory.getAppProperties().getTimeFormat();
+            } else if (timeDifferance > TIME_REF.ONE_DAY * 1) {
+                return "dd, " + ObjectFactory.getAppProperties().getTimeFormat();
+            } else {
+                return ObjectFactory.getAppProperties().getTimeFormat();
             }
-
-            finalData.add(chartData);
+        } else {
+            return ObjectFactory.getAppProperties().getDateFormat();
         }
-        return finalData;
     }
 }

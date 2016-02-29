@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,10 @@
  */
 package org.mycontroller.standalone.gateway.serialport;
 
-import java.util.HashMap;
-
-import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
-import org.mycontroller.standalone.gateway.IMySensorsGateway;
-import org.mycontroller.standalone.mysensors.RawMessage;
+import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.gateway.GatewaySerial;
+import org.mycontroller.standalone.gateway.IGateway;
+import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,14 +29,15 @@ import com.pi4j.io.serial.SerialFactory;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class SerialPortPi4jImpl implements IMySensorsGateway {
+public class SerialPortPi4jImpl implements IGateway {
     private static Logger _logger = LoggerFactory.getLogger(SerialPortPi4jImpl.class.getName());
     private SerialDataListenerPi4j dataListenerPi4J;
-    private GatewayInfo gatewayInfo = new GatewayInfo();
+    private GatewaySerial gateway = null;
 
     private Serial serial;
 
-    public SerialPortPi4jImpl() {
+    public SerialPortPi4jImpl(GatewaySerial gateway) {
+        this.gateway = gateway;
         this.initialize();
     }
 
@@ -47,44 +45,27 @@ public class SerialPortPi4jImpl implements IMySensorsGateway {
         try {
             serial.write(rawMessage.getGWBytes());
         } catch (Exception ex) {
-            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
+            gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+            gateway.updateGateway();
             _logger.error("exception on pi4j serialport,", ex);
         }
     }
 
     private void initialize() {
         try {
-            //Update Gateway Info
-            gatewayInfo.setType(ObjectFactory.getAppProperties().getGatewayType());
-            gatewayInfo.setData(new HashMap<String, Object>());
-
-            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
-            gatewayInfo.getData().put(SerialPortCommon.DRIVER_TYPE,
-                    ObjectFactory.getAppProperties().getGatewaySerialPortDriver());
-            gatewayInfo.getData().put(SerialPortCommon.SELECTED_DRIVER_TYPE,
-                    AppProperties.SERIAL_PORT_DRIVER.PI4J.toString());
-            gatewayInfo.getData().put(SerialPortCommon.PORT_NAME,
-                    ObjectFactory.getAppProperties().getGatewaySerialPortName());
-            gatewayInfo.getData().put(SerialPortCommon.BAUD_RATE,
-                    ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
-
             // create an instance of the serial communications class
             this.serial = SerialFactory.createInstance();
-            this.dataListenerPi4J = new SerialDataListenerPi4j(gatewayInfo);
+            this.dataListenerPi4J = new SerialDataListenerPi4j(gateway);
             // create and register the serial data listener
             serial.addListener(dataListenerPi4J);
             // open the serial port
-            serial.open(ObjectFactory.getAppProperties().getGatewaySerialPortName(),
-                    ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
-            _logger.debug("Serial port initialized with the driver:{}, PortName:{}, BaudRate:{}",
-                    ObjectFactory.getAppProperties().getGatewaySerialPortDriver(),
-                    ObjectFactory.getAppProperties().getGatewaySerialPortName(),
-                    ObjectFactory.getAppProperties().getGatewaySerialPortBaudRate());
-            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "Connected Successfully");
-            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, true);
-            gatewayInfo.getData().put(SerialPortCommon.LAST_SUCCESSFUL_CONNECTION, System.currentTimeMillis());
+            serial.open(gateway.getPortName(), gateway.getBaudRate());
+            _logger.debug("Serial port gateway initialized, Gateway[{}]", gateway);
+            gateway.setStatus(STATE.UP, "Connected Successfully");
+            gateway.updateGateway();
         } catch (Exception ex) {
-            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "ERROR: " + ex.getMessage());
+            gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+            gateway.updateGateway();
             _logger.error("Failed to load serial port,", ex);
         }
 
@@ -97,20 +78,18 @@ public class SerialPortPi4jImpl implements IMySensorsGateway {
                     this.serial.removeListener(dataListenerPi4J);
                 }
                 this.serial.close();
-                _logger.debug("serialPort{} closed",
-                        ObjectFactory.getAppProperties().getGatewaySerialPortName());
+                _logger.debug("serialPort{} closed", gateway.getPortName());
             } catch (Exception ex) {
                 _logger.error("exception on pi4j serialport,", ex);
             }
         } else {
-            _logger.debug("serialPort{} already closed, nothing to do.",
-                    ObjectFactory.getAppProperties().getGatewaySerialPortName());
+            _logger.debug("serialPort{} already closed, nothing to do.", gateway.getPortName());
         }
     }
 
     @Override
-    public GatewayInfo getGatewayInfo() {
-        return gatewayInfo;
+    public GatewaySerial getGateway() {
+        return gateway;
     }
 
 }

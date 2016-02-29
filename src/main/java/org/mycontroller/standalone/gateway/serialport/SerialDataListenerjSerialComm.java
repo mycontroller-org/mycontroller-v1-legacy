@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@
 package org.mycontroller.standalone.gateway.serialport;
 
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.api.jaxrs.mapper.GatewayInfo;
-import org.mycontroller.standalone.mysensors.RawMessage;
-import org.mycontroller.standalone.mysensors.RawMessageException;
+import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.TIME_REF;
+import org.mycontroller.standalone.gateway.GatewaySerial;
+import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +35,13 @@ public class SerialDataListenerjSerialComm implements SerialPortDataListener {
     private static final Logger _logger = LoggerFactory.getLogger(SerialDataListenerjSerialComm.class.getName());
 
     private SerialPort serialPort;
-    private GatewayInfo gatewayInfo;
+    private GatewaySerial gateway = null;
     private StringBuilder message = new StringBuilder();
+    private boolean failedStatusWritten = false;
 
-    public SerialDataListenerjSerialComm(SerialPort serialPort, GatewayInfo gatewayInfo) {
+    public SerialDataListenerjSerialComm(SerialPort serialPort, GatewaySerial gateway) {
         this.serialPort = serialPort;
-        this.gatewayInfo = gatewayInfo;
+        this.gateway = gateway;
     }
 
     @Override
@@ -60,28 +62,40 @@ public class SerialDataListenerjSerialComm implements SerialPortDataListener {
                     String toProcess = message.toString();
                     _logger.debug("Received a message:[{}]", toProcess);
                     //Send Message to message factory
-                    ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(toProcess));
+                    ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(gateway.getId(), toProcess));
                     message.setLength(0);
                 } else if (b != SerialPortCommon.MESSAGE_SPLITTER) {
                     _logger.trace("Received a char:[{}]", ((char) b));
                     message.append((char) b);
+                } else if (message.length() >= MYCSerialPort.SERIAL_DATA_MAX_SIZE) {
+                    _logger.warn(
+                            "Serial receive buffer size reached to MAX level[{} chars], Now clearing the buffer. Existing data:[{}]",
+                            MYCSerialPort.SERIAL_DATA_MAX_SIZE, message.toString());
+                    message.setLength(0);
                 } else {
                     _logger.debug("Received MESSAGE_SPLITTER and current message length is ZERO! Nothing to do");
                 }
             }
-        } catch (RawMessageException rEx) {
-            _logger.warn(rEx.getMessage());
-            message.setLength(0);
+            failedStatusWritten = false;
         } catch (Exception ex) {
-            gatewayInfo.getData().put(SerialPortCommon.IS_CONNECTED, false);
-            gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, ex.getMessage());
-            message.setLength(0);
             if (ex.getMessage() != null) {
-                gatewayInfo.getData().put(SerialPortCommon.CONNECTION_STATUS, "null exception");
-                _logger.error("exception, ", ex);
+                _logger.error("Exception, ", ex);
+            }
+            if (!failedStatusWritten) {
+                gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+                gateway.updateGateway();
+                failedStatusWritten = true;
+                _logger.error("Exception, ", ex);
+            }
+            message.setLength(0);
+            try {
+                //If serial port removed in between throws 'java.lang.NegativeArraySizeException: null' continuously
+                //This continuous exception eats CPU heavily, to reduce CPU usage on this state added Thread.sleep
+                Thread.sleep(TIME_REF.TEN_MILLISECONDS);
+            } catch (InterruptedException tE) {
+                _logger.error("Exception,", tE);
             }
         }
 
     }
-
 }

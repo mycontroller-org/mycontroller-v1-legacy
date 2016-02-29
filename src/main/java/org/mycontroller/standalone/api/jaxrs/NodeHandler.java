@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,32 +17,32 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.codec.binary.Hex;
+import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
+import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.db.tables.Node;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_INTERNAL;
-import org.mycontroller.standalone.mysensors.MyMessages.MESSAGE_TYPE_STREAM;
-import org.mycontroller.standalone.mysensors.structs.FirmwareConfigResponse;
-import org.mycontroller.standalone.mysensors.NodeDiscover;
-import org.mycontroller.standalone.mysensors.RawMessage;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -52,111 +52,136 @@ import org.mycontroller.standalone.mysensors.RawMessage;
 @Path("/rest/nodes")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-public class NodeHandler {
+@RolesAllowed({ "User" })
+public class NodeHandler extends AccessEngine {
+
     @GET
     @Path("/")
-    public Response getAllNodes() {
-        List<Node> nodes = DaoUtils.getNodeDao().getAll();
-        return RestUtils.getResponse(Status.OK, nodes);
+    public Response getAllNodes(
+            @QueryParam(Node.KEY_GATEWAY_ID) Integer gatewayId,
+            @QueryParam(Node.KEY_GATEWAY_NAME) List<String> gatewayName,
+            @QueryParam(Node.KEY_TYPE) String type,
+            @QueryParam(Node.KEY_STATE) String state,
+            @QueryParam(Node.KEY_EUI) List<String> eui,
+            @QueryParam(Node.KEY_NAME) List<String> name,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) Long page,
+            @QueryParam(Query.ORDER_BY) String orderBy,
+            @QueryParam(Query.ORDER) String order) {
+        HashMap<String, Object> filters = new HashMap<String, Object>();
+
+        filters.put(Node.KEY_GATEWAY_ID, gatewayId);
+        filters.put(Node.KEY_GATEWAY_NAME, gatewayName);
+        filters.put(Node.KEY_TYPE, MESSAGE_TYPE_PRESENTATION.fromString(type));
+        filters.put(Node.KEY_STATE, STATE.fromString(state));
+        filters.put(Node.KEY_EUI, eui);
+        filters.put(Node.KEY_NAME, name);
+
+        //Add id filter if he is non-admin
+        if (!isSuperAdmin()) {
+            filters.put(Node.KEY_ID, getUser().getAllowedResources().getNodeIds());
+        }
+
+        QueryResponse queryResponse = DaoUtils.getNodeDao().getAll(
+                Query.builder()
+                        .order(order != null ? order : Query.ORDER_ASC)
+                        .orderBy(orderBy != null ? orderBy : Node.KEY_ID)
+                        .filters(filters)
+                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
+                        .page(page != null ? page : 1l)
+                        .build());
+        return RestUtils.getResponse(Status.OK, queryResponse);
     }
 
     @GET
-    @Path("/{nodeId}")
-    public Response get(@PathParam("nodeId") int nodeId) {
-        Node node = DaoUtils.getNodeDao().get(nodeId);
+    @Path("/{id}")
+    public Response get(@PathParam("id") Integer id) {
+        hasAccessNode(id);
+        Node node = DaoUtils.getNodeDao().getById(id);
         return RestUtils.getResponse(Status.OK, node);
     }
 
-    @DELETE
-    @Path("/{nodeId}")
-    public Response delete(@PathParam("nodeId") int nodeId) {
-        Node node = DaoUtils.getNodeDao().get(nodeId);
-        DeleteResourceUtils.deleteNode(node);
+    @POST
+    @Path("/deleteIds")
+    public Response deleteIds(List<Integer> ids) {
+        updateNodeIds(ids);
+        DeleteResourceUtils.deleteNodes(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @PUT
     @Path("/")
     public Response update(Node node) {
-        DaoUtils.getNodeDao().update(node);
+        hasAccessNode(node.getId());
+        Node availabilityCheck = DaoUtils.getNodeDao().get(node.getGateway().getId(), node.getEui());
+        if (availabilityCheck != null && availabilityCheck.getId() != node.getId()) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A node available with this EUI."));
+        }
+        ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).updateNode(node);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
+    @RolesAllowed({ "admin" })
     @POST
     @Path("/")
     public Response add(Node node) {
-        DaoUtils.getNodeDao().create(node);
+        if (DaoUtils.getNodeDao().get(node.getGateway().getId(), node.getEui()) != null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A node available with this EUI."));
+        }
+        Gateway gateway = DaoUtils.getGatewayDao().getById(node.getGateway().getId());
+        node.setGateway(gateway);
+        ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).addNode(node);
         return RestUtils.getResponse(Status.CREATED);
     }
 
     @POST
     @Path("/reboot")
-    public Response reboot(Node node) {
-        if (DaoUtils.getNodeDao().get(node) != null) {
-            RawMessage rawMessage = new RawMessage(
-                    node.getId(),
-                    255,
-                    MESSAGE_TYPE.C_INTERNAL.ordinal(),
-                    0,
-                    MESSAGE_TYPE_INTERNAL.I_REBOOT.ordinal(),
-                    "",
-                    true);
-            ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
+    public Response reboot(List<Integer> ids) {
+        updateNodeIds(ids);
+        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
+        if (nodes != null && nodes.size() > 0) {
+            for (Node node : nodes) {
+                ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).rebootNode(node);
+            }
             return RestUtils.getResponse(Status.OK);
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST,
-                    new ApiError("Selected Node not available! Node:[" + node.toString() + "]"));
+                    new ApiError("Selected Node(s) not available! Number of nodes:[" + nodes.size() + "]"));
         }
     }
 
     @POST
     @Path("/uploadFirmware")
-    public Response uploadFirmware(Node node) {
-        Node nodeRef = DaoUtils.getNodeDao().get(node.getId());
-        if (nodeRef != null) {
-            if (nodeRef.getFirmware() != null) {
-                FirmwareConfigResponse firmwareConfigResponse = new FirmwareConfigResponse();
-                firmwareConfigResponse.setByteBufferPosition(0);
-
-                firmwareConfigResponse.setType(nodeRef.getFirmware().getType().getId());
-                firmwareConfigResponse.setVersion(nodeRef.getFirmware().getVersion().getId());
-                firmwareConfigResponse.setBlocks(nodeRef.getFirmware().getBlocks());
-                firmwareConfigResponse.setCrc(nodeRef.getFirmware().getCrc());
-
-                RawMessage rawMessage = new RawMessage(
-                        node.getId(),
-                        255,
-                        MESSAGE_TYPE.C_STREAM.ordinal(),
-                        0,
-                        MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.ordinal(),
-                        Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase(),
-                        true);
-                ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
-                return RestUtils.getResponse(Status.OK);
-            } else {
-                return RestUtils.getResponse(Status.BAD_REQUEST,
-                        new ApiError("There is no firmware mapped with this Node:[Id:" + node.getId() + ", Name:"
-                                + node.getName() + "]"));
+    public Response uploadFirmware(List<Integer> ids) {
+        updateNodeIds(ids);
+        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
+        if (nodes != null && nodes.size() > 0) {
+            for (Node node : nodes) {
+                if (node.getFirmware() != null) {
+                    ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).uploadFirmware(node);
+                }
             }
+            return RestUtils.getResponse(Status.OK);
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST,
-                    new ApiError("Selected Node not available! Node:[Id:" + node.getId() + ", Name:"
-                            + node.getName() + "]"));
+                    new ApiError("Selected Node(s) not available! Node Ids:[" + ids + "]"));
         }
     }
 
     @POST
-    @Path("/nodeDiscover")
-    public Response executeNodeDiscover() {
-        if (NodeDiscover.isDiscoverNodesRunning()) {
-            return RestUtils.getResponse(Status.FORBIDDEN, new ApiError("Node Discover util is already running!"));
-        } else {
-            try {
-                new Thread(new NodeDiscover()).start();
-                return RestUtils.getResponse(Status.OK, new ApiError("Node Discover util completed successfully"));
-            } catch (Exception ex) {
-                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+    @Path("/eraseConfiguration")
+    public Response eraseConfig(List<Integer> ids) {
+        updateNodeIds(ids);
+        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
+        if (nodes != null && nodes.size() > 0) {
+            for (Node node : nodes) {
+                ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).eraseConfiguration(node);
             }
+            return RestUtils.getResponse(Status.OK);
+
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Selected Node not available! Node Ids:[" + ids + "]"));
         }
     }
 

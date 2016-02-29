@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,36 +15,26 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
+import org.mycontroller.standalone.db.tables.User;
+
+import lombok.Data;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.Builder;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Builder
+@ToString(includeFieldNames = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class AuthenticationJson {
     private Boolean success;
     private String message;
-
-    public AuthenticationJson(Boolean success, String message) {
-        this.setSuccess(success);
-        this.message = message;
-    }
-
-    public AuthenticationJson(Boolean status) {
-        this(status, null);
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
+    private User user;
 }

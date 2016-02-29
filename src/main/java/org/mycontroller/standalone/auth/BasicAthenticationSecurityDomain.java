@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.mycontroller.standalone.auth;
 import java.security.Principal;
 
 import org.jboss.resteasy.plugins.server.embedded.SecurityDomain;
+import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.USER_ROLE;
 import org.mycontroller.standalone.db.tables.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
     @Override
     public Principal authenticate(String aUsername, String aPassword) throws SecurityException {
         _logger.debug("HTTP authentication: User:{}", aUsername);
-        User user = DaoUtils.getUserDao().get(aUsername);
+        User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
             if (user.getPassword().equals(aPassword)) {
@@ -46,29 +46,38 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
     }
 
     @Override
-    public boolean isUserInRole(Principal principal, String role) {
+    public boolean isUserInRole(Principal principal, String permission) {
         User user = (User) principal;
-        _logger.debug("isUserInRole called with role[{}], user[{}]", role, user);
-        if (USER_ROLE.ADMIN.toString().equalsIgnoreCase(user.getRole())) {
+        _logger.debug("isUserInRole(permission) called with permission[{}], user[{}]", permission, user);
+        if (user.getPermissions() == null || user.getPermissions().isEmpty()) {
+            return false;
+        }
+        if (user.getPermissions().contains(PERMISSION_TYPE.SUPER_ADMIN.getText())) {
             return true;
-        } else if (role.equalsIgnoreCase(user.getRole())) {
+        } else if (user.getPermissions().contains(permission)) {
             return true;
         } else {
-            _logger.info("Roles Mismatch, api role[{}], user role[{}]", role, user.getRole());
+            _logger.info("Roles mismatch for user[{}], api permission[{}], user permission[{}]", user.getUsername(),
+                    permission, user.getPermissions());
         }
         return false;
     }
 
-    public static boolean login(String aUsername, String aPassword) {
+    public static boolean login(String aUsername, String aPassword) throws IllegalAccessException {
         if (aUsername == null || aPassword == null) {
             return false;
         }
         _logger.debug("User:{},Password:{}", aUsername, aPassword);
-        User user = DaoUtils.getUserDao().get(aUsername);
+        User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
             if (user.getPassword().equals(aPassword)) {
-                return true;
+                if (user.getPermission() != null && !user.getPermission().equalsIgnoreCase("MQTT user")) {
+                    return true;
+                } else {
+                    throw new IllegalAccessException(
+                            "There is no suitable role assigned for you! Contact administrator.");
+                }
             }
         }
         return false;

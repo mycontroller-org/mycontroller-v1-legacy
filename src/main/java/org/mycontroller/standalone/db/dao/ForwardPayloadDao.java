@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,32 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface ForwardPayloadDao {
-    void create(ForwardPayload forwardPayload);
+public interface ForwardPayloadDao extends BaseDao<ForwardPayload, Integer> {
 
-    void delete(Integer id);
+    void enable(List<Integer> ids);
 
-    void deleteBySensorRefId(Integer sensorRefId);
+    void disable(List<Integer> ids);
 
-    List<ForwardPayload> getAll();
+    void deleteBySensorId(Integer sensorId);
 
-    List<ForwardPayload> getAll(Integer sensorRefId);
+    List<ForwardPayload> getAll(Integer sensorVariableId);
 
-    List<ForwardPayload> getAll(Integer sensorRefId, Integer sourceType);
+    List<ForwardPayload> getAllEnabled(Integer sensorVariableId);
+
+    List<ForwardPayload> getAllBySourceSensor(Integer sourceSensorId);
+
+    List<ForwardPayload> getAllBySourceSensor(Integer sourceSensorId, Boolean enabled);
+
+    List<ForwardPayload> getAllByDestinationSensor(Integer destiantionSensorId);
+
+    QueryResponse getAll(Query query);
+
 }

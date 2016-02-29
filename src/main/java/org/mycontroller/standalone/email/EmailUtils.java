@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,7 @@ package org.mycontroller.standalone.email;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.alarm.SendEmail;
-import org.mycontroller.standalone.db.tables.Settings;
+import org.mycontroller.standalone.ObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,42 +29,33 @@ import org.slf4j.LoggerFactory;
 public class EmailUtils {
     private static final Logger _logger = LoggerFactory.getLogger(EmailUtils.class);
 
-    public static final String ALARM_INFO = "\\$alarmInfo";
-
     private static HtmlEmail email = null;
 
     private EmailUtils() {
 
     }
 
-    public static void sendSimpleEmail(SendEmail sendEmail, String subject, String message) throws EmailException {
+    public static void sendSimpleEmail(String emails, String subject, String message) throws EmailException {
         initializeEmail();
         email.setSubject(subject);
         email.setHtmlMsg(message);
-        email.addTo(sendEmail.getToEmailAddress().split(","));
+        email.addTo(emails.split(","));
         String sendReturn = email.send();
         _logger.debug("Send Status:[{}]", sendReturn);
-        _logger.debug("Email successfully sent to [{}], Message:[{}]", sendEmail.getToEmailAddress(), message);
-    }
-
-    private static String getString(String key) {
-        Settings settings = DaoUtils.getSettingsDao().get(key);
-        if (settings.getValue() != null && settings.getValue().trim().length() > 0) {
-            return settings.getValue().trim();
-        }
-        throw new IllegalArgumentException("Email configuration [" + key + "] should not be null or empty");
+        _logger.debug("EmailSettings successfully sent to [{}], Message:[{}]", emails, message);
     }
 
     public static void initializeEmail() throws EmailException {
         email = new HtmlEmail();
-        email.setHostName(getString(Settings.EMAIL_SMTP_HOST));
-        email.setSmtpPort(Integer.valueOf(getString(Settings.EMAIL_SMTP_PORT)));
-        if (DaoUtils.getSettingsDao().get(Settings.EMAIL_SMTP_USERNAME).getValue() != null
-                && DaoUtils.getSettingsDao().get(Settings.EMAIL_SMTP_USERNAME).getValue().length() > 0) {
-            email.setAuthenticator(new DefaultAuthenticator(getString(Settings.EMAIL_SMTP_USERNAME),
-                    getString(Settings.EMAIL_SMTP_PASSWORD)));
+        email.setHostName(ObjectFactory.getAppProperties().getEmailSettings().getSmtpHost());
+        email.setSmtpPort(ObjectFactory.getAppProperties().getEmailSettings().getSmtpPort());
+        if (ObjectFactory.getAppProperties().getEmailSettings().getSmtpUsername() != null
+                && ObjectFactory.getAppProperties().getEmailSettings().getSmtpUsername().length() > 0) {
+            email.setAuthenticator(new DefaultAuthenticator(ObjectFactory.getAppProperties().getEmailSettings()
+                    .getSmtpUsername(),
+                    ObjectFactory.getAppProperties().getEmailSettings().getSmtpPassword()));
         }
-        email.setSSLOnConnect(getString(Settings.EMAIL_ENABLE_SSL).equalsIgnoreCase("true") ? true : false);
-        email.setFrom(getString(Settings.EMAIL_FROM));
+        email.setSSLOnConnect(ObjectFactory.getAppProperties().getEmailSettings().getEnableSsl());
+        email.setFrom(ObjectFactory.getAppProperties().getEmailSettings().getFromAddress());
     }
 }

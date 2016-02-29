@@ -4,37 +4,38 @@ image::logo-mycontroller.org_full.png[MyController.org, link="http://www.mycontr
 ---
 
 ifdef::env-github[]
-[link=https://travis-ci.org/mycontroller-org/mycontroller]
-image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branch=master["Build Status", link="https://travis-ci.org/mycontroller-org/mycontroller"]{nbsp}
 image:https://badges.gitter.im/Join%20Chat.svg[link="https://gitter.im/mycontroller-org/mycontroller?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]{nbsp}
 image:https://www.paypalobjects.com/en_US/CH/i/btn/btn_donateCC_LG.gif[link="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHWAXCBVHTC64"]
 endif::[]
 
-
+[link=https://travis-ci.org/mycontroller-org/mycontroller]
+Master: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branch=master["Build Status", link="https://travis-ci.org/mycontroller-org/mycontroller"]
+[link=https://travis-ci.org/mycontroller-org/mycontroller]
+Development: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branch=development["Build Status", link="https://travis-ci.org/mycontroller-org/mycontroller"]
 
 ====== Project website: http://www.mycontroller.org
-====== http://demo.mycontroller.org[Demo Link] Authentication: demo/demo
+====== Want to try now? http://demo.mycontroller.org[Demo server] Authentication: demo/demo
 
 == About
 
-*MyController.org* is a controller for the http://www.mysensors.org/[MySensors] project. Considered system resources in mind. Even we can run it on Raspberry PI (256 MB) very first model.
+*MyController.org* is automation controller for home, office or any place.
+Primarly this project started to support http://www.mysensors.org/[MySensors]. But later it expands support to other network also. Considered system resources in mind on development, as a outcome even we can run it on Raspberry PI (256 MB) very first model.
 
 == Localization
-====== For localization Contribute to the Transifex Project
-===== https://www.transifex.com/mycontrollerorg/gui-angularjs/[Web GUI Project]
+MyController.org supports multiple languages. If you have interest to add/translate your native language for MyController.org send a request on https://www.transifex.com/mycontrollerorg/multi-locale/[Transifex MyController.org locale project]
 
 == System Requirement
 
-MyController.org server is very lightweight, It required very less resource, believe me ;)
+MyController.org is a very lightweight server, It required very less resource, believe me ;)
 
-  * Disk        : ~30 MB
+  * Disk        : ~30 MB (may require more space, when we store metrics data for long time)
   * Memory(RAM) : 40 MB
   * Java        : 1.8 or later
 
   NOTE: Test done up to 5 nodes and 30 sensors with the above configuration.
 
 ===== Supported Platforms (tested)
-MyController.org is java based application server. We can run it in any platform which supports Java.
+MyController.org is java based application server. We can run it in any platform where Java support is available.
 
 - Linux
 - Windows
@@ -42,32 +43,60 @@ MyController.org is java based application server. We can run it in any platform
 
 == Available Features
 
-Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.2-alpha5[0.0.2-alpha5] version,
+Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.3-alpha1[0.0.3-alpha1] version,
 
-- Supports http://www.mysensors.org/build/serial_gateway[Serial Gateway], http://www.mysensors.org/build/ethernet_gateway[Ethernet Gateway], http://www.mysensors.org/build/mqtt_gateway[MQTT Gateway] and NRF24L01+ gateway via PiGatewaySerial (https://github.com/mysensors/Raspberry) on Raspberry PI
-- Auto discover and update nodes(upon nodes restart or receive any data)
-- Timer - Help you schedule time based operations. You can control till the seconds. Types,
+- Supported networks
+  * http://mysensors.org[MySensors.org]
+    ** http://www.mysensors.org/build/serial_gateway[Serial Gateway]
+    ** http://www.mysensors.org/build/ethernet_gateway[Ethernet Gateway]
+    ** http://www.mysensors.org/build/mqtt_gateway[MQTT Gateway]
+    ** NRF24L01+ gateway via PiGatewaySerial (https://github.com/mysensors/Raspberry) on Raspberry PI
+- Auto discover and update nodes
+- Timer - Help you to schedule time based operations. You can control till the seconds. Types,
+    * Simple (with `repeat count` and `repeat interval`)
       * Normal (daily, weekly, monthly)
-      * Cron
+      * Cron expression
       * Before/After Sun Rises and Sun Sets
-- Alarm - based on information received from sensor
-      * Notifications: Send Payload to another sensor, Sens https://www.plivo.com/[SMS], Send Email
-- Graphical reports (Last one hour, 24 hours, 30 days, years)
+- Alarm - based on information received from sensor, Node status or Gateway status
+  * An alarm can support multiple notifications
+- Notifications - is a predefined action to be performed when a alarm triggered.
+  * Send Payload to another sensor
+  * Send SMS. Supports https://www.plivo.com/[Plivo] and https://www.twilio.com[Twilio]
+  * Send Email
+  * https://www.pushbullet.com[Pushbullet] note
+- Graphical reports
+  * you can keep your sensors metrics data as long as you want.
 - Forward payload from one sensor to another sensor
-- Logs report
-- Send Payload to sensor
-- Reboot, Erase EEPROM, Update Firmware for any nodes which is running with https://github.com/mysensors/Arduino/tree/master/MYSBootloader[MYSBootloader]
-- Maintain firmware for all the nodes
-- Display battery level of node
-- Unique Identification number for each sensor
-- MyController.org server health status
-
+  * supports across gateways also
+- Resources logs
+- Node actions
+  * Reboot, Erase configuration, Update Firmware for any nodes which is support
+  * can tag particular firmware for a node
+  * Display battery level of node with graphical support
+- Intractive dashboard.
+  * can create any number of dashboards
+  * widgets
+    ** Server time
+    ** Sunrise and sunset time
+    ** Sensors bullet graph
+    ** a sensor graph
+    ** group of sensors graph
+    ** mixed sensors graph
+    ** monitor and control sensor
+ - Backup and restore via GUI
+ - version to version auto migration support. available from 0.0.3-alpha1
+ - Role based authentication
+   * can map resources for particular user
+ - Inbuilt MQTT broker
+ - Supports multiple gateways
+ - and many more
+ 
 == Installation
 
 ====== Download(executable bundle),
 
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha5/mycontroller-standalone-0.0.2-alpha5-bundle.zip[mycontroller-standalone-0.0.2-alpha5-bundle.zip]
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.2-alpha5/mycontroller-standalone-0.0.2-alpha5-bundle.tar.gz[mycontroller-standalone-0.0.2-alpha5-bundle.tar.gz]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.3-alpha1/mycontroller-standalone-0.0.3-alpha1-bundle.zip[mycontroller-standalone-0.0.3-alpha1-bundle.zip]
+* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.3-alpha1/mycontroller-standalone-0.0.3-alpha1-bundle.tar.gz[mycontroller-standalone-0.0.3-alpha1-bundle.tar.gz]
 
 ====== Configuration
 
@@ -75,65 +104,57 @@ Extract downloaded bundle where exactly do you want to run. Configuration files 
 
 File: `mycontroller.properties`
 
-*Select your gateway*
-```
-mcc.ethernet.gateway.type=ethernet
-```
-- `mcc.ethernet.gateway.type`: Available gateway types: serial, ethernet, mqtt
-
-*Serial Port Gateway Configuration*
-```
-mcc.serialport.driver.type=auto
-mcc.serialport.name=/dev/ttyUSB0
-mcc.serialport.baud.rate=115200
-```
-- `mcc.serialport.driver.type`: Available driver types: `pi4j, jssc, jserialcomm, auto`. It is recommended to keep in `auto`. *For now `jssc` driver is not stable with MyController.org*
-- `mcc.serialport.name` : will vary based on platform and number of ports. Find it on your computer and update
-- `mcc.serialport.baud.rate` : by default http://www.mysensors.org/build/serial_gateway[Serial Gateway] uses `115200`. If you changed on your setup you have to update your custom value here.
-
-*Ethernet Gateway Configuration*
-```
-mcc.ethernet.gateway.host=192.168.178.6
-mcc.ethernet.gateway.port=5003
-mcc.ethernet.gateway.keep.alive.frequency=60
-```
-- `mcc.ethernet.gateway.host`: Host name/ip of your Ethernet Gateway
-- `mcc.ethernet.gateway.port`: Ethernet Gateway port
-- `mcc.ethernet.gateway.keep.alive.frequency`: This field is used to monitor Ethernet Gateway. If Connection goes try to reconnect automatically. Value in seconds.
-
-*MQTT Gateway*
-```
-mcc.mqtt.gateway.broker.host=192.168.178.6
-mcc.mqtt.gateway.broker.port=1883
-mcc.mqtt.gateway.broker.root.topic=MyMQTT
-```
-- `mcc.mqtt.gateway.broker.host`: MQTT Gateway Hostname/IP
-- `mcc.mqtt.gateway.broker.port`: MQTT Gateway port
-- `mcc.mqtt.gateway.broker.root.topic`: Topic name, Should be same name that we used in MQTT Gateway(MQTT_BROKER_PREFIX)
+*Temporary file*
+----
+mcc.tmp.location=tmp/ # <1>
+----
+<1> You can change default location and file name. This file used as server temporery location. Used for the operation such as backup, restore, etc.,
 
 *Database Configuration*
-```
-mcc.h2db.location=../conf/mycontroller
-```
-You can change default location and file name. File will be stored with the file extension `.h2.db`. Do not add file extenstion.
+----
+mcc.db.h2db.location=../conf/mycontroller # <1>
+----
+<1> You can change default location and file name. File will be stored with the file extension `.h2.db`. Do not add file extension.
 
 *Web server configuration*
-```
-enable.https=true
-http.port=8443
-ssl.keystore.file=../conf/keystore.jks
-ssl.keystore.password=password
-ssl.keystore.type=JKS
-```
-- `enable.https` : Enable/disable https. Only one protocol supported at a time.
-- `http.port` : Port number you want to access MyController.org server
-- `ssl.keystore.file, ssl.keystore.password, ssl.keystore.type` : If https is enabled these fields are mandatory.
+----
+mcc.web.bind.address=0.0.0.0 # <1>
+mcc.web.enable.https=true  # <2>
+mcc.web.http.port=8443  # <3>
+mcc.web.file.location=../www/  # <4>
+mcc.web.ssl.keystore.file=../conf/keystore.jks  # <5>
+mcc.web.ssl.keystore.password=mycontroller  # <5>
+mcc.web.ssl.keystore.type=JKS  # <5>
+----
+
+<1> bind interface address. by default it will bind with all the available interface.
+<2> Enable/disable https. Only one protocol supported at a time. true - `https`, false - `http`.
+<3> Port number of `http/https` to access MyController.org server.
+<4> web files location, no need to touch this one.
+<5> If `https` is enabled these fields are mandatory.
 
 Default URL: `https://<ip>:8443` (ex: `https://localhost:8443`)
 
-Default username/password: `admin/admin`
+NOTE: Default username/password: `admin/admin`
 
-IMPORTANT: Change default `ssl.keystore.file` and `ssl.keystore.password` and https protocol is recommended
+*Important*: Change default `mcc.web.ssl.keystore.file` and `mcc.web.ssl.keystore.password` and `https` protocol is
+recommended
+
+*MQTT broker configuration*
+----
+mcc.mqtt.broker.enable=true # <1>
+mcc.mqtt.broker.bind.address=0.0.0.0 # <2>
+mcc.mqtt.broker.port=1883 # <3>
+mcc.mqtt.broker.websocket.port=7080 # <4>
+mcc.mqtt.broker.persistent.store=../conf/moquette/moquette_store.mapdb # <5>
+----
+
+<1> Enable/disable inbuilt MQTT broker. by default it will be enabled. `true`- enabled, `false` - disabled
+<2> bind interface address. by default it will bind with all the available interface.
+<3> MQTT broker port
+<4> websoicket port
+<5> internal use. no need to touch this one.
+
 
 *Logger configuration*
 
@@ -155,5 +176,5 @@ Executable scripts are located in `mycontroller/bin/`
 * Other Platforms
     
 ```
-java -Xms8m -Xmx40m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -jar ../lib/mycontroller-standalone-0.0.1-single.jar
+java -Xms8m -Xmx40m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -jar ../lib/mycontroller-standalone-0.0.3-alpha1-single.jar
 ```

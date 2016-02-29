@@ -37,7 +37,7 @@
       <fileMode>755</fileMode>
       <directoryMode>764</directoryMode>
     </fileSet>
-     <fileSet>
+    <fileSet>
       <directory>src/main/package/www</directory>
       <outputDirectory>mycontroller/www</outputDirectory>
     </fileSet>

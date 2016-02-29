@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,57 +19,408 @@
 var myControllerModule = angular.module('myController',[
   'ui.router',
   'ui.bootstrap',
-  'ui-confirm',
-  'angular-table',
   'ngResource',
   'ngCookies',
-  'nvd3',
-  'ui-rangeSlider',
-  'isteven-multi-select',
   'ui.bootstrap.datetimepicker',
   'base64',
   'colorpicker.module',
   'ngFileSaver',
   'pascalprecht.translate',
   'ngSanitize',
-  'angularModalService'
-]).
-config(function($stateProvider, $urlRouterProvider) {
+  'nvd3',
+  'patternfly',
+  'patternfly.charts',
+  'patternfly.select',
+  'patternfly.views',
+  'patternfly.filters',
+  'patternfly.card',
+  'patternfly.toolbars',
+  'frapontillo.bootstrap-switch',
+  'xeditable',
+  'angularUtils.directives.dirPagination',
+  'frapontillo.bootstrap-duallistbox',
+  'adf',
+  'adf.structures.base',
+  'adf.widget.myc-sen-vars',
+  'adf.widget.myc-a-sensor-graph',
+  'adf.widget.myc-sensors-grouped-graph',
+  'adf.widget.myc-sensors-mixed-graph',
+  'adf.widget.myc-sensors-bullet-graph',
+  'adf.widget.myc-time',
+  'adf.widget.myc-sunrisetime',
+  'adf.widget.news',
+]);
+
+myControllerModule.constant("mchelper", {
+    internal:{},
+    cfg:{},
+    languages:{},
+    user:{},
+    userSettings:{},
+});
+
+myControllerModule.config(function($stateProvider, $urlRouterProvider) {
   //For any unmatched url, redirect to /dashboard
   $urlRouterProvider.otherwise('/dashboard');
   
 	$stateProvider
-    .state('sensors', {
-      url:"/sensors",
-      templateUrl: "partials/sensors/sensors.html",
-      controller: "SensorsController",
-      data: {
-        requireLogin: true // this property will apply to all children of 'sensor'
-      }
-    })
     .state('dashboard', {
       url:"/dashboard",
       templateUrl: "partials/dashboard/dashboard.html",
-      controller: "DashboardController",
+      controller: "DashboardListController",
        data: {
         requireLogin: true
       }
-    }).state('nodes', {
-      url:"/nodes",
-      templateUrl: "partials/nodes/nodes.html",
+    }).state('gatewaysList', {
+      url:"/resources/gateways/list",
+      templateUrl: "partials/gateways/gateways-list.html",
+      controller: "GatewaysController",
+       data: {
+        requireLogin: true
+      }
+    }).state('gatewaysAddEdit', {
+      url:"/resources/gateways/addedit/:id",
+      templateUrl: "partials/gateways/gateway-add-edit.html",
+      controller: "GatewaysControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('gatewaysDetail', {
+      url:"/resources/gateways/detail/:id",
+      templateUrl: "partials/gateways/gateways-detail.html",
+      controller: "GatewaysControllerDetail",
+       data: {
+        requireLogin: true
+      }
+    }).state('nodesList', {
+      url:"/resources/nodes/list/:gatewayId",
+      templateUrl: "partials/nodes/nodes-list.html",
       controller: "NodesController",
        data: {
         requireLogin: true
       }
-    }).state('sensorsaction', {
-      url:"/sensorsaction",
-      templateUrl: "partials/sensorsAction/sensorsAction.html",
-      controller: "SensorsActionController",
+    }).state('nodesAddEdit', {
+      url:"/resources/nodes/addedit/:id",
+      templateUrl: "partials/nodes/node-add-edit.html",
+      controller: "NodesControllerAddEdit",
        data: {
         requireLogin: true
       }
-    }).state('users', {
-      url:"/users",
+    }).state('nodesDetail', {
+      url:"/resources/nodes/detail/:id",
+      templateUrl: "partials/nodes/node-detail.html",
+      controller: "NodesControllerDetail",
+       data: {
+        requireLogin: true
+      }
+    }).state('sensorsList', {
+      url:"/resources/sensors/list/:nodeId",
+      templateUrl: "partials/sensors/sensors-list.html",
+      controller: "SensorsController",
+      data: {
+        requireLogin: true
+      }
+    }).state('sensorsAddEdit', {
+      url:"/resources/sensors/addedit/:id",
+      templateUrl: "partials/sensors/sensor-add-edit.html",
+      controller: "SensorsControllerAddEdit",
+      data: {
+        requireLogin: true
+      }
+    }).state('sensorsDetail', {
+      url:"/resources/sensors/detail/:id",
+      templateUrl: "partials/sensors/sensors-detail.html",
+      controller: "SensorsControllerDetail",
+      data: {
+        requireLogin: true
+      }
+    }).state('alarmsList', {
+      url:"/resources/alarms/list/:resourceType/:resourceId",
+      templateUrl: "partials/alarms/alarms-list.html",
+      controller: "AlarmsController",
+       data: {
+        requireLogin: true
+      }
+    }).state('alarmsAddEdit', {
+      url:"/resources/alarms/addedit/:id",
+      templateUrl: "partials/alarms/alarm-add-edit.html",
+      controller: "AlarmsControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('alarmsNotificationsList', {
+      url:"/resources/notifications/list",
+      templateUrl: "partials/notifications/notifications-list.html",
+      controller: "NotificationsController",
+       data: {
+        requireLogin: true
+      }
+    }).state('alarmsNotificationsAddEdit', {
+      url:"/resources/notifications/addedit/:id",
+      templateUrl: "partials/notifications/notification-add-edit.html",
+      controller: "NotificationsControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('timersList', {
+      url:"/resources/timers/list/:resourceType/:resourceId",
+      templateUrl: "partials/timers/timers-list.html",
+      controller: "TimersController",
+       data: {
+        requireLogin: true
+      }
+    }).state('timersAddEdit', {
+      url:"/resources/timers/addedit/:id",
+      templateUrl: "partials/timers/timer-add-edit.html",
+      controller: "TimersControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('resourcesGroupList', {
+      url:"/resources/groups/list/:resourceType/:resourceId",
+      templateUrl: "partials/resources-group/resources-group-list.html",
+      controller: "ResourcesGroupController",
+       data: {
+        requireLogin: true
+      }
+    }).state('resourcesGroupAddEdit', {
+      url:"/resources/groups/addedit/:id",
+      templateUrl: "partials/resources-group/resources-group-add-edit.html",
+      controller: "ResourcesGroupControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('resourcesGroupMapList', {
+      url:"/resources/groups/map/list/:id",
+      templateUrl: "partials/resources-group/resources-group-map-list.html",
+      controller: "ResourcesGroupMapController",
+       data: {
+        requireLogin: true
+      }
+    }).state('resourcesGroupMapAddEdit', {
+      url:"/resources/groups/map/addedit/:groupId/:id",
+      templateUrl: "partials/resources-group/resources-group-map-add-edit.html",
+      controller: "ResourcesGroupMapControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('actionBoardSensorsList', {
+      url:"/actionboard/sensorsaction/list",
+      templateUrl: "partials/action-board/sensors-action-list.html",
+      controller: "SensorsActionControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('roomsList', {
+      url:"/resources/rooms/list",
+      templateUrl: "partials/rooms/rooms-list.html",
+      controller: "RoomsControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('roomsAddEdit', {
+      url:"/resources/rooms/addedit/:id",
+      templateUrl: "partials/rooms/rooms-add-edit.html",
+      controller: "RoomsControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('forwardPayloadList', {
+      url:"/resources/forwardpayload/list/:sensorId",
+      templateUrl: "partials/forward-payload/forward-payload-list.html",
+      controller: "ForwardPayloadController",
+       data: {
+        requireLogin: true
+      }
+    }).state('forwardPayloadAddEdit', {
+      url:"/resources/forwardpayload/addedit/:id",
+      templateUrl: "partials/forward-payload/forward-payload-add-edit.html",
+      controller: "ForwardPayloadControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('firmwaresList', {
+      url:"/resources/firmwares/list",
+      templateUrl: "partials/firmwares/firmwares-list.html",
+      controller: "FirmwaresController",
+       data: {
+        requireLogin: true
+      }
+    }).state('firmwaresAddEdit', {
+      url:"/resources/firmwares/addedit/:id",
+      templateUrl: "partials/firmwares/firmwares-add-edit.html",
+      controller: "FirmwaresControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('firmwaresTypeList', {
+      url:"/resources/firmwares/type/list",
+      templateUrl: "partials/firmwares/firmwares-type-list.html",
+      controller: "FirmwaresTypeController",
+       data: {
+        requireLogin: true
+      }
+    }).state('firmwaresTypeAddEdit', {
+      url:"/resources/firmwares/type/addedit/:id",
+      templateUrl: "partials/firmwares/firmwares-type-add-edit.html",
+      controller: "FirmwaresTypeControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('firmwaresVersionList', {
+      url:"/resources/firmwares/version/list",
+      templateUrl: "partials/firmwares/firmwares-version-list.html",
+      controller: "FirmwaresVersionController",
+       data: {
+        requireLogin: true
+      }
+    }).state('firmwaresVersionAddEdit', {
+      url:"/resources/firmwares/version/addedit/:id",
+      templateUrl: "partials/firmwares/firmwares-version-add-edit.html",
+      controller: "FirmwaresVersionControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('resourcesLogsList', {
+      url:"/status/resourceslogs/:resourceType/:resourceId",
+      templateUrl: "partials/resources-logs/resources-logs-list.html",
+      controller: "ResourcesLogsController",
+      data: {
+        requireLogin: true
+      }
+    }).state('resourcesLogsPurge', {
+      url:"/status/resourceslogs/purge",
+      templateUrl: "partials/resources-logs/resources-logs-purge.html",
+      controller: "ResourcesLogsPurgeController",
+      data: {
+        requireLogin: true
+      }
+    }).state('mycontrollerLogList', {
+      url:"/status/log/mycontroller",
+      templateUrl: "partials/status/mc-log-list.html",
+      controller: "StatusMcLogController",
+      data: {
+        requireLogin: true
+      }
+    })
+    
+    
+    
+    .state('statusSystem', {
+      url:"/status/system",
+      templateUrl: "partials/status/system-status.html",
+      controller: "StatusSystemController",
+      data: {
+        requireLogin: true
+      }
+    })
+    
+    
+    .state('settingsSystem', {
+      url:"/settings/system",
+      templateUrl: "partials/settings/settings-system.html",
+      controller: "SettingsSystemController",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsUnits', {
+      url:"/settings/units",
+      templateUrl: "partials/settings/settings-units.html",
+      controller: "SettingsUnitsController",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsMetrics', {
+      url:"/settings/metrics",
+      templateUrl: "partials/settings/settings-metrics.html",
+      controller: "SettingsMetricsController",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsNotifications', {
+      url:"/settings/notifications",
+      templateUrl: "partials/settings/settings-notifications.html",
+      controller: "SettingsNotificationsController",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsMySensors', {
+      url:"/settings/mysensors",
+      templateUrl: "partials/settings/settings-mysensors.html",
+      controller: "SettingsSystemMySensors",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsVariablesMapperList', {
+      url:"/settings/variablesmapper/list",
+      templateUrl: "partials/variables-mapper/variables-mapper-list.html",
+      controller: "VariablesMapperListController",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsVariablesMapperEdit', {
+      url:"/settings/variablesmapper/edit/:sensorType",
+      templateUrl: "partials/variables-mapper/variables-mapper-edit.html",
+      controller: "VariablesMapperEditController",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsRolesList', {
+      url:"/settings/roles/list",
+      templateUrl: "partials/users-roles/roles-list.html",
+      controller: "RolesControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsRolesAddEdit', {
+      url:"/settings/roles/addedit/:id",
+      templateUrl: "partials/users-roles/roles-add-edit.html",
+      controller: "RolesControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsUsersList', {
+      url:"/settings/users/list",
+      templateUrl: "partials/users-roles/users-list.html",
+      controller: "UsersControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsUsersAddEdit', {
+      url:"/settings/users/addedit/:id",
+      templateUrl: "partials/users-roles/users-add-edit.html",
+      controller: "UsersControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsProfileUpdate', {
+      url:"/settings/profile/update",
+      templateUrl: "partials/users-roles/profile-update.html",
+      controller: "ProfileControllerUpdate",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsBackupList', {
+      url:"/settings/backup/list",
+      templateUrl: "partials/backup/backup-list.html",
+      controller: "BackupControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsBackupAuto', {
+      url:"/settings/backup/settings",
+      templateUrl: "partials/backup/automatic-backup-settings.html",
+      controller: "BackupControllerAutoSettings",
+       data: {
+        requireLogin: true
+      }
+    })
+    
+    
+    
+    
+    .state('users', {
+      url:"/settings/users",
       templateUrl: "partials/users/users.html",
       controller: "UsersController",
        data: {
@@ -82,20 +433,6 @@ config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
-    }).state('alarm', {
-      url:"/alarm/:id",
-      templateUrl: "partials/alarm/alarms.html",
-      controller: "AlarmController",
-       data: {
-        requireLogin: true
-      }
-    }).state('timer', {
-      url:"/timer/:id",
-      templateUrl: "partials/timer/timers.html",
-      controller: "TimerController",
-       data: {
-        requireLogin: true
-      }
     }).state('sensorlog', {
       url:"/sensorlog/:id",
       templateUrl: "partials/sensorLogs/sensorsLog.html",
@@ -103,24 +440,10 @@ config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
-    }).state('logs', {
-      url:"/logs",
-      templateUrl: "partials/sensorLogs/sensorsLog.html",
-      controller: "LogsController",
-       data: {
-        requireLogin: true
-      }
     }).state('forwardPayload', {
       url:"/forwardPayload/:id",
       templateUrl: "partials/forwardPayload/forwardPayload.html",
       controller: "ForwardPayloadController",
-       data: {
-        requireLogin: true
-      }
-    }).state('variableMapper', {
-      url:"/variableMapper",
-      templateUrl: "partials/variableMapper/variableMapper.html",
-      controller: "VariableMapperController",
        data: {
         requireLogin: true
       }
@@ -132,49 +455,35 @@ config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     }).state('sendRawMessage', {
-      url:"/sendRawMessage",
+      url:"/utils/sendRawMessage",
       templateUrl: "partials/rawMessage/rawMessage.html",
       controller: "RawMessageController",
        data: {
         requireLogin: true
       }
-    }).state('settings', {
-      url:"/settings",
-      templateUrl: "partials/settings/settings.html",
-      controller: "SettingsController",
-       data: {
-        requireLogin: true
-      }
-    }).state('systemstatus', {
-      url:"/systemstatus",
-      templateUrl: "partials/status/systemStatus.html",
-      controller: "SystemStatusController",
-       data: {
-        requireLogin: true
-      }
     }).state('gatewaystatus', {
-      url:"/gatewaystatus",
+      url:"/status/gatewaystatus",
       templateUrl: "partials/status/gatewayStatus.html",
       controller: "GatewayStatusController",
        data: {
         requireLogin: true
       }
     }).state('firmware', {
-      url:"/firmware",
+      url:"/utils/firmware",
       templateUrl: "partials/firmwares/firmware.html",
       controller: "FirmwareController",
        data: {
         requireLogin: true
       }
     }).state('firmwareType', {
-      url:"/firmwareType",
+      url:"/utils/firmwareType",
       templateUrl: "partials/firmwares/firmwareType.html",
       controller: "FirmwareTypeController",
        data: {
         requireLogin: true
       }
     }).state('firmwareVersion', {
-      url:"/firmwareVersion",
+      url:"/utils/firmwareVersion",
       templateUrl: "partials/firmwares/firmwareVersion.html",
       controller: "FirmwareVersionController",
        data: {
@@ -186,82 +495,124 @@ config(function($stateProvider, $urlRouterProvider) {
       controller: "LoginController",
       data: {
         requireLogin: false
-      }
+      },
+      params: { 
+      'toState': 'dashboard', // default state to proceed to after login
+      'toParams': {}
+    },
     });
 });
 
 
 //McNavCtrl
-myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate) {
-   $scope.isCollapsed = true;
-    $scope.isActive = function (viewLocation) { 
-        return viewLocation === $location.path();
-    };
+myControllerModule.controller('McNavBarCtrl', function($scope, $location, $translate, $state, mchelper, SettingsFactory, CommonServices) {
+    $scope.isCollapsed = true;
+    $scope.mchelper = mchelper;
+    $scope.$state = $state;
     
-    $scope.changeLanguage = function (langKey) {
-      $translate.use(langKey);
+    $scope.isAuthenticated = function () { 
+        return mchelper.internal.currentUser;
+    };
+
+    $scope.changeLanguage = function (lang) {
+      $translate.use(lang.id);
+      $scope.languageId = lang.id;
+      mchelper.cfg.languageId = lang.id;
+      mchelper.cfg.language = lang.displayName;
+      //Update selected language
+      if(mchelper.user.permission === 'Super admin'){
+        SettingsFactory.updateLanguage(lang.displayName);
+      }
+      //Update mchelper
+      CommonServices.saveMchelper(mchelper);
     };
 });
 
-myControllerModule.run(function ($rootScope, $state, $location, $cookieStore, $http, about, $translate) {
-  
+myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper, $translate, editableOptions, CommonServices) {
+  //Load mchelper from cookies
+  CommonServices.loadMchelper();
+
   // keep user logged in after page refresh
-  $rootScope.globals = $cookieStore.get('globals') || {};
-  var mcabout = $cookieStore.get('mcabout') || {};
-  about.timezone = mcabout.timezone;
-  about.timezoneMilliseconds = mcabout.timezoneMilliseconds;
-  about.timezoneString = mcabout.timezoneString;
-  about.systemDate = mcabout.systemDate;
-  about.appName = mcabout.appName;
-  about.appVersion = mcabout.appVersion;
-  about.language = mcabout.language;
-  about.dateFormat = mcabout.dateFormat;
-  $translate.use(about.language);
+  if(!mchelper){
+    CommonServices.saveMchelper(CommonServices.loadMchelper());
+  };
   
-  if ($rootScope.globals.currentUser) {
-      $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+  if(mchelper.cfg){
+    $translate.use(mchelper.cfg.languageId);
+  }
+
+  
+  if (mchelper.internal.currentUser) {
+      $http.defaults.headers.common['Authorization'] = 'Basic ' + mchelper.internal.currentUser.authdata; // jshint ignore:line
   }
 
   $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+    //alert(angular.toJson(toState));
+    if(toState.name.indexOf('login') === 0){
+        angular.element( document.querySelector( '#rootId' ) ).addClass( "login-pf" );
+        angular.element( document.querySelector( '#rootView' ) ).removeClass( "container-fluid top-buffer" );
+    }else{
+      angular.element( document.querySelector( '#rootId' ) ).removeClass( "login-pf" );
+      angular.element( document.querySelector( '#rootView' ) ).addClass( "container-fluid top-buffer" );
+    }
     var requireLogin = toState.data.requireLogin;
     // redirect to login page if not logged in
-    if (requireLogin && !$rootScope.globals.currentUser) {
+    if (requireLogin && !mchelper.internal.currentUser) {
       event.preventDefault();
-      return $state.go('login');
+      //return $state.go('login');
+      return $state.go('login', {'toState': toState.name, 'toParams': toParams});
     }
   });
+
+  //update xeditable theme
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
 });
 
 myControllerModule.controller('LoginController',
-    function ($state, $scope, $rootScope, AuthenticationService, alertService, StatusFactory, displayRestError, about, $cookieStore, $translate, $filter) {
+    function ($state, $scope, $rootScope, AuthenticationService, ReadFileFactory, alertService, StatusFactory, TypesFactory, SettingsFactory, displayRestError, CommonServices, mchelper, $translate, $filter) {
+        // load login page settings
+        $scope.loginSettings = {};
         // reset login status
         AuthenticationService.ClearCredentials();
- 
+        // remove mchelper cookies
+        //CommonServices.clearCookies();
+        //Update login page details
+        ReadFileFactory.getConfigFile(function(configFile){
+          $scope.loginSettings = configFile;
+          //Update language
+          $translate.use($scope.loginSettings.languageId);
+        });
+
         $scope.login = function () {
             $scope.dataLoading = true;
-            AuthenticationService.Login($scope.username, $scope.password, function(response) {
-                if(response.success) {
+            AuthenticationService.Login($scope.username, $scope.password, function(authResponse) {
+                if(authResponse.success) {
                     AuthenticationService.SetCredentials($scope.username, $scope.password);
-                    StatusFactory.about(function(response) {
-                        about.timezone = response.timezone;
-                        about.timezoneMilliseconds = response.timezoneMilliseconds;
-                        about.timezoneString = response.timezoneString;
-                        about.systemDate = response.systemDate;
-                        about.appName = response.appName;
-                        about.appVersion = response.appVersion;
-                        about.language = response.language;
-                        about.dateFormat = response.dateFormat;
-                        $cookieStore.put('mcabout', about);
-                        $translate.use(about.language);
+                    mchelper.user = authResponse.user;//Update user details
+                    StatusFactory.getConfig(function(response) {
+                      mchelper.cfg = response;//Update config
+                      //Update language
+                      $translate.use(mchelper.cfg.languageId);
+                      TypesFactory.getLanguages(function(langResponse){
+                        mchelper.languages = langResponse;
+                        SettingsFactory.getUserSettings(function(userNativeSettings){
+                          mchelper.userSettings = userNativeSettings;
+                          //Store all the configurations locally
+                          CommonServices.saveMchelper(mchelper);
+                        });
+                      });
                     },function(error){
                       displayRestError.display(error);            
                     });
-                    
-					alertService.success($filter('translate')('SYSTEM.LOGIN_NOTIFY_SUCCESS'));
-                    $state.go('dashboard'); 
+                    //$state.go('dashboard'); 
+                    $state.go($state.params.toState, $state.params.toParams);
                 } else {
-					alertService.success($filter('translate')('SYSTEM.LOGIN_NOTIFY_INCORRECT'));
+                    if(authResponse.message){
+                      alertService.danger(authResponse.message);
+                    }else{
+                      alertService.danger($filter('translate')('INVALID_USERNAME_OR_PASSWORD'));
+                    }
                     $scope.dataLoading = false;
                 }
             });
@@ -301,20 +652,43 @@ myControllerModule.filter('byteToMBsizeConvertor', function() {
   }
 });
 
-myControllerModule.value("about", {
-    timezone: '-',
-    timezoneString: '-',
-    systemDate: '-',
-    appVersion:'-',
-    appName: '-',
-    language: 'en-us',
-    dateFormat: 'MMM d, y hh:mm:ss a'
+myControllerModule.filter('byteToFriendlyConvertor', function() {
+  return function(sizeInByte) {
+    if(sizeInByte < 0){
+      return "n/a";
+    }else if((sizeInByte /(1024 * 1024)) > 1024){
+      return (sizeInByte /(1024 * 1024 * 1024)).toFixed(2) + " GB";
+    }else if((sizeInByte /(1024)) > 1024){
+      return (sizeInByte /(1024 * 1024)).toFixed(2) + " MB";
+    }else if(sizeInByte > 1024){
+    return (sizeInByte /1024).toFixed(2) + " KB";
+    }
+    return sizeInByte + " Bytes";
+  }
 });
 
-//FooterCtrl
-myControllerModule.controller('FooterCtrl', function($scope, about) {
-  //about, Timezone, etc.,
-  $scope.about = about;
+myControllerModule.filter('mcResourceRepresentation', function() {
+  return function(text){
+    if(text === undefined){
+      return undefined;
+    }
+    return text.replace(/>>/g, '<i class="fa fa-chevron-right"></i>')
+               .replace(/\[RG\]:/g, '<i class="pficon pficon-replicator fa-lg mc-margin-icon"></i> ')
+               .replace(/\[G\]:/g, '<i class="fa fa-plug"></i> ')
+               .replace(/\[N\]:/g, '<i class="fa fa-sitemap"></i> ')
+               .replace(/\[S\]:/g, '<i class="fa fa-eye"></i> ')
+               .replace(/\[SV\]:/g, '')
+               .replace(/\[T\]:/g, '<i class="fa fa-clock-o"></i> ')
+               .replace(/\[AD\]:/g, '<i class="fa fa-bell-o"></i> ');
+  }
+});
+
+
+myControllerModule.filter('mcHtml', function($sce) {
+    return function(htmlText) {
+       return $sce.trustAsHtml(htmlText);
+       //return htmlText
+    };
 });
 
 /** 
@@ -326,9 +700,31 @@ myControllerModule.config(function($translateProvider) {
   //$translateProvider.useSanitizeValueStrategy('sanitize');
   $translateProvider.useSanitizeValueStrategy(null);
   $translateProvider.useStaticFilesLoader({
-    prefix: 'languages/mc_locale_gui_',
+    prefix: 'languages/mc_locale_gui-',
     suffix: '.json'
   });
-  $translateProvider.preferredLanguage('en-us');
+  $translateProvider.preferredLanguage('en_us');
   
 });
+
+
+
+//Items Delete Modal
+myControllerModule.controller('ControllerDeleteModal', function ($scope, $uibModalInstance, $sce, $filter) {
+  $scope.header = $filter('translate')('DELETE_ITEMS');
+  $scope.deleteMsg = $filter('translate')('DELETE_MESSAGE');
+  $scope.remove = function() {
+    $uibModalInstance.close();
+  };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
+});
+
+/*
+//Global exception handler
+myControllerModule.factory('$exceptionHandler', function () {
+  return function errorCatcherHandler(exception, cause) {
+    console.log('Exception cause:'+cause+', Exception:'+angular.toJson(exception));
+    //throw exception;
+  };
+});
+*/

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,37 @@
  */
 package org.mycontroller.standalone.api.jaxrs;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.SettingsUtils;
-import org.mycontroller.standalone.db.TimerUtils;
-import org.mycontroller.standalone.db.tables.Settings;
-import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.notification.PushbulletUtils;
+import org.mycontroller.standalone.notification.SMSUtils;
+import org.mycontroller.standalone.restclient.pushbullet.model.User;
+import org.mycontroller.standalone.settings.EmailSettings;
+import org.mycontroller.standalone.settings.LocationSettings;
+import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
+import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.settings.MyControllerSettings;
+import org.mycontroller.standalone.settings.MySensorsSettings;
+import org.mycontroller.standalone.settings.PushbulletSettings;
+import org.mycontroller.standalone.settings.SettingsUtils;
+import org.mycontroller.standalone.settings.SmsSettings;
+import org.mycontroller.standalone.settings.UnitsSettings;
+import org.mycontroller.standalone.settings.UserNativeSettings;
+import org.mycontroller.standalone.timer.TimerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,115 +59,201 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/rest/settings")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-@RolesAllowed({ "user" })
-public class SettingsHandler {
+@RolesAllowed({ "admin" })
+public class SettingsHandler extends AccessEngine {
     private static final Logger _logger = LoggerFactory.getLogger(SettingsHandler.class.getName());
 
+    @RolesAllowed({ "User" })
+    @GET
+    @Path("/userSettings")
+    public Response getUserNativeSettings() {
+        return RestUtils.getResponse(Status.OK, UserNativeSettings.get(AuthUtils.getUser(securityContext)));
+    }
+
+    @RolesAllowed({ "User" })
+    @POST
+    @Path("/userSettings")
+    public Response saveUserNativeSettings(UserNativeSettings userNativeSettings) {
+        userNativeSettings.save(AuthUtils.getUser(securityContext));
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @RolesAllowed({ "User" })
+    @GET
+    @Path("/location")
+    public Response getLocation() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getLocationSettings());
+    }
+
+    @POST
+    @Path("/location")
+    public Response saveLocation(LocationSettings locationSettings) {
+        locationSettings.save();
+        SettingsUtils.updateAllSettings();
+        try {
+            TimerUtils.updateSunriseSunset();
+        } catch (Exception ex) {
+            _logger.error("Exception,", ex);
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/controller")
+    public Response getController() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getControllerSettings());
+    }
+
+    @POST
+    @Path("/controller")
+    public Response saveController(MyControllerSettings myControllerSettings) {
+        myControllerSettings.save();
+        SettingsUtils.updateAllSettings();
+        //update locale
+        MycUtils.updateLocale();
+        //Update sunriuse and sun set timings
+        try {
+            TimerUtils.updateSunriseSunset();
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Error: " + ex.getMessage()));
+        }
+        return RestUtils.getResponse(Status.OK);
+    }
+
     @PUT
-    @Path("/")
-    public Response updateSettings(Settings settings) {
-        Settings settingsOld = DaoUtils.getSettingsDao().get(settings.getKey());
-        if (settingsOld.getUserEditable()) {
-            if (settings.getKey().equals(Settings.CITY_LONGITUDE) || settings.getKey().equals(Settings.CITY_LATITUDE)) {
-                DaoUtils.getSettingsDao().update(settings);
-                try {
-                    TimerUtils.updateSunriseSunset();
-                } catch (Exception ex) {
-                    return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
-                }
-            } else if (settings.getKey().equals(Settings.MC_LANGUAGE)) {
-                DaoUtils.getSettingsDao().update(settings);
-                ObjectFactory.getAppProperties().updatePropertiesFromDb();
-            } else if (settings.getKey().equals(Settings.MYS_HEARTBEAT_INTERVAL)) {
-                try {
-                    long interval = Long.valueOf(settings.getValue());
-                    if (interval > 0) {
-                        DaoUtils.getSettingsDao().update(settings);
-                        SchedulerUtils.reloadMySensorHearbeatJob();
-                    } else {
-                        return RestUtils.getResponse(Status.NOT_ACCEPTABLE, new ApiError(
-                                "Heartbeat interval should not be <= zero"));
-                    }
-                } catch (Exception ex) {
-                    _logger.debug("Error,", ex);
-                    return RestUtils.getResponse(
-                            Status.NOT_ACCEPTABLE,
-                            new ApiError("Invalid Heartbeat interval! value:["
-                                    + settings.getValue() + "], Error:[" + ex.getMessage() + "]"));
-                }
-            } else {
-                DaoUtils.getSettingsDao().update(settings);
-            }
+    @Path("/updateLanguage")
+    public Response updateLanguage(String language) {
+        if (language != null && MC_LANGUAGE.fromString(language) != null) {
+            MyControllerSettings.builder().language(language).build().save();
+            SettingsUtils.updateAllSettings();
+            //update locale
+            MycUtils.updateLocale();
             return RestUtils.getResponse(Status.OK);
-        } else {
-            return RestUtils.getResponse(Status.NOT_ACCEPTABLE, new ApiError("'" + settings.getFrindlyName()
-                    + "' is not a user editable field!"));
         }
-
-    }
-
-    @GET
-    @Path("/sunriseSunset")
-    public Response getSunRiseSunSet() {
-        List<Settings> settings = SettingsUtils.getSunRiseSet();
-        for (Settings setting : settings) {
-            if (setting.getKey().equals(Settings.SUNRISE_TIME) || setting.getKey().equals(Settings.SUNSET_TIME)) {
-                if (setting.getValue() != null) {
-                    setting.setValue(new SimpleDateFormat(ObjectFactory.getAppProperties()
-                            .getJavaDateWithoutSecondsFormat()).format(new Date(Long
-                            .valueOf(setting.getValue()))));
-                }
-            } else if (setting.getKey().equals(Settings.DEFAULT_FIRMWARE)) {
-                if (setting.getValue() != null) {
-                    setting.setValue(DaoUtils.getFirmwareDao().get(Integer.valueOf(setting.getValue()))
-                            .getFirmwareName());
-                }
-            }
-        }
-        return RestUtils.getResponse(Status.OK, settings);
-    }
-
-    @GET
-    @Path("/nodeDefaults")
-    public Response getNodeDefaults() {
-        return RestUtils.getResponse(Status.OK, SettingsUtils.getNodeDefaults());
+        return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Unknown language: " + language));
     }
 
     @GET
     @Path("/email")
-    public Response getEmailSettings() {
-        return RestUtils.getResponse(Status.OK, SettingsUtils.getEmailSettings());
+    public Response getEmail() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getEmailSettings());
+    }
+
+    @POST
+    @Path("/email")
+    public Response saveEmail(EmailSettings emailSettings) {
+        emailSettings.save();
+        SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
     }
 
     @GET
     @Path("/sms")
-    public Response getSMSSettings() {
-        return RestUtils.getResponse(Status.OK, SettingsUtils.getSMSSettings());
+    public Response getSms() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getSmsSettings());
+    }
+
+    @POST
+    @Path("/sms")
+    public Response saveSms(SmsSettings smsSettings) {
+        smsSettings.save();
+        SMSUtils.clearClients();//Clear clients when SMS updated
+        SettingsUtils.updateAllSettings();
+        //When update sms notification settings, clear clients
+        SMSUtils.clearClients();
+        return RestUtils.getResponse(Status.OK);
     }
 
     @GET
-    @Path("/version")
-    public Response getVersion() {
-        return RestUtils.getResponse(Status.OK, SettingsUtils.getVersionInfo());
+    @Path("/pushbullet")
+    public Response getPushbullet() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getPushbulletSettings());
+    }
+
+    @POST
+    @Path("/pushbullet")
+    public Response savePushbullet(PushbulletSettings pushbulletSettings) {
+        try {
+            pushbulletSettings.save();
+            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            //Clear everything
+            PushbulletSettings.builder()
+                    .active(null)
+                    .name(null)
+                    .email(null)
+                    .imageUrl(null)
+                    .iden(null).build().updateInternal();
+            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            PushbulletUtils.clearClient();//Clear client when updated
+
+            User user = PushbulletUtils.getCurrentUser();
+            PushbulletSettings.builder()
+                    .active(user.getActive())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .imageUrl(user.getImageUrl())
+                    .iden(user.getIden()).build().updateInternal();
+            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @GET
+    @Path("/mySensors")
+    public Response getMySensors() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMySensorsSettings());
+    }
+
+    @POST
+    @Path("/mySensors")
+    public Response saveMySensors(MySensorsSettings mySensorsSettings) {
+        mySensorsSettings.save();
+        SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
     }
 
     @GET
     @Path("/units")
     public Response getUnits() {
-        return RestUtils.getResponse(Status.OK, SettingsUtils.getDisplayUnits());
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getUnitsSettings());
+    }
+
+    @POST
+    @Path("/units")
+    public Response saveUnits(UnitsSettings unitsSettings) {
+        unitsSettings.save();
+        SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
     }
 
     @GET
-    @Path("/graph")
-    public Response getGraph() {
-        return RestUtils.getResponse(Status.OK, SettingsUtils.getGraphSettings());
+    @Path("/metricsGraph")
+    public Response getMetrics() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMetricsGraphSettings());
+    }
+
+    @POST
+    @Path("/metricsGraph")
+    public Response saveMetrics(MetricsGraphSettings metricsGraphSettings) {
+        metricsGraphSettings.save();
+        SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
     }
 
     @GET
-    @Path("/settings/{key}")
-    public Response getSettings(@PathParam("key") String key) {
-        Settings settings = DaoUtils.getSettingsDao().get(key);
-        return RestUtils.getResponse(Status.OK, settings);
+    @Path("/metricsRetention")
+    public Response getMetricsRetention() {
+        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMetricsDataRetentionSettings());
     }
 
+    @POST
+    @Path("/metricsRetention")
+    public Response saveMetricsRetention(MetricsDataRetentionSettings metricsDataRetentionSettings) {
+        metricsDataRetentionSettings.save();
+        SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
+    }
 }

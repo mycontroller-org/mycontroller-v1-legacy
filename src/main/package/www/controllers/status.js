@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,41 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('SystemStatusController', function(alertService,
-$scope, $filter, StatusFactory, $location, $uibModal, $stateParams, displayRestError) {
+myControllerModule.controller('StatusSystemController', function(alertService,
+$scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
   
-  $scope.config = {
-    itemsPerPage: 100,
-    maxPages:1,
-    fillLastPage: false
-  }
+  //GUI page settings
+  $scope.headerStringList = "System status";
 
   //OS Status
-   $scope.osStatus = StatusFactory.getOsStatus(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });  
+   $scope.osStatus = StatusFactory.getOsStatus();  
   //JVM Status
-   $scope.jvmStatus = StatusFactory.getJvmStatus(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    });  
+   $scope.jvmStatus = StatusFactory.getJvmStatus();  
   
 });
 
-myControllerModule.controller('GatewayStatusController', function(alertService,
-$scope, $filter, StatusFactory, $location, $uibModal, $stateParams, displayRestError) {
+myControllerModule.controller('StatusMcLogController', function(alertService,
+$scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
   
-  $scope.config = {
-    itemsPerPage: 100,
-    maxPages:1,
-    fillLastPage: false
+  //GUI page settings
+  $scope.headerStringList = $filter('translate')('MYCONTROLLER_SERVER_LOG');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_LOGS_AVAILABLE');
+  $scope.noItemsSystemIcon = "fa fa-list";
+  
+  $scope.initialLog = {};
+  $scope.logData = [];
+  $scope.logLevel = null;
+  
+  //Refresh
+  $scope.refreshLogs = function(){
+    $scope.initialLog = StatusFactory.getMcServerLog(function(response){
+      $scope.logData = response.data;
+    });
+  };
+  
+  //Get log level string
+  /*
+  $scope.getLogLevel = function(log){
+    if(log.indexOf(' ERROR ') > -1 ){
+      $scope.logLevel = "danger";
+    }else if(log.indexOf(' INFO ') > -1 ){
+      $scope.logLevel = "info";
+    }else if(log.indexOf(' WARN ') > -1 ){
+      $scope.logLevel = "warning";
+    }else if(log.indexOf(' DEBUG ') > -1 ){
+      $scope.logLevel = "default";
+    }
+    
+    if(!$scope.logLevel){
+      $scope.logLevel = "default";
+    }
+    return $scope.logLevel;
   }
-
-  //Gateway Information
-   $scope.gatewayInfo = StatusFactory.getGatewayInfo(function(response) {
-                    },function(error){
-                      displayRestError.display(error);            
-                    }); 
+  */
+  //Pre load
+  $scope.initialLog = StatusFactory.getMcServerLog(function(response){
+    $scope.logData = response.data;
+    /*
+    if(response.data && response.data.length > 0){
+      $scope.logData = response.data.split('\n');
+    }
+    */
+  });
+ 
   
 });
+

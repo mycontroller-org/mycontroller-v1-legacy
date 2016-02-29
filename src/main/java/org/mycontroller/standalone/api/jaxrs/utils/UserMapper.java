@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@ import org.mycontroller.standalone.db.tables.User;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+//As we are using rest basic authentication, this map used to increase retrieve speed
 public class UserMapper {
     private static HashMap<String, User> usersList = new HashMap<String, User>();
 
     public static User getUser(String userName) {
         if (usersList.get(userName) == null) {
-            usersList.put(userName, DaoUtils.getUserDao().get(userName));
+            usersList.put(userName, DaoUtils.getUserDao().getByUsername(userName));
         }
         return usersList.get(userName);
     }

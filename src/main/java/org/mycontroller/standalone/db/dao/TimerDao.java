@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,27 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.Timer;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface TimerDao {
-    void create(Timer timer);
-    void createOrUpdate(Timer timer);
-    void delete(Timer timer);
-    void delete(int id);
-    void deleteBySensorRefId(int sensorRefId);
-    void update(Timer timer);
-    List<Timer> getAll();
-    List<Timer> getAll(int sensorRefId);
-    List<Timer> getAll(int sensorRefId, Boolean enabled);
+public interface TimerDao extends BaseDao<Timer, Integer> {
+
+    void delete(RESOURCE_TYPE resourceType, Integer resourceId);
+
+    List<Timer> getAll(RESOURCE_TYPE resourceType, Integer resourceId);
+
+    List<Timer> getAll(RESOURCE_TYPE resourceType);
+
     List<Timer> getAllEnabled();
-    Timer get(int id);
+
+    long countOf(RESOURCE_TYPE resourceType, Integer resourceId);
+
+    QueryResponse getAll(Query query);
+
 }

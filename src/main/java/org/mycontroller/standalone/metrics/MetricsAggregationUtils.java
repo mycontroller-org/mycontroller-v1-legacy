@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
  */
 package org.mycontroller.standalone.metrics;
 
-import org.mycontroller.standalone.db.AGGREGATION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.TIME_REF;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -31,23 +30,23 @@ public class MetricsAggregationUtils {
 
     public static void removePreviousData(AGGREGATION_TYPE type, long timestamp) {
         DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(
-                new MetricsDoubleTypeDevice(null, type.ordinal(), timestamp));
+                MetricsDoubleTypeDevice.builder().aggregationType(type).timestamp(timestamp).build());
     }
 
     public static void purgeRawData() {
-        purgeRawData(System.currentTimeMillis() - TIME_REF.RAW_DATA_MAX_RETAIN_TIME);
+        purgeRawData(System.currentTimeMillis() - MetricsUtils.RAW_DATA_MAX_RETAIN_TIME);
     }
 
     public static void purgeOneMinuteData() {
-        purgeOneMinuteData(System.currentTimeMillis() - TIME_REF.ONE_MINUTE_MAX_RETAIN_TIME);
+        purgeOneMinuteData(System.currentTimeMillis() - MetricsUtils.ONE_MINUTE_MAX_RETAIN_TIME);
     }
 
     public static void purgeFiveMinutesData() {
-        purgeFiveMinutesData(System.currentTimeMillis() - TIME_REF.FIVE_MINUTES_MAX_RETAIN_TIME);
+        purgeFiveMinutesData(System.currentTimeMillis() - MetricsUtils.FIVE_MINUTES_MAX_RETAIN_TIME);
     }
 
     public static void purgeOneHourData() {
-        purgeOneHourData(System.currentTimeMillis() - TIME_REF.ONE_HOUR_MAX_RETAIN_TIME);
+        purgeOneHourData(System.currentTimeMillis() - MetricsUtils.ONE_HOUR_MAX_RETAIN_TIME);
     }
 
     public static void purgeRawData(long timestamp) {

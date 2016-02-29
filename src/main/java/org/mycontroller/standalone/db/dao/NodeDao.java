@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,29 +17,25 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.Node;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface NodeDao {
+public interface NodeDao extends BaseDao<Node, Integer> {
 
-    void create(Node node);
+    List<Node> getAllByGatewayId(Integer gatewayId);
 
-    void createOrUpdate(Node node);
+    Node get(Integer gatewayId, String nodeEui);
 
-    void delete(Node node);
+    QueryResponse getAll(Query query);
 
-    void delete(int nodeId);
+    List<Integer> getAllIds(Query query);
 
-    void update(Node node);
+    long countOf(Integer gatewayId);
 
-    List<Node> getAll();
-
-    Node get(Node node);
-
-    Node get(int nodeId);
-
-    List<Node> getByName(String name);
+    List<Integer> getNodeIdsByGatewayIds(List<Integer> ids);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsActionController', function(alertService,
-$scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, about) {
+$scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, mchelper) {
     
   $scope.filteredList=[];
   $scope.orgList=[];
   
-  //about, Timezone, etc.,
-  $scope.about = about;
+  //config, language, user, etc.,
+  $scope.mchelper = mchelper;
   
   //Filter
   $scope.updateFilteredList = function() {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,23 +21,34 @@ import java.util.TimeZone;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.ObjectFactory;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.Settings;
+
+import lombok.ToString;
+
+import lombok.Data;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-
+@Data
+@ToString(includeFieldNames = true)
 public class About {
     private String timezone;
-    private int timezoneMilliseconds;
+    private Integer timezoneMilliseconds;
     private String timezoneString;
     private String appVersion;
     private Date systemDate;
     private String appName;
+    private String languageId;
     private String language;
     private String dateFormat;
+    private String dateFormatWithoutSeconds;
+    private String timeFormat;
+    private String timeFormatWithoutSeconds;
+    private String timeFormatSet;
+    private String loginMessage;
+    private Long globalPageRefreshTime;
+    private Integer dashboardLimit;
 
     public About() {
         Date date = new Date();
@@ -46,40 +57,17 @@ public class About {
         this.systemDate = date;
         this.timezone = new SimpleDateFormat("Z").format(date);
         this.timezoneString = new SimpleDateFormat("z").format(date);
-        this.appVersion = DaoUtils.getSettingsDao().get(Settings.MC_VERSION).getValue();
-        this.language = ObjectFactory.getAppProperties().getLanguage().toString().replaceAll("_", "-").toLowerCase();
-        this.dateFormat = ObjectFactory.getAppProperties().getAngularJsDateFormat();
-    }
-
-    public String getAppVersion() {
-        return appVersion;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public String getTimezoneString() {
-        return timezoneString;
-    }
-
-    public Date getSystemDate() {
-        return systemDate;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public int getTimezoneMilliseconds() {
-        return timezoneMilliseconds;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
+        this.appVersion = ObjectFactory.getAppProperties().getControllerSettings().getVersion();
+        this.languageId = ObjectFactory.getAppProperties().getLanguage().toString().toLowerCase();
+        this.language = ObjectFactory.getAppProperties().getLanguage().getText();
+        this.loginMessage = ObjectFactory.getAppProperties().getControllerSettings().getLoginMessage();
+        this.dateFormat = ObjectFactory.getAppProperties().getDateFormat();
+        this.dateFormatWithoutSeconds = ObjectFactory.getAppProperties().getDateFormatWithoutSeconds();
+        this.timeFormat = ObjectFactory.getAppProperties().getTimeFormat();
+        this.timeFormatWithoutSeconds = ObjectFactory.getAppProperties().getTimeFormatWithoutSeconds();
+        this.timeFormatSet = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
+        this.globalPageRefreshTime = ObjectFactory.getAppProperties().getControllerSettings()
+                .getGlobalPageRefreshTime();
+        this.dashboardLimit = ObjectFactory.getAppProperties().getControllerSettings().getDashboardLimit();
     }
 }

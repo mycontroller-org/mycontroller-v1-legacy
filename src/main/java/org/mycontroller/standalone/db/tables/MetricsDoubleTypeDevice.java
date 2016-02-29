@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,141 +15,60 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "metrics_double")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@DatabaseTable(tableName = DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class MetricsDoubleTypeDevice {
-    public static final String SENSOR_VALUE_REF_ID = "sensor_value_ref_id";
-    public static final String TIMESTAMP = "timestamp";
-    public static final String AGGREGATION_TYPE = "aggregation_type";
+    public static final String KEY_SENSOR_VARIABLE_ID = "sensorVariableId";
+    public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_AGGREGATION_TYPE = "aggregationType";
+    public static final String KEY_MIN = "min";
+    public static final String KEY_MAX = "max";
+    public static final String KEY_AVG = "avg";
+    public static final String KEY_SAMPLES = "samples";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_VALUE_REF_ID)
-    private SensorValue sensorValue;
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID)
+    private SensorVariable sensorVariable;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = TIMESTAMP)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_SAMPLES)
     private Integer samples;
 
-    @DatabaseField
+    @DatabaseField(columnName = KEY_MIN)
     private Double min;
 
-    @DatabaseField
+    @DatabaseField(columnName = KEY_MAX)
     private Double max;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_AVG)
     private Double avg;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = AGGREGATION_TYPE)
-    private Integer aggregationType;
+    @DatabaseField(uniqueCombo = true, dataType = DataType.ENUM_INTEGER, canBeNull = false, columnName = KEY_AGGREGATION_TYPE)
+    private AGGREGATION_TYPE aggregationType;
 
     private Long timestampFrom;
     private Long timestampTo;
 
-    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType) {
-        this(sensorValue, aggregationType, null, null, aggregationType);
-    }
-
-    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType, Long timestamp) {
-        this(sensorValue, aggregationType, timestamp, null, aggregationType);
-    }
-
-    public MetricsDoubleTypeDevice(SensorValue sensorValue, Integer aggregationType, Long timestamp, Double avg,
-            Integer samples) {
-        this.sensorValue = sensorValue;
-        this.aggregationType = aggregationType;
-        this.timestamp = timestamp;
-        this.avg = avg;
-        this.samples = samples;
-    }
-
-    public MetricsDoubleTypeDevice() {
-
-    }
-
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public SensorValue getSensorValue() {
-        return this.sensorValue;
-    }
-
-    public void setSensorValue(SensorValue sensorValue) {
-        this.sensorValue = sensorValue;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Integer getSamples() {
-        return samples;
-    }
-
-    public void setSamples(Integer samples) {
-        this.samples = samples;
-    }
-
-    public Double getMin() {
-        return min;
-    }
-
-    public void setMin(Double min) {
-        this.min = min;
-    }
-
-    public Double getMax() {
-        return max;
-    }
-
-    public void setMax(Double max) {
-        this.max = max;
-    }
-
-    public Double getAvg() {
-        return avg;
-    }
-
-    public void setAvg(Double avg) {
-        this.avg = avg;
-    }
-
-    public Integer getAggregationType() {
-        return aggregationType;
-    }
-
-    public void setAggregationType(Integer aggregationType) {
-        this.aggregationType = aggregationType;
-    }
-
-    public Long getTimestampFrom() {
-        return timestampFrom;
-    }
-
-    public void setTimestampFrom(Long timestampFrom) {
-        this.timestampFrom = timestampFrom;
-    }
-
-    public Long getTimestampTo() {
-        return timestampTo;
-    }
-
-    public void setTimestampTo(Long timestampTo) {
-        this.timestampTo = timestampTo;
-    }
 }

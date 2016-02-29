@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+# Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ HEAP_MIN=-Xms8m
 HEAP_MAX=-Xmx40m
 
 JAVA_VERSION="1.7"
-MC_VERSION="0.0.2-alpha6"
+MC_VERSION="0.0.3-alpha1"
 
 #configuration file location
 CONF_PROPERTIES_FILE=../conf/mycontroller.properties

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,23 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class NodeDaoImpl extends BaseAbstractDao<Node, Integer> implements NodeDao {
+public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements NodeDao {
     private static final Logger _logger = LoggerFactory.getLogger(NodeDaoImpl.class);
 
     public NodeDaoImpl(ConnectionSource connectionSource) throws SQLException {
@@ -37,64 +40,21 @@ public class NodeDaoImpl extends BaseAbstractDao<Node, Integer> implements NodeD
     }
 
     @Override
-    public void create(Node node) {
-        try {
-            if (node.getId() < 255 && node.getId() >= 0) {
-                int count = this.getDao().create(node);
-                _logger.debug("Created Node:[{}], Create count:{}", node, count);
-            } else {
-                _logger.warn("Node:[{}], Node Id should be in the range of 0~254", node);
-            }
-        } catch (SQLException ex) {
-            _logger.error("unable to add Node:[{}]", node, ex);
-        }
-    }
-
-    @Override
-    public void delete(Node node) {
-        try {
-            int count = this.getDao().delete(node);
-            _logger.debug("Node:[{}] deleted, Delete count:{}", node, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to delete node:[{}]", node, ex);
-        }
-    }
-
-    @Override
-    public void delete(int nodeId) {
-        Node node = new Node(nodeId);
-        this.delete(node);
-    }
-
-    @Override
-    public void update(Node node) {
-        try {
-            int count = this.getDao().update(node);
-            _logger.debug("Updated Node:[{}], Update count:{}", node, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to update node:[{}]", node, ex);
-        }
-    }
-
-    @Override
-    public List<Node> getAll() {
-        try {
-            return this.getDao().queryForAll();
-        } catch (SQLException ex) {
-            _logger.error("unable to get all Nodes", ex);
-            return null;
-        }
+    public List<Node> getAllByGatewayId(Integer gatewayId) {
+        return super.getAll(Node.KEY_GATEWAY_ID, gatewayId);
     }
 
     @Override
     public Node get(Node node) {
-        return this.get(node.getId());
+        return super.getById(node.getId());
     }
 
     @Override
-    public Node get(int nodeId) {
+    public Node get(Integer gatewayId, String nodeEui) {
         try {
-            return this.getDao().queryForId(nodeId);
+            QueryBuilder<Node, Integer> queryBuilder = this.getDao().queryBuilder();
+            queryBuilder.where().eq(Node.KEY_GATEWAY_ID, gatewayId).and().eq(Node.KEY_EUI, nodeEui);
+            return queryBuilder.queryForFirst();
         } catch (SQLException ex) {
             _logger.error("unable to get Node", ex);
             return null;
@@ -102,24 +62,49 @@ public class NodeDaoImpl extends BaseAbstractDao<Node, Integer> implements NodeD
     }
 
     @Override
-    public List<Node> getByName(String nodeName) {
-        try {
+    public long countOf(Integer gatewayId) {
+        return super.countOf(Node.KEY_GATEWAY_ID, gatewayId);
+    }
 
-            return this.getDao().queryForEq("name", nodeName);
+    @Override
+    public QueryResponse getAll(Query query) {
+        try {
+            return this.getQueryResponse(query, Node.KEY_ID);
         } catch (SQLException ex) {
-            _logger.error("unable to get node by name", ex);
+            _logger.error("unable to run query:[{}]", query, ex);
             return null;
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void createOrUpdate(Node node) {
+    public List<Integer> getAllIds(Query query) {
+        List<Integer> ids = new ArrayList<Integer>();
         try {
-            CreateOrUpdateStatus status = this.getDao().createOrUpdate(node);
-            _logger.debug("CreateOrUpdate Node:[{}],Create:{},Update:{},Lines Changed:{}", node, status.isCreated(),
-                    status.isUpdated(), status.getNumLinesChanged());
+            QueryResponse queryResponse = this.getQueryResponse(query, Node.KEY_ID);
+            for (Node node : (List<Node>) queryResponse.getData()) {
+                ids.add(node.getId());
+            }
         } catch (SQLException ex) {
-            _logger.error("unable to CreateOrUpdate Node:[{}]", node, ex);
+            _logger.error("unable to run query:[{}]", query, ex);
+            return null;
         }
+        return ids;
     }
+
+    @Override
+    public List<Node> getAll(List<Integer> ids) {
+        return super.getAll(Node.KEY_ID, ids);
+    }
+
+    @Override
+    public List<Integer> getNodeIdsByGatewayIds(List<Integer> ids) {
+        List<Node> nodes = super.getAll(Node.KEY_GATEWAY_ID, ids);
+        List<Integer> nodeIds = new ArrayList<Integer>();
+        for (Node node : nodes) {
+            nodeIds.add(node.getId());
+        }
+        return nodeIds;
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.mycontroller.standalone.jobs;
 import java.util.List;
 
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.TimerUtils.TYPE;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.slf4j.Logger;
@@ -35,7 +34,7 @@ public class ManageSunRiseSetJobs implements Runnable {
         List<Timer> timers = DaoUtils.getTimerDao().getAllEnabled();
         //reload all jobs
         for (Timer timer : timers) {
-            switch (TYPE.get(timer.getType())) {
+            switch (timer.getTimerType()) {
                 case BEFORE_SUNRISE:
                 case AFTER_SUNRISE:
                 case BEFORE_SUNSET:
@@ -51,7 +50,6 @@ public class ManageSunRiseSetJobs implements Runnable {
     @Override
     public void run() {
         try {
-            _logger.debug("SunRise, SunSet jobs reseting started...");
             unloadLoadSunRiseSetJobs();
             _logger.debug("SunRise, SunSet jobs reseting completed...");
         } catch (Exception ex) {

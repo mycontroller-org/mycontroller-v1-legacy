@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,15 @@
  */
 package org.mycontroller.standalone.db.dao;
 
-import java.util.List;
-
+import org.mycontroller.standalone.api.jaxrs.mapper.Query;
+import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.tables.FirmwareType;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface FirmwareTypeDao {
-    void create(FirmwareType firmwareType);
-    void createOrUpdate(FirmwareType firmwareType);
-    void delete(FirmwareType firmwareType);
-    void delete(int id);
-    void update(FirmwareType firmwareType);
-    List<FirmwareType> getAll();
-    FirmwareType get(FirmwareType firmwareType);
-    FirmwareType get(int id);
+public interface FirmwareTypeDao extends BaseDao<FirmwareType, Integer> {
+
+    QueryResponse getAll(Query query);
 }

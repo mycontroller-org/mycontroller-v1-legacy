@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,69 +15,27 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
+import lombok.ToString;
+
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@ToString(includeFieldNames = true)
 public class TypesIdNameMapper {
-    private int id;
+    private Object id;
     private String displayName;
-    private Integer subId;
+    private Object value;
+    private Object subId;
     private boolean ticked = false;
-
-    public TypesIdNameMapper() {
-
-    }
-
-    public TypesIdNameMapper(int id, String name) {
-        this(id, null, name, false);
-    }
-
-    public TypesIdNameMapper(int id, String name, boolean ticked) {
-        this(id, null, name, ticked);
-    }
-
-    public TypesIdNameMapper(int id, Integer subId, String name) {
-        this(id, subId, name, false);
-    }
-
-    public TypesIdNameMapper(int id, Integer subId, String name, boolean ticked) {
-        this.id = id;
-        this.subId = subId;
-        this.displayName = name;
-        this.ticked = ticked;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String name) {
-        this.displayName = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Integer getSubId() {
-        return subId;
-    }
-
-    public void setSubId(Integer subId) {
-        this.subId = subId;
-    }
-
-    public boolean isTicked() {
-        return ticked;
-    }
-
-    public void setTicked(boolean ticked) {
-        this.ticked = ticked;
-    }
 
 }

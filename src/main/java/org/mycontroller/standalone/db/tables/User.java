@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,113 +16,93 @@
 package org.mycontroller.standalone.db.tables;
 
 import java.security.Principal;
+import java.util.List;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.mycontroller.standalone.db.USER_ROLE;
+import org.mycontroller.standalone.api.jaxrs.mapper.AllowedResources;
+import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
+import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.db.DaoUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-@DatabaseTable(tableName = "user")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@DatabaseTable(tableName = DB_TABLES.USER)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(includeFieldNames = true)
 public class User implements Principal {
-    public static final String NAME = "name";
-    public static final String EMAIL = "email";
+    public static final Logger _logger = LoggerFactory.getLogger(User.class);
 
-    @DatabaseField(generatedId = true, unique = true)
+    public static final String KEY_ID = "id";
+    public static final String KEY_ENABLED = "enabled";
+    public static final String KEY_USER_NAME = "username";
+    public static final String KEY_FULL_NAME = "fullName";
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_PASSWORD = "password";
+    public static final String KEY_VALIDITY = "validity";
+
+    @DatabaseField(generatedId = true, columnName = KEY_ID)
     private Integer id;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_ENABLED)
+    private Boolean enabled;
+    @DatabaseField(unique = true, index = true, canBeNull = false, columnName = KEY_USER_NAME)
+    private String username;
+    @DatabaseField(canBeNull = false, columnName = KEY_FULL_NAME)
     private String fullName;
-    @DatabaseField(unique = true, index = true, columnName = NAME, canBeNull = false)
-    private String name;
-    @DatabaseField(unique = true, columnName = EMAIL, canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_EMAIL)
     private String email;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_PASSWORD)
     private String password;
-    @DatabaseField(canBeNull = false)
-    private Integer roleId;
+    @DatabaseField(canBeNull = true, columnName = KEY_VALIDITY)
+    private Long validity;
 
-    public User() {
+    private List<String> permissions;
 
+    private AllowedResources allowedResources;
+
+    public AllowedResources getAllowedResources() {
+        if (allowedResources == null) {
+            allowedResources = AllowedResources.builder().userId(this.getId()).build();
+        }
+        return allowedResources;
     }
 
-    public User(int id) {
-        this.id = id;
+    public List<String> getPermissions() {
+        if (permissions == null) {
+            permissions = DaoUtils.getRoleDao().getPermissionsByUserId(id);
+        }
+        return permissions;
     }
 
-    public User(String userName) {
-        this.name = userName;
-    }
-
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String name) {
-        this.fullName = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String username) {
-        this.name = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer role) {
-        this.roleId = role;
-    }
-
-    public String getRole() {
-        if (roleId != null) {
-            return USER_ROLE.get(roleId).toString();
+    public String getPermission() {
+        if (getPermissions().contains(PERMISSION_TYPE.SUPER_ADMIN.getText())) {
+            return PERMISSION_TYPE.SUPER_ADMIN.getText();
+        } else if (getPermissions().contains(PERMISSION_TYPE.USER.getText())) {
+            return PERMISSION_TYPE.USER.getText();
+        } else if (getPermissions().contains(PERMISSION_TYPE.MQTT_USER.getText())) {
+            return PERMISSION_TYPE.MQTT_USER.getText();
         } else {
             return null;
         }
     }
 
-    public void setRole(String roleName) {
-        if (roleName != null) {
-            this.roleId = USER_ROLE.valueOf(roleName).ordinal();
-        }
+    @Override
+    public String getName() {
+        return this.username;
     }
+
 }
