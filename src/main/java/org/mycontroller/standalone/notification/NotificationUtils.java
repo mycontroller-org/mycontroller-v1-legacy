@@ -23,6 +23,8 @@ import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.Notification;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -33,7 +35,7 @@ public class NotificationUtils {
     public static final String ALARM_NOTIFICATION = "alarm_noti_";
     public static final String TIMER_NOTIFICATION = "timer_noti_";
 
-    // private static final Logger _logger = LoggerFactory.getLogger(NotificationUtils.class);
+    private static final Logger _logger = LoggerFactory.getLogger(NotificationUtils.class);
 
     private NotificationUtils() {
     }
@@ -84,11 +86,16 @@ public class NotificationUtils {
 
     public static List<String> getNotifications(AlarmDefinition alarmDefinition) {
         List<String> notificationList = new ArrayList<String>();
-        List<Notification> notifications = DaoUtils.getNotificationDao().getByAlarmDefinitionId(
-                alarmDefinition.getId());
-        for (Notification notification : notifications) {
-            notificationList.add(notification.getName());
+        try {
+            List<Notification> notifications = DaoUtils.getNotificationDao().getByAlarmDefinitionId(
+                    alarmDefinition.getId());
+            for (Notification notification : notifications) {
+                notificationList.add(notification.getName());
+            }
+        } catch (Exception ex) {
+            _logger.error("Exception, ", ex);
         }
+
         return notificationList;
     }
 
