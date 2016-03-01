@@ -56,7 +56,7 @@ public class DataBaseUtils {
     private static final String DB_USERNAME = "mycontroller";
     private static final String DB_PASSWORD = "mycontroller";
     private static final String DB_MIGRATION_LOCATION = "org/mycontroller/standalone/db/migration";
-    private static final String APP_VERSION = "0.0.3-alpha1";
+    private static final String APP_VERSION = "0.0.3-alpha2-SNAPSHOT";
 
     // private static String databaseUrl = "jdbc:sqlite:/tmp/mysensors.db";
 

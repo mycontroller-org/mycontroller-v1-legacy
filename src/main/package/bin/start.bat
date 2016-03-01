@@ -18,7 +18,7 @@
 SET HEAP_MIN=-Xms8m
 SET HEAP_MAX=-Xmx40m
 
-SET MC_VERSION=0.0.3-alpha1
+SET MC_VERSION=0.0.3-alpha2-SNAPSHOT
 
 SET CONF_PROPERTIES_FILE=../conf/mycontroller.properties
 SET CONF_LOG_FILE=../conf/logback.xml
