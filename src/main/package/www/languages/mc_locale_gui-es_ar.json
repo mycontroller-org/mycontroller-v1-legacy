@@ -277,7 +277,7 @@
     "NEW_PASSWORD": "Nueva contraseña",
     "NODE": "Nodo",
     "NODES": "Nodos",
-    "NODES_ALIVE_CHECK_INTERVAL": "Intervalo de verificación de vida de nodos",
+    "NODES_ALIVE_CHECK_INTERVAL": "Nodes alive check interval",
     "NODES_DETAIL": "Detalle de nodos",
     "NODE_DETAILS": "Detalle de nodo",
     "NODE_EUI": "Nodo EUI",
