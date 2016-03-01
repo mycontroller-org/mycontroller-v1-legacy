@@ -24,7 +24,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
     dashboardProvider
       .widget('mycSensorsGroupedGraph', {
         title: 'Grouped sensors graph',
-        description: 'Similar type of sensors grouped grpahical view',
+        description: 'Similar type of sensors grouped graphical view',
         templateUrl: 'controllers/adf-widgets/adf-myc-sgg/view.html',
         controller: 'mycSensorsGroupedGraphController',
         controllerAs: 'mycSensorsGroupedGraph',
