@@ -24,7 +24,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     dashboardProvider
       .widget('mycSensorsMixedGraph', {
         title: 'Mixed sensors graph',
-        description: 'Different type of sensors mixed grpahical view [refer document]',
+        description: 'Different type of sensors mixed graphical view [refer document]',
         templateUrl: 'controllers/adf-widgets/adf-myc-smg/view.html',
         controller: 'mycSensorsMixedGraphController',
         controllerAs: 'mycSensorsMixedGraph',
