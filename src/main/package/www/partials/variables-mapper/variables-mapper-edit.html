@@ -41,7 +41,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label">{{ 'VARIABLE_TYPES' | translate }}</label>
             <div class="col-md-9">
-              <select class="form-control" multiple data-live-search="true" pf-select ng-options="svt.displayName as svt.displayName for svt in sensorVariableTypes" ng-model="item.value">
+              <select class="form-control" multiple data-live-search="true" pf-select ng-options="svt.displayName as svt.displayName for svt in sensorVariableTypes | orderBy:'displayName'" ng-model="item.value">
                 <option value="" ng-hide="true"></option>
               </select>
             </div>

@@ -57,7 +57,7 @@
           <th class="col-md-11">{{ 'VARIABLES' | translate }}</th>
         </thead>
         <tbody>
-          <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" pagination-id="variable-mapper" ng-click="selectItem(item)" ng-class="{'mc-selected': itemName === item.displayName}" >
+          <tr dir-paginate="item in filteredList | orderBy:'displayName' | itemsPerPage: query.pageLimit" pagination-id="variable-mapper" ng-click="selectItem(item)" ng-class="{'mc-selected': itemName === item.displayName}" >
             <td class="col-md-1">{{item.displayName}}</td>
             <td class="col-md-11">{{item.value.join(', ')}}</td>
           </tr>
