@@ -478,6 +478,7 @@
     "UPLOADED_ON": "Загружено",
     "UPLOAD_FIRMWARE": "Загрузить прошивку",
     "UP_TIME": "Время работы",
+    "URL": "url",
     "USED": "Используется",
     "USERNAME": "Имя Пользователя",
     "USERS": "Пользователи",
@@ -500,5 +501,6 @@
     "VM_NAME": "Имя VM",
     "VM_VENDOR": "Производитель VM",
     "VM_VERSION": "Версия VM",
+    "WIDGET_IMAGE_FILES_DISK_LOCATION": "Widget image files disk location",
     "YEARS": "Лет"
 }

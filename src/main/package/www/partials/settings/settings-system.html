@@ -112,6 +112,18 @@
               </div>
             </div>
             
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'WIDGET_IMAGE_FILES_DISK_LOCATION' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{controllerSettings.widgetImageFilesLocation}}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="controllerSettings.widgetImageFilesLocation" required />
+                </div>
+              </div>
+            </div>
+            
             
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'GLOBAL_PAGE_REFRESH_TIME' | translate }}</label>

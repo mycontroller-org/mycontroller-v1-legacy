@@ -478,6 +478,7 @@
     "UPLOADED_ON": "Acutalizado en",
     "UPLOAD_FIRMWARE": "Subir firmware",
     "UP_TIME": "Tiempo",
+    "URL": "url",
     "USED": "Utilizado",
     "USERNAME": "Nombre de usuario",
     "USERS": "Usuarios",
@@ -500,5 +501,6 @@
     "VM_NAME": "Nombre de la VM",
     "VM_VENDOR": "Proveedor VM",
     "VM_VERSION": "Versión VM",
+    "WIDGET_IMAGE_FILES_DISK_LOCATION": "Widget image files disk location",
     "YEARS": "Años"
 }

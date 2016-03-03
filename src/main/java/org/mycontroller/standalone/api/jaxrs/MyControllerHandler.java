@@ -37,7 +37,7 @@ import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.About;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
-import org.mycontroller.standalone.api.jaxrs.utils.McServerLogFile;
+import org.mycontroller.standalone.api.jaxrs.utils.McServerFileUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
@@ -89,7 +89,7 @@ public class MyControllerHandler extends AccessEngine {
             @QueryParam("download") Boolean download) throws IOException {
 
         if (download != null && download) {
-            String zipFileName = McServerLogFile.getLogsZipFile();
+            String zipFileName = McServerFileUtils.getLogsZipFile();
             String fileName = FileUtils.getFile(zipFileName).getName();
 
             StreamingOutput fileStream = new StreamingOutput() {
@@ -112,8 +112,37 @@ public class MyControllerHandler extends AccessEngine {
                     .header("content-disposition", "attachment; filename = " + fileName)
                     .build();
         } else {
-            return RestUtils.getResponse(Status.OK, McServerLogFile.getLogUpdate(lastKnownPosition, lastNPosition));
+            return RestUtils.getResponse(Status.OK, McServerFileUtils.getLogUpdate(lastKnownPosition, lastNPosition));
         }
+    }
+
+    @GET
+    @Path("/imageFiles")
+    public Response getImageFile(@QueryParam("fileName") String fileName) throws IOException {
+        try {
+            if (fileName != null) {
+                return RestUtils.getResponse(Status.OK, McServerFileUtils.getImageFile(fileName));
+
+            } else {
+                return RestUtils.getResponse(Status.OK, McServerFileUtils.getImageFilesList());
+            }
+        } catch (IllegalAccessException ex) {
+            return RestUtils.getResponse(Status.FORBIDDEN, new ApiError(ex.getMessage()));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @GET
+    @Path("/osStatus")
+    public Response getOsStatus() {
+        return RestUtils.getResponse(Status.OK, new StatusOS());
+    }
+
+    @GET
+    @Path("/jvmStatus")
+    public Response getJvmStatus() {
+        return RestUtils.getResponse(Status.OK, new StatusJVM());
     }
 
     //TODO: remove this method, no longer in use
@@ -135,15 +164,4 @@ public class MyControllerHandler extends AccessEngine {
         }
     }
 
-    @GET
-    @Path("/osStatus")
-    public Response getOsStatus() {
-        return RestUtils.getResponse(Status.OK, new StatusOS());
-    }
-
-    @GET
-    @Path("/jvmStatus")
-    public Response getJvmStatus() {
-        return RestUtils.getResponse(Status.OK, new StatusJVM());
-    }
 }

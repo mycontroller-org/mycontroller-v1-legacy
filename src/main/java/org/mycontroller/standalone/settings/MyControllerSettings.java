@@ -15,6 +15,8 @@
  */
 package org.mycontroller.standalone.settings;
 
+import java.io.File;
+
 import org.mycontroller.standalone.MycUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -47,6 +49,7 @@ public class MyControllerSettings {
     public static final String SKEY_RESOURCES_LOG_LEVEL = "resourcesLogLevel";
     public static final String SKEY_GLOBAL_PAGE_REFRESH_TIME = "globalPageRefreshTime";
     public static final String SKEY_DASHBOARD_LIMIT = "dashboardLimit";
+    public static final String SKEY_WIDGET_IMAGE_FILES_LOCATION = "widgetImageFilesLocation";
 
     private String language;
     private String timeFormat;
@@ -59,6 +62,7 @@ public class MyControllerSettings {
     private String resourcesLogLevel;
     private Long globalPageRefreshTime;
     private Integer dashboardLimit;
+    private String widgetImageFilesLocation;
 
     public static MyControllerSettings get() {
         return MyControllerSettings.builder()
@@ -73,6 +77,7 @@ public class MyControllerSettings {
                 .resourcesLogLevel(getValue(SKEY_RESOURCES_LOG_LEVEL))
                 .globalPageRefreshTime(MycUtils.getLong(getValue(SKEY_GLOBAL_PAGE_REFRESH_TIME)))
                 .dashboardLimit(MycUtils.getInteger(getValue(SKEY_DASHBOARD_LIMIT)))
+                .widgetImageFilesLocation(getValue(SKEY_WIDGET_IMAGE_FILES_LOCATION))
                 .build();
     }
 
@@ -103,6 +108,12 @@ public class MyControllerSettings {
         }
         if (dashboardLimit != null) {
             updateValue(SKEY_DASHBOARD_LIMIT, dashboardLimit);
+        }
+        if (widgetImageFilesLocation != null) {
+            if (!widgetImageFilesLocation.endsWith(File.separator)) {
+                widgetImageFilesLocation += File.separator;
+            }
+            updateValue(SKEY_WIDGET_IMAGE_FILES_LOCATION, widgetImageFilesLocation);
         }
     }
 

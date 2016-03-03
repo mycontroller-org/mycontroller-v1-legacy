@@ -478,6 +478,7 @@
     "UPLOADED_ON": "Uploaded on",
     "UPLOAD_FIRMWARE": "Subir firmware",
     "UP_TIME": "Up Time",
+    "URL": "url",
     "USED": "Usado",
     "USERNAME": "Nombre de usuario",
     "USERS": "Usuarios",
@@ -500,5 +501,6 @@
     "VM_NAME": "Nombre de MV",
     "VM_VENDOR": "Vendedor de MV",
     "VM_VERSION": "Versión de MV",
+    "WIDGET_IMAGE_FILES_DISK_LOCATION": "Widget image files disk location",
     "YEARS": "Years"
 }

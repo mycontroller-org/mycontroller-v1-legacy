@@ -332,6 +332,8 @@ myControllerModule.factory('StatusFactory', function ($resource) {
    getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
    sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
    getMcServerLog: { method: 'GET', isArray: false, params: {type:'mcServerLogFile'} },
+   getStaticImageFile: { method: 'GET', isArray: false, params: {type:'imageFiles'} },
+   getStaticImageFilesList: { method: 'GET', isArray: true, params: {type:'imageFiles'} },
   })
 });
 

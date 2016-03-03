@@ -478,6 +478,7 @@
   "UPLOADED_ON": "Uploaded on",
   "UPLOAD_FIRMWARE": "Upload firmware",
   "UP_TIME": "Up Time",
+  "URL": "url",
   "USED": "Used",
   "USERNAME": "Username",
   "USERS": "Users",
@@ -500,5 +501,6 @@
   "VM_NAME": "VM Name",
   "VM_VENDOR": "VM Vendor",
   "VM_VERSION": "VM Version",
+  "WIDGET_IMAGE_FILES_DISK_LOCATION": "Widget image files disk location",
   "YEARS": "Years"
 }

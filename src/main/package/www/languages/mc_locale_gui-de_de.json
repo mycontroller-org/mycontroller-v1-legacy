@@ -478,6 +478,7 @@
     "UPLOADED_ON": "Hochgeladen am",
     "UPLOAD_FIRMWARE": "Firmware hochladen",
     "UP_TIME": "Betriebszeit",
+    "URL": "url",
     "USED": "Verwendet",
     "USERNAME": "Benutzername",
     "USERS": "Benutzer",
@@ -500,5 +501,6 @@
     "VM_NAME": "VM Name",
     "VM_VENDOR": "VM Anbieter",
     "VM_VERSION": "VM Version",
+    "WIDGET_IMAGE_FILES_DISK_LOCATION": "Widget image files disk location",
     "YEARS": "Years"
 }

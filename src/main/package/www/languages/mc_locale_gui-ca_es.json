@@ -478,6 +478,7 @@
     "UPLOADED_ON": "Carregat en",
     "UPLOAD_FIRMWARE": "Carregar firmware",
     "UP_TIME": "Temps en ús",
+    "URL": "url",
     "USED": "Utilitzat",
     "USERNAME": "Nom d'usuari",
     "USERS": "Usuaris",
@@ -500,5 +501,6 @@
     "VM_NAME": "Nom VM",
     "VM_VENDOR": "Venedor VM",
     "VM_VERSION": "Versió VM",
+    "WIDGET_IMAGE_FILES_DISK_LOCATION": "Widget image files disk location",
     "YEARS": "Anys"
 }

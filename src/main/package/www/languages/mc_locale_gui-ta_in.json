@@ -478,6 +478,7 @@
     "UPLOADED_ON": "Uploaded on",
     "UPLOAD_FIRMWARE": "Upload firmware",
     "UP_TIME": "Up Time",
+    "URL": "url",
     "USED": "பயன்படுத்தியது",
     "USERNAME": "பயனர்பெயர்",
     "USERS": "பயனர்கள்",
@@ -500,5 +501,6 @@
     "VM_NAME": "VM பெயர்",
     "VM_VENDOR": "VM சேவையளிப்பவர்",
     "VM_VERSION": "VM பதிப்பு",
+    "WIDGET_IMAGE_FILES_DISK_LOCATION": "Widget image files disk location",
     "YEARS": "ஆண்டுகள்"
 }
