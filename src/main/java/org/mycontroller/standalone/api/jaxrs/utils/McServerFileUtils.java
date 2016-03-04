@@ -63,7 +63,7 @@ public class McServerFileUtils {
     private static final String[] IMAGE_DISPLAY_SUFFIX_FILTER = { "jpg", "jpeg", "png", "gif" };
     //1 MB limit max file size allowed.
     //If we allow more than this, should increase heap space of VM. 
-    private static final long imageDisplayWidgetFileSizeLimit = MycUtils.MB * 7;
+    private static final long IMAGE_DISPLAY_WIDGET_FILE_SIZE_LIMIT = MycUtils.MB * 7;
     private static final long MAX_FILES_LIMIT = 500;
 
     public static LogFileJson getLogUpdate(Long lastKnownPosition, Long lastNPosition) {
@@ -132,7 +132,7 @@ public class McServerFileUtils {
             List<String> files = new ArrayList<String>();
             IOFileFilter ioFileFilter =
                     FileFilterUtils.and(new SuffixFileFilter(IMAGE_DISPLAY_SUFFIX_FILTER, IOCase.INSENSITIVE),
-                            new SizeFileFilter(MAX_FILES_LIMIT));
+                            new SizeFileFilter(IMAGE_DISPLAY_WIDGET_FILE_SIZE_LIMIT, false));
             Collection<File> imageFiles = FileUtils.listFiles(FileUtils.getFile(filesLocation), ioFileFilter,
                     TrueFileFilter.INSTANCE);
             for (File imageFile : imageFiles) {
@@ -158,7 +158,7 @@ public class McServerFileUtils {
         if (FileUtils.getFile(filesLocation).exists()) {
             File imageFile = FileUtils.getFile(filesLocation + imageFileName);
             if (imageFile.exists()) {
-                if (imageFile.length() > imageDisplayWidgetFileSizeLimit) {
+                if (imageFile.length() > IMAGE_DISPLAY_WIDGET_FILE_SIZE_LIMIT) {
                     throw new BadRequestException("File size exceeded the allowed limit of 7 MB, actual size: " +
                             imageFile.length() / MycUtils.MB + " MB");
                 }
