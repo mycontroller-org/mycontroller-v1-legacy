@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('ResourcesLogsController', function(alertService,
-$scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams, mchelper, CommonServices) {
+$scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams, mchelper, CommonServices, $interval) {
   
   //GUI page settings
   $scope.headerStringList = $filter('translate')('RESOURCES_LOGS_DETAIL');
@@ -43,15 +43,24 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
       $scope.query.resourceId = $stateParams.resourceId;
     }
   }
+  
 
+  //Stop if an request sent already
+  var updateInprogress = false; 
   //get all items
   $scope.getAllItems = function(){
+    if(updateInprogress){
+      return;
+    }
+    updateInprogress = true;
     $scope.query.pageLimit = parseInt($scope.itemsPerPage);
     ResourcesLogsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
+      updateInprogress = false;
     },function(error){
+      updateInprogress = false;
       displayRestError.display(error);
     });
   }
@@ -196,6 +205,17 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
     }
   };
 
+  function updatePage(){
+    $scope.getAllItems(true);
+  };
+
+  // global page refresh
+  var promise = $interval(updatePage, mchelper.cfg.globalPageRefreshTime);
+  
+  // cancel interval on scope destroy
+  $scope.$on('$destroy', function(){
+    $interval.cancel(promise);
+  });
   
 });
 

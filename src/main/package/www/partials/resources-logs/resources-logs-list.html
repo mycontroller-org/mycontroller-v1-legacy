@@ -63,6 +63,10 @@
         <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group" ng-show="queryResponse.query.totalItems > 0">
           <a class="btn btn-primary" type="button" ui-sref="resourcesLogsPurge">{{ 'PURGE' | translate }}</a>
         </div>
+        
+        <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group" ng-show="queryResponse.query.totalItems > 0">
+          <button class="btn btn-default" type="button" ng-click="getAllItems()" uib-tooltip="{{ 'REFRESH' | translate }}" tooltip-placement="top"><i class="fa fa-refresh"></i></button>
+        </div>
 
       </div>
 
