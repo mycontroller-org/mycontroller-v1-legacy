@@ -31,6 +31,12 @@ import javax.ws.rs.BadRequestException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.SizeFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.mycontroller.standalone.MycUtils;
 import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.mapper.ImageFileJson;
@@ -54,12 +60,11 @@ public class McServerFileUtils {
     private static final long MAX_POSITION_LIMIT = 100000;
 
     //Image file filters
-    private static final String[] imageDisplayWidgetFilter =
-    { "jpg", "jpeg", "png", "gif",
-            "JPG", "JPEG", "PNG", "GIF" };
+    private static final String[] IMAGE_DISPLAY_SUFFIX_FILTER = { "jpg", "jpeg", "png", "gif" };
     //1 MB limit max file size allowed.
     //If we allow more than this, should increase heap space of VM. 
-    private static final long imageDisplayWidgetFileSizeLimit = MycUtils.MB * 1;
+    private static final long imageDisplayWidgetFileSizeLimit = MycUtils.MB * 7;
+    private static final long MAX_FILES_LIMIT = 500;
 
     public static LogFileJson getLogUpdate(Long lastKnownPosition, Long lastNPosition) {
         if (lastNPosition != null && appLogFile.length() > lastNPosition) {
@@ -125,10 +130,16 @@ public class McServerFileUtils {
         }
         if (FileUtils.getFile(filesLocation).exists()) {
             List<String> files = new ArrayList<String>();
-            Collection<File> imageFiles = FileUtils.listFiles(FileUtils.getFile(filesLocation),
-                    imageDisplayWidgetFilter, true);
+            IOFileFilter ioFileFilter =
+                    FileFilterUtils.and(new SuffixFileFilter(IMAGE_DISPLAY_SUFFIX_FILTER, IOCase.INSENSITIVE),
+                            new SizeFileFilter(MAX_FILES_LIMIT));
+            Collection<File> imageFiles = FileUtils.listFiles(FileUtils.getFile(filesLocation), ioFileFilter,
+                    TrueFileFilter.INSTANCE);
             for (File imageFile : imageFiles) {
                 files.add(imageFile.getCanonicalPath().replace(locationCanonicalPath, ""));
+                if (files.size() >= MAX_FILES_LIMIT) {
+                    break;
+                }
             }
             return files;
         } else {
@@ -140,14 +151,15 @@ public class McServerFileUtils {
             throws IOException, IllegalAccessException {
         String filesLocation = ObjectFactory.getAppProperties().getControllerSettings().getWidgetImageFilesLocation();
         if (!getImageFilesList().contains(imageFileName)) {
-            throw new IllegalAccessException("You do not have access (or) file not found. File name: '"
-                    + imageFileName + "'");
+            throw new IllegalAccessException(
+                    "You do not have access (or) file not found (or) file size exceeded the allowed limit of 7 MB. File name: '"
+                            + imageFileName + "'");
         }
         if (FileUtils.getFile(filesLocation).exists()) {
             File imageFile = FileUtils.getFile(filesLocation + imageFileName);
             if (imageFile.exists()) {
                 if (imageFile.length() > imageDisplayWidgetFileSizeLimit) {
-                    throw new BadRequestException("File size exceeded the allowed limit of 1 MB, actual size: " +
+                    throw new BadRequestException("File size exceeded the allowed limit of 7 MB, actual size: " +
                             imageFile.length() / MycUtils.MB + " MB");
                 }
                 return ImageFileJson
