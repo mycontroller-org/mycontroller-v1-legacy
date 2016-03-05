@@ -17,24 +17,20 @@ package org.mycontroller.standalone.mqttbroker;
 
 import java.nio.charset.StandardCharsets;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mycontroller.standalone.auth.AuthUtils;
 
 import io.moquette.spi.security.IAuthenticator;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.2
+ * @since 0.0.3
  */
 public class MqttAuthenticatorImpl implements IAuthenticator {
-    private static final Logger _logger = LoggerFactory.getLogger(MqttAuthenticatorImpl.class.getName());
 
     @Override
     public boolean checkValid(String username, byte[] passwordBytes) {
-        @SuppressWarnings("unused")
         String password = new String(passwordBytes, StandardCharsets.UTF_8);
-        _logger.debug("Authentication Request from User:{}", username);
-        return true;
+        return AuthUtils.authenticateMqttUser(username, password);
     }
 
 }

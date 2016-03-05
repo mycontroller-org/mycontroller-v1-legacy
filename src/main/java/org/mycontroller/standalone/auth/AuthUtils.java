@@ -18,6 +18,7 @@ package org.mycontroller.standalone.auth;
 import javax.ws.rs.core.SecurityContext;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,4 +101,38 @@ public class AuthUtils {
         }
     }
 
+    public static boolean hasPermission(User user, PERMISSION_TYPE permissionType) {
+        if (user.getPermission().equalsIgnoreCase(permissionType.getText())) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean authenticateMqttUser(String aUsername, String aPassword) {
+        if (_logger.isDebugEnabled()) {
+            _logger.debug("MQTT authentication: User:{}", aUsername);
+        }
+        User user = DaoUtils.getUserDao().getByUsername(aUsername);
+        if (user != null) {
+            if (_logger.isDebugEnabled()) {
+                _logger.debug("User Found...User:{}", user);
+            }
+            if (user.getPassword().equals(aPassword)) {
+                user.setPassword(null);
+                if (isSuperAdmin(user) || hasPermission(user, PERMISSION_TYPE.MQTT_USER)) {
+                    return true;
+                }
+                _logger.warn("User[{}] does not have MQTT access permission!", user.getUsername());
+                return false;
+            }
+            if (_logger.isDebugEnabled()) {
+                _logger.debug("Invalid password for the user: {}", user.getUsername());
+            }
+            return false;
+        }
+        if (_logger.isDebugEnabled()) {
+            _logger.debug("user[{}] not found!", aUsername);
+        }
+        return false;
+    }
 }
