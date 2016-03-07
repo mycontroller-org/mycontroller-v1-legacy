@@ -18,7 +18,6 @@
 -->
 <assembly>
   <id>bundle</id>
-
   <formats>
     <format>zip</format>
     <format>tar.gz</format>
@@ -50,9 +49,9 @@
       <directory>${project.basedir}/target</directory>
       <outputDirectory>mycontroller/lib</outputDirectory>
       <includes>
-        <include>mycontroller-dist-standalone-*-single.jar</include>
+        <include>${mc.dist.jar.finalName}.jar</include>
       </includes>
-      <fileMode>755</fileMode>
+      <fileMode>664</fileMode>
       <directoryMode>764</directoryMode>
     </fileSet>
     <fileSet>

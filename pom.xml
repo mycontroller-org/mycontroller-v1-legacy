@@ -41,8 +41,8 @@
   </scm>
 
   <modules>
-    <module>mycontroller-commons</module>
-    <module>mycontroller-dist</module>
+    <module>modules/commons</module>
+    <module>dist</module>
   </modules>
 
 
@@ -130,7 +130,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>${version.javax.servlet}</version>
     </dependency>
 
     <!-- Database driver -->

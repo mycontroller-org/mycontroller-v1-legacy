@@ -23,10 +23,16 @@
     <artifactId>mycontroller-standalone-parent</artifactId>
     <version>0.0.3.Alpha2-SNAPSHOT</version>
   </parent>
+
   <artifactId>mycontroller-dist</artifactId>
   <url>https://github.com/mycontroller-org</url>
   <inceptionYear>2015</inceptionYear>
   <packaging>jar</packaging>
+
+  <properties>
+    <mc.dist.finalName>${project.artifactId}-standalone-${project.version}</mc.dist.finalName>
+    <mc.dist.jar.finalName>${mc.dist.finalName}-single</mc.dist.jar.finalName>
+  </properties>
 
   <dependencies>
     <!-- internal dependencies  -->
@@ -62,7 +68,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <finalName>${project.artifactId}-standalone-${project.version}-single</finalName>
+              <finalName>${mc.dist.jar.finalName}</finalName>
               <transformers>
                 <transformer
                   implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
@@ -86,6 +92,7 @@
           </execution>
         </executions>
         <configuration>
+          <finalName>${mc.dist.finalName}</finalName>
           <descriptor>src/main/assembly/binary-deployment.xml</descriptor>
         </configuration>
       </plugin>
