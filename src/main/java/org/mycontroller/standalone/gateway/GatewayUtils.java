@@ -18,7 +18,7 @@ package org.mycontroller.standalone.gateway;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.tables.Gateway;
@@ -134,13 +134,13 @@ public class GatewayUtils {
         if (iGateway == null) {
             throw new RuntimeException("Unable to create gateway[" + gateway + "]...Check your input");
         }
-        ObjectFactory.addGateway(iGateway);
+        ObjectManager.addGateway(iGateway);
     }
 
     public synchronized static void unloadGateway(Integer gatewayId) {
-        if (ObjectFactory.getGateway(gatewayId) != null) {
-            ObjectFactory.getGateway(gatewayId).close();
-            ObjectFactory.removeGateway(gatewayId);
+        if (ObjectManager.getGateway(gatewayId) != null) {
+            ObjectManager.getGateway(gatewayId).close();
+            ObjectManager.removeGateway(gatewayId);
         }
     }
 
@@ -152,7 +152,7 @@ public class GatewayUtils {
     }
 
     public synchronized static void unloadAllGateways() {
-        for (Integer gatewayId : ObjectFactory.getGatewayIds()) {
+        for (Integer gatewayId : ObjectManager.getGatewayIds()) {
             unloadGateway(gatewayId);
         }
     }

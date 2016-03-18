@@ -27,7 +27,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.BackupRestore;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.BackupFile;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -61,7 +61,7 @@ public class BackupHandler {
         try {
             String[] filter = { "zip" };
             Collection<File> zipFiles = FileUtils.listFiles(
-                    FileUtils.getFile(ObjectFactory.getAppProperties().getBackupSettings().getBackupLocation()),
+                    FileUtils.getFile(ObjectManager.getAppProperties().getBackupSettings().getBackupLocation()),
                     filter, true);
             List<BackupFile> backupFiles = new ArrayList<BackupFile>();
             for (File zipFile : zipFiles) {
@@ -88,7 +88,7 @@ public class BackupHandler {
     @GET
     @Path("/backupSettings")
     public Response getBackupSettings() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getBackupSettings());
+        return RestUtils.getResponse(Status.OK, ObjectManager.getAppProperties().getBackupSettings());
     }
 
     @PUT
@@ -96,7 +96,7 @@ public class BackupHandler {
     public Response updateBackupSettings(BackupSettings backupSettings) {
         backupSettings.save();
         BackupSettings.reloadJob();//Reload backup job
-        ObjectFactory.getAppProperties().setBackupSettings(BackupSettings.get());
+        ObjectManager.getAppProperties().setBackupSettings(BackupSettings.get());
         return RestUtils.getResponse(Status.OK);
     }
 

@@ -33,7 +33,7 @@ public class AppShutdownHook {
                 _logger.debug("Shutdown hook called. Running stop services...");
                 StartApp.stopServices();
                 _logger.debug("Shutdown hook completed...");
-                _logger.info(ObjectFactory.getMcLocale().getString(MC_LOCALE.BYE_HAVE_A_NICE_DAY));
+                _logger.info(ObjectManager.getMcLocale().getString(MC_LOCALE.BYE_HAVE_A_NICE_DAY));
             }
         });
         _logger.debug("Shutdown hook attached...");

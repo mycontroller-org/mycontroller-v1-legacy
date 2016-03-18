@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiMessage;
@@ -156,7 +156,7 @@ public class GatewayHandler extends AccessEngine {
             for (Integer id : ids) {
                 Gateway gateway = DaoUtils.getGatewayDao().getById(id);
                 if (gateway.getEnabled()) {
-                    ObjectFactory.getIActionEngine(gateway.getNetworkType()).discover(id);
+                    ObjectManager.getIActionEngine(gateway.getNetworkType()).discover(id);
                 }
             }
             return RestUtils.getResponse(Status.OK,

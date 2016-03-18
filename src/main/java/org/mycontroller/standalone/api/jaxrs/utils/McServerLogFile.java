@@ -26,7 +26,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.MycUtils;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.api.jaxrs.mapper.LogFileJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class McServerLogFile {
     }
 
     public static String getLogsZipFile() throws IOException {
-        String fileName = ObjectFactory.getAppProperties().getTmpLocation() + "mc-logs-"
+        String fileName = ObjectManager.getAppProperties().getTmpLocation() + "mc-logs-"
                 + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date()) + ".zip";
         File[] files = FileUtils.getFile(LOG_FILE_LOCATION).listFiles();
         final ZipOutputStream outZip = new ZipOutputStream(new FileOutputStream(fileName));

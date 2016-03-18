@@ -19,7 +19,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_STREAM;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
 import org.mycontroller.standalone.db.PayloadOperationUtils;
@@ -99,7 +99,7 @@ public class MySensorsIActionEngine implements IActionEngine {
         }
 
         if (mySensorsRawMessage != null) {
-            ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+            ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
         }
 
     }
@@ -154,7 +154,7 @@ public class MySensorsIActionEngine implements IActionEngine {
                 payload,
                 true);// isTxMessage
 
-        ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+        ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
     }
 
     @Override
@@ -169,7 +169,7 @@ public class MySensorsIActionEngine implements IActionEngine {
                 String.valueOf(System.currentTimeMillis()), //Payload
                 true    //Is TX Message?
         );
-        ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+        ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
         _logger.debug("Hearbeat message sent for node:[{}], rawMessage:[{}]", node, mySensorsRawMessage);
 
     }
@@ -185,8 +185,8 @@ public class MySensorsIActionEngine implements IActionEngine {
                 MESSAGE_TYPE_INTERNAL.I_VERSION.ordinal(),
                 MySensorsUtils.EMPTY_DATA);
         try {
-            if (ObjectFactory.getGateway(gatewayEthernet.getId()) != null) {
-                ObjectFactory.getGateway(gatewayEthernet.getId()).write(mySensorsRawMessage.getRawMessage());
+            if (ObjectManager.getGateway(gatewayEthernet.getId()) != null) {
+                ObjectManager.getGateway(gatewayEthernet.getId()).write(mySensorsRawMessage.getRawMessage());
                 return true;
             } else {
                 _logger.warn("Gateway not available! Gateway[{}]", gatewayEthernet);
@@ -210,7 +210,7 @@ public class MySensorsIActionEngine implements IActionEngine {
                 forwardPayload.getDestination().getVariableType().ordinal(),//subType
                 payload,
                 true);// isTxMessage
-        ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+        ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
     }
 
     @Override
@@ -224,7 +224,7 @@ public class MySensorsIActionEngine implements IActionEngine {
                 MESSAGE_TYPE_INTERNAL.I_REBOOT.ordinal(),
                 MySensorsUtils.EMPTY_DATA,
                 true);
-        ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+        ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
     }
 
     @Override
@@ -245,7 +245,7 @@ public class MySensorsIActionEngine implements IActionEngine {
                 MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.ordinal(),
                 Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase(),
                 true);
-        ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+        ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
     }
 
     @Override
@@ -295,7 +295,7 @@ public class MySensorsIActionEngine implements IActionEngine {
                 sensorVariable.getVariableType().ordinal(), // subType
                 sensorVariable.getValue(),
                 true);// isTxMessage
-        ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+        ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
     }
 
 }

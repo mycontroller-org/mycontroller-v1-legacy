@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.model.ResourceModel;
@@ -55,7 +55,7 @@ public class AlarmNotification {
         this.aValue = actualValue + AlarmUtils.getSensorUnit(alarmDefinition, false);
         this.aResource = new ResourceModel(alarmDefinition.getResourceType(), alarmDefinition.getResourceId())
                 .getResourceLessDetails();
-        this.aTriggeredAt = new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormatWithTimezone())
+        this.aTriggeredAt = new SimpleDateFormat(ObjectManager.getAppProperties().getDateFormatWithTimezone())
                 .format(new Date(System.currentTimeMillis()));
     }
 

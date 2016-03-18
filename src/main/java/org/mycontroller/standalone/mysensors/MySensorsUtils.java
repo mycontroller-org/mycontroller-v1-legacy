@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.NodeIdException;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -49,11 +49,11 @@ public class MySensorsUtils {
     }
 
     public static String getMetricType() {
-        if (ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig() != null) {
-            if (ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig()
+        if (ObjectManager.getAppProperties().getControllerSettings().getUnitConfig() != null) {
+            if (ObjectManager.getAppProperties().getControllerSettings().getUnitConfig()
                     .equalsIgnoreCase(UNIT_CONFIG.METRIC.getText())) {
                 return "M";
-            } else if (ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig()
+            } else if (ObjectManager.getAppProperties().getControllerSettings().getUnitConfig()
                     .equalsIgnoreCase(UNIT_CONFIG.IMPERIAL.getText())) {
                 return "I";
             }

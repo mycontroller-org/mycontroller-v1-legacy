@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.mysensors;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.gateway.GatewayMQTT;
@@ -51,7 +51,7 @@ public class MySensorsRawMessage {
     public MySensorsRawMessage(RawMessage rawMessage) throws RawMessageException {
         this.gatewayId = rawMessage.getGatewayId();
         this.isTxMessage = rawMessage.isTxMessage();
-        switch (ObjectFactory.getGateway(rawMessage.getGatewayId()).getGateway().getType()) {
+        switch (ObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getType()) {
             case MQTT:
                 this.updateMQTTMessage(rawMessage.getSubData(), rawMessage.getData());
                 break;
@@ -62,7 +62,7 @@ public class MySensorsRawMessage {
             default:
                 _logger.warn(
                         "This type not implemented yet, Type:[{}]",
-                        ObjectFactory.getGateway(rawMessage.getGatewayId()).getGateway().getType());
+                        ObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getType());
         }
     }
 
@@ -254,7 +254,7 @@ public class MySensorsRawMessage {
         // Topic structure:
         // MY_MQTT_TOPIC_PREFIX/NODE-KEY_ID/SENSOR_VARIABLE-KEY_ID/CMD-NOTIFICATION_TYPE/ACK-FLAG/SUB-NOTIFICATION_TYPE
         StringBuilder builder = new StringBuilder();
-        builder.append(((GatewayMQTT) ObjectFactory.getGateway(this.gatewayId).getGateway()).getTopicPublish());
+        builder.append(((GatewayMQTT) ObjectManager.getGateway(this.gatewayId).getGateway()).getTopicPublish());
         builder.append("/").append(this.getNodeId());
         builder.append("/").append(this.getChildSensorId());
         builder.append("/").append(this.getMessageType());

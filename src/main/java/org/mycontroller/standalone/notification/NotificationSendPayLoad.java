@@ -28,7 +28,7 @@ import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerSimple;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.MycUtils;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +98,7 @@ public class NotificationSendPayLoad implements INotificationEngine {
                     ResourcesGroupUtils.executeResourceGroupsOperation(resourceModel, payloadOperation);
                     break;
                 default:
-                    ObjectFactory.getIActionEngine(
+                    ObjectManager.getIActionEngine(
                             resourceModel.getNetworkType()).executeSendPayload(resourceModel, payloadOperation);
                     break;
             }

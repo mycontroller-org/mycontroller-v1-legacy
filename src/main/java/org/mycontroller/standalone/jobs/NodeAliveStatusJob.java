@@ -20,7 +20,7 @@ import java.util.List;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.MycUtils;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.slf4j.Logger;
@@ -64,7 +64,7 @@ public class NodeAliveStatusJob extends Job {
         for (Node node : nodes) {
             switch (node.getGateway().getNetworkType()) {
                 case MY_SENSORS:
-                    ObjectFactory.getIActionEngine(NETWORK_TYPE.MY_SENSORS).sendAliveStatusRequest(node);
+                    ObjectManager.getIActionEngine(NETWORK_TYPE.MY_SENSORS).sendAliveStatusRequest(node);
                     break;
                 default:
                     //TODO: not supported
@@ -76,7 +76,7 @@ public class NodeAliveStatusJob extends Job {
 
     private void checkHearbeat() {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
-        long aliveCheckInterval = ObjectFactory.getAppProperties().getControllerSettings().getAliveCheckInterval();
+        long aliveCheckInterval = ObjectManager.getAppProperties().getControllerSettings().getAliveCheckInterval();
         if (aliveCheckInterval < MycUtils.MINUTE) {
             aliveCheckInterval = MycUtils.MINUTE;
         }

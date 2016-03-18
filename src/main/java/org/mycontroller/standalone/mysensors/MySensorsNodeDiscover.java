@@ -15,10 +15,9 @@
  */
 package org.mycontroller.standalone.mysensors;
 
-import java.util.HashMap;
 import java.util.List;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -61,7 +60,7 @@ public class MySensorsNodeDiscover implements Runnable {
                         MySensorsUtils.EMPTY_DATA, //Payload
                         true    //Is TX Message?
                 );
-                ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+                ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
                 nodeId++;
             }
             */
@@ -80,7 +79,7 @@ public class MySensorsNodeDiscover implements Runnable {
                         MySensorsUtils.EMPTY_DATA, //Payload
                         true    //Is TX Message?
                 );
-                ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+                ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
             }
 
             _logger.debug("Node discover util completed");

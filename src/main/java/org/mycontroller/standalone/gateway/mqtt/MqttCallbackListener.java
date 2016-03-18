@@ -22,7 +22,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.gateway.GatewayMQTT;
 import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ public class MqttCallbackListener implements MqttCallback {
         try {
             _logger.debug("Message Received, Topic:[{}], PayLoad:[{}]", topic, message);
             RawMessage rawMessage = new RawMessage(gateway.getId(), message.toString(), topic);
-            ObjectFactory.getRawMessageQueue().putMessage(rawMessage);
+            ObjectManager.getRawMessageQueue().putMessage(rawMessage);
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
         }

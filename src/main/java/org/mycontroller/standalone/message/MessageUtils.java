@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.message;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +34,8 @@ public class MessageUtils {
     public synchronized static void sendMessgaeToGateway(RawMessage rawMessage) {
         //Send message to nodes [going out from MyController]
         try {
-            if (ObjectFactory.getGateway(rawMessage.getGatewayId()) != null) {
-                ObjectFactory.getGateway(rawMessage.getGatewayId()).write(rawMessage);
+            if (ObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
+                ObjectManager.getGateway(rawMessage.getGatewayId()).write(rawMessage);
             } else {
                 _logger.error("Selected gateway not available! Gateway:[{}]",
                         DaoUtils.getGatewayDao().getById(rawMessage.getGatewayId()));

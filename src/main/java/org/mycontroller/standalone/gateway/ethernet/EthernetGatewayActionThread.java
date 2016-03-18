@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.gateway.GatewayEthernet;
@@ -155,7 +155,7 @@ public class EthernetGatewayActionThread implements Runnable {
     }
 
     private boolean checkAliveState() {
-        return ObjectFactory.getIActionEngine(this.gateway.getNetworkType()).checkEthernetGatewayAliveState(
+        return ObjectManager.getIActionEngine(this.gateway.getNetworkType()).checkEthernetGatewayAliveState(
                 this.gateway);
     }
 
