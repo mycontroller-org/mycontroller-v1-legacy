@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.gateway.GatewayEthernet;
 import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class EthernetGatewayListener implements Runnable {
                 if (buf.ready()) {
                     String message = buf.readLine();
                     _logger.debug("Message Received: {}", message);
-                    ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(gateway.getId(), message));
+                    ObjectManager.getRawMessageQueue().putMessage(new RawMessage(gateway.getId(), message));
                 }
                 Thread.sleep(100);
             } catch (IOException | InterruptedException ex) {

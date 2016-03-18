@@ -17,7 +17,7 @@ package org.mycontroller.standalone.mqttbroker;
 
 import java.io.IOException;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class MoquetteMqttBroker {
     }
 
     public static synchronized void start() {
-        if (!ObjectFactory.getAppProperties().isMqttBrokerEnabled()) {
+        if (!ObjectManager.getAppProperties().isMqttBrokerEnabled()) {
             _logger.debug("InBuilt MQTT broker is not enabled... Skipping to start...");
             return;
         }
@@ -56,7 +56,7 @@ public class MoquetteMqttBroker {
     }
 
     public static synchronized void stop() {
-        if (!ObjectFactory.getAppProperties().isMqttBrokerEnabled()) {
+        if (!ObjectManager.getAppProperties().isMqttBrokerEnabled()) {
             _logger.debug("InBuilt MQTT broker is not enabled... Skipping to stop...");
             return;
         }

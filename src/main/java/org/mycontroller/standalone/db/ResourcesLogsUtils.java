@@ -17,7 +17,7 @@ package org.mycontroller.standalone.db;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.tables.AlarmDefinition;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
@@ -105,7 +105,7 @@ public class ResourcesLogsUtils {
     }
 
     public static boolean isLevel(LOG_LEVEL logLevel) {
-        if (LOG_LEVEL.fromString(ObjectFactory.getAppProperties().getControllerSettings().getResourcesLogLevel())
+        if (LOG_LEVEL.fromString(ObjectManager.getAppProperties().getControllerSettings().getResourcesLogLevel())
                 .ordinal() <= logLevel.ordinal()) {
             return true;
         }

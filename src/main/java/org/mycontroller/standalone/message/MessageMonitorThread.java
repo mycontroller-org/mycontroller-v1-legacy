@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.message;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Gateway;
 import org.mycontroller.standalone.gateway.GatewayException;
@@ -58,22 +58,22 @@ public class MessageMonitorThread implements Runnable {
     }
 
     private void processRawMessage() {
-        while (!ObjectFactory.getRawMessageQueue().isEmpty() && !isTerminationIssued()) {
-            RawMessage rawMessage = ObjectFactory.getRawMessageQueue().getMessage();
+        while (!ObjectManager.getRawMessageQueue().isEmpty() && !isTerminationIssued()) {
+            RawMessage rawMessage = ObjectManager.getRawMessageQueue().getMessage();
             _logger.debug("Processing message:[{}]", rawMessage);
-            if (ObjectFactory.getGateway(rawMessage.getGatewayId()) != null) {
+            if (ObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
                 try {
-                    switch (ObjectFactory.getGateway(rawMessage.getGatewayId()).getGateway().getNetworkType()) {
+                    switch (ObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getNetworkType()) {
                         case MY_SENSORS:
                             mySensorsEngine.executeMessage(rawMessage);
                             break;
                         default:
                             _logger.warn("Not implemented this type:{}",
-                                    ObjectFactory.getGateway(rawMessage.getGatewayId()).getGateway().getNetworkType());
+                                    ObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getNetworkType());
                             break;
                     }
                     //A delay to avoid collisions on MySensor networks on continues messages
-                    if (!ObjectFactory.getRawMessageQueue().isEmpty()) {
+                    if (!ObjectManager.getRawMessageQueue().isEmpty()) {
                         Thread.sleep(MYS_MSG_DELAY);
                     }
 
@@ -93,8 +93,8 @@ public class MessageMonitorThread implements Runnable {
             }
 
         }
-        if (!ObjectFactory.getRawMessageQueue().isEmpty()) {
-            _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!", ObjectFactory
+        if (!ObjectManager.getRawMessageQueue().isEmpty()) {
+            _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!", ObjectManager
                     .getRawMessageQueue().getQueueSize());
         }
     }

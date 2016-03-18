@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.timer.jobs;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
@@ -75,7 +75,7 @@ public class TimerJob extends Job {
                 ResourcesGroupUtils.executeResourceGroupsOperation(resourceModel, payloadOperation);
                 break;
             default:
-                ObjectFactory.getIActionEngine(
+                ObjectManager.getIActionEngine(
                         resourceModel.getNetworkType()).executeSendPayload(resourceModel, payloadOperation);
                 break;
         }

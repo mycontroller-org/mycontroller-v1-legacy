@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 
 import lombok.ToString;
 
@@ -57,17 +57,17 @@ public class About {
         this.systemDate = date;
         this.timezone = new SimpleDateFormat("Z").format(date);
         this.timezoneString = new SimpleDateFormat("z").format(date);
-        this.appVersion = ObjectFactory.getAppProperties().getControllerSettings().getVersion();
-        this.languageId = ObjectFactory.getAppProperties().getLanguage().toString().toLowerCase();
-        this.language = ObjectFactory.getAppProperties().getLanguage().getText();
-        this.loginMessage = ObjectFactory.getAppProperties().getControllerSettings().getLoginMessage();
-        this.dateFormat = ObjectFactory.getAppProperties().getDateFormat();
-        this.dateFormatWithoutSeconds = ObjectFactory.getAppProperties().getDateFormatWithoutSeconds();
-        this.timeFormat = ObjectFactory.getAppProperties().getTimeFormat();
-        this.timeFormatWithoutSeconds = ObjectFactory.getAppProperties().getTimeFormatWithoutSeconds();
-        this.timeFormatSet = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
-        this.globalPageRefreshTime = ObjectFactory.getAppProperties().getControllerSettings()
+        this.appVersion = ObjectManager.getAppProperties().getControllerSettings().getVersion();
+        this.languageId = ObjectManager.getAppProperties().getLanguage().toString().toLowerCase();
+        this.language = ObjectManager.getAppProperties().getLanguage().getText();
+        this.loginMessage = ObjectManager.getAppProperties().getControllerSettings().getLoginMessage();
+        this.dateFormat = ObjectManager.getAppProperties().getDateFormat();
+        this.dateFormatWithoutSeconds = ObjectManager.getAppProperties().getDateFormatWithoutSeconds();
+        this.timeFormat = ObjectManager.getAppProperties().getTimeFormat();
+        this.timeFormatWithoutSeconds = ObjectManager.getAppProperties().getTimeFormatWithoutSeconds();
+        this.timeFormatSet = ObjectManager.getAppProperties().getControllerSettings().getTimeFormat();
+        this.globalPageRefreshTime = ObjectManager.getAppProperties().getControllerSettings()
                 .getGlobalPageRefreshTime();
-        this.dashboardLimit = ObjectFactory.getAppProperties().getControllerSettings().getDashboardLimit();
+        this.dashboardLimit = ObjectManager.getAppProperties().getControllerSettings().getDashboardLimit();
     }
 }

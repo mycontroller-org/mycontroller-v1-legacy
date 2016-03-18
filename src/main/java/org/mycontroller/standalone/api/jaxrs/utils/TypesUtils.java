@@ -30,7 +30,7 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.MYCMessages;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.alarm.AlarmUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.THRESHOLD_TYPE;
 import org.mycontroller.standalone.alarm.AlarmUtils.TRIGGER_TYPE;
@@ -79,10 +79,10 @@ public class TypesUtils {
         for (MESSAGE_TYPE_SET_REQ type : types) {
             if (metricTypes.isEmpty()) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                        .displayName(ObjectManager.getMcLocale().getString(type.name())).build());
             } else if (metricTypes.contains(MYCMessages.getMetricType(type).getText())) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                        .displayName(ObjectManager.getMcLocale().getString(type.name())).build());
             }
         }
         return typesIdNameMappers;
@@ -96,7 +96,7 @@ public class TypesUtils {
                 typesIdNameMappers.add(TypesIdNameMapper
                         .builder()
                         .id(type.getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                        .displayName(ObjectManager.getMcLocale().getString(type.name())).build());
             }
         }
         return typesIdNameMappers;
@@ -108,7 +108,7 @@ public class TypesUtils {
         for (MESSAGE_TYPE_PRESENTATION type : types) {
             if (type.name().contains(NODE_IDENTIFIER)) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                        .displayName(ObjectManager.getMcLocale().getString(type.name())).build());
             }
         }
         return typesIdNameMappers;
@@ -716,7 +716,7 @@ public class TypesUtils {
             List<SensorsVariablesMap> variableTypes = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
             for (SensorsVariablesMap variableType : variableTypes) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(variableType.getVariableType().getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(variableType.getVariableType().name()))
+                        .displayName(ObjectManager.getMcLocale().getString(variableType.getVariableType().name()))
                         .ticked(false).build());
             }
             if (sensorId != null) {
@@ -852,7 +852,7 @@ public class TypesUtils {
     public static ArrayList<TypesIdNameMapper> getLanguages() {
         MC_LANGUAGE[] languages = MC_LANGUAGE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        MC_LANGUAGE selected = ObjectFactory.getAppProperties().getLanguage();
+        MC_LANGUAGE selected = ObjectManager.getAppProperties().getLanguage();
         for (MC_LANGUAGE language : languages) {
             if (selected == language) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(language.name().toLowerCase())
@@ -881,7 +881,7 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (GatewayUtils.TYPE type : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                    .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                    .displayName(ObjectManager.getMcLocale().getString(type.name())).build());
         }
         return typesIdNameMappers;
     }

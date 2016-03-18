@@ -16,7 +16,7 @@
 package org.mycontroller.standalone.api.jaxrs.mapper;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.model.ResourceModel;
@@ -54,7 +54,7 @@ public class VariableStatusModel {
         this.id = sensorVariable.getId();
         if (sensorVariable.getVariableType() != null) {
             this.type = LocaleString.builder().en(sensorVariable.getVariableType().getText())
-                    .locale(ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name())).build();
+                    .locale(ObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name())).build();
         }
         if (sensorVariable.getMetricType() != null) {
             this.metricType = sensorVariable.getMetricType().getText();

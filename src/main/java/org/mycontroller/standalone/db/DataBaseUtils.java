@@ -26,7 +26,7 @@ import org.apache.commons.io.FileUtils;
 import org.flywaydb.core.Flyway;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.settings.MyControllerSettings;
@@ -84,7 +84,7 @@ public class DataBaseUtils {
              */
 
             //Update Database url
-            DB_URL = DB_URL_PREFIX + ObjectFactory.getAppProperties().getDbH2DbLocation();
+            DB_URL = DB_URL_PREFIX + ObjectManager.getAppProperties().getDbH2DbLocation();
 
             // pooled connection source
             connectionPooledSource = new JdbcPooledConnectionSource(DB_URL, DB_USERNAME, DB_PASSWORD);
@@ -128,12 +128,12 @@ public class DataBaseUtils {
             }
 
             //After executed migration, reload settings again
-            ObjectFactory.getAppProperties().loadPropertiesFromDb();
+            ObjectManager.getAppProperties().loadPropertiesFromDb();
 
             _logger.info("Number of migrations done:{}", migrationsCount);
             _logger.info("Application information: [Version:{}, Database version:{}]",
-                    ObjectFactory.getAppProperties().getControllerSettings().getVersion(),
-                    ObjectFactory.getAppProperties().getControllerSettings().getDbVersion());
+                    ObjectManager.getAppProperties().getControllerSettings().getVersion(),
+                    ObjectManager.getAppProperties().getControllerSettings().getDbVersion());
 
             //create or update static json file used for GUI before login
             SettingsUtils.updateStaticJsonInformationFile();
@@ -204,13 +204,13 @@ public class DataBaseUtils {
         Connection conn = null;
         try {
             _logger.debug("database backup triggered...");
-            conn = DriverManager.getConnection(DB_URL_PREFIX + ObjectFactory.getAppProperties().getDbH2DbLocation(),
+            conn = DriverManager.getConnection(DB_URL_PREFIX + ObjectManager.getAppProperties().getDbH2DbLocation(),
                     DB_USERNAME, DB_PASSWORD);
             PreparedStatement statement = conn.prepareStatement("RUNSCRIPT FROM ? COMPRESSION ZIP");
             statement.setString(1, databaseRestoreScript);
             statement.execute();
             _logger.info("Database restore completed. Database location:{}, Restored file name:{}",
-                    ObjectFactory.getAppProperties().getDbH2DbLocation(), databaseRestoreScript);
+                    ObjectManager.getAppProperties().getDbH2DbLocation(), databaseRestoreScript);
             return true;
         } catch (SQLException ex) {
             _logger.error("Exception, backup failed!", ex);

@@ -22,7 +22,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -98,12 +98,12 @@ public class ExecuteUidTag implements Runnable {
                     MESSAGE_TYPE_SET_REQ.V_VAR5.ordinal(),//subType
                     String.valueOf(uidTagStruct.getPayload()),
                     true);// isTxMessage
-            ObjectFactory.getRawMessageQueue().putMessage(rawMessageToDevice.getRawMessage());
+            ObjectManager.getRawMessageQueue().putMessage(rawMessageToDevice.getRawMessage());
         } else {
             uidTagStruct.setStatus(0);
             mySensorsRawMessage.setPayload(Hex.encodeHexString(uidTagStruct.getByteBuffer().array()));
         }
-        ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+        ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
         _logger.debug("Message Sent:[{}]", mySensorsRawMessage.toString());
     }
 

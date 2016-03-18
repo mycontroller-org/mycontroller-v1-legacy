@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response.Status;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.MycUtils;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
@@ -145,7 +145,7 @@ public class SensorHandler extends AccessEngine {
         }
         //Add Update sensor will be handled by Network type interface
         Node node = DaoUtils.getNodeDao().getById(sensor.getNode().getId());
-        ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).updateSensor(sensor);
+        ObjectManager.getIActionEngine(node.getGateway().getNetworkType()).updateSensor(sensor);
         // Update Variable Types
         SensorUtils.updateSensorVariables(sensor);
         return RestUtils.getResponse(Status.NO_CONTENT);
@@ -163,7 +163,7 @@ public class SensorHandler extends AccessEngine {
         List<String> variableTypes = sensor.getVariableTypes();
         //Add Update sensor will be handled by Network type interface
         Node node = DaoUtils.getNodeDao().getById(sensor.getNode().getId());
-        ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).addSensor(sensor);
+        ObjectManager.getIActionEngine(node.getGateway().getNetworkType()).addSensor(sensor);
 
         sensor = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
         for (String variableType : variableTypes) {
@@ -221,7 +221,7 @@ public class SensorHandler extends AccessEngine {
             }
 
             sensorVariable.setValue(String.valueOf(variableStatusModel.getValue()));
-            ObjectFactory.getIActionEngine(sensorVariable.getSensor().getNode().getGateway().getNetworkType())
+            ObjectManager.getIActionEngine(sensorVariable.getSensor().getNode().getGateway().getNetworkType())
                     .sendPayload(sensorVariable);
 
         } else {

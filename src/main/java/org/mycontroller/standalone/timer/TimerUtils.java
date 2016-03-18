@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.mycontroller.standalone.MycUtils;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
@@ -171,8 +171,8 @@ public class TimerUtils {
         Date tmpSunsetTime = sunsetTime;
         //https://github.com/mikereedell/sunrisesunsetlib-java
         Location location = new Location(
-                ObjectFactory.getAppProperties().getLocationSettings().getLatitude(),
-                ObjectFactory.getAppProperties().getLocationSettings().getLongitude());
+                ObjectManager.getAppProperties().getLocationSettings().getLatitude(),
+                ObjectManager.getAppProperties().getLocationSettings().getLongitude());
         SunriseSunsetCalculator sunriseSunsetCalculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
 
         sunriseTime = sunriseSunsetCalculator.getOfficialSunriseCalendarForDate(Calendar.getInstance()).getTime();
@@ -182,8 +182,8 @@ public class TimerUtils {
         LocationSettings.builder().sunriseTime(sunriseTime.getTime()).sunsetTime(sunsetTime.getTime()).build()
                 .updateInternal();
         //update location settings to object factory
-        ObjectFactory.getAppProperties().setLocationSettings(LocationSettings.get());
-        _logger.debug("Location settings after updated:{}", ObjectFactory.getAppProperties().getLocationSettings());
+        ObjectManager.getAppProperties().setLocationSettings(LocationSettings.get());
+        _logger.debug("Location settings after updated:{}", ObjectManager.getAppProperties().getLocationSettings());
 
         if (!(tmpSunriseTime == null || sunriseTime == null)) {
             //call Manage sun rise sun set jobs, if value changed
@@ -222,7 +222,7 @@ public class TimerUtils {
         }
         if (timer.getTimerType() == TIMER_TYPE.NORMAL) {
             builder.append("], [Time: ")
-                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getTimeFormat()).format(new Date(
+                    .append(new SimpleDateFormat(ObjectManager.getAppProperties().getTimeFormat()).format(new Date(
                             timer.getTriggerTime())))
                     .append("]");
         } else {
@@ -267,19 +267,19 @@ public class TimerUtils {
         StringBuilder stringBuilder = new StringBuilder();
         if (timer.getValidityFrom() != null && timer.getValidityTo() != null) {
             stringBuilder
-                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormatWithoutSeconds())
+                    .append(new SimpleDateFormat(ObjectManager.getAppProperties().getDateFormatWithoutSeconds())
                             .format(new Date(timer.getValidityFrom())));
             stringBuilder.append(" ~ ");
-            stringBuilder.append(new SimpleDateFormat(ObjectFactory.getAppProperties()
+            stringBuilder.append(new SimpleDateFormat(ObjectManager.getAppProperties()
                     .getDateFormatWithoutSeconds()).format(new Date(timer.getValidityTo())));
         } else if (timer.getValidityFrom() != null) {
             stringBuilder.append("From ");
             stringBuilder
-                    .append(new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormatWithoutSeconds())
+                    .append(new SimpleDateFormat(ObjectManager.getAppProperties().getDateFormatWithoutSeconds())
                             .format(new Date(timer.getValidityFrom())));
         } else if (timer.getValidityTo() != null) {
             stringBuilder.append("Till ");
-            stringBuilder.append(new SimpleDateFormat(ObjectFactory.getAppProperties()
+            stringBuilder.append(new SimpleDateFormat(ObjectManager.getAppProperties()
                     .getDateFormatWithoutSeconds()).format(new Date(timer.getValidityTo())));
         }
         return stringBuilder.toString();
@@ -287,7 +287,7 @@ public class TimerUtils {
 
     public static Long getValidFromToTime(String date) {
         try {
-            return new SimpleDateFormat(ObjectFactory.getAppProperties().getDateFormat()).parse(date)
+            return new SimpleDateFormat(ObjectManager.getAppProperties().getDateFormat()).parse(date)
                     .getTime();
         } catch (ParseException ex) {
             _logger.error("exception, ", ex);

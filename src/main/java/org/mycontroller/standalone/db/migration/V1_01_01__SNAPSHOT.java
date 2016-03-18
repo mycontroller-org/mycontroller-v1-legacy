@@ -44,7 +44,7 @@ public class V1_01_01__SNAPSHOT extends MigrationBase implements JdbcMigration {
              DaoUtils.loadAllDao();
          }
          //Load properties from database
-         ObjectFactory.getAppProperties().loadPropertiesFromDb();*/
+         ObjectManager.getAppProperties().loadPropertiesFromDb();*/
 
         updateDao();
 

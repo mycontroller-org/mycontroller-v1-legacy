@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.api.jaxrs.mapper.ApiError;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
@@ -117,7 +117,7 @@ public class NodeHandler extends AccessEngine {
         if (availabilityCheck != null && availabilityCheck.getId() != node.getId()) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A node available with this EUI."));
         }
-        ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).updateNode(node);
+        ObjectManager.getIActionEngine(node.getGateway().getNetworkType()).updateNode(node);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
@@ -130,7 +130,7 @@ public class NodeHandler extends AccessEngine {
         }
         Gateway gateway = DaoUtils.getGatewayDao().getById(node.getGateway().getId());
         node.setGateway(gateway);
-        ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).addNode(node);
+        ObjectManager.getIActionEngine(node.getGateway().getNetworkType()).addNode(node);
         return RestUtils.getResponse(Status.CREATED);
     }
 
@@ -141,7 +141,7 @@ public class NodeHandler extends AccessEngine {
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
-                ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).rebootNode(node);
+                ObjectManager.getIActionEngine(node.getGateway().getNetworkType()).rebootNode(node);
             }
             return RestUtils.getResponse(Status.OK);
         } else {
@@ -158,7 +158,7 @@ public class NodeHandler extends AccessEngine {
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
                 if (node.getFirmware() != null) {
-                    ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).uploadFirmware(node);
+                    ObjectManager.getIActionEngine(node.getGateway().getNetworkType()).uploadFirmware(node);
                 }
             }
             return RestUtils.getResponse(Status.OK);
@@ -175,7 +175,7 @@ public class NodeHandler extends AccessEngine {
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
-                ObjectFactory.getIActionEngine(node.getGateway().getNetworkType()).eraseConfiguration(node);
+                ObjectManager.getIActionEngine(node.getGateway().getNetworkType()).eraseConfiguration(node);
             }
             return RestUtils.getResponse(Status.OK);
 

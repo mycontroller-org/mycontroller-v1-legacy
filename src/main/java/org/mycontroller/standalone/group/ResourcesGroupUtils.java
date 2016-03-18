@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.PayloadOperation;
@@ -85,7 +85,7 @@ public class ResourcesGroupUtils {
             if (resourceModel.getResourceType() == RESOURCE_TYPE.GATEWAY) {
                 GatewayUtils.executeGatewayOperation(resourceModel, operation);
             } else {
-                ObjectFactory.getIActionEngine(resourceModel.getNetworkType())
+                ObjectManager.getIActionEngine(resourceModel.getNetworkType())
                         .executeSendPayload(resourceModel, operation);
             }
         }

@@ -18,7 +18,7 @@ package org.mycontroller.standalone.fwpayload;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -45,7 +45,7 @@ public class ExecuteForwardPayload implements Runnable {
         _logger.debug("Sensor:[{}], Details of ForwardPayload:[{}]", sensor, forwardPayload);
         switch (forwardPayload.getDestination().getSensor().getNode().getGateway().getNetworkType()) {
             case MY_SENSORS:
-                ObjectFactory.getIActionEngine(NETWORK_TYPE.MY_SENSORS).executeForwardPayload(forwardPayload,
+                ObjectManager.getIActionEngine(NETWORK_TYPE.MY_SENSORS).executeForwardPayload(forwardPayload,
                         sensorVariable.getValue());
                 break;
 

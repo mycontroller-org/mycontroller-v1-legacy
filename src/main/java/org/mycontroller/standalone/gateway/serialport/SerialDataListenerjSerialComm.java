@@ -15,7 +15,7 @@
  */
 package org.mycontroller.standalone.gateway.serialport;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.gateway.GatewaySerial;
@@ -62,7 +62,7 @@ public class SerialDataListenerjSerialComm implements SerialPortDataListener {
                     String toProcess = message.toString();
                     _logger.debug("Received a message:[{}]", toProcess);
                     //Send Message to message factory
-                    ObjectFactory.getRawMessageQueue().putMessage(new RawMessage(gateway.getId(), toProcess));
+                    ObjectManager.getRawMessageQueue().putMessage(new RawMessage(gateway.getId(), toProcess));
                     message.setLength(0);
                 } else if (b != SerialPortCommon.MESSAGE_SPLITTER) {
                     _logger.trace("Received a char:[{}]", ((char) b));

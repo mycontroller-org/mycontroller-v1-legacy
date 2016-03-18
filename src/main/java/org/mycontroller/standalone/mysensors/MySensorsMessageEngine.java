@@ -22,7 +22,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.*;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE;
@@ -31,10 +31,7 @@ import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.MYCMessages.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.MYCMessages.PAYLOAD_TYPE;
-import org.mycontroller.standalone.MYCMessages;
-import org.mycontroller.standalone.NodeIdException;
-import org.mycontroller.standalone.MycUtils;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.alarm.AlarmUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
@@ -219,7 +216,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 mySensorsRawMessage.setPayload(String.valueOf(localTime / 1000));
                 mySensorsRawMessage.setTxMessage(true);
                 _logger.debug("Time Message:[{}]", mySensorsRawMessage);
-                ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+                ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
                 _logger.debug("Time request resolved.");
                 break;
             case I_VERSION:
@@ -233,7 +230,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                     mySensorsRawMessage.setPayload(nodeId);
                     mySensorsRawMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_ID_RESPONSE.ordinal());
                     mySensorsRawMessage.setTxMessage(true);
-                    ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+                    ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
                     _logger.debug("New Id[{}] sent to node", nodeId);
                 } catch (NodeIdException ex) {
                     _logger.error("Unable to generate new node Id,", ex);
@@ -257,7 +254,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 }
                 mySensorsRawMessage.setPayload(MySensorsUtils.getMetricType());
                 mySensorsRawMessage.setTxMessage(true);
-                ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+                ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
                 _logger.debug("Configuration sent as follow[M/I]?:{}", mySensorsRawMessage.getPayload());
                 break;
             case I_LOG_MESSAGE:
@@ -444,7 +441,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
             mySensorsRawMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.ordinal());
             mySensorsRawMessage.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array())
                     + builder.toString());
-            ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+            ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
 
@@ -485,9 +482,9 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                 firmware = DaoUtils.getFirmwareDao().getById(node.getFirmware().getId());
                 _logger.debug("Firmware selected based on node configuration...");
             } else if (firmwareConfigRequest.getType() == 65535 && firmwareConfigRequest.getVersion() == 65535) {
-                if (ObjectFactory.getAppProperties().getMySensorsSettings().getDefaultFirmware() != null) {
+                if (ObjectManager.getAppProperties().getMySensorsSettings().getDefaultFirmware() != null) {
                     firmware = DaoUtils.getFirmwareDao().getById(
-                            ObjectFactory.getAppProperties().getMySensorsSettings().getDefaultFirmware());
+                            ObjectManager.getAppProperties().getMySensorsSettings().getDefaultFirmware());
                 } else {
                     _logger.warn("There is no default firmware set!");
                 }
@@ -510,11 +507,11 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
                     return;
                 }
             } else if (firmware == null) {//Non bootloader command
-                if (ObjectFactory.getAppProperties().getMySensorsSettings().getEnbaledDefaultOnNoFirmware()) {
+                if (ObjectManager.getAppProperties().getMySensorsSettings().getEnbaledDefaultOnNoFirmware()) {
                     _logger.debug("If requested firmware is not available, redirect to default firmware is set, Checking the default firmware");
-                    if (ObjectFactory.getAppProperties().getMySensorsSettings().getDefaultFirmware() != null) {
+                    if (ObjectManager.getAppProperties().getMySensorsSettings().getDefaultFirmware() != null) {
                         firmware = DaoUtils.getFirmwareDao().getById(
-                                ObjectFactory.getAppProperties().getMySensorsSettings().getDefaultFirmware());
+                                ObjectManager.getAppProperties().getMySensorsSettings().getDefaultFirmware());
                         _logger.debug("Default firmware:[{}]", firmware.getFirmwareName());
                     } else {
                         _logger.warn("There is no default firmware set!");
@@ -539,7 +536,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
             mySensorsRawMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.ordinal());
             mySensorsRawMessage
                     .setPayload(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase());
-            ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+            ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
             _logger.debug("FirmwareConfigRequest:[{}]", firmwareConfigRequest);
             _logger.debug("FirmwareConfigResponse:[{}]", firmwareConfigResponse);
         } catch (DecoderException ex) {
@@ -561,7 +558,7 @@ public class MySensorsMessageEngine implements IMessageProcessEngine {
             mySensorsRawMessage.setMessageType(MESSAGE_TYPE.C_SET.ordinal());
             mySensorsRawMessage.setAck(0);
             mySensorsRawMessage.setPayload(sensorVariable.getValue());
-            ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+            ObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
             _logger.debug("Request processed! Message Sent: {}", mySensorsRawMessage);
         } else {
             //If sensorVariable not available create new one.

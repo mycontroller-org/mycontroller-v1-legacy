@@ -18,7 +18,7 @@ package org.mycontroller.standalone.email;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,15 +47,15 @@ public class EmailUtils {
 
     public static void initializeEmail() throws EmailException {
         email = new HtmlEmail();
-        email.setHostName(ObjectFactory.getAppProperties().getEmailSettings().getSmtpHost());
-        email.setSmtpPort(ObjectFactory.getAppProperties().getEmailSettings().getSmtpPort());
-        if (ObjectFactory.getAppProperties().getEmailSettings().getSmtpUsername() != null
-                && ObjectFactory.getAppProperties().getEmailSettings().getSmtpUsername().length() > 0) {
-            email.setAuthenticator(new DefaultAuthenticator(ObjectFactory.getAppProperties().getEmailSettings()
+        email.setHostName(ObjectManager.getAppProperties().getEmailSettings().getSmtpHost());
+        email.setSmtpPort(ObjectManager.getAppProperties().getEmailSettings().getSmtpPort());
+        if (ObjectManager.getAppProperties().getEmailSettings().getSmtpUsername() != null
+                && ObjectManager.getAppProperties().getEmailSettings().getSmtpUsername().length() > 0) {
+            email.setAuthenticator(new DefaultAuthenticator(ObjectManager.getAppProperties().getEmailSettings()
                     .getSmtpUsername(),
-                    ObjectFactory.getAppProperties().getEmailSettings().getSmtpPassword()));
+                    ObjectManager.getAppProperties().getEmailSettings().getSmtpPassword()));
         }
-        email.setSSLOnConnect(ObjectFactory.getAppProperties().getEmailSettings().getEnableSsl());
-        email.setFrom(ObjectFactory.getAppProperties().getEmailSettings().getFromAddress());
+        email.setSSLOnConnect(ObjectManager.getAppProperties().getEmailSettings().getEnableSsl());
+        email.setFrom(ObjectManager.getAppProperties().getEmailSettings().getFromAddress());
     }
 }

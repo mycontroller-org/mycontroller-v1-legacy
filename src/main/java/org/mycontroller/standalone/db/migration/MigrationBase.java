@@ -17,7 +17,7 @@ package org.mycontroller.standalone.db.migration;
 
 import java.sql.SQLException;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class MigrationBase {
         }
 
         //Load properties from database
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        ObjectManager.getAppProperties().loadPropertiesFromDb();
     }
 
     protected boolean hasColumn(String tableName, String columnName) throws SQLException {

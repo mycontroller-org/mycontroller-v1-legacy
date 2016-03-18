@@ -70,7 +70,7 @@ public class V1_01__Initial_Configuration extends MigrationBase implements JdbcM
         }
 
         //Load properties from database
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();*/
+        ObjectManager.getAppProperties().loadPropertiesFromDb();*/
 
         updateDao();
 

@@ -91,7 +91,7 @@ public class StartApp {
     public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException {
         start = System.currentTimeMillis();
         loadInitialProperties();
-        _logger.debug("App Properties: {}", ObjectFactory.getAppProperties().toString());
+        _logger.debug("App Properties: {}", ObjectManager.getAppProperties().toString());
         _logger.debug("Operating System detail:[os:{},arch:{},version:{}]",
                 AppProperties.getOsName(), AppProperties.getOsArch(), AppProperties.getOsVersion());
         startServices();
@@ -108,7 +108,7 @@ public class StartApp {
             //DaoUtils.getAlarmDao().disableAllTriggered();
 
             //Load IActionEngines
-            ObjectFactory.addIActionEngine(NETWORK_TYPE.MY_SENSORS, new MySensorsIActionEngine());
+            ObjectManager.addIActionEngine(NETWORK_TYPE.MY_SENSORS, new MySensorsIActionEngine());
 
         } catch (Exception ex) {
             _logger.error("Failed to update sunrise/sunset time", ex);
@@ -169,24 +169,24 @@ public class StartApp {
 
     private static void startHTTPWebServer() {
         //Check HTTPS enabled?
-        if (ObjectFactory.getAppProperties().isWebHttpsEnabled()) {
+        if (ObjectManager.getAppProperties().isWebHttpsEnabled()) {
             // Set up SSL connections on server
-            server.setSSLPort(ObjectFactory.getAppProperties().getWebHttpPort());
-            server.setSSLKeyStoreFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile());
-            server.setSSLKeyStorePass(ObjectFactory.getAppProperties().getWebSslKeystorePassword());
-            server.setSSLKeyStoreType(ObjectFactory.getAppProperties().getWebSslKeystoreType());
+            server.setSSLPort(ObjectManager.getAppProperties().getWebHttpPort());
+            server.setSSLKeyStoreFile(ObjectManager.getAppProperties().getWebSslKeystoreFile());
+            server.setSSLKeyStorePass(ObjectManager.getAppProperties().getWebSslKeystorePassword());
+            server.setSSLKeyStoreType(ObjectManager.getAppProperties().getWebSslKeystoreType());
         } else {
             //Set http communication port
-            server.setPort(ObjectFactory.getAppProperties().getWebHttpPort());
+            server.setPort(ObjectManager.getAppProperties().getWebHttpPort());
         }
 
-        if (ObjectFactory.getAppProperties().getWebBindAddress() != null) {
-            server.setBindAddress(ObjectFactory.getAppProperties().getWebBindAddress());
+        if (ObjectManager.getAppProperties().getWebBindAddress() != null) {
+            server.setBindAddress(ObjectManager.getAppProperties().getWebBindAddress());
         }
 
         //Deploy RestEasy with TJWS
         server.setDeployment(getResteasyDeployment());
-        server.addFileMapping("/", new File(ObjectFactory.getAppProperties().getWebFileLocation()));
+        server.addFileMapping("/", new File(ObjectManager.getAppProperties().getWebFileLocation()));
 
         //Enable Authentication
         server.setSecurityDomain(new BasicAthenticationSecurityDomain());
@@ -197,8 +197,8 @@ public class StartApp {
         server.start();
 
         _logger.info("TJWS server started successfully, HTTPS Enabled?:{}, HTTP(S) Port: [{}]",
-                ObjectFactory.getAppProperties().isWebHttpsEnabled(),
-                ObjectFactory.getAppProperties().getWebHttpPort());
+                ObjectManager.getAppProperties().isWebHttpsEnabled(),
+                ObjectManager.getAppProperties().getWebHttpPort());
     }
 
     private static void stopHTTPWebServer() {
@@ -233,12 +233,12 @@ public class StartApp {
         DataBaseUtils.loadDatabase();
 
         //Set to locale actual
-        MycUtils.updateLocale(MC_LANGUAGE.fromString(ObjectFactory.getAppProperties().getControllerSettings()
+        MycUtils.updateLocale(MC_LANGUAGE.fromString(ObjectManager.getAppProperties().getControllerSettings()
                 .getLanguage()));
 
         //Start message Monitor Thread
         //Create RawMessageQueue, which is required for MessageMonitorThread
-        ObjectFactory.setRawMessageQueue(new RawMessageQueue());
+        ObjectManager.setRawMessageQueue(new RawMessageQueue());
         //Create new thread to monitor received logs
         MessageMonitorThread messageMonitorThread = new MessageMonitorThread();
         Thread thread = new Thread(messageMonitorThread);
@@ -279,7 +279,7 @@ public class StartApp {
         DataBaseUtils.stop();
         _logger.debug("All services stopped.");
         //Remove references
-        ObjectFactory.clearAllReferences();
+        ObjectManager.clearAllReferences();
     }
 
     public static boolean loadInitialProperties() {
@@ -294,7 +294,7 @@ public class StartApp {
                 properties.load(new FileReader(propertiesFile));
             }
             AppProperties appProperties = new AppProperties(properties);
-            ObjectFactory.setAppProperties(appProperties);
+            ObjectManager.setAppProperties(appProperties);
             _logger.debug("Properties are loaded successfuly...");
             return true;
         } catch (IOException ex) {

@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.api.jaxrs.mapper.Query;
 import org.mycontroller.standalone.api.jaxrs.mapper.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -133,7 +133,7 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
                     ids.add(roleNodeMap.getNode().getId());
                 }
             }
-            if (ObjectFactory.getAppProperties().getControllerSettings().getGrantAccessToChildResources()) {
+            if (ObjectManager.getAppProperties().getControllerSettings().getGrantAccessToChildResources()) {
                 ids.addAll(DaoUtils.getNodeDao().getNodeIdsByGatewayIds(getGatewayIds(userId)));
             }
         } catch (SQLException ex) {
@@ -158,7 +158,7 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
                     ids.add(roleSensorMap.getSensor().getId());
                 }
             }
-            if (ObjectFactory.getAppProperties().getControllerSettings().getGrantAccessToChildResources()) {
+            if (ObjectManager.getAppProperties().getControllerSettings().getGrantAccessToChildResources()) {
                 ids.addAll(DaoUtils.getSensorDao().getSensorIdsByNodeIds(getNodeIds(userId)));
             }
         } catch (SQLException ex) {

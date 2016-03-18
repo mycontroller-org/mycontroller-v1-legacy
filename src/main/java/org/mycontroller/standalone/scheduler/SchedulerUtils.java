@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.ObjectManager;
 import org.mycontroller.standalone.TIME_REF;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SystemJob;
@@ -307,7 +307,7 @@ public class SchedulerUtils {
                 NodeAliveStatusJob.TRIGGER_NAME,
                 NodeAliveStatusJob.NAME,
                 -1,
-                ObjectFactory.getAppProperties().getControllerSettings().getAliveCheckInterval(),
+                ObjectManager.getAppProperties().getControllerSettings().getAliveCheckInterval(),
                 //Start this job after 10 seconds
                 new Date(System.currentTimeMillis() + (TIME_REF.ONE_SECOND * 10)),
                 null);
