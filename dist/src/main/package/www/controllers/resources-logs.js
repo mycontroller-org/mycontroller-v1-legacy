@@ -16,7 +16,7 @@
  */
 myControllerModule.controller('ResourcesLogsController', function(alertService,
 $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams, mchelper, CommonServices, $interval) {
-  
+
   //GUI page settings
   $scope.headerStringList = $filter('translate')('RESOURCES_LOGS_DETAIL');
   $scope.noItemsSystemMsg = $filter('translate')('NO_LOGS_AVAILABLE');
@@ -25,29 +25,29 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
   $scope.itemsPerPage = mchelper.userSettings.resourcesLogsItemsPerPage;
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
   };
-  
-  
+
+
   if($stateParams.resourceType){
     $scope.query.resourceType = $stateParams.resourceType;
     if($stateParams.resourceId){
       $scope.query.resourceId = $stateParams.resourceId;
     }
   }
-  
+
 
   //Stop if an request sent already
-  var updateInprogress = false; 
+  var updateInprogress = false;
   //get all items
   $scope.getAllItems = function(){
     if(updateInprogress){
@@ -76,7 +76,7 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -87,7 +87,7 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -129,8 +129,8 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
-  
+
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -173,7 +173,7 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
     onSortChange: sortChange,
     isAscending: false,
   };
-  
+
   //Update items per page
   $scope.updateItemsPerPage = function(itemsPerPage){
     mchelper.userSettings.resourcesLogsItemsPerPage = itemsPerPage;
@@ -181,7 +181,7 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
     CommonServices.saveMchelper(mchelper);
     $scope.getAllItems();
   };
-  
+
   //Delete item(s)
   $scope.delete = function (size) {
     var modalInstance = $uibModal.open({
@@ -199,8 +199,8 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
-    }), 
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -212,18 +212,18 @@ $scope, $filter, ResourcesLogsFactory, SettingsFactory, $uibModal, $stateParams,
 
   // global page refresh
   var promise = $interval(updatePage, mchelper.cfg.globalPageRefreshTime);
-  
+
   // cancel interval on scope destroy
   $scope.$on('$destroy', function(){
     $interval.cancel(promise);
   });
-  
+
 });
 
 //purge resources logs
 myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, CommonServices, alertService, ResourcesLogsFactory, mchelper, $filter, TypesFactory) {
   $scope.item = {};
-  
+
   //GUI page settings
   $scope.headerStringAdd = $filter('translate')('PURGE_RESOURCES_LOGS');
   $scope.cancelButtonState = "resourcesLogsList"; //Cancel button state
@@ -232,33 +232,33 @@ myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, 
   $scope.savingButtonName = $filter('translate')('PURGING');
   $scope.saveButtonTooltip = $filter('translate')('PURGE_WARNING');
   //$scope.isSettingChange = false;
-  
+
   //Pre load
   $scope.messageTypes = TypesFactory.getResourceLogsMessageTypes();
   $scope.logDirections = TypesFactory.getResourceLogsLogDirections();
   $scope.logLevels = TypesFactory.getResourceLogsLogLevels();
-    
+
   $scope.resourceTypes = TypesFactory.getResourceTypes();
   $scope.resourcesLogs = {};
-  
-  
+
+
   //Get resources
   $scope.getResources = function(resourceType){
     return CommonServices.getResources(resourceType);
   }
-  
+
   //Convert as display string
   $scope.getDateTimeDisplayFormat = function (newDate) {
     return $filter('date')(newDate, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
   };
-  
+
   //Save data - here it's purge
   $scope.save = function(){
     //Update validity from/to
     if($scope.purgeBefore){
       $scope.resourcesLogs.timestamp = $scope.purgeBefore.getTime();
     }
-    
+
     $scope.saveProgress = true;
     ResourcesLogsFactory.purge($scope.resourcesLogs,function(response) {
       alertService.success($filter('translate')('PURGE_DONE_SUCCESSFULLY'));

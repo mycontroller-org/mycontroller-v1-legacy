@@ -318,8 +318,8 @@ input.mc-color-steel-blue{
 
 
 
-/* on angular-patternfly upgrade from 2.x to 3.x introduced issue on sensors-action page. 
- * To overcome this issue copied style from old version. 
+/* on angular-patternfly upgrade from 2.x to 3.x introduced issue on sensors-action page.
+ * To overcome this issue copied style from old version.
  * following style used only on sensors-action page.
  * */
 .data-list-pf {
@@ -432,31 +432,31 @@ input.mc-color-steel-blue{
 
 
 .mc-icon{
-  font-size:15px; 
+  font-size:15px;
   vertical-align: middle;
   margin-right: 5px;
 }
 
 .mc-icon{
-  font-size:100%; 
+  font-size:100%;
   vertical-align: middle;
   margin-right: 5px;
 }
 
 .mc-icon-md-1{
-  font-size:110%; 
+  font-size:110%;
   vertical-align: middle;
   margin-right: 5px;
 }
 
 .mc-icon-md-3{
-  font-size:130%; 
+  font-size:130%;
   vertical-align: middle;
   margin-right: 5px;
 }
 
 .mc-icon-lg{
-  font-size:150%; 
+  font-size:150%;
   vertical-align: middle;
   margin-right: 5px;
 }

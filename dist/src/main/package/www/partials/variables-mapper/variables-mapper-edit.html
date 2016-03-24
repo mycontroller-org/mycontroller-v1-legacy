@@ -16,28 +16,28 @@
 
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="sensorVariableTypes.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="sensorVariableTypes.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
-  
+
     <div>
       <form class="form-horizontal">
         <div class="col-md-4">
-          
+
           <div class="form-group">
             <label class="col-md-3 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-md-9">
               <label>{{item.displayName}}</label>
             </div>
           </div>
-          
+
           <div class="form-group">
             <label class="col-md-3 control-label">{{ 'VARIABLE_TYPES' | translate }}</label>
             <div class="col-md-9">
@@ -46,10 +46,10 @@
               </select>
             </div>
           </div>
-  
+
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>
-  
+
         </div>
       </form>
     </div>

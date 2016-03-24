@@ -16,7 +16,7 @@
  */
 myControllerModule.controller('ChartsController', function($scope, $stateParams, MetricsFactory,
   mchelper, $filter, SettingsFactory, TypesFactory, SensorsFactory, displayRestError, FileSaver, Blob, $filter) {
-    
+
   //Get Chart Interpolate Type
   $scope.interpolateType = SettingsFactory.get({key_:'graph_interpolate_type'});
   $scope.hourFormat = 'hh';
@@ -27,27 +27,27 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
         $scope.hourFormatSufix = '';
       }
     },function(error){
-      displayRestError.display(error);            
+      displayRestError.display(error);
     });
-  
+
   $scope.sensor = SensorsFactory.getSensorByRefId({"sensorRefId":$stateParams.sensorId}, function(response) {
     },function(error){
-      displayRestError.display(error);            
+      displayRestError.display(error);
     });
   //config, language, user, etc.,
-  $scope.mchelper = mchelper;  
+  $scope.mchelper = mchelper;
   $scope.variableType = {};
-  
+
   $scope.variableTypes = TypesFactory.getGraphSensorVariableTypes({id:$stateParams.sensorId}, function(response) {
     if(response.length == 1){
         $scope.variableTypeId = response[0].id;
         $scope.updateSensorVariableType($scope.variableTypeId);
-    }      
+    }
   },function(error){
-    displayRestError.display(error);            
+    displayRestError.display(error);
   });
-  
-  
+
+
   //Download csv file for metrics
   $scope.downloadCSV = function(variableTypeId, aggregationType){
     MetricsFactory.getCsvFile({"variableTypeId":variableTypeId, "aggregationType": aggregationType},function(response) {
@@ -58,18 +58,18 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
         };
         FileSaver.saveAs(config);
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       });
   };
- 
-  
+
+
   //Update Sensor Variable Type
   $scope.updateSensorVariableType = function(variableTypeId){
     if(variableTypeId == null){
       return;
-    }  
+    }
     $scope.variableType = SensorsFactory.getSensorValue({sensorId:variableTypeId});
-  
+
     //http://krispo.github.io/angular-nvd3
     //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
     var chartOptions = {
@@ -85,7 +85,7 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
                 left: 65
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
-          
+
             x: function(d){return d[0];},
             y: function(d){return d[1];},
             useVoronoi: false,
@@ -145,19 +145,19 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
           var textDayData = $filter('translate')('CHART.TITLE_BINARY_ALL_DATA');
         }
         //http://www.d3noob.org/2013/01/smoothing-out-lines-in-d3js.html
-     
+
         chartOptions.chart.type = 'lineChart'; //workaround to suppress 'type undefined error'
         chartOptions.chart.interpolate = chartInterpolate;
         chartOptions.chart.color = chartLineColor;
         chartOptions.chart.yAxis.tickFormat = function(d){return d3.format(yAxisD3Format)(d) + ' ' + $scope.variableType.unit ;};
-        
+
         if($scope.variableType.metricType == 1){
           //Chart options for one Minute sample interval data
           $scope.chartRawDataOptions = chartOptions;
           $scope.chartRawDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatRawData, mchelper.cfg.timezone)};
           $scope.chartRawDataOptions.title.text = textRawData;
         }
-      
+
         //Chart options for one Minute sample interval data
         $scope.chartMinuteDataOptions = angular.copy(chartOptions);
         $scope.chartMinuteDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatMinuteData, mchelper.cfg.timezone)};
@@ -167,21 +167,21 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
         $scope.chart5MinutesDataOptions = angular.copy(chartOptions);
         $scope.chart5MinutesDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormat5MinutesData, mchelper.cfg.timezone)};
         $scope.chart5MinutesDataOptions.title.text = text5MinutesData;
-        
+
         //Chart options for one Hour sample interval data
         $scope.chartHourDataOptions = angular.copy(chartOptions);
         $scope.chartHourDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatHourData, mchelper.cfg.timezone)};
         $scope.chartHourDataOptions.title.text = textHourData;
-        
+
         //Chart options for one Day sample interval data
         $scope.chartDayDataOptions = angular.copy(chartOptions);
         $scope.chartDayDataOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, dateFormatDayData, mchelper.cfg.timezone)};
         $scope.chartDayDataOptions.title.text = textDayData;
-        
+
         //Get list of Metrics types
         var hour = 60*60*1000;
         if($scope.variableType.metricType == 1){
-          $scope.metricsDataRaw = MetricsFactory.getRawData({"variableTypeId":variableType.id, "lastNmilliSeconds": hour});          
+          $scope.metricsDataRaw = MetricsFactory.getRawData({"variableTypeId":variableType.id, "lastNmilliSeconds": hour});
         }
         $scope.metricsDataMinute = MetricsFactory.getOneMinuteData({"variableTypeId":variableType.id, "lastNmilliSeconds": hour*6});
         $scope.metricsData5Minutes = MetricsFactory.getFiveMinutesData({"variableTypeId":variableType.id, "lastNmilliSeconds": hour*24});
@@ -190,5 +190,5 @@ myControllerModule.controller('ChartsController', function($scope, $stateParams,
       });
     });
   };
-        
+
 });

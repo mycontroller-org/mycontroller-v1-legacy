@@ -25,12 +25,12 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
@@ -43,7 +43,7 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
     },function(error){
-      displayRestError.display(error);            
+      displayRestError.display(error);
     });
   }
 
@@ -57,7 +57,7 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -68,7 +68,7 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -95,7 +95,7 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -122,15 +122,15 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     ],
     onSortChange: sortChange
   };
-  
-  
+
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("settingsRolesAddEdit", {'id':$scope.itemIds[0]});
     }
   };
-  
+
   //Delete item(s)
   $scope.delete = function (size) {
     var modalInstance = $uibModal.open({
@@ -147,21 +147,21 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-  
+
 });
 
 //Add Edit item
 myControllerModule.controller('RolesControllerAddEdit', function ($scope, $stateParams, $state, SecurityFactory, TypesFactory, mchelper, alertService, displayRestError, $filter) {
   $scope.mchelper = mchelper;
   $scope.item = {};
-  
+
   if($stateParams.id){
     SecurityFactory.getRole({"id":$stateParams.id},function(response) {
         $scope.item = response;
@@ -177,7 +177,7 @@ myControllerModule.controller('RolesControllerAddEdit', function ($scope, $state
   $scope.cancelButtonState = "settingsRolesList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   //Pre load
   $scope.nodes = TypesFactory.getNodes();
   $scope.sensors = TypesFactory.getSensors();

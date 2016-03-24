@@ -17,20 +17,20 @@
 -->
 <div class="container mc-top-space-header">
 
-  <!-- Loading icon disaplay --> 
+  <!-- Loading icon disaplay -->
   <div ng-hide="unitsSettings.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="unitsSettings.$resolved"> <!-- Main Message -->
-    
+
     <!-- Units -->
     <div class="col-md-12">
       <div class="card-pf">
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> {{ 'UNITS_METRICS_IMPERIAL' | translate }}</i></h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal">
-        
+
             <div ng-repeat="item in unitsSettings.variables">
               <div class="form-group">
                 <label class="col-sm-2 control-label">{{item.variable}}</label>

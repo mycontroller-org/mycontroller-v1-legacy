@@ -16,22 +16,22 @@
 
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="firmwareVersions.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
 
   <div ng-show="firmwareVersions.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
-  
+
     <div><!-- div-main -->
       <form class="form-horizontal" name="mcForm">
         <div class="col-md-5">
-          
+
           <!-- type -->
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
@@ -41,7 +41,7 @@
               </select>
             </div>
           </div>
-          
+
           <!-- version -->
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'VERSION' | translate }}</label>
@@ -51,7 +51,7 @@
               </select>
             </div>
           </div>
-          
+
           <!-- Firmware -->
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'FILE' | translate }}</label>
@@ -59,7 +59,7 @@
               <input type="file" class="form-control" id="firmware.file" on-read-file="displayFileContents(contents)" ng-accept="'.hex'" ng-model="file" >
             </div>
           </div>
-          
+
           <!-- Firmware list -->
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'CONTENT' | translate }}</label>
@@ -67,10 +67,10 @@
               <textarea  class="form-control" rows="21" style="resize:none" ng-model="item.fileString" readonly  required ></textarea>
             </div>
           </div>
-          
+
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>
-  
+
         </div>
       </form>
     </div><!-- div-main -->

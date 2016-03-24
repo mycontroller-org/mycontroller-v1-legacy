@@ -41,7 +41,7 @@
   </scm>
 
   <modules>
-    <module>modules/commons</module>
+    <module>modules/core</module>
     <module>dist</module>
   </modules>
 
@@ -219,6 +219,12 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- EasyRules - rule engine -->
+    <dependency>
+      <groupId>org.easyrules</groupId>
+      <artifactId>easyrules-core</artifactId>
     </dependency>
 
   </dependencies>

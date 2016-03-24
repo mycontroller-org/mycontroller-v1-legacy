@@ -16,7 +16,7 @@
 
 -->
 <div class="container-fluid row mc-top-space">
-  
+
   <!-- Loading icon disaplay -->
   <div ng-show="showLoadingMain">
     <div ng-include src="'partials/common-html/loading.html'"></div>
@@ -29,16 +29,16 @@
       <li class="pull-right"><span ng-disabled="dashboards.length >= mchelper.cfg.dashboardLimit" class="btn btn-primary mc-margin" style="margin-top:5px;" type="button" ng-click="createNewDashboad()">{{ 'NEW_DASHBOARD' | translate }}</span></li>
       <li class="pull-right"><span ng-disabled="dashboards.length == 1 && dId" class="btn btn-danger mc-margin" style="margin-top:5px;" type="button" ng-click="deleteDashboad()">{{ 'DELETE_DASHBOARD' | translate }}</span></li>
     </ul>
-    
-      <!-- Loading icon disaplay --> 
+
+      <!-- Loading icon disaplay -->
     <div ng-show="showLoading">
       <div ng-include src="'partials/common-html/loading.html'"></div>
     </div>
-    
+
     <div ng-hide="showLoading">
       <div ng-if="model" adf-dashboard name="{{model.name}}" collapsible="true" enableConfirmDelete="false" adf-model="model"></div>
     </div>
 
   </div>
-  
+
 </div>

@@ -16,14 +16,14 @@
 
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="queryResponse.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
@@ -47,7 +47,7 @@
             </ul>
           </div>
         </div>
-        
+
         <div class="btn-group" role="group">
           <a class="btn btn-primary" type="button" ui-sref="timersAddEdit">{{ 'ADD_TIMER' | translate }}</a>
         </div>
@@ -63,7 +63,7 @@
 
     <!-- Display No Items on system -->
     <div ng-include src="'partials/common-html/no-items-system.html'"></div>
-    
+
     <!-- Display When no data on table -->
     <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
 
@@ -74,10 +74,9 @@
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
           <th>{{ 'ENABLED' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
-          <th>{{ 'RESOURCE' | translate }}</th>
-          <th>{{ 'PAYLOAD' | translate }}</th>
           <th>{{ 'TYPE' | translate }}</th>
           <th>{{ 'VALIDITY' | translate }}</th>
+          <th>{{ 'OPERATIONS' | translate }}</th>
           <th>{{ 'LAST_FIRED' | translate }}</th>
         </thead>
         <tbody>
@@ -89,19 +88,18 @@
               <i ng-hide="item.enabled" class="text-danger fa fa-circle-o fa-lg" uib-tooltip="{{ 'DISABLED' | translate }}"></i>
             </td>
             <td>{{item.name}}</td>
-            <td ng-bind-html="item.resource | mcResourceRepresentation"></td>
-            <td>{{item.payloadFormatted}}</td>
             <td>{{item.timerDataString}}</td>
             <td>{{item.validityString}}</td>
+            <td>{{item.operations.join(', ')}}</td>
             <td>
-              <span uib-tooltip="{{item.lastFire.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.lastFire.inString  || 'Never'}}</span>
+              <span uib-tooltip="{{item.lastFire | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left" am-time-ago="item.lastFire"></span>
             </td>
           </tr>
         </tbody>
       </table>
       <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
     </div>
-    
+
   </div> <!-- Main Message -->
-  
+
 </div> <!-- Container-fluid -->

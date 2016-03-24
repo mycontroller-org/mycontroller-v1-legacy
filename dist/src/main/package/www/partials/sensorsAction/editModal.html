@@ -19,20 +19,20 @@
   <div class="modal-header">
     <div class="modal-title"><b>{{header}}</b></div>
   </div>
-  
+
   <div class="modal-body">
     <form class="form-horizontal form-group-sm" role="form" name="form">
-    
+
       <div class="form-group form-inline" ng-repeat="keyValue in keyValues">
         <label class="control-label col-sm-4">{{keyValue.key}}</label>
         <input style="width:320px" type="text" class="form-control" id="{{keyValue.key}}" placeholder="{{keyValue.type}}" ng-model="keyValue.value">
-      </div> 
-   
+      </div>
+
     </form>
-    
+
   <div class="modal-footer">
     <button class="btn btn-primary btn-xs" ng-click="edit()" ng-disabled="form.$invalid"><i class="fa fa-pencil"> {{ 'SYSTEM.UPDATE' | translate }}</i></button>
     <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
   </div>
-  
+
 </div>

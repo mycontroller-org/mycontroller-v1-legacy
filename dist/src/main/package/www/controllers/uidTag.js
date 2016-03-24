@@ -16,7 +16,7 @@
  */
 myControllerModule.controller('UidTagController', function(alertService,
 $scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayRestError, $filter) {
-  
+
   $scope.filteredList=[];
   $scope.orgList=[];
   $scope.config = {
@@ -29,14 +29,14 @@ $scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayR
   $scope.updateFilteredList = function() {
     $scope.filteredList = $filter("filter")($scope.orgList, $scope.query);
   };
-  
+
   // Call and Run function every second
   $scope.orgList = UidTagFactory.getAll(function(response) {
                     },function(error){
-                      displayRestError.display(error);            
+                      displayRestError.display(error);
                     });
   $scope.filteredList = $scope.orgList;
-  
+
   //Add new
   $scope.add = function (size) {
     var addModalInstance = $uibModal.open({
@@ -48,22 +48,22 @@ $scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayR
 
     addModalInstance.result.then(function (uidTag) {
       UidTagFactory.create(uidTag, function(response) {
-		alertService.success($filter('translate')('UID.TITLE_ADDED', uidTag));
+        alertService.success($filter('translate')('UID.TITLE_ADDED', uidTag));
         //Update display table
         $scope.orgList = UidTagFactory.getAll(function(response) {
         },function(error){
-          displayRestError.display(error);          
+          displayRestError.display(error);
         });
         $scope.filteredList = $scope.orgList;
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       });
-    }), 
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-    
+
   //Delete timer
   $scope.delete = function (uidTag, size) {
     var modalInstance = $uibModal.open({
@@ -76,17 +76,17 @@ $scope, $filter, TimersFactory, UidTagFactory, $uibModal, $stateParams, displayR
     });
     modalInstance.result.then(function (uidTag) {
       UidTagFactory.delete({id: uidTag.uid},function(response) {
-		alertService.success($filter('translate')('UID.TITLE_DELETED', uidTag));
+        alertService.success($filter('translate')('UID.TITLE_DELETED', uidTag));
         //Update display table
         $scope.orgList = UidTagFactory.getAll(function(response) {
         },function(error){
-          displayRestError.display(error);            
+          displayRestError.display(error);
         });
         $scope.filteredList = $scope.orgList;
       },function(error){
-        displayRestError.display(error);            
-      });    
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -101,7 +101,7 @@ myControllerModule.controller('UTMaddController', function ($scope, $modalInstan
   $scope.refreshSensors = function(nodeId){
       return TypesFactory.getSensors({id: nodeId});
   };
-  
+
   $scope.refreshVariableTypes = function(sensorRefId){
       return TypesFactory.getSensorVariableTypesBySensorRefId({id:sensorRefId});
   };

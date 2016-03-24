@@ -22,34 +22,34 @@
   </div>
 
   <div class="modal-body">
-   
+
     <form class="form-horizontal form-group-sm" role="form" name="form">
-      
+
       <div class="form-group form-inline">
         <label class="control-label col-sm-3" for="uidTag.uid">UID:</label>
         <input style="width:320px" type="text" class="form-control" id="uidTag.uid" placeholder="{{ 'UID.UNIQUE_IDENTIFICATION_NUMBER' | translate }}" ng-model="uidTag.uid" required>
-      </div>    
-      
+      </div>
+
       <div class="form-group form-inline">
         <label class="control-label col-sm-3">{{ 'ALARM.NODE' | translate }}:</label>
         <select style="width:158px" class="form-control" ng-options="node.id as node.displayName for node in nodes" ng-model="uidTag.sensor.node.id" ng-change="sensors = refreshSensors(uidTag.sensor.node.id)" required></select>
         <select style="width:158px" class="form-control" ng-options="sensor.id as sensor.displayName for sensor in sensors" ng-model="uidTag.sensor.id" ng-change="sendPayloadVariableTypes = refreshVariableTypes(uidTag.sensor.id)" required></select>
       </div>
-      
+
       <div class="form-group form-inline">
         <label class="control-label col-sm-3">{{ 'FIRMWARE.TYPE' | translate }}:</label>
-        <select style="width:320px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in sendPayloadVariableTypes | orderBy:'displayName'" 
+        <select style="width:320px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in sendPayloadVariableTypes | orderBy:'displayName'"
         ng-model="uidTag.variableType"></select>
       </div>
-  
+
     </form>
-    
+
     <div class="modal-footer">
       <button class="btn btn-primary btn-xs" ng-click="add()" ng-disabled="form.$invalid"><i class="fa fa-plus"> {{ 'SYSTEM.ADD' | translate }}</i></button>
       <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
     </div>
-    
+
   </div>
-  
+
 </div>
 

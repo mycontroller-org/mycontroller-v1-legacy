@@ -44,7 +44,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
   })
   .controller('mycSingleSensorGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory, TypesFactory, CommonServices){
     var mycSingleSensorGraph = this;
-    
+
     mycSingleSensorGraph.showLoading = true;
     mycSingleSensorGraph.showError = false;
     mycSingleSensorGraph.isSyncing = true;
@@ -52,7 +52,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
     $scope.tooltipEnabled = false;
     $scope.hideVariableName=true;
     $scope.cs = CommonServices;
-    
+
     mycSingleSensorGraph.chartOptions = {
         chart: {
             type: 'lineChart',
@@ -65,7 +65,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
                 left: 65
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
-            noData:"No data available.",          
+            noData:"No data available.",
             x: function(d){return d[0];},
             y: function(d){return d[1];},
             useVoronoi: false,
@@ -92,10 +92,10 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
             text: 'Title'
         }
     };
-    
+
     mycSingleSensorGraph.chartTimeFormat = mchelper.cfg.dateFormat;
     mycSingleSensorGraph.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, mycSingleSensorGraph.chartTimeFormat, mchelper.cfg.timezone)};
-    
+
     function updateChart(){
       mycSingleSensorGraph.isSyncing = true;
       MetricsFactory.getMetricsData({"variableId":config.variableId, "withMinMax":config.withMinMax, "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
@@ -124,7 +124,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
         }
       });
     }
-    
+
     function updateVariables(){
       if(mycSingleSensorGraph.isSyncing){
         return;
@@ -132,10 +132,10 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
         updateChart();
       }
     }
-    
+
     //load graph initially
     updateChart();
-    
+
     // refresh every second
     var promise = $interval(updateChart, config.refreshTime*1000);
 

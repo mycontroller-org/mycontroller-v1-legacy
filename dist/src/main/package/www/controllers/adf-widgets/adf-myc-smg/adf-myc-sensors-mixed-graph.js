@@ -45,11 +45,11 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
       });
   })
   .controller('mycSensorsMixedGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory){
-    var mycSensorsMixedGraph = this;    
+    var mycSensorsMixedGraph = this;
     mycSensorsMixedGraph.showLoading = true;
     mycSensorsMixedGraph.showError = false;
     mycSensorsMixedGraph.isSyncing = true;
-    
+
     mycSensorsMixedGraph.chartOptions = {
         chart: {
             type: 'multiChart',
@@ -64,13 +64,13 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
             color: d3.scale.category10().range(),
             duration: 500,
             noData: $filter('translate')('NO_DATA_AVAILABLE'),
-          
+
             //x: function(d,i){return d[0];},
             //y: function(d,i){return d[1];},
             clipEdge: false,
             useVoronoi: !config.useInteractiveGuideline,
             useInteractiveGuideline: config.useInteractiveGuideline,
-            
+
             xAxis: {
                 showMaxMin: false,
                 tickFormat: function(d) {
@@ -93,10 +93,10 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
             text: 'Title'
         }
     };
-    
+
     mycSensorsMixedGraph.chartTimeFormat = mchelper.cfg.dateFormat;
 
-    
+
     function updateChart(){
       mycSensorsMixedGraph.isSyncing = true;
       MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"multiChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
@@ -106,7 +106,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
           mycSensorsMixedGraph.chartTimeFormat = resource[0].timeFormat;
           mycSensorsMixedGraph.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, mycSensorsMixedGraph.chartTimeFormat, mchelper.cfg.timezone)};
           mycSensorsMixedGraph.chartOptions.chart.interpolate = config.chartInterpolate;
-          
+
           if(resource[0].unit === ''){
             mycSensorsMixedGraph.chartOptions.chart.yAxis1.tickFormat = function(d){return d3.format('.0f')(d);};
           }else{
@@ -117,7 +117,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
               mycSensorsMixedGraph.chartOptions.chart.yAxis1.tickFormat = function(d){return d3.format('.02f')(d)};
             }
           }
-          
+
           if(resource[0].unit2 === ''){
             mycSensorsMixedGraph.chartOptions.chart.yAxis2.tickFormat = function(d){return d3.format('.0f')(d);};
           }else{
@@ -135,7 +135,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
         }
       });
     }
-    
+
     function updateVariables(){
       if(mycSensorsMixedGraph.isSyncing){
         return;
@@ -143,10 +143,10 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
         updateChart();
       }
     }
-    
+
     //load graph initially
     updateChart();
-    
+
     // refresh every second
     var promise = $interval(updateChart, config.refreshTime*1000);
 
@@ -154,11 +154,11 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     $scope.$on('$destroy', function(){
       $interval.cancel(promise);
     });
-    
-    
+
+
   }).controller('mycSensorsMixedGraphEditController', function($scope, $interval, config, mchelper, $filter, TypesFactory, CommonServices){
     var mycSensorsMixedGraphEdit = this;
-    
+
     mycSensorsMixedGraphEdit.onVariableTypeChange = function(){
       if(config.variableType.length > 0){
         TypesFactory.getSensorVariables({"variableType":config.variableType}, function(response){
@@ -176,7 +176,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
         config.variableId = [];
       }
     };
-    
+
     //Pre load
     mycSensorsMixedGraphEdit.cs = CommonServices;
     //Load variable types

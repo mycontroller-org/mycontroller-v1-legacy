@@ -44,7 +44,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
       });
   })
   .controller('mycSensorsGroupedGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory, CommonServices){
-    var mycSensorsGroupedGraph = this;    
+    var mycSensorsGroupedGraph = this;
     mycSensorsGroupedGraph.showLoading = true;
     mycSensorsGroupedGraph.showError = false;
     mycSensorsGroupedGraph.isSyncing = true;
@@ -89,10 +89,10 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
             text: 'Title'
         }
     };
-    
+
     mycSensorsGroupedGraph.chartTimeFormat = mchelper.cfg.dateFormat;
 
-    
+
     function updateChart(){
       mycSensorsGroupedGraph.isSyncing = true;
       MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"lineChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
@@ -102,7 +102,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
           mycSensorsGroupedGraph.chartTimeFormat = resource[0].timeFormat;
           mycSensorsGroupedGraph.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, mycSensorsGroupedGraph.chartTimeFormat, mchelper.cfg.timezone)};
           mycSensorsGroupedGraph.chartOptions.chart.interpolate = resource[0].chartInterpolate;
-          
+
           if(resource[0].unit === ''){
             mycSensorsGroupedGraph.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.0f')(d);};
           }else{
@@ -120,7 +120,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
         }
       });
     }
-    
+
     function updateVariables(){
       if(mycSensorsGroupedGraph.isSyncing){
         return;
@@ -128,10 +128,10 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
         updateChart();
       }
     }
-    
+
     //load graph initially
     updateChart();
-    
+
     // refresh every second
     var promise = $interval(updateChart, config.refreshTime*1000);
 
@@ -139,12 +139,12 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
     $scope.$on('$destroy', function(){
       $interval.cancel(promise);
     });
-    
-    
+
+
   }).controller('mycSensorsGroupedGraphEditController', function($scope, $interval, config, mchelper, $filter, TypesFactory, CommonServices){
     var mycSensorsGroupedGraphEdit = this;
     mycSensorsGroupedGraphEdit.cs = CommonServices;
-    
+
     mycSensorsGroupedGraphEdit.onVariableTypeChange = function(){
       config.variableId = [];
       if(config.variableType){
@@ -153,7 +153,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
         mycSensorsGroupedGraphEdit.variables = {};
       }
     };
-    
+
     //Load variable types
     mycSensorsGroupedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes({"metricType":["Double","Binary"]});
     if(config.variableType){

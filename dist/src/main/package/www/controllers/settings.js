@@ -16,11 +16,11 @@
  */
 myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory,
   StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore, CommonServices) {
-  
+
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
   $scope.cs = CommonServices;
-  
+
   //editable settings
   $scope.editEnable = {};
   $scope.saveProgress = {};
@@ -29,7 +29,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.updateSettingsLocation = function(){
     $scope.locationSettings = SettingsFactory.getLocation();
   };
-  
+
   //settings MyController
   $scope.updateSettingsController = function(){
     SettingsFactory.getController(function(resource){
@@ -38,7 +38,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
       $scope.globalPageRefreshTime = $scope.controllerSettings.globalPageRefreshTime / 1000;
     });
   };
-  
+
   //Pre-load
   $scope.locationSettings = {};
   $scope.controllerSettings = {};
@@ -50,9 +50,9 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.updateSettingsController();
   $scope.aliveCheckMinutes = null;
   $scope.globalPageRefreshTime = null;
-   
+
   //Save functions
-  
+
   //Save location
   $scope.saveLocation = function(){
     $scope.saveProgress.location = true;
@@ -64,7 +64,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
         $scope.saveProgress.location = false;
       });
   };
-  
+
   //Save controller
   $scope.saveController = function(){
     $scope.saveProgress.controller = true;
@@ -84,25 +84,25 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
         displayRestError.display(error);
         $scope.saveProgress.controller = false;
       });
-  }; 
+  };
 
 });
 
 myControllerModule.controller('SettingsUnitsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper) {
-  
+
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
-  
+
   //editable settings
   $scope.editEnable = {};
   $scope.saveProgress = {};
-  
+
   //settings Units
   $scope.updateSettingsUnits = function(){
     $scope.unitsSettings = SettingsFactory.getUnits();
   };
-  
-  
+
+
   //Pre-load
   $scope.unitsSettings = {};
   $scope.updateSettingsUnits();
@@ -117,45 +117,45 @@ myControllerModule.controller('SettingsUnitsController', function(alertService, 
         displayRestError.display(error);
         $scope.saveProgress.units = false;
       });
-  }; 
+  };
 
 });
 
 myControllerModule.controller('SettingsNotificationsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper, CommonServices) {
-  
+
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
   $scope.cs = CommonServices;
-  
+
   //editable settings
   $scope.editEnable = {};
   $scope.saveProgress = {};
-  
+
   //settings Email
   $scope.updateSettingsEmail = function(){
     $scope.emailSettings = SettingsFactory.getEmail();
   };
-  
+
   //settings SMS
   $scope.updateSettingsSms = function(){
     $scope.smsSettings = SettingsFactory.getSms();
   };
-  
+
   //settings Pushbullet
   $scope.updateSettingsPushbullet = function(){
     $scope.pushbulletSettings = SettingsFactory.getPushbullet();
   };
-  
-  
-  
-  
+
+
+
+
   //Pre-load
   $scope.emailSettings = {};
   $scope.smsSettings = {};
   $scope.updateSettingsEmail();
   $scope.updateSettingsSms();
   $scope.updateSettingsPushbullet();
-   
+
   //Save email
   $scope.saveEmail = function(){
     $scope.saveProgress.email = true;
@@ -166,9 +166,9 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
         displayRestError.display(error);
         $scope.saveProgress.email = false;
       });
-  }; 
-   
-   
+  };
+
+
   //Save sms
   $scope.saveSms = function(){
     $scope.saveProgress.sms = true;
@@ -180,7 +180,7 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
         $scope.saveProgress.sms = false;
       });
   };
-  
+
   //Save pushbullet
   $scope.savePushbullet = function(){
     $scope.saveProgress.pushbullet = true;
@@ -198,15 +198,15 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
 });
 
 myControllerModule.controller('SettingsSystemMySensors', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, FirmwaresFactory, displayRestError, mchelper) {
-  
+
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
-  
+
   //editable settings
   $scope.editEnable = {};
   $scope.saveProgress = {};
 
- 
+
   //settings MySensors
   $scope.updateSettingsMySensors = function(){
     SettingsFactory.getMySensors(function(response){
@@ -215,7 +215,7 @@ myControllerModule.controller('SettingsSystemMySensors', function(alertService, 
         FirmwaresFactory.getFirmware({"refId": response.defaultFirmware},function(response){
           $scope.defaultFirmware = response.firmwareName;
         });
-      }      
+      }
     });
   };
 
@@ -241,15 +241,15 @@ myControllerModule.controller('SettingsSystemMySensors', function(alertService, 
 });
 
 myControllerModule.controller('SettingsMetricsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper, CommonServices,  $uibModal) {
-  
+
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
   $scope.cs = CommonServices;
-  
+
   //editable settings
   $scope.editEnable = {};
   $scope.saveProgress = {};
-  
+
   //settings Units
   $scope.updateSettingsMetrics = function(){
     SettingsFactory.getMetrics(function(response){
@@ -257,7 +257,7 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
       $scope.metricsSettings.defaultTimeRange = $scope.metricsSettings.defaultTimeRange.toString();
     });
   };
-  
+
   //Update Retention settings
   $scope.updateSettingsMetricsRetention = function(){
     SettingsFactory.getMetricsRetention(function(response) {
@@ -273,8 +273,8 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
         displayRestError.display(error);
       });
   }
-  
-  
+
+
   //Pre-load
   $scope.metricsSettings = {};
   $scope.updateSettingsMetricsRetention();
@@ -290,8 +290,8 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
         displayRestError.display(error);
         $scope.saveProgress.metrics = false;
       });
-  }; 
-  
+  };
+
   //Save retention settings
   $scope.saveMetricsRetention = function(){
     $scope.saveProgress.metricsRetention = true;
@@ -303,7 +303,7 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
     $scope.metricsRetention.retentionSixHours = CommonServices.getTimestamp($scope.rSixHours);
     $scope.metricsRetention.retentionTwelveHours = CommonServices.getTimestamp($scope.rTwelveHours);
     $scope.metricsRetention.retentionOneDay = CommonServices.getTimestamp($scope.rOneDay);
-    
+
     SettingsFactory.saveMetricsRetention($scope.metricsRetention,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.metricsRetention = false;
@@ -312,7 +312,7 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
         $scope.saveProgress.metricsRetention = false;
       });
   };
-  
+
     //Restore
   $scope.retentionWarning = function (size) {
     var addModalInstance = $uibModal.open({
@@ -323,7 +323,7 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
     });
     addModalInstance.result.then(function () {
       $scope.editEnable.metricsDataRetention = true;
-    }), 
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }

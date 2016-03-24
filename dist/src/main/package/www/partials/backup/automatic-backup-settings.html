@@ -16,21 +16,21 @@
 
 -->
 <div class="container mc-top-space-2x"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="item.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="item.$resolved"> <!-- Main Message -->
-    
+
     <!-- Email settings -->
     <div class="col-md-12">
       <div class="card-pf card-pf-accented">
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-database"></i> {{ 'BACKUP_SETTINGS' | translate }}</h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal" name="mcBackupSettingsForm">
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'BACKUP_LOCATION' | translate }}</label>
               <div class="col-sm-7">
@@ -38,19 +38,19 @@
                 <div ng-hide="editEnable.backupSettings">{{item.backupLocation}}</div>
               </div>
             </div>
-            
+
             <legend><small>{{ 'AUTOMATIC_BACKUP_SETTINGS' | translate }}</small></legend>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'STATUS' | translate }}</label>
               <div class="col-sm-5">
                 <input bs-switch ng-change="editEnable.backupSettings = true" ng-model="item.enabled" type="checkbox"
                       switch-animate="true" switch-handle-width="50px" switch-label-width="3px"
-                      switch-off-color="default" switch-on-color="primary" ng-true-value="true" 
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
                       ng-false-value="false" switch-on-text="{{ 'ON' | translate }}" switch-off-text="{{ 'OFF' | translate }}">
               </div>
             </div>
-            
+
             <div ng-if="item.enabled">
               <div class="form-group">
                 <label class="col-sm-2 control-label">{{ 'BACKUP_FILE_PREFIX' | translate }}</label>
@@ -60,7 +60,7 @@
                   <div ng-hide="editEnable.backupSettings">{{item.prefix}}</div>
                 </div>
               </div>
-              
+
               <div class="form-group">
                 <label class="col-sm-2 control-label">{{ 'BACKUP_EVERY' | translate }}</label>
                 <div class="col-sm-4" ng-show="editEnable.backupSettings">
@@ -79,7 +79,7 @@
                     </select>
                   </div>
               </div>
-              
+
               <div class="form-group">
                 <label class="col-sm-2 control-label">{{ 'RETAIN_MAX' | translate }}</label>
                 <div class="col-sm-7">
@@ -89,7 +89,7 @@
                 </div>
               </div>
             </div>
-            
+
           </form>
 
           <div class="form-actions text-right">

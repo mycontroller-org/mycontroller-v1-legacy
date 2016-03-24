@@ -43,7 +43,7 @@ angular.module('adf.widget.myc-dsi', [])
   })
   .controller('mycDisplayStaticImageController', function($scope, $interval, config, mchelper, $filter, StatusFactory, displayRestError, CommonServices){
     var mycDisplayStaticImage = this;
-    
+
     mycDisplayStaticImage.showLoading = true;
     mycDisplayStaticImage.isSyncing = true;
     mycDisplayStaticImage.fileData = {};
@@ -52,7 +52,7 @@ angular.module('adf.widget.myc-dsi', [])
     mycDisplayStaticImage.imageNameUrl = config.imageNameUrl;
     $scope.cs = CommonServices;
 
-    
+
     function loadImage(){
       mycDisplayStaticImage.isSyncing = true;
       if(config.locationType === "disk"){
@@ -82,7 +82,7 @@ angular.module('adf.widget.myc-dsi', [])
         }
       }
     };
-    
+
     function updateImage(){
       if(mycDisplayStaticImage.isSyncing){
         return;
@@ -90,14 +90,14 @@ angular.module('adf.widget.myc-dsi', [])
         loadImage();
       }
     }
-    
+
     //load image initially
     if(config.imageNameUrl && config.imageNameUrl.length > 0){
       loadImage();
     }else{
       mycDisplayStaticImage.showLoading = false;
     }
-    
+
     // refresh every second
     var promise = $interval(updateImage, config.refreshTime*1000);
 
@@ -110,7 +110,7 @@ angular.module('adf.widget.myc-dsi', [])
     mycDisplayStaticImageEdit.cs = CommonServices;
     mycDisplayStaticImageEdit.locationTypes = ["disk","url"];
     mycDisplayStaticImageEdit.filesList = [];
-    
+
     mycDisplayStaticImageEdit.onLocationTypeChange = function(){
       config.imageNameUrl = "";
       if(config.locationType === "disk"){
@@ -121,12 +121,12 @@ angular.module('adf.widget.myc-dsi', [])
         });
       }
     };
-    
+
     if(config.locationType === "disk"){
       var tmpImageUrl = config.imageNameUrl;
       mycDisplayStaticImageEdit.onLocationTypeChange();
       config.imageNameUrl = tmpImageUrl;
     }
-    
-    
+
+
   });

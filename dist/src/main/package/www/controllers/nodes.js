@@ -25,12 +25,12 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
@@ -43,7 +43,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
     },function(error){
-      displayRestError.display(error);            
+      displayRestError.display(error);
     });
   }
 
@@ -57,7 +57,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -177,8 +177,8 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
-    }), 
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -198,7 +198,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
         alertService.success($filter('translate')('FIRMWARE_UPLOAD_INITIATED'));
       },function(error){
         displayRestError.display(error);
-      });  
+      });
     }
   };
 
@@ -216,13 +216,13 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
         alertService.success($filter('translate')('REBOOT_INITIATED'));
       },function(error){
         displayRestError.display(error);
-      });      
-    }), 
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-  
+
   //Erase Configuration of Nodes
   $scope.eraseConfiguration = function (size) {
     var addModalInstance = $uibModal.open({
@@ -238,7 +238,7 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
       },function(error){
         displayRestError.display(error);
       });
-    }), 
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -261,7 +261,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
   $scope.gateways = TypesFactory.getGateways();
   $scope.nodeTypes = TypesFactory.getNodeTypes();
   $scope.firmwares = TypesFactory.getFirmwares();
-  
+
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = $filter('translate')('ADD_NODE');
@@ -269,8 +269,8 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
   $scope.cancelButtonState = "nodesList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
-  
+
+
   $scope.save = function(){
       $scope.saveProgress = true;
     if($stateParams.id){
@@ -300,10 +300,10 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
   $scope.mchelper = mchelper;
   $scope.item = {};
   $scope.headerStringList = $filter('translate')('NODE_DETAILS');
-  
+
   $scope.item = NodesFactory.get({"nodeId":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"NODE", "resourceId":$stateParams.id});
-  
+
   $scope.chartOptions = {
         chart: {
             type: 'lineChart',
@@ -317,7 +317,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
                 left: 65
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
-          
+
             x: function(d){return d[0];},
             y: function(d){return d[1];},
             useVoronoi: false,
@@ -344,7 +344,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
             text: 'Title'
         }
     };
-  
+
   //pre select, should be updated from server
   TypesFactory.getMetricsSettings(function(response){
     $scope.metricsSettings = response;
@@ -361,7 +361,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
   });
   $scope.chartTimeFormat = mchelper.cfg.dateFormat;
   $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, $scope.chartTimeFormat, mchelper.cfg.timezone)};
-  
+
   $scope.updateChart = function(){
     MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
       $scope.batteryChartData.chartData = resource.chartData;
@@ -379,7 +379,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
         }, 1000);
       }
     });
-  
+
 });
 
 

@@ -17,7 +17,7 @@
 -->
 <div class="container-fluid">
 
-  <!-- Loading icon disaplay --> 
+  <!-- Loading icon disaplay -->
   <div ng-hide="resourceCount.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
@@ -29,7 +29,7 @@
 
     <div class=" container-fluid row"><!-- row1 -->
       <div class="row-cards-pf ">
-  
+
         <div class="col-xs-6 col-sm-6 col-lg-6">
           <div class="card-pf card-pf-utilization">
             <div class="card-pf-heading">
@@ -42,7 +42,7 @@
                 <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
                 <dt>{{ 'NETWORK_TYPE' | translate }}</dt> <dd>{{item.networkType}}</dd>
                 <dt>{{ 'CONNECTION_DETAILS' | translate }}</dt> <dd>{{item.connectionDetails}}</dd>
-                <dt>{{ 'STATUS' | translate }}</dt> 
+                <dt>{{ 'STATUS' | translate }}</dt>
                 <dd>
                   <span class="card-pf-aggregate-status-notification">
                     <span ng-show="item.state.toLowerCase() === 'up'">
@@ -58,29 +58,29 @@
                 </dd>
                 <dt>{{ 'STATUS_SINCE' | translate }}</dt> <dd>{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</dd>
                 <dt>{{ 'STATUS_MESSAGE' | translate }}</dt> <dd>{{item.statusMessage}}</dd>
-                
+
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
-                <dt><span class="fa fa-sitemap mc-icon-md-3"></span>{{ 'NODES' | translate }}</dt> 
+                <dt><span class="fa fa-sitemap mc-icon-md-3"></span>{{ 'NODES' | translate }}</dt>
                 <dd>
                   <a  ng-hide="resourceCount.sensors == 0" ui-sref="nodesList({ gatewayId: item.id})">{{resourceCount.nodes}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.nodes}}</span>
                 </dd>
-                <dt><span class="fa fa-eye mc-icon-md-3"></span>{{ 'SENSORS' | translate }}</dt> 
+                <dt><span class="fa fa-eye mc-icon-md-3"></span>{{ 'SENSORS' | translate }}</dt>
                 <dd>
                   <a  ng-hide="resourceCount.sensors == 0" >{{resourceCount.sensors}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
                 </dd>
-                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt> 
+                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt>
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
-                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt> 
+                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt>
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
-                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt> 
+                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
                 <dd>
                   <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
                   <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
@@ -89,10 +89,10 @@
             </div>
           </div>
         </div>
-      
-      </div>  
+
+      </div>
     </div><!-- /row1 -->
-    
+
   </div> <!-- Main Message -->
 
 </div> <!-- Container-fluid -->

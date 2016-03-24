@@ -16,42 +16,42 @@
  */
 myControllerModule.controller('SensorsActionController', function(alertService,
 $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, displayRestError, mchelper) {
-    
+
   $scope.filteredList=[];
   $scope.orgList=[];
-  
+
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
-  
+
   //Filter
   $scope.updateFilteredList = function() {
     $scope.filteredList = $filter("filter")($scope.orgList, $scope.query);
   };
-  
+
   //Send list of Sensors
   $scope.orgList = {};
   $scope.orgList = SensorsFactory.query(function(response) {
                     },function(error){
-                      displayRestError.display(error);            
+                      displayRestError.display(error);
                     });
   $scope.filteredList = $scope.orgList;
-  
+
   //Get all Nodes
   $scope.nodes = TypesFactory.getNodes();
-  
+
   $scope.nodeChange = function(selectedNodeId){
     $scope.orgList = SensorsFactory.query({nodeId: selectedNodeId}, function(response) {
                     },function(error){
-                      displayRestError.display(error);            
+                      displayRestError.display(error);
                     });
     $scope.filteredList = $scope.orgList;
   };
- 
+
  //Refresh sensor data
   $scope.refresh = function (sensor) {
     $scope.updateSensor(sensor, false);
   }
-  
+
     /*
      * Update only one sensor data
      */
@@ -72,10 +72,10 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
       displayRestError.display(error);
     });
   }
-    
-    
+
+
   //Update all sensors data
-  $scope.updateAllSensors = function () {  
+  $scope.updateAllSensors = function () {
    SensorsFactory.query(function(response) {
      $scope.tmpList = response;
      for (var sId=0; sId<$scope.orgList.length; sId++){
@@ -86,14 +86,14 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
       }
      }
     },function(error){
-      displayRestError.display(error);            
+      displayRestError.display(error);
     });
   }
-  
+
   //Initiate the Refresh Timer object.
   $scope.refreshTimer = null;
   $scope.refreshTime = 0;
-  
+
   $scope.refreshTimeChange = function (){
     $scope.StopRefreshTimer();
     if($scope.refreshTime == 0){
@@ -101,7 +101,7 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
     }
     $scope.StartRefreshTimer();
   }
-  
+
   //Start Refresh Timer function.
   $scope.StartRefreshTimer = function () {
     // Don't start a new timer, if one running already
@@ -109,7 +109,7 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
     //Initialize the Timer to run every milliseconds defined in $scope.refreshTime
     $scope.refreshTimer = $interval($scope.updateAllSensors, $scope.refreshTime);
   };
-  
+
   //Stop and distroy function.
   $scope.StopRefreshTimer = function () {
     //Cancel the Refresh Timer.
@@ -118,27 +118,27 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
       $scope.refreshTimer = undefined;
     }
   };
-  
+
   $scope.$on('$destroy', function() {
     // Make sure that the interval is destroyed too
     $scope.StopRefreshTimer();
   });
-    
-    
+
+
   //Send payload by button
   $scope.sendPL = function (sensor, payloadJson, singleCall) {
     SensorsFactory.sendPayload({nodeId: "sendPayload"}, payloadJson,function(response) {
         if(singleCall){
           alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+payloadJson.payload);
-          $scope.updateSensor(sensor, false); 
+          $scope.updateSensor(sensor, false);
         }else{
-          $scope.updateSensor(sensor, true); 
+          $scope.updateSensor(sensor, true);
         }
     },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
     });
   }
-  
+
   //ON/OFF Sensor
   $scope.onOff = function (sensor) {
     if(sensor.status === '0' || sensor.status === 'OFF'){
@@ -150,10 +150,10 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
         alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+sensor.newPayload);
         $scope.updateSensor(sensor, false);
     },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
     });
   }
- 
+
   //Update payload model
   $scope.sendPayload = function (sensor, size) {
     var editModalInstance = $uibModal.open({
@@ -165,18 +165,18 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
 
     editModalInstance.result.then(function (payloadJson) {
       SensorsFactory.sendPayload({nodeId: "sendPayload"},payloadJson,function(response) {
-        //displayRestError.display(response, 201, "Payload sent to ["+sensor.nameWithNode+"]");   
+        //displayRestError.display(response, 201, "Payload sent to ["+sensor.nameWithNode+"]");
         alertService.success("Payload sent to ["+sensor.nameWithNode+"], Payload:"+payloadJson.payload);
         $scope.updateSensor(sensor);
       },function(error){
-        displayRestError.display(error);            
-      });        
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-  
+
   //Update sensor model
   $scope.editSensor = function (sensor, size) {
     var editModalInstance = $uibModal.open({
@@ -191,9 +191,9 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
         alertService.success("Updat success ["+sensor.nameWithNode+"]");
         $scope.updateSensor(sensor, false);
       },function(error){
-        displayRestError.display(error);            
-      });        
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -204,7 +204,7 @@ $scope, $interval, $filter, SensorsFactory, TypesFactory, $location, $uibModal, 
 
 myControllerModule.controller('SAsendPayloadController', function ($scope, $modalInstance, sensor, SensorsFactory, TypesFactory) {
   $scope.sensor = sensor;
-  $scope.header = "Send Payload to '"+$scope.sensor.nameWithNode+"'";  
+  $scope.header = "Send Payload to '"+$scope.sensor.nameWithNode+"'";
   $scope.sensor.sliderPayload=sensor.lastValue;
   $scope.payloadJson={};
   $scope.payloadJson.nodeId=sensor.node.id;
@@ -215,15 +215,15 @@ myControllerModule.controller('SAsendPayloadController', function ($scope, $moda
   $scope.sliderReleased = function(){
     SensorsFactory.sendPayload({nodeId: sensor.id, payload: sensor.newPayload},function(response) {
       },function(error){
-        displayRestError.display(error);            
-      });        
+        displayRestError.display(error);
+      });
   }
   $scope.sliderOnChange = function() {
-        $scope.sensor.newPayload = $scope.sensor.sliderPayload;  
+        $scope.sensor.newPayload = $scope.sensor.sliderPayload;
   };
-  
+
   $scope.variableTypes = TypesFactory.getSensorVariableTypes({id: sensor.type});
-  
+
   $scope.send = function() {$modalInstance.close($scope.payloadJson);}
   $scope.cancel = function () { $modalInstance.dismiss('cancel'); }
 });

@@ -39,10 +39,10 @@ angular.module('adf.widget.myc-sunrisetime', [])
   })
   .controller('mycSunriseController', function($scope, $interval, config, mchelper, $filter, SettingsFactory){
     var mycSunriseTime = this;
-    
+
     mycSunriseTime.isSyncing = false;
     mycSunriseTime.showLoading = true;
-    
+
     function updateLocationSettings(){
       if(mycSunriseTime.isSyncing){
         return;
@@ -59,7 +59,7 @@ angular.module('adf.widget.myc-sunrisetime', [])
           }
       });
     };
-    
+
     updateLocationSettings();
 
     // refresh every five minutes

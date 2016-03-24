@@ -43,32 +43,32 @@ angular.module('adf.widget.myc-sen-vars', [])
   })
   .controller('mycSenVarsController', function($scope, $interval, config, mchelper, $filter, SensorsFactory, TypesFactory, CommonServices){
     var mycSenVars = this;
-    
+
     mycSenVars.showLoading = true;
     mycSenVars.isSyncing = true;
     mycSenVars.variables = {};
     $scope.tooltipEnabled = false;
     $scope.hideVariableName=true;
     $scope.cs = CommonServices;
-    
+
     //HVAC heater options - HVAC flow state
-    $scope.hvacOptionsFlowState = TypesFactory.getHvacOptionsFlowState();  
+    $scope.hvacOptionsFlowState = TypesFactory.getHvacOptionsFlowState();
     //HVAC heater options - HVAC flow mode
-    $scope.hvacOptionsFlowMode = TypesFactory.getHvacOptionsFlowMode();  
+    $scope.hvacOptionsFlowMode = TypesFactory.getHvacOptionsFlowMode();
     //HVAC heater options - HVAC fan speed
-    $scope.hvacOptionsFanSpeed = TypesFactory.getHvacOptionsFanSpeed();  
-    
+    $scope.hvacOptionsFanSpeed = TypesFactory.getHvacOptionsFanSpeed();
+
     //Defined variable types list
     $scope.definedVariableTypes = CommonServices.getSensorVariablesKnownList();
-  
 
-  
+
+
   //update rgba color
   $scope.updateRgba = function(variable){
     variable.value = CommonServices.rgba2hex(variable.rgba);
     $scope.updateVariable(variable);
   };
-    
+
     function loadVariables(){
       mycSenVars.isSyncing = true;
       SensorsFactory.getVariables({'ids':config.variableIds}, function(response){
@@ -79,7 +79,7 @@ angular.module('adf.widget.myc-sen-vars', [])
           }
       });
     };
-    
+
     function updateVariables(){
       if(mycSenVars.isSyncing){
         return;
@@ -87,11 +87,11 @@ angular.module('adf.widget.myc-sen-vars', [])
         loadVariables();
       }
     }
-    
+
     //load variables initially
     loadVariables();
     //updateVariables();
-    
+
     //Update Variable / Send Payload
     $scope.updateVariable = function(variable){
       SensorsFactory.updateVariable(variable, function(){
@@ -100,7 +100,7 @@ angular.module('adf.widget.myc-sen-vars', [])
         displayRestError.display(error);
       });
     };
-    
+
     // refresh every second
     var promise = $interval(updateVariables, config.refreshTime*1000);
 

@@ -50,9 +50,9 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
     mycSensorsBulletGraph.variables = {};
     $scope.tooltipEnabled = false;
     $scope.hideVariableName=true;
-    
+
     mycSensorsBulletGraph.variables = {};
-    
+
     mycSensorsBulletGraph.chartOptions = {
         chart: {
             type: 'bulletChart',
@@ -67,7 +67,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
             },
         }
       };
-      
+
     mycSensorsBulletGraph.getChartOptions = function(){
       return angular.copy(mycSensorsBulletGraph.chartOptions);
     }
@@ -101,7 +101,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
         loadVariables();
       }
     }
-    
+
     //load variables initially
     if(config.variableIds.length > 0){
       loadVariables();
@@ -109,7 +109,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
       mycSensorsBulletGraph.showLoading = false;
     }
     //updateVariables();
-    
+
     //Update Variable / Send Payload
     $scope.updateVariable = function(variable){
       SensorsFactory.updateVariable(variable, function(){
@@ -118,7 +118,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
         displayRestError.display(error);
       });
     };
-    
+
     // refresh every second
     var promise = $interval(updateVariables, config.refreshTime*1000);
 

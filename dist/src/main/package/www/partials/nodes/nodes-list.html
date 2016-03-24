@@ -16,14 +16,14 @@
 
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="queryResponse.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
@@ -48,13 +48,13 @@
             </ul>
           </div>
         </div>
-        
+
         <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group">
           <a class="btn btn-primary" type="button" ui-sref="nodesAddEdit">{{ 'ADD_NODE' | translate }}</a>
         </div>
 
       </div>
-      
+
       <div class="pull-right mc-v-margin" ng-show="filteredList.length > 0">
         <div pf-sort id="exampleSimpleSort" config="sortConfig"></div>
       </div>
@@ -64,7 +64,7 @@
 
     <!-- Display No Items on system -->
     <div ng-include src="'partials/common-html/no-items-system.html'"></div>
-    
+
     <!-- Display When no data on table -->
     <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
 
@@ -117,7 +117,7 @@
       <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
 
     </div>
-    
+
   </div> <!-- Main Message -->
-  
+
 </div> <!-- Container-fluid -->

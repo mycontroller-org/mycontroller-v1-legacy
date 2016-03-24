@@ -17,7 +17,7 @@
 /* Firmwares type */
 myControllerModule.controller('FirmwaresTypeController', function(
   alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
-  
+
   //GUI page settings
   $scope.headerStringList = $filter('translate')('FIRMWARE_TYPES_DETAIL');
   $scope.noItemsSystemMsg = $filter('translate')('NO_FIRMWARE_TYPES_SETUP');
@@ -26,17 +26,17 @@ myControllerModule.controller('FirmwaresTypeController', function(
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
-  };  
-  
+  };
+
   //get all items
   $scope.getAllItems = function(){
     FirmwaresFactory.getAllFirmwareTypes($scope.query, function(response) {
@@ -58,7 +58,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -69,7 +69,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -88,7 +88,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -109,7 +109,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
     ],
     onSortChange: sortChange
   };
-  
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
@@ -133,9 +133,9 @@ myControllerModule.controller('FirmwaresTypeController', function(
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -153,9 +153,9 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
   $scope.cancelButtonState = "firmwaresTypeList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   $scope.cs = CommonServices;
-  
+
   $scope.firmwareType = {};
   $scope.ftypeId = $stateParams.id;
 
@@ -166,7 +166,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
         displayRestError.display(error);
       });
   }
-  
+
 
   //Save data
   $scope.save = function(){
@@ -197,7 +197,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
 /* Firmwares version */
 myControllerModule.controller('FirmwaresVersionController', function(
   alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
-  
+
   //GUI page settings
   $scope.headerStringList = $filter('translate')('FIRMWARE_VERSIONS_DETAIL');
   $scope.noItemsSystemMsg = $filter('translate')('NO_FIRMWARE_VERSIONS_SETUP');
@@ -206,16 +206,16 @@ myControllerModule.controller('FirmwaresVersionController', function(
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
-  };  
+  };
 
   //get all items
   $scope.getAllItems = function(){
@@ -238,7 +238,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -249,7 +249,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -268,7 +268,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -289,7 +289,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
     ],
     onSortChange: sortChange
   };
-  
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
@@ -313,9 +313,9 @@ myControllerModule.controller('FirmwaresVersionController', function(
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -324,7 +324,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
 
 //add edit item
 myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $filter, $state, CommonServices) {
-  
+
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = $filter('translate')('ADD_FIRMWARE_VERSION');
@@ -332,7 +332,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
   $scope.cancelButtonState = "firmwaresVersionList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   $scope.item = {};
   $scope.itemId = $stateParams.id;
   $scope.cs = CommonServices;
@@ -344,7 +344,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
         displayRestError.display(error);
       });
   }
-  
+
 
   //Save data
   $scope.save = function(){
@@ -376,8 +376,8 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
 
 /* Firmware controller */
 myControllerModule.controller('FirmwaresController', function(
-  alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {  
-  
+  alertService, $scope, $filter, FirmwaresFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams) {
+
   //GUI page settings
   $scope.headerStringList = $filter('translate')('FIRMWARES_DETAIL');
   $scope.noItemsSystemMsg = $filter('translate')('NO_FIRMWARES_SETUP');
@@ -386,17 +386,17 @@ myControllerModule.controller('FirmwaresController', function(
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
-  };  
-  
+  };
+
   if($stateParams.sensorId){
     $scope.sensorId = $stateParams.sensorId;
   }
@@ -422,7 +422,7 @@ myControllerModule.controller('FirmwaresController', function(
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -433,7 +433,7 @@ myControllerModule.controller('FirmwaresController', function(
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
 $scope.filterConfig = {
     fields: [
       {
@@ -457,7 +457,7 @@ $scope.filterConfig = {
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -490,8 +490,8 @@ $scope.filterConfig = {
     ],
     onSortChange: sortChange
   };
-  
-  
+
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
@@ -515,21 +515,21 @@ $scope.filterConfig = {
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-  
+
 });
 
 
 //add edit item
 myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $state, $filter, TypesFactory) {
   $scope.item = {};
-  
+
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = $filter('translate')('ADD_FIRMWARE');
@@ -545,11 +545,11 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
         displayRestError.display(error);
       });
   }
-  
+
   //Pre load
   $scope.firmwareTypes = TypesFactory.getFirmwareTypes();
   $scope.firmwareVersions = TypesFactory.getFirmwareVersions();
-  
+
   //Read File and put it in textarea
   $scope.displayFileContents = function(contents) {
         $scope.item.fileString = contents;
@@ -576,17 +576,17 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
       });
     }
   }
-  
+
 }).directive('onReadFile', function ($parse) {
     return {
         restrict: 'A',
         scope: false,
         link: function(scope, element, attrs) {
             element.bind('change', function(e) {
-                
+
                 var onFileReadFn = $parse(attrs.onReadFile);
                 var reader = new FileReader();
-                
+
                 reader.onload = function() {
                     var fileContents = reader.result;
                     // invoke parsed function on scope

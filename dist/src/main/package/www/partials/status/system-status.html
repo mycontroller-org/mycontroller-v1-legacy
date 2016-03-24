@@ -17,7 +17,7 @@
 -->
 <div class="container mc-top-space-2x">
 
-  <!-- Loading icon disaplay --> 
+  <!-- Loading icon disaplay -->
   <div ng-hide="jvmStatus.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
@@ -40,36 +40,36 @@
             <dt>{{ 'UP_TIME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.uptime | millSecondsToTimeString}}</dd>
             <dt>{{ 'HEAP_MEMORY' | translate }}</dt>
                 <dd>
-                  {{ 'USED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.used | byteToMBsizeConvertor}}, 
-                  {{ 'COMMITTED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.committed | byteToMBsizeConvertor}}, 
-                  {{ 'INIT' | translate }}: {{jvmStatus.memory.heapMemoryUsage.init | byteToMBsizeConvertor}}, 
+                  {{ 'USED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.used | byteToMBsizeConvertor}},
+                  {{ 'COMMITTED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.committed | byteToMBsizeConvertor}},
+                  {{ 'INIT' | translate }}: {{jvmStatus.memory.heapMemoryUsage.init | byteToMBsizeConvertor}},
                   {{ 'MAX' | translate }}: {{jvmStatus.memory.heapMemoryUsage.max | byteToMBsizeConvertor}}
                 </dd>
             <dt>{{ 'NON_HEAP_MEMORY' | translate }}</dt>
                 <dd>
-                  {{ 'USED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.used | byteToMBsizeConvertor}}, 
-                  {{ 'COMMITTED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.committed | byteToMBsizeConvertor}}, 
-                  {{ 'INIT' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.init | byteToMBsizeConvertor}}, 
+                  {{ 'USED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.used | byteToMBsizeConvertor}},
+                  {{ 'COMMITTED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.committed | byteToMBsizeConvertor}},
+                  {{ 'INIT' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.init | byteToMBsizeConvertor}},
                   {{ 'MAX' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.max | byteToMBsizeConvertor}}
                 </dd>
             <dt>{{ 'THREADS_COUNT' | translate }}</dt>
                 <dd>
-                  {{ 'CURRENT' | translate }}: {{jvmStatus.thread.threadCount}}, 
-                  {{ 'PEAK' | translate }}: {{jvmStatus.thread.peakThreadCount}}, 
-                  {{ 'TOTAL_STARTED' | translate }}: {{jvmStatus.thread.totalStartedThreadCount}}, 
+                  {{ 'CURRENT' | translate }}: {{jvmStatus.thread.threadCount}},
+                  {{ 'PEAK' | translate }}: {{jvmStatus.thread.peakThreadCount}},
+                  {{ 'TOTAL_STARTED' | translate }}: {{jvmStatus.thread.totalStartedThreadCount}},
                   {{ 'DAEMON' | translate }}: {{jvmStatus.thread.daemonThreadCount}}
                 </dd>
             <dt>{{ 'CLASS_LOADING_DETAILS' | translate }}</dt>
                 <dd>
-                  {{ 'LOADED' | translate }}: {{jvmStatus.classLoadingDetail.loadedClassCount}}, 
-                  {{ 'UNLOADED' | translate }}: {{jvmStatus.classLoadingDetail.unloadedClassCount}}, 
+                  {{ 'LOADED' | translate }}: {{jvmStatus.classLoadingDetail.loadedClassCount}},
+                  {{ 'UNLOADED' | translate }}: {{jvmStatus.classLoadingDetail.unloadedClassCount}},
                   {{ 'TOTAL_LOADED' | translate }}: {{jvmStatus.classLoadingDetail.totalLoadedClassCount}}
                 </dd>
             <span ng-repeat="garbageCollector in jvmStatus.garbageCollectors">
               <dt>{{ 'GARBAGE_COLLECTOR' | translate }} - {{garbageCollector.name}}</dt>
                 <dd>
-                  {{ 'COLLECTION_TIME' | translate }}: {{garbageCollector.collectionTime}}, 
-                  {{ 'COLLECTION_COUNT' | translate }}: {{garbageCollector.collectionCount}}, 
+                  {{ 'COLLECTION_TIME' | translate }}: {{garbageCollector.collectionTime}},
+                  {{ 'COLLECTION_COUNT' | translate }}: {{garbageCollector.collectionCount}},
                   {{ 'LAST_GARBAGECOLLECTOR_DURATION' | translate }}: {{garbageCollector.lastGcDuration}}
                 </dd>
             </span>
@@ -92,12 +92,12 @@
             <dt>{{ 'PROCESS_CPU' | translate }}</dt> <dd>{{ 'LOAD' | translate }}: {{osStatus.processCpuLoad}}, {{ 'TIME' | translate }}: {{osStatus.processCpuTime}}</dd>
             <dt>{{ 'PHYSICAL_MEMORY' | translate }}</dt>
               <dd>
-                {{ 'FREE' | translate }}: {{osStatus.freePhysicalMemorySize | byteToMBsizeConvertor}}, 
+                {{ 'FREE' | translate }}: {{osStatus.freePhysicalMemorySize | byteToMBsizeConvertor}},
                 {{ 'TOTAL' | translate }}: {{osStatus.totalPhysicalMemorySize | byteToMBsizeConvertor}}
               </dd>
             <dt>{{ 'SWAP_SPACE' | translate }}</dt>
               <dd>
-                {{ 'FREE' | translate }}: {{osStatus.freeSwapSpaceSize | byteToMBsizeConvertor}}, 
+                {{ 'FREE' | translate }}: {{osStatus.freeSwapSpaceSize | byteToMBsizeConvertor}},
                 {{ 'TOTAL' | translate }}: {{osStatus.totalSwapSpaceSize | byteToMBsizeConvertor}}
               </dd>
             <dt>{{ 'COMMITTED_VIRTUAL_MEMORY_SIZE' | translate }}</dt> <dd>{{osStatus.committedVirtualMemorySize | byteToMBsizeConvertor}}</dd>

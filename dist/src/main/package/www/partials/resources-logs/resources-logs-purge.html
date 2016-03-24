@@ -16,25 +16,25 @@
 
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="resourceTypes.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="resourceTypes.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
-  
+
     <div><!-- div-main -->
       <form class="form-horizontal">
         <div class="col-md-5">
-          
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'RESOURCE' | translate }}</label>
               <div class="col-sm-4 mc-form-fixer-left">
-                <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in resourceTypes" 
+                <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in resourceTypes"
                   ng-change="resourcesList = getResources(resourcesLogs.resourceType);resourcesLogs.resourceId=''" ng-model="resourcesLogs.resourceType">
                   <option value="" ng-hide="true"></option>
                 </select>
@@ -46,7 +46,7 @@
                 </select>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'MESSAGE_TYPE' | translate }}</label>
               <div class="col-sm-10 mc-form-fixer-left">
@@ -55,7 +55,7 @@
                 </select>
               </div>
             </div>
-          
+
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'LOG_DIRECTION' | translate }}</label>
             <div class="col-sm-10 mc-form-fixer-left">
@@ -64,7 +64,7 @@
               </select>
             </div>
           </div>
-          
+
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'LOG_LEVEL' | translate }}</label>
             <div class="col-sm-10 mc-form-fixer-left">
@@ -73,7 +73,7 @@
               </select>
             </div>
           </div>
-          
+
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'MESSAGE_CONTAINS' | translate }}</label>
             <div class="col-sm-10 mc-form-fixer-left">
@@ -83,7 +83,7 @@
 
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'PURGE_BEFORE' | translate }}</label>
-                        
+
             <div class="col-sm-10 mc-form-fixer-left">
               <div class="dropdown">
                 <a class="dropdown-toggle" id="datetime1" role="button" data-toggle="dropdown" data-target="#" href="">
@@ -100,13 +100,13 @@
               </div>
             </div>
           </div>
-              
-            
+
+
 
 
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>
-  
+
         </div>
       </form>
     </div><!-- div-main -->

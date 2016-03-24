@@ -16,21 +16,21 @@
 
 -->
 <div>
-  
+
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">
       <span class="pficon pficon-close"></span>
     </button>
     <div class="modal-title"><b>{{header}}</b></div>
   </div>
-  
-  <div class="modal-body modal-body-text-only">   
+
+  <div class="modal-body modal-body-text-only">
     <small ng-bind-html="rebootMsg"></small>
   </div>
-  
+
   <div class="modal-footer">
     <button class="btn btn-default" ng-click="cancel()"><i class="fa fa-close"> {{ 'CANCEL' | translate }}</i></button>
     <button class="btn btn-primary" ng-click="reboot()"><i class="fa fa-undo"> {{ 'REBOOT' | translate }}</i></button>
   </div>
-  
+
 </div>

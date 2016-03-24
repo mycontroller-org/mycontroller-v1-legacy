@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 myControllerModule.controller('VariablesMapperListController', function(alertService, $scope, $filter, displayRestError, TypesFactory, $filter, mchelper, CommonServices, $state) {
-  
-  
+
+
   //GUI page settings
   $scope.headerStringList = $filter('translate')('SENSORS_AND_VARIABLES_MAPPING');
 
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
 
   //get all items
   $scope.getAllItems = function(){
@@ -40,7 +40,7 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
       displayRestError.display(error);
     });
   }
-  
+
   //Pre load
   $scope.getAllItems();
   $scope.itemName = null;
@@ -51,7 +51,7 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
     CommonServices.filterChangeLocal(filters, $scope);
     $scope.itemName = null;
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -70,7 +70,7 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
    //Select item
   $scope.selectItem = function (item) {
     if($scope.itemName === item.displayName){
@@ -79,7 +79,7 @@ myControllerModule.controller('VariablesMapperListController', function(alertSer
       $scope.itemName = item.displayName;
     }
   };
-  
+
   //Edit item
   $scope.editItem = function () {
     $state.go("settingsVariablesMapperEdit", {'sensorType':$scope.itemName});
@@ -94,13 +94,13 @@ myControllerModule.controller('VariablesMapperEditController', function ($scope,
   $scope.headerStringAdd = $filter('translate')('MODIFIY_SENSOR_VARIABLES_MAPPING');
   $scope.cancelButtonState = "settingsVariablesMapperList"; //Cancel button state
   $scope.saveProgress = false;
-  
-  
+
+
   $scope.item = {};
   $scope.sensorVariableTypes = {};
   $scope.item.displayName = $stateParams.sensorType;
   $scope.item.value = [];
-  
+
   $scope.getSensorVariables = function(){
     TypesFactory.getSensorVariableMapperByType({"sensorType": $scope.item.displayName}, function(resource){
       $scope.sensorVariableTypes = resource;

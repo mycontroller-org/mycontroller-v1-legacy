@@ -80,7 +80,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
     getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}  },
     getSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypes', id : null}  },
-    getGatewayTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayTypes'} }, 
+    getGatewayTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayTypes'} },
     getGatewayNetworkTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayNetworkTypes'} },
     getGatewaySerialDrivers:  { method: 'GET', isArray: true, params: {type: 'gatewaySerialDrivers'} },
     getResourceTypes:  { method: 'GET', isArray: true, params: {type: 'resourceTypes'} },
@@ -88,16 +88,18 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getNodes:  { method: 'GET', isArray: true, params: {type: 'nodes'}  },
     getSensors:  { method: 'GET', isArray: true, params: {type: 'sensors'} },
     getSensorVariables:  { method: 'GET', isArray: true, params: {type: 'sensorVariables'} },
-    getAlarmDefinitions:  { method: 'GET', isArray: true, params: {type: 'alarmDefinitions'} },
+    getRuleDefinitions:  { method: 'GET', isArray: true, params: {type: 'ruleDefinitions'} },
     getTimers:  { method: 'GET', isArray: true, params: {type: 'timers'} },
     getSensorValueTypes:  { method: 'GET', isArray: true, params: {type: 'sensorValueTypes'}  },
     getResourcesGroups:  { method: 'GET', isArray: true, params: {type: 'resourcesGroups'}  },
-    getAlarmNotificationTypes:  { method: 'GET', isArray: true, params: {type: 'alarmNotificationTypes'}  },
-    getAlarmTriggerTypes:  { method: 'GET', isArray: true, params: {type: 'alarmTriggerTypes'}  },
-    getAlarmThresholdTypes:  { method: 'GET', isArray: true, params: {type: 'alarmThresholdTypes'}  },
-    getAlarmDampeningTypes:  { method: 'GET', isArray: true, params: {type: 'alarmDampeningTypes'}  },
+    getOperationTypes:  { method: 'GET', isArray: true, params: {type: 'operationTypes'}  },
+    getRuleOperatorTypes:  { method: 'GET', isArray: true, params: {type: 'ruleOperatorTypes'}  },
+    getRuleThresholdDataTypes:  { method: 'GET', isArray: true, params: {type: 'ruleThresholdDataTypes'}  },
+    getRuleDampeningTypes:  { method: 'GET', isArray: true, params: {type: 'ruleDampeningTypes'}  },
     getStateTypes:  { method: 'GET', isArray: true, params: {type: 'stateTypes'}  },
     getPayloadOperations:  { method: 'GET', isArray: true, params: {type: 'payloadOperations'}  },
+    getRuleConditionTypes:  { method: 'GET', isArray: true, params: {type: 'ruleConditionTypes'}  },
+
     //Timers
     getTimerTypes:  { method: 'GET', isArray: true, params: {type: 'timerTypes'}  },
     getTimerFrequencies:  { method: 'GET', isArray: true, params: {type: 'timerFrequencyTypes'}  },
@@ -114,8 +116,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getHvacOptionsFlowMode: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFlowMode', id : null}},
     getHvacOptionsFanSpeed: { method: 'GET', isArray: true, params: {type: 'hvacOptionsFanSpeed', id : null}},
     getRolePermissions: { method: 'GET', isArray: true, params: {type: 'rolePermissions', id : null}},
-    //Notifications
-    getNotifications:  { method: 'GET', isArray: true, params: {type: 'notifications'} },
+    //Operations
+    getOperations:  { method: 'GET', isArray: true, params: {type: 'operations'} },
     //Rooms
     getRooms:  { method: 'GET', isArray: true, params: {type: 'rooms'} },
 
@@ -134,7 +136,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getResourceLogsLogLevels:  { method: 'GET', isArray: true, params: {type: 'resourceLogsLogLevels'} },
     //Metrics
     getMetricsSettings:  { method: 'GET', isArray: false, params: {type: 'metricsSettings', id:null} },
-    
+
   })
 });
 
@@ -147,7 +149,7 @@ myControllerModule.factory('MetricsFactory', function ($resource) {
     getBulletChart: { method: 'GET', isArray: true, params: {type: 'bulletChart'}},
 
     getCsvFile: { method: 'GET', isArray: false, params: {type: 'csvFile'}},
-    
+
   })
 });
 
@@ -163,10 +165,10 @@ myControllerModule.factory('AuthenticationFactory', function ($resource) {
 myControllerModule.factory('AuthenticationService',
     function (AuthenticationFactory,$base64, $http, CommonServices, mchelper) {
         var service = {};
-        
+
         service.Login = function (username, password, callback) {
         $http.defaults.headers.common['Authorization'] = 'Basic ' + $base64.encode(username + ':' + password);
-            
+
             /* Use this for real authentication
              ----------------------------------------------*/
             $http.post('/mc/rest/authentication/login', { username: username, password: password })
@@ -176,10 +178,10 @@ myControllerModule.factory('AuthenticationService',
                     callback(response);
                 });
         };
- 
+
         service.SetCredentials = function (username, password) {
             var authdata = $base64.encode(username + ':' + password);
- 
+
             mchelper.internal = {
                 currentUser: {
                     username: username,
@@ -190,14 +192,14 @@ myControllerModule.factory('AuthenticationService',
             //Save in cookies
             CommonServices.saveMchelper(mchelper);
         };
- 
+
         service.ClearCredentials = function () {
             $http.defaults.headers.common.Authorization = 'Basic ';
             //clear mchelper auth record
             CommonServices.clearMchelper();
             CommonServices.clearCookies();
         };
- 
+
         return service;
     });
 
@@ -211,7 +213,7 @@ myControllerModule.factory('SecurityFactory', function ($resource) {
     createRole: { method: 'POST', isArray: false, params: {type: 'roles', id:null}},
     updateRole: { method: 'PUT', isArray: false, params: {type: 'roles', id:null}},
     deleteRoleIds: { method: 'POST', isArray: false, params: {type: 'roles', id:'delete'}},
-    
+
     getAllUsers: { method: 'GET', isArray: false, params: {type: 'users', id:null, 'onlyUsername':null}},
     getAllUsersSimple: { method: 'GET', isArray: true, params: {type: 'users', id:null, 'onlyUsername':true}},
     getUser: { method: 'GET', isArray: false, params: {type: 'users', id:'@id'}},
@@ -226,8 +228,8 @@ myControllerModule.factory('SecurityFactory', function ($resource) {
 });
 
 //Alarm Services
-myControllerModule.factory('AlarmsFactory', function ($resource) {
-  return $resource('/mc/rest/alarms/:id', {id: '@id'}, {
+myControllerModule.factory('RulesFactory', function ($resource) {
+  return $resource('/mc/rest/rules/:id', {id: '@id'}, {
     getAll: { method: 'GET', isArray: false, params: {id: null} },
     get:    { method: 'GET' },
     create: { method: 'POST', params: {id: null}},
@@ -239,8 +241,8 @@ myControllerModule.factory('AlarmsFactory', function ($resource) {
 });
 
 //Notification Services
-myControllerModule.factory('NotificationsFactory', function ($resource) {
-  return $resource('/mc/rest/notifications/:id', {id: '@id'}, {
+myControllerModule.factory('OperationsFactory', function ($resource) {
+  return $resource('/mc/rest/operations/:id', {id: '@id'}, {
     getAll: { method: 'GET', isArray: false, params: {id: null} },
     get:    { method: 'GET' },
     create: { method: 'POST', params: {id: null}},
@@ -329,7 +331,7 @@ myControllerModule.factory('StatusFactory', function ($resource) {
    getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
    getConfig: { method: 'GET', params: {type:'about'} },
    getTimestamp: { method: 'GET', params: {type:'timestamp'} },
-   
+
    getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
    sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
    getMcServerLog: { method: 'GET', isArray: false, params: {type:'mcServerLogFile'} },
@@ -415,6 +417,16 @@ myControllerModule.factory('RoomsFactory', function ($resource) {
     get:    { method: 'GET' },
     create: { method: 'POST', params: {id: null}},
     update: { method: 'PUT', params: {id: null} },
+    deleteIds: { method: 'POST', params: {id: 'delete'} },
+  })
+});
+
+//Scripts Services
+myControllerModule.factory('ScriptsFactory', function ($resource) {
+  return $resource('/mc/rest/scripts/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: true, params: {id: null} },
+    get:    { method: 'GET' },
+    upload: { method: 'PUT', params: {id: null} },
     deleteIds: { method: 'POST', params: {id: 'delete'} },
   })
 });

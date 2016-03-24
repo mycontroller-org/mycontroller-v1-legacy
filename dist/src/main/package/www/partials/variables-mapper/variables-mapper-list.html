@@ -17,14 +17,14 @@
 -->
 
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-if="!orgList.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-if="orgList.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
@@ -65,7 +65,7 @@
       </table>
       <dir-pagination-controls class="pull-right" boundary-links="true" pagination-id="variable-mapper"></dir-pagination-controls>
     </div>
-    
+
   </div> <!-- Main Message -->
-  
+
 </div> <!-- Container-fluid -->

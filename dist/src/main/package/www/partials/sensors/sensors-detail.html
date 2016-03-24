@@ -17,7 +17,7 @@
 -->
 <div class="container-fluid">
 
-  <!-- Loading icon disaplay --> 
+  <!-- Loading icon disaplay -->
   <div ng-hide="resourceCount.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
@@ -29,7 +29,7 @@
 
     <div class="container-cards-pf"><!-- row -->
       <div class="row row-cards-pf"> <!-- row-details -->
-  
+
         <!-- details -->
         <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
           <div class="card-pf card-pf-utilization card-pf-accented">
@@ -50,14 +50,14 @@
                 <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.node.gateway.networkType}}</dd>
                 <dt>{{ 'ROOM' | translate }}</dt> <dd>{{item.room.name}}</dd>
                 <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right">{{item.lastSeen.inString  || 'NEVER' | translate }}</span></dd>
-                
+
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
-                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt> 
+                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt>
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
-                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt> 
+                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt>
                 <dd>
                   <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
                   <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
@@ -69,7 +69,7 @@
         </div>
 
         <!-- custom buttons -->
-        <!-- yet to implement 
+        <!-- yet to implement
         <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8">
           <div class="card-pf card-pf-accented ">
             <div class="card-pf-heading">
@@ -91,9 +91,9 @@
           </div>
         </div>
         -->
-        
+
         <!-- variables ng-repeat -->
-        <div ng-repeat="variable in item.variables"> 
+        <div ng-repeat="variable in item.variables">
           <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
             <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented mc-sensor-variable-detail">
               <h2 class="card-pf-title">{{variable.type.locale}}</h2>
@@ -112,11 +112,11 @@
             </div>
           </div>
         </div>
-        
+
       </div> <!-- /row-details -->
     </div><!-- /row -->
-    
-    
+
+
     <div class="container-cards-pf" ng-show="chartData.length > 0">
       <div class="row row-cards-pf">
         <div class="col-lg-12">
@@ -150,11 +150,11 @@
             </div>
           </div>
         </div>
-        
+
       </div><!-- /row -->
     </div><!-- /container -->
-    
-    
+
+
   </div> <!-- Main Message -->
 
 </div> <!-- Container-fluid -->

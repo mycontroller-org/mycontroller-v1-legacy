@@ -16,14 +16,14 @@
 
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="queryResponse.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
@@ -32,7 +32,7 @@
         <div class="btn-group mc-side-space" ng-show="filteredList.length > 0">
           <label class="mc-align-center mc-top-space-5px">Showing {{(query.pageLimit * (query.page - 1))+1}} to {{getMin(getMin(query.pageLimit * query.page, queryResponse.query.totalItems), queryResponse.query.filteredCount)}} of {{queryResponse.query.totalItems}} items</label>
         </div>
-        
+
         <div class="btn-group" role="group" aria-label="" ng-show="filteredList.length > 0">
           <!-- Single button -->
           <div class="btn-group">
@@ -49,7 +49,7 @@
             </ul>
           </div>
         </div>
-        
+
         <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group">
           <a class="btn btn-primary" type="button" ui-sref="gatewaysAddEdit">{{ 'ADD_GATEWAY' | translate }}</a>
         </div>
@@ -65,7 +65,7 @@
 
     <!-- Display No Items on system -->
     <div ng-include src="'partials/common-html/no-items-system.html'"></div>
-    
+
     <!-- Display When no data on table -->
     <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
 
@@ -111,7 +111,7 @@
       </table>
       <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
     </div>
-    
+
   </div> <!-- Main Message -->
-  
+
 </div> <!-- Container-fluid -->

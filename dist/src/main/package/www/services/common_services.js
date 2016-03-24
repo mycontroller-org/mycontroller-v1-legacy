@@ -20,7 +20,7 @@
 
 myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $cookies, mchelper) {
   var commonService = {};
-  
+
   //get mchelper configurations
   commonService.loadMchelper = function(){
     var mchelperLocal = $cookies.getObject('mchelper');
@@ -30,10 +30,10 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       mchelper.languages = mchelperLocal.languages || {};
       mchelper.userSettings = mchelperLocal.userSettings || {};
       mchelper.internal = mchelperLocal.internal || {};
-    }    
+    }
     return mchelper;
   };
-  
+
   //restore store all the configurations locally
   commonService.saveMchelper = function(mchelperRemote){
     mchelper.cfg = mchelperRemote.cfg;
@@ -43,7 +43,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     mchelper.internal = mchelperRemote.internal;
     $cookies.putObject('mchelper', mchelper);
   };
-  
+
   //clear local mchelper
   commonService.clearMchelper = function(){
     mchelper.selectedDashboard = undefined;
@@ -53,7 +53,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     mchelper.userSettings = {};
     mchelper.internal = {};
   };
-  
+
   //remove cookies
   commonService.clearCookies = function(){
     var cookies = $cookies.getAll();
@@ -61,7 +61,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       $cookies.remove(k);
     });
   };
-  
+
   //Get value nested supported
   commonService.getValue = function(item, key){
     var keys = key.split('.');
@@ -75,7 +75,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     }
     return item;
   };
-  
+
   //Match value
   var matchesFilter = function (item, filter) {
     var match = true;
@@ -90,7 +90,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
         filter.type = 'text';
       }
     }
-    
+
     if(filter.type === 'text' || filter.type ===  'select'){
       if(value){
         match = value.toUpperCase().match(filter.value.toUpperCase()) !== null;
@@ -104,10 +104,10 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     }
     return match;
   };
-  
+
   //Match values with for loop
   var matchesFilters = function (item, filters) {
-    var matches = true; 
+    var matches = true;
     filters.forEach(function(filter) {
       if (!matchesFilter(item, filter)) {
         matches = false;
@@ -116,7 +116,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     });
     return matches;
   };
-  
+
   //Apply filter
   var applyFilters = function (filters, configMap) {
     configMap.filteredList = [];
@@ -131,7 +131,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     }
     configMap.filterConfig.resultsCount = configMap.filteredList.length;
   };
-  
+
   // Common filter
   commonService.filterChangeLocal = function (filters, configMap) {
   configMap.filtersText = "";
@@ -140,7 +140,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     });
     applyFilters(filters, configMap);
   };
-  
+
   //Select/unselect single row of table
   commonService.selectItem = function (baseScope, item){
     if(baseScope.itemIds.indexOf(item.id) == -1){
@@ -163,7 +163,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       }
     }
   };
-  
+
   // Update row selection of table function
   commonService.updateSelection = function (baseScope) {
     if(baseScope.itemIds.length > 0){
@@ -176,7 +176,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       });
     }
   };
-  
+
   // get Table configuration
   commonService.getTableConfig = function(){
     return config = {
@@ -185,8 +185,8 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       fillLastPage: false
     };
   };
-  
-  
+
+
   // get resources
   commonService.getResources= function(resourceType){
     if(resourceType === 'Sensor variable'){
@@ -205,7 +205,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       return null;
     }
   }
-  
+
   // get Table configuration
   commonService.getQuery = function(){
     return query = {
@@ -215,7 +215,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       order: "asc"
     };
   };
-  
+
   //Apply filters
   commonService.updateFiltersChange = function (remoteScope, filters) {
     //Clears filter
@@ -247,10 +247,10 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     //move to page number 1 on filter change
     remoteScope.currentPage = 1;
     remoteScope.query.page=1;
-    
+
     remoteScope.getAllItems();
   };
-  
+
   //Update sort columns(orderBy)
   commonService.updateSortChange = function (remoteScope, sortId, isAscending) {
     if(isAscending){
@@ -261,21 +261,21 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     remoteScope.query.orderBy = sortId.id;
     remoteScope.getAllItems();
   };
-  
+
   //Update page change
   commonService.updatePageChange = function (remoteScope, newPage) {
     remoteScope.query.page = newPage;
     remoteScope.getAllItems();
   };
-  
+
   //Get min number
   commonService.getMin = function(item1, item2){
     return Math.min(item1, item2);
   };
-  
+
   //item for sensor actions
   //--------------------------------------------------
-  
+
   //Defined variable types list
   commonService.getSensorVariablesKnownList = function(){
     var definedVariableTypes = ["Status","Watt","Temperature","Humidity","Pressure","Forecast","Armed","Tripped","Lock status","Percentage","Weight","Stop","Up","Down","Rain","Rain rate",
@@ -283,7 +283,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     "Current","Voltage","Impedance"];
     return definedVariableTypes;
   };
-  
+
   //Forecast mapper
     var forecastMapper = [
         {
@@ -306,7 +306,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
           value:"na",
         },
       ];
-  
+
   commonService.getForecastValue = function(key){
     if(key === undefined){
       key = 'na';
@@ -320,7 +320,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     //return $filter('filter')($scope.forecastMapper, {id: key}, true)[0].value;
   };
 
-  
+
   //Sensor icons
     var sensorIcons = [
         { id:"na",value:"na"},{id:"Door",value:"fa fa-building-o"},{ id:"Motion",value:"fa fa-paw"},{ id:"Smoke",value:"wi wi-smoke"},{ id:"Binary",value:"fa fa-power-off"},{ id:"Dimmer",value:"fa fa-lightbulb-o"},
@@ -332,25 +332,25 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
         { id:"Sprinkler",value:"fa fa-star-o"},{ id:"Water leak",value:"fa fa-tint"},{ id:"Sound",value:"fa fa-volume-up"},{ id:"Vibration",value:"fa fa-star-o"},{ id:"Moisture",value:"fa fa-star-o"},
         { id:"Information",value:"fa fa-info"},{ id:"Gas",value:"fa fa-star-o"},{ id:"GPS",value:"fa fa-star-o"},
       ];
-  
+
   commonService.getSensorIcon = function(key){
     if(key === undefined){
       key = 'na';
     }
     return $filter('filter')(sensorIcons, {id: key}, true)[0].value;
   };
-  
-  
+
+
   //RGBA functions
   //Function to convert rgba format to hex color
-  commonService.rgba2hex = function rgb2hex(rgb){  
+  commonService.rgba2hex = function rgb2hex(rgb){
     rgb = rgb.replace("rgba","").replace("(","").replace(")","").split(",");
     return "#"+parseInt(rgb[0],10).toString(16)
       + parseInt(rgb[1],10).toString(16)
       + parseInt(rgb[2],10).toString(16)
       + parseInt((parseFloat(rgb[3],10)*255)).toString(16);
   };
-  
+
   //Function to convert hex format to RGBA color
   commonService.hex2rgba = function(hex){
     if(hex){
@@ -364,7 +364,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     }
     return undefined;
   };
-  
+
   //Get integer value for switch
   commonService.getInteger = function(value){
     if(!value){
@@ -373,7 +373,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       return parseInt(value);
     }
   };
-  
+
   //Switch settings
   commonService.mcbStyle = {
       handleWidth: "60px",
@@ -382,27 +382,27 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
       animate:true,
       size:"small",
     };
-    
+
   //validation methods
   //-----------------------
-  
+
   //Number validation
   commonService.isNumber = function (value) {
     if (isNaN(value)) {
       return false;
-    } 
+    }
     return true;
   };
-  
+
   //is contains space validation
   commonService.isContainsSpace = function (value) {
     if(value !== undefined){
       return !value.match(/\s/g);
     }
-    return true;    
+    return true;
   };
-  
-  //guid helper 
+
+  //guid helper
   var s4 = function() {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
@@ -412,7 +412,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
   commonService.guid = function() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   };
-  
+
   //get friendly time
   commonService.getTimestampJson = function(timestamp){
     var timestampJson = {};
@@ -435,12 +435,12 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     }
     return timestampJson;
   };
-  
+
   //get timestamp
   commonService.getTimestamp = function(timestampJson){
     return timestampJson.timeConstant * timestampJson.timestamp;
   };
-  
+
  return commonService;
 
 });

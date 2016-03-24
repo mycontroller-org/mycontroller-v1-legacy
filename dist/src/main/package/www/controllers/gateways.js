@@ -16,7 +16,7 @@
  */
 myControllerModule.controller('GatewaysController', function(alertService,
 $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper, CommonServices) {
-    
+
   //GUI page settings
   $scope.headerStringList = $filter('translate')('GATEWAYS_DETAIL');
   $scope.noItemsSystemMsg = $filter('translate')('NO_GATEWAYS_SETUP');
@@ -25,12 +25,12 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
@@ -57,7 +57,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -102,7 +102,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -144,15 +144,15 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
     ],
     onSortChange: sortChange
   };
-  
-  
+
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("gatewaysAddEdit", {'id':$scope.itemIds[0]});
     }
   };
-  
+
   //Enable items
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
@@ -162,11 +162,11 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
+        displayRestError.display(error);
+      });
     }
   };
-  
+
   //Disable items
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
@@ -177,10 +177,10 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
+      });
     }
   };
-  
+
   //Discover items
   $scope.discover = function () {
     if($scope.itemIds.length > 0){
@@ -189,10 +189,10 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
+      });
     }
   };
-  
+
   //Reload items
   $scope.reload = function () {
     if($scope.itemIds.length > 0){
@@ -201,7 +201,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
+      });
     }
   };
 
@@ -222,14 +222,14 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
-    }), 
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-  
-  
+
+
 });
 
 
@@ -239,26 +239,33 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
   $scope.gatewayTypes = TypesFactory.getGatewayTypes();
   $scope.cs = CommonServices;
-  
+
   if($stateParams.id){
     $scope.gateway = GatewaysFactory.get({"gatewayId":$stateParams.id});
   }
-  
+
   $scope.gatewaySerialDrivers = TypesFactory.getGatewaySerialDrivers();
-  
+
   $scope.updateTypeChange = function (){
-    $scope.gateway.variable1 = "";
-    $scope.gateway.variable2 = "";
-    $scope.gateway.variable3 = "";
-    $scope.gateway.variable4 = "";
-    $scope.gateway.variable5 = "";
-    $scope.gateway.variable6 = "";
-    $scope.gateway.variable7 = "";
-    $scope.gateway.variable8 = "";
-    $scope.gateway.variable9 = "";
-    $scope.gateway.variable10 = "";
+    if($scope.gateway.type === 'Serial'){
+      $scope.gateway.driver='';
+      $scope.gateway.portName='';
+      $scope.gateway.baudRate='';
+      $scope.gateway.retryFrequency='';
+    }else if($scope.gateway.type === 'Ethernet'){
+      $scope.gateway.host='';
+      $scope.gateway.port='';
+      $scope.gateway.aliveFrequency='';
+    }else if($scope.gateway.type === 'MQTT'){
+      $scope.gateway.brokerHost='';
+      $scope.gateway.clientId='';
+      $scope.gateway.topicsPublish='';
+      $scope.gateway.topicsSubscribe='';
+      $scope.gateway.username='';
+      $scope.gateway.password='';
+    }
   };
-  
+
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = $filter('translate')('ADD_GATEWAY');
@@ -266,7 +273,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   $scope.cancelButtonState = "gatewaysList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   $scope.save = function(){
       $scope.saveProgress = true;
     if($stateParams.id){
@@ -287,7 +294,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       });
     }
   }
-  
+
 });
 
 
@@ -297,7 +304,7 @@ myControllerModule.controller('GatewaysControllerDetail', function ($scope, $sta
   $scope.mchelper = mchelper;
   $scope.node = {};
   $scope.headerStringList = $filter('translate')('GATEWAY_DETAILS');
-  
+
   $scope.item = GatewaysFactory.get({"gatewayId":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"Gateway", "resourceId":$stateParams.id});
 });

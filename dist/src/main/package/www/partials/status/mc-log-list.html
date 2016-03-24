@@ -16,23 +16,23 @@
 
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="initialLog.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="initialLog.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
-    
+
     <!-- buttons -->
     <div style="margin-bottom: 10px;">
-        <button class="btn btn-default" ng-click="refreshLogs()" type="button" uib-tooltip="{{ 'REFRESH' | translate }}" tooltip-placement="top"><i class="fa fa-refresh"></i></button> 
+        <button class="btn btn-default" ng-click="refreshLogs()" type="button" uib-tooltip="{{ 'REFRESH' | translate }}" tooltip-placement="top"><i class="fa fa-refresh"></i></button>
     </div>
-        
-    <!-- 
+
+    <!--
     <span class="mc-log text-{{getLogLevel(log)}}" ng-repeat="log in logData track by $index">
       {{log}}
     </span>
@@ -42,5 +42,5 @@
     </pre>
 
   </div> <!-- Main Message -->
-  
+
 </div> <!-- Container-fluid -->

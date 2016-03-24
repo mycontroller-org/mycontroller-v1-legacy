@@ -16,7 +16,7 @@
  */
 myControllerModule.controller('TimersController', function(alertService,
 $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelper, CommonServices, $filter) {
-  
+
   //GUI page settings
   $scope.headerStringList = $filter('translate')('TIMERS_DETAIL');
   $scope.noItemsSystemMsg = $filter('translate')('NO_TIMERS_SETUP');
@@ -25,18 +25,18 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
   };
-  
-  
+
+
   if($stateParams.resourceType){
     $scope.query.resourceType = $stateParams.resourceType;
     $scope.query.resourceId = $stateParams.resourceId;
@@ -63,7 +63,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -74,7 +74,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -84,18 +84,33 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
         filterType: 'text'
       },
       {
-        id: 'resourceType',
-        title:  $filter('translate')('RESOURCE_TYPE'),
+        id: 'timerType',
+        title:  $filter('translate')('TIMER_TYPE'),
         placeholder: $filter('translate')('FILTER_BY_RESOURCE_TYPE'),
-        filterType: 'text'
+        filterType: 'select',
+        filterValues: ['Simple','Normal','Cron','Before sunrise','After sunrise','Before sunset','After sunset'],
+      },
+      {
+        id: 'frequency',
+        title:  $filter('translate')('FREQUENCY'),
+        placeholder: $filter('translate')('FILTER_BY_FREQUENCY'),
+        filterType: 'select',
+        filterValues: ['Daily','Weekly','Monthly'],
+      },
+      {
+        id: 'enabled',
+        title: $filter('translate')('ENABLED'),
+        placeholder: $filter('translate')('FILTER_BY_ENABLED'),
+        filterType: 'select',
+        filterValues: ['True','False'],
       }
     ],
     resultsCount: $scope.filteredList.length,
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
-  
+
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -115,8 +130,13 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
         sortType: 'text'
       },
       {
-        id: 'resourceType',
-        title:  $filter('translate')('RESOURCE_TYPE'),
+        id: 'timerType',
+        title:  $filter('translate')('TIMER_TYPE'),
+        sortType: 'text'
+      },
+      {
+        id: 'frequency',
+        title:  $filter('translate')('FREQUENCY'),
         sortType: 'text'
       },
       {
@@ -127,7 +147,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     ],
     onSortChange: sortChange
   };
-  
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
@@ -151,15 +171,15 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
 
-  
+
   //Enable items
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
@@ -169,11 +189,11 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
+        displayRestError.display(error);
+      });
     }
   };
-  
+
   //Disable items
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
@@ -184,11 +204,11 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
+      });
     }
   };
 
-  
+
 });
 
 myControllerModule.controller('TimersControllerAddEdit', function ($scope, TypesFactory, CommonServices, alertService, TimersFactory, mchelper, $stateParams, $state, $filter, displayRestError) {
@@ -200,10 +220,10 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
     if($stateParams.id){
       TimersFactory.get({"id":$stateParams.id},function(response) {
         $scope.timer = response;
-        
+
         //Update Resource Type
         $scope.dspResources = $scope.getResources($scope.timer.resourceType);
-        
+
         //Update frequency data
         if($scope.timer.timerType === 'Simple'){
           var array = $scope.timer.frequencyData.split(',');
@@ -218,15 +238,15 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
             $scope.weeklyFrequencyData = $scope.timer.frequencyData;
           }else if($scope.timer.frequencyType === 'Monthly'){
             $scope.monthlyFrequencyData = $scope.timer.frequencyData;
-          } 
+          }
         }
-        
+
          //Update payload operations
         if($scope.timer.resourceType !== 'Sensor variable'){
           $scope.updatePayloadOperations($scope.timer.resourceType);
         }
-        
-        //Update date    
+
+        //Update date
         if($scope.timer.timerType !== 'Simple' || $scope.timer.timerType !== 'Cron'){
           $scope.lTriggerTime = new Date($scope.timer.triggerTime);
         }
@@ -243,7 +263,7 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
         displayRestError.display(error);
       });
   }
-  
+
   //pre load
   $scope.dailyFrequencyData = [];
   $scope.monthDays = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'];
@@ -251,22 +271,24 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   $scope.minutes = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31',
                     '32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59'];
 
+  $scope.operations = TypesFactory.getOperations();
+
   $scope.timerTypes = TypesFactory.getTimerTypes();
   $scope.timerFrequencyTypes = TypesFactory.getTimerFrequencies();
   $scope.timerWeekDays = TypesFactory.getTimerWeekDays();
-  
+
   $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "timer", "isSendPayload":true});
-  
+
   //Get resources
   $scope.getResources = function(resourceType){
     return CommonServices.getResources(resourceType);
   }
-  
+
   //Update Payload operations
   $scope.updatePayloadOperations= function(resourceType){
-    $scope.payloadOperations = TypesFactory.getPayloadOperations({"resourceType":resourceType}); 
+    $scope.payloadOperations = TypesFactory.getPayloadOperations({"resourceType":resourceType});
   }
-  
+
   //Get trigger time
   $scope.setTriggerTime = function(isDefault){
     if(!$scope.lTriggerTime){
@@ -274,12 +296,12 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
       if(isDefault){
         $scope.lTriggerTime.setHours(00,00,00,00);
       }
-    }    
+    }
     $scope.lTriggerTime.setFullYear(0000,00,00);
   };
-  
+
   $scope.frequencyData;
-  //Update Frequency Data    
+  //Update Frequency Data
   $scope.updateFrequencyData = function(value1,value2){
     if($scope.timer.timerType === 'Simple'){
     }else if($scope.timer.timerType === 'Cron'){
@@ -291,11 +313,11 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
         $scope.frequencyData = value1;
       }else if($scope.timer.frequencyType === 'Monthly'){
         $scope.frequencyData = value1;
-      } 
+      }
     }
     console.log('FrequencyData:'+$scope.frequencyData);
   };
-  
+
   //Update daily frequency
   $scope.updateFrequency = function() {
     if($scope.timer.frequencyType === 'Daily' && $scope.dailyFrequencyData.length == 0){
@@ -304,12 +326,12 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
       });
     }
   };
-  
+
   //Convert as display string
   $scope.getDateTimeDisplayFormat = function (newDate) {
     return $filter('date')(newDate, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
   };
-  
+
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = $filter('translate')('ADD_TIMER');
@@ -317,13 +339,13 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   $scope.cancelButtonState = "timersList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   //Save data
   $scope.save = function(){
-    
+
     //Clear update required values
     $scope.timer.frequencyData = null;
-    
+
     //Update validity from/to
     if($scope.vFromDate){
       $scope.timer.validityFrom = $scope.vFromDate.getTime();
@@ -331,7 +353,7 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
     if($scope.vToDate){
       $scope.timer.validityTo = $scope.vToDate.getTime();
     }
-    
+
     //Update Frequency Data
     if($scope.timer.timerType === 'Simple'){
       $scope.timer.frequencyData = ($scope.rpInterval*1000)+','+$scope.rpCount;
@@ -344,9 +366,9 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
         $scope.timer.frequencyData = $scope.weeklyFrequencyData;
       }else if($scope.timer.frequencyType === 'Monthly'){
         $scope.timer.frequencyData = $scope.monthlyFrequencyData;
-      } 
+      }
     }
-    
+
     //Update Time
     if($scope.timer.timerType === 'Simple' || $scope.timer.timerType === 'Cron'){
       $scope.timer.triggerTime = null;

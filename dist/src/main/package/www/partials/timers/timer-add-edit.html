@@ -16,37 +16,37 @@
 
 -->
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-hide="resourceTypes.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="resourceTypes.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-add-update.html'"></div>
-  
+
     <div><!-- div-main -->
       <form class="form-horizontal" name="mcForm">
         <div class="col-md-6">
-          
+
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
             <div class="col-sm-10 mc-form-fixer-left">
               <input class="form-control" placeholder="{{ 'TIMER_NAME' | translate }}" ng-model="timer.name" required />
             </div>
           </div>
-          
+
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'ENABLED' | translate }}</label>
             <div class="col-sm-10">
              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="timer.enabled" checked>
             </div>
           </div>
-          
+
           <legend><small>{{ 'TYPE' | translate }}</small></legend>
-          
+
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TIMER_TYPE' | translate }}</label>
             <div class="col-sm-3 mc-form-fixer-left">
@@ -54,7 +54,7 @@
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
-            
+
             <div class="col-sm-2 mc-form-fixer" ng-if="timer.timerType === 'Normal' || timer.timerType === 'Before sunrise' || timer.timerType === 'After sunrise' || timer.timerType === 'Before sunset' || timer.timerType === 'After sunset'">
               <select class="form-control" pf-select ng-options="tft.displayName as tft.displayName for tft in timerFrequencyTypes" ng-change="updateFrequency()" ng-model="timer.frequencyType" required >
                 <option value="" ng-hide="true"></option>
@@ -75,12 +75,12 @@
                 <option value="" ng-hide="true">{{ 'DAY' | translate }}</option>
               </select>
             </div>
-          
+
             <div class="col-sm-7 mc-form-fixer" ng-if="timer.timerType === 'Cron'">
               <input class="form-control" placeholder="{{ 'CRON_EXPRESSION' | translate }}" ng-model="$parent.cronFrequencyData" required />
             </div>
-            
-            
+
+
             <div ng-if="timer.timerType === 'Simple'">
               <div class="col-sm-4 mc-form-fixer">
                 <input class="form-control" placeholder="{{ 'INTERVAL_IN_SECONDS' | translate }}" ng-model="$parent.rpInterval" pf-validation="cs.isNumber(input)" required />
@@ -91,9 +91,9 @@
                 <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
             </div>
-            
+
           </div>
-          
+
           <!-- Time -->
           <div ng-if="timer.timerType === 'Normal'">
             <div class="form-group">
@@ -103,7 +103,7 @@
               </div>
             </div>
           </div>
-          
+
           <div ng-if="timer.timerType === 'Before sunrise' || timer.timerType === 'Before sunset' || timer.timerType === 'After sunrise' || timer.timerType === 'After sunset'">
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'TIME_OFFSET_HH_MM_SS' | translate }}</label>
@@ -112,43 +112,13 @@
               </div>
             </div>
           </div>
-          
-          <legend><small>{{ 'RESOURCE' | translate }}</small></legend>
-          
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{{ 'RESOURCE' | translate }}</label>
-            <div class="col-sm-3 mc-form-fixer-left">
-              <select class="form-control" pf-select  ng-options="rT.displayName as rT.displayName for rT in resourceTypes" 
-                ng-change="dspResources=getResources(timer.resourceType);timer.resourceId = timer.payload='';updatePayloadOperations(timer.resourceType)" ng-model="timer.resourceType" required>
-                <option value="" ng-hide="true"></option>
-              </select>
-            </div>
-            <div class="col-sm-7 mc-form-fixer" ng-if="timer.resourceType">
-              <select class="form-control" pf-select data-live-search="true" ng-model="timer.resourceId" required>
-                <option value="" ng-hide="true"></option>
-                <option ng-repeat="res in dspResources" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == timer.resourceId"></option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{{ 'PAYLOAD' | translate }}</label>
-            <div class="col-sm-10 mc-form-fixer-left" ng-if="timer.resourceType === 'Sensor variable'">
-              <input class="form-control" placeholder="{{ 'PAYLOAD' | translate }}" ng-model="timer.payload" required />
-            </div>
-            <div class="col-sm-3 mc-form-fixer-left" ng-if="timer.resourceType !== 'Sensor variable'">
-              <select class="form-control" pf-select  ng-options="pos.displayName as pos.displayName for pos in payloadOperations" ng-model="timer.payload" required> 
-                <option value="" ng-hide="true"></option>
-              </select>
-            </div>
-          </div>
 
-          
+
           <legend><small>{{ 'VALIDITY' | translate }}</small></legend>
           <!-- Validity -->
           <div class="form-group">
             <label class="col-sm-2 control-label"></label>
-                        
+
             <div class="col-sm-5 mc-form-fixer-left">
               <div class="dropup">
                 <a class="dropdown-toggle" id="datetime1" role="button" data-toggle="dropdown" data-target="#" href="">
@@ -164,7 +134,7 @@
                 </ul>
               </div>
             </div>
-            
+
             <div class="col-sm-5 mc-form-fixer">
               <div class="dropup">
                 <a class="dropdown-toggle" id="datetime2" role="button" data-toggle="dropdown" data-target="#" href="">
@@ -176,18 +146,37 @@
                   </div>
                 </a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                  <datetimepicker data-ng-model="vToDate" data-on-set-time="newDate.setSeconds(newDate.getSeconds() + 59); vToString = getDateTimeDisplayFormat(newDate)" 
+                  <datetimepicker data-ng-model="vToDate" data-on-set-time="newDate.setSeconds(newDate.getSeconds() + 59); vToString = getDateTimeDisplayFormat(newDate)"
                     data-datetimepicker-config="{ dropdownSelector: '#datetime2', minuteStep:1 }"/>
                 </ul>
               </div>
             </div>
           </div>
 
+          <legend><small>{{ 'OPERATIONS' | translate }}</small></legend>
 
-          
+          <div class="form-group">
+            <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-10">
+              <div class="card-pf card-pf-accented">
+                <div class="card-pf-body">
+                  <div>
+                    <select ng-options="ls.id as ls.displayName for ls in operations" multiple
+                      ng-model="timer.operationIds" bs-duallistbox
+                      move-on-select="false"
+                      filter="true"
+                      select-min-height="200"
+                      ></select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>
-  
+
         </div>
       </form>
     </div><!-- div-main -->

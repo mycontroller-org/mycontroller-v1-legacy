@@ -21,12 +21,12 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
 
   //get all items
   $scope.getAllItems = function(){
@@ -52,7 +52,7 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
     CommonServices.filterChangeLocal(filters, $scope);
     $scope.itemName = null;
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -66,7 +66,7 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
    //Select item
   $scope.selectItem = function (item) {
     $scope.restoreItem = item;
@@ -89,8 +89,8 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
         $scope.disableRunBackup = false;
     });
   };
-  
-  
+
+
   //Restore
   $scope.restoreItemFn = function (size) {
     var addModalInstance = $uibModal.open({
@@ -105,13 +105,13 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
         alertService.success($filter('translate')('RESTORE_INITIATED'));
       },function(error){
         displayRestError.display(error);
-      });      
-    }), 
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-  
+
   //Delete Item
   $scope.delete = function (size) {
     var modalInstance = $uibModal.open({
@@ -129,8 +129,8 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
         $scope.itemName = null;
       },function(error){
         displayRestError.display(error);
-      }); 
-    }), 
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -151,7 +151,7 @@ myControllerModule.controller('BackupControllerAutoSettings', function ($scope, 
   $scope.item = {};
   $scope.item.enabled = false;
   $scope.cs = CommonServices;
-  
+
   $scope.resetSettings = function(){
     BackupRestoreFactory.getBackupSettings(function(response) {
         $scope.item = response;
@@ -176,7 +176,7 @@ myControllerModule.controller('BackupControllerAutoSettings', function ($scope, 
 
   //GUI page settings
   $scope.saveProgress = false;
-  
+
   //Load details
   $scope.resetSettings();
 
@@ -184,7 +184,7 @@ myControllerModule.controller('BackupControllerAutoSettings', function ($scope, 
     if($scope.item.enabled){
       //Update time
       $scope.item.interval = $scope.intervalLocal * $scope.intervalTimeConstant;
-    }    
+    }
     $scope.saveProgress = true;
     BackupRestoreFactory.updateBackupSettings($scope.item,function(response) {
       $scope.saveProgress = false;

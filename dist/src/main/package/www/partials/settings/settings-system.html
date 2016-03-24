@@ -17,35 +17,35 @@
 -->
 <div class="container mc-top-space-2x">
 
-  <!-- Loading icon disaplay --> 
+  <!-- Loading icon disaplay -->
   <div ng-hide="controllerSettings.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-show="controllerSettings.$resolved"> <!-- Main Message -->
-    
+
     <!-- Location settings -->
     <div class="col-md-12">
       <div class="card-pf">
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-map-marker fa-lg"></i> {{ 'LOCATION' | translate }}</h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal" name="mcForm">
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label"><i class="wi wi-sunrise mc-icon-2x" uib-tooltip="{{ 'SUNRISE' | translate }}" tooltip-placement="left"></i></label>
               <div class="col-sm-10">
                 <span class="mc-icon">{{locationSettings.sunriseTime | date:mchelper.cfg.timeFormatWithoutSeconds : mchelper.cfg.timezone}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label"><i class="wi wi-sunset mc-icon-2x" uib-tooltip="{{ 'SUNSET' | translate }}" tooltip-placement="left"></i></label>
               <div class="col-sm-10">
                 <span class="mc-icon">{{locationSettings.sunsetTime | date:mchelper.cfg.timeFormatWithoutSeconds : mchelper.cfg.timezone}}</span>
               </div>
             </div>
-            
-            
+
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'LATITUDE' | translate }}</label>
               <div class="col-sm-5">
@@ -54,7 +54,7 @@
                 <div ng-hide="editEnable.location">{{locationSettings.latitude}}</div>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'LONGITUDE' | translate }}</label>
               <div class="col-sm-5">
@@ -63,7 +63,7 @@
                 <div ng-hide="editEnable.location">{{locationSettings.longitude}}</div>
               </div>
             </div>
-            
+
           </form>
 
           <div class="form-actions text-right">
@@ -77,28 +77,28 @@
         </div>
       </div>
     </div>
-      
+
     <!-- Controller settings -->
     <div class="col-md-12">
       <div class="card-pf">
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> {{ 'MY_CONTROLLER' | translate }}</h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal" name="mcFormController">
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'VERSION' | translate }}</label>
               <div class="col-sm-10">
                 <span class="mc-icon">{{controllerSettings.version}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'DATABASE_VERSION' | translate }}</label>
               <div class="col-sm-10">
                 <span class="mc-icon">{{controllerSettings.dbVersion}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'DASHBOARD_LIMIT' | translate }}</label>
               <div class="col-sm-5" ng-hide="editEnable.controller">
@@ -111,7 +111,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'WIDGET_IMAGE_FILES_DISK_LOCATION' | translate }}</label>
               <div class="col-sm-5" ng-hide="editEnable.controller">
@@ -123,8 +123,8 @@
                 </div>
               </div>
             </div>
-            
-            
+
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'GLOBAL_PAGE_REFRESH_TIME' | translate }}</label>
               <div class="col-sm-5" ng-hide="editEnable.controller">
@@ -140,7 +140,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'NODES_ALIVE_CHECK_INTERVAL' | translate }}</label>
               <div class="col-sm-5" ng-hide="editEnable.controller">
@@ -156,24 +156,24 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'LANGUAGE' | translate }}</label>
               <div class="col-sm-5">
                 <div ng-show="editEnable.controller">
-                  <select class="form-control" pf-select  ng-options="lg.displayName as lg.displayName for lg in languages" ng-model="controllerSettings.language"> 
+                  <select class="form-control" pf-select  ng-options="lg.displayName as lg.displayName for lg in languages" ng-model="controllerSettings.language">
                     <option value="" ng-hide="true"></option>
                   </select>
                 </div>
                 <span ng-hide="editEnable.controller">{{controllerSettings.language}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'TIME_FORMAT' | translate }}</label>
               <div class="col-sm-5">
                 <div ng-show="editEnable.controller">
-                  <select class="form-control" pf-select ng-model="controllerSettings.timeFormat"> 
+                  <select class="form-control" pf-select ng-model="controllerSettings.timeFormat">
                     <option value="12 hours">{{ '12_HOURS' | translate }}</option>
                     <option value="24 hours">{{ '24_HOURS' | translate }}</option>
                   </select>
@@ -181,12 +181,12 @@
                 <span ng-hide="editEnable.controller">{{controllerSettings.timeFormat.toUpperCase().replace(" ", "_") | translate}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'UNITS_CONFIGURATION' | translate }}</label>
               <div class="col-sm-5">
                 <div ng-show="editEnable.controller">
-                  <select class="form-control" pf-select ng-model="controllerSettings.unitConfig"> 
+                  <select class="form-control" pf-select ng-model="controllerSettings.unitConfig">
                     <option value="Metric">{{ 'METRIC' | translate }}</option>
                     <option value="Imperial">{{ 'IMPERIAL' | translate }}</option>
                   </select>
@@ -194,22 +194,22 @@
                 <span ng-hide="editEnable.controller">{{controllerSettings.unitConfig.toUpperCase() | translate}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'GRANT_ACCESS_TO_CHILD_RESOURCES_IN_ROLES' | translate }}</label>
               <div class="col-sm-5">
                 <input bs-switch ng-change="editEnable.controller = true" ng-model="controllerSettings.grantAccessToChildResources" type="checkbox"
                       switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
-                      switch-off-color="default" switch-on-color="primary" ng-true-value="true" 
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
                       ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'RESOURCES_LOG_LEVEL' | translate }}</label>
               <div class="col-sm-5">
                 <div ng-show="editEnable.controller">
-                  <select class="form-control" pf-select  ng-options="ll.displayName as ll.displayName for ll in logLevels" ng-model="controllerSettings.resourcesLogLevel"> 
+                  <select class="form-control" pf-select  ng-options="ll.displayName as ll.displayName for ll in logLevels" ng-model="controllerSettings.resourcesLogLevel">
                     <option value="" ng-hide="true"></option>
                   </select>
                 </div>
@@ -224,8 +224,8 @@
                 <p ng-hide="editEnable.controller" ng-bind-html="controllerSettings.loginMessage"></span>
               </div>
             </div>
-            
-            
+
+
           </form>
 
           <div class="form-actions text-right">

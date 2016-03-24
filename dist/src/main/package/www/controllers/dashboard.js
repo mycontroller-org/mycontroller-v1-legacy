@@ -21,7 +21,7 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
   $scope.showLoading = false;
   $scope.showLoadingMain = false;
   $scope.mchelper = mchelper;
-  
+
   $scope.updateDashboard = function(){
     DashboardFactory.getAll({'lessInfo':true}, function(responseDashboards){
       $scope.dashboards = $filter('orderBy')(responseDashboards, 'id', false);
@@ -37,9 +37,9 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
         $scope.model.titleTemplateUrl = "partials/dashboard/dashboard-title.html";
         $scope.selectedName = $scope.model.name;
       });
-    });  
+    });
   };
-  
+
   //Initial load
   $scope.updateDashboard();
 
@@ -55,16 +55,16 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
       $scope.showLoading = false;
     });
   };
-  
+
   $scope.createNewDashboad = function(){
     if($scope.dashboards.length < mchelper.cfg.dashboardLimit){
       DashboardFactory.get({'getNew':true,'title':$filter('translate')('NEW_DASHBOARD')},function(response){
         //Update items
         $scope.updateDashboard();
       });
-    }    
+    }
   };
-  
+
     //Delete item(s)
   $scope.deleteDashboad = function (size) {
     if($scope.dashboards.length == 1){
@@ -86,12 +86,12 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
         $scope.updateDashboard();
       },function(error){
         displayRestError.display(error);
-      }); 
-    }), 
+      });
+    }),
     function () {
     }
   };
-  
+
  var eventFired = function (event, name, model) {
         //$scope.eventsFired.push(event);
         //console.log(angular.toJson(model));

@@ -38,7 +38,7 @@
     <!-- internal dependencies  -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>mycontroller-commons</artifactId>
+      <artifactId>mycontroller-core</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

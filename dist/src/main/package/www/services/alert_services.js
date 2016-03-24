@@ -19,9 +19,9 @@
 //https://coderwall.com/p/r_bvhg/angular-ui-bootstrap-alert-service-for-angular-js
 
 myControllerModule.factory('alertService', function() {
-    
+
     var alertCfg = {};
-    
+
     alertCfg.displayTemplate = '<div class="col-xs-11 col-sm-3 toast-pf alert alert-{0}  alert-dismissable">' +
                             '<button type="button" class="close" data-dismiss="alert" data-notify="dismiss" aria-hidden="true">' +
                               '<span class="pficon pficon-close"></span>' +
@@ -33,7 +33,7 @@ myControllerModule.factory('alertService', function() {
     alertCfg.placement = "top";
     alertCfg.delay = 1000;
     alertCfg.timer = 1000;
-    
+
     return alertService = {
       default: function(msg) {
           $.notify({
@@ -122,8 +122,8 @@ myControllerModule.factory('displayRestError', function(alertService){
         if(error.data.errorMessage != null){
           displayMessage = error.status +': '+ error.statusText+'<br>'+error.data.errorMessage;
         }else{
-         displayMessage = error.status +': '+ error.statusText; 
-        }  
+         displayMessage = error.status +': '+ error.statusText;
+        }
       }else if(data != null){
         displayMessage = error.status +': '+ error.statusText;
       }

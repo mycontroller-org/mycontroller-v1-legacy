@@ -91,7 +91,7 @@ Features available in https://github.com/mycontroller-org/mycontroller/releases/
  - Inbuilt MQTT broker
  - Supports multiple gateways
  - and many more
- 
+
 == Installation
 
 ====== Download(executable bundle),
@@ -175,7 +175,7 @@ Executable scripts are located in `mycontroller/bin/`
     - Stop  : `Ctrl+C`
 
 * Other Platforms
-    
+
 ```
 java -Xms8m -Xmx40m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -jar ../lib/mycontroller-standalone-0.0.3-alpha1-single.jar
 ```

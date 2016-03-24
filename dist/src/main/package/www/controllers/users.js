@@ -25,12 +25,12 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
@@ -57,7 +57,7 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -68,7 +68,7 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -94,7 +94,7 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -126,15 +126,15 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
     ],
     onSortChange: sortChange
   };
-  
-  
+
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("settingsUsersAddEdit", {'id':$scope.itemIds[0]});
     }
   };
-  
+
   //Delete item(s)
   $scope.delete = function (size) {
     var modalInstance = $uibModal.open({
@@ -152,13 +152,13 @@ $scope, SecurityFactory, $state, $uibModal, displayRestError, mchelper, CommonSe
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
-    }), 
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-  
+
 });
 
 
@@ -169,7 +169,7 @@ myControllerModule.controller('UsersControllerAddEdit', function ($scope, $state
   $scope.item = {};
   $scope.item.user = {};
   $scope.item.user.enabled = true;
-  
+
   if($stateParams.id){
     SecurityFactory.getUser({"id":$stateParams.id},function(response) {
         $scope.item = response;
@@ -185,7 +185,7 @@ myControllerModule.controller('UsersControllerAddEdit', function ($scope, $state
   $scope.cancelButtonState = "settingsUsersList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   //Pre load
   $scope.roles = SecurityFactory.getAllRolesSimple();
 
@@ -217,7 +217,7 @@ myControllerModule.controller('ProfileControllerUpdate', function ($scope, $stat
   $scope.item = {};
   $scope.item.user = {};
   $scope.item.user.enabled = true;
-  
+
   $scope.resetProfile = function(){
     SecurityFactory.getProfile(function(response) {
         $scope.item = response;
@@ -238,7 +238,7 @@ myControllerModule.controller('ProfileControllerUpdate', function ($scope, $stat
   $scope.cancelButtonState = "dashboard"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   //Load self details
   $scope.resetProfile();
 

@@ -40,6 +40,7 @@ var myControllerModule = angular.module('myController',[
   'xeditable',
   'angularUtils.directives.dirPagination',
   'frapontillo.bootstrap-duallistbox',
+  'angularMoment',
   'adf',
   'adf.structures.base',
   'adf.widget.myc-sen-vars',
@@ -64,8 +65,8 @@ myControllerModule.constant("mchelper", {
 myControllerModule.config(function($stateProvider, $urlRouterProvider) {
   //For any unmatched url, redirect to /dashboard
   $urlRouterProvider.otherwise('/dashboard');
-  
-	$stateProvider
+
+  $stateProvider
     .state('dashboard', {
       url:"/dashboard",
       templateUrl: "partials/dashboard/dashboard.html",
@@ -136,31 +137,31 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       data: {
         requireLogin: true
       }
-    }).state('alarmsList', {
-      url:"/resources/alarms/list/:resourceType/:resourceId",
-      templateUrl: "partials/alarms/alarms-list.html",
-      controller: "AlarmsController",
+    }).state('rulesList', {
+      url:"/resources/rules/list/:resourceType/:resourceId",
+      templateUrl: "partials/rule-engine/rules-list.html",
+      controller: "RuleEngineController",
        data: {
         requireLogin: true
       }
-    }).state('alarmsAddEdit', {
-      url:"/resources/alarms/addedit/:id",
-      templateUrl: "partials/alarms/alarm-add-edit.html",
-      controller: "AlarmsControllerAddEdit",
+    }).state('rulesAddEdit', {
+      url:"/resources/rules/addedit/:id",
+      templateUrl: "partials/rule-engine/rules-add-edit.html",
+      controller: "RuleEngineControllerAddEdit",
        data: {
         requireLogin: true
       }
-    }).state('alarmsNotificationsList', {
-      url:"/resources/notifications/list",
-      templateUrl: "partials/notifications/notifications-list.html",
-      controller: "NotificationsController",
+    }).state('operationsList', {
+      url:"/resources/operations/list",
+      templateUrl: "partials/operations/operations-list.html",
+      controller: "OperationsController",
        data: {
         requireLogin: true
       }
-    }).state('alarmsNotificationsAddEdit', {
-      url:"/resources/notifications/addedit/:id",
-      templateUrl: "partials/notifications/notification-add-edit.html",
-      controller: "NotificationsControllerAddEdit",
+    }).state('operationsAddEdit', {
+      url:"/resources/operations/addedit/:id",
+      templateUrl: "partials/operations/operations-add-edit.html",
+      controller: "OperationsControllerAddEdit",
        data: {
         requireLogin: true
       }
@@ -305,9 +306,9 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     })
-    
-    
-    
+
+
+
     .state('statusSystem', {
       url:"/status/system",
       templateUrl: "partials/status/system-status.html",
@@ -316,8 +317,8 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     })
-    
-    
+
+
     .state('settingsSystem', {
       url:"/settings/system",
       templateUrl: "partials/settings/settings-system.html",
@@ -417,10 +418,10 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     })
-    
-    
-    
-    
+
+
+
+
     .state('users', {
       url:"/settings/users",
       templateUrl: "partials/users/users.html",
@@ -498,7 +499,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       data: {
         requireLogin: false
       },
-      params: { 
+      params: {
       'toState': 'dashboard', // default state to proceed to after login
       'toParams': {}
     },
@@ -511,8 +512,8 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
     $scope.isCollapsed = true;
     $scope.mchelper = mchelper;
     $scope.$state = $state;
-    
-    $scope.isAuthenticated = function () { 
+
+    $scope.isAuthenticated = function () {
         return mchelper.internal.currentUser;
     };
 
@@ -538,12 +539,12 @@ myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper,
   if(!mchelper){
     CommonServices.saveMchelper(CommonServices.loadMchelper());
   };
-  
+
   if(mchelper.cfg){
     $translate.use(mchelper.cfg.languageId);
   }
 
-  
+
   if (mchelper.internal.currentUser) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + mchelper.internal.currentUser.authdata; // jshint ignore:line
   }
@@ -605,9 +606,9 @@ myControllerModule.controller('LoginController',
                         });
                       });
                     },function(error){
-                      displayRestError.display(error);            
+                      displayRestError.display(error);
                     });
-                    //$state.go('dashboard'); 
+                    //$state.go('dashboard');
                     $state.go($state.params.toState, $state.params.toParams);
                 } else {
                     if(authResponse.message){
@@ -620,7 +621,7 @@ myControllerModule.controller('LoginController',
             });
         };
     });
-    
+
 myControllerModule.filter('millSecondsToTimeString', function() {
   return function(millseconds) {
     var seconds = Math.floor(millseconds / 1000);
@@ -643,7 +644,7 @@ myControllerModule.filter('millSecondsToTimeString', function() {
     }
     return timeString;
   }
-});    
+});
 
 myControllerModule.filter('byteToMBsizeConvertor', function() {
   return function(sizeInByte) {
@@ -681,7 +682,7 @@ myControllerModule.filter('mcResourceRepresentation', function() {
                .replace(/\[S\]:/g, '<i class="fa fa-eye"></i> ')
                .replace(/\[SV\]:/g, '')
                .replace(/\[T\]:/g, '<i class="fa fa-clock-o"></i> ')
-               .replace(/\[AD\]:/g, '<i class="fa fa-bell-o"></i> ');
+               .replace(/\[RD\]:/g, '<i class="fa fa-cogs"></i> ');
   }
 });
 
@@ -693,10 +694,10 @@ myControllerModule.filter('mcHtml', function($sce) {
     };
 });
 
-/** 
+/**
  * i18n Language support
  * */
- 
+
 myControllerModule.config(function($translateProvider) {
   // Enable escaping of HTML
   //$translateProvider.useSanitizeValueStrategy('sanitize');
@@ -706,7 +707,7 @@ myControllerModule.config(function($translateProvider) {
     suffix: '.json'
   });
   $translateProvider.preferredLanguage('en_us');
-  
+
 });
 
 

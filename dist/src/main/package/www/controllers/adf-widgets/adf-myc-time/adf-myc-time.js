@@ -40,19 +40,19 @@ angular.module('adf.widget.myc-time', [])
   })
   .controller('mycTimeController', function($scope, $interval, config, mchelper, $filter, StatusFactory){
     var mycTime = this;
-    
+
     mycTime.isSyncing = false;
     mycTime.showLoading = true;
     mycTime.mycTimestamp = {};
-    
-    
+
+
     function updateDateTime(){
       mycTime.time = $filter('date')(mycTime.mycTimestamp.timestamp, mchelper.cfg.timeFormat, mchelper.cfg.timezone);
       mycTime.date = $filter('date')(mycTime.mycTimestamp.timestamp, config.datePattern, mchelper.cfg.timezone);
       mycTime.timezone = mchelper.cfg.timezone;
       mycTime.timezoneString = mchelper.cfg.timezoneString;
     };
-    
+
     function getTimestampFromServer(){
       mycTime.isSyncing = true;
       StatusFactory.getTimestamp(function(response){
@@ -64,7 +64,7 @@ angular.module('adf.widget.myc-time', [])
           }
       });
     };
-    
+
     function setDateAndTime(){
       if(mycTime.isSyncing){
         return;
@@ -78,7 +78,7 @@ angular.module('adf.widget.myc-time', [])
         updateDateTime();
       }
     }
-    
+
     getTimestampFromServer();
     setDateAndTime();
 

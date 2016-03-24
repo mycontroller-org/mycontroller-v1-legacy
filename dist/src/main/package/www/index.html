@@ -17,106 +17,107 @@
 -->
 <!DOCTYPE html>
 <html lang="en" ng-app="myController" class="no-js" id="rootId">
-  
+
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <title>MyController.org - The Open Source Controller</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="images/favicon.ico">
-    
+
     <!-- CSS Files -->
     <!-- ********************************************************** -->
     <!-- PatternFly Styles -->
     <!-- Note: No other CSS files are needed regardless of what other JS packages located in patternfly/components that you decide to pull in -->
     <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly.min.css" />
     <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly-additions.min.css" />
-    
+
     <!-- Angular-PatternFly Styles -->
     <link rel="stylesheet" href="libs/angular-patternfly/angular-patternfly.min.css" />
-    
+
     <!-- Font awesome icons-->
     <link rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css">
-    
+
     <!-- weather icons -->
     <link rel="stylesheet" type="text/css" href="libs/weather-icons/css/weather-icons.min.css">
-    
+
     <!-- angular-xeditable -->
     <link rel="stylesheet" type="text/css" href="libs/angular-xeditable/css/xeditable.css">
-    
+
     <!-- https://github.com/buberdds/angular-bootstrap-colorpicker -->
     <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-colorpicker/colorpicker.min.css"/>
-    
+
     <!-- https://github.com/dalelotts/angular-bootstrap-datetimepicker -->
     <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-datetimepicker/css/datetimepicker.css"/>
-    
+
     <!-- nvd3 chart -->
     <link rel="stylesheet" type="text/css" href="libs/nvd3/nv.d3.min.css">
-    
+
     <!-- bootstrap-duallistbox -->
     <link rel="stylesheet" type="text/css" href="libs/bootstrap-duallistbox/dist/bootstrap-duallistbox.min.css">
-    
+
     <!-- angular-dashboard-framework -->
     <link rel="stylesheet" type="text/css" href="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.css">
-    
-    
+
+
     <!-- Application specific css -->
     <link rel="stylesheet" type="text/css" href="app.css">
-    
-    
+
+
     <!-- JS Files -->
     <!-- ********************************************************** -->
-  
+
     <!-- jQuery -->
     <script src="libs/jquery/dist/jquery.min.js"></script>
-    
+
     <!-- Bootstrap JS --> <!-- If I remove this, main menu drop down is not working as expected! -->
     <script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
-    
+
     <!-- C3, D3 - Charting Libraries -->
     <script src="libs/c3/c3.min.js"></script>
     <script src="libs/d3/d3.min.js"></script>
-    
+
     <!-- PatternFly Custom Componets -  Sidebar, Popovers and Datatables Customizations -->
     <!-- Note: jquery.dataTables.js must occur in the html source before patternfly*.js.-->
     <script src="libs/patternfly/dist/js/patternfly.min.js"></script>
-    
+
     <!-- Bootstrap Select -->
     <script src="libs/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-    
+
     <!-- Bootstrap Switch -->
     <script src="libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
-    
+
     <!-- Angular Application? You May Want to Consider Pulling Angular-PatternFly And Angular-UI Bootstrap instead of bootstrap.js -->
     <!-- See https://github.com/patternfly/angular-patternfly for more information -->
 
     <!-- AngularJS -->
     <script src="libs/angular/angular.min.js"></script>
-    
+
     <!-- Bootstrap JS -->
     <script src="libs/angular-bootstrap/ui-bootstrap-tpls-0.14.3.min.js"></script>
-    
+
     <script src="libs/lodash/lodash.min.js"></script>
 
-    
+
     <!-- Angular-PatternFly  -->
     <script src="libs/angular-patternfly/angular-patternfly.min.js"></script>
-    
-    
+
+
     <!-- xeditable JS -->
     <script src="libs/angular-xeditable/js/xeditable.min.js"></script>
-    
+
     <!-- pagination -->
     <script src="libs/angularUtils-pagination/dirPagination.js"></script>
 
-  
+
     <!-- Third party js-->
     <script src="libs/angular-ui-router/angular-ui-router.min.js"></script>
     <script src="libs/angular-resource/angular-resource.min.js"></script>
     <script src="libs/angular-base64/angular-base64.min.js"></script>
     <script src="libs/remarkable-bootstrap-notify/bootstrap-notify.min.js"></script>
-    <script src="libs/angular-cookies/angular-cookies.min.js"></script> 
+    <script src="libs/angular-cookies/angular-cookies.min.js"></script>
     <script src="libs/moment/moment.min.js"></script>
+    <script src="libs/angular-moment/angular-moment.min.js"></script>
     <script src="libs/angular-bootstrap-datetimepicker/js/datetimepicker.js"></script>
     <script src="libs/angular-bootstrap-colorpicker/bootstrap-colorpicker-module.min.js"></script>
     <script src="libs/angular-file-saver/angular-file-saver.bundle.min.js"></script>
@@ -132,13 +133,13 @@
     <script src="libs/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="libs/angular-translate-loader-url/atlu.min.js"></script>
     <script src="libs/angular-translate-loader-static-files/atlsf.min.js"></script>
-  
+
     <script src="libs/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
-    
+
     <script src="libs/Sortable/Sortable.min.js"></script>
     <script src="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.js"></script>
     <script src="libs/adf-structures-base/dist/adf-structures-base.min.js"></script>
-    <script src="libs/adf-widget-news/dist/adf-widget-news.min.js"></script> 
+    <script src="libs/adf-widget-news/dist/adf-widget-news.min.js"></script>
     <script src="controllers/adf-widgets/adf-myc-time/adf-myc-time.js"></script>
     <script src="controllers/adf-widgets/adf-myc-sunrisetime/adf-myc-sunrise.js"></script>
     <script src="controllers/adf-widgets/adf-myc-sen-vars/adf-myc-sen-vars.js"></script>
@@ -147,7 +148,7 @@
     <script src="controllers/adf-widgets/adf-myc-smg/adf-myc-sensors-mixed-graph.js"></script>
     <script src="controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js"></script>
     <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js"></script>
-    
+
     <!-- Application js-->
     <script src="app.js"></script>
     <script src="services/alert_services.js"></script>
@@ -160,8 +161,8 @@
     <script src="controllers/sensorsAction.js"></script>
     <script src="controllers/charts.js"></script>
     <script src="controllers/users.js"></script>
-    <script src="controllers/alarms.js"></script>
-    <script src="controllers/notifications.js"></script>
+    <script src="controllers/rule-engine.js"></script>
+    <script src="controllers/operations.js"></script>
     <script src="controllers/timers.js"></script>
     <script src="controllers/settings.js"></script>
     <script src="controllers/resources-logs.js"></script>
@@ -177,10 +178,10 @@
     <script src="controllers/roles.js"></script>
     <script src="controllers/backup.js"></script>
     <script src="controllers/rooms.js"></script>
-    
-    
+
+
   </head>
-  
+
   <body ng-controller="McNavBarCtrl">
     <nav ng-if="isAuthenticated()" class="navbar navbar-default navbar-fixed-top navbar-pf" role="navigation">
       <!-- Brand and toggle get grouped for better mobile display -->
@@ -198,7 +199,7 @@
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="navbar-collapse-main">
-        
+
         <!-- Top right side corner menus -->
         <ul class="nav navbar-nav navbar-utility">
           <!-- Language selection -->
@@ -221,7 +222,7 @@
               <li><a href="https://github.com/mycontroller-org/mycontroller"><i class="fa fa-github fa-lg"></i> {{ 'SOURCE_CODE' | translate }}</a></li>
             </ul>
           </li>
-          
+
           <!-- user information, logout -->
           <li class="dropdown">
             <a href="" class="dropdown-toggle" data-toggle="dropdown">
@@ -238,7 +239,7 @@
             </ul>
           </li>
         </ul>
-        
+
         <!-- Main Menu (header type)-->
         <ul class="nav navbar-nav navbar-primary persistent-secondary">
           <!-- Dashboard -->
@@ -255,8 +256,9 @@
               <li ng-class="{ active: $state.current.name.indexOf('gateways') == 0 }"><a ui-sref="gatewaysList"><i class="fa fa-plug fa-lg"></i> {{ 'GATEWAYS' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('nodes') == 0 }"><a ui-sref="nodesList"><i class="fa fa-sitemap fa-lg"></i> {{ 'NODES' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('sensors') == 0 }"><a ui-sref="sensorsList"><i class="fa fa-eye fa-lg"></i> {{ 'SENSORS' | translate }}</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('alarms') == 0 }"><a ui-sref="alarmsList"><i class="fa fa-bell-o fa-lg"></i> {{ 'ALARMS' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('rules') == 0 }"><a ui-sref="rulesList"><i class="fa fa-cogs fa-lg"></i> {{ 'RULES' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> {{ 'TIMERS' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('operations') == 0 }"><a ui-sref="operationsList"><i class="fa fa-paper-plane fa-lg"></i> {{ 'OPERATIONS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('forwardPayload') == 0 }"><a ui-sref="forwardPayloadList"><i class="fa fa-forward fa-lg"></i> {{ 'FORWARD_PAYLOAD' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>{{ 'GROUPS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rooms') == 0 }"><a ui-sref="roomsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS' | translate }}</a></li>
@@ -300,9 +302,9 @@
     </nav>
 
     <div class="container-fluid top-buffer" id="rootView">
-      <div ui-view></div> 
+      <div ui-view></div>
     </div>
-    
+
     <!-- fix: mobile navbar doesn't collapse after clicking link-->
     <!-- https://github.com/twbs/bootstrap/issues/12852 -->
     <script>
@@ -312,6 +314,6 @@
         }
       });
     </script>
-    
+
   </body>
 </html>

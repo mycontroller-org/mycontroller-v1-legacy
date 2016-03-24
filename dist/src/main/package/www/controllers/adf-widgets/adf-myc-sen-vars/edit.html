@@ -23,7 +23,7 @@
   </div>
   <div class="form-group">
     <label>{{ 'ITEMS_PER_ROW' | translate }}</label>
-    <select id="panelSize" class="form-control" pf-select ng-model="config.itemsPerRow"> 
+    <select id="panelSize" class="form-control" pf-select ng-model="config.itemsPerRow">
       <option value="" ng-hide="true"></option>
       <option value="1">1</option>
       <option value="2">2</option>
@@ -35,7 +35,7 @@
   </div>
   <div class="form-group">
     <label>{{ 'SENSOR_VARIABLES' | translate }}</label>
-    <select id="senVars" class="form-control" multiple pf-select data-live-search="true" ng-model="config.variableIds"> 
+    <select id="senVars" class="form-control" multiple pf-select data-live-search="true" ng-model="config.variableIds">
       <option value="" ng-hide="true"></option>
       <option ng-repeat="res in mycSenVarsEdit.variables" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="config.variableIds.indexOf(res.id.toString()) != -1"></option>
     </select>

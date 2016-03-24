@@ -17,14 +17,14 @@
 -->
 
 <div class="container-fluid"> <!-- Container-fluid -->
-  
-  <!-- Loading icon disaplay --> 
+
+  <!-- Loading icon disaplay -->
   <div ng-if="!orgList.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
   <div ng-if="orgList.$resolved"> <!-- Main Message -->
-    
+
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
@@ -62,7 +62,7 @@
         <h1>{{ 'NO_ITEMS_IN_FILTER' | translate }}</h1>
       </div>
     </div>
-    
+
     <!-- Display When no data on system -->
     <div ng-show="orgList.length == 0" class="mc-top-space-2x">
       <div class="blank-slate-pf">
@@ -91,8 +91,8 @@
       </table>
       <dir-pagination-controls class="pull-right" boundary-links="true" pagination-id="backup-list"></dir-pagination-controls>
     </div>
-    
+
   </div> <!-- Main Message -->
-  
+
 </div> <!-- Container-fluid -->
 

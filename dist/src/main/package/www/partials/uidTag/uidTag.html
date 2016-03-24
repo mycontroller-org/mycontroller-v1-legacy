@@ -19,34 +19,35 @@
     <h3><b><i class="fa fa-tags"></i> {{ 'TITLE.UID_TAG' | translate }} </b><small>{{ 'UID.UNIQUE_IDENTIFICATION_TAG' | translate }}</small></h3>
 </div>
 
-	<div class="panel panel-default">
-	  <!-- Default panel contents --TOP -->
-	  <div class="panel-heading">
-		<form class="form-inline">
-			<div class="form-group">
-				<label class="sr-only" for="search">{{ 'SYSTEM.SEARCH' | translate }}</label>
-				<input type="text" class="form-control ng-pristine ng-valid input-sm ng-valid" 
-				ng-model="query" id="search" placeholder="{{ 'SYSTEM.SEARCH' | translate }}" ng-model="query" 
-				ng-change="updateFilteredList()"/>
-			</div>
-			<a href='' class="text-default pull-right" ng-click="add()" uib-tooltip="{{ 'SYSTEM.ADD' | translate }}"><i class="fa fa-lg fa-plus-square-o"></i></a>
-		</form>
-	 </div>
-	
-	  <!-- Table -->
-	  <table class="table table-hover table-bordered table-striped" at-table at-paginated 
-	  at-list="filteredList" at-config="config">
-			<thead></thead>
-			<tbody>
-	      <tr>
+  <div class="panel panel-default">
+    <!-- Default panel contents --TOP -->
+    <div class="panel-heading">
+    <form class="form-inline">
+      <div class="form-group">
+        <label class="sr-only" for="search">{{ 'SYSTEM.SEARCH' | translate }}</label>
+        <input type="text" class="form-control ng-pristine ng-valid input-sm ng-valid"
+        ng-model="query" id="search" placeholder="{{ 'SYSTEM.SEARCH' | translate }}" ng-model="query"
+        ng-change="updateFilteredList()"/>
+      </div>
+      <a href='' class="text-default pull-right" ng-click="add()" uib-tooltip="{{ 'SYSTEM.ADD' | translate }}"><i class="fa fa-lg fa-plus-square-o"></i></a>
+    </form>
+   </div>
+
+    <!-- Table -->
+    <table class="table table-hover table-bordered table-striped" at-table at-paginated
+    at-list="filteredList" at-config="config">
+      <thead></thead>
+      <tbody>
+        <tr>
           <td at-implicit at-sortable at-attribute="uid" at-title="{{ 'UID.UID' | translate }}"></td>
           <td at-sortable at-title="{{ 'SENSORS.SENSOR' | translate }}">{{ 'UID.NAME' | translate }}:[{{item.sensor.nameWithNode}}], {{ 'UID.ID' | translate }}:[{{ 'UID.NODE' | translate }}:{{item.sensor.node.id}}, {{ 'UID.SENSOR' | translate }}:{{item.sensor.sensorId}}]</td>
           <td at-implicit at-sortable at-attribute="variableTypeString" at-title="{{ 'SENSORS.TYPE' | translate }}"></td>
-					<td class="text-center">
-						<a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="{{ 'SYSTEM.DELETE' | translate }}"><i class="fa fa-lg fa-trash"></i></a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<at-pagination class="pull-right" at-list="filteredList" at-config="config"></at-pagination>
-	</div>
+          <td class="text-center">
+            <a href='' ng-click="delete(item)" class="text-danger" uib-tooltip="{{ 'SYSTEM.DELETE' | translate }}"><i class="fa fa-lg fa-trash"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <at-pagination class="pull-right" at-list="filteredList" at-config="config"></at-pagination>
+  </div>
+

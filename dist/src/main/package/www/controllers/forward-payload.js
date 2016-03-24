@@ -24,18 +24,18 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
-    
+
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
   };
-  
+
   if($stateParams.sensorId){
     $scope.query.sensorId = $stateParams.sensorId;
   }
@@ -47,7 +47,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
     },function(error){
-      displayRestError.display(error);            
+      displayRestError.display(error);
     });
   }
 
@@ -61,7 +61,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -72,7 +72,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -92,8 +92,8 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
-  
+
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -119,7 +119,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
     onSortChange: sortChange,
     isAscending: false,
   };
-  
+
 
   //Edit item
   $scope.edit = function () {
@@ -144,14 +144,14 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
-  
+
   //Enable items
   $scope.enable = function () {
     if($scope.itemIds.length > 0){
@@ -161,11 +161,11 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
+        displayRestError.display(error);
+      });
     }
   };
-  
+
   //Disable items
   $scope.disable = function () {
     if($scope.itemIds.length > 0){
@@ -176,7 +176,7 @@ $scope, $filter, ForwardPayloadFactory, $state, $uibModal, displayRestError, mch
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
+      });
     }
   };
 
@@ -196,16 +196,16 @@ myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scop
         displayRestError.display(error);
       });
   }
-  
+
     //Get resources
   $scope.getResources = function(resourceType){
     return CommonServices.getResources(resourceType);
   }
-  
-  
+
+
   //pre load
   $scope.resources = $scope.getResources("Sensor variable");
-  
+
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = $filter('translate')('ADD_FORWARD_PAYLOAD_ENTRY');
@@ -213,7 +213,7 @@ myControllerModule.controller('ForwardPayloadControllerAddEdit', function ($scop
   $scope.cancelButtonState = "forwardPayloadList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
 
   //Save data
   $scope.save = function(){

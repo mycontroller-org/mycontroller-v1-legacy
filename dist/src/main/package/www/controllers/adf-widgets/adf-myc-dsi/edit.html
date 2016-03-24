@@ -21,24 +21,24 @@
     <input type="text" class="form-control" id="refreshTime" placeholder="{{'REFRESH_TIME_SECONDS' | translate}}" ng-model="config.refreshTime" pf-validation="mycDisplayStaticImageEdit.cs.isNumber(input)" required>
     <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
   </div>
-  
+
   <div class="form-group">
     <label>{{ 'TYPE' | translate }}</label>
-    <select id="senVarsTypes" class="form-control" pf-select ng-model="config.locationType" ng-change="mycDisplayStaticImageEdit.onLocationTypeChange()" ng-options="type for type in mycDisplayStaticImageEdit.locationTypes"> 
+    <select id="senVarsTypes" class="form-control" pf-select ng-model="config.locationType" ng-change="mycDisplayStaticImageEdit.onLocationTypeChange()" ng-options="type for type in mycDisplayStaticImageEdit.locationTypes">
       <option value="" ng-hide="true"></option>
     </select>
   </div>
-  
+
   <div ng-if="config.locationType === 'disk'" class="form-group">
     <label>{{ 'FILE' | translate }}</label>
-    <select id="senVars" class="form-control" pf-select data-live-search="true" ng-model="config.imageNameUrl" ng-options="fileName for fileName in mycDisplayStaticImageEdit.filesList" required> 
+    <select id="senVars" class="form-control" pf-select data-live-search="true" ng-model="config.imageNameUrl" ng-options="fileName for fileName in mycDisplayStaticImageEdit.filesList" required>
       <option value="" ng-hide="true"></option>
     </select>
   </div>
-  
+
   <div ng-if="config.locationType === 'url'" class="form-group">
     <label>{{ 'URL' | translate }}</label>
     <input type="text" class="form-control" id="fileUrl" placeholder="{{'URL' | translate}}" ng-model="config.imageNameUrl" required>
   </div>
-  
+
 </form>

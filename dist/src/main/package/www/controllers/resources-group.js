@@ -25,12 +25,12 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
@@ -57,7 +57,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -68,7 +68,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -88,7 +88,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -117,9 +117,9 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
     ],
     onSortChange: sortChange
   };
-  
 
-  
+
+
   //On,Off switch control
   $scope.changeMystate = function(item, state){
     var itemArray = [item.id];
@@ -129,7 +129,7 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
         //Update display table
         //$scope.getAllItems();
       },function(error){
-        displayRestError.display(error);            
+        displayRestError.display(error);
       });
     }else{
       ResourcesGroupFactory.turnOffIds(itemArray, function(response) {
@@ -141,14 +141,14 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
       });
     }
   }
-    
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("resourcesGroupAddEdit", {'id':$scope.itemIds[0]});
     }
   };
-  
+
   //Turm ON items
   $scope.turnOn = function () {
     if($scope.itemIds.length > 0){
@@ -158,11 +158,11 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
+        displayRestError.display(error);
+      });
     }
   };
-  
+
   //Turm OFF items
   $scope.turnOff = function () {
     if($scope.itemIds.length > 0){
@@ -172,11 +172,11 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
+        displayRestError.display(error);
+      });
     }
   };
-  
+
   //Delete item(s)
   $scope.delete = function (size) {
     var modalInstance = $uibModal.open({
@@ -194,8 +194,8 @@ $scope, ResourcesGroupFactory, $state, $uibModal, displayRestError, mchelper, Co
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);
-      }); 
-    }), 
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -213,12 +213,12 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
   $scope.cancelButtonState = "resourcesGroupList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   $scope.mchelper = mchelper;
   $scope.group = {};
   $scope.id = $stateParams.id;
 
- 
+
   if($stateParams.id){
     ResourcesGroupFactory.get({"id":$stateParams.id},function(response) {
         $scope.group = response;
@@ -226,7 +226,7 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
         displayRestError.display(error);
       });
   }
-  
+
   $scope.save = function(){
     $scope.saveProgress = true;
     if($stateParams.id){
@@ -264,25 +264,25 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
   };
-  
+
   //redirect to groups list if id not found
   if(!$stateParams){
     $state.go("resourcesGroupList");
   }
-  
+
   //always lock with group id
   $scope.query.groupId = $stateParams.id;
-  
+
   $scope.resourcesGroup = ResourcesGroupFactory.get({"id":$stateParams.id});
 
   //get all items
@@ -306,7 +306,7 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
   $scope.selectItem = function(item){
     CommonServices.selectItem($scope, item);
   };
-  
+
   //On page change
   $scope.pageChanged = function(newPage){
     CommonServices.updatePageChange($scope, newPage);
@@ -317,7 +317,7 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -343,7 +343,7 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
@@ -369,14 +369,14 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
     ],
     onSortChange: sortChange
   };
-    
+
   //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("resourcesGroupMapAddEdit", {'groupId':$scope.query.groupId, 'id':$scope.itemIds[0]});
     }
   };
-  
+
   //Delete item(s)
   $scope.delete = function (size) {
     var modalInstance = $uibModal.open({
@@ -393,9 +393,9 @@ $scope, ResourcesGroupFactory, ResourcesGroupMapFactory, $state, $uibModal, disp
         $scope.getAllItems();
         $scope.itemIds = [];
       },function(error){
-        displayRestError.display(error);            
-      }); 
-    }), 
+        displayRestError.display(error);
+      });
+    }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());
     }
@@ -423,7 +423,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
   }else{
     $state.go("resourcesGroupList");
   }
-  
+
   //pre load
   $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "resources group"});
 
@@ -431,7 +431,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
   $scope.getResources = function(resourceType){
     return CommonServices.getResources(resourceType);
   }
-  
+
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;
   $scope.headerStringAdd = $filter('translate')('ADD_AN_ENTRY');
@@ -439,7 +439,7 @@ myControllerModule.controller('ResourcesGroupMapControllerAddEdit', function ($s
   $scope.cancelButtonState = "resourcesGroupMapList({id:"+$stateParams.groupId+"})"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
-  
+
   $scope.save = function(){
     $scope.saveProgress = true;
     if($stateParams.id){

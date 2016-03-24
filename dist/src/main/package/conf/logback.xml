@@ -22,7 +22,7 @@
     <file>../logs/mycontroller.log</file>
     <encoder>
       <pattern>%date %level [%thread] [%logger:%line] %msg%n</pattern>
-    </encoder>    
+    </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
       <FileNamePattern>mycontroller_%i.log.zip</FileNamePattern>
       <MinIndex>1</MinIndex>
@@ -45,8 +45,10 @@
   <logger level="INFO" name="com.j256.ormlite"/>
   <logger level="WARN" name="com.j256.ormlite.table.TableUtils"/>
   <logger level="WARN" name="org.quartz"/>
-  <logger level="WARN" name="com.xeiam.sundial"/>  
-  
+  <logger level="WARN" name="com.xeiam.sundial"/>
+
+  <logger level="INFO" name="org.mycontroller.standalone.provider"/>
+  <logger level="INFO" name="org.mycontroller.standalone.message"/>
   <logger level="INFO" name="org.mycontroller.standalone"/>
   <logger level="INFO" name="org.mycontroller.standalone.mysensors"/>
   <logger level="INFO" name="org.mycontroller.standalone.scheduler"/>

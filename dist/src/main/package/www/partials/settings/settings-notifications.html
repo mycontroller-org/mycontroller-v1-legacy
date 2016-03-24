@@ -17,7 +17,7 @@
 -->
 <div class="container mc-top-space-2x">
 
-  <!-- Loading icon disaplay --> 
+  <!-- Loading icon disaplay -->
   <div ng-hide="smsSettings.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
@@ -30,7 +30,7 @@
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-envelope-o fa-lg"></i> {{ 'EMAIL' | translate }}</h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal" name="mcFormEmailNotification">
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'SMTP_HOST' | translate }}</label>
               <div class="col-sm-5">
@@ -38,8 +38,8 @@
                 <span ng-hide="editEnable.email">{{emailSettings.smtpHost}}</span>
               </div>
             </div>
-            
-            
+
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'SMTP_PORT' | translate }}</label>
               <div class="col-sm-5">
@@ -48,7 +48,7 @@
                 <div ng-hide="editEnable.email">{{emailSettings.smtpPort}}</div>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'FROM_ADDRESS' | translate }}</label>
               <div class="col-sm-5">
@@ -56,17 +56,17 @@
                 <span ng-hide="editEnable.email">{{emailSettings.fromAddress}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'ENABLE_SSL' | translate }}</label>
               <div class="col-sm-5">
                 <input bs-switch ng-change="editEnable.email = true" ng-model="emailSettings.enableSsl" type="checkbox"
                       switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
-                      switch-off-color="default" switch-on-color="primary" ng-true-value="true" 
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
                       ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'SMTP_USERNAME' | translate }}</label>
               <div class="col-sm-5">
@@ -74,7 +74,7 @@
                 <span ng-hide="editEnable.email">{{emailSettings.smtpUsername}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'SMTP_PASSWORD' | translate }}</label>
               <div class="col-sm-5">
@@ -82,7 +82,7 @@
                 <span ng-hide="editEnable.email">{{emailSettings.smtpPassword}}</span>
               </div>
             </div>
-            
+
           </form>
 
           <div class="form-actions text-right">
@@ -96,15 +96,15 @@
         </div>
       </div>
     </div>
-    
-    
+
+
     <!-- Pushbullet settings -->
     <div class="col-md-12">
       <div class="card-pf">
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-mobile fa-lg"></i> {{ 'PUSHBULLET' | translate }}</h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal" name="mcFormPushbulletNotification">
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'ACCESS_TOKEN' | translate }}</label>
               <div class="col-sm-7">
@@ -112,36 +112,36 @@
                 <span ng-hide="editEnable.pushbullet">**********</span>
               </div>
             </div>
-            
-            
+
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'IDEN' | translate }}</label>
               <div class="col-sm-7">
                 <span>{{pushbulletSettings.iden}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'ACTIVE' | translate }}</label>
               <div class="col-sm-7">
                 <span>{{pushbulletSettings.active}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
               <div class="col-sm-7">
                 <span>{{pushbulletSettings.name}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'EMAIL' | translate }}</label>
               <div class="col-sm-7">
                 <span>{{pushbulletSettings.email}}</span>
               </div>
             </div>
-            
+
           </form>
 
           <div class="form-actions text-right">
@@ -155,19 +155,19 @@
         </div>
       </div>
     </div>
-    
+
     <!-- SMS settings -->
     <div class="col-md-12">
       <div class="card-pf">
         <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-mobile fa-lg"></i> {{ 'SMS' | translate }}</h2></div>
         <div class="card-pf-body">
           <form class="form-horizontal" name="mcFormSMSNotification">
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'VENDOR' | translate }}</label>
               <div class="col-sm-5">
                 <div ng-show="editEnable.sms">
-                  <select class="form-control" pf-select ng-model="smsSettings.vendor" required> 
+                  <select class="form-control" pf-select ng-model="smsSettings.vendor" required>
                     <option value="" ng-hide="true"></option>
                     <option value="Plivo">{{ 'PLIVO' | translate }}</option>
                     <option value="Twilio">{{ 'TWILIO' | translate }}</option>
@@ -176,7 +176,7 @@
                 <span ng-hide="editEnable.sms">{{smsSettings.vendor}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'AUTH_ID_SID' | translate }}</label>
               <div class="col-sm-5">
@@ -184,8 +184,8 @@
                 <span ng-hide="editEnable.sms">{{smsSettings.authSid}}</span>
               </div>
             </div>
-            
-            
+
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'AUTH_TOKEN' | translate }}</label>
               <div class="col-sm-5">
@@ -193,7 +193,7 @@
                 <span ng-hide="editEnable.sms">{{smsSettings.authToken}}</span>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'FROM_PHONE_NUMBER' | translate }}</label>
               <div class="col-sm-5">
@@ -201,7 +201,7 @@
                 <span ng-hide="editEnable.sms">{{smsSettings.fromNumber}}</span>
               </div>
             </div>
-            
+
           </form>
 
           <div class="form-actions text-right">

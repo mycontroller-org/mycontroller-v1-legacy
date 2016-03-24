@@ -16,7 +16,7 @@
  */
 myControllerModule.controller('SensorsActionControllerList', function(
   alertService, $scope, SensorsFactory, TypesFactory, NodesFactory, SettingsFactory, $uibModal, displayRestError, mchelper, CommonServices, pfViewUtils, $filter, $window, $interval) {
-  
+
   //GUI page settings
   //$scope.headerStringList = "Sesnors detail";
   $scope.noItemsSystemMsg = $filter('translate')('NO_SENSORS_SETUP');
@@ -26,25 +26,25 @@ myControllerModule.controller('SensorsActionControllerList', function(
   $scope.mchelper = mchelper;
   $scope.filteredList=[];
   $scope.cs = CommonServices;
-    
+
   //data query details
   $scope.currentPage = 1;
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
-  
+
   //Get min number
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
   };
-  
+
   //Stop if an request sent already
-  var updateInprogress = false;  
+  var updateInprogress = false;
   //get all items
   $scope.getAllItems = function(hideLoading){
     if(updateInprogress){
       return;
     }
-    updateInprogress = true;    
+    updateInprogress = true;
     if(!hideLoading){
       $scope.dataLoading = true;
     }
@@ -71,7 +71,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
     //Reset filter fields and update items
     CommonServices.updateFiltersChange($scope, filters);
   };
-  
+
   $scope.filterConfig = {
     fields: [
       {
@@ -103,8 +103,8 @@ myControllerModule.controller('SensorsActionControllerList', function(
     appliedFilters: [],
     onFilterChange: filterChange
   };
-  
-  
+
+
   //View selection
   var viewSelected = function(viewId) {
     mchelper.userSettings.actionBoardView = viewId;
@@ -123,20 +123,20 @@ myControllerModule.controller('SensorsActionControllerList', function(
     $scope.viewType = viewId;
 
   };
-  
+
   //View configuration
   $scope.viewsConfig = {
       views: [pfViewUtils.getListView(), pfViewUtils.getCardView()],
       onViewSelect: viewSelected,
     };
-  
+
   //Sort columns
   var sortChange = function (sortId, isAscending) {
     //Reset sort type and update items
     CommonServices.updateSortChange($scope, sortId, isAscending);
   };
 
- 
+
   $scope.sortConfig = {
     fields: [
       {
@@ -167,16 +167,16 @@ myControllerModule.controller('SensorsActionControllerList', function(
     onSortChange: sortChange,
     isAscending: false,
   };
-  
-  
+
+
   // Item tool bar config
   $scope.sensorsToolbarConfig = {
       viewsConfig: $scope.viewsConfig,
       filterConfig: $scope.filterConfig,
       sortConfig: $scope.sortConfig,
     };
-  
-  
+
+
   //refresh sensor
   $scope.refreshSensor = function(sensor){
     SensorsFactory.get({"id":sensor.id}, function(response) {
@@ -187,8 +187,8 @@ myControllerModule.controller('SensorsActionControllerList', function(
       displayRestError.display(error);
     });
   };
-  
-  
+
+
   //Update Variable / Send Payload
   $scope.updateVariable = function(variable){
     SensorsFactory.updateVariable(variable, function(){
@@ -197,26 +197,26 @@ myControllerModule.controller('SensorsActionControllerList', function(
       displayRestError.display(error);
     });
   };
-  
+
   //HVAC heater options - HVAC flow state
-  $scope.hvacOptionsFlowState = TypesFactory.getHvacOptionsFlowState();  
+  $scope.hvacOptionsFlowState = TypesFactory.getHvacOptionsFlowState();
   //HVAC heater options - HVAC flow mode
-  $scope.hvacOptionsFlowMode = TypesFactory.getHvacOptionsFlowMode();  
+  $scope.hvacOptionsFlowMode = TypesFactory.getHvacOptionsFlowMode();
   //HVAC heater options - HVAC fan speed
-  $scope.hvacOptionsFanSpeed = TypesFactory.getHvacOptionsFanSpeed();  
-  
+  $scope.hvacOptionsFanSpeed = TypesFactory.getHvacOptionsFanSpeed();
+
   //Defined variable types list
   $scope.definedVariableTypes = CommonServices.getSensorVariablesKnownList();
-  
 
-  
+
+
   //update rgba color
   $scope.updateRgba = function(variable){
     variable.value = CommonServices.rgba2hex(variable.rgba);
     $scope.updateVariable(variable);
   };
-  
-  
+
+
   //Pre load
   $scope.viewsConfig.currentView = mchelper.userSettings.actionBoardView;
   $scope.tooltipPlacement = 'left';
@@ -224,8 +224,8 @@ myControllerModule.controller('SensorsActionControllerList', function(
   $scope.viewType = $scope.viewsConfig.currentView;
   //Update list table
   //getAllItems();
-  
-  
+
+
   //fix for layout tiles
   var isInnterWidth = function(minWidth, maxWidth, value){
     return (minWidth <= value) && (maxWidth >= value);
@@ -242,7 +242,7 @@ myControllerModule.controller('SensorsActionControllerList', function(
 
   // global page refresh
   var promise = $interval(updatePage, mchelper.cfg.globalPageRefreshTime);
-  
+
   // cancel interval on scope destroy
   $scope.$on('$destroy', function(){
     $interval.cancel(promise);

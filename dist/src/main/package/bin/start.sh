@@ -55,7 +55,7 @@ if [[ "$_java" ]]; then
           java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -jar ../lib/mycontroller-dist-standalone-${MC_VERSION}-single.jar >> ../logs/mycontroller.log 2>&1 &
           echo 'Start issued for Mycontroller'
         fi
-    else         
+    else
       echo "Mycontroller.org server required java version $JAVA_VERSION or later"
     fi
 fi

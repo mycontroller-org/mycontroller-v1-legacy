@@ -16,36 +16,36 @@
  */
 myControllerModule.controller('StatusSystemController', function(alertService,
 $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
-  
+
   //GUI page settings
   $scope.headerStringList = "System status";
 
   //OS Status
-   $scope.osStatus = StatusFactory.getOsStatus();  
+   $scope.osStatus = StatusFactory.getOsStatus();
   //JVM Status
-   $scope.jvmStatus = StatusFactory.getJvmStatus();  
-  
+   $scope.jvmStatus = StatusFactory.getJvmStatus();
+
 });
 
 myControllerModule.controller('StatusMcLogController', function(alertService,
 $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
-  
+
   //GUI page settings
   $scope.headerStringList = $filter('translate')('MYCONTROLLER_SERVER_LOG');
   $scope.noItemsSystemMsg = $filter('translate')('NO_LOGS_AVAILABLE');
   $scope.noItemsSystemIcon = "fa fa-list";
-  
+
   $scope.initialLog = {};
   $scope.logData = [];
   $scope.logLevel = null;
-  
+
   //Refresh
   $scope.refreshLogs = function(){
     $scope.initialLog = StatusFactory.getMcServerLog(function(response){
       $scope.logData = response.data;
     });
   };
-  
+
   //Get log level string
   /*
   $scope.getLogLevel = function(log){
@@ -58,7 +58,7 @@ $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
     }else if(log.indexOf(' DEBUG ') > -1 ){
       $scope.logLevel = "default";
     }
-    
+
     if(!$scope.logLevel){
       $scope.logLevel = "default";
     }
@@ -74,7 +74,7 @@ $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
     }
     */
   });
- 
-  
+
+
 });
 

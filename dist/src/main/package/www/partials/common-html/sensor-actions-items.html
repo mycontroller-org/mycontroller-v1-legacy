@@ -173,7 +173,7 @@
 <!-- Lock status -->
 <div ng-if="variable.type.en === 'Lock status'">
   <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
-    <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = cs.getInteger(variable.value)" type="checkbox" 
+    <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = cs.getInteger(variable.value)" type="checkbox"
       switch-animate="{{cs.mcbStyle.animate}}" switch-handle-width="{{cs.mcbStyle.handleWidth}}" switch-label-width="{{cs.mcbStyle.labelWidth}}"
       switch-off-color="danger" switch-on-color="primary" switch-size="{{cs.mcbStyle.size}}"
       ng-true-value="1" ng-false-value="0" switch-on-text="Locked" switch-off-text="Unlocked">
@@ -182,7 +182,7 @@
 
 <!-- HVAC flow mode -->
 <div ng-if="variable.type.en === 'HVAC flow mode'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-sab-dropdown mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)" 
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-sab-dropdown mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)"
     buttons="no" editable-select="variable.value" e-ng-options="hvac.id as hvac.displayName for hvac in hvacOptionsFlowMode">
     <span class="mc-style-ab">{{variable.value || "not set"}}</span>
   </span>
@@ -190,7 +190,7 @@
 
 <!-- HVAC flow state -->
 <div ng-if="variable.type.en === 'HVAC flow state'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)" buttons="no" 
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)" buttons="no"
     editable-select="variable.value" e-ng-options="hvac.id as hvac.displayName for hvac in hvacOptionsFlowState">
     <span class="mc-style-ab">{{variable.value || "not set"}}</span>
   </span>
@@ -198,7 +198,7 @@
 
 <!-- HVAC fan speed -->
 <div ng-if="variable.type.en === 'HVAC speed'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)" e-style="height: 22px;" 
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-icon-md-1" onbeforesave="updateVariable(variable)" e-style="height: 22px;"
     buttons="no" editable-select="variable.value" e-ng-options="hvac.id as hvac.displayName for hvac in hvacOptionsFanSpeed">
     <span class="mc-style-ab">{{variable.value || "not set"}}</span>
   </span>

@@ -17,7 +17,7 @@
 -->
 <div class="container mc-top-space-2x">
 
-  <!-- Loading icon disaplay --> 
+  <!-- Loading icon disaplay -->
   <div ng-hide="mySensorsSettings.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
@@ -38,21 +38,21 @@
                 <div ng-show="editEnable.mySensors">
                   <select class="form-control" pf-select data-live-search="true" ng-options="firmware.id as firmware.displayName for firmware in firmwares" ng-model="mySensorsSettings.defaultFirmware">
                     <option value="" ng-hide="true"></option>
-                  </select>                
+                  </select>
                 </div>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="col-sm-2 control-label" uib-tooltip="{{ 'ENABLE_DEFAULT_ON_NO_FIRMWARE_TOOLTIP' | translate }}" tooltip-placement="bottom">{{ 'ENABLE_DEFAULT_ON_NO_FIRMWARE' | translate }}</label>
               <div class="col-sm-5">
                 <input bs-switch ng-change="editEnable.mySensors = true" ng-model="mySensorsSettings.enbaledDefaultOnNoFirmware" type="checkbox"
                       switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
-                      switch-off-color="default" switch-on-color="primary" ng-true-value="true" 
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
                       ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
               </div>
             </div>
-            
+
           </form>
 
           <div class="form-actions text-right">
