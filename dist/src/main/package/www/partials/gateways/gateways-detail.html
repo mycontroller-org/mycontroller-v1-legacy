@@ -56,7 +56,7 @@
                     </span>
                   </span>
                 </dd>
-                <dt>{{ 'STATUS_SINCE' | translate }}</dt> <dd>{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</dd>
+                <dt>{{ 'STATUS_SINCE' | translate }}</dt> <dd><span uib-tooltip="{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.statusSince"></span></dd>
                 <dt>{{ 'STATUS_MESSAGE' | translate }}</dt> <dd>{{item.statusMessage}}</dd>
 
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
@@ -69,16 +69,6 @@
                 <dd>
                   <a  ng-hide="resourceCount.sensors == 0" >{{resourceCount.sensors}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
-                </dd>
-                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt>
-                <dd>
-                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
-                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
-                </dd>
-                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt>
-                <dd>
-                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
-                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
                 <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
                 <dd>

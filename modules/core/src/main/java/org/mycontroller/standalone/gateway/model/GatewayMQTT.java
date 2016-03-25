@@ -84,4 +84,12 @@ public class GatewayMQTT extends Gateway {
         username = (String) gatewayTable.getProperties().get(KEY_USERNAME);
         password = (String) gatewayTable.getProperties().get(KEY_PASSWORD);
     }
+
+    @Override
+    public String getConnectionDetails() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("BrokerHost:").append(getBrokerHost());
+        builder.append(", ClientId:").append(getClientId());
+        return builder.toString();
+    }
 }

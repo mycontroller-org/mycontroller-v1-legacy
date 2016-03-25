@@ -24,8 +24,13 @@ import org.easyrules.core.RulesEngineBuilder;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
+import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
+import org.mycontroller.standalone.rule.RuleUtils.DATA_TYPE;
+import org.mycontroller.standalone.rule.model.RuleDefinitionCompare;
+import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,12 +141,45 @@ public class McRuleEngine extends Job implements Runnable {
             return;
         }
         try {
-            execute(DaoUtils.getRuleDefinitionDao().getAll(resourceType, resourceId),
-                    MC_RULES_ENGINE_NAME + "_" + resourceId);
+            //Load rules
+            List<RuleDefinitionTable> ruleDefinitionsDb = new ArrayList<RuleDefinitionTable>();
+            //Resource specific rules
+            List<RuleDefinitionTable> resourceRules = DaoUtils.getRuleDefinitionDao().getAll(resourceType, resourceId);
+            if (resourceRules != null) {
+                ruleDefinitionsDb.addAll(resourceRules);
+            }
+
+            //Threshold Rules
+            List<RuleDefinitionTable> otherRules = DaoUtils.getRuleDefinitionDao().getAll(
+                    RuleDefinitionTable.KEY_CONDITION_TYPE, CONDITION_TYPE.THRESHOLD);
+            if (otherRules != null) {
+                for (RuleDefinitionTable ruleDefinitionTable : otherRules) {
+                    RuleDefinitionThreshold thresholdRule = new RuleDefinitionThreshold(ruleDefinitionTable);
+                    if (thresholdRule.getDataType() == DATA_TYPE.SENSOR_VARIABLE
+                            && McUtils.getInteger(thresholdRule.getData()).equals(resourceId)) {
+                        ruleDefinitionsDb.add(ruleDefinitionTable);
+                    }
+                }
+            }
+
+            //Compare Rules
+            otherRules = DaoUtils.getRuleDefinitionDao().getAll(
+                    RuleDefinitionTable.KEY_CONDITION_TYPE, CONDITION_TYPE.COMPARE);
+            if (otherRules != null) {
+                for (RuleDefinitionTable ruleDefinitionTable : otherRules) {
+                    RuleDefinitionCompare compareRule = new RuleDefinitionCompare(ruleDefinitionTable);
+                    if (compareRule.getData2ResourceType() == RESOURCE_TYPE.SENSOR_VARIABLE
+                            && compareRule.getData2ResourceId().equals(resourceId)) {
+                        ruleDefinitionsDb.add(ruleDefinitionTable);
+                    }
+                }
+            }
+
+            //Execute all the rules
+            execute(ruleDefinitionsDb, MC_RULES_ENGINE_NAME + "_" + resourceId);
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
         }
 
     }
-
 }

@@ -45,6 +45,8 @@ public abstract class Gateway {
     private String statusMessage;
     private Long statusSince;
 
+    public abstract String getConnectionDetails();
+
     @JsonIgnore
     public GatewayTable getGatewayTable() {
         return GatewayTable.builder()

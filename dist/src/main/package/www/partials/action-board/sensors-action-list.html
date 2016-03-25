@@ -55,9 +55,9 @@
               </div>
 
               <!-- Last seen -->
-              <div class="col-md-1" uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">
+              <div class="col-md-1" uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">
                 <span class="text-left">
-                  <i class="fa fa-clock-o mc-icon-lg" ></i><span>{{item.lastSeen.inString  || 'Never'}}</span>
+                  <i class="fa fa-clock-o mc-icon-lg" ></i><span am-time-ago="item.lastSeen"></span>
                 </span>
               </div>
 
@@ -124,7 +124,7 @@
                 <!-- Sensor type, Last seen -->
                 <div class="mc-sa-tiles-variable col-md-12">
                   <span class="mc-padding"><i class="mc-icon-lg" ng-class="cs.getSensorIcon(item.type.en)"></i><span>{{item.type.locale ? item.type.locale : 'Undefined'}}</span></span>
-                  <span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="top"><span class="text-left"><i class="fa fa-clock-o fa-lg" ></i><span> {{item.lastSeen.inString  || 'Never'}}</span></span></span>
+                  <span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="top"><span class="text-left"><i class="fa fa-clock-o fa-lg" ></i> <span am-time-ago="item.lastSeen"></span></span></span>
                 </div>
                 <legend style="margin:3px" ng-init="variableMaxSize=200"></legend>
                 <!-- Variables, selects only one-->

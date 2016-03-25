@@ -270,39 +270,6 @@ public class GatewayUtils {
         }
     }
 
-    public static String getConnectionDetails(GatewayTable gatewayTable) {
-        if (gatewayTable.getType() == null) {
-            return null;
-        }
-        StringBuilder builder = new StringBuilder();
-        switch (gatewayTable.getType()) {
-            case SERIAL:
-                GatewaySerial gatewaySerial = new GatewaySerial(gatewayTable);
-                builder.append("Port:").append(gatewaySerial.getPortName());
-                builder.append(", BaudRate:").append(gatewaySerial.getBaudRate());
-                builder.append(", Driver:").append(gatewaySerial.getDriver().getText());
-                if (gatewaySerial.getDriver() == SERIAL_PORT_DRIVER.AUTO && gatewaySerial.getRunningDriver() != null) {
-                    builder.append("[").append(gatewaySerial.getRunningDriver().getText()).append("]");
-                }
-                builder.append(", RetryFrequency:").append(gatewaySerial.getRetryFrequency()).append(" Second(s)");
-                break;
-            case ETHERNET:
-                GatewayEthernet gatewayEthernet = new GatewayEthernet(gatewayTable);
-                builder.append("Host:").append(gatewayEthernet.getHost());
-                builder.append(", Port:").append(gatewayEthernet.getPort());
-                break;
-            case MQTT:
-                GatewayMQTT gatewayMqtt = new GatewayMQTT(gatewayTable);
-                builder.append("BrokerHost:").append(gatewayMqtt.getBrokerHost());
-                builder.append(", ClientId:").append(gatewayMqtt.getClientId());
-                break;
-
-            default:
-                break;
-        }
-        return builder.toString();
-    }
-
     public static void executeGatewayOperation(ResourceModel resourceModel, ResourceOperation operation) {
         switch (operation.getOperationType()) {
             case ENABLE:

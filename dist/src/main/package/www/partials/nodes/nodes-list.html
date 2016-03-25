@@ -81,9 +81,10 @@
           <th>{{ 'TYPE' | translate }}</th>
           <th>{{ 'RSSI' | translate }}</th>
           <th>{{ 'BATTERY_LEVEL' | translate }}</th>
-          <th>{{ 'VERSION' | translate }}</th>
           <th>{{ 'LIBRARY_VERSION' | translate }}</th>
+          <th>{{ 'VERSION' | translate }}</th>
           <th>{{ 'FIRMWARE' | translate }}</th>
+          <th>{{ 'LAST_SEEN' | translate }}</th>
           <th></th>
         </thead>
         <tbody>
@@ -105,9 +106,10 @@
               <span ng-show="item.batteryLevel"><i class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}"></i> {{item.batteryLevel}} %</span>
               <label ng-hide="item.batteryLevel">-</label>
             </td>
-            <td>{{item.version}}</td>
             <td>{{item.libVersion}}</td>
+            <td>{{item.version}}</td>
             <td>{{item.firmware.firmwareName}}</td>
+            <td><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left" am-time-ago="item.lastSeen"></span></td>
             <td class="mc-align-center">
               <a class="btn btn-link" ui-sref="nodesDetail({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-placement="top"></i></a>
             </td>

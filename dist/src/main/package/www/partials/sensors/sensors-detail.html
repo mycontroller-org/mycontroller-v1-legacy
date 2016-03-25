@@ -49,18 +49,12 @@
                 <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.node.gateway.type}}</dd>
                 <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.node.gateway.networkType}}</dd>
                 <dt>{{ 'ROOM' | translate }}</dt> <dd>{{item.room.name}}</dd>
-                <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right">{{item.lastSeen.inString  || 'NEVER' | translate }}</span></dd>
-
+                <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.lastSeen"></span></dd>
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
-                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt>
+                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
                 <dd>
-                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
-                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
-                </dd>
-                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt>
-                <dd>
-                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
-                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
+                  <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
+                  <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
                 </dd>
 
               </dl>

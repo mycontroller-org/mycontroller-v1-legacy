@@ -70,4 +70,12 @@ public class GatewayEthernet extends Gateway {
         port = (Integer) gatewayTable.getProperties().get(KEY_PORT);
         aliveFrequency = (Long) gatewayTable.getProperties().get(KEY_ALIVE_FREQUENCY);
     }
+
+    @Override
+    public String getConnectionDetails() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Host:").append(getHost());
+        builder.append(", Port:").append(getPort());
+        return builder.toString();
+    }
 }

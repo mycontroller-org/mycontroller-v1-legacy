@@ -44,8 +44,8 @@
                 <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.gateway.type}}</dd>
                 <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.gateway.networkType}}</dd>
                 <dt>{{ 'RSSI' | translate }}</dt> <dd>{{item.rssi}}</dd>
-                <dt>{{ 'VERSION' | translate }}</dt> <dd>{{item.version}}</dd>
                 <dt>{{ 'LIBRARY_VERSION' | translate }}</dt> <dd>{{item.libVersion}}</dd>
+                <dt>{{ 'VERSION' | translate }}</dt> <dd>{{item.version}}</dd>
                 <dt>{{ 'STATUS' | translate }}</dt>
                 <dd>
                   <span class="card-pf-aggregate-status-notification">
@@ -63,25 +63,16 @@
                 <dt>{{ 'BATTERY' | translate }}</dt>
                 <dd>
                   <span ng-show="item.batteryLevel"><i class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}"></i> {{item.batteryLevel}} %</span>
-                  <label ng-hide="item.batteryLevel">-</label>
+                  <span ng-hide="item.batteryLevel">-</span>
                 </dd>
                 <dt>{{ 'FIRMWARE' | translate }}</dt> <dd>{{item.firmware.firmwareName}}</dd>
+                <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.lastSeen"></span></dd>
 
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
                 <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt>
                 <dd>
                   <a  ng-hide="resourceCount.sensors == 0" ui-sref="sensorsList({ nodeId: item.id})">{{resourceCount.sensors}}</a>
                   <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
-                </dd>
-                <dt><span class="fa fa-clock-o mc-icon-md-3"></span>{{ 'TIMERS' | translate }}</dt>
-                <dd>
-                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
-                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
-                </dd>
-                <dt><span class="fa fa-bell-o mc-icon-md-3"></span>{{ 'ALARM_DEFINITIONS' | translate }}</dt>
-                <dd>
-                  <a ng-hide="resourceCount.timers == 0" ui-sref="timersList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.timers}}</a>
-                  <span ng-show="resourceCount.timers == 0">{{resourceCount.timers}}</span>
                 </dd>
                 <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
                 <dd>
@@ -95,7 +86,7 @@
 
         <!-- custom buttons -->
         <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8">
-          <div class="card-pf card-pf-accented" style="min-height:471px">
+          <div class="card-pf card-pf-accented" style="min-height:450px">
             <div class="card-pf-heading">
               <div ng-show="item.batteryLevel" class="dropdown card-pf-time-frame-filter">
                 <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"

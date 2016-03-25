@@ -57,6 +57,14 @@ public class McConditionCompare extends McRuleBase {
         if (_logger.isDebugEnabled()) {
             _logger.debug("Actual value:{}, data2Value:{}", actualValue, date2ValueString);
         }
+        //If either value is NULL cannot execute
+        if (actualValue == null || date2ValueString == null) {
+            if (_logger.isDebugEnabled()) {
+                _logger.debug("compare can not be executed with NULL. actualValue:{}, date2ValueString:{}",
+                        actualValue, date2ValueString);
+            }
+            return false;
+        }
         double avDouble = McUtils.getDouble(actualValue);
         double data2Value = McUtils.getDouble(date2ValueString);
         //Multiplier will be in percentage, change it double value

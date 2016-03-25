@@ -92,4 +92,17 @@ public class GatewaySerial extends Gateway {
     private String getRunningDriverString() {
         return runningDriver != null ? runningDriver.getText() : null;
     }
+
+    @Override
+    public String getConnectionDetails() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Port:").append(getPortName());
+        builder.append(", BaudRate:").append(getBaudRate());
+        builder.append(", Driver:").append(getDriver().getText());
+        if (getDriver() == SERIAL_PORT_DRIVER.AUTO && getRunningDriver() != null) {
+            builder.append("[").append(getRunningDriver().getText()).append("]");
+        }
+        builder.append(", RetryFrequency:").append(getRetryFrequency()).append(" Second(s)");
+        return builder.toString();
+    }
 }
