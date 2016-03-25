@@ -211,11 +211,13 @@ public class MySensorsRawMessage {
     }
 
     public McMessage getMcMessage() {
+        String sensorId = getChildSensorId() == 255 ? McMessage.SENSOR_BROADCAST_ID : getChildSensorIdString();
+        String nodeId = getNodeId() == 255 ? McMessage.NODE_BROADCAST_ID : getNodeEui();
         return McMessage.builder()
                 .acknowledge(ack == 0)
                 .gatewayId(gatewayId)
-                .nodeEui(getNodeEui())
-                .SensorId(getChildSensorIdString())
+                .nodeEui(nodeId)
+                .SensorId(sensorId)
                 .networkType(NETWORK_TYPE.MY_SENSORS)
                 .type(MESSAGE_TYPE.fromString(MYS_MESSAGE_TYPE.get(messageType).getText()))
                 .subType(getMcMessageSubType())
