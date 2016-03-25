@@ -98,7 +98,7 @@ public class RuleDefinitionState extends RuleDefinition {
 
     @JsonGetter("state")
     private String getStateString() {
-        return state.getText();
+        return state != null ? state.getText() : null;
     }
 
 }

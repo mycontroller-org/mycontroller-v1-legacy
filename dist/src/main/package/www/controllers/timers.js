@@ -140,7 +140,7 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
         sortType: 'text'
       },
       {
-        id: 'lastFired',
+        id: 'lastFire',
         title:  $filter('translate')('LAST_FIRED'),
         sortType: 'text'
       }

@@ -56,8 +56,8 @@ public class GatewayEthernet extends Gateway {
         GatewayTable gatewayTable = super.getGatewayTable();
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(KEY_HOST, host);
-        properties.put(KEY_PORT, host);
-        properties.put(KEY_ALIVE_FREQUENCY, host);
+        properties.put(KEY_PORT, port);
+        properties.put(KEY_ALIVE_FREQUENCY, aliveFrequency);
         gatewayTable.setProperties(properties);
         return gatewayTable;
     }

@@ -317,7 +317,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
             case ETHERNET:
                 properties.put(GatewayEthernet.KEY_HOST, row.get("VARIABLE1"));
                 properties.put(GatewayEthernet.KEY_PORT, McUtils.getInteger(row.get("VARIABLE2")));
-                properties.put(GatewayEthernet.KEY_ALIVE_FREQUENCY, McUtils.getInteger(row.get("VARIABLE3")));
+                properties.put(GatewayEthernet.KEY_ALIVE_FREQUENCY, McUtils.getLong(row.get("VARIABLE3")));
                 break;
             case MQTT:
                 properties.put(GatewayMQTT.KEY_BROKER_HOST, row.get("VARIABLE1"));
