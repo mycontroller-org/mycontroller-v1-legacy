@@ -8,4 +8,4 @@ branches:
 install:
 - mvn -version -B
 script:
-- mvn test
+- mvn install
