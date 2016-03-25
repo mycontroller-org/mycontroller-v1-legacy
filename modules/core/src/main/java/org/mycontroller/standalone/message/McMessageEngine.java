@@ -119,7 +119,7 @@ public class McMessageEngine implements Runnable {
             if (!mcMessage.getNodeEui().equalsIgnoreCase(McMessage.NODE_BROADCAST_ID)) {
                 Node node = getNode(mcMessage);
                 node.setState(STATE.UP);
-                updateNode(null);
+                updateNode(node);
             }
         }
     }
