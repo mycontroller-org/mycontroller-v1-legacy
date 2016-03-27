@@ -31,9 +31,7 @@ public class RawMessageQueue {
     private int queueSize;
 
     public RawMessageQueue() {
-        this.rawMessages = new ArrayList<RawMessage>();
-        this.queueSize = 1000;
-        _logger.debug("Defined Queue Size:{}", queueSize);
+        this(1000);
     }
 
     public RawMessageQueue(int queueSize) {
