@@ -240,6 +240,8 @@
             <excludes combine.children="append">
               <!-- Ignore locale properties file -->
               <exclude>**/mc_locale/**</exclude>
+              <!-- Ignore lombok config files -->
+              <exclude>**/lombok.config</exclude>
             </excludes>
           </configuration>
         </plugin>

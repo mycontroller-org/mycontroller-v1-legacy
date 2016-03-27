@@ -18,15 +18,14 @@ package org.mycontroller.standalone.message;
 
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class RawMessageQueue {
-    private static Logger _logger = LoggerFactory.getLogger(RawMessageQueue.class.getName());
     private ArrayList<RawMessage> rawMessages;
     private int queueSize;
 
