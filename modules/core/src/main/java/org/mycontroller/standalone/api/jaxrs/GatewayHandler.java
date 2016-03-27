@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -158,7 +158,7 @@ public class GatewayHandler extends AccessEngine {
             for (Integer id : ids) {
                 GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(id);
                 if (gatewayTable.getEnabled()) {
-                    ObjectFactory.getMcActionEngine().discover(id);
+                    McObjectManager.getMcActionEngine().discover(id);
                 }
             }
             return RestUtils.getResponse(Status.OK,

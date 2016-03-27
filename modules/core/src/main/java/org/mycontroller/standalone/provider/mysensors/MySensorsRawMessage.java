@@ -17,8 +17,8 @@
 package org.mycontroller.standalone.provider.mysensors;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
@@ -58,7 +58,7 @@ public class MySensorsRawMessage {
     public MySensorsRawMessage(RawMessage rawMessage) throws RawMessageException {
         this.gatewayId = rawMessage.getGatewayId();
         this.isTxMessage = rawMessage.isTxMessage();
-        switch (ObjectFactory.getGateway(rawMessage.getGatewayId()).getGateway().getType()) {
+        switch (McObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getType()) {
             case MQTT:
                 this.updateMQTTMessage(rawMessage.getSubData(), rawMessage.getData());
                 break;
@@ -69,7 +69,7 @@ public class MySensorsRawMessage {
             default:
                 _logger.warn(
                         "This type not implemented yet, Type:[{}]",
-                        ObjectFactory.getGateway(rawMessage.getGatewayId()).getGateway().getType());
+                        McObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getType());
         }
         MySensorsEngine.updateMessage(this);
     }
@@ -173,7 +173,7 @@ public class MySensorsRawMessage {
         // Topic structure:
         // MY_MQTT_TOPIC_PREFIX/NODE-KEY_ID/SENSOR_VARIABLE-KEY_ID/CMD-OPERATION_TYPE/ACK-FLAG/SUB-OPERATION_TYPE
         StringBuilder builder = new StringBuilder();
-        String[] topicsPublish = ((GatewayMQTT) ObjectFactory.getGateway(this.gatewayId).getGateway())
+        String[] topicsPublish = ((GatewayMQTT) McObjectManager.getGateway(this.gatewayId).getGateway())
                 .getTopicsPublish().split(GatewayMQTT.TOPICS_SPLITER);
         for (String topic : topicsPublish) {
             if (builder.length() > 0) {

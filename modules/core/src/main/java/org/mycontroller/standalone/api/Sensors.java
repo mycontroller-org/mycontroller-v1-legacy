@@ -19,8 +19,8 @@ package org.mycontroller.standalone.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
@@ -131,7 +131,7 @@ public class Sensors {
             }
 
             sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
-            ObjectFactory.getMcActionEngine().sendPayload(sensorVariable);
+            McObjectManager.getMcActionEngine().sendPayload(sensorVariable);
         } else {
             throw new McBadRequestException("null not allowed");
         }

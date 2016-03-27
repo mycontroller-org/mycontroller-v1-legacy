@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.KeyValue;
 import org.mycontroller.standalone.api.jaxrs.json.KeyValue.TYPE;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -267,7 +267,7 @@ public class SensorUtils {
 
     public static String getUnit(MESSAGE_TYPE_SET_REQ variableType) {
         Unit unit = null;
-        for (Unit tmpUnit : ObjectFactory.getAppProperties().getUnitsSettings().getVariables()) {
+        for (Unit tmpUnit : McObjectManager.getAppProperties().getUnitsSettings().getVariables()) {
             if (tmpUnit.getVariable().equalsIgnoreCase(variableType.getText())) {
                 unit = tmpUnit;
                 break;
@@ -275,7 +275,7 @@ public class SensorUtils {
         }
 
         if (unit != null) {
-            if (ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig()
+            if (McObjectManager.getAppProperties().getControllerSettings().getUnitConfig()
                     .equalsIgnoreCase(UNIT_CONFIG.METRIC.getText())) {
                 return unit.getMetric();
             } else {

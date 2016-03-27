@@ -19,7 +19,7 @@ package org.mycontroller.standalone.settings;
 import java.io.File;
 import java.util.List;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.About;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
@@ -112,7 +112,7 @@ public class SettingsUtils {
     //As all of our REST API basic authentication,
     //without authentication we need to serve some information about our controller
     public static void updateStaticJsonInformationFile() {
-        String fileLocation = ObjectFactory.getAppProperties().getWebFileLocation() + "configMyController.json";
+        String fileLocation = McObjectManager.getAppProperties().getWebFileLocation() + "configMyController.json";
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             _logger.debug("controller information static file location:[{}]", fileLocation);
@@ -123,7 +123,7 @@ public class SettingsUtils {
     }
 
     public static void updateAllSettings() {
-        ObjectFactory.getAppProperties().loadPropertiesFromDb();
+        McObjectManager.getAppProperties().loadPropertiesFromDb();
         updateStaticJsonInformationFile();
     }
 }

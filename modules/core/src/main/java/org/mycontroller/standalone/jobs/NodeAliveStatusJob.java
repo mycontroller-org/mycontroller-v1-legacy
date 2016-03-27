@@ -21,8 +21,8 @@ import java.util.List;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.slf4j.Logger;
@@ -62,13 +62,13 @@ public class NodeAliveStatusJob extends Job {
     private void sendHearbeat() {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
         for (Node node : nodes) {
-            ObjectFactory.getMcActionEngine().sendAliveStatusRequest(node);
+            McObjectManager.getMcActionEngine().sendAliveStatusRequest(node);
         }
     }
 
     private void checkHearbeat() {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
-        long aliveCheckInterval = ObjectFactory.getAppProperties().getControllerSettings().getAliveCheckInterval();
+        long aliveCheckInterval = McObjectManager.getAppProperties().getControllerSettings().getAliveCheckInterval();
         if (aliveCheckInterval < McUtils.MINUTE) {
             aliveCheckInterval = McUtils.MINUTE;
         }

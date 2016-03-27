@@ -270,12 +270,12 @@ public class McUtils {
 
     public static void updateLocale(MC_LANGUAGE mcLanguage) {
         String[] locale = mcLanguage.name().split("_");
-        ObjectFactory.setMcLocale(ResourceBundle.getBundle(MC_LOCALE_FILE_NAME,
+        McObjectManager.setMcLocale(ResourceBundle.getBundle(MC_LOCALE_FILE_NAME,
                 new Locale(locale[0].toLowerCase(), locale[1].toUpperCase())));
     }
 
     public static void updateLocale() {
-        updateLocale(MC_LANGUAGE.fromString(ObjectFactory.getAppProperties().getControllerSettings().getLanguage()));
+        updateLocale(MC_LANGUAGE.fromString(McObjectManager.getAppProperties().getControllerSettings().getLanguage()));
     }
 
     /* file utils*/

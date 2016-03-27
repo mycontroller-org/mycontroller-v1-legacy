@@ -32,8 +32,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsBulletChartNVD3;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataGroupNVD3;
@@ -204,22 +204,22 @@ public class MetricsHandler extends AccessEngine {
             }
 
         }
-        MetricsGraph metricBattery = ObjectFactory.getAppProperties().getMetricsGraphSettings().getBattery();
+        MetricsGraph metricBattery = McObjectManager.getAppProperties().getMetricsGraphSettings().getBattery();
         preDoubleData.add(MetricsChartDataNVD3.builder()
-                .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.AVERAGE))
+                .key(McObjectManager.getMcLocale().getString(MC_LOCALE.AVERAGE))
                 .values(avgMetricValues)
                 .color(metricBattery.getColor())
                 .type(metricBattery.getSubType())
                 .build().updateSubType(metricBattery.getType()));
         if (withMinMax) {
             preDoubleData.add(MetricsChartDataNVD3.builder()
-                    .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.MINUMUM))
+                    .key(McObjectManager.getMcLocale().getString(MC_LOCALE.MINUMUM))
                     .values(minMetricValues)
                     .color(COLOR_MINIMUM)
                     .type(metricBattery.getSubType())
                     .build().updateSubType(metricBattery.getType()));
             preDoubleData.add(MetricsChartDataNVD3.builder()
-                    .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.MAXIMUM))
+                    .key(McObjectManager.getMcLocale().getString(MC_LOCALE.MAXIMUM))
                     .values(maxMetricValues)
                     .color(COLOR_MAXIMUM)
                     .type(metricBattery.getSubType())
@@ -254,7 +254,7 @@ public class MetricsHandler extends AccessEngine {
             return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
-        MetricsGraphSettings metricsGraphSettings = ObjectFactory.getAppProperties().getMetricsGraphSettings();
+        MetricsGraphSettings metricsGraphSettings = McObjectManager.getAppProperties().getMetricsGraphSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         SensorVariable yaxis1Variable = null;
@@ -417,7 +417,7 @@ public class MetricsHandler extends AccessEngine {
             return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
-        MetricsGraphSettings metricsGraphSettings = ObjectFactory.getAppProperties().getMetricsGraphSettings();
+        MetricsGraphSettings metricsGraphSettings = McObjectManager.getAppProperties().getMetricsGraphSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         for (SensorVariable sensorVariable : sensorVariables) {
@@ -444,20 +444,20 @@ public class MetricsHandler extends AccessEngine {
                         }
                     }
                     preDoubleData.add(MetricsChartDataNVD3.builder()
-                            .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.AVERAGE))
+                            .key(McObjectManager.getMcLocale().getString(MC_LOCALE.AVERAGE))
                             .values(avgMetricDoubleValues)
                             .color(metrics.getColor())
                             .type(metrics.getSubType())
                             .build().updateSubType(metrics.getType()));
                     if (withMinMax) {
                         preDoubleData.add(MetricsChartDataNVD3.builder()
-                                .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.MINUMUM))
+                                .key(McObjectManager.getMcLocale().getString(MC_LOCALE.MINUMUM))
                                 .values(minMetricDoubleValues)
                                 .color(COLOR_MINIMUM)
                                 .type(metrics.getSubType())
                                 .build().updateSubType(metrics.getType()));
                         preDoubleData.add(MetricsChartDataNVD3.builder()
-                                .key(ObjectFactory.getMcLocale().getString(MC_LOCALE.MAXIMUM))
+                                .key(McObjectManager.getMcLocale().getString(MC_LOCALE.MAXIMUM))
                                 .values(maxMetricDoubleValues)
                                 .color(COLOR_MAXIMUM)
                                 .type(metrics.getSubType())
@@ -470,7 +470,7 @@ public class MetricsHandler extends AccessEngine {
                             .unit(sensorVariable.getUnit())
                             .timeFormat(getTimeFormat(timestampFrom))
                             .variableType(
-                                    ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name()))
+                                    McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
                             .dataType(sensorVariable.getMetricType().getText())
                             .resourceName(new ResourceModel(
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
@@ -505,7 +505,7 @@ public class MetricsHandler extends AccessEngine {
                             .unit(sensorVariable.getUnit())
                             .timeFormat(getTimeFormat(timestampFrom))
                             .variableType(
-                                    ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name()))
+                                    McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
                             .dataType(sensorVariable.getMetricType().getText())
                             .resourceName(new ResourceModel(
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
@@ -527,16 +527,16 @@ public class MetricsHandler extends AccessEngine {
             //subtract 5 seconds to get proper timeformat
             Long timeDifferance = System.currentTimeMillis() - timestampFrom - (McUtils.ONE_SECOND * 5);
             if (timeDifferance > (McUtils.ONE_DAY * 365)) {
-                return ObjectFactory.getAppProperties().getDateFormat();
+                return McObjectManager.getAppProperties().getDateFormat();
             } else if (timeDifferance > McUtils.ONE_DAY * 7) {
-                return "MMM dd, " + ObjectFactory.getAppProperties().getTimeFormat();
+                return "MMM dd, " + McObjectManager.getAppProperties().getTimeFormat();
             } else if (timeDifferance > McUtils.ONE_DAY * 1) {
-                return "dd, " + ObjectFactory.getAppProperties().getTimeFormat();
+                return "dd, " + McObjectManager.getAppProperties().getTimeFormat();
             } else {
-                return ObjectFactory.getAppProperties().getTimeFormat();
+                return McObjectManager.getAppProperties().getTimeFormat();
             }
         } else {
-            return ObjectFactory.getAppProperties().getDateFormat();
+            return McObjectManager.getAppProperties().getDateFormat();
         }
     }
 }

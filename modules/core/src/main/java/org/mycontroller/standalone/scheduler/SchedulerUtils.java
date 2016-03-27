@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.knowm.sundial.SundialJobScheduler;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
@@ -314,7 +314,7 @@ public class SchedulerUtils {
                 NodeAliveStatusJob.TRIGGER_NAME,
                 NodeAliveStatusJob.NAME,
                 -1,
-                ObjectFactory.getAppProperties().getControllerSettings().getAliveCheckInterval(),
+                McObjectManager.getAppProperties().getControllerSettings().getAliveCheckInterval(),
                 //Start this job after 10 seconds
                 new Date(System.currentTimeMillis() + (McUtils.ONE_SECOND * 10)),
                 null);

@@ -17,7 +17,7 @@
 package org.mycontroller.standalone.provider.mysensors;
 
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.exceptions.NodeIdException;
 
@@ -40,11 +40,11 @@ public class MySensorsUtils {
     }
 
     public static String getMetricType() {
-        if (ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig() != null) {
-            if (ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig()
+        if (McObjectManager.getAppProperties().getControllerSettings().getUnitConfig() != null) {
+            if (McObjectManager.getAppProperties().getControllerSettings().getUnitConfig()
                     .equalsIgnoreCase(UNIT_CONFIG.METRIC.getText())) {
                 return "M";
-            } else if (ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig()
+            } else if (McObjectManager.getAppProperties().getControllerSettings().getUnitConfig()
                     .equalsIgnoreCase(UNIT_CONFIG.IMPERIAL.getText())) {
                 return "I";
             }

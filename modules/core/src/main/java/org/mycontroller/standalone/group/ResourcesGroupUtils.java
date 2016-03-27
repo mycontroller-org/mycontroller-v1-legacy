@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
@@ -86,7 +86,7 @@ public class ResourcesGroupUtils {
             if (resourceModel.getResourceType() == RESOURCE_TYPE.GATEWAY) {
                 GatewayUtils.executeGatewayOperation(resourceModel, operation);
             } else {
-                ObjectFactory.getMcActionEngine().executeSendPayload(resourceModel, operation);
+                McObjectManager.getMcActionEngine().executeSendPayload(resourceModel, operation);
             }
         }
 

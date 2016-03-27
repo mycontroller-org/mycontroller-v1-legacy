@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
@@ -157,7 +157,7 @@ public class NodeHandler extends AccessEngine {
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
-                ObjectFactory.getMcActionEngine().rebootNode(node);
+                McObjectManager.getMcActionEngine().rebootNode(node);
             }
             return RestUtils.getResponse(Status.OK);
         } else {
@@ -174,7 +174,7 @@ public class NodeHandler extends AccessEngine {
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
                 if (node.getFirmware() != null) {
-                    ObjectFactory.getMcActionEngine().uploadFirmware(node);
+                    McObjectManager.getMcActionEngine().uploadFirmware(node);
                 }
             }
             return RestUtils.getResponse(Status.OK);
@@ -191,7 +191,7 @@ public class NodeHandler extends AccessEngine {
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
-                ObjectFactory.getMcActionEngine().eraseConfiguration(node);
+                McObjectManager.getMcActionEngine().eraseConfiguration(node);
             }
             return RestUtils.getResponse(Status.OK);
 

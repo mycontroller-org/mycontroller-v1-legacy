@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class EthernetGatewayListener implements Runnable {
                 if (buf.ready()) {
                     String message = buf.readLine();
                     _logger.debug("Message Received: {}", message);
-                    ObjectFactory.getRawMessageQueue().putMessage(RawMessage.builder()
+                    McObjectManager.getRawMessageQueue().putMessage(RawMessage.builder()
                             .gatewayId(gateway.getId())
                             .data(message)
                             .networkType(gateway.getNetworkType())

@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 
 import lombok.Data;
 import lombok.ToString;
@@ -57,17 +57,17 @@ public class About {
         this.systemDate = date;
         this.timezone = new SimpleDateFormat("Z").format(date);
         this.timezoneString = new SimpleDateFormat("z").format(date);
-        this.appVersion = ObjectFactory.getAppProperties().getControllerSettings().getVersion();
-        this.languageId = ObjectFactory.getAppProperties().getLanguage().toString().toLowerCase();
-        this.language = ObjectFactory.getAppProperties().getLanguage().getText();
-        this.loginMessage = ObjectFactory.getAppProperties().getControllerSettings().getLoginMessage();
-        this.dateFormat = ObjectFactory.getAppProperties().getDateFormat();
-        this.dateFormatWithoutSeconds = ObjectFactory.getAppProperties().getDateFormatWithoutSeconds();
-        this.timeFormat = ObjectFactory.getAppProperties().getTimeFormat();
-        this.timeFormatWithoutSeconds = ObjectFactory.getAppProperties().getTimeFormatWithoutSeconds();
-        this.timeFormatSet = ObjectFactory.getAppProperties().getControllerSettings().getTimeFormat();
-        this.globalPageRefreshTime = ObjectFactory.getAppProperties().getControllerSettings()
+        this.appVersion = McObjectManager.getAppProperties().getControllerSettings().getVersion();
+        this.languageId = McObjectManager.getAppProperties().getLanguage().toString().toLowerCase();
+        this.language = McObjectManager.getAppProperties().getLanguage().getText();
+        this.loginMessage = McObjectManager.getAppProperties().getControllerSettings().getLoginMessage();
+        this.dateFormat = McObjectManager.getAppProperties().getDateFormat();
+        this.dateFormatWithoutSeconds = McObjectManager.getAppProperties().getDateFormatWithoutSeconds();
+        this.timeFormat = McObjectManager.getAppProperties().getTimeFormat();
+        this.timeFormatWithoutSeconds = McObjectManager.getAppProperties().getTimeFormatWithoutSeconds();
+        this.timeFormatSet = McObjectManager.getAppProperties().getControllerSettings().getTimeFormat();
+        this.globalPageRefreshTime = McObjectManager.getAppProperties().getControllerSettings()
                 .getGlobalPageRefreshTime();
-        this.dashboardLimit = ObjectFactory.getAppProperties().getControllerSettings().getDashboardLimit();
+        this.dashboardLimit = McObjectManager.getAppProperties().getControllerSettings().getDashboardLimit();
     }
 }

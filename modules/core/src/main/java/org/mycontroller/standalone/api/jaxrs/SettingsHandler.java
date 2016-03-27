@@ -29,8 +29,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
@@ -83,7 +83,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/location")
     public Response getLocation() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getLocationSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getLocationSettings());
     }
 
     @POST
@@ -103,7 +103,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/controller")
     public Response getController() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getControllerSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getControllerSettings());
     }
 
     @POST
@@ -138,7 +138,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/email")
     public Response getEmail() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getEmailSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getEmailSettings());
     }
 
     @POST
@@ -152,7 +152,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/sms")
     public Response getSms() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getSmsSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getSmsSettings());
     }
 
     @POST
@@ -169,7 +169,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/pushbullet")
     public Response getPushbullet() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getPushbulletSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getPushbulletSettings());
     }
 
     @POST
@@ -177,7 +177,7 @@ public class SettingsHandler extends AccessEngine {
     public Response savePushbullet(PushbulletSettings pushbulletSettings) {
         try {
             pushbulletSettings.save();
-            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            McObjectManager.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
             //Clear everything
             PushbulletSettings.builder()
                     .active(null)
@@ -185,7 +185,7 @@ public class SettingsHandler extends AccessEngine {
                     .email(null)
                     .imageUrl(null)
                     .iden(null).build().updateInternal();
-            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            McObjectManager.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
             PushbulletUtils.clearClient();//Clear client when updated
 
             User user = PushbulletUtils.getCurrentUser();
@@ -195,7 +195,7 @@ public class SettingsHandler extends AccessEngine {
                     .email(user.getEmail())
                     .imageUrl(user.getImageUrl())
                     .iden(user.getIden()).build().updateInternal();
-            ObjectFactory.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
+            McObjectManager.getAppProperties().setPushbulletSettings(PushbulletSettings.get());
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
@@ -205,7 +205,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/mySensors")
     public Response getMySensors() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMySensorsSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getMySensorsSettings());
     }
 
     @POST
@@ -219,7 +219,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/units")
     public Response getUnits() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getUnitsSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getUnitsSettings());
     }
 
     @POST
@@ -233,7 +233,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/metricsGraph")
     public Response getMetrics() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMetricsGraphSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getMetricsGraphSettings());
     }
 
     @POST
@@ -247,7 +247,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/metricsRetention")
     public Response getMetricsRetention() {
-        return RestUtils.getResponse(Status.OK, ObjectFactory.getAppProperties().getMetricsDataRetentionSettings());
+        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getMetricsDataRetentionSettings());
     }
 
     @POST

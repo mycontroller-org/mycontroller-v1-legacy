@@ -19,7 +19,7 @@ package org.mycontroller.standalone.gateway.serialport;
 import java.io.IOException;
 
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class SerialDataListenerPi4j implements SerialDataEventListener {
                     String toProcess = message.toString();
                     _logger.debug("Received a message:[{}]", toProcess);
                     //Send Message to message factory
-                    ObjectFactory.getRawMessageQueue().putMessage(RawMessage.builder()
+                    McObjectManager.getRawMessageQueue().putMessage(RawMessage.builder()
                             .gatewayId(gateway.getId())
                             .data(toProcess)
                             .networkType(gateway.getNetworkType())

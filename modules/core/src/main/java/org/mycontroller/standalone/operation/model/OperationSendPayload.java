@@ -19,8 +19,8 @@ package org.mycontroller.standalone.operation.model;
 import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.tables.OperationTable;
@@ -165,7 +165,7 @@ public class OperationSendPayload extends Operation {
                 ResourcesGroupUtils.executeResourceGroupsOperation(resourceModel, resourceOperation);
                 break;
             default:
-                ObjectFactory.getMcActionEngine().executeSendPayload(resourceModel, resourceOperation);
+                McObjectManager.getMcActionEngine().executeSendPayload(resourceModel, resourceOperation);
                 break;
         }
     }

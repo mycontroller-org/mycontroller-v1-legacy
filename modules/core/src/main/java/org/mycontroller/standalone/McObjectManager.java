@@ -29,8 +29,8 @@ import org.mycontroller.standalone.message.RawMessageQueue;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public class ObjectFactory {
-    private ObjectFactory() {
+public class McObjectManager {
+    private McObjectManager() {
 
     }
 
@@ -45,7 +45,7 @@ public class ObjectFactory {
     }
 
     public static void setAppProperties(AppProperties appProperties) {
-        ObjectFactory.appProperties = appProperties;
+        McObjectManager.appProperties = appProperties;
     }
 
     public static RawMessageQueue getRawMessageQueue() {
@@ -53,7 +53,7 @@ public class ObjectFactory {
     }
 
     public static void setRawMessageQueue(RawMessageQueue rawMessageQueue) {
-        ObjectFactory.rawMessageQueue = rawMessageQueue;
+        McObjectManager.rawMessageQueue = rawMessageQueue;
     }
 
     public static synchronized IGateway getGateway(Integer gatewayId) {
@@ -84,7 +84,7 @@ public class ObjectFactory {
     }
 
     public static void setMcLocale(ResourceBundle mcLocale) {
-        ObjectFactory.mcLocale = mcLocale;
+        McObjectManager.mcLocale = mcLocale;
     }
 
     public static IMcActionEngine getMcActionEngine() {

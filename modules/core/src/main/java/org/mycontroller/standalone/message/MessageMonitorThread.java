@@ -16,7 +16,7 @@
  */
 package org.mycontroller.standalone.message;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.slf4j.Logger;
@@ -55,14 +55,14 @@ public class MessageMonitorThread implements Runnable {
     }
 
     private void processRawMessage() {
-        while (!ObjectFactory.getRawMessageQueue().isEmpty() && !isTerminationIssued()) {
-            RawMessage rawMessage = ObjectFactory.getRawMessageQueue().getMessage();
+        while (!McObjectManager.getRawMessageQueue().isEmpty() && !isTerminationIssued()) {
+            RawMessage rawMessage = McObjectManager.getRawMessageQueue().getMessage();
             _logger.debug("Processing message:[{}]", rawMessage);
-            if (ObjectFactory.getGateway(rawMessage.getGatewayId()) != null) {
+            if (McObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
                 try {
                     McMessageUtils.sendToProviderBridge(rawMessage);
                     //A delay to avoid collisions on MySensor networks on continues messages
-                    if (!ObjectFactory.getRawMessageQueue().isEmpty()) {
+                    if (!McObjectManager.getRawMessageQueue().isEmpty()) {
                         Thread.sleep(MYS_MSG_DELAY);
                     }
                 } catch (Exception ex) {
@@ -75,8 +75,8 @@ public class MessageMonitorThread implements Runnable {
             }
 
         }
-        if (!ObjectFactory.getRawMessageQueue().isEmpty()) {
-            _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!", ObjectFactory
+        if (!McObjectManager.getRawMessageQueue().isEmpty()) {
+            _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!", McObjectManager
                     .getRawMessageQueue().getQueueSize());
         }
     }

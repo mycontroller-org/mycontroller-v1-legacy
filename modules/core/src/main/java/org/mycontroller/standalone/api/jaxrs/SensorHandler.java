@@ -34,8 +34,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
@@ -234,7 +234,7 @@ public class SensorHandler extends AccessEngine {
             }
 
             sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
-            ObjectFactory.getMcActionEngine().sendPayload(sensorVariable);
+            McObjectManager.getMcActionEngine().sendPayload(sensorVariable);
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST);
         }

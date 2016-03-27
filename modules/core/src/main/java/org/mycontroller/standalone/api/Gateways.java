@@ -18,7 +18,7 @@ package org.mycontroller.standalone.api;
 
 import java.util.List;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -72,7 +72,7 @@ public class Gateways {
             for (Integer id : ids) {
                 GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(id);
                 if (gatewayTable.getEnabled()) {
-                    ObjectFactory.getMcActionEngine().discover(id);
+                    McObjectManager.getMcActionEngine().discover(id);
                 }
             }
 

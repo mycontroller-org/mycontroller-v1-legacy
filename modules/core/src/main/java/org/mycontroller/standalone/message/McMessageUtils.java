@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.gateway.GatewayUtils;
@@ -488,8 +488,8 @@ public class McMessageUtils {
     }
 
     public static String getMetricType() {
-        if (ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig() != null) {
-            return ObjectFactory.getAppProperties().getControllerSettings().getUnitConfig();
+        if (McObjectManager.getAppProperties().getControllerSettings().getUnitConfig() != null) {
+            return McObjectManager.getAppProperties().getControllerSettings().getUnitConfig();
         }
         return UNIT_CONFIG.METRIC.getText();
     }
@@ -500,8 +500,8 @@ public class McMessageUtils {
     public static synchronized void sendToGateway(RawMessage rawMessage) {
         //Send message to nodes [going out from MyController]
         try {
-            if (ObjectFactory.getGateway(rawMessage.getGatewayId()) != null) {
-                ObjectFactory.getGateway(rawMessage.getGatewayId()).write(rawMessage);
+            if (McObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
+                McObjectManager.getGateway(rawMessage.getGatewayId()).write(rawMessage);
                 if (_logger.isDebugEnabled()) {
                     _logger.debug("Message sent to gateway, {}", rawMessage);
                 }

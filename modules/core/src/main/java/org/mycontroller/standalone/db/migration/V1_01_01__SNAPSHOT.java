@@ -40,7 +40,7 @@ public class V1_01_01__SNAPSHOT extends MigrationBase {
              DaoUtils.loadAllDao();
          }
          //Load properties from database
-         ObjectFactory.getAppProperties().loadPropertiesFromDb();*/
+         McObjectManager.getAppProperties().loadPropertiesFromDb();*/
 
         loadDao();
 

@@ -27,8 +27,8 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
@@ -501,9 +501,9 @@ public class McMessageEngine implements Runnable {
                 firmware = DaoUtils.getFirmwareDao().getById(node.getFirmware().getId());
                 _logger.debug("Firmware selected based on node configuration...");
             } else if (firmwareConfigRequest.getType() == 65535 && firmwareConfigRequest.getVersion() == 65535) {
-                if (ObjectFactory.getAppProperties().getMySensorsSettings().getDefaultFirmware() != null) {
+                if (McObjectManager.getAppProperties().getMySensorsSettings().getDefaultFirmware() != null) {
                     firmware = DaoUtils.getFirmwareDao().getById(
-                            ObjectFactory.getAppProperties().getMySensorsSettings().getDefaultFirmware());
+                            McObjectManager.getAppProperties().getMySensorsSettings().getDefaultFirmware());
                 } else {
                     _logger.warn("There is no default firmware set!");
                 }
@@ -526,12 +526,12 @@ public class McMessageEngine implements Runnable {
                     return;
                 }
             } else if (firmware == null) {//Non bootloader command
-                if (ObjectFactory.getAppProperties().getMySensorsSettings().getEnbaledDefaultOnNoFirmware()) {
+                if (McObjectManager.getAppProperties().getMySensorsSettings().getEnbaledDefaultOnNoFirmware()) {
                     _logger.debug("If requested firmware is not available, "
                             + "redirect to default firmware is set, Checking the default firmware");
-                    if (ObjectFactory.getAppProperties().getMySensorsSettings().getDefaultFirmware() != null) {
+                    if (McObjectManager.getAppProperties().getMySensorsSettings().getDefaultFirmware() != null) {
                         firmware = DaoUtils.getFirmwareDao().getById(
-                                ObjectFactory.getAppProperties().getMySensorsSettings().getDefaultFirmware());
+                                McObjectManager.getAppProperties().getMySensorsSettings().getDefaultFirmware());
                         _logger.debug("Default firmware:[{}]", firmware.getFirmwareName());
                     } else {
                         _logger.warn("There is no default firmware set!");

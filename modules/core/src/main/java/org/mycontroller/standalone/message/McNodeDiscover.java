@@ -60,7 +60,7 @@ public class McNodeDiscover implements Runnable {
                         MySensorsUtils.EMPTY_DATA, //Payload
                         true    //Is TX Message?
                 );
-                ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+                McObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
                 nodeId++;
             }
              */
