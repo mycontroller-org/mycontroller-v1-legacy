@@ -16,8 +16,13 @@
  */
 package org.mycontroller.standalone.db;
 
-import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
-import com.j256.ormlite.support.ConnectionSource;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import org.apache.commons.io.FileUtils;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
@@ -31,12 +36,9 @@ import org.mycontroller.standalone.settings.SettingsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

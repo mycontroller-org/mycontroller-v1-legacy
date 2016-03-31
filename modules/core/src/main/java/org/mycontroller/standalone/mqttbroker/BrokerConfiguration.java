@@ -16,15 +16,16 @@
  */
 package org.mycontroller.standalone.mqttbroker;
 
-import io.moquette.server.config.IConfig;
+import static io.moquette.BrokerConstants.*;
+
+import java.util.Properties;
+
 import org.h2.store.fs.FileUtils;
 import org.mycontroller.standalone.McObjectManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
-
-import static io.moquette.BrokerConstants.*;
+import io.moquette.server.config.IConfig;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -41,8 +42,8 @@ public class BrokerConfiguration implements IConfig {
     }
 
     private void createDefaultLocations() {
-        FileUtils
-                .createDirectory(FileUtils.getParent(McObjectManager.getAppProperties().getMqttBrokerPersistentStore()));
+        FileUtils.createDirectory(FileUtils.getParent(McObjectManager.getAppProperties().
+                getMqttBrokerPersistentStore()));
     }
 
     private void loadProperties() {

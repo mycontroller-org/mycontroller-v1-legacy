@@ -16,6 +16,10 @@
  */
 package org.mycontroller.standalone.db;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
@@ -27,10 +31,6 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.settings.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
