@@ -16,18 +16,13 @@
  */
 package org.mycontroller.standalone.db;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
+import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
 import org.apache.commons.io.FileUtils;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
@@ -36,8 +31,12 @@ import org.mycontroller.standalone.settings.SettingsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
-import com.j256.ormlite.support.ConnectionSource;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

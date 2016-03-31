@@ -16,21 +16,17 @@
  */
 package org.mycontroller.standalone.metrics;
 
-import java.util.Date;
-import java.util.List;
-
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
-import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
-import org.mycontroller.standalone.db.tables.Node;
-import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.db.tables.*;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -356,8 +352,8 @@ public class MetricsAggregationBase {
                 return System.currentTimeMillis()
                         - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionOneMinute();
             case ONE_HOUR:
-                return System.currentTimeMillis()
-                        - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionFiveMinutes();
+                return System.currentTimeMillis() - McObjectManager.getAppProperties().
+                        getMetricsDataRetentionSettings().getRetentionFiveMinutes();
             case SIX_HOURS:
                 return System.currentTimeMillis()
                         - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionOneHour();
@@ -365,8 +361,8 @@ public class MetricsAggregationBase {
                 return System.currentTimeMillis()
                         - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionSixHours();
             case ONE_DAY:
-                return System.currentTimeMillis()
-                        - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionTwelveHours();
+                return System.currentTimeMillis() - McObjectManager.getAppProperties().
+                        getMetricsDataRetentionSettings().getRetentionTwelveHours();
             default:
                 return null;
         }

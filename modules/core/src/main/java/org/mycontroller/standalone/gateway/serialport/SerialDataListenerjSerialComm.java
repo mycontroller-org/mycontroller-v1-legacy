@@ -16,17 +16,16 @@
  */
 package org.mycontroller.standalone.gateway.serialport;
 
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

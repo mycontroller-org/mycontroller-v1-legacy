@@ -16,23 +16,15 @@
  */
 package org.mycontroller.standalone.mqttbroker;
 
-import static io.moquette.BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME;
-import static io.moquette.BrokerConstants.AUTHENTICATOR_CLASS_NAME;
-import static io.moquette.BrokerConstants.AUTHORIZATOR_CLASS_NAME;
-import static io.moquette.BrokerConstants.HOST_PROPERTY_NAME;
-import static io.moquette.BrokerConstants.PASSWORD_FILE_PROPERTY_NAME;
-import static io.moquette.BrokerConstants.PERSISTENT_STORE_PROPERTY_NAME;
-import static io.moquette.BrokerConstants.PORT_PROPERTY_NAME;
-import static io.moquette.BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME;
-
-import java.util.Properties;
-
+import io.moquette.server.config.IConfig;
 import org.h2.store.fs.FileUtils;
 import org.mycontroller.standalone.McObjectManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.moquette.server.config.IConfig;
+import java.util.Properties;
+
+import static io.moquette.BrokerConstants.*;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
