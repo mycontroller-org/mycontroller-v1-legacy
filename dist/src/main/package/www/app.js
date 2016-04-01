@@ -529,6 +529,17 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
       //Update mchelper
       CommonServices.saveMchelper(mchelper);
     };
+    
+    //Show hide main menu
+    $scope.showHideMainMenu = function () {
+      if(mchelper.user.hideMenu){
+        mchelper.user.hideMenu = false;
+      }else{
+        mchelper.user.hideMenu = true;
+      }
+      //Update mchelper
+      CommonServices.saveMchelper(mchelper);
+    };
 });
 
 myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper, $translate, editableOptions, CommonServices) {
@@ -553,10 +564,10 @@ myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper,
     //alert(angular.toJson(toState));
     if(toState.name.indexOf('login') === 0){
         angular.element( document.querySelector( '#rootId' ) ).addClass( "login-pf" );
-        angular.element( document.querySelector( '#rootView' ) ).removeClass( "container-fluid top-buffer" );
+        angular.element( document.querySelector( '#rootView' ) ).removeClass( "container-fluid top-buffer-m top-buffer-nm" );
     }else{
       angular.element( document.querySelector( '#rootId' ) ).removeClass( "login-pf" );
-      angular.element( document.querySelector( '#rootView' ) ).addClass( "container-fluid top-buffer" );
+      angular.element( document.querySelector( '#rootView' ) ).addClass( "container-fluid top-buffer-m top-buffer-nm" );
     }
     var requireLogin = toState.data.requireLogin;
     // redirect to login page if not logged in

@@ -22,7 +22,9 @@ body {
   padding-bottom: 20px;
 }
 
-.top-buffer { margin-top:100px; }
+.top-buffer-nm { margin-top:20px; }
+
+.top-buffer-m { margin-top:100px; }
 
 
 .fa-check-circle-o {
