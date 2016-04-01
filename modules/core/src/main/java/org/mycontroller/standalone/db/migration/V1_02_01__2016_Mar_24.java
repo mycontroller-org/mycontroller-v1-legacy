@@ -32,6 +32,7 @@ import org.mycontroller.standalone.db.tables.OperationRuleDefinitionMap;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.OperationTimerMap;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.User;
@@ -39,6 +40,7 @@ import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
 import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
@@ -52,6 +54,8 @@ import org.mycontroller.standalone.rule.RuleUtils.OPERATOR;
 import org.mycontroller.standalone.rule.model.DampeningActiveTime;
 import org.mycontroller.standalone.rule.model.DampeningConsecutive;
 import org.mycontroller.standalone.rule.model.DampeningLastNEvaluations;
+import org.mycontroller.standalone.rule.model.RuleDefinitionState;
+import org.mycontroller.standalone.rule.model.RuleDefinitionString;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
@@ -392,11 +396,30 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
         } else if (row.get(KEY_TRIGGER_TYPE).equalsIgnoreCase("NOT_EQUAL")) {
             properties.put(RuleDefinitionThreshold.KEY_OPERATOR, OPERATOR.NEQ.getText());
         }
-        properties.put(RuleDefinitionThreshold.KEY_DATA, row.get("THRESHOLDVALUE"));
-        if (row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(
-                RESOURCE_TYPE.SENSOR_VARIABLE.name())) {
-            properties.put(RuleDefinitionThreshold.KEY_DATA_TYPE,
-                    DATA_TYPE.valueOf(row.get("THRESHOLDTYPE")).getText());
+
+        _logger.info("Row data: {}", row);
+        switch (getConditionType(row)) {
+            case STATE:
+                if (row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(
+                        RESOURCE_TYPE.SENSOR_VARIABLE.name())) {
+                    properties.put(RuleDefinitionState.KEY_STATE,
+                            McUtils.getBoolean(row.get("THRESHOLDVALUE")) ? STATE.ON.getText() : STATE.OFF.getText());
+                } else {
+                    properties.put(RuleDefinitionState.KEY_STATE, STATE.fromString(row.get("THRESHOLDVALUE"))
+                            .getText());
+                }
+                break;
+            case STRING:
+                properties.put(RuleDefinitionString.KEY_PATTERN, row.get("THRESHOLDVALUE"));
+                break;
+            case THRESHOLD:
+                properties.put(RuleDefinitionThreshold.KEY_DATA_TYPE,
+                        DATA_TYPE.valueOf(row.get("THRESHOLDTYPE")).getText());
+                properties.put(RuleDefinitionThreshold.KEY_DATA, row.get("THRESHOLDVALUE"));
+                break;
+            default:
+                break;
+
         }
         return properties;
     }
@@ -404,7 +427,17 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
     private CONDITION_TYPE getConditionType(HashMap<String, String> row) {
         if (row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(
                 RESOURCE_TYPE.SENSOR_VARIABLE.name())) {
-            return CONDITION_TYPE.THRESHOLD;
+            SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().getById(
+                    Integer.valueOf(row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_ID))));
+            if (sensorVariable.getMetricType() == METRIC_TYPE.BINARY) {
+                return CONDITION_TYPE.STATE;
+            } else if (sensorVariable.getMetricType() == METRIC_TYPE.DOUBLE) {
+                return CONDITION_TYPE.THRESHOLD;
+            } else if (sensorVariable.getMetricType() == METRIC_TYPE.NONE) {
+                return CONDITION_TYPE.STRING;
+            } else {
+                return CONDITION_TYPE.THRESHOLD;
+            }
         } else {
             return CONDITION_TYPE.STATE;
         }
