@@ -24,7 +24,6 @@ import org.mycontroller.standalone.api.jaxrs.mixins.serializers.StateSerializer;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -46,9 +45,6 @@ abstract class NodeMixin {
 
     @JsonDeserialize(using = StateDeserializer.class)
     public abstract void setState(STATE state);
-
-    @JsonIgnoreProperties(value = { "connectionDetails", "statusMessage", "statusSince", "state" })
-    public abstract GatewayMixin getGateway();
 
     @JsonSetter(value = "gateway")
     @JsonDeserialize(using = GatewayTableDeserializer.class)
