@@ -529,7 +529,7 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
       //Update mchelper
       CommonServices.saveMchelper(mchelper);
     };
-    
+
     //Show hide main menu
     $scope.showHideMainMenu = function () {
       if(mchelper.user.hideMenu){
