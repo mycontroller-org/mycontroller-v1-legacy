@@ -18,7 +18,7 @@ package org.mycontroller.standalone.model;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
@@ -171,7 +171,7 @@ public class ResourceModel {
                         .append(", NodeEui:").append(sensorVariable.getSensor().getNode().getEui())
                         .append(", SensorId:").append(sensorVariable.getSensor().getSensorId())
                         .append(", VariableType:")
-                        .append(ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name()));
+                        .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
                 break;
             case RESOURCES_GROUP:
                 ResourcesGroup resourcesGroup = (ResourcesGroup) this.resource;
@@ -225,7 +225,7 @@ public class ResourceModel {
                         .append(" >> ").append(DISPLAY_KEY_SENSOR).append(sensorVariable.getSensor().getSensorId())
                         .append(":").append(sensorVariable.getSensor().getName())
                         .append(" >> ").append(DISPLAY_KEY_SENSOR_VARIABLE)
-                        .append(ObjectFactory.getMcLocale().getString(sensorVariable.getVariableType().name()));
+                        .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
                 break;
             case RESOURCES_GROUP:
                 ResourcesGroup resourcesGroup = (ResourcesGroup) this.resource;

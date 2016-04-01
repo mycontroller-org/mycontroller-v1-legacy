@@ -61,12 +61,12 @@ public class BackupRestore {
         }
 
         isbackupRestoreRunning = true;
-        String applicationBackupDir = ObjectFactory.getAppProperties().getBackupSettings().getBackupLocation()
+        String applicationBackupDir = McObjectManager.getAppProperties().getBackupSettings().getBackupLocation()
                 + prefix + FILE_NAME_IDENTITY + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
         //Create parent dir if not exist
         try {
             FileUtils.forceMkdir(FileUtils.getFile(applicationBackupDir));
-            String databaseBackup = ObjectFactory.getAppProperties().getTmpLocation() + DATABASE_FILENAME;
+            String databaseBackup = McObjectManager.getAppProperties().getTmpLocation() + DATABASE_FILENAME;
             if (DataBaseUtils.backupDatabase(databaseBackup)) {
                 //Copy database file
                 FileUtils.moveFile(
@@ -82,7 +82,7 @@ public class BackupRestore {
                 //add properties file
                 McUtils.addToZipFile(applicationBackupDir + "/" + APP_PROPERTIES_FILENAME, outZip);
                 //add keystore file, if https enabled
-                if (ObjectFactory.getAppProperties().isWebHttpsEnabled() && KEY_STORE_FILE != null) {
+                if (McObjectManager.getAppProperties().isWebHttpsEnabled() && KEY_STORE_FILE != null) {
                     McUtils.addToZipFile(KEY_STORE_FILE, outZip);
                 }
                 //compress all the files
@@ -113,11 +113,11 @@ public class BackupRestore {
 
         isbackupRestoreRunning = true;
 
-        String extractedLocation = ObjectFactory.getAppProperties().getTmpLocation()
+        String extractedLocation = McObjectManager.getAppProperties().getTmpLocation()
                 + backupFile.getName().replaceAll(".zip", "");
         try {
 
-            String oldDatabaseLocation = ObjectFactory.getAppProperties().getDbH2DbLocation();
+            String oldDatabaseLocation = McObjectManager.getAppProperties().getDbH2DbLocation();
             //Extract zip file
             _logger.debug("Zip file:{}", backupFile.getAbsolutePath());
 
@@ -145,14 +145,14 @@ public class BackupRestore {
             StartApp.loadInitialProperties();
 
             //Remove old files
-            FileUtils.deleteQuietly(FileUtils.getFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile()));
+            FileUtils.deleteQuietly(FileUtils.getFile(McObjectManager.getAppProperties().getWebSslKeystoreFile()));
 
-            if (ObjectFactory.getAppProperties().isWebHttpsEnabled()) {
+            if (McObjectManager.getAppProperties().isWebHttpsEnabled()) {
                 //restore key store file
                 FileUtils.moveFile(
                         FileUtils.getFile(extractedLocation + "/" + FileUtils.getFile(
-                                ObjectFactory.getAppProperties().getWebSslKeystoreFile()).getName()),
-                        FileUtils.getFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile()));
+                                McObjectManager.getAppProperties().getWebSslKeystoreFile()).getName()),
+                        FileUtils.getFile(McObjectManager.getAppProperties().getWebSslKeystoreFile()));
             }
 
             //remove old database
@@ -185,11 +185,11 @@ public class BackupRestore {
             FileUtils.copyFile(
                     FileUtils.getFile(System.getProperty("mc.conf.file")),
                     FileUtils.getFile(applicationBackupDir + "/" + APP_PROPERTIES_FILENAME));
-            if (ObjectFactory.getAppProperties().isWebHttpsEnabled()) {
+            if (McObjectManager.getAppProperties().isWebHttpsEnabled()) {
                 KEY_STORE_FILE = applicationBackupDir + "/"
-                        + FileUtils.getFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile()).getName();
+                        + FileUtils.getFile(McObjectManager.getAppProperties().getWebSslKeystoreFile()).getName();
                 FileUtils.copyFile(
-                        FileUtils.getFile(ObjectFactory.getAppProperties().getWebSslKeystoreFile()),
+                        FileUtils.getFile(McObjectManager.getAppProperties().getWebSslKeystoreFile()),
                         FileUtils.getFile(KEY_STORE_FILE));
             }
 

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -140,8 +140,8 @@ public class GatewayUtils {
     }
 
     public static NETWORK_TYPE getNetworkType(Integer gatewayId) {
-        if (ObjectFactory.getGateway(gatewayId) != null) {
-            return ObjectFactory.getGateway(gatewayId).getGateway().getNetworkType();
+        if (McObjectManager.getGateway(gatewayId) != null) {
+            return McObjectManager.getGateway(gatewayId).getGateway().getNetworkType();
         } else {
             GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
             return gatewayTable.getNetworkType();
@@ -184,13 +184,13 @@ public class GatewayUtils {
         if (iGateway == null) {
             throw new RuntimeException("Unable to create gateway[" + gatewayTable + "]...Check your input");
         }
-        ObjectFactory.addGateway(iGateway);
+        McObjectManager.addGateway(iGateway);
     }
 
     public static synchronized void unloadGateway(Integer gatewayId) {
-        if (ObjectFactory.getGateway(gatewayId) != null) {
-            ObjectFactory.getGateway(gatewayId).close();
-            ObjectFactory.removeGateway(gatewayId);
+        if (McObjectManager.getGateway(gatewayId) != null) {
+            McObjectManager.getGateway(gatewayId).close();
+            McObjectManager.removeGateway(gatewayId);
         }
     }
 
@@ -202,7 +202,7 @@ public class GatewayUtils {
     }
 
     public static synchronized void unloadAllGateways() {
-        for (Integer gatewayId : ObjectFactory.getGatewayIds()) {
+        for (Integer gatewayId : McObjectManager.getGatewayIds()) {
             unloadGateway(gatewayId);
         }
     }

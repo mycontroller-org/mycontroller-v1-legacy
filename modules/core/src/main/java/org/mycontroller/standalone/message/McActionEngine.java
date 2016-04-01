@@ -17,7 +17,7 @@
 package org.mycontroller.standalone.message;
 
 import org.apache.commons.codec.binary.Hex;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.ResourceOperationUtils;
@@ -176,7 +176,7 @@ public class McActionEngine implements IMcActionEngine {
                 .isTxMessage(true)
                 .build();
         try {
-            if (ObjectFactory.getGateway(gatewayEthernet.getId()) != null) {
+            if (McObjectManager.getGateway(gatewayEthernet.getId()) != null) {
                 McMessageUtils.sendToProviderBridge(mcMessage);
                 return true;
             } else {

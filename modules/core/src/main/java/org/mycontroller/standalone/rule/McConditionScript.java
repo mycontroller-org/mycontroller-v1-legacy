@@ -20,8 +20,8 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionScript;
 import org.mycontroller.standalone.scripts.McScript;
@@ -55,7 +55,7 @@ public class McConditionScript extends McRuleBase {
         //execute script
         try {
             File scriptFile = FileUtils.getFile(
-                    ObjectFactory.getAppProperties().getScriptConditionsLocation() + rdScript.getScriptFile());
+                    McObjectManager.getAppProperties().getScriptConditionsLocation() + rdScript.getScriptFile());
             McScript mcScript = McScript.builder()
                     .file(scriptFile.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(scriptFile.getCanonicalPath()))

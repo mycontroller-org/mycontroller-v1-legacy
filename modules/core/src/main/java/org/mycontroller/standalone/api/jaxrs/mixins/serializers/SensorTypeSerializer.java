@@ -18,7 +18,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
 
 import java.io.IOException;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.LocaleString;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
@@ -38,7 +38,7 @@ public class SensorTypeSerializer extends JsonSerializer<MESSAGE_TYPE_PRESENTATI
             throws IOException, JsonProcessingException {
         if (type != null) {
             jgen.writeObject(LocaleString.builder().en(type.getText())
-                    .locale(ObjectFactory.getMcLocale().getString(type.name())).build());
+                    .locale(McObjectManager.getMcLocale().getString(type.name())).build());
         } else {
             jgen.writeNull();
         }

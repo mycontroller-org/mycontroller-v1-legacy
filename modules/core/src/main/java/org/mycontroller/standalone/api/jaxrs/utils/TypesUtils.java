@@ -25,7 +25,7 @@ import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
@@ -88,10 +88,10 @@ public class TypesUtils {
         for (MESSAGE_TYPE_SET_REQ type : types) {
             if (metricTypes.isEmpty()) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                        .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
             } else if (metricTypes.contains(McMessageUtils.getMetricType(type).getText())) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                        .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
             }
         }
         return typesIdNameMappers;
@@ -105,7 +105,7 @@ public class TypesUtils {
                 typesIdNameMappers.add(TypesIdNameMapper
                         .builder()
                         .id(type.getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                        .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
             }
         }
         return typesIdNameMappers;
@@ -117,7 +117,7 @@ public class TypesUtils {
         for (MESSAGE_TYPE_PRESENTATION type : types) {
             if (type.name().contains(NODE_IDENTIFIER)) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(type.name())).build());
+                        .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
             }
         }
         return typesIdNameMappers;
@@ -783,7 +783,7 @@ public class TypesUtils {
             List<SensorsVariablesMap> variableTypes = DaoUtils.getSensorsVariablesMapDao().getAll(sensorType);
             for (SensorsVariablesMap variableType : variableTypes) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(variableType.getVariableType().getText())
-                        .displayName(ObjectFactory.getMcLocale().getString(variableType.getVariableType().name()))
+                        .displayName(McObjectManager.getMcLocale().getString(variableType.getVariableType().name()))
                         .ticked(false).build());
             }
             if (sensorId != null) {
@@ -919,7 +919,7 @@ public class TypesUtils {
     public static ArrayList<TypesIdNameMapper> getLanguages() {
         MC_LANGUAGE[] languages = MC_LANGUAGE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        MC_LANGUAGE selected = ObjectFactory.getAppProperties().getLanguage();
+        MC_LANGUAGE selected = McObjectManager.getAppProperties().getLanguage();
         for (MC_LANGUAGE language : languages) {
             if (selected == language) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(language.name().toLowerCase())
@@ -948,7 +948,7 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (GatewayUtils.GATEWAY_TYPE gatewayType : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(gatewayType.getText())
-                    .displayName(ObjectFactory.getMcLocale().getString(gatewayType.name())).build());
+                    .displayName(McObjectManager.getMcLocale().getString(gatewayType.name())).build());
         }
         return typesIdNameMappers;
     }

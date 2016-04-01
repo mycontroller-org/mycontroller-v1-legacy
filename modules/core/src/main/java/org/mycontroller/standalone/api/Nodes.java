@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -77,7 +77,7 @@ public class Nodes {
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
-                ObjectFactory.getMcActionEngine().rebootNode(node);
+                McObjectManager.getMcActionEngine().rebootNode(node);
             }
         } else {
             throw new McBadRequestException("Selected Node(s) not available!");
@@ -89,7 +89,7 @@ public class Nodes {
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
                 if (node.getFirmware() != null) {
-                    ObjectFactory.getMcActionEngine().uploadFirmware(node);
+                    McObjectManager.getMcActionEngine().uploadFirmware(node);
                 }
             }
         } else {
@@ -101,7 +101,7 @@ public class Nodes {
         List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
         if (nodes != null && nodes.size() > 0) {
             for (Node node : nodes) {
-                ObjectFactory.getMcActionEngine().eraseConfiguration(node);
+                McObjectManager.getMcActionEngine().eraseConfiguration(node);
             }
 
         } else {

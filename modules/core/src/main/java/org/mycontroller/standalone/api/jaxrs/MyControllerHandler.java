@@ -37,7 +37,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.About;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.McServerFileUtils;
@@ -158,7 +158,7 @@ public class MyControllerHandler extends AccessEngine {
     public Response sendRawMessage(MySensorsRawMessage mySensorsRawMessage) {
         try {
             mySensorsRawMessage.setTxMessage(true);
-            ObjectFactory.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
+            McObjectManager.getRawMessageQueue().putMessage(mySensorsRawMessage.getRawMessage());
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

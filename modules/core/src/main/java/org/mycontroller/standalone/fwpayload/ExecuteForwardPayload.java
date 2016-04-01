@@ -18,7 +18,7 @@ package org.mycontroller.standalone.fwpayload;
 
 import java.util.List;
 
-import org.mycontroller.standalone.ObjectFactory;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -43,7 +43,7 @@ public class ExecuteForwardPayload implements Runnable {
 
     private void execute(ForwardPayload forwardPayload) {
         _logger.debug("Sensor:[{}], Details of ForwardPayload:[{}]", sensor, forwardPayload);
-        ObjectFactory.getMcActionEngine().executeForwardPayload(forwardPayload, sensorVariable.getValue());
+        McObjectManager.getMcActionEngine().executeForwardPayload(forwardPayload, sensorVariable.getValue());
     }
 
     @Override

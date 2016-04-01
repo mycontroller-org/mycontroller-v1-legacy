@@ -21,8 +21,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.ObjectFactory;
 import org.mycontroller.standalone.gateway.GatewayException;
 import org.mycontroller.standalone.gateway.IGateway.GATEWAY_STATUS;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
@@ -153,7 +153,7 @@ public class EthernetGatewayActionThread implements Runnable {
     }
 
     private boolean checkAliveState() {
-        return ObjectFactory.getMcActionEngine().checkEthernetGatewayAliveState(gateway);
+        return McObjectManager.getMcActionEngine().checkEthernetGatewayAliveState(gateway);
     }
 
     @Override
