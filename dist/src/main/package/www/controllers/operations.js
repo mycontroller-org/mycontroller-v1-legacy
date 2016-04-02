@@ -20,7 +20,7 @@ $scope, OperationsFactory, $state, $uibModal, $stateParams, displayRestError, mc
   //GUI page settings
   $scope.headerStringList = $filter('translate')('OPERATIONS_DETAIL');
   $scope.noItemsSystemMsg = $filter('translate')('NO_OPERATIONS_SETUP');
-  $scope.noItemsSystemIcon = "fa fa-paper-plane";
+  $scope.noItemsSystemIcon = "fa fa-tasks";
 
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;

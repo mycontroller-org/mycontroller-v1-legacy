@@ -148,6 +148,11 @@
     <script src="controllers/adf-widgets/adf-myc-smg/adf-myc-sensors-mixed-graph.js"></script>
     <script src="controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js"></script>
     <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js"></script>
+    
+    <!-- Google api for maps: https://github.com/allenhwkim/angularjs-google-maps -->
+    <script src="libs/angularjs-google-maps/ng-map.min.js"></script>
+    <!-- Include google maps -->
+    <script src="https://maps.google.com/maps/api/js"></script>
 
     <!-- Application js-->
     <script src="app.js"></script>
@@ -260,7 +265,7 @@
               <li ng-class="{ active: $state.current.name.indexOf('sensors') == 0 }"><a ui-sref="sensorsList"><i class="fa fa-eye fa-lg"></i> {{ 'SENSORS' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('rules') == 0 }"><a ui-sref="rulesList"><i class="fa fa-cogs fa-lg"></i> {{ 'RULES' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> {{ 'TIMERS' | translate }}</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('operations') == 0 }"><a ui-sref="operationsList"><i class="fa fa-paper-plane fa-lg"></i> {{ 'OPERATIONS' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('operations') == 0 }"><a ui-sref="operationsList"><i class="fa fa-tasks fa-lg"></i> {{ 'OPERATIONS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('forwardPayload') == 0 }"><a ui-sref="forwardPayloadList"><i class="fa fa-forward fa-lg"></i> {{ 'FORWARD_PAYLOAD' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>{{ 'GROUPS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rooms') == 0 }"><a ui-sref="roomsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS' | translate }}</a></li>

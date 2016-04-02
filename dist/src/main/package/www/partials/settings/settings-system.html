@@ -45,6 +45,12 @@
               </div>
             </div>
 
+            <div class="form-group" ng-show="editEnable.location">
+              <label class="col-sm-2 control-label">{{ 'LOCATION' | translate }}</label>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-default" class="button" ng-click="updateGeoLocation()"><i class="fa fa-map-marker fa-lg"></i> {{ 'UPDATE' | translate }}</button>
+              </div>
+            </div>
 
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'LATITUDE' | translate }}</label>

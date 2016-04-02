@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory,
-  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore, CommonServices) {
+  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore, CommonServices, NavigatorGeolocation, GeoCoder) {
 
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
@@ -51,7 +51,14 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.aliveCheckMinutes = null;
   $scope.globalPageRefreshTime = null;
 
-  //Save functions
+  //Get current location
+  $scope.updateGeoLocation = function(){
+    NavigatorGeolocation.getCurrentPosition()
+    .then(function(position) {
+      $scope.locationSettings.latitude = position.coords.latitude;
+      $scope.locationSettings.longitude = position.coords.longitude;
+    });
+  };
 
   //Save location
   $scope.saveLocation = function(){
@@ -59,6 +66,8 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
     SettingsFactory.saveLocation($scope.locationSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.location = false;
+        $scope.updateSettingsLocation();
+        $scope.editEnable.location = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.location = false;
