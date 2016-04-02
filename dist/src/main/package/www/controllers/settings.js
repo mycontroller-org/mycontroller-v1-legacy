@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory,
-  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore, CommonServices, NavigatorGeolocation, GeoCoder) {
+  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore, CommonServices, NavigatorGeolocation) {
 
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
