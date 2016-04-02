@@ -722,7 +722,37 @@ myControllerModule.config(function($translateProvider) {
 
 });
 
-
+//Dashboard custom layouts
+myControllerModule.config(function(dashboardProvider){
+  dashboardProvider
+    .structure('4-4-4/12', {
+      rows: [{
+        columns: [{
+          styleClass: 'col-md-4'
+        }, {
+          styleClass: 'col-md-4'
+        }, {
+          styleClass: 'col-md-4'
+        }]
+      }, {
+        columns: [{
+          styleClass: 'col-md-12'
+        }]
+      }]
+    }).structure('6-6/12', {
+      rows: [{
+        columns: [{
+          styleClass: 'col-md-6'
+        }, {
+          styleClass: 'col-md-6'
+        }]
+      }, {
+        columns: [{
+          styleClass: 'col-md-12'
+        }]
+      }]
+    });
+});
 
 //Items Delete Modal
 myControllerModule.controller('ControllerDeleteModal', function ($scope, $uibModalInstance, $sce, $filter) {
