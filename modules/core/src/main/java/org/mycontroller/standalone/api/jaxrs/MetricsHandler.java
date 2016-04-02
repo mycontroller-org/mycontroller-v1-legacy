@@ -306,7 +306,8 @@ public class MetricsHandler extends AccessEngine {
             } else {
                 seriesName = sensorVariable.getSensor().getName();
                 if (seriesName == null) {
-                    seriesName = sensorVariable.getSensor().getType().getText();
+                    seriesName = sensorVariable.getSensor().getSensorId() + "-"
+                            + sensorVariable.getVariableType().getText();
                 }
             }
             switch (sensorVariable.getMetricType()) {
