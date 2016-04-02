@@ -55,8 +55,8 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.updateGeoLocation = function(){
     NavigatorGeolocation.getCurrentPosition()
     .then(function(position) {
-      $scope.locationSettings.latitude = position.coords.latitude;
-      $scope.locationSettings.longitude = position.coords.longitude;
+      $scope.locationSettings.latitude = $filter('number')(position.coords.latitude, 4);
+      $scope.locationSettings.longitude = $filter('number')(position.coords.longitude, 4);
     });
   };
 
