@@ -315,6 +315,7 @@
     "NO_RESOURCE_GROUPS_SETUP": "Никакие группы ресурсов не установлены.",
     "NO_ROOMS_SETUP": "Никакие комнаты не созданы.",
     "NO_RULES_SETUP": "Никакие правила не установлены.",
+    "NO_SCRIPTS_SETUP": "No scripts set up.",
     "NO_SENSORS_SETUP": "Никакие датчики не установлены.",
     "NO_TIMERS_SETUP": "Никакие таймеры не установлены.",
     "OCCURRENCES": "Срабатывание",

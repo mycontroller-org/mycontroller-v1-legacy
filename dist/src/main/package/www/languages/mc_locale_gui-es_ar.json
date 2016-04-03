@@ -315,6 +315,7 @@
     "NO_RESOURCE_GROUPS_SETUP": "No hay grupo de recursos configurados.",
     "NO_ROOMS_SETUP": "No hay salas configuradas.",
     "NO_RULES_SETUP": "No rules set up.",
+    "NO_SCRIPTS_SETUP": "No scripts set up.",
     "NO_SENSORS_SETUP": "No hay sensores configurados.",
     "NO_TIMERS_SETUP": "No hay temporizadores establecidos.",
     "OCCURRENCES": "Ocurrencias",
