@@ -180,6 +180,20 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('scriptsList', {
+      url:"/resources/scripts/list",
+      templateUrl: "partials/scripts/scripts-list.html",
+      controller: "ScriptsController",
+       data: {
+        requireLogin: true
+      }
+    }).state('scriptsAddEdit', {
+      url:"/resources/scripts/addedit/:name",
+      templateUrl: "partials/scripts/scripts-add-edit.html",
+      controller: "ScriptsControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
     }).state('resourcesGroupList', {
       url:"/resources/groups/list/:resourceType/:resourceId",
       templateUrl: "partials/resources-group/resources-group-list.html",

@@ -276,7 +276,7 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
   $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "Rule definition"});
   $scope.spResourceTypes = TypesFactory.getResourceTypes({"resourceType": "Rule definition", "isSendPayload":true});
   $scope.operationTypes = TypesFactory.getOperationTypes();
-  $scope.scriptsList = ScriptsFactory.getAll({"type":"Operation"});
+  $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Operation"});
 
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;

@@ -18,9 +18,14 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -28,8 +33,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.utils.McServerFileUtils;
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.utils.McServerScriptFileUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 
 /**
@@ -42,15 +49,78 @@ import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "Admin" })
 public class ScriptsHandler extends AccessEngine {
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_EXTENSION = "extension";
+    public static final String KEY_LESS_INFO = "lessInfo";
 
     @GET
     @Path("/")
-    public Response getAll(@QueryParam("type") String type) {
+    public Response getAll(@QueryParam(KEY_NAME) List<String> name,
+            @QueryParam(KEY_TYPE) String type,
+            @QueryParam(KEY_EXTENSION) String extension,
+            @QueryParam(KEY_LESS_INFO) Boolean lessInfo,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) Long page,
+            @QueryParam(Query.ORDER_BY) String orderBy,
+            @QueryParam(Query.ORDER) String order) {
+        HashMap<String, Object> filters = new HashMap<String, Object>();
+        filters.put(KEY_NAME, name);
+        filters.put(KEY_TYPE, SCRIPT_TYPE.fromString(type));
+        filters.put(KEY_EXTENSION, extension);
+        filters.put(KEY_LESS_INFO, lessInfo);
+
+        Query query = Query.builder()
+                .order(order != null ? order : Query.ORDER_ASC)
+                .orderBy(orderBy != null ? orderBy : KEY_NAME)
+                .filters(filters)
+                .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
+                .page(page != null ? page : 1L)
+                .build();
         try {
-            SCRIPT_TYPE scriptType = SCRIPT_TYPE.fromString(type);
-            return RestUtils.getResponse(Status.OK, McServerFileUtils.getScriptFiles(scriptType));
+            if (lessInfo != null && lessInfo) {
+                return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query).getData());
+            } else {
+                return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query));
+            }
         } catch (Exception ex) {
-            return RestUtils.getResponse(Status.EXPECTATION_FAILED, new ApiError("Exception: " + ex.getMessage()));
+            return RestUtils.getResponse(Status.EXPECTATION_FAILED, new ApiError(ex.getMessage()));
         }
     }
+
+    @POST
+    @Path("/delete")
+    public Response deleteIds(List<String> scriptFiles) {
+        try {
+            McServerScriptFileUtils.deleteScriptFiles(scriptFiles);
+        } catch (IOException ex) {
+            RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+        return RestUtils.getResponse(Status.NO_CONTENT);
+    }
+
+    @GET
+    @Path("/get")
+    public Response get(@QueryParam("name") String scriptName) {
+        if (scriptName == null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST);
+        }
+        try {
+            return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFile(scriptName));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @POST
+    @Path("/")
+    public Response upload(McScript mcScript) {
+        try {
+            McServerScriptFileUtils.uploadScript(mcScript);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
 }

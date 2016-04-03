@@ -55,9 +55,9 @@ public class McConditionScript extends McRuleBase {
         //execute script
         try {
             File scriptFile = FileUtils.getFile(
-                    McObjectManager.getAppProperties().getScriptConditionsLocation() + rdScript.getScriptFile());
+                    McObjectManager.getAppProperties().getScriptLocation() + rdScript.getScriptFile());
             McScript mcScript = McScript.builder()
-                    .file(scriptFile.getCanonicalPath())
+                    .name(scriptFile.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(scriptFile.getCanonicalPath()))
                     .build();
             McScriptEngine mcScriptEngine = new McScriptEngine(mcScript);
@@ -67,7 +67,10 @@ public class McConditionScript extends McRuleBase {
                 _logger.warn("Looks like script does not return result! {}", mcScript);
             }
         } catch (Exception ex) {
-            _logger.error("Exception,", ex);
+            _logger.error("Exception occurred. This rule will be disabled. Fix this error and enable this rule{}",
+                    rdScript, ex);
+            //Disable this rule, when there is an exception on script
+            rdScript.setEnabled(false);
         }
 
         if (_logger.isDebugEnabled()) {

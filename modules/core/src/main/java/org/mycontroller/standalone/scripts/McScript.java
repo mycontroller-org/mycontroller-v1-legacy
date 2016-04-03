@@ -16,8 +16,15 @@
  */
 package org.mycontroller.standalone.scripts;
 
+import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -27,16 +34,34 @@ import lombok.ToString;
 @Data
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class McScript {
     private String engineName;
     private String mimeType;
     private String extension;
-    private String file;
+    private String name;
+    private SCRIPT_TYPE type;
+    private long size;
+    private long lastModified;
+    private Object data;
 
+    @JsonIgnore
     public boolean isValid() {
         if (engineName == null && mimeType == null && extension == null) {
             return false;
         }
         return true;
+    }
+
+    public SCRIPT_TYPE getType() {
+        if (type == null) {
+            if (name.startsWith(AppProperties.CONDITIONS_SCRIPT_DIRECTORY)) {
+                type = SCRIPT_TYPE.CONDITION;
+            } else {
+                type = SCRIPT_TYPE.OPERATION;
+            }
+        }
+        return type;
     }
 }

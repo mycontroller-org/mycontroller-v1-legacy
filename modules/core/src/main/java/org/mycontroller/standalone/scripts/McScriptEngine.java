@@ -61,7 +61,7 @@ public class McScriptEngine implements Runnable {
         McScriptEngineUtils.updateMcApi(engine);
 
         // evaluate JavaScript code from String
-        Object result = engine.eval(new FileReader(mcScript.getFile()));
+        Object result = engine.eval(new FileReader(mcScript.getName()));
         if (result == null) {
             result = engine.get(McScriptEngineUtils.MC_SCRIPT_RESULT);
         }

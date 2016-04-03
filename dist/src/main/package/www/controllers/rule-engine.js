@@ -315,7 +315,7 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
       $scope.item.operator = '';
       $scope.item.pattern = '';
     }else if($scope.item.conditionType === 'Script'){
-      $scope.scriptsList = ScriptsFactory.getAll({"type":"Condition"});
+      $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Condition"});
       $scope.item.resourceId = -1;
       $scope.item.resourceType = 'Script';
     }
@@ -346,7 +346,7 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
             $scope.sensorVariablesList = TypesFactory.getSensorVariables();
             $scope.ruleOperatorTypes = TypesFactory.getRuleOperatorTypes({"conditionType":$scope.item.conditionType});
           }else if($scope.item.conditionType === 'Script'){
-            $scope.scriptsList = ScriptsFactory.getAll({"type":"Condition"});
+            $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Condition"});
           }
 
 

@@ -42,7 +42,6 @@ import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.ImageFile;
 import org.mycontroller.standalone.api.jaxrs.json.LogFile;
-import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,9 +66,6 @@ public class McServerFileUtils {
     //If we allow more than this, should increase heap space of VM.
     private static final long IMAGE_DISPLAY_WIDGET_FILE_SIZE_LIMIT = McUtils.MB * 7;
     private static final long MAX_FILES_LIMIT = 500;
-
-    //mc script file filter
-    private static final String[] MC_SCRIPT_SUFFIX_FILTER = { "js", "py", "rb", "groovy" };
 
     public static LogFile getLogUpdate(Long lastKnownPosition, Long lastNPosition) {
         if (lastNPosition != null && appLogFile.length() > lastNPosition) {
@@ -128,7 +124,8 @@ public class McServerFileUtils {
     }
 
     public static List<String> getImageFilesList() throws IOException {
-        String filesLocation = McObjectManager.getAppProperties().getControllerSettings().getWidgetImageFilesLocation();
+        String filesLocation = McObjectManager.getAppProperties().getControllerSettings()
+                .getWidgetImageFilesLocation();
         String locationCanonicalPath = FileUtils.getFile(filesLocation).getCanonicalPath();
         if (!locationCanonicalPath.endsWith(File.separator)) {
             locationCanonicalPath += File.separator;
@@ -154,7 +151,8 @@ public class McServerFileUtils {
 
     public static synchronized ImageFile getImageFile(String imageFileName)
             throws IOException, IllegalAccessException {
-        String filesLocation = McObjectManager.getAppProperties().getControllerSettings().getWidgetImageFilesLocation();
+        String filesLocation = McObjectManager.getAppProperties().getControllerSettings()
+                .getWidgetImageFilesLocation();
         if (!getImageFilesList().contains(imageFileName)) {
             throw new IllegalAccessException(
                     "You do not have access (or) file not found (or) "
@@ -181,38 +179,6 @@ public class McServerFileUtils {
             }
         } else {
             throw new FileNotFoundException("File location not found: " + filesLocation);
-        }
-    }
-
-    public static synchronized List<String> getScriptFiles(SCRIPT_TYPE scriptType) throws IOException {
-
-        String filesLocation = null;
-        if (scriptType == null) {
-            filesLocation = McObjectManager.getAppProperties().getScriptLocation();
-        } else if (scriptType == SCRIPT_TYPE.CONDITION) {
-            filesLocation = McObjectManager.getAppProperties().getScriptConditionsLocation();
-        } else if (scriptType == SCRIPT_TYPE.OPERATION) {
-            filesLocation = McObjectManager.getAppProperties().getScriptOperationsLocation();
-        }
-
-        String locationCanonicalPath = FileUtils.getFile(filesLocation).getCanonicalPath();
-        if (!locationCanonicalPath.endsWith(File.separator)) {
-            locationCanonicalPath += File.separator;
-        }
-        if (FileUtils.getFile(filesLocation).exists()) {
-            List<String> files = new ArrayList<String>();
-            IOFileFilter ioFileFilter = new SuffixFileFilter(MC_SCRIPT_SUFFIX_FILTER, IOCase.INSENSITIVE);
-            Collection<File> conditionScriptFiles = FileUtils.listFiles(FileUtils.getFile(filesLocation),
-                    ioFileFilter, TrueFileFilter.INSTANCE);
-            for (File scriptFile : conditionScriptFiles) {
-                files.add(scriptFile.getCanonicalPath().replace(locationCanonicalPath, ""));
-                if (files.size() >= MAX_FILES_LIMIT) {
-                    break;
-                }
-            }
-            return files;
-        } else {
-            throw new FileNotFoundException("File location not found: " + locationCanonicalPath);
         }
     }
 }

@@ -142,23 +142,29 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
   };
 
   //Select/unselect single row of table
-  commonService.selectItem = function (baseScope, item){
-    if(baseScope.itemIds.indexOf(item.id) == -1){
-      baseScope.itemIds.push(item.id);
+  commonService.selectItem = function (baseScope, item, key){
+    if(!key){
+      key='id';
+    }
+    if(baseScope.itemIds.indexOf(item[key]) == -1){
+      baseScope.itemIds.push(item[key]);
     }else{
-      baseScope.itemIds.splice(baseScope.itemIds.indexOf(item.id), 1);
+      baseScope.itemIds.splice(baseScope.itemIds.indexOf(item[key]), 1);
     }
   };
 
   // select ALL/NONE of table row function
-  commonService.selectAllItems = function (baseScope) {
+  commonService.selectAllItems = function (baseScope, key) {
+    if(!key){
+      key='id';
+    }
     if(baseScope.filteredList.length > 0){
       if(baseScope.filteredList.length == baseScope.itemIds.length){
         baseScope.itemIds = [];
       }else{
         baseScope.itemIds = [];
-        angular.forEach(baseScope.filteredList, function(value, key) {
-          baseScope.itemIds.push(value.id);
+        angular.forEach(baseScope.filteredList, function(value, keyT) {
+          baseScope.itemIds.push(value[key]);
         });
       }
     }

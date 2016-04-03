@@ -47,6 +47,7 @@ import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.settings.Dashboard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +94,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(Sensor.class, SensorMixin.class);
         mapper.addMixIn(Timer.class, TimerMixin.class);
         mapper.addMixIn(User.class, UserMixin.class);
+        mapper.addMixIn(McScript.class, McScriptMixin.class);
 
         if (_logger.isDebugEnabled()) {
             _logger.debug("Response: Headers:{}", httpHeaders);
@@ -123,6 +125,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(Sensor.class, SensorMixin.class);
         mapper.addMixIn(Timer.class, TimerMixin.class);
         mapper.addMixIn(User.class, UserMixin.class);
+        mapper.addMixIn(McScript.class, McScriptMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
 

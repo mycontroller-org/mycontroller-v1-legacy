@@ -296,4 +296,11 @@ public class McUtils {
         fis.close();
     }
 
+    public static String getDirectoryLocation(String directoryLocation) {
+        if (!directoryLocation.endsWith(File.separator)) {
+            directoryLocation = directoryLocation + File.separator;
+        }
+        return directoryLocation;
+    }
+
 }

@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone;
 
+import java.io.File;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -43,8 +44,8 @@ public class AppProperties {
     private static final Logger _logger = LoggerFactory.getLogger(AppProperties.class.getName());
 
     public static final String APPLICATION_NAME = "MyController.org";
-    public static final String CONDITIONS_SCRIPT_DIRECTORY = "conditions/";
-    public static final String OPERATIONS_SCRIPT_DIRECTORY = "operations/";
+    public static final String CONDITIONS_SCRIPT_DIRECTORY = "conditions" + File.separator;
+    public static final String OPERATIONS_SCRIPT_DIRECTORY = "operations" + File.separator;
 
     private String tmpLocation;
     private String scriptLocation;
@@ -340,12 +341,12 @@ public class AppProperties {
 
     public void loadProperties(Properties properties) {
         //Create tmp location
-        tmpLocation = getDirectoryLocation(getValue(properties, "mcc.tmp.location", "/tmp"));
+        tmpLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.tmp.location", "/tmp"));
 
         createDirectoryLocation(tmpLocation);
 
         //create script location
-        scriptLocation = getDirectoryLocation(getValue(properties, "mcc.script.location", "../conf/scripts"));
+        scriptLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.script.location", "../conf/scripts"));
         createDirectoryLocation(scriptLocation);
         //create scripts, conditions directory
         createDirectoryLocation(scriptLocation + CONDITIONS_SCRIPT_DIRECTORY);
@@ -356,7 +357,7 @@ public class AppProperties {
         dbH2DbLocation = getValue(properties, "mcc.db.h2db.location", "../conf/mycontroller");
 
         //mycontroller web location
-        webFileLocation = getDirectoryLocation(getValue(properties, "mcc.web.file.location", "../www"));
+        webFileLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.web.file.location", "../www"));
 
         //update web details
         webHttpPort = Integer.valueOf(getValue(properties, "mcc.web.http.port", "8443"));
@@ -379,13 +380,6 @@ public class AppProperties {
             mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store",
                     "../conf/moquette/moquette_store.mapdb");
         }
-    }
-
-    private String getDirectoryLocation(String directoryLocation) {
-        if (!directoryLocation.endsWith("/")) {
-            directoryLocation = directoryLocation + "/";
-        }
-        return directoryLocation;
     }
 
     private void createDirectoryLocation(String directoryLocation) {

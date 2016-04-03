@@ -240,7 +240,7 @@ myControllerModule.factory('RulesFactory', function ($resource) {
   })
 });
 
-//Notification Services
+//Operations Services
 myControllerModule.factory('OperationsFactory', function ($resource) {
   return $resource('/mc/rest/operations/:id', {id: '@id'}, {
     getAll: { method: 'GET', isArray: false, params: {id: null} },
@@ -424,9 +424,10 @@ myControllerModule.factory('RoomsFactory', function ($resource) {
 //Scripts Services
 myControllerModule.factory('ScriptsFactory', function ($resource) {
   return $resource('/mc/rest/scripts/:id', {id: '@id'}, {
-    getAll: { method: 'GET', isArray: true, params: {id: null} },
-    get:    { method: 'GET' },
-    upload: { method: 'PUT', params: {id: null} },
+    getAll: { method: 'GET', isArray: false, params: {id: null} },
+    getAllLessInfo: { method: 'GET', isArray: true, params: {id: null, 'lessInfo':true} },
+    get:    { method: 'GET', params: {id: 'get'}},
+    upload: { method: 'POST', params: {id: null} },
     deleteIds: { method: 'POST', params: {id: 'delete'} },
   })
 });

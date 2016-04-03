@@ -110,9 +110,9 @@ public class OperationExecuteScript extends Operation {
         }
         try {
             File script = FileUtils.getFile(
-                    McObjectManager.getAppProperties().getScriptOperationsLocation() + scriptFile);
+                    McObjectManager.getAppProperties().getScriptLocation() + scriptFile);
             McScript mcScript = McScript.builder()
-                    .file(script.getCanonicalPath())
+                    .name(script.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(script.getCanonicalPath()))
                     .build();
             McScriptEngine mcScriptEngine = new McScriptEngine(mcScript);

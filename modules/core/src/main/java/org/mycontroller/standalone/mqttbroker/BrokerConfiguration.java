@@ -16,7 +16,14 @@
  */
 package org.mycontroller.standalone.mqttbroker;
 
-import static io.moquette.BrokerConstants.*;
+import static io.moquette.BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.AUTHENTICATOR_CLASS_NAME;
+import static io.moquette.BrokerConstants.AUTHORIZATOR_CLASS_NAME;
+import static io.moquette.BrokerConstants.HOST_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.PASSWORD_FILE_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.PERSISTENT_STORE_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.PORT_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME;
 
 import java.util.Properties;
 

@@ -59,7 +59,6 @@
     <!-- angular-dashboard-framework -->
     <link rel="stylesheet" type="text/css" href="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.css">
 
-
     <!-- Application specific css -->
     <link rel="stylesheet" type="text/css" href="app.css">
 
@@ -168,6 +167,7 @@
     <script src="controllers/users.js"></script>
     <script src="controllers/rule-engine.js"></script>
     <script src="controllers/operations.js"></script>
+    <script src="controllers/scripts.js"></script>
     <script src="controllers/timers.js"></script>
     <script src="controllers/settings.js"></script>
     <script src="controllers/resources-logs.js"></script>
@@ -263,9 +263,10 @@
               <li ng-class="{ active: $state.current.name.indexOf('gateways') == 0 }"><a ui-sref="gatewaysList"><i class="fa fa-plug fa-lg"></i> {{ 'GATEWAYS' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('nodes') == 0 }"><a ui-sref="nodesList"><i class="fa fa-sitemap fa-lg"></i> {{ 'NODES' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('sensors') == 0 }"><a ui-sref="sensorsList"><i class="fa fa-eye fa-lg"></i> {{ 'SENSORS' | translate }}</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('rules') == 0 }"><a ui-sref="rulesList"><i class="fa fa-cogs fa-lg"></i> {{ 'RULES' | translate }}</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> {{ 'TIMERS' | translate }}</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('operations') == 0 }"><a ui-sref="operationsList"><i class="fa fa-tasks fa-lg"></i> {{ 'OPERATIONS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rules') == 0 }"><a ui-sref="rulesList"><i class="fa fa-cogs fa-lg"></i> {{ 'RULES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> {{ 'TIMERS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('operations') == 0 }"><a ui-sref="operationsList"><i class="fa fa-tasks fa-lg"></i> {{ 'OPERATIONS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('scripts') == 0 }"><a ui-sref="scriptsList"><i class="fa fa-code fa-lg"></i> {{ 'SCRIPTS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('forwardPayload') == 0 }"><a ui-sref="forwardPayloadList"><i class="fa fa-forward fa-lg"></i> {{ 'FORWARD_PAYLOAD' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>{{ 'GROUPS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rooms') == 0 }"><a ui-sref="roomsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS' | translate }}</a></li>
