@@ -34,12 +34,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.RuleApi;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
-import org.mycontroller.standalone.rule.RuleUtils;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
@@ -55,10 +54,12 @@ import org.mycontroller.standalone.rule.model.RuleDefinition;
 @RolesAllowed({ "Admin" })
 public class RuleHandler extends AccessEngine {
 
+    private static RuleApi ruleApi = new RuleApi();
+
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getRuleDefinitionDao().getById(id));
+        return RestUtils.getResponse(Status.OK, ruleApi.get(id));
     }
 
     @GET
@@ -83,7 +84,7 @@ public class RuleHandler extends AccessEngine {
         filters.put(RuleDefinitionTable.KEY_CONDITION_TYPE, CONDITION_TYPE.fromString(conditionType));
         filters.put(RuleDefinitionTable.KEY_DAMPENING_TYPE, DAMPENING_TYPE.fromString(dampeningType));
 
-        QueryResponse queryResponse = DaoUtils.getRuleDefinitionDao().getAll(
+        QueryResponse queryResponse = ruleApi.getAll(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : RuleDefinitionTable.KEY_ID)
@@ -97,36 +98,35 @@ public class RuleHandler extends AccessEngine {
     @POST
     @Path("/")
     public Response add(RuleDefinition ruleDefinition) {
-        ruleDefinition.reset();
-        RuleUtils.addRuleDefinition(ruleDefinition);
+        ruleApi.add(ruleDefinition);
         return RestUtils.getResponse(Status.CREATED);
     }
 
     @PUT
     @Path("/")
     public Response update(RuleDefinition ruleDefinition) {
-        RuleUtils.updateRuleDefinition(ruleDefinition);
+        ruleApi.update(ruleDefinition);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/delete")
     public Response deleteIds(List<Integer> ids) {
-        RuleUtils.deleteRuleDefinitionIds(ids);
+        ruleApi.deleteIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/enable")
     public Response enableIds(List<Integer> ids) {
-        RuleUtils.enableRuleDefinitions(ids);
+        ruleApi.enableIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/disable")
     public Response disableIds(List<Integer> ids) {
-        RuleUtils.disableRuleDefinitions(ids);
+        ruleApi.disableIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 

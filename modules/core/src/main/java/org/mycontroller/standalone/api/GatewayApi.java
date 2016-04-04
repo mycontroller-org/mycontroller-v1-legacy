@@ -33,7 +33,7 @@ import org.mycontroller.standalone.gateway.model.Gateway;
  * @since 0.0.3
  */
 
-public class Gateways {
+public class GatewayApi {
 
     public void updateGateway(Gateway gateway) {
         GatewayUtils.updateGateway(gateway.getGatewayTable());
@@ -43,8 +43,8 @@ public class Gateways {
         GatewayUtils.addGateway(gateway.getGatewayTable());
     }
 
-    public Gateway getGateway(Integer gatewayId) {
-        return GatewayUtils.getGateway(DaoUtils.getGatewayDao().getById(gatewayId));
+    public GatewayTable getGateway(Integer gatewayId) {
+        return DaoUtils.getGatewayDao().getById(gatewayId);
     }
 
     public QueryResponse getAllGateways(Query query) {
@@ -55,11 +55,11 @@ public class Gateways {
         DeleteResourceUtils.deleteGateways(ids);
     }
 
-    public void enableGateway(List<Integer> ids) {
+    public void enableGateways(List<Integer> ids) {
         GatewayUtils.enableGateways(ids);
     }
 
-    public void enableGateways(List<Integer> ids) {
+    public void disableGateways(List<Integer> ids) {
         GatewayUtils.disableGateways(ids);
     }
 

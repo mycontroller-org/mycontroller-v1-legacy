@@ -35,14 +35,12 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.api.ResourcesGroupApi;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.ResourcesGroupMap;
-import org.mycontroller.standalone.group.ResourcesGroupUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -55,27 +53,26 @@ import org.mycontroller.standalone.group.ResourcesGroupUtils;
 @RolesAllowed({ "admin" })
 public class ResourcesGroupHandler {
 
+    private ResourcesGroupApi resourcesGroupApi = new ResourcesGroupApi();
+
     @PUT
     @Path("/")
     public Response updateResourcesGroup(ResourcesGroup resourcesGroup) {
-        ResourcesGroup resourcesGroupOld = DaoUtils.getResourcesGroupDao().get(resourcesGroup.getId());
-        resourcesGroupOld.setDescription(resourcesGroup.getDescription());
-        resourcesGroupOld.setName(resourcesGroup.getName());
-        DaoUtils.getResourcesGroupDao().update(resourcesGroupOld);
+        resourcesGroupApi.updateResourcesGroup(resourcesGroup);
         return RestUtils.getResponse(Status.OK);
     }
 
     @POST
     @Path("/")
     public Response addResourcesGroup(ResourcesGroup resourcesGroup) {
-        DaoUtils.getResourcesGroupDao().create(resourcesGroup);
+        resourcesGroupApi.addResourcesGroup(resourcesGroup);
         return RestUtils.getResponse(Status.OK);
     }
 
     @GET
     @Path("/{groupId}")
     public Response getResourcesGroup(@PathParam("groupId") Integer groupId) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getResourcesGroupDao().get(groupId));
+        return RestUtils.getResponse(Status.OK, resourcesGroupApi.getResourcesGroup(groupId));
     }
 
     @GET
@@ -94,7 +91,7 @@ public class ResourcesGroupHandler {
         filters.put(ResourcesGroup.KEY_DESCRIPTION, description);
         filters.put(ResourcesGroup.KEY_STATE, STATE.fromString(state));
 
-        QueryResponse queryResponse = DaoUtils.getResourcesGroupDao().getAll(
+        QueryResponse queryResponse = resourcesGroupApi.getAllResourcesGroups(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : ResourcesGroup.KEY_ID)
@@ -108,21 +105,21 @@ public class ResourcesGroupHandler {
     @POST
     @Path("/delete")
     public Response deleteResourcesGroup(List<Integer> ids) {
-        DeleteResourceUtils.deleteResourcesGroup(ids);
+        resourcesGroupApi.deleteResourcesGroup(ids);
         return RestUtils.getResponse(Status.OK);
     }
 
     @POST
     @Path("/on")
     public Response onResourcesGroup(List<Integer> ids) {
-        ResourcesGroupUtils.turnONresourcesGroup(ids);
+        resourcesGroupApi.turnOn(ids);
         return RestUtils.getResponse(Status.OK);
     }
 
     @POST
     @Path("/off")
     public Response offResourcesGroup(List<Integer> ids) {
-        ResourcesGroupUtils.turnOFFresourcesGroup(ids);
+        resourcesGroupApi.turnOff(ids);
         return RestUtils.getResponse(Status.OK);
     }
 
@@ -131,21 +128,21 @@ public class ResourcesGroupHandler {
     @PUT
     @Path("/map/")
     public Response updateResourcesGroupMap(ResourcesGroupMap resourcesGroupMap) {
-        DaoUtils.getResourcesGroupMapDao().update(resourcesGroupMap);
+        resourcesGroupApi.updateResourcesGroupMap(resourcesGroupMap);
         return RestUtils.getResponse(Status.OK);
     }
 
     @POST
     @Path("/map/")
     public Response addResourcesGroupMap(ResourcesGroupMap resourcesGroupMap) {
-        DaoUtils.getResourcesGroupMapDao().createOrUpdate(resourcesGroupMap);
+        resourcesGroupApi.addResourcesGroupMap(resourcesGroupMap);
         return RestUtils.getResponse(Status.OK);
     }
 
     @GET
     @Path("/map/{id}")
     public Response getResourcesGroupMap(@PathParam("id") Integer id) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getResourcesGroupMapDao().get(id));
+        return RestUtils.getResponse(Status.OK, resourcesGroupApi.getResourcesGroupMap(id));
     }
 
     @GET
@@ -166,7 +163,7 @@ public class ResourcesGroupHandler {
         filters.put(ResourcesGroupMap.KEY_PAYLOAD_OFF, payloadOff);
         filters.put(ResourcesGroupMap.KEY_RESOURCE_TYPE, RESOURCE_TYPE.fromString(resourceType));
 
-        QueryResponse queryResponse = DaoUtils.getResourcesGroupMapDao().getAll(
+        QueryResponse queryResponse = resourcesGroupApi.getAllResourcesGroupsMap(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : ResourcesGroupMap.KEY_ID)
@@ -180,7 +177,7 @@ public class ResourcesGroupHandler {
     @POST
     @Path("/map/delete")
     public Response deleteResourcesGroupMap(List<Integer> ids) {
-        DaoUtils.getResourcesGroupMapDao().delete(ids);
+        resourcesGroupApi.deleteResourcesGroupMap(ids);
         return RestUtils.getResponse(Status.OK);
     }
 

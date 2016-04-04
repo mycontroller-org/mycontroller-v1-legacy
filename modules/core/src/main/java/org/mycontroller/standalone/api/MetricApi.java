@@ -22,6 +22,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -33,14 +34,14 @@ import org.mycontroller.standalone.model.ResourceCountModel;
  * @since 0.0.3
  */
 
-public class Metrics {
+public class MetricApi {
     //Get count of resources
     public ResourceCountModel getResourceCount(RESOURCE_TYPE resourceType, Integer resourceId) {
         return new ResourceCountModel(resourceType, resourceId);
     }
 
-    public List<MetricsDoubleTypeDevice> getSensorVariableMetricsDataDouble(Integer sensorVariableId,
-            Long timestampFrom, Long timestampTo, Boolean withMinMax) {
+    public List<MetricsDoubleTypeDevice> getSensorVariableMetricsDouble(Integer sensorVariableId,
+            Long timestampFrom, Long timestampTo) {
         return DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(MetricsDoubleTypeDevice.builder()
                 .timestampFrom(timestampFrom)
                 .timestampTo(timestampTo)
@@ -48,7 +49,7 @@ public class Metrics {
                 .build());
     }
 
-    public MetricDouble getSensorVariableMetricsDouble(SensorVariable sensorVariable, Long timestampFrom,
+    public MetricDouble getSensorVariableMetricDouble(SensorVariable sensorVariable, Long timestampFrom,
             Long timestampTo) {
         MetricsDoubleTypeDevice queryInput = MetricsDoubleTypeDevice.builder()
                 .timestampFrom(timestampFrom)
@@ -73,6 +74,15 @@ public class Metrics {
                     .build();
         }
         return metricDouble;
+    }
+
+    public List<MetricsBinaryTypeDevice> getSensorVariableMetricsBinary(Integer sensorVariableId,
+            Long timestampFrom, Long timestampTo) {
+        return DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(MetricsBinaryTypeDevice.builder()
+                .timestampFrom(timestampFrom)
+                .timestampTo(timestampTo)
+                .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
+                .build());
     }
 
     public List<MetricsBatteryUsage> getMetricsBattery(Integer nodeId, Long timestampFrom, Long timestampTo,

@@ -21,42 +21,44 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
+import org.mycontroller.standalone.rule.RuleUtils;
+import org.mycontroller.standalone.rule.model.RuleDefinition;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
 
-public class TimerApi {
+public class RuleApi {
 
-    public Timer get(int id) {
-        return DaoUtils.getTimerDao().getById(id);
+    public RuleDefinitionTable get(int id) {
+        return DaoUtils.getRuleDefinitionDao().getById(id);
     }
 
     public QueryResponse getAll(Query query) {
-        return DaoUtils.getTimerDao().getAll(query);
+        return DaoUtils.getRuleDefinitionDao().getAll(query);
     }
 
-    public void update(Timer timer) {
-        TimerUtils.updateTimer(timer);
+    public void add(RuleDefinition ruleDefinition) {
+        ruleDefinition.reset();
+        RuleUtils.addRuleDefinition(ruleDefinition);
     }
 
-    public void add(Timer timer) {
-        TimerUtils.addTimer(timer);
+    public void update(RuleDefinition ruleDefinition) {
+        RuleUtils.updateRuleDefinition(ruleDefinition);
     }
 
-    public void delete(List<Integer> ids) {
-        TimerUtils.deleteTimers(ids);
+    public void deleteIds(List<Integer> ids) {
+        RuleUtils.deleteRuleDefinitionIds(ids);
     }
 
-    public void enable(List<Integer> ids) {
-        TimerUtils.enableTimers(ids);
+    public void enableIds(List<Integer> ids) {
+        RuleUtils.enableRuleDefinitions(ids);
     }
 
-    public void disable(List<Integer> ids) {
-        TimerUtils.disableTimers(ids);
+    public void disableIds(List<Integer> ids) {
+        RuleUtils.disableRuleDefinitions(ids);
     }
 
 }

@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-public class Sensors {
-    private static final Logger _logger = LoggerFactory.getLogger(Sensors.class);
+public class SensorApi {
+    private static final Logger _logger = LoggerFactory.getLogger(SensorApi.class);
 
     public QueryResponse getAll(Query query) {
         return DaoUtils.getSensorDao().getAll(query);
@@ -67,8 +67,6 @@ public class Sensors {
                 // Update Variable Types
                 SensorUtils.updateSensorVariables(sensor);
             }
-            throw new McException("Refer server logs");
-
         } catch (Exception ex) {
             throw new McException(ex);
         }
@@ -91,7 +89,6 @@ public class Sensors {
                 //Update into database
                 SensorUtils.updateSensorVariables(sensor);
             }
-            throw new McException("Refer server logs");
         } catch (Exception ex) {
             _logger.error("Exception,", ex);
             throw new McException(ex);

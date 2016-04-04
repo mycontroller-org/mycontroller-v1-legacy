@@ -18,7 +18,6 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,8 +33,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.api.SensorApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
@@ -43,12 +41,11 @@ import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.DeleteResourceUtils;
-import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.message.McMessageUtils;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
+import org.mycontroller.standalone.exceptions.McInvalidException;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +61,7 @@ import org.slf4j.LoggerFactory;
 @RolesAllowed({ "User" })
 public class SensorHandler extends AccessEngine {
     private static final Logger _logger = LoggerFactory.getLogger(SensorHandler.class);
+    private SensorApi sensorApi = new SensorApi();
 
     @GET
     @Path("/")
@@ -112,7 +110,7 @@ public class SensorHandler extends AccessEngine {
             filters.put(Sensor.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds());
         }
 
-        QueryResponse queryResponse = DaoUtils.getSensorDao().getAll(
+        QueryResponse queryResponse = sensorApi.getAll(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : Sensor.KEY_ID)
@@ -127,15 +125,14 @@ public class SensorHandler extends AccessEngine {
     @Path("/{id}")
     public Response get(@PathParam("id") Integer id) {
         this.hasAccessSensor(id);
-        Sensor sensor = DaoUtils.getSensorDao().getById(id);
-        return RestUtils.getResponse(Status.OK, sensor);
+        return RestUtils.getResponse(Status.OK, sensorApi.get(id));
     }
 
     @POST
     @Path("/deleteIds")
     public Response deleteIds(List<Integer> ids) {
         this.updateSensorIds(ids);
-        DeleteResourceUtils.deleteSensors(ids);
+        sensorApi.deleteIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
@@ -143,18 +140,9 @@ public class SensorHandler extends AccessEngine {
     @Path("/")
     public Response update(Sensor sensor) {
         this.hasAccessSensor(sensor.getId());
-        Sensor availabilityCheck = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
-        if (availabilityCheck != null && sensor.getId() != availabilityCheck.getId()) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A sensor available with this sensor id!"));
-        }
         try {
-            if (McMessageUtils.validateSensorIdByProvider(sensor)) {
-                DaoUtils.getSensorDao().update(sensor);
-                // Update Variable Types
-                SensorUtils.updateSensorVariables(sensor);
-                return RestUtils.getResponse(Status.NO_CONTENT);
-            }
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Refer server logs"));
+            sensorApi.update(sensor);
+            return RestUtils.getResponse(Status.NO_CONTENT);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
@@ -165,43 +153,20 @@ public class SensorHandler extends AccessEngine {
     @POST
     @Path("/")
     public Response add(Sensor sensor) {
-        Sensor availabilityCheck = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
-        if (availabilityCheck != null) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A sensor available with this sensor id!"));
-        }
         try {
-            //Take variable types reference
-            List<String> variableTypes = sensor.getVariableTypes();
-            if (McMessageUtils.validateSensorIdByProvider(sensor)) {
-                DaoUtils.getSensorDao().create(sensor);
-                sensor = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
-                // Update Variable Types
-                sensor.setVariableTypes(variableTypes);
-                //Update into database
-                SensorUtils.updateSensorVariables(sensor);
-                return RestUtils.getResponse(Status.CREATED);
-            }
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Refer server logs"));
+            sensorApi.add(sensor);
+            return RestUtils.getResponse(Status.CREATED);
         } catch (Exception ex) {
             _logger.error("Exception,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Exception: " + ex.getMessage()));
         }
-
     }
 
     @GET
     @Path("/getVariables")
     public Response getVariables(@QueryParam("ids") List<Integer> ids) {
         updateSensorVariableIds(ids);
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(ids);
-        List<SensorVariableJson> sensorVariableJson = new ArrayList<SensorVariableJson>();
-        //Convert to SensorVariableJson
-        if (sensorVariables != null) {
-            for (SensorVariable sensorVariable : sensorVariables) {
-                sensorVariableJson.add(new SensorVariableJson(sensorVariable));
-            }
-        }
-        return RestUtils.getResponse(Status.OK, sensorVariableJson);
+        return RestUtils.getResponse(Status.OK, sensorApi.getVariables(ids));
     }
 
     @PUT
@@ -211,34 +176,14 @@ public class SensorHandler extends AccessEngine {
         if (sensorVariable != null) {
             this.hasAccessSensor(sensorVariable.getSensor().getId());
             try {
-                switch (sensorVariable.getMetricType()) {
-                    case BINARY:
-                        if (McUtils.getBoolean(sensorVariableJson.getValue() == null)) {
-                            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Invalid value: "
-                                    + sensorVariableJson.getValue()));
-                        }
-                        break;
-                    case DOUBLE:
-                        if (McUtils.getDouble(sensorVariableJson.getValue()) == null) {
-                            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Invalid value: "
-                                    + sensorVariableJson.getValue()));
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-            } catch (NumberFormatException nfex) {
-                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("NumberFormatException: "
-                        + nfex.getMessage()));
+                sensorApi.sendpayload(sensorVariableJson);
+                return RestUtils.getResponse(Status.OK);
+            } catch (NumberFormatException | McInvalidException | McBadRequestException ex) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
             }
-
-            sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
-            McObjectManager.getMcActionEngine().sendPayload(sensorVariable);
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST);
         }
-        return RestUtils.getResponse(Status.OK);
     }
 
     @PUT
@@ -247,13 +192,15 @@ public class SensorHandler extends AccessEngine {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
             hasAccessSensor(sensorVariable.getSensor().getId());
-            sensorVariable.setUnit(sensorVariableJson.getUnit());
-            //Update sensor unit
-            DaoUtils.getSensorVariableDao().update(sensorVariable);
+            try {
+                sensorApi.updateVariableUnit(sensorVariableJson);
+                return RestUtils.getResponse(Status.OK);
+            } catch (McBadRequestException ex) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+            }
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST);
         }
-        return RestUtils.getResponse(Status.OK);
     }
 
 }

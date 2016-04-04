@@ -18,12 +18,6 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -34,9 +28,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.BackupRestore;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.api.BackupApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -56,29 +49,13 @@ import org.slf4j.LoggerFactory;
 public class BackupHandler {
     private static final Logger _logger = LoggerFactory.getLogger(BackupHandler.class.getName());
 
+    private BackupApi backupApi = new BackupApi();
+
     @GET
     @Path("/backupList")
     public Response getBackupList() {
         try {
-            String[] filter = { "zip" };
-            Collection<File> zipFiles = FileUtils.listFiles(
-                    FileUtils.getFile(McObjectManager.getAppProperties().getBackupSettings().getBackupLocation()),
-                    filter, true);
-            List<BackupFile> backupFiles = new ArrayList<BackupFile>();
-            for (File zipFile : zipFiles) {
-                if (zipFile.getName().contains(BackupRestore.FILE_NAME_IDENTITY)) {
-                    backupFiles.add(BackupFile.builder()
-                            .name(zipFile.getName())
-                            .size(zipFile.length())
-                            .timestamp(zipFile.lastModified())
-                            .absolutePath(zipFile.getAbsolutePath())
-                            .build());
-                }
-
-            }
-            //Do order reverse
-            Collections.sort(backupFiles, Collections.reverseOrder());
-            return RestUtils.getResponse(Status.OK, backupFiles);
+            return RestUtils.getResponse(Status.OK, backupApi.getBackupList());
         } catch (Exception ex) {
             _logger.error("Error,", ex);
             return RestUtils.getResponse(Status.INTERNAL_SERVER_ERROR, new ApiError(ex.getMessage()));
@@ -105,20 +82,19 @@ public class BackupHandler {
     @Path("/backupNow")
     public Response backupNow() {
         try {
-            _logger.debug("Backup triggered.");
-            BackupRestore.backup("on-demand");
+            backupApi.backupNow();
+            return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             _logger.error("Error,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
-        return RestUtils.getResponse(Status.OK);
     }
 
     @POST
     @Path("/delete")
     public Response deleteBackup(BackupFile backupFile) {
         try {
-            FileUtils.forceDelete(FileUtils.getFile(backupFile.getAbsolutePath()));
+            backupApi.deleteBackup(backupFile);
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
@@ -128,15 +104,12 @@ public class BackupHandler {
     @POST
     @Path("/restore")
     public Response restore(BackupFile backupFile) {
-        if (backupFile != null) {
-            _logger.info("Restore triggered.");
-            try {
-                BackupRestore.restore(backupFile);
-            } catch (Exception ex) {
-                _logger.error("Error in restore,", ex);
-                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
-            }
+        try {
+            backupApi.restore(backupFile);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            _logger.error("Error in restore,", ex);
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
-        return RestUtils.getResponse(Status.OK);
     }
 }

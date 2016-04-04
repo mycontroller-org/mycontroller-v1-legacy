@@ -34,16 +34,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.api.NodeApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.DeleteResourceUtils;
-import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
-import org.mycontroller.standalone.message.McMessageUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 /**
@@ -56,6 +52,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTAT
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
 public class NodeHandler extends AccessEngine {
+    private NodeApi nodeApi = new NodeApi();
 
     @GET
     @Path("/")
@@ -84,7 +81,7 @@ public class NodeHandler extends AccessEngine {
             filters.put(Node.KEY_ID, getUser().getAllowedResources().getNodeIds());
         }
 
-        QueryResponse queryResponse = DaoUtils.getNodeDao().getAll(
+        QueryResponse queryResponse = nodeApi.getAllNodes(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : Node.KEY_ID)
@@ -99,15 +96,14 @@ public class NodeHandler extends AccessEngine {
     @Path("/{id}")
     public Response get(@PathParam("id") Integer id) {
         hasAccessNode(id);
-        Node node = DaoUtils.getNodeDao().getById(id);
-        return RestUtils.getResponse(Status.OK, node);
+        return RestUtils.getResponse(Status.OK, nodeApi.get(id));
     }
 
     @POST
     @Path("/deleteIds")
     public Response deleteIds(List<Integer> ids) {
         updateNodeIds(ids);
-        DeleteResourceUtils.deleteNodes(ids);
+        nodeApi.deleteIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
@@ -115,16 +111,9 @@ public class NodeHandler extends AccessEngine {
     @Path("/")
     public Response update(Node node) {
         hasAccessNode(node.getId());
-        Node availabilityCheck = DaoUtils.getNodeDao().get(node.getGatewayTable().getId(), node.getEui());
-        if (availabilityCheck != null && availabilityCheck.getId() != node.getId()) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A node available with this EUI."));
-        }
         try {
-            if (McMessageUtils.validateNodeIdByProvider(node)) {
-                DaoUtils.getNodeDao().update(node);
-                return RestUtils.getResponse(Status.NO_CONTENT);
-            }
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Refer server logs"));
+            nodeApi.update(node);
+            return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
@@ -134,17 +123,9 @@ public class NodeHandler extends AccessEngine {
     @POST
     @Path("/")
     public Response add(Node node) {
-        if (DaoUtils.getNodeDao().get(node.getGatewayTable().getId(), node.getEui()) != null) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A node available with this EUI."));
-        }
-        GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(node.getGatewayTable().getId());
-        node.setGatewayTable(gatewayTable);
         try {
-            if (McMessageUtils.validateNodeIdByProvider(node)) {
-                DaoUtils.getNodeDao().create(node);
-                return RestUtils.getResponse(Status.NO_CONTENT);
-            }
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Refer server logs"));
+            nodeApi.add(node);
+            return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
@@ -154,15 +135,11 @@ public class NodeHandler extends AccessEngine {
     @Path("/reboot")
     public Response reboot(List<Integer> ids) {
         updateNodeIds(ids);
-        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
-        if (nodes != null && nodes.size() > 0) {
-            for (Node node : nodes) {
-                McObjectManager.getMcActionEngine().rebootNode(node);
-            }
+        try {
+            nodeApi.reboot(ids);
             return RestUtils.getResponse(Status.OK);
-        } else {
-            return RestUtils.getResponse(Status.BAD_REQUEST,
-                    new ApiError("Selected Node(s) not available! Number of nodes:[" + nodes.size() + "]"));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }
 
@@ -170,17 +147,11 @@ public class NodeHandler extends AccessEngine {
     @Path("/uploadFirmware")
     public Response uploadFirmware(List<Integer> ids) {
         updateNodeIds(ids);
-        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
-        if (nodes != null && nodes.size() > 0) {
-            for (Node node : nodes) {
-                if (node.getFirmware() != null) {
-                    McObjectManager.getMcActionEngine().uploadFirmware(node);
-                }
-            }
+        try {
+            nodeApi.uploadFirmware(ids);
             return RestUtils.getResponse(Status.OK);
-        } else {
-            return RestUtils.getResponse(Status.BAD_REQUEST,
-                    new ApiError("Selected Node(s) not available! Node Ids:[" + ids + "]"));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }
 
@@ -188,16 +159,11 @@ public class NodeHandler extends AccessEngine {
     @Path("/eraseConfiguration")
     public Response eraseConfig(List<Integer> ids) {
         updateNodeIds(ids);
-        List<Node> nodes = DaoUtils.getNodeDao().getAll(ids);
-        if (nodes != null && nodes.size() > 0) {
-            for (Node node : nodes) {
-                McObjectManager.getMcActionEngine().eraseConfiguration(node);
-            }
+        try {
+            nodeApi.eraseConfig(ids);
             return RestUtils.getResponse(Status.OK);
-
-        } else {
-            return RestUtils.getResponse(Status.BAD_REQUEST,
-                    new ApiError("Selected Node not available! Node Ids:[" + ids + "]"));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }
 

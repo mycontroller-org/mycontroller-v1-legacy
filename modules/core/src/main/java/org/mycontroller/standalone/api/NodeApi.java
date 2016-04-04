@@ -18,8 +18,6 @@ package org.mycontroller.standalone.api;
 
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
@@ -35,7 +33,7 @@ import org.mycontroller.standalone.message.McMessageUtils;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-public class Nodes {
+public class NodeApi {
 
     public QueryResponse getAllNodes(Query query) {
         return DaoUtils.getNodeDao().getAll(query);
@@ -49,7 +47,7 @@ public class Nodes {
         DeleteResourceUtils.deleteNodes(ids);
     }
 
-    public Response update(Node node) throws McDuplicateException, McBadRequestException {
+    public void update(Node node) throws McDuplicateException, McBadRequestException {
         Node availabilityCheck = DaoUtils.getNodeDao().get(node.getGatewayTable().getId(), node.getEui());
         if (availabilityCheck != null && availabilityCheck.getId() != node.getId()) {
             throw new McDuplicateException("A node available with this EUI.");
@@ -58,8 +56,6 @@ public class Nodes {
         if (McMessageUtils.validateNodeIdByProvider(node)) {
             DaoUtils.getNodeDao().update(node);
         }
-        throw new McBadRequestException("Refer server logs");
-
     }
 
     public void add(Node node) throws McDuplicateException {

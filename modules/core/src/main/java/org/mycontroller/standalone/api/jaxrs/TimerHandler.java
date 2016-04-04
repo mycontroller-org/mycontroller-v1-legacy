@@ -33,12 +33,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.api.TimerApi;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 
@@ -53,11 +52,13 @@ import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 @RolesAllowed({ "Admin" })
 public class TimerHandler extends AccessEngine {
 
+    private TimerApi timerApi = new TimerApi();
+
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") int id) {
         //hasAccessTimer(id);
-        return RestUtils.getResponse(Status.OK, DaoUtils.getTimerDao().getById(id));
+        return RestUtils.getResponse(Status.OK, timerApi.get(id));
     }
 
     @GET
@@ -78,7 +79,7 @@ public class TimerHandler extends AccessEngine {
         filters.put(Timer.KEY_FREQUENCY, FREQUENCY_TYPE.fromString(frequency));
         filters.put(Timer.KEY_ENABLED, enabled);
 
-        QueryResponse queryResponse = DaoUtils.getTimerDao().getAll(
+        QueryResponse queryResponse = timerApi.getAll(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : Timer.KEY_ID)
@@ -92,35 +93,35 @@ public class TimerHandler extends AccessEngine {
     @PUT
     @Path("/")
     public Response update(Timer timer) {
-        TimerUtils.updateTimer(timer);
+        timerApi.update(timer);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/")
     public Response add(Timer timer) {
-        TimerUtils.addTimer(timer);
+        timerApi.add(timer);
         return RestUtils.getResponse(Status.CREATED);
     }
 
     @POST
     @Path("/delete")
     public Response delete(List<Integer> ids) {
-        TimerUtils.deleteTimers(ids);
+        timerApi.delete(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/enable")
     public Response enable(List<Integer> ids) {
-        TimerUtils.enableTimers(ids);
+        timerApi.enable(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/disable")
     public Response disable(List<Integer> ids) {
-        TimerUtils.disableTimers(ids);
+        timerApi.disable(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 

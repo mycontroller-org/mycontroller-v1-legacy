@@ -16,11 +16,14 @@
  */
 package org.mycontroller.standalone.scripts.api;
 
-import org.mycontroller.standalone.api.Gateways;
-import org.mycontroller.standalone.api.Metrics;
-import org.mycontroller.standalone.api.Nodes;
-import org.mycontroller.standalone.api.Sensors;
-import org.mycontroller.standalone.api.Timers;
+import org.mycontroller.standalone.api.BackupApi;
+import org.mycontroller.standalone.api.GatewayApi;
+import org.mycontroller.standalone.api.MetricApi;
+import org.mycontroller.standalone.api.NodeApi;
+import org.mycontroller.standalone.api.OperationApi;
+import org.mycontroller.standalone.api.RuleApi;
+import org.mycontroller.standalone.api.SensorApi;
+import org.mycontroller.standalone.api.TimerApi;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -28,30 +31,45 @@ import org.mycontroller.standalone.api.Timers;
  */
 
 public class ActionApi {
-    private Gateways gateways = new Gateways();
-    private Nodes nodes = new Nodes();
-    private Sensors sensors = new Sensors();
-    private Timers timers = new Timers();
-    private Metrics metrics = new Metrics();
+    private GatewayApi gatewayApi = new GatewayApi();
+    private NodeApi nodeApi = new NodeApi();
+    private SensorApi sensorApi = new SensorApi();
+    private TimerApi timerApi = new TimerApi();
+    private MetricApi metricApi = new MetricApi();
+    private BackupApi backupApi = new BackupApi();
+    private OperationApi operationApi = new OperationApi();
+    private RuleApi ruleApi = new RuleApi();
 
-    public Sensors sensors() {
-        return sensors;
+    public SensorApi sensor() {
+        return sensorApi;
     }
 
-    public Gateways gateways() {
-        return gateways;
+    public GatewayApi gateway() {
+        return gatewayApi;
     }
 
-    public Nodes nodes() {
-        return nodes;
+    public NodeApi node() {
+        return nodeApi;
     }
 
-    public Timers timers() {
-        return timers;
+    public TimerApi timer() {
+        return timerApi;
     }
 
-    public Metrics metrics() {
-        return metrics;
+    public MetricApi metric() {
+        return metricApi;
+    }
+
+    public BackupApi backup() {
+        return backupApi;
+    }
+
+    public OperationApi operation() {
+        return operationApi;
+    }
+
+    public RuleApi rule() {
+        return ruleApi;
     }
 
 }

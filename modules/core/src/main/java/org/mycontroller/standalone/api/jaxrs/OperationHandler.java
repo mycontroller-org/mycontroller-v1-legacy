@@ -33,12 +33,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.api.OperationApi;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
-import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
 import org.mycontroller.standalone.operation.model.Operation;
 
@@ -53,10 +52,12 @@ import org.mycontroller.standalone.operation.model.Operation;
 @RolesAllowed({ "Admin" })
 public class OperationHandler extends AccessEngine {
 
+    private OperationApi operationApi = new OperationApi();
+
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getOperationDao().getById(id));
+        return RestUtils.getResponse(Status.OK, operationApi.get(id));
     }
 
     @GET
@@ -77,7 +78,7 @@ public class OperationHandler extends AccessEngine {
         filters.put(OperationTable.KEY_PUBLIC_ACCESS, publicAccess);
         filters.put(OperationTable.KEY_ENABLED, enabled);
 
-        QueryResponse queryResponse = DaoUtils.getOperationDao().getAll(
+        QueryResponse queryResponse = operationApi.getAll(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : OperationTable.KEY_ID)
@@ -92,7 +93,7 @@ public class OperationHandler extends AccessEngine {
     @Path("/")
     public Response add(Operation operation) {
         operation.setUser(getUser());
-        DaoUtils.getOperationDao().create(operation.getOperationTable());
+        operationApi.add(operation);
         return RestUtils.getResponse(Status.CREATED);
     }
 
@@ -100,39 +101,28 @@ public class OperationHandler extends AccessEngine {
     @Path("/")
     public Response update(Operation operation) {
         operation.setUser(getUser());
-        if (!operation.getEnabled()) {
-            OperationUtils.unloadOperationTimerJobs(operation.getOperationTable());
-        }
-        DaoUtils.getOperationDao().update(operation.getOperationTable());
+        operationApi.update(operation);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/delete")
     public Response deleteIds(List<Integer> ids) {
-        OperationUtils.unloadNotificationTimerJobs(ids);
-        DaoUtils.getOperationDao().deleteByIds(ids);
+        operationApi.deleteIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/enable")
     public Response enableIds(List<Integer> ids) {
-        for (OperationTable operationTable : DaoUtils.getOperationDao().getAll(ids)) {
-            operationTable.setEnabled(true);
-            DaoUtils.getOperationDao().update(operationTable);
-        }
+        operationApi.enableIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/disable")
     public Response disableIds(List<Integer> ids) {
-        OperationUtils.unloadNotificationTimerJobs(ids);
-        for (OperationTable operationTable : DaoUtils.getOperationDao().getAll(ids)) {
-            operationTable.setEnabled(false);
-            DaoUtils.getOperationDao().update(operationTable);
-        }
+        operationApi.disableIds(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 

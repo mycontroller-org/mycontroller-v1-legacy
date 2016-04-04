@@ -34,6 +34,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.api.MetricApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsBulletChartNVD3;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataGroupNVD3;
@@ -44,10 +45,9 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
-import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.metrics.MetricDouble;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
-import org.mycontroller.standalone.model.ResourceCountModel;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
@@ -66,12 +66,14 @@ public class MetricsHandler extends AccessEngine {
     public static final String COLOR_MINIMUM = "#2ca02c";
     public static final String COLOR_MAXIMUM = "#802b00";
 
+    private MetricApi metricApi = new MetricApi();
+
     //Get count of resources
     @GET
     @Path("/resourceCount")
     public Response getResourceCount(@QueryParam("resourceType") RESOURCE_TYPE resourceType,
             @QueryParam("resourceId") Integer resourceId) {
-        return RestUtils.getResponse(Status.OK, new ResourceCountModel(resourceType, resourceId));
+        return RestUtils.getResponse(Status.OK, metricApi.getResourceCount(resourceType, resourceId));
     }
 
     @GET
@@ -149,12 +151,13 @@ public class MetricsHandler extends AccessEngine {
         for (SensorVariable sensorVariable : sensorVariables) {
             //Update sensor variable
             queryInput.setSensorVariable(sensorVariable);
-            MetricsDoubleTypeDevice metric = DaoUtils.getMetricsDoubleTypeDeviceDao().getMinMaxAvg(queryInput);
+
+            MetricDouble metric = metricApi.getSensorVariableMetricDouble(sensorVariable, timestampFrom, timestampTo);
 
             String unit = sensorVariable.getUnit() != "" ? " (" + sensorVariable.getUnit() + ")" : "";
 
             //If current value not available, do not allow any value
-            if (sensorVariable.getValue() == null || metric.getMin() == null) {
+            if (metric.getCurrent() == null || metric.getMinimum() == null) {
                 bulletCharts.add(MetricsBulletChartNVD3
                         .builder()
                         .id(sensorVariable.getId())
@@ -169,9 +172,9 @@ public class MetricsHandler extends AccessEngine {
                         .id(sensorVariable.getId())
                         //.title(sensorVariable.getVariableType().getText())
                         //.subtitle(sensorVariable.getUnit())
-                        .ranges(new Object[] { metric.getMin(), metric.getAvg(), metric.getMax() })
-                        .measures(new Object[] { sensorVariable.getValue() })
-                        .markers(new Object[] { sensorVariable.getPreviousValue() })
+                        .ranges(new Object[] { metric.getMinimum(), metric.getAverage(), metric.getMaximum() })
+                        .measures(new Object[] { metric.getCurrent() })
+                        .markers(new Object[] { metric.getPrevious() })
                         .resourceName(new ResourceModel(
                                 RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
                         .displayName(sensorVariable.getSensor().getName() + " >> "
@@ -186,13 +189,9 @@ public class MetricsHandler extends AccessEngine {
     private MetricsChartDataGroupNVD3 getMetricsBatteryJsonNVD3(Integer nodeId, Long timestampFrom,
             Long timestampTo, Boolean withMinMax) {
         ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
-
-        MetricsBatteryUsage metricQueryBattery = MetricsBatteryUsage.builder()
-                .timestampFrom(timestampFrom)
-                .timestampTo(timestampTo)
-                .node(Node.builder().id(nodeId).build())
-                .build();
-        List<MetricsBatteryUsage> batteryMetrics = DaoUtils.getMetricsBatteryUsageDao().getAll(metricQueryBattery);
+        //Get metrics
+        List<MetricsBatteryUsage> batteryMetrics = metricApi.getMetricsBattery(nodeId, timestampFrom, timestampTo,
+                withMinMax);
         ArrayList<Object> avgMetricValues = new ArrayList<Object>();
         ArrayList<Object> minMetricValues = new ArrayList<Object>();
         ArrayList<Object> maxMetricValues = new ArrayList<Object>();
@@ -313,14 +312,8 @@ public class MetricsHandler extends AccessEngine {
             }
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
-
-                    MetricsDoubleTypeDevice metricQueryDouble = MetricsDoubleTypeDevice.builder()
-                            .timestampFrom(timestampFrom)
-                            .timestampTo(timestampTo)
-                            .sensorVariable(sensorVariable)
-                            .build();
-                    List<MetricsDoubleTypeDevice> doubleMetrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(
-                            metricQueryDouble);
+                    List<MetricsDoubleTypeDevice> doubleMetrics = metricApi.getSensorVariableMetricsDouble(
+                            sensorVariable.getId(), timestampFrom, timestampTo);
                     ArrayList<Object> avgMetricDoubleValues = new ArrayList<Object>();
                     for (MetricsDoubleTypeDevice metric : doubleMetrics) {
                         if (isMultiChart) {
@@ -343,13 +336,8 @@ public class MetricsHandler extends AccessEngine {
 
                     break;
                 case BINARY:
-                    MetricsBinaryTypeDevice metricQueryBinary = MetricsBinaryTypeDevice.builder()
-                            .timestampFrom(timestampFrom)
-                            .timestampTo(timestampTo)
-                            .sensorVariable(sensorVariable)
-                            .build();
-                    List<MetricsBinaryTypeDevice> binaryMetrics = DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(
-                            metricQueryBinary);
+                    List<MetricsBinaryTypeDevice> binaryMetrics = metricApi.getSensorVariableMetricsBinary(
+                            sensorVariable.getId(), timestampFrom, timestampTo);
                     ArrayList<Object> metricBinaryValues = new ArrayList<Object>();
                     for (MetricsBinaryTypeDevice metric : binaryMetrics) {
                         if (isMultiChart) {
@@ -427,14 +415,8 @@ public class MetricsHandler extends AccessEngine {
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
                     ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
-
-                    MetricsDoubleTypeDevice metricQueryDouble = MetricsDoubleTypeDevice.builder()
-                            .timestampFrom(timestampFrom)
-                            .timestampTo(timestampTo)
-                            .sensorVariable(sensorVariable)
-                            .build();
-                    List<MetricsDoubleTypeDevice> doubleMetrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(
-                            metricQueryDouble);
+                    List<MetricsDoubleTypeDevice> doubleMetrics = metricApi.getSensorVariableMetricsDouble(
+                            sensorVariable.getId(), timestampFrom, timestampTo);
                     ArrayList<Object> avgMetricDoubleValues = new ArrayList<Object>();
                     ArrayList<Object> minMetricDoubleValues = new ArrayList<Object>();
                     ArrayList<Object> maxMetricDoubleValues = new ArrayList<Object>();
@@ -483,13 +465,8 @@ public class MetricsHandler extends AccessEngine {
                     break;
                 case BINARY:
                     ArrayList<MetricsChartDataNVD3> preBinaryData = new ArrayList<MetricsChartDataNVD3>();
-                    MetricsBinaryTypeDevice metricQueryBinary = MetricsBinaryTypeDevice.builder()
-                            .timestampFrom(timestampFrom)
-                            .timestampTo(timestampTo)
-                            .sensorVariable(sensorVariable)
-                            .build();
-                    List<MetricsBinaryTypeDevice> binaryMetrics = DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(
-                            metricQueryBinary);
+                    List<MetricsBinaryTypeDevice> binaryMetrics = metricApi.getSensorVariableMetricsBinary(
+                            sensorVariable.getId(), timestampFrom, timestampTo);
                     ArrayList<Object> metricBinaryValues = new ArrayList<Object>();
                     for (MetricsBinaryTypeDevice metric : binaryMetrics) {
                         metricBinaryValues.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });

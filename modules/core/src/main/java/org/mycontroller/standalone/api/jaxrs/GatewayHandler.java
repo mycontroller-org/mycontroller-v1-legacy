@@ -35,17 +35,14 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.api.GatewayApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
-import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
 import org.mycontroller.standalone.gateway.model.Gateway;
 
@@ -59,12 +56,13 @@ import org.mycontroller.standalone.gateway.model.Gateway;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
 public class GatewayHandler extends AccessEngine {
+    private GatewayApi gatewayApi = new GatewayApi();
 
     @PUT
     @Path("/")
     public Response updateGateway(Gateway gateway) {
         this.hasAccessGateway(gateway.getId());
-        GatewayUtils.updateGateway(gateway.getGatewayTable());
+        gatewayApi.updateGateway(gateway);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -72,7 +70,7 @@ public class GatewayHandler extends AccessEngine {
     @POST
     @Path("/")
     public Response addGateway(Gateway gateway) {
-        GatewayUtils.addGateway(gateway.getGatewayTable());
+        gatewayApi.addGateway(gateway);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -80,7 +78,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/{id}")
     public Response getGateway(@PathParam("id") Integer gatewayId) {
         this.hasAccessGateway(gatewayId);
-        return RestUtils.getResponse(Status.OK, DaoUtils.getGatewayDao().getById(gatewayId));
+        return RestUtils.getResponse(Status.OK, gatewayApi.getGateway(gatewayId));
     }
 
     @GET
@@ -106,7 +104,7 @@ public class GatewayHandler extends AccessEngine {
             filters.put(GatewayTable.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds());
         }
 
-        QueryResponse queryResponse = DaoUtils.getGatewayDao().getAll(
+        QueryResponse queryResponse = gatewayApi.getAllGateways(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : GatewayTable.KEY_ID)
@@ -122,7 +120,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/delete")
     public Response deleteGateways(List<Integer> ids) {
         updateGatewayIds(ids);
-        DeleteResourceUtils.deleteGateways(ids);
+        gatewayApi.deleteGateways(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -130,7 +128,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/enable")
     public Response enableGateway(List<Integer> ids) {
         updateGatewayIds(ids);
-        GatewayUtils.enableGateways(ids);
+        gatewayApi.enableGateways(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -138,7 +136,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/disable")
     public Response enableGateways(List<Integer> ids) {
         updateGatewayIds(ids);
-        GatewayUtils.disableGateways(ids);
+        gatewayApi.disableGateways(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -146,7 +144,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/reload")
     public Response reloadGateways(List<Integer> ids) {
         updateGatewayIds(ids);
-        GatewayUtils.reloadGateways(ids);
+        gatewayApi.reloadGateways(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -155,12 +153,7 @@ public class GatewayHandler extends AccessEngine {
     public Response executeNodeDiscover(List<Integer> ids) {
         updateGatewayIds(ids);
         try {
-            for (Integer id : ids) {
-                GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(id);
-                if (gatewayTable.getEnabled()) {
-                    McObjectManager.getMcActionEngine().discover(id);
-                }
-            }
+            gatewayApi.executeNodeDiscover(ids);
             return RestUtils.getResponse(Status.OK,
                     ApiMessage.builder().message("Node Discover util started successfully").build());
 
