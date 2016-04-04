@@ -215,7 +215,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
   // get Table configuration
   commonService.getQuery = function(){
     return query = {
-      pageLimit: 10,
+      pageLimit: mchelper.cfg.tableRowsLimit,
       page: 1,
       orderBy: "id",
       order: "asc"

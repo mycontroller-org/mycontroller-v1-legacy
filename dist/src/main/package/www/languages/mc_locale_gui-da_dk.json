@@ -448,6 +448,7 @@
     "SYSTEM_CPU_LOAD": "System Cpu Load",
     "SYSTEM_LOAD_AVERAGE": "System Load Average",
     "SYSTEM_STATUS": "System status",
+    "TABLE_ROWS_LIMIT": "Table rows limit",
     "THREADS_COUNT": "Threads Count",
     "THRESHOLD_VALUE": "Threshold value",
     "THRESHOLD_VALUE_HIGH": "Threshold value high",

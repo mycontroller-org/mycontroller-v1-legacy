@@ -448,6 +448,7 @@
     "SYSTEM_CPU_LOAD": "System CPU auslastung",
     "SYSTEM_LOAD_AVERAGE": "Systemauslastung durchschnitt",
     "SYSTEM_STATUS": "System status",
+    "TABLE_ROWS_LIMIT": "Table rows limit",
     "THREADS_COUNT": "Themenanzahl",
     "THRESHOLD_VALUE": "Threshold value",
     "THRESHOLD_VALUE_HIGH": "Threshold value high",

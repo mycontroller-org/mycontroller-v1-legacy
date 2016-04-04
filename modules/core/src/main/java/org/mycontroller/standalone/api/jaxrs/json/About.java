@@ -49,25 +49,27 @@ public class About {
     private String loginMessage;
     private Long globalPageRefreshTime;
     private Integer dashboardLimit;
+    private Integer tableRowsLimit;
 
     public About() {
         Date date = new Date();
-        this.appName = AppProperties.APPLICATION_NAME;
-        this.timezoneMilliseconds = TimeZone.getDefault().getOffset(System.currentTimeMillis());
-        this.systemDate = date;
-        this.timezone = new SimpleDateFormat("Z").format(date);
-        this.timezoneString = new SimpleDateFormat("z").format(date);
-        this.appVersion = McObjectManager.getAppProperties().getControllerSettings().getVersion();
-        this.languageId = McObjectManager.getAppProperties().getLanguage().toString().toLowerCase();
-        this.language = McObjectManager.getAppProperties().getLanguage().getText();
-        this.loginMessage = McObjectManager.getAppProperties().getControllerSettings().getLoginMessage();
-        this.dateFormat = McObjectManager.getAppProperties().getDateFormat();
-        this.dateFormatWithoutSeconds = McObjectManager.getAppProperties().getDateFormatWithoutSeconds();
-        this.timeFormat = McObjectManager.getAppProperties().getTimeFormat();
-        this.timeFormatWithoutSeconds = McObjectManager.getAppProperties().getTimeFormatWithoutSeconds();
-        this.timeFormatSet = McObjectManager.getAppProperties().getControllerSettings().getTimeFormat();
-        this.globalPageRefreshTime = McObjectManager.getAppProperties().getControllerSettings()
+        appName = AppProperties.APPLICATION_NAME;
+        timezoneMilliseconds = TimeZone.getDefault().getOffset(System.currentTimeMillis());
+        systemDate = date;
+        timezone = new SimpleDateFormat("Z").format(date);
+        timezoneString = new SimpleDateFormat("z").format(date);
+        appVersion = McObjectManager.getAppProperties().getControllerSettings().getVersion();
+        languageId = McObjectManager.getAppProperties().getLanguage().toString().toLowerCase();
+        language = McObjectManager.getAppProperties().getLanguage().getText();
+        loginMessage = McObjectManager.getAppProperties().getControllerSettings().getLoginMessage();
+        dateFormat = McObjectManager.getAppProperties().getDateFormat();
+        dateFormatWithoutSeconds = McObjectManager.getAppProperties().getDateFormatWithoutSeconds();
+        timeFormat = McObjectManager.getAppProperties().getTimeFormat();
+        timeFormatWithoutSeconds = McObjectManager.getAppProperties().getTimeFormatWithoutSeconds();
+        timeFormatSet = McObjectManager.getAppProperties().getControllerSettings().getTimeFormat();
+        globalPageRefreshTime = McObjectManager.getAppProperties().getControllerSettings()
                 .getGlobalPageRefreshTime();
-        this.dashboardLimit = McObjectManager.getAppProperties().getControllerSettings().getDashboardLimit();
+        dashboardLimit = McObjectManager.getAppProperties().getControllerSettings().getDashboardLimit();
+        tableRowsLimit = McObjectManager.getAppProperties().getControllerSettings().getTableRowsLimit();
     }
 }

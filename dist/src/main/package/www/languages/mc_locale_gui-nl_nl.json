@@ -448,6 +448,7 @@
     "SYSTEM_CPU_LOAD": "Systeem processor load",
     "SYSTEM_LOAD_AVERAGE": "Systeem Gemiddelde Load",
     "SYSTEM_STATUS": "Systeem Status",
+    "TABLE_ROWS_LIMIT": "Table rows limit",
     "THREADS_COUNT": "Threads aantal",
     "THRESHOLD_VALUE": "Drempelwaarde",
     "THRESHOLD_VALUE_HIGH": "Drempel waarde hoog",

@@ -448,6 +448,7 @@
     "SYSTEM_CPU_LOAD": "Càrrega de Cpu de sistema",
     "SYSTEM_LOAD_AVERAGE": "Mitjana de càrrega de sistema",
     "SYSTEM_STATUS": "Estatus de sistema",
+    "TABLE_ROWS_LIMIT": "Table rows limit",
     "THREADS_COUNT": "Comte de fils",
     "THRESHOLD_VALUE": "Valor llindar",
     "THRESHOLD_VALUE_HIGH": "Threshold value high",

@@ -448,6 +448,7 @@
     "SYSTEM_CPU_LOAD": "Загрузка ЦПУ",
     "SYSTEM_LOAD_AVERAGE": "Средняя Загрузка Системы",
     "SYSTEM_STATUS": "Состояние системы",
+    "TABLE_ROWS_LIMIT": "Table rows limit",
     "THREADS_COUNT": "Счетчик нитей",
     "THRESHOLD_VALUE": "Пороговое значение",
     "THRESHOLD_VALUE_HIGH": "Высокое пороговое значение",

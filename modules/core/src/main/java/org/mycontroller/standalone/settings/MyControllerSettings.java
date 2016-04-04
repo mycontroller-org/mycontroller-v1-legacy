@@ -16,8 +16,6 @@
  */
 package org.mycontroller.standalone.settings;
 
-import java.io.File;
-
 import org.mycontroller.standalone.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -51,6 +49,7 @@ public class MyControllerSettings {
     public static final String SKEY_GLOBAL_PAGE_REFRESH_TIME = "globalPageRefreshTime";
     public static final String SKEY_DASHBOARD_LIMIT = "dashboardLimit";
     public static final String SKEY_WIDGET_IMAGE_FILES_LOCATION = "widgetImageFilesLocation";
+    public static final String SKEY_TABLE_ROWS_LIMIT = "tableRowsLimit";
 
     private String language;
     private String timeFormat;
@@ -64,6 +63,7 @@ public class MyControllerSettings {
     private Long globalPageRefreshTime;
     private Integer dashboardLimit;
     private String widgetImageFilesLocation;
+    private Integer tableRowsLimit;
 
     public static MyControllerSettings get() {
         return MyControllerSettings.builder()
@@ -79,6 +79,7 @@ public class MyControllerSettings {
                 .globalPageRefreshTime(McUtils.getLong(getValue(SKEY_GLOBAL_PAGE_REFRESH_TIME)))
                 .dashboardLimit(McUtils.getInteger(getValue(SKEY_DASHBOARD_LIMIT)))
                 .widgetImageFilesLocation(getValue(SKEY_WIDGET_IMAGE_FILES_LOCATION))
+                .tableRowsLimit(McUtils.getInteger(getValue(SKEY_TABLE_ROWS_LIMIT)))
                 .build();
     }
 
@@ -111,10 +112,10 @@ public class MyControllerSettings {
             updateValue(SKEY_DASHBOARD_LIMIT, dashboardLimit);
         }
         if (widgetImageFilesLocation != null) {
-            if (!widgetImageFilesLocation.endsWith(File.separator)) {
-                widgetImageFilesLocation += File.separator;
-            }
-            updateValue(SKEY_WIDGET_IMAGE_FILES_LOCATION, widgetImageFilesLocation);
+            updateValue(SKEY_WIDGET_IMAGE_FILES_LOCATION, McUtils.getDirectoryLocation(widgetImageFilesLocation));
+        }
+        if (tableRowsLimit != null) {
+            updateValue(SKEY_TABLE_ROWS_LIMIT, tableRowsLimit);
         }
     }
 
