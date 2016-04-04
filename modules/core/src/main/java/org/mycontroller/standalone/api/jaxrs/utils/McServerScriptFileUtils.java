@@ -62,7 +62,7 @@ public class McServerScriptFileUtils {
     public static QueryResponse getScriptFiles(Query query) throws IOException {
         //Check less info available and true, if true set less info return
         Boolean lessInfo = (Boolean) query.getFilters().get(ScriptsHandler.KEY_LESS_INFO);
-        if (lessInfo != null && lessInfo) {
+        if (lessInfo) {
             query.setPageLimit(-1);
         }
 
@@ -141,7 +141,7 @@ public class McServerScriptFileUtils {
                 if (scriptFiles.size() > fileFrom) {
                     File scriptFile = scriptFiles.get(fileFrom);
                     String name = scriptFile.getCanonicalPath().replace(locationCanonicalPath, "");
-                    if (lessInfo != null && lessInfo) {
+                    if (lessInfo) {
                         filesString.add(name);
                     } else {
                         files.add(McScript.builder()
@@ -155,7 +155,7 @@ public class McServerScriptFileUtils {
                     break;
                 }
             }
-            if (lessInfo != null && lessInfo) {
+            if (lessInfo) {
                 return QueryResponse.builder().data(filesString).query(query).build();
             } else {
                 return QueryResponse.builder().data(files).query(query).build();

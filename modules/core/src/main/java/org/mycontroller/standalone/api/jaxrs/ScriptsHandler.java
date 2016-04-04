@@ -64,6 +64,10 @@ public class ScriptsHandler extends AccessEngine {
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
             @QueryParam(Query.ORDER) String order) {
+        //If lessInfo is null load as false.
+        if (lessInfo == null) {
+            lessInfo = false;
+        }
         HashMap<String, Object> filters = new HashMap<String, Object>();
         filters.put(KEY_NAME, name);
         filters.put(KEY_TYPE, SCRIPT_TYPE.fromString(type));
@@ -78,7 +82,7 @@ public class ScriptsHandler extends AccessEngine {
                 .page(page != null ? page : 1L)
                 .build();
         try {
-            if (lessInfo != null && lessInfo) {
+            if (lessInfo) {
                 return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query).getData());
             } else {
                 return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query));
