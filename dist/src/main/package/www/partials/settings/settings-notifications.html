@@ -79,7 +79,7 @@
               <label class="col-sm-2 control-label">{{ 'SMTP_PASSWORD' | translate }}</label>
               <div class="col-sm-5">
                 <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpPassword"/>
-                <span ng-hide="editEnable.email">{{emailSettings.smtpPassword}}</span>
+                <span ng-hide="editEnable.pushbullet">**********</span>
               </div>
             </div>
 
@@ -190,7 +190,7 @@
               <label class="col-sm-2 control-label">{{ 'AUTH_TOKEN' | translate }}</label>
               <div class="col-sm-5">
                 <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.authToken" required />
-                <span ng-hide="editEnable.sms">{{smsSettings.authToken}}</span>
+                <span ng-hide="editEnable.pushbullet">**********</span>
               </div>
             </div>
 
