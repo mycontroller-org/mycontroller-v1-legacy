@@ -62,7 +62,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/")
     public Response updateGateway(Gateway gateway) {
         this.hasAccessGateway(gateway.getId());
-        gatewayApi.updateGateway(gateway);
+        gatewayApi.update(gateway);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -70,7 +70,7 @@ public class GatewayHandler extends AccessEngine {
     @POST
     @Path("/")
     public Response addGateway(Gateway gateway) {
-        gatewayApi.addGateway(gateway);
+        gatewayApi.add(gateway);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -78,7 +78,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/{id}")
     public Response getGateway(@PathParam("id") Integer gatewayId) {
         this.hasAccessGateway(gatewayId);
-        return RestUtils.getResponse(Status.OK, gatewayApi.getGateway(gatewayId));
+        return RestUtils.getResponse(Status.OK, gatewayApi.getRaw(gatewayId));
     }
 
     @GET
@@ -104,7 +104,7 @@ public class GatewayHandler extends AccessEngine {
             filters.put(GatewayTable.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds());
         }
 
-        QueryResponse queryResponse = gatewayApi.getAllGateways(
+        QueryResponse queryResponse = gatewayApi.getAllRaw(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : GatewayTable.KEY_ID)
@@ -120,7 +120,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/delete")
     public Response deleteGateways(List<Integer> ids) {
         updateGatewayIds(ids);
-        gatewayApi.deleteGateways(ids);
+        gatewayApi.delete(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -128,7 +128,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/enable")
     public Response enableGateway(List<Integer> ids) {
         updateGatewayIds(ids);
-        gatewayApi.enableGateways(ids);
+        gatewayApi.enable(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -136,7 +136,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/disable")
     public Response enableGateways(List<Integer> ids) {
         updateGatewayIds(ids);
-        gatewayApi.disableGateways(ids);
+        gatewayApi.disable(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -144,7 +144,7 @@ public class GatewayHandler extends AccessEngine {
     @Path("/reload")
     public Response reloadGateways(List<Integer> ids) {
         updateGatewayIds(ids);
-        gatewayApi.reloadGateways(ids);
+        gatewayApi.reload(ids);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 

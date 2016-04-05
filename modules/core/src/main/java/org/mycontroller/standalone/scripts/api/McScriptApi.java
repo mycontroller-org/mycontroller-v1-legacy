@@ -23,6 +23,7 @@ package org.mycontroller.standalone.scripts.api;
 public class McScriptApi {
     private LoggerApi logger = new LoggerApi();
     private ActionApi actionApi = new ActionApi();
+    private UtilsApi utilsApi = new UtilsApi();
 
     public LoggerApi logger() {
         return logger;
@@ -30,5 +31,9 @@ public class McScriptApi {
 
     public ActionApi action() {
         return actionApi;
+    }
+
+    public UtilsApi utils() {
+        return utilsApi;
     }
 }

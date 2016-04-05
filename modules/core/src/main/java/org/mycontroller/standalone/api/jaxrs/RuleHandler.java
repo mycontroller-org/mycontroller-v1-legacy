@@ -59,7 +59,7 @@ public class RuleHandler extends AccessEngine {
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, ruleApi.get(id));
+        return RestUtils.getResponse(Status.OK, ruleApi.getRaw(id));
     }
 
     @GET
@@ -84,7 +84,7 @@ public class RuleHandler extends AccessEngine {
         filters.put(RuleDefinitionTable.KEY_CONDITION_TYPE, CONDITION_TYPE.fromString(conditionType));
         filters.put(RuleDefinitionTable.KEY_DAMPENING_TYPE, DAMPENING_TYPE.fromString(dampeningType));
 
-        QueryResponse queryResponse = ruleApi.getAll(
+        QueryResponse queryResponse = ruleApi.getAllRaw(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : RuleDefinitionTable.KEY_ID)

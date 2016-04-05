@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.McObjectManager;
@@ -35,35 +36,51 @@ import org.mycontroller.standalone.gateway.model.Gateway;
 
 public class GatewayApi {
 
-    public void updateGateway(Gateway gateway) {
-        GatewayUtils.updateGateway(gateway.getGatewayTable());
-    }
-
-    public void addGateway(Gateway gateway) {
-        GatewayUtils.addGateway(gateway.getGatewayTable());
-    }
-
-    public GatewayTable getGateway(Integer gatewayId) {
+    public GatewayTable getRaw(Integer gatewayId) {
         return DaoUtils.getGatewayDao().getById(gatewayId);
     }
 
-    public QueryResponse getAllGateways(Query query) {
+    public QueryResponse getAllRaw(Query query) {
         return DaoUtils.getGatewayDao().getAll(query);
     }
 
-    public void deleteGateways(List<Integer> ids) {
+    public Gateway get(Integer gatewayId) {
+        return GatewayUtils.getGateway(getRaw(gatewayId));
+    }
+
+    public QueryResponse getAll(Query query) {
+        QueryResponse queryResponse = getAllRaw(query);
+        ArrayList<Gateway> gateways = new ArrayList<Gateway>();
+        @SuppressWarnings("unchecked")
+        List<GatewayTable> gatewayTables = (List<GatewayTable>) queryResponse.getData();
+        for (GatewayTable gatewayTable : gatewayTables) {
+            gateways.add(GatewayUtils.getGateway(gatewayTable));
+        }
+        queryResponse.setData(gateways);
+        return queryResponse;
+    }
+
+    public void add(Gateway gateway) {
+        GatewayUtils.addGateway(gateway.getGatewayTable());
+    }
+
+    public void update(Gateway gateway) {
+        GatewayUtils.updateGateway(gateway.getGatewayTable());
+    }
+
+    public void delete(List<Integer> ids) {
         DeleteResourceUtils.deleteGateways(ids);
     }
 
-    public void enableGateways(List<Integer> ids) {
+    public void enable(List<Integer> ids) {
         GatewayUtils.enableGateways(ids);
     }
 
-    public void disableGateways(List<Integer> ids) {
+    public void disable(List<Integer> ids) {
         GatewayUtils.disableGateways(ids);
     }
 
-    public void reloadGateways(List<Integer> ids) {
+    public void reload(List<Integer> ids) {
         GatewayUtils.reloadGateways(ids);
     }
 
@@ -79,10 +96,6 @@ public class GatewayApi {
         } catch (Exception ex) {
             throw new McBadRequestException(ex.getMessage());
         }
-    }
-
-    public Gateway getGateway(GatewayTable gatewayTable) {
-        return GatewayUtils.getGateway(gatewayTable);
     }
 
 }

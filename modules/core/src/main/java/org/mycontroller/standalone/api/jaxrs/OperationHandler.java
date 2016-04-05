@@ -57,7 +57,7 @@ public class OperationHandler extends AccessEngine {
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, operationApi.get(id));
+        return RestUtils.getResponse(Status.OK, operationApi.getRaw(id));
     }
 
     @GET
@@ -78,7 +78,7 @@ public class OperationHandler extends AccessEngine {
         filters.put(OperationTable.KEY_PUBLIC_ACCESS, publicAccess);
         filters.put(OperationTable.KEY_ENABLED, enabled);
 
-        QueryResponse queryResponse = operationApi.getAll(
+        QueryResponse queryResponse = operationApi.getAllRaw(
                 Query.builder()
                         .order(order != null ? order : Query.ORDER_ASC)
                         .orderBy(orderBy != null ? orderBy : OperationTable.KEY_ID)

@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -32,12 +33,28 @@ import org.mycontroller.standalone.rule.model.RuleDefinition;
 
 public class RuleApi {
 
-    public RuleDefinitionTable get(int id) {
+    public RuleDefinitionTable getRaw(int id) {
         return DaoUtils.getRuleDefinitionDao().getById(id);
     }
 
-    public QueryResponse getAll(Query query) {
+    public QueryResponse getAllRaw(Query query) {
         return DaoUtils.getRuleDefinitionDao().getAll(query);
+    }
+
+    public RuleDefinition get(int id) {
+        return RuleUtils.getRuleDefinition(getRaw(id));
+    }
+
+    public QueryResponse getAll(Query query) {
+        QueryResponse queryResponse = getAllRaw(query);
+        ArrayList<RuleDefinition> gateways = new ArrayList<RuleDefinition>();
+        @SuppressWarnings("unchecked")
+        List<RuleDefinitionTable> rows = (List<RuleDefinitionTable>) queryResponse.getData();
+        for (RuleDefinitionTable row : rows) {
+            gateways.add(RuleUtils.getRuleDefinition(row));
+        }
+        queryResponse.setData(gateways);
+        return queryResponse;
     }
 
     public void add(RuleDefinition ruleDefinition) {

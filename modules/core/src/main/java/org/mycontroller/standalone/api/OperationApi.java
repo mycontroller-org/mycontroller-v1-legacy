@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -32,12 +33,28 @@ import org.mycontroller.standalone.operation.model.Operation;
 
 public class OperationApi {
 
-    public OperationTable get(int id) {
+    public OperationTable getRaw(int id) {
         return DaoUtils.getOperationDao().getById(id);
     }
 
-    public QueryResponse getAll(Query query) {
+    public QueryResponse getAllRaw(Query query) {
         return DaoUtils.getOperationDao().getAll(query);
+    }
+
+    public Operation get(int id) {
+        return OperationUtils.getOperation(getRaw(id));
+    }
+
+    public QueryResponse getAll(Query query) {
+        QueryResponse queryResponse = getAllRaw(query);
+        ArrayList<Operation> gateways = new ArrayList<Operation>();
+        @SuppressWarnings("unchecked")
+        List<OperationTable> rows = (List<OperationTable>) queryResponse.getData();
+        for (OperationTable row : rows) {
+            gateways.add(OperationUtils.getOperation(row));
+        }
+        queryResponse.setData(gateways);
+        return queryResponse;
     }
 
     public void add(Operation operation) {
