@@ -18,7 +18,6 @@ package org.mycontroller.standalone;
 
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.message.IMcActionEngine;
@@ -56,7 +55,7 @@ public class McObjectManager {
         McObjectManager.rawMessageQueue = rawMessageQueue;
     }
 
-    public static synchronized IGateway getGateway(Integer gatewayId) {
+    public static IGateway getGateway(Integer gatewayId) {
         return gateways.get(gatewayId);
     }
 
@@ -68,8 +67,9 @@ public class McObjectManager {
         gateways.remove(gatewayId);
     }
 
-    public static synchronized Set<Integer> getGatewayIds() {
-        return gateways.keySet();
+    @SuppressWarnings("unchecked")
+    public static HashMap<Integer, IGateway> getGateways() {
+        return (HashMap<Integer, IGateway>) gateways.clone();
     }
 
     /* This method is used for restore operation, never call on normal time */

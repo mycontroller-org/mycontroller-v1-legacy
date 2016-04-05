@@ -91,4 +91,42 @@ public class MetricsUtils {
             return null;
         }
     }
+
+    public enum HEAT_MAP_TYPE {
+        NODE_BATTERY("Node battery"),
+        NODE_STATUS("Node status"),
+        SENSOR_VARIABLE("Sensor variable"),
+        SCRIPT("Script");
+
+        public static HEAT_MAP_TYPE get(int id) {
+            for (HEAT_MAP_TYPE type : values()) {
+                if (type.ordinal() == id) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
+
+        private String text;
+
+        public String getText() {
+            return this.text;
+        }
+
+        private HEAT_MAP_TYPE(String text) {
+            this.text = text;
+        }
+
+        public static HEAT_MAP_TYPE fromString(String text) {
+            if (text != null) {
+                for (HEAT_MAP_TYPE type : HEAT_MAP_TYPE.values()) {
+                    if (text.equalsIgnoreCase(type.getText())) {
+                        return type;
+                    }
+                }
+            }
+            return null;
+        }
+
+    }
 }

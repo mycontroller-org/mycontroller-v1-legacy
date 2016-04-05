@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response.Status;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.BackupApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
+import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.settings.BackupSettings;
@@ -82,8 +83,7 @@ public class BackupHandler {
     @Path("/backupNow")
     public Response backupNow() {
         try {
-            backupApi.backupNow();
-            return RestUtils.getResponse(Status.OK);
+            return RestUtils.getResponse(Status.OK, new ApiMessage(backupApi.backupNow()));
         } catch (Exception ex) {
             _logger.error("Error,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
@@ -106,7 +106,8 @@ public class BackupHandler {
     public Response restore(BackupFile backupFile) {
         try {
             backupApi.restore(backupFile);
-            return RestUtils.getResponse(Status.OK);
+            return RestUtils.getResponse(Status.OK, new ApiMessage(
+                    "Server is going to down now! Monitor log file of the server."));
         } catch (Exception ex) {
             _logger.error("Error in restore,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

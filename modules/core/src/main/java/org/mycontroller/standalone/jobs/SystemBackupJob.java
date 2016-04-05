@@ -25,9 +25,9 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
-import org.mycontroller.standalone.BackupRestore;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
+import org.mycontroller.standalone.backup.Backup;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +85,7 @@ public class SystemBackupJob extends Job {
         try {
             isBackupRunning = true;
             _logger.debug("Backup job triggered");
-            BackupRestore.backup(McObjectManager.getAppProperties().getBackupSettings().getPrefix());
+            Backup.backup(McObjectManager.getAppProperties().getBackupSettings().getPrefix());
             removeOldFiles(McObjectManager.getAppProperties().getBackupSettings());//Retain max backup
             _logger.debug("Backup job completed");
         } catch (Exception ex) {

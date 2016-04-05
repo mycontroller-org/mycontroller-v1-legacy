@@ -19,6 +19,7 @@ package org.mycontroller.standalone;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -279,21 +280,43 @@ public class McUtils {
     }
 
     /* file utils*/
-    public static void addToZipFile(String fileName, ZipOutputStream zos) throws FileNotFoundException, IOException {
-        _logger.debug("Writing '{}' to zip file", fileName);
-        File file = FileUtils.getFile(fileName);
-        FileInputStream fis = new FileInputStream(file);
-        ZipEntry zipEntry = new ZipEntry(FileUtils.getFile(fileName).getName());
-        zos.putNextEntry(zipEntry);
+    public static void addFileToZip(String fileName, ZipOutputStream zos, String removePrefix)
+            throws FileNotFoundException, IOException {
+        addFileToZip(FileUtils.getFile(fileName), zos, removePrefix);
+    }
 
+    public static void addFileToZip(File srcFile, ZipOutputStream zos, String removePrefix)
+            throws FileNotFoundException, IOException {
         byte[] bytes = new byte[1024];
-        int length;
-        while ((length = fis.read(bytes)) >= 0) {
-            zos.write(bytes, 0, length);
-        }
+        for (File file : srcFile.listFiles()) {
+            if (file.isDirectory()) {
+                addFileToZip(file, zos, removePrefix);
+                continue;
+            }
+            if (_logger.isDebugEnabled()) {
+                _logger.debug("Writing '{}' to zip file", file.getAbsolutePath());
+            }
+            FileInputStream fis = new FileInputStream(file.getAbsolutePath());
+            zos.putNextEntry(new ZipEntry(file.getCanonicalPath().replace(removePrefix, "")));
 
-        zos.closeEntry();
-        fis.close();
+            int length;
+            while ((length = fis.read(bytes)) >= 0) {
+                zos.write(bytes, 0, length);
+            }
+            zos.closeEntry();
+            fis.close();
+        }
+    }
+
+    public static void createZipFile(String directoryName, String zipFileName) throws IOException {
+        directoryName = FileUtils.getFile(directoryName).getCanonicalPath();
+        File directory = FileUtils.getFile(directoryName);
+        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFileName));
+        if (_logger.isDebugEnabled()) {
+            _logger.debug("Creating: {}", zipFileName);
+        }
+        addFileToZip(directory, zos, directoryName);
+        zos.close();
     }
 
     public static String getDirectoryLocation(String directoryLocation) {

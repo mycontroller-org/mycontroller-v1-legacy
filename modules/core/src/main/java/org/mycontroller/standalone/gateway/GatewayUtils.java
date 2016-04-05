@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.gateway;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
@@ -202,7 +203,8 @@ public class GatewayUtils {
     }
 
     public static synchronized void unloadAllGateways() {
-        for (Integer gatewayId : McObjectManager.getGatewayIds()) {
+        HashMap<Integer, IGateway> gateways = McObjectManager.getGateways();
+        for (Integer gatewayId : gateways.keySet()) {
             unloadGateway(gatewayId);
         }
     }

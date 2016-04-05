@@ -18,7 +18,6 @@ package org.mycontroller.standalone.api.jaxrs.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.BadRequestException;
 
@@ -110,17 +108,11 @@ public class McServerFileUtils {
     }
 
     public static String getLogsZipFile() throws IOException {
-        String fileName = McObjectManager.getAppProperties().getTmpLocation() + "mc-logs-"
+        String zipFileName = McObjectManager.getAppProperties().getTmpLocation() + "mc-logs-"
                 + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date()) + ".zip";
-        File[] files = FileUtils.getFile(LOG_FILE_LOCATION).listFiles();
-        final ZipOutputStream outZip = new ZipOutputStream(new FileOutputStream(fileName));
-        for (File file : files) {
-            McUtils.addToZipFile(file.getAbsolutePath(), outZip);
-        }
-        //compress all the files
-        outZip.close();
+        McUtils.createZipFile(LOG_FILE_LOCATION, zipFileName);
         _logger.debug("zip file creation done for logs");
-        return fileName;
+        return zipFileName;
     }
 
     public static List<String> getImageFilesList() throws IOException {

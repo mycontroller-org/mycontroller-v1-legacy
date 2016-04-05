@@ -24,10 +24,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.BackupRestore;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
+import org.mycontroller.standalone.backup.BRCommons;
+import org.mycontroller.standalone.backup.Backup;
+import org.mycontroller.standalone.backup.Restore;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
+import org.mycontroller.standalone.exceptions.McException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +49,7 @@ public class BackupApi {
                 filter, true);
         List<BackupFile> backupFiles = new ArrayList<BackupFile>();
         for (File zipFile : zipFiles) {
-            if (zipFile.getName().contains(BackupRestore.FILE_NAME_IDENTITY)) {
+            if (zipFile.getName().contains(BRCommons.FILE_NAME_IDENTITY)) {
                 backupFiles.add(BackupFile.builder()
                         .name(zipFile.getName())
                         .size(zipFile.length())
@@ -61,11 +64,15 @@ public class BackupApi {
         return backupFiles;
     }
 
-    public void backupNow() {
+    public String backupNow(String backupFilePrefix) throws McException, IOException {
         if (_logger.isDebugEnabled()) {
             _logger.debug("Backup triggered.");
         }
-        BackupRestore.backup("on-demand");
+        return Backup.backup(backupFilePrefix);
+    }
+
+    public String backupNow() throws McException, IOException {
+        return backupNow("on-demand");
     }
 
     public void deleteBackup(BackupFile backupFile) throws IOException {
@@ -74,8 +81,8 @@ public class BackupApi {
 
     public void restore(BackupFile backupFile) throws IOException, McBadRequestException {
         if (backupFile != null) {
+            new Thread(new Restore(backupFile)).start();
             _logger.info("Restore triggered.");
-            BackupRestore.restore(backupFile);
         } else {
             throw new McBadRequestException("backup file should not be null");
         }

@@ -102,7 +102,7 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
 
     addModalInstance.result.then(function () {
       BackupRestoreFactory.restore($scope.restoreItem, function(response) {
-        alertService.success($filter('translate')('RESTORE_INITIATED'));
+        alertService.success($filter('translate')('RESTORE_INITIATED_SUCCESSFULLY')+' '+response.message);
       },function(error){
         displayRestError.display(error);
       });

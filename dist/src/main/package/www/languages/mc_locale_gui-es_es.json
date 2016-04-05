@@ -384,6 +384,7 @@
     "RESTORE": "Restaurar",
     "RESTORE_CONFIRMATION_MESSAGE": "Estás a punto de restaurar sistema a '{{nombre}}'. <br>Restore elimina la configuración y los datos actuales totalmente y el sistema pasa al estado '{{nombre}}'! <br>Haga clic en 'restaurar' para proceder. <br><b>Nota: después de la restauración tienes que iniciar el servidor manualmente desde línea de comandos</b>",
     "RESTORE_CONFIRMATION_TITLE": "Restaurar sistema a '{{nombre}}'",
+    "RESTORE_INITIATED_SUCCESSFULLY": "Restore initiated successfully.",
     "RETAIN_MAX": "# Máximo de conservar",
     "RETENTION_DIALOG_CONFIRMATION_MSG": "Estás a punto de cambiar la configuración de retención de datos de métricas. <br>Esta acción puede provocar pérdida de datos. Lea el manual del usuario para más detalles. <br>Es recomiendo un backup del sistema antes de seguir adelante!",
     "RETENTION_DIALOG_TITLE": "Lea cuidadosamente antes de seguir adelante",

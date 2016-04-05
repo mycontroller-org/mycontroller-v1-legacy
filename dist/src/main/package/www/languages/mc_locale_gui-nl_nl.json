@@ -384,6 +384,7 @@
     "RESTORE": "Terug zetten",
     "RESTORE_CONFIRMATION_MESSAGE": "U staat op het punt het systeem te herstellen naar '{{naam}}'. <br> Herstellen verwijdert de huidige data / configuratie volledig en het systeem gaat naar '{{naam}}' status <br> Klik op 'Herstellen' om verder te gaan. <Br > <b> NB: Na het succesvol te herstellen moet u de server handmatig starten vanaf de command line </ b>",
     "RESTORE_CONFIRMATION_TITLE": "Systeem herstellen naar '{{name}}'",
+    "RESTORE_INITIATED_SUCCESSFULLY": "Restore initiated successfully.",
     "RETAIN_MAX": "Behoud maximaal #",
     "RETENTION_DIALOG_CONFIRMATION_MSG": "U staat op het punt het bewaren van statistiek gegevens wijzigen. <br> Deze actie kan tot het verlies van gegevens leiden. Lees de gebruiksaanwijzing voor verdere details. <br> Het is ten zeerste aanbevolen een systeem back-up te maken voordat u verder ga",
     "RETENTION_DIALOG_TITLE": "Lees aandachtig voor dat u verdergaat",

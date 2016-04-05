@@ -16,10 +16,12 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
@@ -27,7 +29,9 @@ import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.metrics.MetricDouble;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceCountModel;
+import org.mycontroller.standalone.model.ResourceModel;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -93,5 +97,81 @@ public class MetricApi {
                 .node(Node.builder().id(nodeId).build())
                 .build();
         return DaoUtils.getMetricsBatteryUsageDao().getAll(metricQueryBattery);
+    }
+
+    public List<McHeatMap> getHeatMapNodeBatteryUsage(List<Integer> nodeIds) {
+        List<McHeatMap> mcHeatMap = new ArrayList<McHeatMap>();
+        List<Node> nodes = null;
+        if (nodeIds != null) {
+            nodes = DaoUtils.getNodeDao().getAll(nodeIds);
+        } else {
+            nodes = DaoUtils.getNodeDao().getAll();
+        }
+        for (Node node : nodes) {
+            if (node.getBatteryLevel() != null) {
+                mcHeatMap.add(McHeatMap.builder()
+                        .id(node.getId().longValue())
+                        .value(McUtils.getDouble(node.getBatteryLevel()) / 100.0)
+                        .tooltip(new ResourceModel(RESOURCE_TYPE.NODE, node).getResourceLessDetails())
+                        .build());
+            }
+        }
+        return mcHeatMap;
+    }
+
+    public List<McHeatMap> getHeatMapNodeState(List<Integer> nodeIds) {
+        List<McHeatMap> mcHeatMap = new ArrayList<McHeatMap>();
+        List<Node> nodes = null;
+        if (nodeIds != null) {
+            nodes = DaoUtils.getNodeDao().getAll(nodeIds);
+        } else {
+            nodes = DaoUtils.getNodeDao().getAll();
+        }
+        Double value = null;
+        for (Node node : nodes) {
+            value = null;
+            switch (node.getState()) {
+                case DOWN:
+                    value = 0.0;
+                    break;
+                case UNAVAILABLE:
+                    value = 0.5;
+                    break;
+                case UP:
+                    value = 1.0;
+                    break;
+                default:
+                    break;
+            }
+            mcHeatMap.add(McHeatMap.builder()
+                    .id(node.getId().longValue())
+                    .value(value)
+                    .tooltip(new ResourceModel(RESOURCE_TYPE.NODE, node).getResourceLessDetails())
+                    .build());
+        }
+        return mcHeatMap;
+    }
+
+    public List<McHeatMap> getHeatMapSensorVariableDouble(List<Integer> svIds, Double upperLimit) {
+        List<McHeatMap> mcHeatMap = new ArrayList<McHeatMap>();
+        List<SensorVariable> sVariables = null;
+        if (svIds != null) {
+            sVariables = DaoUtils.getSensorVariableDao().getAll(svIds);
+        } else {
+            sVariables = DaoUtils.getSensorVariableDao().getAll(SensorVariable.KEY_METRIC, METRIC_TYPE.DOUBLE);
+        }
+        Double value = null;
+        for (SensorVariable sVariable : sVariables) {
+            if (sVariable.getValue() != null) {
+                value = McUtils.getDouble(sVariable.getValue()) / upperLimit;
+
+                mcHeatMap.add(McHeatMap.builder()
+                        .id(sVariable.getId().longValue())
+                        .value(value)
+                        .tooltip(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sVariable).getResourceLessDetails())
+                        .build());
+            }
+        }
+        return mcHeatMap;
     }
 }
