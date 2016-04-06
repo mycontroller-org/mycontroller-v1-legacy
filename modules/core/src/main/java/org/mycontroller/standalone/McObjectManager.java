@@ -23,14 +23,15 @@ import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.message.IMcActionEngine;
 import org.mycontroller.standalone.message.McActionEngine;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class McObjectManager {
-    private McObjectManager() {
-
-    }
 
     private static HashMap<Integer, IGateway> gateways = new HashMap<Integer, IGateway>();
     private static ResourceBundle mcLocale;
