@@ -1,0 +1,84 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<form role="form">
+
+  <div class="form-group">
+    <label>{{ 'REFRESH_TIME_SECONDS' | translate }}</label>
+    <input type="text" class="form-control" id="refreshTime" placeholder="{{'REFRESH_TIME_SECONDS' | translate}}" ng-model="config.refreshTime" pf-validation="mycHeatMapEdit.cs.isNumber(input)" required>
+    <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+  </div>
+
+  <div class="form-group" ng-if="config.dataType">
+    <label class="mc-margin-right">{{ 'HEIGHT' | translate }}</label>
+    <input class="mc-margin-right" type="text" id="height" placeholder="{{'HEIGHT' | translate}}" ng-model="config.height" pf-validation="mycHeatMapEdit.cs.isNumber(input)" required>
+    <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+    <label class="mc-margin-right">{{ 'MAXIMUM_BLOCK_SIZE' | translate }}</label>
+    <input type="text" id="height" placeholder="{{'MAXIMUM_BLOCK_SIZE' | translate}}" ng-model="config.maxBlockSize" pf-validation="mycHeatMapEdit.cs.isNumber(input)" required>
+    <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+  </div>
+
+  <div class="form-group">
+    <input ng-model="config.showLegends" type="checkbox"/>
+    <label class="control-label">{{ 'SHOW_LEGENDS' | translate }}</label>
+  </div>
+
+  <div class="form-group">
+    <label>{{ 'DATA_TYPE' | translate }}</label>
+    <select id="panelSize" class="form-control" pf-select ng-change="mycHeatMapEdit.changeDataType()" ng-model="config.dataType">
+      <option value="" ng-hide="true"></option>
+        <option value="BATTERY_LEVEL">{{ 'BATTERY_LEVEL' | translate }}</option>
+        <option value="NODE_STATUS">{{ 'NODE_STATUS' | translate }}</option>
+        <option value="SENSOR_VARIABLES">{{ 'SENSOR_VARIABLES' | translate }}</option>
+        <option value="SCRIPT">{{ 'SCRIPT' | translate }}</option>
+    </select>
+  </div>
+
+  <div class="form-group" ng-if="config.dataType === 'SENSOR_VARIABLES'">
+    <label>{{ 'UPPER_LIMIT' | translate }}</label>
+    <input type="text" class="form-control" id="refreshTime" placeholder="{{'UPPER_LIMIT' | translate}}" ng-model="config.upperLimit" pf-validation="mycHeatMapEdit.cs.isNumber(input)" required>
+    <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+  </div>
+
+  <div class="form-group" ng-if="config.dataType">
+    <label class="mc-margin-right">{{ 'COLOR' | translate }}</label>
+    <i uib-tooltip="{{ 'SWAP' | translate }}" tooltip-placement="top" ng-click="mycHeatMapEdit.swapColors()" class="fa fa-exchange mc-icon-md-3 mc-pointer text-primary"></i>
+  </div>
+
+  <div class="form-group" ng-if="config.dataType">
+    <span ng-repeat="item in config.colorPattern track by $index">
+      <span style="background-color:{{config.colorPattern[$index]}};width:72px;color:white;" class="btn btn-sm mc-margin-right" colorpicker="hex" colorpicker-position="top"
+        ng-model="config.colorPattern[$index]">{{config.legendLabels[$index] || "-"}}</span>
+    </span>
+  </div>
+
+  <div class="form-group">
+    <label ng-if="config.dataType === 'SENSOR_VARIABLES'">{{ 'SENSOR_VARIABLES' | translate }}</label>
+    <label ng-if="config.dataType === 'BATTERY_LEVEL'">{{ 'NODES' | translate }}</label>
+    <label ng-if="config.dataType === 'NODE_STATUS'">{{ 'NODES' | translate }}</label>
+    <label ng-if="config.dataType === 'SCRIPT'">{{ 'SCRIPT' | translate }}</label>
+    <select ng-if="config.dataType === 'SENSOR_VARIABLES' || config.dataType === 'BATTERY_LEVEL' || config.dataType === 'NODE_STATUS'"
+      id="dataKey" class="form-control" multiple pf-select data-live-search="true" ng-model="config.dataKey">
+      <option value="" ng-hide="true"></option>
+      <option ng-repeat="res in mycHeatMapEdit.variables" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="config.dataKey.indexOf(res.id.toString()) != -1"></option>
+    </select>
+    <select ng-if="config.dataType === 'SCRIPT'" id="dataKey" class="form-control" pf-select data-live-search="true" ng-options="resource for resource in mycHeatMapEdit.variables"  ng-model="config.dataKey">
+      <option value="" ng-hide="true"></option>
+    </select>
+  </div>
+
+</form>

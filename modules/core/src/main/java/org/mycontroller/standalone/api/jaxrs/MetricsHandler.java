@@ -18,10 +18,12 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
+import javax.script.ScriptException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -46,9 +48,11 @@ import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.metrics.MetricDouble;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.scripts.McScriptException;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
@@ -112,6 +116,56 @@ public class MetricsHandler extends AccessEngine {
                     new ApiError("Sensor variable id(s) is required!"));
         }
         return RestUtils.getResponse(Status.OK, getMetricsBulletChart(variableIds, timestampFrom, timestampTo));
+    }
+
+    @GET
+    @Path("/heatMapBatteryLevel")
+    public Response getHeatMapBatteryLevel(@QueryParam("nodeId") List<Integer> nodeIds) {
+        if (!nodeIds.isEmpty()) {
+            return RestUtils.getResponse(Status.OK, metricApi.getHeatMapNodeBatteryLevel(nodeIds));
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Node id(s) is required!"));
+        }
+    }
+
+    @GET
+    @Path("/heatMapNodeStatus")
+    public Response getHeatMapNodeStatus(@QueryParam("nodeId") List<Integer> nodeIds) {
+        if (!nodeIds.isEmpty()) {
+            return RestUtils.getResponse(Status.OK, metricApi.getHeatMapNodeState(nodeIds));
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Node id(s) is required!"));
+        }
+    }
+
+    @GET
+    @Path("/heatMapSensorVariable")
+    public Response getHeatMapSensorVariable(@QueryParam("variableId") List<Integer> sVariableIds,
+            @QueryParam("upperLimit") Double upperLimit) {
+        if (!sVariableIds.isEmpty()) {
+            return RestUtils
+                    .getResponse(Status.OK, metricApi.getHeatMapSensorVariableDouble(sVariableIds, upperLimit));
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST,
+                    new ApiError("Sensor variable id(s) is required!"));
+        }
+    }
+
+    @GET
+    @Path("/heatMapScript")
+    public Response getHeatMapScript(@QueryParam("scriptName") String scriptName) {
+        if (scriptName != null) {
+            try {
+                return RestUtils.getResponse(Status.OK, metricApi.getHeatMapScript(scriptName));
+            } catch (McBadRequestException | IllegalAccessException | IOException | McScriptException
+                    | ScriptException ex) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+            }
+        } else {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Script file name is required!"));
+        }
     }
 
     @GET

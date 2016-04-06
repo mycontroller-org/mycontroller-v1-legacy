@@ -48,6 +48,7 @@ var myControllerModule = angular.module('myController',[
   'adf.widget.myc-sensors-grouped-graph',
   'adf.widget.myc-sensors-mixed-graph',
   'adf.widget.myc-sensors-bullet-graph',
+  'adf.widget.myc-heat-map',
   'adf.widget.myc-dsi',
   'adf.widget.myc-time',
   'adf.widget.myc-sunrisetime',

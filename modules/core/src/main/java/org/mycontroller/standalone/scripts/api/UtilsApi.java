@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.OperationTable;
@@ -62,6 +63,10 @@ public class UtilsApi {
 
     public RuleDefinition getRuleDefinition(RuleDefinitionTable ruleDefinitionTable) {
         return RuleUtils.getRuleDefinition(ruleDefinitionTable);
+    }
+
+    public McHeatMap getHeatMap() {
+        return McHeatMap.builder().build();
     }
 
 }

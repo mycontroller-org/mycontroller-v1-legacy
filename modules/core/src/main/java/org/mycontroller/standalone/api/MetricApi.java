@@ -16,8 +16,11 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.script.ScriptException;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.McUtils;
@@ -28,10 +31,14 @@ import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.metrics.MetricDouble;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceCountModel;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.scripts.McScript;
+import org.mycontroller.standalone.scripts.McScriptEngine;
+import org.mycontroller.standalone.scripts.McScriptException;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -99,7 +106,7 @@ public class MetricApi {
         return DaoUtils.getMetricsBatteryUsageDao().getAll(metricQueryBattery);
     }
 
-    public List<McHeatMap> getHeatMapNodeBatteryUsage(List<Integer> nodeIds) {
+    public List<McHeatMap> getHeatMapNodeBatteryLevel(List<Integer> nodeIds) {
         List<McHeatMap> mcHeatMap = new ArrayList<McHeatMap>();
         List<Node> nodes = null;
         if (nodeIds != null) {
@@ -111,7 +118,8 @@ public class MetricApi {
             if (node.getBatteryLevel() != null) {
                 mcHeatMap.add(McHeatMap.builder()
                         .id(node.getId().longValue())
-                        .value(McUtils.getDouble(node.getBatteryLevel()) / 100.0)
+                        .altId(node.getId().longValue())
+                        .value(McUtils.round((McUtils.getDouble(node.getBatteryLevel()) / 100.0), 2))
                         .tooltip(new ResourceModel(RESOURCE_TYPE.NODE, node).getResourceLessDetails())
                         .build());
             }
@@ -145,6 +153,7 @@ public class MetricApi {
             }
             mcHeatMap.add(McHeatMap.builder()
                     .id(node.getId().longValue())
+                    .altId(node.getId().longValue())
                     .value(value)
                     .tooltip(new ResourceModel(RESOURCE_TYPE.NODE, node).getResourceLessDetails())
                     .build());
@@ -153,6 +162,9 @@ public class MetricApi {
     }
 
     public List<McHeatMap> getHeatMapSensorVariableDouble(List<Integer> svIds, Double upperLimit) {
+        if (upperLimit == null) {
+            upperLimit = 100.0;
+        }
         List<McHeatMap> mcHeatMap = new ArrayList<McHeatMap>();
         List<SensorVariable> sVariables = null;
         if (svIds != null) {
@@ -163,15 +175,26 @@ public class MetricApi {
         Double value = null;
         for (SensorVariable sVariable : sVariables) {
             if (sVariable.getValue() != null) {
-                value = McUtils.getDouble(sVariable.getValue()) / upperLimit;
+                value = McUtils.round(McUtils.getDouble(sVariable.getValue()) / upperLimit, 2);
 
                 mcHeatMap.add(McHeatMap.builder()
                         .id(sVariable.getId().longValue())
+                        .altId(sVariable.getSensor().getId().longValue())
                         .value(value)
                         .tooltip(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sVariable).getResourceLessDetails())
                         .build());
             }
         }
         return mcHeatMap;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<McHeatMap> getHeatMapScript(String scriptName) throws McBadRequestException, IllegalAccessException,
+            IOException, McScriptException, ScriptException {
+        if (scriptName == null) {
+            throw new McBadRequestException("script file name missing!");
+        }
+        McScriptEngine mcScriptEngine = new McScriptEngine(McScript.getMcScript(scriptName));
+        return (List<McHeatMap>) mcScriptEngine.executeScript();
     }
 }

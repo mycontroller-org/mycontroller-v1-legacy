@@ -16,9 +16,14 @@
  */
 package org.mycontroller.standalone.scripts;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.scripts.api.McScriptApi;
 
 /**
@@ -41,8 +46,25 @@ public class McScriptEngineUtils {
         return scriptEngineManager;
     }
 
+    public static File getScriptFile(String scriptFileName) throws IllegalAccessException, IOException {
+        File scriptFile = FileUtils.getFile(McObjectManager.getAppProperties().getScriptLocation() + scriptFileName);
+        String scriptCanonicalPath = scriptFile.getCanonicalPath();
+        String scriptLocation = FileUtils.getFile(McObjectManager.getAppProperties().getScriptLocation())
+                .getCanonicalPath();
+        //Check is file available and has access to read
+        if (!scriptFile.exists() || !scriptFile.canRead()) {
+            throw new IllegalAccessException("Unable to access this file '" + scriptCanonicalPath + "'!");
+        }
+        //Check file location inside scripts location
+        if (!scriptCanonicalPath.startsWith(scriptLocation)) {
+            throw new IllegalAccessException("Selected file is not under script location! '" + scriptCanonicalPath
+                    + "'!");
+        }
+        return scriptFile;
+    }
+
     //Load mc api details
-    public static synchronized void updateMcApi(ScriptEngine engine) {
+    public static void updateMcApi(ScriptEngine engine) {
         engine.put(MC_API, new McScriptApi());
     }
 

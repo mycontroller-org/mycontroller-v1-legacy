@@ -16,6 +16,10 @@
  */
 package org.mycontroller.standalone.scripts;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FilenameUtils;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 
@@ -63,5 +67,14 @@ public class McScript {
             }
         }
         return type;
+    }
+
+    @JsonIgnore
+    public static McScript getMcScript(String scriptFileName) throws IllegalAccessException, IOException {
+        File scriptFile = McScriptEngineUtils.getScriptFile(scriptFileName);
+        return McScript.builder()
+                .extension(FilenameUtils.getExtension(scriptFile.getCanonicalPath()))
+                .name(scriptFile.getCanonicalPath())
+                .build();
     }
 }

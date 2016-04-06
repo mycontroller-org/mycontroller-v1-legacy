@@ -148,6 +148,12 @@ myControllerModule.factory('MetricsFactory', function ($resource) {
     getBatteryMetrics: { method: 'GET', isArray: false, params: {type: 'metricsBattery'}},
     getBulletChart: { method: 'GET', isArray: true, params: {type: 'bulletChart'}},
 
+    getHeatMapBatteryLevel: { method: 'GET', isArray: true, params: {type: 'heatMapBatteryLevel'}},
+    getHeatMapHeatMapNodeStatus: { method: 'GET', isArray: true, params: {type: 'heatMapNodeStatus'}},
+    getHeatMapHeatMapSensorVariable: { method: 'GET', isArray: true, params: {type: 'heatMapSensorVariable'}},
+    getHeatMapHeatMapScript: { method: 'GET', isArray: true, params: {type: 'heatMapScript'}},
+
+
     getCsvFile: { method: 'GET', isArray: false, params: {type: 'csvFile'}},
 
   })
