@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.backup.Backup;
 import org.mycontroller.standalone.settings.BackupSettings;
@@ -43,7 +43,7 @@ public class SystemBackupJob extends Job {
     private void removeOldFiles(BackupSettings backupSettings) {
         String[] filter = { "zip" };
         Collection<File> zipFiles = FileUtils.listFiles(
-                FileUtils.getFile(McObjectManager.getAppProperties().getBackupSettings().getBackupLocation()),
+                FileUtils.getFile(AppProperties.getInstance().getBackupSettings().getBackupLocation()),
                 filter, true);
 
         List<BackupFile> backupFiles = new ArrayList<BackupFile>();
@@ -85,8 +85,8 @@ public class SystemBackupJob extends Job {
         try {
             isBackupRunning = true;
             _logger.debug("Backup job triggered");
-            Backup.backup(McObjectManager.getAppProperties().getBackupSettings().getPrefix());
-            removeOldFiles(McObjectManager.getAppProperties().getBackupSettings());//Retain max backup
+            Backup.backup(AppProperties.getInstance().getBackupSettings().getPrefix());
+            removeOldFiles(AppProperties.getInstance().getBackupSettings());//Retain max backup
             _logger.debug("Backup job completed");
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);

@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 
 import lombok.Getter;
@@ -49,7 +49,7 @@ public class OperationNotification {
         ruleName = ruleDefinition.getName();
         ruleCondition = ruleDefinition.getConditionString();
         actualValue = ruleDefinition.getActualValue();
-        triggeredAt = new SimpleDateFormat(McObjectManager.getAppProperties().getDateFormatWithTimezone())
+        triggeredAt = new SimpleDateFormat(AppProperties.getInstance().getDateFormatWithTimezone())
                 .format(new Date(ruleDefinition.getLastTrigger()));
     }
 

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
@@ -46,7 +46,7 @@ public abstract class MigrationBase implements JdbcMigration {
         }
 
         //Load properties from database
-        McObjectManager.getAppProperties().loadPropertiesFromDb();
+        AppProperties.getInstance().loadPropertiesFromDb();
     }
 
     protected void reloadDao() {

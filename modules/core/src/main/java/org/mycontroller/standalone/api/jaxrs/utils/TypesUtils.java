@@ -19,6 +19,7 @@ package org.mycontroller.standalone.api.jaxrs.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.AppProperties.MC_TIME_FORMAT;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
@@ -919,7 +920,7 @@ public class TypesUtils {
     public static ArrayList<TypesIdNameMapper> getLanguages() {
         MC_LANGUAGE[] languages = MC_LANGUAGE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        MC_LANGUAGE selected = McObjectManager.getAppProperties().getLanguage();
+        MC_LANGUAGE selected = AppProperties.getInstance().getLanguage();
         for (MC_LANGUAGE language : languages) {
             if (selected == language) {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(language.name().toLowerCase())

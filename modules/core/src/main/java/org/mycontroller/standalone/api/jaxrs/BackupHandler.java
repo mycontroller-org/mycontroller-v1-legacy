@@ -28,7 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.BackupApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
@@ -67,7 +67,7 @@ public class BackupHandler {
     @GET
     @Path("/backupSettings")
     public Response getBackupSettings() {
-        return RestUtils.getResponse(Status.OK, McObjectManager.getAppProperties().getBackupSettings());
+        return RestUtils.getResponse(Status.OK, AppProperties.getInstance().getBackupSettings());
     }
 
     @PUT
@@ -75,7 +75,7 @@ public class BackupHandler {
     public Response updateBackupSettings(BackupSettings backupSettings) {
         backupSettings.save();
         BackupSettings.reloadJob();//Reload backup job
-        McObjectManager.getAppProperties().setBackupSettings(BackupSettings.get());
+        AppProperties.getInstance().setBackupSettings(BackupSettings.get());
         return RestUtils.getResponse(Status.OK);
     }
 

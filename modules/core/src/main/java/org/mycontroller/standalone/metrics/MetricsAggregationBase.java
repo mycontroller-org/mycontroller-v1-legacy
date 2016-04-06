@@ -19,7 +19,7 @@ package org.mycontroller.standalone.metrics;
 import java.util.Date;
 import java.util.List;
 
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
@@ -273,7 +273,7 @@ public class MetricsAggregationBase {
             if (dataRetentionSettings != null) {
                 dataRetentionSettings.updateInternal();
                 dataRetentionSettings = MetricsDataRetentionSettings.get();
-                McObjectManager.getAppProperties().setMetricsDataRetentionSettings(dataRetentionSettings);
+                AppProperties.getInstance().setMetricsDataRetentionSettings(dataRetentionSettings);
                 if (_logger.isDebugEnabled()) {
                     _logger.debug(
                             "Metrics settings update successfully! New referances, Last aggregation:[Raw:{}, "
@@ -304,7 +304,7 @@ public class MetricsAggregationBase {
             return;
         }
         if (_logger.isDebugEnabled()) {
-            _logger.debug("Data retention settings:{}", McObjectManager.getAppProperties()
+            _logger.debug("Data retention settings:{}", AppProperties.getInstance()
                     .getMetricsDataRetentionSettings());
         }
         try {
@@ -312,30 +312,30 @@ public class MetricsAggregationBase {
             setAggregationRunning(true);
             //Run aggregation one bye in order..
             //run aggregation for one minute
-            executeBucketByBucket(AGGREGATION_TYPE.ONE_MINUTE, AGGREGATION_TYPE.RAW, McObjectManager.getAppProperties()
+            executeBucketByBucket(AGGREGATION_TYPE.ONE_MINUTE, AGGREGATION_TYPE.RAW, AppProperties.getInstance()
                     .getMetricsDataRetentionSettings().getLastAggregationOneMinute(),
                     getToTime(AGGREGATION_TYPE.ONE_MINUTE), McUtils.ONE_MINUTE);
             //run aggregation for five minutes
-            executeBucketByBucket(AGGREGATION_TYPE.FIVE_MINUTES, AGGREGATION_TYPE.ONE_MINUTE, McObjectManager
-                    .getAppProperties().getMetricsDataRetentionSettings().getLastAggregationFiveMinutes(),
+            executeBucketByBucket(AGGREGATION_TYPE.FIVE_MINUTES, AGGREGATION_TYPE.ONE_MINUTE,
+                    AppProperties.getInstance().getMetricsDataRetentionSettings().getLastAggregationFiveMinutes(),
                     getToTime(AGGREGATION_TYPE.FIVE_MINUTES), McUtils.FIVE_MINUTES);
             //run aggregation for one hour
-            executeBucketByBucket(AGGREGATION_TYPE.ONE_HOUR, AGGREGATION_TYPE.FIVE_MINUTES, McObjectManager
-                    .getAppProperties().getMetricsDataRetentionSettings().getLastAggregationOneHour(),
+            executeBucketByBucket(AGGREGATION_TYPE.ONE_HOUR, AGGREGATION_TYPE.FIVE_MINUTES,
+                    AppProperties.getInstance().getMetricsDataRetentionSettings().getLastAggregationOneHour(),
                     getToTime(AGGREGATION_TYPE.ONE_HOUR), McUtils.ONE_HOUR);
             //run aggregation for six hours
-            executeBucketByBucket(AGGREGATION_TYPE.SIX_HOURS, AGGREGATION_TYPE.ONE_HOUR, McObjectManager
-                    .getAppProperties()
+            executeBucketByBucket(AGGREGATION_TYPE.SIX_HOURS, AGGREGATION_TYPE.ONE_HOUR,
+                    AppProperties.getInstance()
                     .getMetricsDataRetentionSettings().getLastAggregationSixHours(),
                     getToTime(AGGREGATION_TYPE.SIX_HOURS),
                     (McUtils.ONE_HOUR * 6));
             //run aggregation for twelve hours
-            executeBucketByBucket(AGGREGATION_TYPE.TWELVE_HOURS, AGGREGATION_TYPE.SIX_HOURS, McObjectManager
-                    .getAppProperties().getMetricsDataRetentionSettings().getLastAggregationTwelveHours(),
+            executeBucketByBucket(AGGREGATION_TYPE.TWELVE_HOURS, AGGREGATION_TYPE.SIX_HOURS,
+                    AppProperties.getInstance().getMetricsDataRetentionSettings().getLastAggregationTwelveHours(),
                     getToTime(AGGREGATION_TYPE.TWELVE_HOURS), (McUtils.ONE_HOUR * 12));
             //run aggregation for one day
-            executeBucketByBucket(AGGREGATION_TYPE.ONE_DAY, AGGREGATION_TYPE.TWELVE_HOURS, McObjectManager
-                    .getAppProperties().getMetricsDataRetentionSettings().getLastAggregationOneDay(),
+            executeBucketByBucket(AGGREGATION_TYPE.ONE_DAY, AGGREGATION_TYPE.TWELVE_HOURS,
+                    AppProperties.getInstance().getMetricsDataRetentionSettings().getLastAggregationOneDay(),
                     getToTime(AGGREGATION_TYPE.ONE_DAY), McUtils.ONE_DAY);
 
             //Start purge job
@@ -351,21 +351,21 @@ public class MetricsAggregationBase {
         switch (aggregationType) {
             case ONE_MINUTE:
                 return System.currentTimeMillis()
-                        - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionRawData();
+                        - AppProperties.getInstance().getMetricsDataRetentionSettings().getRetentionRawData();
             case FIVE_MINUTES:
                 return System.currentTimeMillis()
-                        - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionOneMinute();
+                        - AppProperties.getInstance().getMetricsDataRetentionSettings().getRetentionOneMinute();
             case ONE_HOUR:
-                return System.currentTimeMillis() - McObjectManager.getAppProperties().
+                return System.currentTimeMillis() - AppProperties.getInstance().
                         getMetricsDataRetentionSettings().getRetentionFiveMinutes();
             case SIX_HOURS:
                 return System.currentTimeMillis()
-                        - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionOneHour();
+                        - AppProperties.getInstance().getMetricsDataRetentionSettings().getRetentionOneHour();
             case TWELVE_HOURS:
                 return System.currentTimeMillis()
-                        - McObjectManager.getAppProperties().getMetricsDataRetentionSettings().getRetentionSixHours();
+                        - AppProperties.getInstance().getMetricsDataRetentionSettings().getRetentionSixHours();
             case ONE_DAY:
-                return System.currentTimeMillis() - McObjectManager.getAppProperties().
+                return System.currentTimeMillis() - AppProperties.getInstance().
                         getMetricsDataRetentionSettings().getRetentionTwelveHours();
             default:
                 return null;
@@ -407,7 +407,7 @@ public class MetricsAggregationBase {
 
     private void purgeMetricTables() {
         //remove data one by one
-        MetricsDataRetentionSettings dataRetentionSettings = McObjectManager.getAppProperties()
+        MetricsDataRetentionSettings dataRetentionSettings = AppProperties.getInstance()
                 .getMetricsDataRetentionSettings();
 
         //For double data

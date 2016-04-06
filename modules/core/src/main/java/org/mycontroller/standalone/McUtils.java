@@ -276,7 +276,7 @@ public class McUtils {
     }
 
     public static void updateLocale() {
-        updateLocale(MC_LANGUAGE.fromString(McObjectManager.getAppProperties().getControllerSettings().getLanguage()));
+        updateLocale(MC_LANGUAGE.fromString(AppProperties.getInstance().getControllerSettings().getLanguage()));
     }
 
     /* file utils*/

@@ -31,6 +31,8 @@ import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @ToString(includeFieldNames = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppProperties {
     private static AppProperties _instance = new AppProperties();
 
@@ -332,11 +335,8 @@ public class AppProperties {
         }
     }
 
-    public AppProperties() {
-    }
-
-    public AppProperties(Properties properties) {
-        this.loadProperties(properties);
+    public static AppProperties getInstance() {
+        return _instance;
     }
 
     public void loadProperties(Properties properties) {
