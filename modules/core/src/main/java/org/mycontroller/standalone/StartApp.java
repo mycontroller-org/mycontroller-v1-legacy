@@ -64,7 +64,6 @@ import org.mycontroller.standalone.auth.McContainerRequestFilter;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.message.MessageMonitorThread;
-import org.mycontroller.standalone.message.RawMessageQueue;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
@@ -239,8 +238,6 @@ public class StartApp {
                 .getLanguage()));
 
         //Start message Monitor Thread
-        //Create RawMessageQueue, which is required for MessageMonitorThread
-        McObjectManager.setRawMessageQueue(new RawMessageQueue());
         //Create new thread to monitor received logs
         MessageMonitorThread messageMonitorThread = new MessageMonitorThread();
         Thread thread = new Thread(messageMonitorThread);

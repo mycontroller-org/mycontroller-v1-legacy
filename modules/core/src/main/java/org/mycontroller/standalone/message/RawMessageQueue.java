@@ -26,14 +26,19 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RawMessageQueue {
+    private static RawMessageQueue _instance = new RawMessageQueue();
     private ArrayList<RawMessage> rawMessages;
     private int queueSize;
 
-    public RawMessageQueue() {
+    public static RawMessageQueue getInstance() {
+        return _instance;
+    }
+
+    private RawMessageQueue() {
         this(1000);
     }
 
-    public RawMessageQueue(int queueSize) {
+    private RawMessageQueue(int queueSize) {
         rawMessages = new ArrayList<RawMessage>();
         this.queueSize = queueSize;
         _logger.debug("Defined Queue Size:{}", queueSize);

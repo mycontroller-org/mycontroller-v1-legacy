@@ -22,7 +22,6 @@ import java.util.ResourceBundle;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.message.IMcActionEngine;
 import org.mycontroller.standalone.message.McActionEngine;
-import org.mycontroller.standalone.message.RawMessageQueue;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -34,7 +33,6 @@ public class McObjectManager {
     }
 
     private static AppProperties appProperties;
-    private static RawMessageQueue rawMessageQueue;
     private static HashMap<Integer, IGateway> gateways = new HashMap<Integer, IGateway>();
     private static ResourceBundle mcLocale;
     private static IMcActionEngine mcActionEngine = new McActionEngine();
@@ -47,15 +45,7 @@ public class McObjectManager {
         McObjectManager.appProperties = appProperties;
     }
 
-    public static RawMessageQueue getRawMessageQueue() {
-        return rawMessageQueue;
-    }
-
-    public static void setRawMessageQueue(RawMessageQueue rawMessageQueue) {
-        McObjectManager.rawMessageQueue = rawMessageQueue;
-    }
-
-    public static IGateway getGateway(Integer gatewayId) {
+    public static synchronized IGateway getGateway(Integer gatewayId) {
         return gateways.get(gatewayId);
     }
 
@@ -75,7 +65,6 @@ public class McObjectManager {
     /* This method is used for restore operation, never call on normal time */
     public static synchronized void clearAllReferences() {
         appProperties = null;
-        rawMessageQueue = null;
         gateways = new HashMap<Integer, IGateway>();
     }
 
