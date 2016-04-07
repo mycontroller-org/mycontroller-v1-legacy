@@ -18,6 +18,7 @@ package org.mycontroller.standalone.message;
 
 import java.util.HashMap;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McObjectManager;
@@ -488,8 +489,8 @@ public class McMessageUtils {
     }
 
     public static String getMetricType() {
-        if (McObjectManager.getAppProperties().getControllerSettings().getUnitConfig() != null) {
-            return McObjectManager.getAppProperties().getControllerSettings().getUnitConfig();
+        if (AppProperties.getInstance().getControllerSettings().getUnitConfig() != null) {
+            return AppProperties.getInstance().getControllerSettings().getUnitConfig();
         }
         return UNIT_CONFIG.METRIC.getText();
     }

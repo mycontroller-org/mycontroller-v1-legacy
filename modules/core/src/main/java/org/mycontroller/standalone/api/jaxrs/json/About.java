@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McObjectManager;
 
 import lombok.Data;
 import lombok.ToString;
@@ -58,18 +57,18 @@ public class About {
         systemDate = date;
         timezone = new SimpleDateFormat("Z").format(date);
         timezoneString = new SimpleDateFormat("z").format(date);
-        appVersion = McObjectManager.getAppProperties().getControllerSettings().getVersion();
-        languageId = McObjectManager.getAppProperties().getLanguage().toString().toLowerCase();
-        language = McObjectManager.getAppProperties().getLanguage().getText();
-        loginMessage = McObjectManager.getAppProperties().getControllerSettings().getLoginMessage();
-        dateFormat = McObjectManager.getAppProperties().getDateFormat();
-        dateFormatWithoutSeconds = McObjectManager.getAppProperties().getDateFormatWithoutSeconds();
-        timeFormat = McObjectManager.getAppProperties().getTimeFormat();
-        timeFormatWithoutSeconds = McObjectManager.getAppProperties().getTimeFormatWithoutSeconds();
-        timeFormatSet = McObjectManager.getAppProperties().getControllerSettings().getTimeFormat();
-        globalPageRefreshTime = McObjectManager.getAppProperties().getControllerSettings()
+        appVersion = AppProperties.getInstance().getControllerSettings().getVersion();
+        languageId = AppProperties.getInstance().getLanguage().toString().toLowerCase();
+        language = AppProperties.getInstance().getLanguage().getText();
+        loginMessage = AppProperties.getInstance().getControllerSettings().getLoginMessage();
+        dateFormat = AppProperties.getInstance().getDateFormat();
+        dateFormatWithoutSeconds = AppProperties.getInstance().getDateFormatWithoutSeconds();
+        timeFormat = AppProperties.getInstance().getTimeFormat();
+        timeFormatWithoutSeconds = AppProperties.getInstance().getTimeFormatWithoutSeconds();
+        timeFormatSet = AppProperties.getInstance().getControllerSettings().getTimeFormat();
+        globalPageRefreshTime = AppProperties.getInstance().getControllerSettings()
                 .getGlobalPageRefreshTime();
-        dashboardLimit = McObjectManager.getAppProperties().getControllerSettings().getDashboardLimit();
-        tableRowsLimit = McObjectManager.getAppProperties().getControllerSettings().getTableRowsLimit();
+        dashboardLimit = AppProperties.getInstance().getControllerSettings().getDashboardLimit();
+        tableRowsLimit = AppProperties.getInstance().getControllerSettings().getTableRowsLimit();
     }
 }

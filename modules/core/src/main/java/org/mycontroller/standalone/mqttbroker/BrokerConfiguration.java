@@ -28,7 +28,7 @@ import static io.moquette.BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME;
 import java.util.Properties;
 
 import org.h2.store.fs.FileUtils;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,19 +49,19 @@ public class BrokerConfiguration implements IConfig {
     }
 
     private void createDefaultLocations() {
-        FileUtils.createDirectory(FileUtils.getParent(McObjectManager.getAppProperties().
+        FileUtils.createDirectory(FileUtils.getParent(AppProperties.getInstance().
                 getMqttBrokerPersistentStore()));
     }
 
     private void loadProperties() {
-        m_properties.put(HOST_PROPERTY_NAME, McObjectManager.getAppProperties().getMqttBrokerBindAddress());
-        m_properties.put(PORT_PROPERTY_NAME, String.valueOf(McObjectManager.getAppProperties().getMqttBrokerPort()));
+        m_properties.put(HOST_PROPERTY_NAME, AppProperties.getInstance().getMqttBrokerBindAddress());
+        m_properties.put(PORT_PROPERTY_NAME, String.valueOf(AppProperties.getInstance().getMqttBrokerPort()));
         m_properties.put(WEB_SOCKET_PORT_PROPERTY_NAME,
-                String.valueOf(McObjectManager.getAppProperties().getMqttBrokerWebsocketPort()));
+                String.valueOf(AppProperties.getInstance().getMqttBrokerWebsocketPort()));
 
         m_properties.put(PASSWORD_FILE_PROPERTY_NAME, "");
         m_properties.put(PERSISTENT_STORE_PROPERTY_NAME,
-                McObjectManager.getAppProperties().getMqttBrokerPersistentStore());
+                AppProperties.getInstance().getMqttBrokerPersistentStore());
         m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, "true");
 
         m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());

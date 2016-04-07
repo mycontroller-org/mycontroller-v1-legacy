@@ -23,7 +23,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.scripts.api.McScriptApi;
 
 /**
@@ -47,9 +47,9 @@ public class McScriptEngineUtils {
     }
 
     public static File getScriptFile(String scriptFileName) throws IllegalAccessException, IOException {
-        File scriptFile = FileUtils.getFile(McObjectManager.getAppProperties().getScriptLocation() + scriptFileName);
+        File scriptFile = FileUtils.getFile(AppProperties.getInstance().getScriptLocation() + scriptFileName);
         String scriptCanonicalPath = scriptFile.getCanonicalPath();
-        String scriptLocation = FileUtils.getFile(McObjectManager.getAppProperties().getScriptLocation())
+        String scriptLocation = FileUtils.getFile(AppProperties.getInstance().getScriptLocation())
                 .getCanonicalPath();
         //Check is file available and has access to read
         if (!scriptFile.exists() || !scriptFile.canRead()) {

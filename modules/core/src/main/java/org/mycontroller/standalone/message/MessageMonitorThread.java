@@ -55,14 +55,14 @@ public class MessageMonitorThread implements Runnable {
     }
 
     private void processRawMessage() {
-        while (!McObjectManager.getRawMessageQueue().isEmpty() && !isTerminationIssued()) {
-            RawMessage rawMessage = McObjectManager.getRawMessageQueue().getMessage();
+        while (!RawMessageQueue.getInstance().isEmpty() && !isTerminationIssued()) {
+            RawMessage rawMessage = RawMessageQueue.getInstance().getMessage();
             _logger.debug("Processing message:[{}]", rawMessage);
             if (McObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
                 try {
                     McMessageUtils.sendToProviderBridge(rawMessage);
                     //A delay to avoid collisions on MySensor networks on continues messages
-                    if (!McObjectManager.getRawMessageQueue().isEmpty()) {
+                    if (!RawMessageQueue.getInstance().isEmpty()) {
                         Thread.sleep(MYS_MSG_DELAY);
                     }
                 } catch (Exception ex) {
@@ -75,9 +75,9 @@ public class MessageMonitorThread implements Runnable {
             }
 
         }
-        if (!McObjectManager.getRawMessageQueue().isEmpty()) {
-            _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!", McObjectManager
-                    .getRawMessageQueue().getQueueSize());
+        if (!RawMessageQueue.getInstance().isEmpty()) {
+            _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!",
+                    RawMessageQueue.getInstance().getQueueSize());
         }
     }
 

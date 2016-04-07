@@ -18,25 +18,27 @@ package org.mycontroller.standalone.message;
 
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class RawMessageQueue {
-    private static Logger _logger = LoggerFactory.getLogger(RawMessageQueue.class.getName());
+    private static RawMessageQueue _instance = new RawMessageQueue();
     private ArrayList<RawMessage> rawMessages;
     private int queueSize;
 
-    public RawMessageQueue() {
-        this.rawMessages = new ArrayList<RawMessage>();
-        this.queueSize = 1000;
-        _logger.debug("Defined Queue Size:{}", queueSize);
+    public static RawMessageQueue getInstance() {
+        return _instance;
     }
 
-    public RawMessageQueue(int queueSize) {
+    private RawMessageQueue() {
+        this(1000);
+    }
+
+    private RawMessageQueue(int queueSize) {
         rawMessages = new ArrayList<RawMessage>();
         this.queueSize = queueSize;
         _logger.debug("Defined Queue Size:{}", queueSize);

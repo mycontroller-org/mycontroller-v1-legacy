@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
@@ -110,7 +110,7 @@ public class OperationExecuteScript extends Operation {
         }
         try {
             File script = FileUtils.getFile(
-                    McObjectManager.getAppProperties().getScriptLocation() + scriptFile);
+                    AppProperties.getInstance().getScriptLocation() + scriptFile);
             McScript mcScript = McScript.builder()
                     .name(script.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(script.getCanonicalPath()))

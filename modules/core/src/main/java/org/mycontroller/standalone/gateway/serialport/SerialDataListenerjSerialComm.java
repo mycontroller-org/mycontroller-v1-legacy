@@ -17,10 +17,10 @@
 package org.mycontroller.standalone.gateway.serialport;
 
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
+import org.mycontroller.standalone.message.RawMessageQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +63,7 @@ public class SerialDataListenerjSerialComm implements SerialPortDataListener {
                     String toProcess = message.toString();
                     _logger.debug("Received a message:[{}]", toProcess);
                     //Send Message to message factory
-                    McObjectManager.getRawMessageQueue().putMessage(RawMessage.builder()
+                    RawMessageQueue.getInstance().putMessage(RawMessage.builder()
                             .gatewayId(gateway.getId())
                             .data(toProcess)
                             .networkType(gateway.getNetworkType())

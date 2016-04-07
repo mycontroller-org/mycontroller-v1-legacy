@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.backup.BRCommons;
 import org.mycontroller.standalone.backup.Backup;
@@ -45,7 +45,7 @@ public class BackupApi {
     public List<BackupFile> getBackupList() {
         String[] filter = { "zip" };
         Collection<File> zipFiles = FileUtils.listFiles(
-                FileUtils.getFile(McObjectManager.getAppProperties().getBackupSettings().getBackupLocation()),
+                FileUtils.getFile(AppProperties.getInstance().getBackupSettings().getBackupLocation()),
                 filter, true);
         List<BackupFile> backupFiles = new ArrayList<BackupFile>();
         for (File zipFile : zipFiles) {

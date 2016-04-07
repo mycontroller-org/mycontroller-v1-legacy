@@ -16,8 +16,8 @@
  */
 package org.mycontroller.standalone.operation;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.SMS_VENDOR;
-import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.restclient.ClientResponse;
 import org.mycontroller.standalone.restclient.plivo.PlivoClient;
 import org.mycontroller.standalone.restclient.plivo.PlivoClientImpl;
@@ -46,14 +46,14 @@ public class SMSUtils {
         if (plivoClient == null) {
             try {
                 plivoClient = new PlivoClientImpl(
-                        McObjectManager.getAppProperties().getSmsSettings().getAuthSid(),
-                        McObjectManager.getAppProperties().getSmsSettings().getAuthToken());
+                        AppProperties.getInstance().getSmsSettings().getAuthSid(),
+                        AppProperties.getInstance().getSmsSettings().getAuthToken());
             } catch (Exception ex) {
                 _logger.error("Unable to create plivo client, ", ex);
             }
         }
         Message messagePlivo = Message.builder()
-                .src(McObjectManager.getAppProperties().getSmsSettings().getFromNumber())
+                .src(AppProperties.getInstance().getSmsSettings().getFromNumber())
                 .dst(toPhoneNumbers.replaceAll(",", "<").replace("+", ""))
                 .text(message).build();
         if (message.length() > 160) {
@@ -77,8 +77,8 @@ public class SMSUtils {
         if (twilioClient == null) {
             try {
                 twilioClient = new TwilioClientImpl(
-                        McObjectManager.getAppProperties().getSmsSettings().getAuthSid(),
-                        McObjectManager.getAppProperties().getSmsSettings().getAuthToken());
+                        AppProperties.getInstance().getSmsSettings().getAuthSid(),
+                        AppProperties.getInstance().getSmsSettings().getAuthToken());
             } catch (Exception ex) {
                 _logger.error("Unable to create twilio client, ", ex);
             }
@@ -93,7 +93,7 @@ public class SMSUtils {
 
         org.mycontroller.standalone.restclient.twilio.model.Message messageTwilio =
                 org.mycontroller.standalone.restclient.twilio.model.Message.builder()
-                        .from(McObjectManager.getAppProperties().getSmsSettings().getFromNumber())
+                        .from(AppProperties.getInstance().getSmsSettings().getFromNumber())
                         .to("") //To should not be null
                         .body(message)
                         .build();
@@ -115,18 +115,18 @@ public class SMSUtils {
 
     public static synchronized void sendSMS(String toPhoneNumbers, String message) {
         //Check weather you have sid and auth token
-        if (McObjectManager.getAppProperties().getSmsSettings().getAuthSid() == null ||
-                McObjectManager.getAppProperties().getSmsSettings().getAuthToken() == null ||
-                McObjectManager.getAppProperties().getSmsSettings().getFromNumber() == null ||
-                McObjectManager.getAppProperties().getSmsSettings().getVendor() == null ||
+        if (AppProperties.getInstance().getSmsSettings().getAuthSid() == null ||
+                AppProperties.getInstance().getSmsSettings().getAuthToken() == null ||
+                AppProperties.getInstance().getSmsSettings().getFromNumber() == null ||
+                AppProperties.getInstance().getSmsSettings().getVendor() == null ||
                 toPhoneNumbers == null || message == null) {
             _logger.warn(
                     "Sms sending failed! Sms settings value should not be null. "
                             + "ToPhoneNumbers:{},Message:{},SmsSettings:{}",
-                    toPhoneNumbers, message, McObjectManager.getAppProperties().getSmsSettings());
+                    toPhoneNumbers, message, AppProperties.getInstance().getSmsSettings());
             return;
         }
-        switch (SMS_VENDOR.fromString(McObjectManager.getAppProperties().getSmsSettings().getVendor())) {
+        switch (SMS_VENDOR.fromString(AppProperties.getInstance().getSmsSettings().getVendor())) {
             case PLIVO:
                 sendSmsPlivo(toPhoneNumbers, message);
                 break;
@@ -136,7 +136,7 @@ public class SMSUtils {
 
             default:
                 _logger.warn("This type of vendor not implemented yet! Vendor:{}",
-                        McObjectManager.getAppProperties().getSmsSettings().getVendor());
+                        AppProperties.getInstance().getSmsSettings().getVendor());
                 break;
         }
 

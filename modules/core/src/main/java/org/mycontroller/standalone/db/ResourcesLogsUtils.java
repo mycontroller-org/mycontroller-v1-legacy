@@ -16,8 +16,8 @@
  */
 package org.mycontroller.standalone.db;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
@@ -105,7 +105,7 @@ public class ResourcesLogsUtils {
     }
 
     public static boolean isLevel(LOG_LEVEL logLevel) {
-        if (LOG_LEVEL.fromString(McObjectManager.getAppProperties().getControllerSettings().getResourcesLogLevel())
+        if (LOG_LEVEL.fromString(AppProperties.getInstance().getControllerSettings().getResourcesLogLevel())
                 .ordinal() <= logLevel.ordinal()) {
             return true;
         }

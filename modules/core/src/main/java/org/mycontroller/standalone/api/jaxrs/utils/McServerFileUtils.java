@@ -36,7 +36,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SizeFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.ImageFile;
 import org.mycontroller.standalone.api.jaxrs.json.LogFile;
@@ -108,7 +108,7 @@ public class McServerFileUtils {
     }
 
     public static String getLogsZipFile() throws IOException {
-        String zipFileName = McObjectManager.getAppProperties().getTmpLocation() + "mc-logs-"
+        String zipFileName = AppProperties.getInstance().getTmpLocation() + "mc-logs-"
                 + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date()) + ".zip";
         McUtils.createZipFile(LOG_FILE_LOCATION, zipFileName);
         _logger.debug("zip file creation done for logs");
@@ -116,7 +116,7 @@ public class McServerFileUtils {
     }
 
     public static List<String> getImageFilesList() throws IOException {
-        String filesLocation = McObjectManager.getAppProperties().getControllerSettings()
+        String filesLocation = AppProperties.getInstance().getControllerSettings()
                 .getWidgetImageFilesLocation();
         String locationCanonicalPath = FileUtils.getFile(filesLocation).getCanonicalPath();
         if (!locationCanonicalPath.endsWith(File.separator)) {
@@ -143,7 +143,7 @@ public class McServerFileUtils {
 
     public static synchronized ImageFile getImageFile(String imageFileName)
             throws IOException, IllegalAccessException {
-        String filesLocation = McObjectManager.getAppProperties().getControllerSettings()
+        String filesLocation = AppProperties.getInstance().getControllerSettings()
                 .getWidgetImageFilesLocation();
         if (!getImageFilesList().contains(imageFileName)) {
             throw new IllegalAccessException(

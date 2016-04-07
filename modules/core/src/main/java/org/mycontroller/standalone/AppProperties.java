@@ -30,18 +30,21 @@ import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 @ToString(includeFieldNames = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppProperties {
-    private static final Logger _logger = LoggerFactory.getLogger(AppProperties.class.getName());
+    private static AppProperties _instance = new AppProperties();
 
     public static final String APPLICATION_NAME = "MyController.org";
     public static final String CONDITIONS_SCRIPT_DIRECTORY = "conditions" + File.separator;
@@ -332,11 +335,8 @@ public class AppProperties {
         }
     }
 
-    public AppProperties() {
-    }
-
-    public AppProperties(Properties properties) {
-        this.loadProperties(properties);
+    public static AppProperties getInstance() {
+        return _instance;
     }
 
     public void loadProperties(Properties properties) {
