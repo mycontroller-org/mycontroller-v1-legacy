@@ -237,7 +237,7 @@
             </a>
             <ul class="dropdown-menu">
               <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }">
-                <a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user"> {{ 'PROFILE' | translate }}</i></a>
+                <a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user"></i> {{ 'PROFILE' | translate }}</a>
               </li>
               <li ng-if="mchelper.user.hideMenu"><a href="" ng-click="showHideMainMenu()"><i class="fa fa-expand fa-lg"></i> {{ 'SHOW_MENU' | translate }}</a></li>
               <li ng-if="!mchelper.user.hideMenu"><a href="" ng-click="showHideMainMenu()"><i class="fa fa-compress fa-lg"></i> {{ 'HIDE_MENU' | translate }}</a></li>
