@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('DashboardListController', function(alertService,
-$scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, DashboardFactory, mchelper) {
+$scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, DashboardFactory, mchelper, CommonServices) {
   $scope.dId;
   $scope.dashboards ={};
   $scope.showLoading = false;
@@ -25,12 +25,12 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
   $scope.updateDashboard = function(){
     DashboardFactory.getAll({'lessInfo':true}, function(responseDashboards){
       $scope.dashboards = $filter('orderBy')(responseDashboards, 'id', false);
-      if(!mchelper.selectedDashboard){
-        mchelper.selectedDashboard = $scope.dashboards[0].id;
-        $scope.dId = mchelper.selectedDashboard;
-      }else{
-        $scope.dId = mchelper.selectedDashboard;
+      if(mchelper.user.selectedDashboard === undefined){
+        mchelper.user.selectedDashboard = $scope.dashboards[0].id;
+        //Update mchelper
+        CommonServices.saveMchelper(mchelper);
       }
+      $scope.dId = mchelper.user.selectedDashboard;
       $scope.showLoadingMain = false;
       DashboardFactory.get({'dId':$scope.dId}, function(responseDashboard){
         $scope.model = responseDashboard;
@@ -46,7 +46,9 @@ $scope, $filter, $location, $uibModal, $stateParams, $state, displayRestError, D
   $scope.changeDashboard = function (item){
     $scope.showLoading = true;
     $scope.dId = item.id;
-    mchelper.selectedDashboard = item.id;
+    mchelper.user.selectedDashboard = item.id;
+    //Update mchelper
+    CommonServices.saveMchelper(mchelper);
     DashboardFactory.get({'dId':$scope.dId}, function(response){
       $scope.model = response;
       $scope.model.titleTemplateUrl = "partials/dashboard/dashboard-title.html";
