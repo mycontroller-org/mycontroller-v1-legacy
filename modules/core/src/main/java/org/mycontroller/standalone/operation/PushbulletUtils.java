@@ -16,7 +16,7 @@
  */
 package org.mycontroller.standalone.operation;
 
-import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.restclient.ClientResponse;
 import org.mycontroller.standalone.restclient.pushbullet.PushbulletClient;
 import org.mycontroller.standalone.restclient.pushbullet.PushbulletClientImpl;
@@ -83,9 +83,9 @@ public class PushbulletUtils {
     private static void updateClient() {
         if (pushbulletClient == null) {
             try {
-                _logger.debug("PushBullet:{}", McObjectManager.getAppProperties().getPushbulletSettings());
+                _logger.debug("PushBullet:{}", AppProperties.getInstance().getPushbulletSettings());
                 pushbulletClient = new PushbulletClientImpl(
-                        McObjectManager.getAppProperties().getPushbulletSettings().getAccessToken(), null);
+                        AppProperties.getInstance().getPushbulletSettings().getAccessToken(), null);
             } catch (Exception ex) {
                 _logger.error("Unable to create Pushbullet client, ", ex);
                 throw new RuntimeException("Error: " + ex.getMessage());

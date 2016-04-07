@@ -29,7 +29,6 @@ import javax.ws.rs.BadRequestException;
 
 import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.StartApp;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
@@ -62,11 +61,11 @@ public class Restore implements Runnable {
 
         BRCommons.setBackupRestoreRunning(true);
 
-        String extractedLocation = McObjectManager.getAppProperties().getTmpLocation()
+        String extractedLocation = AppProperties.getInstance().getTmpLocation()
                 + backupFile.getName().replaceAll(".zip", "");
         try {
 
-            String oldDatabaseLocation = McObjectManager.getAppProperties().getDbH2DbLocation();
+            String oldDatabaseLocation = AppProperties.getInstance().getDbH2DbLocation();
             //Extract zip file
             _logger.debug("Zip file:{}", backupFile.getAbsolutePath());
 
@@ -94,23 +93,23 @@ public class Restore implements Runnable {
             //Load initial properties
             StartApp.loadInitialProperties();
 
-            if (McObjectManager.getAppProperties().isWebHttpsEnabled()) {
+            if (AppProperties.getInstance().isWebHttpsEnabled()) {
                 //Remove old files
-                FileUtils.deleteQuietly(FileUtils.getFile(McObjectManager.getAppProperties().getWebSslKeystoreFile()));
+                FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getWebSslKeystoreFile()));
                 //restore key store file
                 FileUtils.moveFile(
                         FileUtils.getFile(extractedLocation + File.separator + FileUtils.getFile(
-                                McObjectManager.getAppProperties().getWebSslKeystoreFile()).getName()),
-                        FileUtils.getFile(McObjectManager.getAppProperties().getWebSslKeystoreFile()));
+                                AppProperties.getInstance().getWebSslKeystoreFile()).getName()),
+                        FileUtils.getFile(AppProperties.getInstance().getWebSslKeystoreFile()));
             }
 
             //Restore scripts directory
             //Remove old files
-            FileUtils.deleteQuietly(FileUtils.getFile(McObjectManager.getAppProperties().getScriptLocation()));
+            FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getScriptLocation()));
             //restore
             FileUtils.copyDirectory(
                     FileUtils.getFile(extractedLocation + File.separator + BRCommons.SCRIPTS_LOCATION),
-                    FileUtils.getFile(McObjectManager.getAppProperties().getScriptLocation()),
+                    FileUtils.getFile(AppProperties.getInstance().getScriptLocation()),
                     true);
 
             //remove old database

@@ -32,6 +32,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
@@ -257,7 +258,7 @@ public class MetricsHandler extends AccessEngine {
             }
 
         }
-        MetricsGraph metricBattery = McObjectManager.getAppProperties().getMetricsGraphSettings().getBattery();
+        MetricsGraph metricBattery = AppProperties.getInstance().getMetricsGraphSettings().getBattery();
         preDoubleData.add(MetricsChartDataNVD3.builder()
                 .key(McObjectManager.getMcLocale().getString(MC_LOCALE.AVERAGE))
                 .values(avgMetricValues)
@@ -307,7 +308,7 @@ public class MetricsHandler extends AccessEngine {
             return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
-        MetricsGraphSettings metricsGraphSettings = McObjectManager.getAppProperties().getMetricsGraphSettings();
+        MetricsGraphSettings metricsGraphSettings = AppProperties.getInstance().getMetricsGraphSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         SensorVariable yaxis1Variable = null;
@@ -461,7 +462,7 @@ public class MetricsHandler extends AccessEngine {
             return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
-        MetricsGraphSettings metricsGraphSettings = McObjectManager.getAppProperties().getMetricsGraphSettings();
+        MetricsGraphSettings metricsGraphSettings = AppProperties.getInstance().getMetricsGraphSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         for (SensorVariable sensorVariable : sensorVariables) {
@@ -560,16 +561,16 @@ public class MetricsHandler extends AccessEngine {
             //subtract 5 seconds to get proper timeformat
             Long timeDifferance = System.currentTimeMillis() - timestampFrom - (McUtils.ONE_SECOND * 5);
             if (timeDifferance > (McUtils.ONE_DAY * 365)) {
-                return McObjectManager.getAppProperties().getDateFormat();
+                return AppProperties.getInstance().getDateFormat();
             } else if (timeDifferance > McUtils.ONE_DAY * 7) {
-                return "MMM dd, " + McObjectManager.getAppProperties().getTimeFormat();
+                return "MMM dd, " + AppProperties.getInstance().getTimeFormat();
             } else if (timeDifferance > McUtils.ONE_DAY * 1) {
-                return "dd, " + McObjectManager.getAppProperties().getTimeFormat();
+                return "dd, " + AppProperties.getInstance().getTimeFormat();
             } else {
-                return McObjectManager.getAppProperties().getTimeFormat();
+                return AppProperties.getInstance().getTimeFormat();
             }
         } else {
-            return McObjectManager.getAppProperties().getDateFormat();
+            return AppProperties.getInstance().getDateFormat();
         }
     }
 }

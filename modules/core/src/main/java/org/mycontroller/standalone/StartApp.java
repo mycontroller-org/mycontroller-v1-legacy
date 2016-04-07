@@ -64,7 +64,6 @@ import org.mycontroller.standalone.auth.McContainerRequestFilter;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.message.MessageMonitorThread;
-import org.mycontroller.standalone.message.RawMessageQueue;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
@@ -95,7 +94,7 @@ public class StartApp {
     public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException {
         start = System.currentTimeMillis();
         loadInitialProperties();
-        _logger.debug("App Properties: {}", McObjectManager.getAppProperties().toString());
+        _logger.debug("App Properties: {}", AppProperties.getInstance().toString());
         _logger.debug("Operating System detail:[os:{},arch:{},version:{}]",
                 AppProperties.getOsName(), AppProperties.getOsArch(), AppProperties.getOsVersion());
         startServices();
@@ -171,24 +170,24 @@ public class StartApp {
 
     private static void startHTTPWebServer() {
         //Check HTTPS enabled?
-        if (McObjectManager.getAppProperties().isWebHttpsEnabled()) {
+        if (AppProperties.getInstance().isWebHttpsEnabled()) {
             // Set up SSL connections on server
-            server.setSSLPort(McObjectManager.getAppProperties().getWebHttpPort());
-            server.setSSLKeyStoreFile(McObjectManager.getAppProperties().getWebSslKeystoreFile());
-            server.setSSLKeyStorePass(McObjectManager.getAppProperties().getWebSslKeystorePassword());
-            server.setSSLKeyStoreType(McObjectManager.getAppProperties().getWebSslKeystoreType());
+            server.setSSLPort(AppProperties.getInstance().getWebHttpPort());
+            server.setSSLKeyStoreFile(AppProperties.getInstance().getWebSslKeystoreFile());
+            server.setSSLKeyStorePass(AppProperties.getInstance().getWebSslKeystorePassword());
+            server.setSSLKeyStoreType(AppProperties.getInstance().getWebSslKeystoreType());
         } else {
             //Set http communication port
-            server.setPort(McObjectManager.getAppProperties().getWebHttpPort());
+            server.setPort(AppProperties.getInstance().getWebHttpPort());
         }
 
-        if (McObjectManager.getAppProperties().getWebBindAddress() != null) {
-            server.setBindAddress(McObjectManager.getAppProperties().getWebBindAddress());
+        if (AppProperties.getInstance().getWebBindAddress() != null) {
+            server.setBindAddress(AppProperties.getInstance().getWebBindAddress());
         }
 
         //Deploy RestEasy with TJWS
         server.setDeployment(getResteasyDeployment());
-        server.addFileMapping("/", new File(McObjectManager.getAppProperties().getWebFileLocation()));
+        server.addFileMapping("/", new File(AppProperties.getInstance().getWebFileLocation()));
 
         //Enable Authentication
         server.setSecurityDomain(new BasicAthenticationSecurityDomain());
@@ -199,8 +198,8 @@ public class StartApp {
         server.start();
 
         _logger.info("TJWS server started successfully, HTTPS Enabled?:{}, HTTP(S) Port: [{}]",
-                McObjectManager.getAppProperties().isWebHttpsEnabled(),
-                McObjectManager.getAppProperties().getWebHttpPort());
+                AppProperties.getInstance().isWebHttpsEnabled(),
+                AppProperties.getInstance().getWebHttpPort());
     }
 
     private static void stopHTTPWebServer() {
@@ -235,12 +234,10 @@ public class StartApp {
         DataBaseUtils.loadDatabase();
 
         //Set to locale actual
-        McUtils.updateLocale(MC_LANGUAGE.fromString(McObjectManager.getAppProperties().getControllerSettings()
+        McUtils.updateLocale(MC_LANGUAGE.fromString(AppProperties.getInstance().getControllerSettings()
                 .getLanguage()));
 
         //Start message Monitor Thread
-        //Create RawMessageQueue, which is required for MessageMonitorThread
-        McObjectManager.setRawMessageQueue(new RawMessageQueue());
         //Create new thread to monitor received logs
         MessageMonitorThread messageMonitorThread = new MessageMonitorThread();
         Thread thread = new Thread(messageMonitorThread);
@@ -295,8 +292,7 @@ public class StartApp {
             } else {
                 properties.load(new FileReader(propertiesFile));
             }
-            AppProperties appProperties = new AppProperties(properties);
-            McObjectManager.setAppProperties(appProperties);
+            AppProperties.getInstance().loadProperties(properties);
             _logger.debug("Properties are loaded successfuly...");
             return true;
         } catch (IOException ex) {

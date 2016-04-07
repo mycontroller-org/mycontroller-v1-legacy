@@ -20,8 +20,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.KeyValue;
 import org.mycontroller.standalone.api.jaxrs.json.KeyValue.TYPE;
@@ -267,7 +267,7 @@ public class SensorUtils {
 
     public static String getUnit(MESSAGE_TYPE_SET_REQ variableType) {
         Unit unit = null;
-        for (Unit tmpUnit : McObjectManager.getAppProperties().getUnitsSettings().getVariables()) {
+        for (Unit tmpUnit : AppProperties.getInstance().getUnitsSettings().getVariables()) {
             if (tmpUnit.getVariable().equalsIgnoreCase(variableType.getText())) {
                 unit = tmpUnit;
                 break;
@@ -275,7 +275,7 @@ public class SensorUtils {
         }
 
         if (unit != null) {
-            if (McObjectManager.getAppProperties().getControllerSettings().getUnitConfig()
+            if (AppProperties.getInstance().getControllerSettings().getUnitConfig()
                     .equalsIgnoreCase(UNIT_CONFIG.METRIC.getText())) {
                 return unit.getMetric();
             } else {
