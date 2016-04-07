@@ -67,15 +67,12 @@ import org.mycontroller.standalone.rule.RuleUtils.STRING_OPERATOR;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
 public class TypesUtils {
-    static final Logger _logger = LoggerFactory.getLogger(TypesUtils.class.getName());
 
     public static final String NODE_IDENTIFIER = "NODE";
 

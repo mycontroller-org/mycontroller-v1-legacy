@@ -22,15 +22,15 @@ import org.jboss.resteasy.plugins.server.embedded.SecurityDomain;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class BasicAthenticationSecurityDomain implements SecurityDomain {
-    private static final Logger _logger = LoggerFactory.getLogger(BasicAthenticationSecurityDomain.class.getName());
 
     @Override
     public Principal authenticate(String aUsername, String aPassword) throws SecurityException {

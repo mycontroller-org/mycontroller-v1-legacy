@@ -29,17 +29,16 @@ import java.util.Properties;
 
 import org.h2.store.fs.FileUtils;
 import org.mycontroller.standalone.AppProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.moquette.server.config.IConfig;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class BrokerConfiguration implements IConfig {
-    private static final Logger _logger = LoggerFactory.getLogger(BrokerConfiguration.class.getName());
 
     private final Properties m_properties = new Properties();
 

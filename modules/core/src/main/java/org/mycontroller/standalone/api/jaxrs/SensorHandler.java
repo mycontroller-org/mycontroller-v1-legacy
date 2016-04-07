@@ -47,8 +47,8 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -59,8 +59,8 @@ import org.slf4j.LoggerFactory;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
+@Slf4j
 public class SensorHandler extends AccessEngine {
-    private static final Logger _logger = LoggerFactory.getLogger(SensorHandler.class);
     private SensorApi sensorApi = new SensorApi();
 
     @GET

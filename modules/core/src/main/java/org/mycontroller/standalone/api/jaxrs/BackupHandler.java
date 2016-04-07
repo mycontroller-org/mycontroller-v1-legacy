@@ -35,8 +35,8 @@ import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.settings.BackupSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -47,8 +47,8 @@ import org.slf4j.LoggerFactory;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "admin" })
+@Slf4j
 public class BackupHandler {
-    private static final Logger _logger = LoggerFactory.getLogger(BackupHandler.class.getName());
 
     private BackupApi backupApi = new BackupApi();
 

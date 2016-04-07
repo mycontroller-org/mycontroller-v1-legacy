@@ -31,7 +31,6 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class ImperiHomeSSIUtils {
-    //private static final Logger _logger = LoggerFactory.getLogger(ImperiHomeSSIUtils.class);
 
     // Type of devices
     public enum IMPERI_HOME_DEVICE_TYPE {

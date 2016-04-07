@@ -59,15 +59,15 @@ import org.mycontroller.standalone.rule.model.RuleDefinitionString;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class V1_02_01__2016_Mar_24 extends MigrationBase {
-    private static final Logger _logger = LoggerFactory.getLogger(V1_02_01__2016_Mar_24.class.getName());
 
     @Override
     public void migrate(Connection connection) throws Exception {

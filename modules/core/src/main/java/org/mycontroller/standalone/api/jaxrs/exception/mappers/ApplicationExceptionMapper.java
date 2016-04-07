@@ -22,16 +22,16 @@ import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.spi.ApplicationException;
 import org.jboss.resteasy.spi.UnhandledException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
 @Provider
+@Slf4j
 public class ApplicationExceptionMapper implements ExceptionMapper<ApplicationException> {
-    private static final Logger _logger = LoggerFactory.getLogger(ApplicationExceptionMapper.class);
 
     //Refer: https://issues.jboss.org/browse/RESTEASY-891
     // Any exception mappers for 'handled' exceptions

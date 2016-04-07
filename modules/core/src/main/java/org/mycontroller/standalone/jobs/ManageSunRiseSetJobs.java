@@ -21,15 +21,15 @@ import java.util.List;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class ManageSunRiseSetJobs implements Runnable {
-    private static final Logger _logger = LoggerFactory.getLogger(ManageSunRiseSetJobs.class);
 
     private void unloadLoadSunRiseSetJobs() {
         List<Timer> timers = DaoUtils.getTimerDao().getAllEnabled();

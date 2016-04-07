@@ -24,19 +24,19 @@ import org.mycontroller.standalone.db.DbException;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.metrics.MetricsUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, Integer> implements SensorVariableDao {
-    private static final Logger _logger = LoggerFactory.getLogger(SensorVariableDaoImpl.class);
 
     public SensorVariableDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, SensorVariable.class);

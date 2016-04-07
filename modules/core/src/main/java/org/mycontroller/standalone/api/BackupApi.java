@@ -31,16 +31,15 @@ import org.mycontroller.standalone.backup.Backup;
 import org.mycontroller.standalone.backup.Restore;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-
+@Slf4j
 public class BackupApi {
-    private static final Logger _logger = LoggerFactory.getLogger(BackupApi.class.getName());
 
     public List<BackupFile> getBackupList() {
         String[] filter = { "zip" };

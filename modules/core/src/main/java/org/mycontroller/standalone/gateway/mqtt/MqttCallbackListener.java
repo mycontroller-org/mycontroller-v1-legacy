@@ -26,15 +26,15 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class MqttCallbackListener implements MqttCallback {
-    private static final Logger _logger = LoggerFactory.getLogger(MqttCallbackListener.class.getName());
     private IMqttClient mqttClient;
     private GatewayMQTT gateway;
     private boolean reconnect = true;

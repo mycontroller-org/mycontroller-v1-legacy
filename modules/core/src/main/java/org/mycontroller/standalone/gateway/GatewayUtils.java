@@ -35,15 +35,15 @@ import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
 import org.mycontroller.standalone.gateway.serialport.MYCSerialPort;
 import org.mycontroller.standalone.model.ResourceModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class GatewayUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(GatewayUtils.class.getName());
 
     public static final String OS_ARCH_ARM = "arm";
 

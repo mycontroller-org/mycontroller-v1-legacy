@@ -24,15 +24,15 @@ import org.mycontroller.standalone.restclient.plivo.PlivoClientImpl;
 import org.mycontroller.standalone.restclient.plivo.model.Message;
 import org.mycontroller.standalone.restclient.twilio.TwilioClient;
 import org.mycontroller.standalone.restclient.twilio.TwilioClientImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SMSUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(SMSUtils.class);
 
     // Create a rest clients
     private static TwilioClient twilioClient = null;

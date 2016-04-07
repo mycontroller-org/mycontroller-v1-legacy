@@ -23,17 +23,17 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.jaxrs.json.About;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SettingsUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(SettingsUtils.class.getName());
 
     private SettingsUtils() {
 

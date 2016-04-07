@@ -67,15 +67,15 @@ import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class StartApp {
-    private static final Logger _logger = LoggerFactory.getLogger(StartApp.class.getName());
 
     //TJWS Server instance
     private static final TJWSEmbeddedJaxrsServer server = new TJWSEmbeddedJaxrsServer();

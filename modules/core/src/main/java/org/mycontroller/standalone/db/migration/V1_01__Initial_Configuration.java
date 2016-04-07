@@ -50,15 +50,15 @@ import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.Unit;
 import org.mycontroller.standalone.settings.UnitsSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class V1_01__Initial_Configuration extends MigrationBase {
-    private static final Logger _logger = LoggerFactory.getLogger(V1_01__Initial_Configuration.class.getName());
 
     @Override
     public void migrate(Connection connection) throws Exception {

@@ -22,18 +22,17 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.FirmwareType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.support.ConnectionSource;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class FirmwareTypeDaoImpl extends BaseAbstractDaoImpl<FirmwareType, Integer> implements FirmwareTypeDao {
-    private static final Logger _logger = LoggerFactory.getLogger(FirmwareTypeDaoImpl.class);
-
     public FirmwareTypeDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, FirmwareType.class);
     }

@@ -22,15 +22,15 @@ import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class ResourcesLogsAggregationJob extends Job {
-    private static final Logger _logger = LoggerFactory.getLogger(ResourcesLogsAggregationJob.class.getName());
     private static final long TRUNCATE_TRACE = McUtils.ONE_MINUTE * 15;
     private static final long TRUNCATE_NOTICE = McUtils.ONE_HOUR * 2;
     private static final long TRUNCATE_INFO = McUtils.ONE_HOUR * 6;

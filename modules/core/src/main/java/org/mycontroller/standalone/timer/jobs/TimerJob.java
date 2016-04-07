@@ -31,15 +31,15 @@ import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerSimple;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class TimerJob extends Job {
-    private static final Logger _logger = LoggerFactory.getLogger(TimerJob.class);
     public static final String TIMER_REF = "timer_referance_key";
     public static final String KEY_RESOURCE_TYPE = "resourceType";
     public static final String KEY_RESOURCE_ID = "resourceId";

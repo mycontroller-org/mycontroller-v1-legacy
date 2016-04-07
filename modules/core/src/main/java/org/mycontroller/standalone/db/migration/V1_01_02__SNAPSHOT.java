@@ -21,15 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.db.DaoUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class V1_01_02__SNAPSHOT extends MigrationBase {
-    private static final Logger _logger = LoggerFactory.getLogger(V1_01_02__SNAPSHOT.class.getName());
 
     private static final String TABLE_ALARM_DEFINITION = "alarm_definition";
     private static final String TABLE_NOTIFICATION = "notification";

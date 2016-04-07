@@ -27,16 +27,16 @@ import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /* All the messages based on MYSENSORS.ORG, Do not add new */
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class McMessageUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(McMessageUtils.class.getName());
 
     private McMessageUtils() {
 

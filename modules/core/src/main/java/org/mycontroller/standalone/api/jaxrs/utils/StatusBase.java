@@ -24,9 +24,6 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sun.management.OperatingSystemMXBean;
 
 /**
@@ -34,7 +31,6 @@ import com.sun.management.OperatingSystemMXBean;
  * @since 0.0.1
  */
 public class StatusBase {
-    static final Logger _logger = LoggerFactory.getLogger(StatusBase.class.getName());
 
     static OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getPlatformMXBean(
             OperatingSystemMXBean.class);

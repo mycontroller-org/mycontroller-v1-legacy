@@ -22,15 +22,15 @@ import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class ExecuteForwardPayload implements Runnable {
-    private static final Logger _logger = LoggerFactory.getLogger(ExecuteForwardPayload.class);
     private List<ForwardPayload> forwardPayloads;
     private Sensor sensor;
     private SensorVariable sensorVariable;

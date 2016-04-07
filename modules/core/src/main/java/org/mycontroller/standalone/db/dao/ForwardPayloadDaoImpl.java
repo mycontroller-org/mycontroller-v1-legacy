@@ -23,20 +23,20 @@ import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, Integer> implements ForwardPayloadDao {
-    private static final Logger _logger = LoggerFactory.getLogger(ForwardPayloadDaoImpl.class);
 
     public ForwardPayloadDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, ForwardPayload.class);

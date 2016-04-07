@@ -20,18 +20,18 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SerialPortPi4jImpl implements IGateway {
-    private static Logger _logger = LoggerFactory.getLogger(SerialPortPi4jImpl.class.getName());
     private SerialDataListenerPi4j dataListenerPi4J;
     private GatewaySerial gateway = null;
 

@@ -24,8 +24,6 @@ import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.rule.RuleUtils.DATA_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.OPERATOR;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -41,8 +40,8 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Slf4j
 public class RuleDefinitionThreshold extends RuleDefinition {
-    private static final Logger _logger = LoggerFactory.getLogger(RuleDefinitionThreshold.class);
     public static final String KEY_OPERATOR = "operator";
     public static final String KEY_DATA_TYPE = "dataType";
     public static final String KEY_DATA = "data";

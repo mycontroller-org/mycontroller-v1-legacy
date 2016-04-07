@@ -20,20 +20,19 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SerialDataListenerJssc implements SerialPortEventListener {
-    private static Logger _logger = LoggerFactory.getLogger(SerialDataListenerJssc.class.getName());
     private SerialPort serialPort;
     private GatewaySerial gateway;
 
@@ -66,7 +65,7 @@ public class SerialDataListenerJssc implements SerialPortEventListener {
                     } else if (message.length() >= MYCSerialPort.SERIAL_DATA_MAX_SIZE) {
                         _logger.warn(
                                 "Serial receive buffer size reached to MAX level[{} chars], "
-                                + "Now clearing the buffer. Existing data:[{}]",
+                                        + "Now clearing the buffer. Existing data:[{}]",
                                 MYCSerialPort.SERIAL_DATA_MAX_SIZE, message.toString());
                         message.setLength(0);
                     } else {

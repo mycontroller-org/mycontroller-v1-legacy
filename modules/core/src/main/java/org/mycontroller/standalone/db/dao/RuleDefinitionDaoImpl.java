@@ -29,10 +29,13 @@ import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class RuleDefinitionDaoImpl extends BaseAbstractDaoImpl<RuleDefinitionTable, Integer> implements
         RuleDefinitionDao {
     public RuleDefinitionDaoImpl(ConnectionSource connectionSource) throws SQLException {

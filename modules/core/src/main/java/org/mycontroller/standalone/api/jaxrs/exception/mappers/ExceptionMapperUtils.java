@@ -21,19 +21,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class ExceptionMapperUtils {
     private ExceptionMapperUtils() {
 
     }
-
-    private static final Logger _logger = LoggerFactory.getLogger(NotFoundExceptionMapper.class);
 
     public static Response buildResponse(Throwable exception, Status status) {
         _logger.trace("RestEasy exception,", exception);

@@ -28,15 +28,15 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.exceptions.McException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class Backup {
-    private static final Logger _logger = LoggerFactory.getLogger(Backup.class.getName());
     private static String KEY_STORE_FILE = null;
 
     public static synchronized String backup(String prefix) throws McException, IOException {

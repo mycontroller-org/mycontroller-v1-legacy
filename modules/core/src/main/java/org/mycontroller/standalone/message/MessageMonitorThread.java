@@ -19,15 +19,15 @@ package org.mycontroller.standalone.message;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class MessageMonitorThread implements Runnable {
-    private static Logger _logger = LoggerFactory.getLogger(MessageMonitorThread.class.getName());
     private static boolean terminationIssued = false;
     private static boolean terminated = false;
     public static final long MYS_MSG_DELAY = 20; // delay time to avoid collisions in network, in milliseconds

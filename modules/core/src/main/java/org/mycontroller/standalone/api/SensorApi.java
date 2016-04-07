@@ -34,15 +34,15 @@ import org.mycontroller.standalone.exceptions.McDuplicateException;
 import org.mycontroller.standalone.exceptions.McException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
 import org.mycontroller.standalone.message.McMessageUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class SensorApi {
-    private static final Logger _logger = LoggerFactory.getLogger(SensorApi.class);
 
     public QueryResponse getAll(Query query) {
         return DaoUtils.getSensorDao().getAll(query);

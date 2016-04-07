@@ -29,15 +29,15 @@ import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class MetricsAggregationBase {
-    private static final Logger _logger = LoggerFactory.getLogger(MetricsAggregationBase.class.getName());
 
     private static boolean isAggregationRunning = false;
 
@@ -326,7 +326,7 @@ public class MetricsAggregationBase {
             //run aggregation for six hours
             executeBucketByBucket(AGGREGATION_TYPE.SIX_HOURS, AGGREGATION_TYPE.ONE_HOUR,
                     AppProperties.getInstance()
-                    .getMetricsDataRetentionSettings().getLastAggregationSixHours(),
+                            .getMetricsDataRetentionSettings().getLastAggregationSixHours(),
                     getToTime(AGGREGATION_TYPE.SIX_HOURS),
                     (McUtils.ONE_HOUR * 6));
             //run aggregation for twelve hours

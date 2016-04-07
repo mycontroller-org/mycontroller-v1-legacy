@@ -20,17 +20,17 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fazecast.jSerialComm.SerialPort;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SerialPortjSerialCommImpl implements IGateway {
-    private static final Logger _logger = LoggerFactory.getLogger(SerialPortjSerialCommImpl.class.getName());
     private SerialPort serialPort;
     private GatewaySerial gateway = null;
 

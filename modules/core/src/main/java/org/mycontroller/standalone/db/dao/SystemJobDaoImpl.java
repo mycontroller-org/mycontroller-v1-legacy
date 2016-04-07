@@ -20,17 +20,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.SystemJob;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.support.ConnectionSource;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SystemJobDaoImpl extends BaseAbstractDaoImpl<SystemJob, Integer> implements SystemJobDao {
-    private static final Logger _logger = LoggerFactory.getLogger(SystemJobDaoImpl.class);
 
     public SystemJobDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, SystemJob.class);

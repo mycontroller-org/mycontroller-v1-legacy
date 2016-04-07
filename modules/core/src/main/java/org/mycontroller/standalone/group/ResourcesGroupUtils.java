@@ -28,15 +28,15 @@ import org.mycontroller.standalone.db.tables.ResourcesGroupMap;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.rule.McRuleEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class ResourcesGroupUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(ResourcesGroupUtils.class);
 
     private ResourcesGroupUtils() {
 

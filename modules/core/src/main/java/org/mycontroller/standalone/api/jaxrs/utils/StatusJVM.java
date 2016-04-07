@@ -25,10 +25,13 @@ import java.util.List;
 
 import com.sun.management.GcInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class StatusJVM extends StatusBase {
     private static final String GET_LAST_GC_INFO = "getLastGcInfo";
 

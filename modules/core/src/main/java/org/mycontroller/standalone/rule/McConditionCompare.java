@@ -19,15 +19,15 @@ package org.mycontroller.standalone.rule;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionCompare;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class McConditionCompare extends McRuleBase {
-    private static final Logger _logger = LoggerFactory.getLogger(McConditionCompare.class);
     public RuleDefinitionCompare rdCompare; //data to operate on
 
     public McConditionCompare(RuleDefinitionTable ruleDefinitionTable) {

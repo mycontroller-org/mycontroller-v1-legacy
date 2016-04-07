@@ -31,16 +31,16 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareConfigResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
 
+@Slf4j
 public class McActionEngine implements IMcActionEngine {
-    private static final Logger _logger = LoggerFactory.getLogger(McActionEngine.class);
 
     @Override
     public void executeSendPayload(ResourceModel resourceModel, ResourceOperation operation) {

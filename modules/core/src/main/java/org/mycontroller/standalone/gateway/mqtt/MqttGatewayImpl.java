@@ -27,15 +27,15 @@ import org.mycontroller.standalone.gateway.GatewayException;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.message.RawMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class MqttGatewayImpl implements IGateway {
-    private static final Logger _logger = LoggerFactory.getLogger(MqttGatewayImpl.class.getName());
 
     public static final long TIME_TO_WAIT = 100;
     public static final long DISCONNECT_TIME_OUT = 1000 * 1;

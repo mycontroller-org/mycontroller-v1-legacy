@@ -18,15 +18,14 @@ package org.mycontroller.standalone.db.migration;
 
 import java.sql.Connection;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class V1_01_05__0_0_3_alpha1 extends MigrationBase {
-    private static final Logger _logger = LoggerFactory.getLogger(V1_01_05__0_0_3_alpha1.class.getName());
 
     @Override
     public void migrate(Connection connection) throws Exception {

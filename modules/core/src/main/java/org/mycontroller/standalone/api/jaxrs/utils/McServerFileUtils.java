@@ -40,10 +40,9 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.ImageFile;
 import org.mycontroller.standalone.api.jaxrs.json.LogFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -51,8 +50,8 @@ import lombok.experimental.UtilityClass;
  */
 
 @UtilityClass
+@Slf4j
 public class McServerFileUtils {
-    static final Logger _logger = LoggerFactory.getLogger(McServerFileUtils.class.getName());
     private static final String LOG_FILE_LOCATION = "../logs/";
     private static File appLogFile = FileUtils.getFile("../logs/mycontroller.log");
     private static final StringBuilder logBuilder = new StringBuilder();

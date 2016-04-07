@@ -33,15 +33,15 @@ import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.StartApp;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.db.DataBaseUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class Restore implements Runnable {
-    private static final Logger _logger = LoggerFactory.getLogger(Restore.class.getName());
     private BackupFile backupFile;
 
     public Restore(BackupFile backupFile) {

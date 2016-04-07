@@ -33,8 +33,8 @@ import org.mycontroller.standalone.api.jaxrs.json.UserCredential;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -45,8 +45,8 @@ import org.slf4j.LoggerFactory;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @PermitAll
+@Slf4j
 public class AuthenticationHandler {
-    private static final Logger _logger = LoggerFactory.getLogger(AuthenticationHandler.class);
     @Context
     HttpRequest request;
 

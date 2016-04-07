@@ -31,11 +31,10 @@ import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_STREAM;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.Data;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -43,8 +42,8 @@ import lombok.ToString;
  */
 @Data
 @ToString
+@Slf4j
 public class MySensorsRawMessage {
-    private static final Logger _logger = LoggerFactory.getLogger(MySensorsRawMessage.class.getName());
 
     private int gatewayId;
     private int nodeId;

@@ -36,8 +36,8 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.settings.Dashboard;
 import org.mycontroller.standalone.settings.DashboardSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -48,8 +48,8 @@ import org.slf4j.LoggerFactory;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
+@Slf4j
 public class DashboardHandler extends AccessEngine {
-    private static final Logger _logger = LoggerFactory.getLogger(DashboardHandler.class.getName());
 
     @GET
     @Path("/")

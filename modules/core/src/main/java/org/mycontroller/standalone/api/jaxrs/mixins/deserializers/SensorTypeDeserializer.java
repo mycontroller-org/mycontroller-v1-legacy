@@ -20,8 +20,6 @@ import java.io.IOException;
 
 import org.mycontroller.standalone.api.jaxrs.json.LocaleString;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @since 0.0.2
  */
 public class SensorTypeDeserializer extends JsonDeserializer<MESSAGE_TYPE_PRESENTATION> {
-    private static final Logger _logger = LoggerFactory.getLogger(SensorTypeDeserializer.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
@@ -42,7 +39,6 @@ public class SensorTypeDeserializer extends JsonDeserializer<MESSAGE_TYPE_PRESEN
             throws IOException, JsonProcessingException {
         final LocaleString localeString = OBJECT_MAPPER.treeToValue(parser.getCodec().readTree(parser),
                 LocaleString.class);
-        _logger.debug("Sensor type:{}", localeString.getEn());
         if (localeString != null && localeString.getEn() != null) {
             return MESSAGE_TYPE_PRESENTATION.fromString(localeString.getEn());
         } else {

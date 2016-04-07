@@ -29,15 +29,15 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.backup.Backup;
 import org.mycontroller.standalone.settings.BackupSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class SystemBackupJob extends Job {
-    private static final Logger _logger = LoggerFactory.getLogger(SystemBackupJob.class);
     private static boolean isBackupRunning = false;
 
     private void removeOldFiles(BackupSettings backupSettings) {

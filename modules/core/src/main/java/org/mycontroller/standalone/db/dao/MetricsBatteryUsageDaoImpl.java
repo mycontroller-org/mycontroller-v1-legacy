@@ -21,21 +21,21 @@ import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class MetricsBatteryUsageDaoImpl extends BaseAbstractDaoImpl<MetricsBatteryUsage, Object> implements
         MetricsBatteryUsageDao {
-    private static final Logger _logger = LoggerFactory.getLogger(MetricsBatteryUsageDaoImpl.class);
 
     public MetricsBatteryUsageDaoImpl(ConnectionSource connectionSource)
             throws SQLException {

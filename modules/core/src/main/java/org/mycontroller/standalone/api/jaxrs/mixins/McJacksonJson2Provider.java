@@ -49,13 +49,13 @@ import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.settings.Dashboard;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -64,8 +64,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Slf4j
 public class McJacksonJson2Provider extends ResteasyJackson2Provider {
-    private static final Logger _logger = LoggerFactory.getLogger(McJacksonJson2Provider.class);
 
     @Context
     HttpHeaders headers;

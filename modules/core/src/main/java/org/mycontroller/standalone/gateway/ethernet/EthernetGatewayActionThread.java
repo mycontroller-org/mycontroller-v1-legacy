@@ -27,15 +27,15 @@ import org.mycontroller.standalone.gateway.GatewayException;
 import org.mycontroller.standalone.gateway.IGateway.GATEWAY_STATUS;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.message.RawMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class EthernetGatewayActionThread implements Runnable {
-    private static final Logger _logger = LoggerFactory.getLogger(EthernetGatewayActionThread.class.getName());
     private Socket socket = null;
     private EthernetGatewayListener ethernetGatewayListener = null;
     private boolean terminated = false;

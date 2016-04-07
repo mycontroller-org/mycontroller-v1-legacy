@@ -23,15 +23,15 @@ import org.mycontroller.standalone.restclient.pushbullet.PushbulletClientImpl;
 import org.mycontroller.standalone.restclient.pushbullet.model.Push;
 import org.mycontroller.standalone.restclient.pushbullet.model.PushResponse;
 import org.mycontroller.standalone.restclient.pushbullet.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class PushbulletUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(PushbulletUtils.class);
 
     // Create a rest clients
     private static PushbulletClient pushbulletClient = null;

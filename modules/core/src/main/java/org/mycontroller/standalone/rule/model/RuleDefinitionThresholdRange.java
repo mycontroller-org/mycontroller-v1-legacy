@@ -20,14 +20,13 @@ import java.util.HashMap;
 
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.model.ResourceModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -36,8 +35,8 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Slf4j
 public class RuleDefinitionThresholdRange extends RuleDefinition {
-    private static final Logger _logger = LoggerFactory.getLogger(RuleDefinitionThresholdRange.class);
     public static final String KEY_IN_RANGE = "inRange";
     public static final String KEY_INCLUDE_OPERATOR_LOW = "includeOperatorLow";
     public static final String KEY_INCLUDE_OPERATOR_HIGH = "includeOperatorHigh";

@@ -32,15 +32,15 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class McUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(McUtils.class);
     public static final int DOUBLE_ROUND = 3;
     public static final long SECOND = 1000;
     public static final long MINUTE = SECOND * 60;

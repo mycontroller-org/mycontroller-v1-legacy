@@ -21,19 +21,19 @@ import java.util.List;
 
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.db.tables.UserSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integer> implements UserSettingsDao {
-    private static final Logger _logger = LoggerFactory.getLogger(UserSettingsDaoImpl.class);
 
     public UserSettingsDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, UserSettings.class);

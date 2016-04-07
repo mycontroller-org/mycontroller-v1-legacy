@@ -25,8 +25,6 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.Dao;
@@ -39,12 +37,14 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableInfo;
 import com.j256.ormlite.table.TableUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
-    public static final Logger _logger = LoggerFactory.getLogger(BaseAbstractDaoImpl.class);
 
     private Dao<Tdao, Tid> dao;
     private TableInfo<Tdao, Tid> tableInfo;

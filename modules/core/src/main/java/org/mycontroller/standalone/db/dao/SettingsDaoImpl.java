@@ -20,20 +20,20 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.Settings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SettingsDaoImpl extends BaseAbstractDaoImpl<Settings, Integer> implements SettingsDao {
-    private static final Logger _logger = LoggerFactory.getLogger(SettingsDaoImpl.class);
 
     public SettingsDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, Settings.class);

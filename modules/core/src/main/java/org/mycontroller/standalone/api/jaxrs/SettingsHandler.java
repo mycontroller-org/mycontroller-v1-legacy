@@ -49,8 +49,8 @@ import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
 import org.mycontroller.standalone.settings.UserNativeSettings;
 import org.mycontroller.standalone.timer.TimerUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -61,8 +61,8 @@ import org.slf4j.LoggerFactory;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "admin" })
+@Slf4j
 public class SettingsHandler extends AccessEngine {
-    private static final Logger _logger = LoggerFactory.getLogger(SettingsHandler.class.getName());
 
     @RolesAllowed({ "User" })
     @GET

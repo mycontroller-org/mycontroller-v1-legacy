@@ -23,14 +23,13 @@ import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.jobs.SystemBackupJob;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerSimple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -42,8 +41,8 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class BackupSettings {
-    private static final Logger _logger = LoggerFactory.getLogger(BackupSettings.class.getName());
 
     private static final String JOB_NAME = "myController-backup-job";
     public static final String KEY_BACKUP = "backup";

@@ -18,7 +18,6 @@ package org.mycontroller.standalone.api.jaxrs.json;
 
 import lombok.Builder;
 import lombok.Data;
-
 import lombok.ToString;
 
 /**

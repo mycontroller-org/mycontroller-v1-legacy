@@ -24,10 +24,13 @@ import org.mycontroller.standalone.db.tables.OperationRuleDefinitionMap;
 
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class OperationRuleDefinitionMapDaoImpl extends BaseAbstractDaoImpl<OperationRuleDefinitionMap, Object>
         implements OperationRuleDefinitionMapDao {
 

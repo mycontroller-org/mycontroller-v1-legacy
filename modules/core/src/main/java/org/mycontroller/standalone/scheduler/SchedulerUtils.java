@@ -35,20 +35,20 @@ import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
 import org.mycontroller.standalone.timer.jobs.TimerJob;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SchedulerUtils {
     public static final String JOB_DATA = "job-data";
     public static final String SYSTEM_JOB_REF = "SYS_";
     public static final String TIMER_JOB_REF = "TIMER_";
     public static final String CRON_TRIGGER_REF = "_Cron_Trigger";
     private static final long FROM_TIME_DELAY = McUtils.ONE_SECOND;
-    private static final Logger _logger = LoggerFactory.getLogger(SchedulerUtils.class);
 
     private SchedulerUtils() {
     }

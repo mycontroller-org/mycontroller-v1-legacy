@@ -18,15 +18,15 @@ package org.mycontroller.standalone.rule;
 
 import org.easyrules.api.Rule;
 import org.easyrules.api.RuleListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class McRuleListener implements RuleListener {
-    protected static final Logger _logger = LoggerFactory.getLogger(McRuleListener.class);
 
     @Override
     public void beforeExecute(Rule rule) {

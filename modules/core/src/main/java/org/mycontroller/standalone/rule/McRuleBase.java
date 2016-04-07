@@ -24,15 +24,15 @@ import org.mycontroller.standalone.rule.model.DampeningActiveTime;
 import org.mycontroller.standalone.rule.model.DampeningConsecutive;
 import org.mycontroller.standalone.rule.model.DampeningLastNEvaluations;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public abstract class McRuleBase extends BasicRule {
-    private static final Logger _logger = LoggerFactory.getLogger(McRuleBase.class);
     private RuleDefinition ruleDefinition;
     protected String actualValue = null;
 

@@ -22,17 +22,17 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.Room;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.support.ConnectionSource;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class RoomDaoImpl extends BaseAbstractDaoImpl<Room, Integer> implements RoomDao {
-    private static final Logger _logger = LoggerFactory.getLogger(RoomDaoImpl.class);
 
     public RoomDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, Room.class);

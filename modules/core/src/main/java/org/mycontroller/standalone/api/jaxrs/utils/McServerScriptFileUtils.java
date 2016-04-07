@@ -40,10 +40,9 @@ import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -51,8 +50,8 @@ import lombok.experimental.UtilityClass;
  */
 
 @UtilityClass
+@Slf4j
 public class McServerScriptFileUtils {
-    static final Logger _logger = LoggerFactory.getLogger(McServerScriptFileUtils.class.getName());
 
     //mc script file filter
     private static final String[] MC_SCRIPT_SUFFIX_FILTER = { "js", "py", "rb", "groovy" };

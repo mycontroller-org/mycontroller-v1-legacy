@@ -21,17 +21,16 @@ import java.nio.ByteOrder;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javolution.io.Struct;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class FirmwareConfigResponse extends Struct {
-    private static final Logger _logger = LoggerFactory.getLogger(FirmwareConfigResponse.class.getName());
 
     private final Unsigned16 type = new Unsigned16();
     private final Unsigned16 version = new Unsigned16();

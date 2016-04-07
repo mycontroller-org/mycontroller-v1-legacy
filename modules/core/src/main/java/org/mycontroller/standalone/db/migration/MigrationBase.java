@@ -26,18 +26,18 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.table.TableUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public abstract class MigrationBase implements JdbcMigration {
-    private static final Logger _logger = LoggerFactory.getLogger(MigrationBase.class);
 
     protected void loadDao() {
         //Load Dao's if not loaded already

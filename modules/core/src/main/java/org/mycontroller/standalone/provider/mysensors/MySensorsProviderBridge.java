@@ -25,15 +25,15 @@ import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class MySensorsProviderBridge implements IProviderBridge {
-    private static final Logger _logger = LoggerFactory.getLogger(MySensorsProviderBridge.class);
 
     @Override
     public void executeMcMessage(McMessage mcMessage) {

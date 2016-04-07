@@ -20,15 +20,15 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.mycontroller.standalone.AppProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class EmailUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(EmailUtils.class);
 
     private static HtmlEmail email = null;
 

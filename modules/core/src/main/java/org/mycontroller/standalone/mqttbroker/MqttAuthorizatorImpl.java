@@ -16,17 +16,15 @@
  */
 package org.mycontroller.standalone.mqttbroker;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.moquette.spi.security.IAuthorizator;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class MqttAuthorizatorImpl implements IAuthorizator {
-    private static final Logger _logger = LoggerFactory.getLogger(MqttAuthorizatorImpl.class.getName());
 
     @Override
     public boolean canRead(String topic, String user, String client) {

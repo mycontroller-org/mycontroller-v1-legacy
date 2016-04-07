@@ -26,15 +26,15 @@ import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionScript;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class McConditionScript extends McRuleBase {
-    private static final Logger _logger = LoggerFactory.getLogger(McConditionScript.class);
     public RuleDefinitionScript rdScript; //data to operate on
 
     public McConditionScript(RuleDefinitionTable ruleDefinitionTable) {

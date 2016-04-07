@@ -306,7 +306,7 @@ public class MySensorsUtils {
         V_HVAC_FLOW_MODE("HVAC flow mode"), // S_HVAC. Flow mode for HVAC ("Auto", "ContinuousOn", "PeriodicOn")
         V_TEXT("Text"),         // S_INFO. Text message to display on LCD or controller device
         V_CUSTOM("Custom"),     // Custom messages used for controller/inter node specific commands,
-                            // preferably using S_CUSTOM device type.
+        // preferably using S_CUSTOM device type.
         V_POSITION("Position"), // GPS position and altitude. Payload: latitude;longitude;altitude(m).
                                 // E.g. "55.722526;13.017972;18"
         V_IR_RECORD("IR record");         // Record IR codes S_IR for playback

@@ -22,15 +22,15 @@ import org.mycontroller.standalone.gateway.GatewayException;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class MYCSerialPort implements IGateway {
-    private static final Logger _logger = LoggerFactory.getLogger(MYCSerialPort.class.getName());
     public static final long THREAD_TERMINATION_WAIT_TIME = McUtils.ONE_SECOND * 5; //Five seconds
     public static final int SERIAL_DATA_MAX_SIZE = 1000;
     private SerialPortMonitoringThread monitoringThread = null;

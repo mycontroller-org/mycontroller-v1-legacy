@@ -21,15 +21,15 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class McConditionState extends McRuleBase {
-    private static final Logger _logger = LoggerFactory.getLogger(McConditionState.class);
     public RuleDefinitionState rdState; //data to operate on
 
     public McConditionState(RuleDefinitionTable ruleDefinitionTable) {

@@ -58,15 +58,15 @@ import org.mycontroller.standalone.provider.mysensors.structs.FirmwareRequest;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareResponse;
 import org.mycontroller.standalone.rule.McRuleEngine;
 import org.mycontroller.standalone.uidtag.ExecuteUidTag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class McMessageEngine implements Runnable {
-    private static final Logger _logger = LoggerFactory.getLogger(McMessageEngine.class.getName());
     private static final int FIRMWARE_PRINT_LOG = 100;
 
     private Firmware firmware;
@@ -327,7 +327,7 @@ public class McMessageEngine implements Runnable {
             default:
                 _logger.warn(
                         "Internal Message[type:{},payload:{}], "
-                        + "This type may not be supported (or) not implemented yet",
+                                + "This type may not be supported (or) not implemented yet",
                         MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()),
                         mcMessage.getPayload());
                 break;

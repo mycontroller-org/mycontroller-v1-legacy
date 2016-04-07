@@ -24,15 +24,15 @@ import java.net.Socket;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class EthernetGatewayListener implements Runnable {
-    private static final Logger _logger = LoggerFactory.getLogger(EthernetGatewayListener.class.getName());
     private Socket socket = null;
     private boolean terminate = false;
     private boolean terminated = false;

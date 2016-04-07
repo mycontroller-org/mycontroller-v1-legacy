@@ -29,10 +29,13 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class GatewayDaoImpl extends BaseAbstractDaoImpl<GatewayTable, Integer> implements GatewayDao {
     public GatewayDaoImpl(ConnectionSource connectionSource) throws SQLException {
         super(connectionSource, GatewayTable.class);

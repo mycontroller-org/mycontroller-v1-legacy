@@ -21,15 +21,15 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class McConditionThreshold extends McRuleBase {
-    private static final Logger _logger = LoggerFactory.getLogger(McConditionThreshold.class);
     public RuleDefinitionThreshold rdThreshold; //data to operate on
 
     public McConditionThreshold(RuleDefinitionTable ruleDefinitionTable) {

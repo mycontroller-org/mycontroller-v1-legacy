@@ -20,19 +20,18 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class SerialPortJsscImpl implements IGateway {
-    private static final Logger _logger = LoggerFactory.getLogger(SerialPortJsscImpl.class.getName());
     private SerialPort serialPort;
     private GatewaySerial gateway = null;
 

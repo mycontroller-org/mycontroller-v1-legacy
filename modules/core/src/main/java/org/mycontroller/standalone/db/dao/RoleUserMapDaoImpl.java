@@ -24,10 +24,13 @@ import org.mycontroller.standalone.db.tables.RoleUserMap;
 
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class RoleUserMapDaoImpl extends BaseAbstractDaoImpl<RoleUserMap, Object> implements RoleUserMapDao {
 
     public RoleUserMapDaoImpl(ConnectionSource connectionSource) throws SQLException {

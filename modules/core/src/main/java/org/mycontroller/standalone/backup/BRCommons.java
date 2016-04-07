@@ -29,7 +29,6 @@ public class BRCommons {
     public static final String SCRIPTS_LOCATION = "scripts" + File.separator;
     public static final String FILE_NAME_IDENTITY = "_mc_backup-";
 
-
     private static boolean isbackupRestoreRunning = false;
 
     public static synchronized boolean isBackupRestoreRunning() {

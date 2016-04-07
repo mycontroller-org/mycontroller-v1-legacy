@@ -34,15 +34,15 @@ import org.mycontroller.standalone.rule.model.RuleDefinitionState;
 import org.mycontroller.standalone.rule.model.RuleDefinitionString;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThresholdRange;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class RuleUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(RuleUtils.class);
 
     private RuleUtils() {
 

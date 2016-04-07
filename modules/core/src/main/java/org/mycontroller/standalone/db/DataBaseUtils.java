@@ -33,22 +33,21 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTAT
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class DataBaseUtils {
     private DataBaseUtils() {
     }
 
-    private static final Logger _logger = LoggerFactory.getLogger(DataBaseUtils.class.getName());
     private static boolean isDbLoaded = false;
     // private static ConnectionSource connectionSource = null;
     private static JdbcPooledConnectionSource connectionPooledSource = null;

@@ -22,8 +22,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
  */
 
 @Path("/{path : .*}")
+@Slf4j
 public class OptionsHandler {
-    private static final Logger _logger = LoggerFactory.getLogger(OptionsHandler.class);
 
     //https://gist.github.com/tganzarolli/8520728
     /*http://stackoverflow.com/questions/21221688/
@@ -40,7 +40,9 @@ public class OptionsHandler {
      */
     @OPTIONS
     public Response sendPreFlightResponse() {
-        _logger.trace("Called pre flight options...");
+        if (_logger.isTraceEnabled()) {
+            _logger.trace("Called pre flight options...");
+        }
         return RestUtils.getResponse(Status.OK);
     }
 

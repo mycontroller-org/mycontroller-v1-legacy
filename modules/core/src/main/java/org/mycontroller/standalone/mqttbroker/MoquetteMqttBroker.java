@@ -19,17 +19,16 @@ package org.mycontroller.standalone.mqttbroker;
 import java.io.IOException;
 
 import org.mycontroller.standalone.AppProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.moquette.server.Server;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class MoquetteMqttBroker {
-    private static final Logger _logger = LoggerFactory.getLogger(MoquetteMqttBroker.class.getName());
     private static boolean isRunning = false;
     private static Server mqttServer = null;
 

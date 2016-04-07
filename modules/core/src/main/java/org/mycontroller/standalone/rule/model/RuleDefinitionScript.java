@@ -19,14 +19,13 @@ package org.mycontroller.standalone.rule.model;
 import java.util.HashMap;
 
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -35,8 +34,8 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Slf4j
 public class RuleDefinitionScript extends RuleDefinition {
-    private static final Logger _logger = LoggerFactory.getLogger(RuleDefinitionScript.class);
     public static final String KEY_SCRIPT_FILE = "scriptFile";
 
     private String scriptFile;

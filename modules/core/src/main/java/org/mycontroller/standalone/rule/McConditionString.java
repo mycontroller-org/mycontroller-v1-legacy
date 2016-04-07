@@ -18,15 +18,15 @@ package org.mycontroller.standalone.rule;
 
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class McConditionString extends McRuleBase {
-    private static final Logger _logger = LoggerFactory.getLogger(McConditionString.class);
     public RuleDefinitionString rdString; //data to operate on
 
     public McConditionString(RuleDefinitionTable ruleDefinitionTable) {

@@ -24,10 +24,13 @@ import org.mycontroller.standalone.db.tables.OperationTimerMap;
 
 import com.j256.ormlite.support.ConnectionSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@Slf4j
 public class OperationTimerMapDaoImpl extends BaseAbstractDaoImpl<OperationTimerMap, Object>
         implements OperationTimerMapDao {
 

@@ -19,15 +19,15 @@ package org.mycontroller.standalone.jobs;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.timer.TimerUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class MidNightJobs extends Job {
-    private static final Logger _logger = LoggerFactory.getLogger(MidNightJobs.class);
 
     private void updateSunriseSunset() {
         try {

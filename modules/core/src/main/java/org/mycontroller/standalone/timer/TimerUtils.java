@@ -36,18 +36,18 @@ import org.mycontroller.standalone.jobs.ManageSunRiseSetJobs;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.settings.LocationSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Slf4j
 public class TimerUtils {
-    private static final Logger _logger = LoggerFactory.getLogger(TimerUtils.class);
 
     private TimerUtils() {
 

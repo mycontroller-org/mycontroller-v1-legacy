@@ -25,15 +25,15 @@ import org.mycontroller.standalone.gateway.GatewayUtils.SERIAL_PORT_DRIVER;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class SerialPortMonitoringThread implements Runnable, IGateway {
-    private static final Logger _logger = LoggerFactory.getLogger(SerialPortMonitoringThread.class.getName());
 
     private IGateway serialGateway = null;
     private boolean terminated = false;
