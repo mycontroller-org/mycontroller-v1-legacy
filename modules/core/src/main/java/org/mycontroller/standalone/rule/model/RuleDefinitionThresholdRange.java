@@ -22,6 +22,7 @@ import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.model.ResourceModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

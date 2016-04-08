@@ -26,6 +26,7 @@ import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
