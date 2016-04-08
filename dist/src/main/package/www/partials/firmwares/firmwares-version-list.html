@@ -1,0 +1,94 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="queryResponse.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-list.html'"></div>
+
+    <div class="col-md-12">
+      <div class="btn-toolbar pull-right" role="toolbar">
+        <div class="btn-group mc-side-space" ng-show="filteredList.length > 0">
+          <label class="mc-align-center mc-top-space-5px">Showing {{(query.pageLimit * (query.page - 1))+1}} to {{getMin(getMin(query.pageLimit * query.page, queryResponse.query.totalItems), queryResponse.query.filteredCount)}} of {{queryResponse.query.totalItems}} items</label>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="" ng-show="filteredList.length > 0">
+          <!-- Single button -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="itemIds.length == 0">
+              {{ 'ACTIONS' | translate }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || delete()" class="text-danger"><i class="fa fa-lg fa-trash"></i> Delete</a></li>
+              <li ng-class="{'disabled': itemIds.length != 1}"><a href='' ng-click="itemIds.length != 1 || edit()" class="text-default"><i class="fa fa-lg fa-edit"></i> Edit</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="btn-group" role="group">
+          <a class="btn btn-default" type="button" ui-sref="firmwaresTypeList">{{ 'TYPES' | translate }}</a>
+          <a class="btn btn-default" ng-disabled="true" type="button" ui-sref="firmwaresVersionList">{{ 'VERSIONS' | translate }}</a>
+          <a class="btn btn-default" type="button" ui-sref="firmwaresList">{{ 'FIRMWARES' | translate }}</a>
+        </div>
+        <div class="btn-group" role="group">
+          <a class="btn btn-primary" type="button" ui-sref="firmwaresVersionAddEdit">{{ 'ADD_FIRMWARE_VERSION' | translate }}</a>
+        </div>
+      </div>
+
+      <div class="pull-right mc-v-margin" ng-show="filteredList.length > 0">
+        <div pf-sort id="itemsSort" config="sortConfig"></div>
+      </div>
+
+      <div pf-filter id="itemsFilter" config="filterConfig" ng-show="queryResponse.query.totalItems > 0"></div>
+    </div>
+
+    <!-- Display No Items on system -->
+    <div ng-include src="'partials/common-html/no-items-system.html'"></div>
+
+    <!-- Display When no data on table -->
+    <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
+
+    <div ng-show="filteredList.length > 0">
+      <!-- Table -->
+      <table class="table table-hover table-bordered table-striped mc-table">
+        <thead>
+          <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
+          <th>{{ 'VERSION_ID' | translate }}</th>
+          <th>{{ 'VERSION' | translate }}</th>
+        </thead>
+        <tbody>
+          <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"
+            ng-class="{'mc-selected': itemIds.indexOf(item.id) != -1}" ng-click="selectItem(item)">
+            <td class="mc-align-center col-md-1"><input type="checkbox" ng-checked="itemIds.indexOf(item.id) != -1"></td>
+            <td class="col-md-1">{{item.id}}</td>
+            <td>{{item.version}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+    </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->

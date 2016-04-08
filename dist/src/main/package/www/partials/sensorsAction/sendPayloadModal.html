@@ -1,0 +1,39 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div>
+  <div class="modal-header">
+    <div class="modal-title"><b>{{header}}</b></div>
+  </div>
+  <div class="modal-body">
+
+  <form class="form-horizontal form-group-sm" role="form" name="form">
+
+    <div class="form-group form-inline">
+      <label class="control-label col-sm-3" for="sensor.newPayload">{{ 'ALARM.TYPE' | translate }}:</label>
+      <select style="width:200px" class="form-control" ng-options="variableType.id as variableType.displayName for variableType in variableTypes | orderBy:'displayName'"
+        ng-model="payloadJson.variableType" required></select>
+      <input style="width:200px" type="text" class="form-control" id="sensor.newPayload" placeholder="{{ 'RAW.PAYLOAD' | translate }}" ng-model="payloadJson.payload" ng-disabled="enableSlider" required>
+    </div>
+
+  </form>
+
+  <div class="modal-footer">
+    <button class="btn btn-primary btn-xs" ng-click="send()" ng-disabled="form.$invalid"><i class="fa fa-cloud-upload"> {{ 'SYSTEM.SEND' | translate }}</i></button>
+    <button class="btn btn-default btn-xs" ng-click="cancel()"><i class="fa fa-close"> {{ 'SYSTEM.CANCEL' | translate }}</i></button>
+  </div>
+</div>

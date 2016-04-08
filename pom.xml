@@ -1,12 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+    and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-            http://www.apache.org/licenses/LICENSE-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,141 +17,101 @@
     limitations under the License.
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mycontroller</groupId>
+    <artifactId>mycontroller-parent</artifactId>
+    <version>1</version>
+  </parent>
 
-  <groupId>org.mycontroller</groupId>
-  <artifactId>mycontroller-standalone</artifactId>
-  <version>0.0.3-alpha1</version>
-  <packaging>jar</packaging>
-
-  <name>MyController.org</name>
-  <description>The Open Source Controller</description>
+  <groupId>org.mycontroller.standalone</groupId>
+  <artifactId>mycontroller-standalone-parent</artifactId>
+  <version>0.0.3.Alpha2-SNAPSHOT</version>
   <url>https://github.com/mycontroller-org</url>
-  <inceptionYear>2015-2016</inceptionYear>
+  <inceptionYear>2015</inceptionYear>
+  <packaging>pom</packaging>
 
-  <developers>
-    <developer>
-      <id>jkandasa</id>
-      <name>Jeeva Kandasamy</name>
-      <timezone>Asia/Kolkata</timezone>
-    </developer>
-  </developers>
+  <scm>
+    <url>https://github.com/mycontroller-org/mycontroller</url>
+    <connection>scm:git:https://github.com/mycontroller-org/mycontroller</connection>
+    <developerConnection>scm:git:git@github.com:mycontroller-org/mycontroller.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <modules>
+    <module>modules/core</module>
+    <module>dist</module>
+  </modules>
 
-    <!-- maven-compiler-plugin -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
-
-    <!-- license-maven-plugin -->
-    <license.failIfMissing>true</license.failIfMissing>
-    <license.failIfUnknown>true</license.failIfUnknown>
-
-    <!-- dependency versions -->
-    <version.org.scream3r>2.8.0</version.org.scream3r>
-    <version.com.pi4j>1.1-SNAPSHOT</version.com.pi4j>
-    <version.com.fazecast>1.3.10</version.com.fazecast>
-    <version.org.slf4j>1.7.12</version.org.slf4j>
-    <version.ch.qos.logback>1.1.3</version.ch.qos.logback>
-    <version.org.javolution>5.3.1</version.org.javolution>
-    <version.org.jboss.resteasy>3.0.14.Final</version.org.jboss.resteasy>
-    <version.javax.servlet>2.5</version.javax.servlet>
-    <version.com.j256.ormlite>4.48</version.com.j256.ormlite>
-    <version.com.h2database>1.3.176</version.com.h2database>
-    <version.org.knowm>2.1.1-SNAPSHOT</version.org.knowm>
-    <version.commons-lang>2.2</version.commons-lang>
-    <version.com.luckycatlabs>1.2</version.com.luckycatlabs>
-    <version.org.apache.commons>1.4</version.org.apache.commons>
-    <version.com.plivo>3.0.6</version.com.plivo>
-    <version.commons-codec>1.10</version.commons-codec>
-    <version.org.eclipse.paho>1.0.2</version.org.eclipse.paho>
-    <version.moquette-broker>0.8</version.moquette-broker>
-    <version.org.projectlombok>1.16.6</version.org.projectlombok>
-    <version.com.twilio.sdk>5.8.0</version.com.twilio.sdk>
-    <version.org.apache.shiro>1.2.4</version.org.apache.shiro>
-    <version.apache.httpclient>4.5.1</version.apache.httpclient>
-    <version.apache.httpcore>4.4.4</version.apache.httpcore>
-    <version.org.flywaydb>3.2.1</version.org.flywaydb>
-    <version.commons-io>2.4</version.commons-io>
-
-    <!-- plugins version -->
-    <version.com.mycila.license-maven-plugin>2.11</version.com.mycila.license-maven-plugin>
-  </properties>
 
   <dependencies>
+
+    <!-- Internal dependency - Rest clients -->
+    <dependency>
+      <groupId>org.mycontroller</groupId>
+      <artifactId>mycontroller-rest-clients</artifactId>
+    </dependency>
 
     <!-- serial gateway drivers -->
     <dependency>
       <groupId>org.scream3r</groupId>
       <artifactId>jssc</artifactId>
-      <version>${version.org.scream3r}</version>
     </dependency>
 
     <dependency>
       <groupId>com.pi4j</groupId>
       <artifactId>pi4j-core</artifactId>
-      <version>${version.com.pi4j}</version>
     </dependency>
 
     <dependency>
       <groupId>com.fazecast</groupId>
       <artifactId>jSerialComm</artifactId>
-      <version>${version.com.fazecast}</version>
     </dependency>
 
     <!-- Logger -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${version.org.slf4j}</version>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>${version.ch.qos.logback}</version>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>${version.ch.qos.logback}</version>
     </dependency>
 
     <!-- Struct for firmware -->
     <dependency>
       <groupId>org.javolution</groupId>
       <artifactId>javolution</artifactId>
-      <version>${version.org.javolution}</version>
     </dependency>
 
     <!-- RestEasy -->
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>tjws</artifactId>
-      <version>${version.org.jboss.resteasy}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson2-provider</artifactId>
-      <version>${version.org.jboss.resteasy}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>${version.org.jboss.resteasy}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
-      <version>${version.org.jboss.resteasy}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-io</groupId>
@@ -162,7 +124,6 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>${version.commons-io}</version>
     </dependency>
 
 
@@ -170,76 +131,65 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>${version.javax.servlet}</version>
     </dependency>
 
     <!-- Database driver -->
     <dependency>
       <groupId>com.j256.ormlite</groupId>
       <artifactId>ormlite-jdbc</artifactId>
-      <version>${version.com.j256.ormlite}</version>
     </dependency>
 
     <dependency>
       <groupId>com.j256.ormlite</groupId>
       <artifactId>ormlite-core</artifactId>
-      <version>${version.com.j256.ormlite}</version>
     </dependency>
 
     <!-- Database -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>${version.com.h2database}</version>
     </dependency>
 
     <!-- Quartz scheduler -->
     <dependency>
       <groupId>org.knowm</groupId>
       <artifactId>sundial</artifactId>
-      <version>${version.org.knowm}</version>
     </dependency>
 
     <!-- Apache - Commons Lang -->
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>${version.commons-lang}</version>
     </dependency>
 
     <!-- Sunrise and Sunset calculator -->
     <dependency>
       <groupId>com.luckycatlabs</groupId>
       <artifactId>SunriseSunsetCalculator</artifactId>
-      <version>${version.com.luckycatlabs}</version>
     </dependency>
 
     <!-- Email client -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email</artifactId>
-      <version>${version.org.apache.commons}</version>
     </dependency>
 
     <!-- Apache Commons Codec -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>${version.commons-codec}</version>
     </dependency>
 
     <!-- MQTT client -->
     <dependency>
       <groupId>org.eclipse.paho</groupId>
       <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-      <version>${version.org.eclipse.paho}</version>
     </dependency>
 
     <!-- MQTT broker -->
     <dependency>
       <groupId>io.moquette</groupId>
       <artifactId>moquette-broker</artifactId>
-      <version>${version.moquette-broker}</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -248,155 +198,53 @@
       </exclusions>
     </dependency>
 
-    <!-- Project lombok builder annotation -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>${version.org.projectlombok}</version>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Apache HttpComponents -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>${version.apache.httpclient}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
-      <version>${version.apache.httpcore}</version>
     </dependency>
 
     <!-- FlyWay database migration -->
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>${version.org.flywaydb}</version>
+    </dependency>
+
+    <!-- Project lombok builder annotation -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- EasyRules - rule engine -->
+    <dependency>
+      <groupId>org.easyrules</groupId>
+      <artifactId>easyrules-core</artifactId>
     </dependency>
 
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>oss-snapshots-repo</id>
-      <name>Sonatype OSS Maven Repository</name>
-      <url>https://oss.sonatype.org/content/groups/public</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>Eclipse Paho Repo</id>
-      <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
-    </repository>
-    <repository>
-      <id>moquette-bintray</id>
-      <url>http://dl.bintray.com/andsel/maven/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <build>
-    <plugins>
-
-      <plugin>
-        <groupId>com.mycila</groupId>
-        <artifactId>license-maven-plugin</artifactId>
-        <version>${version.com.mycila.license-maven-plugin}</version>
-        <configuration>
-          <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-          <properties>
-            <owner>Jeeva Kandasamy</owner>
-            <email>jkandasa@gmail.com</email>
-          </properties>
-          <excludes>
-            <exclude>**/README</exclude>
-            <exclude>src/test/resources/**</exclude>
-            <exclude>src/main/resources/**</exclude>
-            <exclude>src/main/package/conf/*.jks</exclude>
-            <exclude>src/main/package/lib/**</exclude>
-            <exclude>src/main/package/logs/**</exclude>
-            <exclude>src/main/package/www/libs/**</exclude>
-            <exclude>src/main/package/www/images/**</exclude>
-            <exclude>src/main/assembly/**</exclude>
-            <exclude>src/main/assembly/**</exclude>
-            <exclude>README.adoc</exclude>
-            <exclude>LICENSE</exclude>
-            <exclude>.tx/**</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>1.6</version>
-        <configuration>
-          <createDependencyReducedPom>true</createDependencyReducedPom>
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <finalName>${project.artifactId}-${project.version}-single</finalName>
-              <transformers>
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.mycontroller.standalone.StartApp</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>attached</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <descriptor>src/main/assembly/binary-deployment.xml</descriptor>
-        </configuration>
-      </plugin>
-
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <configuration>
+            <excludes combine.children="append">
+              <!-- Ignore locale properties file -->
+              <exclude>**/mc_locale/**</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
 </project>

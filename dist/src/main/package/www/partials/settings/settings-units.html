@@ -1,0 +1,64 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-header">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="unitsSettings.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="unitsSettings.$resolved"> <!-- Main Message -->
+
+    <!-- Units -->
+    <div class="col-md-12">
+      <div class="card-pf">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> {{ 'UNITS_METRICS_IMPERIAL' | translate }}</i></h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal">
+
+            <div ng-repeat="item in unitsSettings.variables">
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{item.variable}}</label>
+                <div class="col-sm-3">
+                  <input ng-show="editEnable.units" class="form-control" ng-model="item.metric"/>
+                  <span ng-hide="editEnable.units">{{item.metric}}</span>
+                </div>
+                <div class="col-sm-3">
+                  <input ng-show="editEnable.units" class="form-control" ng-model="item.imperial"/>
+                  <span ng-hide="editEnable.units">{{item.imperial}}</span>
+                </div>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.units" ng-click="editEnable.units = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.units" ng-click="updateSettingsUnits();editEnable.units = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="saveUnits()"  ng-show="editEnable.units" ng-disabled="saveProgress.units">
+              <div ng-show="saveProgress.units" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container -->
