@@ -38,9 +38,9 @@ import org.mycontroller.standalone.timer.jobs.TimerJob;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -50,6 +50,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString
+@NoArgsConstructor
 public class OperationSendPayload extends Operation {
 
     public static final String KEY_RESOURCE_TYPE = "resourceType";
@@ -61,10 +62,6 @@ public class OperationSendPayload extends Operation {
     private Integer resourceId;
     private String payload;
     private Long delayTime;
-
-    public OperationSendPayload() {
-
-    }
 
     public OperationSendPayload(OperationTable operationTable) {
         this.updateOperation(operationTable);

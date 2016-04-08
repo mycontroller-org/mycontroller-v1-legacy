@@ -21,6 +21,8 @@ import java.io.IOException;
 import org.mycontroller.standalone.AppProperties;
 
 import io.moquette.server.Server;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -28,13 +30,10 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.2
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoquetteMqttBroker {
     private static boolean isRunning = false;
     private static Server mqttServer = null;
-
-    private MoquetteMqttBroker() {
-
-    }
 
     public static synchronized void start() {
         if (!AppProperties.getInstance().isMqttBrokerEnabled()) {

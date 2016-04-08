@@ -25,6 +25,8 @@ import org.mycontroller.standalone.restclient.plivo.model.Message;
 import org.mycontroller.standalone.restclient.twilio.TwilioClient;
 import org.mycontroller.standalone.restclient.twilio.TwilioClientImpl;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -32,15 +34,12 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SMSUtils {
 
     // Create a rest clients
     private static TwilioClient twilioClient = null;
     private static PlivoClient plivoClient = null;
-
-    private SMSUtils() {
-
-    }
 
     public static synchronized void sendSmsPlivo(String toPhoneNumbers, String message) {
         if (plivoClient == null) {

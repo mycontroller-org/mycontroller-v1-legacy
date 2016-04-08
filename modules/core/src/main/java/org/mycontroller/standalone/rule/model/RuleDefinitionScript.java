@@ -21,9 +21,9 @@ import java.util.HashMap;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,14 +35,11 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
+@NoArgsConstructor
 public class RuleDefinitionScript extends RuleDefinition {
     public static final String KEY_SCRIPT_FILE = "scriptFile";
 
     private String scriptFile;
-
-    public RuleDefinitionScript() {
-
-    }
 
     public RuleDefinitionScript(RuleDefinitionTable ruleDefinitionTable) {
         updateRuleDefinition(ruleDefinitionTable);

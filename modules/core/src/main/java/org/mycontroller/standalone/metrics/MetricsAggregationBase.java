@@ -30,6 +30,7 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -37,12 +38,10 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor
 public class MetricsAggregationBase {
 
     private static boolean isAggregationRunning = false;
-
-    public MetricsAggregationBase() {
-    }
 
     private void aggregateForBucketSensorVariable(AGGREGATION_TYPE aggregationType,
             AGGREGATION_TYPE sourceAggregationType,

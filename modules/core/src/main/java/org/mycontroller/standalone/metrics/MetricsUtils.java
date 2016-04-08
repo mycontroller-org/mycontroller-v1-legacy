@@ -18,10 +18,14 @@ package org.mycontroller.standalone.metrics;
 
 import org.mycontroller.standalone.McUtils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MetricsUtils {
     public static final long RAW_DATA_MAX_RETAIN_TIME = McUtils.ONE_MINUTE;        // 1 minute
     public static final long ONE_MINUTE_MAX_RETAIN_TIME = McUtils.ONE_HOUR * 6;    // 6 Hours
@@ -32,10 +36,6 @@ public class MetricsUtils {
     public static final long ONE_DAY_MAX_RETAIN_TIME = McUtils.ONE_YEAR * 5;  // 5 years
 
     public static final long MILLISECONDS_2015 = 1420050600000L;
-
-    private MetricsUtils() {
-
-    }
 
     public enum AGGREGATION_TYPE {
         RAW,

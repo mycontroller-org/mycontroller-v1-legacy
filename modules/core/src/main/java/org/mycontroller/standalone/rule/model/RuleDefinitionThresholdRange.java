@@ -22,9 +22,9 @@ import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.model.ResourceModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
+@NoArgsConstructor
 public class RuleDefinitionThresholdRange extends RuleDefinition {
     public static final String KEY_IN_RANGE = "inRange";
     public static final String KEY_INCLUDE_OPERATOR_LOW = "includeOperatorLow";
@@ -48,10 +49,6 @@ public class RuleDefinitionThresholdRange extends RuleDefinition {
     private boolean includeOperatorHigh;
     private Double thresholdLow;
     private Double thresholdHigh;
-
-    public RuleDefinitionThresholdRange() {
-
-    }
 
     public RuleDefinitionThresholdRange(RuleDefinitionTable ruleDefinitionTable) {
         updateRuleDefinition(ruleDefinitionTable);

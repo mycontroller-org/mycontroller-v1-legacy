@@ -26,9 +26,9 @@ import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @Slf4j
+@NoArgsConstructor
 public class OperationSendSMS extends Operation {
 
     public static final String KEY_TO_PHONE_NUMBERS = "toPhoneNumbers";
@@ -47,10 +48,6 @@ public class OperationSendSMS extends Operation {
 
     private String toPhoneNumbers;
     private String customMessage;
-
-    public OperationSendSMS() {
-
-    }
 
     public OperationSendSMS(OperationTable operationTable) {
         this.updateOperation(operationTable);

@@ -30,17 +30,18 @@ import org.mycontroller.standalone.operation.model.OperationSendSMS;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OperationUtils {
     public static final String OPERATION_SEND_PAYLOAD_TIMER_JOB = "operation_send_payload_";
     public static final String RULE_OPERATION = "rule_oper_";
     public static final String TIMER_OPERATION = "timer_oper_";
-
-    private OperationUtils() {
-    }
 
     public enum OPERATION_TYPE {
         SEND_PAYLOAD("Send payload"),

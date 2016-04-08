@@ -16,18 +16,17 @@
  */
 package org.mycontroller.standalone.scripts;
 
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@NoArgsConstructor
 public class McScriptException extends Exception {
 
     /**  */
     private static final long serialVersionUID = -2479481541436250531L;
-
-    public McScriptException() {
-
-    }
 
     public McScriptException(String message) {
         super(message);
