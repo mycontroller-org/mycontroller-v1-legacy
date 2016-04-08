@@ -28,6 +28,8 @@ import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /* All the messages based on MYSENSORS.ORG, Do not add new */
@@ -36,11 +38,8 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.2
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class McMessageUtils {
-
-    private McMessageUtils() {
-
-    }
 
     private static HashMap<Integer, Boolean> discoverRunning = new HashMap<Integer, Boolean>();
 

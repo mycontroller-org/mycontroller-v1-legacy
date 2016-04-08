@@ -22,6 +22,7 @@ import java.io.FileReader;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,12 +30,9 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.3
  */
 @Slf4j
+@AllArgsConstructor
 public class McScriptEngine implements Runnable {
     private McScript mcScript;
-
-    public McScriptEngine(McScript mcScript) {
-        this.mcScript = mcScript;
-    }
 
     public Object executeScript() throws McScriptException, ScriptException, FileNotFoundException {
         if (!mcScript.isValid()) {

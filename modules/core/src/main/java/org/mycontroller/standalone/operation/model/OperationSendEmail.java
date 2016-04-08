@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @Slf4j
+@NoArgsConstructor
 public class OperationSendEmail extends Operation {
     public static final String EMAIL_TEMPLATE_RULE = "../conf/templates/emailTemplateAlarm.html";
 
@@ -53,10 +55,6 @@ public class OperationSendEmail extends Operation {
 
     private String toEmailAddresses;
     private String emailSubject;
-
-    public OperationSendEmail() {
-
-    }
 
     public OperationSendEmail(OperationTable operationTable) {
         this.updateOperation(operationTable);

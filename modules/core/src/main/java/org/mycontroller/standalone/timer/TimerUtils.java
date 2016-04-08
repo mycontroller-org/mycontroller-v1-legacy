@@ -40,6 +40,8 @@ import org.mycontroller.standalone.settings.LocationSettings;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,11 +49,8 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TimerUtils {
-
-    private TimerUtils() {
-
-    }
 
     public static Date sunriseTime;
     public static Date sunsetTime;

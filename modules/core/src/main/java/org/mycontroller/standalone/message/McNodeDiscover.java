@@ -23,6 +23,7 @@ import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,13 +31,10 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.2
  */
 @Slf4j
+@AllArgsConstructor
 public class McNodeDiscover implements Runnable {
 
     private int gatewayId;
-
-    public McNodeDiscover(int gatewayId) {
-        this.gatewayId = gatewayId;
-    }
 
     private void discoverNodes() {
         if (McMessageUtils.isDiscoverRunning(gatewayId)) {

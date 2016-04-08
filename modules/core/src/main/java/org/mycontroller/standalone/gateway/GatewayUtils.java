@@ -36,6 +36,8 @@ import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
 import org.mycontroller.standalone.gateway.serialport.MYCSerialPort;
 import org.mycontroller.standalone.model.ResourceModel;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -43,13 +45,10 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.2
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GatewayUtils {
 
     public static final String OS_ARCH_ARM = "arm";
-
-    private GatewayUtils() {
-
-    }
 
     public enum GATEWAY_TYPE {
         SERIAL("Serial"),

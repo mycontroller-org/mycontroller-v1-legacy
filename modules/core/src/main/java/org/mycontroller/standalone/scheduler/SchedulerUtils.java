@@ -36,6 +36,8 @@ import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
 import org.mycontroller.standalone.timer.jobs.TimerJob;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -43,15 +45,13 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SchedulerUtils {
     public static final String JOB_DATA = "job-data";
     public static final String SYSTEM_JOB_REF = "SYS_";
     public static final String TIMER_JOB_REF = "TIMER_";
     public static final String CRON_TRIGGER_REF = "_Cron_Trigger";
     private static final long FROM_TIME_DELAY = McUtils.ONE_SECOND;
-
-    private SchedulerUtils() {
-    }
 
     public static void startScheduler() {
         SundialJobScheduler.startScheduler();

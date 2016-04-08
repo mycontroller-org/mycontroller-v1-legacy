@@ -16,19 +16,17 @@
  */
 package org.mycontroller.standalone.exceptions;
 
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-
+@NoArgsConstructor
 public class McException extends Exception {
 
     /**  */
     private static final long serialVersionUID = 7453421272595510071L;
-
-    public McException() {
-
-    }
 
     public McException(String message) {
         super(message);

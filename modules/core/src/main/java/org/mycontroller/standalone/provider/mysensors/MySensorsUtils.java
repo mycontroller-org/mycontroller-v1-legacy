@@ -21,10 +21,14 @@ import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.exceptions.NodeIdException;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MySensorsUtils {
     public static final int NODE_ID_BROADCAST = 255;
     public static final int SENSOR_ID_BROADCAST = 255;
@@ -34,10 +38,6 @@ public class MySensorsUtils {
     public static final String EMPTY_DATA = "";
     public static final int NODE_ID_MIN = 1;
     public static final int NODE_ID_MAX = 254;
-
-    private MySensorsUtils() {
-
-    }
 
     public static String getMetricType() {
         if (AppProperties.getInstance().getControllerSettings().getUnitConfig() != null) {

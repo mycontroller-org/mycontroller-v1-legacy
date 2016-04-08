@@ -21,6 +21,8 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.mycontroller.standalone.AppProperties;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -28,13 +30,10 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EmailUtils {
 
     private static HtmlEmail email = null;
-
-    private EmailUtils() {
-
-    }
 
     public static void sendSimpleEmail(String emails, String subject, String message) throws EmailException {
         initializeEmail();

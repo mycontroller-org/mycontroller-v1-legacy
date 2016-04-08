@@ -26,18 +26,19 @@ import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.scripts.api.McScriptApi;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class McScriptEngineUtils {
     private static ScriptEngineManager scriptEngineManager = null;
     public static final String MC_API = "mcApi";
     public static final String MC_SCRIPT_RESULT = "mcResult";
-
-    private McScriptEngineUtils() {
-
-    }
 
     public static synchronized ScriptEngineManager getScriptEngineManager() {
         if (scriptEngineManager == null) {

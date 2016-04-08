@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,15 +45,12 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @Slf4j
+@NoArgsConstructor
 public class OperationExecuteScript extends Operation {
 
     public static final String KEY_SCRIPT_FILE = "scriptFile";
 
     private String scriptFile;
-
-    public OperationExecuteScript() {
-
-    }
 
     public OperationExecuteScript(OperationTable operationTable) {
         this.updateOperation(operationTable);
