@@ -24,6 +24,7 @@ import org.mycontroller.standalone.api.OperationApi;
 import org.mycontroller.standalone.api.RuleApi;
 import org.mycontroller.standalone.api.SensorApi;
 import org.mycontroller.standalone.api.TimerApi;
+import org.mycontroller.standalone.api.UidTagApi;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -39,6 +40,7 @@ public class ActionApi {
     private BackupApi backupApi = new BackupApi();
     private OperationApi operationApi = new OperationApi();
     private RuleApi ruleApi = new RuleApi();
+    private UidTagApi uidTagApi = new UidTagApi();
 
     public SensorApi sensor() {
         return sensorApi;
@@ -70,6 +72,10 @@ public class ActionApi {
 
     public RuleApi rule() {
         return ruleApi;
+    }
+
+    public UidTagApi uidTag() {
+        return uidTagApi;
     }
 
 }

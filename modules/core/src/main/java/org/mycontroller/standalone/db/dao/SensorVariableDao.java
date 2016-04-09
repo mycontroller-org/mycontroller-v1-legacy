@@ -39,5 +39,5 @@ public interface SensorVariableDao extends BaseDao<SensorVariable, Integer> {
 
     SensorVariable get(Integer sensorRefId, MESSAGE_TYPE_SET_REQ variableType);
 
-    List<Integer> getSensorVariableIds(Integer sensorRefId);
+    List<Integer> getSensorVariableIds(Integer sId);
 }

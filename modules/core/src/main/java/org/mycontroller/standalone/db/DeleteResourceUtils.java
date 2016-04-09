@@ -108,7 +108,7 @@ public class DeleteResourceUtils {
         DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.SENSOR, sensor.getId());
 
         //Delete UID tags
-        DaoUtils.getUidTagDao().deleteBySensorRefId(sensor.getId());
+        DaoUtils.getUidTagDao().deleteBySensorId(sensor.getId());
 
         //Delete Sensor
         DaoUtils.getSensorDao().delete(sensor);

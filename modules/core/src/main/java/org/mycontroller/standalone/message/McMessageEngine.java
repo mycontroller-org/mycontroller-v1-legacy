@@ -759,8 +759,8 @@ public class McMessageEngine implements Runnable {
             if (sensor.getType() != null
                     && sensor.getType() != null
                     && sensor.getType() == MESSAGE_TYPE_PRESENTATION.S_CUSTOM
-                    && sensorVariable.getVariableType() == MESSAGE_TYPE_SET_REQ.V_VAR5) {
-                ExecuteUidTag executeUidTag = new ExecuteUidTag(sensor, sensorVariable);
+                    && sensorVariable.getVariableType() == MESSAGE_TYPE_SET_REQ.V_ID) {
+                ExecuteUidTag executeUidTag = new ExecuteUidTag(sensorVariable);
                 new Thread(executeUidTag).start();
             }
         }

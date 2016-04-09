@@ -218,8 +218,8 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
     }
 
     @Override
-    public List<Integer> getSensorVariableIds(Integer sensorRefId) {
-        List<SensorVariable> variables = this.getAllBySensorId(sensorRefId);
+    public List<Integer> getSensorVariableIds(Integer sId) {
+        List<SensorVariable> variables = this.getAllBySensorId(sId);
         List<Integer> ids = new ArrayList<Integer>();
         //TODO: should modify by query (RAW query)
         for (SensorVariable sensorVariable : variables) {
