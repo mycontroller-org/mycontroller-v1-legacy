@@ -292,9 +292,7 @@ public class McUtils {
                 addFileToZip(file, zos, removePrefix);
                 continue;
             }
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Writing '{}' to zip file", file.getAbsolutePath());
-            }
+            _logger.debug("Writing '{}' to zip file", file.getAbsolutePath());
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
             zos.putNextEntry(new ZipEntry(file.getCanonicalPath().replace(removePrefix, "")));
 
@@ -311,9 +309,7 @@ public class McUtils {
         directoryName = FileUtils.getFile(directoryName).getCanonicalPath();
         File directory = FileUtils.getFile(directoryName);
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFileName));
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Creating: {}", zipFileName);
-        }
+        _logger.debug("Creating: {}", zipFileName);
         addFileToZip(directory, zos, directoryName);
         zos.close();
     }

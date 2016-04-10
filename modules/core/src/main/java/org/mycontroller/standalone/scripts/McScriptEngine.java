@@ -62,22 +62,16 @@ public class McScriptEngine implements Runnable {
         if (result == null) {
             result = engine.get(McScriptEngineUtils.MC_SCRIPT_RESULT);
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Script result:[{}], {}", result, mcScript);
-        }
+        _logger.debug("Script result:[{}], {}", result, mcScript);
         return result;
     }
 
     @Override
     public void run() {
         try {
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Script execution started for ", mcScript);
-            }
+            _logger.debug("Script execution started for ", mcScript);
             executeScript();
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Script execution completed for ", mcScript);
-            }
+            _logger.debug("Script execution completed for ", mcScript);
         } catch (Exception ex) {
             _logger.error("Error,", ex);
         }

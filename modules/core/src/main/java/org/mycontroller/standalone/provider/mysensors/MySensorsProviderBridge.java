@@ -41,9 +41,7 @@ public class MySensorsProviderBridge implements IProviderBridge {
             _logger.error("This is not MySensors message! McMessage:{}", mcMessage);
         }
         try {
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("McMessage about to send to gateway: [{}]", mcMessage);
-            }
+            _logger.debug("McMessage about to send to gateway: [{}]", mcMessage);
             McMessageUtils.sendToGateway(new MySensorsRawMessage(mcMessage).getRawMessage());
         } catch (RawMessageException ex) {
             _logger.error("Unable to process this McMessage:{}", mcMessage, ex);
@@ -56,9 +54,7 @@ public class MySensorsProviderBridge implements IProviderBridge {
             _logger.error("This is not MySensors message! RawMessage:{}", rawMessage);
         }
         try {
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Received raw message: [{}]", rawMessage);
-            }
+            _logger.debug("Received raw message: [{}]", rawMessage);
             McMessageUtils.sendToMcMessageEngine(new MySensorsRawMessage(rawMessage).getMcMessage());
         } catch (RawMessageException ex) {
             _logger.error("Unable to process this rawMessage:{}", rawMessage, ex);

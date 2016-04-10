@@ -50,9 +50,7 @@ public class McConditionString extends McRuleBase {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Actual value:{}", actualValue);
-        }
+        _logger.debug("Actual value:{}", actualValue);
 
         switch (rdString.getOperator()) {
             case CONTAINS:
@@ -126,9 +124,7 @@ public class McConditionString extends McRuleBase {
                 return false;
         }
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

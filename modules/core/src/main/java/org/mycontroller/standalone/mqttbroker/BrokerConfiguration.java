@@ -65,33 +65,25 @@ public class BrokerConfiguration implements IConfig {
 
         m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
         m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Properties:[{}]", m_properties);
-        }
+        _logger.debug("Properties:[{}]", m_properties);
     }
 
     @Override
     public void setProperty(String name, String value) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Set property [name:{}, value:{}]", name, value);
-        }
+        _logger.debug("Set property [name:{}, value:{}]", name, value);
         m_properties.setProperty(name, value);
     }
 
     @Override
     public String getProperty(String name) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Get property [name:{}, value:{}]", name, m_properties.getProperty(name));
-        }
+        _logger.debug("Get property [name:{}, value:{}]", name, m_properties.getProperty(name));
         return m_properties.getProperty(name);
     }
 
     @Override
     public String getProperty(String name, String defaultValue) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Get property with default value [name:{}, value:{}, defaultValue:{}]", name,
-                    m_properties.getProperty(name), defaultValue);
-        }
+        _logger.debug("Get property with default value [name:{}, value:{}, defaultValue:{}]", name,
+                m_properties.getProperty(name), defaultValue);
         return m_properties.getProperty(name, defaultValue);
     }
 

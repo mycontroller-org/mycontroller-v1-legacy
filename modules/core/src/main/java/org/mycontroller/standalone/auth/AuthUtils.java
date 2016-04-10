@@ -109,14 +109,10 @@ public class AuthUtils {
     }
 
     public static boolean authenticateMqttUser(String aUsername, String aPassword) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("MQTT authentication: User:{}", aUsername);
-        }
+        _logger.debug("MQTT authentication: User:{}", aUsername);
         User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("User Found...User:{}", user);
-            }
+            _logger.debug("User Found...User:{}", user);
             if (user.getPassword().equals(aPassword)) {
                 user.setPassword(null);
                 if (isSuperAdmin(user) || hasPermission(user, PERMISSION_TYPE.MQTT_USER)) {
@@ -125,14 +121,10 @@ public class AuthUtils {
                 _logger.warn("User[{}] does not have MQTT access permission!", user.getUsername());
                 return false;
             }
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Invalid password for the user: {}", user.getUsername());
-            }
+            _logger.debug("Invalid password for the user: {}", user.getUsername());
             return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("user[{}] not found!", aUsername);
-        }
+        _logger.debug("user[{}] not found!", aUsername);
         return false;
     }
 }

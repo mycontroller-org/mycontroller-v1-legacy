@@ -502,9 +502,7 @@ public class McMessageUtils {
         try {
             if (McObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
                 McObjectManager.getGateway(rawMessage.getGatewayId()).write(rawMessage);
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Message sent to gateway, {}", rawMessage);
-                }
+                _logger.debug("Message sent to gateway, {}", rawMessage);
             } else {
                 _logger.error("Message sending failed, Selected gateway not available! {}, {}",
                         rawMessage, GatewayUtils.getGateway(rawMessage.getGatewayId()));

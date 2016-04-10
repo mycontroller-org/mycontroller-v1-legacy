@@ -73,9 +73,7 @@ public class McConditionScript extends McRuleBase {
             rdScript.setEnabled(false);
         }
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }
