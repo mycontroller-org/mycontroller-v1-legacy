@@ -176,7 +176,6 @@ public class MetricApi {
         for (SensorVariable sVariable : sVariables) {
             if (sVariable.getValue() != null) {
                 value = McUtils.round(McUtils.getDouble(sVariable.getValue()) / upperLimit, 2);
-
                 mcHeatMap.add(McHeatMap.builder()
                         .id(sVariable.getId().longValue())
                         .altId(sVariable.getSensor().getId().longValue())

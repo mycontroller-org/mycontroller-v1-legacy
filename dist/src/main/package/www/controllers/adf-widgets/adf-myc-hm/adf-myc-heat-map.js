@@ -136,11 +136,11 @@ angular.module('adf.widget.myc-heat-map', [])
     var mycHeatMapEdit = this;
     mycHeatMapEdit.cs = CommonServices;
 
-    var generalColorPattern = ['#21781f', '#3f9c35', '#57a8d4', '#F9D67A', '#EC7A08', '#CC0000', '#F00'];
-    var statusColorPattern = ['#C00', '#808080', '#3f9c35'];
+    var generalColorPattern = ['#21781F', '#3F9C35', '#57A8D4', '#F9D67A', '#EC7A08', '#CC0000', '#F00'];
     var generalThresholds = [0.1, 0.3, 0.5, 0.7, 0.8, 0.9];
-    var statusThresholds = [0.1, 0.5, 0.9];
     var generalLabels = ['< 10%', '10-30%', '30-50%', '50-70%', '70-80%', '80-90%', '> 90%'];
+    var statusColorPattern = ['#C00', '#808080', '#3F9C35'];
+    var statusThresholds = [0.4, 0.6];
     var statusLabels = ['Down', 'Unavailable', 'Up'];
 
     //Change data type
