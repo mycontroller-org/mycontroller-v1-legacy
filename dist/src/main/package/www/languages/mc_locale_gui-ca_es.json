@@ -392,7 +392,7 @@
     "RETAIN_MAX": "Mantenir la màxima #",
     "RETENTION_DIALOG_CONFIRMATION_MSG": "You are about to change metrics data retention settings.<br>This action may lead data loss. Read user manual for further details.<br>It is highly recommend a system backup before moving forward!",
     "RETENTION_DIALOG_TITLE": "Llegeixi atentament abans de seguir endavant",
-    "RETRY_FREQUENCY": "Retry frequency (seconds)",
+    "RETRY_FREQUENCY": "Freqüència de reintents (segons)",
     "ROLES": "Rols",
     "ROLES_DETAIL": "Detall de rols",
     "ROOM": "Sala",
