@@ -53,9 +53,7 @@ public class McConditionThreshold extends McRuleBase {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Actual value:{}", actualValue);
-        }
+        _logger.debug("Actual value:{}", actualValue);
         String thresholdValue = null;
 
         //Get threshold value
@@ -110,9 +108,7 @@ public class McConditionThreshold extends McRuleBase {
                 _logger.warn("Operater[{}] not supported!", rdThreshold.getOperator());
                 return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

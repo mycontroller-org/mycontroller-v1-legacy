@@ -242,9 +242,7 @@ public class McServerScriptFileUtils {
                     + mcScript.getName() + "." + mcScript.getExtension();
         }
         FileUtils.writeStringToFile(FileUtils.getFile(fileFullPath), (String) mcScript.getData(), false);
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Write success! File:{}", fileFullPath);
-        }
+        _logger.debug("Write success! File:{}", fileFullPath);
     }
 
     private static boolean isInScope(String scopeLocation, String fileFullPath) throws IOException {

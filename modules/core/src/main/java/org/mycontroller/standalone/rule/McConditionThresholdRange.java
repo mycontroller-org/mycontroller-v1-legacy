@@ -54,9 +54,7 @@ public class McConditionThresholdRange extends McRuleBase {
 
         Double avDouble = McUtils.getDouble(actualValue);
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Actual value:{}", actualValue);
-        }
+        _logger.debug("Actual value:{}", actualValue);
 
         if (rdThRange.isIncludeOperatorLow() && rdThRange.isIncludeOperatorHigh()) {
             if (avDouble >= rdThRange.getThresholdLow() && avDouble <= rdThRange.getThresholdHigh()) {
@@ -96,9 +94,7 @@ public class McConditionThresholdRange extends McRuleBase {
             return false;
         }
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

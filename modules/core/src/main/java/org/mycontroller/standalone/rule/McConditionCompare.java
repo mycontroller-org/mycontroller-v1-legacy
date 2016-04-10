@@ -54,15 +54,11 @@ public class McConditionCompare extends McRuleBase {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Actual value:{}, data2Value:{}", actualValue, date2ValueString);
-        }
+        _logger.debug("Actual value:{}, data2Value:{}", actualValue, date2ValueString);
         //If either value is NULL cannot execute
         if (actualValue == null || date2ValueString == null) {
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("compare can not be executed with NULL. actualValue:{}, date2ValueString:{}",
-                        actualValue, date2ValueString);
-            }
+            _logger.debug("compare can not be executed with NULL. actualValue:{}, date2ValueString:{}",
+                    actualValue, date2ValueString);
             return false;
         }
         double avDouble = McUtils.getDouble(actualValue);
@@ -106,9 +102,7 @@ public class McConditionCompare extends McRuleBase {
                 return false;
         }
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

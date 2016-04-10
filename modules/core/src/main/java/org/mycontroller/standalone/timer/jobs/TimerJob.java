@@ -52,9 +52,7 @@ public class TimerJob extends Job {
                 timerSimple.incrementExecutedCount();
                 timerSimple.update();
             }
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Operations going to execute:{}", timer.getOperations());
-            }
+            _logger.debug("Operations going to execute:{}", timer.getOperations());
             for (Operation operation : timer.getOperations()) {
                 try {
                     operation.execute(timer);

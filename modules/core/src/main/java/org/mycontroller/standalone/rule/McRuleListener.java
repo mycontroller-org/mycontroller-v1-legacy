@@ -30,9 +30,7 @@ public class McRuleListener implements RuleListener {
 
     @Override
     public void beforeExecute(Rule rule) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("About to execute the rule:{}", rule);
-        }
+        _logger.debug("About to execute the rule:{}", rule);
     }
 
     @Override
@@ -43,9 +41,7 @@ public class McRuleListener implements RuleListener {
 
     @Override
     public void onSuccess(Rule rule) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule executed successfully:{}", rule);
-        }
+        _logger.debug("Rule executed successfully:{}", rule);
     }
 
 }

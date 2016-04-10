@@ -64,9 +64,7 @@ public class BackupApi {
     }
 
     public String backupNow(String backupFilePrefix) throws McException, IOException {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Backup triggered.");
-        }
+        _logger.debug("Backup triggered.");
         return Backup.backup(backupFilePrefix);
     }
 

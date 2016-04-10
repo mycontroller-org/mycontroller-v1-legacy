@@ -50,10 +50,8 @@ public class MetricsAggregationBase {
             _logger.warn("Should create object with valid aggregation type!");
             return;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp,
-                    toTimestamp, aggregationType);
-        }
+        _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp,
+                toTimestamp, aggregationType);
         List<MetricsDoubleTypeDevice> variableIds = DaoUtils.getMetricsDoubleTypeDeviceDao()
                 .getAggregationRequiredVariableIds(sourceAggregationType, fromTimestamp, toTimestamp);
 
@@ -73,9 +71,7 @@ public class MetricsAggregationBase {
                             .sensorVariable(sensorVariable.getSensorVariable())
                             .timestampFrom(fromTimestamp)
                             .timestampTo(toTimestamp).build());
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Metrics:{}", metrics);
-            }
+            _logger.debug("Metrics:{}", metrics);
             //Calculate Metrics
             if (metrics.size() > 0) {
                 int samples = 0;
@@ -135,10 +131,8 @@ public class MetricsAggregationBase {
             _logger.warn("Should create object with valid aggregation type!");
             return;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp,
-                    toTimestamp, aggregationType);
-        }
+        _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp,
+                toTimestamp, aggregationType);
 
         List<MetricsBatteryUsage> nodeIds = DaoUtils.getMetricsBatteryUsageDao()
                 .getAggregationRequiredNodeIds(sourceAggregationType, fromTimestamp, toTimestamp);
@@ -159,9 +153,7 @@ public class MetricsAggregationBase {
                             .node(node.getNode())
                             .timestampFrom(fromTimestamp)
                             .timestampTo(toTimestamp).build());
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Metrics:{}", metrics);
-            }
+            _logger.debug("Metrics:{}", metrics);
             //Calculate Metrics
             if (metrics.size() > 0) {
                 int samples = 0;
@@ -217,10 +209,8 @@ public class MetricsAggregationBase {
 
     private void executeBucketByBucket(AGGREGATION_TYPE aggregationType, AGGREGATION_TYPE sourceAggregationType,
             Long fromTimestamp, Long toTimestamp, Long bucketDuration) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Aggregation Type:{}, FromTime:{}, ToTime:{}, bucketDuration:{}", aggregationType, new Date(
-                    fromTimestamp), new Date(toTimestamp), McUtils.getFriendlyTime(bucketDuration, true));
-        }
+        _logger.debug("Aggregation Type:{}, FromTime:{}, ToTime:{}, bucketDuration:{}", aggregationType, new Date(
+                fromTimestamp), new Date(toTimestamp), McUtils.getFriendlyTime(bucketDuration, true));
 
         //Complete for all missed and current time
         while ((fromTimestamp + bucketDuration) <= toTimestamp) {
@@ -273,19 +263,17 @@ public class MetricsAggregationBase {
                 dataRetentionSettings.updateInternal();
                 dataRetentionSettings = MetricsDataRetentionSettings.get();
                 AppProperties.getInstance().setMetricsDataRetentionSettings(dataRetentionSettings);
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug(
-                            "Metrics settings update successfully! New referances, Last aggregation:[Raw:{}, "
-                                    + "OneMinute:{}, FiveMinute:{}, "
-                                    + "OneHour:{}, SixHours:{}, TwelveHours:{}, OneDay:{}]",
-                            dataRetentionSettings.getLastAggregationRawData(),
-                            dataRetentionSettings.getLastAggregationOneMinute(),
-                            dataRetentionSettings.getLastAggregationFiveMinutes(),
-                            dataRetentionSettings.getLastAggregationOneHour(),
-                            dataRetentionSettings.getLastAggregationSixHours(),
-                            dataRetentionSettings.getLastAggregationTwelveHours(),
-                            dataRetentionSettings.getLastAggregationOneDay());
-                }
+                _logger.debug(
+                        "Metrics settings update successfully! New referances, Last aggregation:[Raw:{}, "
+                                + "OneMinute:{}, FiveMinute:{}, "
+                                + "OneHour:{}, SixHours:{}, TwelveHours:{}, OneDay:{}]",
+                        dataRetentionSettings.getLastAggregationRawData(),
+                        dataRetentionSettings.getLastAggregationOneMinute(),
+                        dataRetentionSettings.getLastAggregationFiveMinutes(),
+                        dataRetentionSettings.getLastAggregationOneHour(),
+                        dataRetentionSettings.getLastAggregationSixHours(),
+                        dataRetentionSettings.getLastAggregationTwelveHours(),
+                        dataRetentionSettings.getLastAggregationOneDay());
             } else {
                 _logger.warn("metricsSettings is null cannot update");
             }
@@ -302,10 +290,8 @@ public class MetricsAggregationBase {
             _logger.warn("Already a aggregation is running. Cannot run now!");
             return;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Data retention settings:{}", AppProperties.getInstance()
-                    .getMetricsDataRetentionSettings());
-        }
+        _logger.debug("Data retention settings:{}", AppProperties.getInstance()
+                .getMetricsDataRetentionSettings());
         try {
             //set aggregation started
             setAggregationRunning(true);
