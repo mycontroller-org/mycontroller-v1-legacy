@@ -324,6 +324,7 @@
     "NO_SCRIPTS_SETUP": "No scripts set up.",
     "NO_SENSORS_SETUP": "No hay sensores configurados.",
     "NO_TIMERS_SETUP": "No hay temporizadores configurados.",
+    "NO_UID_TAGS_SETUP": "No UID tags setup.",
     "OCCURRENCES": "Ocurrencias",
     "OFF": "OFF",
     "ON": "ON",
