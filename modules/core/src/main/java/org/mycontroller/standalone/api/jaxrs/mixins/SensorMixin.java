@@ -21,7 +21,7 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.SensorTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorTypeSerializer;
-import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorVariableSerializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorVariablesSerializer;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -43,7 +43,7 @@ abstract class SensorMixin {
     public abstract void setType(MESSAGE_TYPE_PRESENTATION type);
 
     @JsonGetter(value = "variables")
-    @JsonSerialize(using = SensorVariableSerializer.class)
+    @JsonSerialize(using = SensorVariablesSerializer.class)
     public abstract List<SensorVariableJson> getIdforVariables();
 
 }

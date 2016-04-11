@@ -285,12 +285,13 @@ myControllerModule.factory('ForwardPayloadFactory', function ($resource) {
   })
 });
 
-//ForwardPayload Services
-myControllerModule.factory('UidTagFactory', function ($resource) {
-  return $resource('/mc/rest/uidtag/:id', {id: '@id'}, {
-    getAll: { method: 'GET', isArray: true},
-    create: { method: 'POST'},
-    delete: { method: 'DELETE'}
+//UidTags Services
+myControllerModule.factory('UidTagsFactory', function ($resource) {
+  return $resource('/mc/rest/uidtags/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null}},
+    create: { method: 'POST', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    update: { method: 'PUT', params: {id: null}},
   })
 });
 

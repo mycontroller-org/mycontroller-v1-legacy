@@ -18,12 +18,14 @@ package org.mycontroller.standalone.api;
 
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.UidTag;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McDuplicateException;
+import org.mycontroller.standalone.model.ResourceModel;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -57,33 +59,41 @@ public class UidTagApi {
     public void update(UidTag uidTag) throws McDuplicateException, McBadRequestException {
         UidTag availabilityCheck = DaoUtils.getUidTagDao().getById(uidTag.getId());
         if (availabilityCheck != null) {
-            UidTag uidAvailabilityCheck = DaoUtils.getUidTagDao().getByUId(availabilityCheck.getUid());
-            if (!uidAvailabilityCheck.getId().equals(availabilityCheck.getId())) {
-                throw new McDuplicateException("This UID[" + uidTag.getUid()
-                        + "] tagged with another sensor variable["
-                        + availabilityCheck.getSensorVariable().toString() + "].");
+            UidTag uidAvailabilityCheck = DaoUtils.getUidTagDao().getByUId(uidTag.getUid());
+            if (uidAvailabilityCheck != null && !uidAvailabilityCheck.getId().equals(availabilityCheck.getId())) {
+                throw new McDuplicateException(
+                        "This UID["
+                                + uidTag.getUid()
+                                + "] tagged with another sensor variable["
+                                + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck
+                                        .getSensorVariable()).getResourceLessDetails() + "].");
             }
             UidTag svAvailabilityCheck = DaoUtils.getUidTagDao().getBySensorVariableId(
-                    availabilityCheck.getSensorVariable().getId());
-            if (!svAvailabilityCheck.getId().equals(availabilityCheck.getId())) {
+                    uidTag.getSensorVariable().getId());
+            if (svAvailabilityCheck != null && !svAvailabilityCheck.getId().equals(availabilityCheck.getId())) {
                 throw new McDuplicateException("This sensor variable["
-                        + availabilityCheck.getSensorVariable().toString() + "] tagged with another UID["
+                        + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck
+                                .getSensorVariable()).getResourceLessDetails() + "] tagged with another UID["
                         + uidTag.getUid() + "] .");
             }
+        } else {
+            throw new McBadRequestException("Selected entry not available!");
         }
         DaoUtils.getUidTagDao().update(uidTag);
     }
 
     public void add(UidTag uidTag) throws McDuplicateException {
-        UidTag availabilityCheck = DaoUtils.getUidTagDao().getById(uidTag.getUid());
+        UidTag availabilityCheck = DaoUtils.getUidTagDao().getByUId(uidTag.getUid());
         if (availabilityCheck != null) {
             throw new McDuplicateException("This UID[" + uidTag.getUid() + "] tagged with another sensor variable["
-                    + availabilityCheck.getSensorVariable().toString() + "].");
+                    + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck
+                            .getSensorVariable()).getResourceLessDetails() + "].");
         }
         availabilityCheck = DaoUtils.getUidTagDao().getBySensorVariableId(uidTag.getSensorVariable().getId());
         if (availabilityCheck != null) {
             throw new McDuplicateException("This sensor variable["
-                    + availabilityCheck.getSensorVariable().toString() + "] tagged with another UID["
+                    + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck
+                            .getSensorVariable()).getResourceLessDetails() + "] tagged with another UID["
                     + uidTag.getUid() + "] .");
         }
         DaoUtils.getUidTagDao().create(uidTag);

@@ -52,20 +52,21 @@ public class SensorVariableJson {
     }
 
     public SensorVariableJson(SensorVariable sensorVariable) {
-        this.id = sensorVariable.getId();
+        id = sensorVariable.getId();
         if (sensorVariable.getVariableType() != null) {
-            this.type = LocaleString.builder().en(sensorVariable.getVariableType().getText())
+            type = LocaleString.builder().en(sensorVariable.getVariableType().getText())
                     .locale(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name())).build();
         }
         if (sensorVariable.getMetricType() != null) {
-            this.metricType = sensorVariable.getMetricType().getText();
+            metricType = sensorVariable.getMetricType().getText();
         }
-        this.unit = sensorVariable.getUnit();
-        this.value = sensorVariable.getValue();
-        this.friendlyValue = SensorUtils.getValue(sensorVariable);
-        this.timestamp = sensorVariable.getTimestamp();
-        this.sensorName = sensorVariable.getSensor().getName();
-        this.resourceName = new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails();
+        unit = sensorVariable.getUnit();
+        value = sensorVariable.getValue();
+        friendlyValue = SensorUtils.getValue(sensorVariable);
+        timestamp = sensorVariable.getTimestamp();
+        sensorName = sensorVariable.getSensor().getName();
+        resourceName = new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails();
+
     }
 
 }

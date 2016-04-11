@@ -42,7 +42,9 @@ import org.mycontroller.standalone.db.tables.ResourcesLogs;
 import org.mycontroller.standalone.db.tables.Role;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.db.tables.UidTag;
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.operation.model.Operation;
@@ -95,6 +97,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(Timer.class, TimerMixin.class);
         mapper.addMixIn(User.class, UserMixin.class);
         mapper.addMixIn(McScript.class, McScriptMixin.class);
+        mapper.addMixIn(SensorVariable.class, SensorVariableMixin.class);
 
         if (_logger.isDebugEnabled()) {
             _logger.debug("Response: Headers:{}", httpHeaders);
@@ -126,6 +129,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(Timer.class, TimerMixin.class);
         mapper.addMixIn(User.class, UserMixin.class);
         mapper.addMixIn(McScript.class, McScriptMixin.class);
+        mapper.addMixIn(UidTag.class, UidTagMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
 

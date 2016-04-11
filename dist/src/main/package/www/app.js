@@ -321,6 +321,20 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       data: {
         requireLogin: true
       }
+    }).state('uidTagsList', {
+      url:"/resources/uidtags/list",
+      templateUrl: "partials/uid-tags/uid-tags-list.html",
+      controller: "UidTagsController",
+       data: {
+        requireLogin: true
+      }
+    }).state('uidTagsAddEdit', {
+      url:"/resources/uidtags/addedit/:id",
+      templateUrl: "partials/uid-tags/uid-tags-add-edit.html",
+      controller: "UidTagsControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
     })
 
 

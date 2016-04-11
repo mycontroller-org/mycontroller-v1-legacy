@@ -17,8 +17,13 @@
 package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
+import org.mycontroller.standalone.db.ComparatorSensorVariable;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -30,15 +35,27 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-public class SensorVariableSerializer extends JsonSerializer<SensorVariable> {
+public class SensorVariablesSerializer extends JsonSerializer<Integer> {
 
     @Override
-    public void serialize(SensorVariable sensorVariable, JsonGenerator jgen, SerializerProvider provider)
+    public void serialize(Integer id, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonProcessingException {
-        if (sensorVariable != null) {
-            jgen.writeObject(new SensorVariableJson(sensorVariable));
+
+        if (id != null) {
+            List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(id);
+
+            //Sort by defined order
+            Collections.sort(sensorVariables, new ComparatorSensorVariable());
+
+            List<SensorVariableJson> variables = new ArrayList<SensorVariableJson>();
+            for (SensorVariable sensorVariable : sensorVariables) {
+                variables.add(new SensorVariableJson(sensorVariable));
+            }
+            jgen.writeObject(variables);
         } else {
             jgen.writeNull();
         }
+
     }
+
 }

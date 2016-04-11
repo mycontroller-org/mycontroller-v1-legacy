@@ -51,7 +51,7 @@ public class UidTag {
     private Integer uid;
 
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE,
-            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
+            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 5)
     private SensorVariable sensorVariable;
 
 }

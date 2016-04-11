@@ -27,6 +27,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -47,7 +48,7 @@ import org.mycontroller.standalone.exceptions.McDuplicateException;
  * @since 0.0.1
  */
 
-@Path("/rest/uidtag")
+@Path("/rest/uidtags")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "Admin" })
@@ -57,16 +58,16 @@ public class UidTagHandler {
     @GET
     @Path("/")
     public Response getAll(
-            @QueryParam(UidTag.KEY_UID) Integer uid,
-            @QueryParam(UidTag.KEY_SENSOR_VARIABLE) Integer sVariableId,
+            @QueryParam(UidTag.KEY_UID) List<Integer> uids,
+            @QueryParam(UidTag.KEY_SENSOR_VARIABLE) List<Integer> sVariableIds,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
             @QueryParam(Query.ORDER) String order) {
         HashMap<String, Object> filters = new HashMap<String, Object>();
 
-        filters.put(UidTag.KEY_UID, uid);
-        filters.put(UidTag.KEY_SENSOR_VARIABLE, sVariableId);
+        filters.put(UidTag.KEY_UID, uids);
+        filters.put(UidTag.KEY_SENSOR_VARIABLE, sVariableIds);
 
         QueryResponse queryResponse = uidTagApi.getAll(
                 Query.builder()
@@ -77,6 +78,12 @@ public class UidTagHandler {
                         .page(page != null ? page : 1L)
                         .build());
         return RestUtils.getResponse(Status.OK, queryResponse);
+    }
+
+    @GET
+    @Path("/{id}")
+    public Response get(@PathParam("id") Integer id) {
+        return RestUtils.getResponse(Status.OK, uidTagApi.get(id));
     }
 
     @PUT

@@ -173,7 +173,6 @@
     <script src="controllers/settings.js"></script>
     <script src="controllers/resources-logs.js"></script>
     <script src="controllers/forward-payload.js"></script>
-    <script src="controllers/uidTag.js"></script>
     <script src="controllers/firmwares.js"></script>
     <script src="controllers/status.js"></script>
     <script src="controllers/rawMessage.js"></script>
@@ -184,6 +183,7 @@
     <script src="controllers/roles.js"></script>
     <script src="controllers/backup.js"></script>
     <script src="controllers/rooms.js"></script>
+    <script src="controllers/uid-tags.js"></script>
 
 
   </head>
@@ -272,6 +272,7 @@
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>{{ 'GROUPS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rooms') == 0 }"><a ui-sref="roomsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('uidTags') == 0 }"><a ui-sref="uidTagsList"><i class="fa fa-tags fa-lg"></i> {{ 'UID_TAGS' | translate }}</a></li>
             </ul>
           </li>
           <!-- Action Board -->

@@ -63,7 +63,7 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, UidTag.KEY_UID);
+            return this.getQueryResponse(query, UidTag.KEY_ID);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
@@ -73,7 +73,7 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     @Override
     public UidTag getBySensorVariableId(Integer sVariableId) {
         List<UidTag> uidTags = super.getAll(UidTag.KEY_SENSOR_VARIABLE, sVariableId);
-        if (uidTags != null && uidTags.isEmpty()) {
+        if (uidTags != null && !uidTags.isEmpty()) {
             return uidTags.get(0);
         }
         return null;
@@ -82,7 +82,7 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     @Override
     public UidTag getByUId(Integer uid) {
         List<UidTag> uidTags = super.getAll(UidTag.KEY_UID, uid);
-        if (uidTags != null && uidTags.isEmpty()) {
+        if (uidTags != null && !uidTags.isEmpty()) {
             return uidTags.get(0);
         }
         return null;
