@@ -41,7 +41,7 @@ public class SMSUtils {
     private static TwilioClient twilioClient = null;
     private static PlivoClient plivoClient = null;
 
-    public static synchronized void sendSmsPlivo(String toPhoneNumbers, String message) {
+    private static void sendSmsPlivo(String toPhoneNumbers, String message) {
         if (plivoClient == null) {
             try {
                 plivoClient = new PlivoClientImpl(
@@ -72,7 +72,7 @@ public class SMSUtils {
     }
 
     //Refer: https://github.com/twilio/twilio-java
-    public static synchronized void sendSmsTwilio(String toPhoneNumbers, String message) {
+    private static void sendSmsTwilio(String toPhoneNumbers, String message) {
         if (twilioClient == null) {
             try {
                 twilioClient = new TwilioClientImpl(

@@ -72,6 +72,7 @@ public class SensorHandler extends AccessEngine {
             @QueryParam(Sensor.KEY_TYPE) String type,
             @QueryParam(Sensor.KEY_SENSOR_ID) List<Integer> sensorId,
             @QueryParam(Sensor.KEY_NAME) List<String> name,
+            @QueryParam(Sensor.KEY_ROOM_ID) List<Integer> roomId,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
@@ -81,6 +82,7 @@ public class SensorHandler extends AccessEngine {
 
         filters.put(Sensor.KEY_TYPE, MESSAGE_TYPE_PRESENTATION.fromString(type));
         filters.put(Sensor.KEY_SENSOR_ID, sensorId);
+        filters.put(Sensor.KEY_ROOM_ID, roomId);
         filters.put(Sensor.KEY_NAME, name);
 
         //If nodeName or nodeEui is not null, fetch nodeIds

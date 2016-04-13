@@ -19,11 +19,15 @@ package org.mycontroller.standalone.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.mail.EmailException;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
+import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.operation.OperationUtils;
+import org.mycontroller.standalone.operation.PushbulletUtils;
+import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.operation.model.Operation;
 
 /**
@@ -86,6 +90,18 @@ public class OperationApi {
             operationTable.setEnabled(false);
             DaoUtils.getOperationDao().update(operationTable);
         }
+    }
+
+    public void sendSMS(String toPhoneNumbers, String message) {
+        SMSUtils.sendSMS(toPhoneNumbers, message);
+    }
+
+    public void sendEmail(String emails, String subject, String message) throws EmailException {
+        EmailUtils.sendSimpleEmail(emails, subject, message);
+    }
+
+    public void sendPushbulletNote(String idens, String title, String body) {
+        PushbulletUtils.sendNote(idens, title, body);
     }
 
 }
