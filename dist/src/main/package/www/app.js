@@ -49,6 +49,7 @@ var myControllerModule = angular.module('myController',[
   'adf.widget.myc-sensors-mixed-graph',
   'adf.widget.myc-sensors-bullet-graph',
   'adf.widget.myc-heat-map',
+  'adf.widget.myc-custom-buttons',
   'adf.widget.myc-dsi',
   'adf.widget.myc-time',
   'adf.widget.myc-sunrisetime',
@@ -562,10 +563,10 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
 
     //Show hide main menu
     $scope.showHideMainMenu = function () {
-      if(mchelper.user.hideMenu){
-        mchelper.user.hideMenu = false;
+      if(mchelper.userSettings.hideMenu){
+        mchelper.userSettings.hideMenu = false;
       }else{
-        mchelper.user.hideMenu = true;
+        mchelper.userSettings.hideMenu = true;
       }
       //Update mchelper
       CommonServices.saveMchelper(mchelper);
@@ -597,7 +598,11 @@ myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper,
         angular.element( document.querySelector( '#rootView' ) ).removeClass( "container-fluid top-buffer-m top-buffer-nm" );
     }else{
       angular.element( document.querySelector( '#rootId' ) ).removeClass( "login-pf" );
-      angular.element( document.querySelector( '#rootView' ) ).addClass( "container-fluid" );
+      if(!mchelper.userSettings.hideMenu){
+        angular.element( document.querySelector( '#rootView' ) ).addClass( "container-fluid top-buffer-m");
+      }else{
+        angular.element( document.querySelector( '#rootView' ) ).addClass( "container-fluid top-buffer-nm");
+      }
     }
     var requireLogin = toState.data.requireLogin;
     // redirect to login page if not logged in
@@ -642,6 +647,7 @@ myControllerModule.controller('LoginController',
                         mchelper.languages = langResponse;
                         SettingsFactory.getUserSettings(function(userNativeSettings){
                           mchelper.userSettings = userNativeSettings;
+                          mchelper.userSettings.hideMenu = false;
                           //Store all the configurations locally
                           CommonServices.saveMchelper(mchelper);
                         });
@@ -733,6 +739,12 @@ myControllerModule.filter('mcHtml', function($sce) {
        return $sce.trustAsHtml(htmlText);
        //return htmlText
     };
+});
+
+myControllerModule.filter('slice', function() {
+  return function(arr, start, end) {
+    return (arr || []).slice(start, end);
+  };
 });
 
 /**

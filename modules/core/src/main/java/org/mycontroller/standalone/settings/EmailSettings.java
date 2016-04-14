@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.settings;
 
 import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.auth.McCrypt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,12 +52,16 @@ public class EmailSettings {
     private String smtpPassword;
 
     public static EmailSettings get() {
+        String emailPassword = getValue(SKEY_SMTP_PASSWORD);
+        if (emailPassword != null) {
+            emailPassword = McCrypt.decrypt(emailPassword);
+        }
         return EmailSettings.builder().smtpHost(getValue(SKEY_SMTP_HOST))
                 .smtpPort(McUtils.getInteger(getValue(SKEY_SMTP_PORT)))
                 .fromAddress(getValue(SKEY_FROM_ADDRESS))
                 .enableSsl(McUtils.getBoolean(getValue(SKEY_ENABLE_SSL)))
                 .smtpUsername(getValue(SKEY_SMTP_USERNAME))
-                .smtpPassword(getValue(SKEY_SMTP_PASSWORD)).build();
+                .smtpPassword(emailPassword).build();
     }
 
     public void save() {
@@ -65,6 +70,9 @@ public class EmailSettings {
         updateValue(SKEY_FROM_ADDRESS, fromAddress);
         updateValue(SKEY_ENABLE_SSL, enableSsl);
         updateValue(SKEY_SMTP_USERNAME, smtpUsername);
+        if (smtpPassword != null) {
+            smtpPassword = McCrypt.encrypt(smtpPassword);
+        }
         updateValue(SKEY_SMTP_PASSWORD, smtpPassword);
     }
 

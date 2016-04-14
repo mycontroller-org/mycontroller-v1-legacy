@@ -73,7 +73,6 @@
         <thead>
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
           <th>{{ 'ENABLED' | translate }}</th>
-          <th>{{ 'ACCESS' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
           <th>{{ 'OPERATION' | translate }}</th>
           <th>{{ 'LAST_EXECUTION' | translate }}</th>
@@ -85,10 +84,6 @@
             <td class="text-center">
               <i ng-if="item.enabled" class="text-success fa fa-circle fa-lg" uib-tooltip="{{ 'ENABLED' | translate }}"></i>
               <i ng-if="!item.enabled" class="text-danger fa fa-circle-o fa-lg" uib-tooltip="{{ 'DISABLED' | translate }}"></i>
-            </td>
-             <td class="text-center">
-              <i ng-if="item.publicAccess" class="fa fa-users fa-lg" uib-tooltip="{{ 'PUBLIC' | translate }}"></i>
-              <i ng-if="!item.publicAccess" class="fa fa-user fa-lg" uib-tooltip="{{ 'PRIVATE' | translate }}"></i>
             </td>
             <td>{{item.name}}</td>
             <td ng-bind-html="item.operationString | mcResourceRepresentation"></td>

@@ -64,7 +64,6 @@ public class OperationHandler extends AccessEngine {
     @Path("/")
     public Response getAll(
             @QueryParam(OperationTable.KEY_NAME) List<String> name,
-            @QueryParam(OperationTable.KEY_PUBLIC_ACCESS) Boolean publicAccess,
             @QueryParam(OperationTable.KEY_TYPE) String type,
             @QueryParam(OperationTable.KEY_ENABLED) Boolean enabled,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
@@ -75,7 +74,6 @@ public class OperationHandler extends AccessEngine {
 
         filters.put(OperationTable.KEY_NAME, name);
         filters.put(OperationTable.KEY_TYPE, OPERATION_TYPE.fromString(type));
-        filters.put(OperationTable.KEY_PUBLIC_ACCESS, publicAccess);
         filters.put(OperationTable.KEY_ENABLED, enabled);
 
         QueryResponse queryResponse = operationApi.getAllRaw(

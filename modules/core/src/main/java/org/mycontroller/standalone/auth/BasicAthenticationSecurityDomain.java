@@ -38,7 +38,7 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
         User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
-            if (user.getPassword().equals(aPassword)) {
+            if (McCrypt.decrypt(user.getPassword()).equals(aPassword)) {
                 user.setPassword(null);
                 return user;
             }
@@ -72,7 +72,7 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
         User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
-            if (user.getPassword().equals(aPassword)) {
+            if (McCrypt.decrypt(user.getPassword()).equals(aPassword)) {
                 if (user.getPermission() != null && !user.getPermission().equalsIgnoreCase("MQTT user")) {
                     return true;
                 } else {

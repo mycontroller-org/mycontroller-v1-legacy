@@ -124,7 +124,6 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
         operation.setEnabled(node.get("enabled").asBoolean());
         operation.setName(node.get("name").asText());
         operation.setType(operationType);
-        operation.setPublicAccess(node.get("publicAccess").asBoolean());
         //operation.setUser(User.builder().id(node.get("user").get("id").intValue()).build());
         return operation;
     }

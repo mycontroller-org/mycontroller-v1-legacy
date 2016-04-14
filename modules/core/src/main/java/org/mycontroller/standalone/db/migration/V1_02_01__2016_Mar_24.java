@@ -136,8 +136,6 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
                                 .builder()
                                 .id(McUtils.getInteger(row.get(getColumnName(OperationTable.KEY_ID))))
                                 .name(row.get(getColumnName(OperationTable.KEY_NAME)))
-                                .publicAccess(
-                                        McUtils.getBoolean(row.get(getColumnName(OperationTable.KEY_PUBLIC_ACCESS))))
                                 .type(OPERATION_TYPE.valueOf(row.get(getColumnName(OperationTable.KEY_TYPE))))
                                 .user(User.builder()
                                         .id(McUtils.getInteger(row.get(getColumnName(OperationTable.KEY_USER_ID))))
@@ -249,7 +247,6 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
                                 .name(operationName)
                                 .enabled(true)
                                 .type(OPERATION_TYPE.SEND_PAYLOAD)
-                                .publicAccess(false)
                                 .user(getAdminUser())
                                 .properties(properties)
                                 .build());

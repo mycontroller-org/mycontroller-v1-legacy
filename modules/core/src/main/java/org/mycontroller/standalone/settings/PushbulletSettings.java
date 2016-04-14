@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.settings;
 
 import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.auth.McCrypt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,8 +53,12 @@ public class PushbulletSettings {
     private String imageUrl;
 
     public static PushbulletSettings get() {
+        String accessToken = getValue(SKEY_ACCESS_TOKEN);
+        if (accessToken != null) {
+            accessToken = McCrypt.decrypt(accessToken);
+        }
         return PushbulletSettings.builder()
-                .accessToken(getValue(SKEY_ACCESS_TOKEN))
+                .accessToken(accessToken)
                 .iden(getValue(SKEY_IDEN))
                 .active(McUtils.getBoolean(getValue(SKEY_ACTIVE)))
                 .name(getValue(SKEY_NAME))
@@ -62,6 +67,9 @@ public class PushbulletSettings {
     }
 
     public void save() {
+        if (accessToken != null) {
+            accessToken = McCrypt.encrypt(accessToken);
+        }
         updateValue(SKEY_ACCESS_TOKEN, accessToken);
     }
 

@@ -148,6 +148,7 @@
     <script src="controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js"></script>
     <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js"></script>
     <script src="controllers/adf-widgets/adf-myc-hm/adf-myc-heat-map.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-cb/adf-myc-custom-buttons.js"></script>
 
     <!-- Google api for maps: https://github.com/allenhwkim/angularjs-google-maps -->
     <script src="libs/angularjs-google-maps/ng-map.min.js"></script>
@@ -239,8 +240,8 @@
               <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }">
                 <a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user"></i> {{ 'PROFILE' | translate }}</a>
               </li>
-              <li ng-if="mchelper.user.hideMenu"><a href="" ng-click="showHideMainMenu()"><i class="fa fa-expand fa-lg"></i> {{ 'SHOW_MENU' | translate }}</a></li>
-              <li ng-if="!mchelper.user.hideMenu"><a href="" ng-click="showHideMainMenu()"><i class="fa fa-compress fa-lg"></i> {{ 'HIDE_MENU' | translate }}</a></li>
+              <li ng-if="mchelper.userSettings.hideMenu"><a href="" ng-click="showHideMainMenu()"><i class="fa fa-expand fa-lg"></i> {{ 'SHOW_MENU' | translate }}</a></li>
+              <li ng-if="!mchelper.userSettings.hideMenu"><a href="" ng-click="showHideMainMenu()"><i class="fa fa-compress fa-lg"></i> {{ 'HIDE_MENU' | translate }}</a></li>
               <li>
                 <a ui-sref="login"><i class="fa fa-sign-out fa-lg"></i> {{ 'LOG_OUT' | translate }}</a><!-- Logout Link -->
               </li>
@@ -249,7 +250,7 @@
         </ul>
 
         <!-- Main Menu (header type)-->
-        <ul ng-if="!mchelper.user.hideMenu" class="nav navbar-nav navbar-primary persistent-secondary">
+        <ul ng-if="!mchelper.userSettings.hideMenu" class="nav navbar-nav navbar-primary persistent-secondary">
           <!-- Dashboard -->
           <li ng-class="{ active: $state.current.url.indexOf('/dashboard') == 0 }">
             <a ui-sref="dashboard"><i class="fa fa-tachometer fa-lg"></i> {{ 'DASHBOARDS' | translate }}</a>
@@ -311,7 +312,7 @@
       </div><!-- /.navbar-collapse -->
     </nav>
 
-    <div class="container-fluid" ng-class="mchelper.user.hideMenu ? 'top-buffer-nm' : 'top-buffer-m'" id="rootView">
+    <div class="container-fluid" ng-class="{'top-buffer-nm' : mchelper.userSettings.hideMenu, 'top-buffer-m' : !mchelper.userSettings.hideMenu}" id="rootView">
       <div ui-view></div>
     </div>
 

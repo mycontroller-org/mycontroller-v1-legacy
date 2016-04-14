@@ -106,11 +106,14 @@ public class Restore implements Runnable {
             //Restore scripts directory
             //Remove old files
             FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getScriptLocation()));
-            //restore
-            FileUtils.copyDirectory(
-                    FileUtils.getFile(extractedLocation + File.separator + BRCommons.SCRIPTS_LOCATION),
-                    FileUtils.getFile(AppProperties.getInstance().getScriptLocation()),
-                    true);
+            //restore scripts directory, if exists
+            File scriptsDir = FileUtils.getFile(extractedLocation + File.separator + BRCommons.SCRIPTS_LOCATION);
+            if (scriptsDir.exists()) {
+                FileUtils.copyDirectory(
+                        scriptsDir,
+                        FileUtils.getFile(AppProperties.getInstance().getScriptLocation()),
+                        true);
+            }
 
             //remove old database
             if (FileUtils.deleteQuietly(FileUtils.getFile(oldDatabaseLocation + ".h2.db"))) {

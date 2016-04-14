@@ -620,6 +620,16 @@ input.mc-color-steel-blue{
   margin:0px;
 }
 
+/* custom buttons */
+#custom-buttons-wrapper .btn {
+  margin: 3px 0px 3px 3px;
+  font-weight: bold;
+  font-size: 21px;
+}
+.adf-myc-cb-margin{
+  margin-top:5px;
+  margin-bottom:5px;
+}
 
 
 

@@ -113,7 +113,7 @@ public class AuthUtils {
         User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
-            if (user.getPassword().equals(aPassword)) {
+            if (McCrypt.decrypt(user.getPassword()).equals(aPassword)) {
                 user.setPassword(null);
                 if (isSuperAdmin(user) || hasPermission(user, PERMISSION_TYPE.MQTT_USER)) {
                     return true;

@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.settings;
 
+import org.mycontroller.standalone.auth.McCrypt;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,14 +46,21 @@ public class SmsSettings {
     private String fromNumber;
 
     public static SmsSettings get() {
+        String authToken = getValue(SKEY_AUTH_TOKEN);
+        if (authToken != null) {
+            authToken = McCrypt.decrypt(authToken);
+        }
         return SmsSettings.builder()
                 .vendor(getValue(SKEY_VENDOR))
                 .authSid(getValue(SKEY_AUTH_SID))
-                .authToken(getValue(SKEY_AUTH_TOKEN))
+                .authToken(authToken)
                 .fromNumber(getValue(SKEY_FROM_NUMBER)).build();
     }
 
     public void save() {
+        if (authToken != null) {
+            authToken = McCrypt.encrypt(authToken);
+        }
         updateValue(SKEY_VENDOR, vendor);
         updateValue(SKEY_AUTH_SID, authSid);
         updateValue(SKEY_AUTH_TOKEN, authToken);

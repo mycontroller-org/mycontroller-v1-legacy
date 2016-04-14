@@ -37,7 +37,6 @@ import lombok.ToString;
 public abstract class Operation implements IOperationEngine {
     private Integer id;
     private Boolean enabled;
-    private Boolean publicAccess;
     private User user;
     private String name;
     private OPERATION_TYPE type;
@@ -48,7 +47,6 @@ public abstract class Operation implements IOperationEngine {
     public void updateOperation(OperationTable operationTable) {
         id = operationTable.getId();
         enabled = operationTable.getEnabled();
-        publicAccess = operationTable.getPublicAccess();
         user = operationTable.getUser();
         name = operationTable.getName();
         type = operationTable.getType();
@@ -60,7 +58,6 @@ public abstract class Operation implements IOperationEngine {
         return OperationTable.builder()
                 .id(id)
                 .enabled(enabled)
-                .publicAccess(publicAccess)
                 .user(user)
                 .name(name)
                 .type(type)
