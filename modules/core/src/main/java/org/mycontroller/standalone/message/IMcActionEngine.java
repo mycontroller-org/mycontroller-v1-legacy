@@ -32,6 +32,8 @@ public interface IMcActionEngine {
 
     void executeSendPayload(ResourceModel resourceModel, ResourceOperation operation);
 
+    void executeRequestPayload(ResourceModel resourceModel);
+
     void sendAliveStatusRequest(Node node);
 
     boolean checkEthernetGatewayAliveState(GatewayEthernet gatewayEthernet);

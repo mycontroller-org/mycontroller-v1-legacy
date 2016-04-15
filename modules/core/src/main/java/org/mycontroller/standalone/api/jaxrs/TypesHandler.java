@@ -77,13 +77,10 @@ public class TypesHandler extends AccessEngine {
     @Path("/resourceTypes")
     public Response getResourceTypes(
             @QueryParam("resourceType") String resourceType,
-            @QueryParam("isSendPayload") Boolean isSendPayload,
+            @QueryParam("operationType") String operationType,
             @QueryParam("conditionType") String conditionType) {
-        if (isSendPayload == null) {
-            isSendPayload = false;
-        }
         return RestUtils.getResponse(Status.OK,
-                TypesUtils.getResourceTypes(AuthUtils.getUser(securityContext), resourceType, isSendPayload,
+                TypesUtils.getResourceTypes(AuthUtils.getUser(securityContext), resourceType, operationType,
                         conditionType));
     }
 

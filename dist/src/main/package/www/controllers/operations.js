@@ -274,7 +274,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
 
   //--------------pre load -----------
   $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "Rule definition"});
-  $scope.spResourceTypes = TypesFactory.getResourceTypes({"resourceType": "Rule definition", "isSendPayload":true});
+  $scope.spResourceTypes = TypesFactory.getResourceTypes({"operationType": "Send payload"});
+  $scope.reqPlResourceTypes = TypesFactory.getResourceTypes({"operationType": "Request payload"});
   $scope.operationTypes = TypesFactory.getOperationTypes();
   $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Operation"});
 

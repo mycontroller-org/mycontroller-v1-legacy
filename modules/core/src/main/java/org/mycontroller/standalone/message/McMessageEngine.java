@@ -40,6 +40,7 @@ import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.NodeIdException;
 import org.mycontroller.standalone.fwpayload.ExecuteForwardPayload;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
@@ -76,7 +77,7 @@ public class McMessageEngine implements Runnable {
         this.mcMessage = mcMessage;
     }
 
-    public void execute() {
+    public void execute() throws McBadRequestException {
         mcMessage.setScreeningDone(true);
         _logger.debug("McMessage:{}", mcMessage);
         switch (mcMessage.getType()) {
@@ -531,15 +532,25 @@ public class McMessageEngine implements Runnable {
         }
     }
 
-    private void responseReqTypeData(McMessage mcMessage) {
+    private void responseReqTypeData(McMessage mcMessage) throws McBadRequestException {
         Sensor sensor = this.getSensor(mcMessage);
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensor.getId(),
                 MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()));
+        if (mcMessage.isTxMessage()) {
+            if (sensorVariable != null) {
+                //ResourcesLogs message data
+                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                    this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage, null);
+                }
+            } else {
+                throw new McBadRequestException("Selected sensor variable is not available!");
+            }
+            return;
+        }
         if (sensorVariable != null && sensorVariable.getValue() != null) {
             //ResourcesLogs message data
             if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
-                this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage,
-                        null);
+                this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage, null);
             }
             mcMessage.setTxMessage(true);
             mcMessage.setType(MESSAGE_TYPE.C_SET);
@@ -556,13 +567,9 @@ public class McMessageEngine implements Runnable {
             //ResourcesLogs message data
             if (ResourcesLogsUtils.isLevel(LOG_LEVEL.WARNING)) {
                 this.setSensorVariableData(LOG_LEVEL.WARNING, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage,
-                        "Data not available in " + AppProperties.APPLICATION_NAME);
+                        "Failed: Data not available in " + AppProperties.APPLICATION_NAME);
             }
-            if (_logger.isWarnEnabled()) {
-                _logger.warn("Data not available! but there is request from sensor[{}], "
-                        + "Ignored this request!", mcMessage);
-            }
-
+            _logger.warn("Data not available! but there is request from sensor[{}], Ignored this request!", mcMessage);
         }
     }
 
@@ -783,7 +790,11 @@ public class McMessageEngine implements Runnable {
 
     @Override
     public void run() {
-        this.execute();
+        try {
+            this.execute();
+        } catch (McBadRequestException ex) {
+            _logger.error("Exception on processing {}", mcMessage, ex);
+        }
 
     }
 }

@@ -25,6 +25,7 @@ import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.operation.model.OperationExecuteScript;
+import org.mycontroller.standalone.operation.model.OperationRequestPayload;
 import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.operation.model.OperationSendPushbulletNote;
@@ -100,6 +101,12 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                     operationSendPayload.setDelayTime(0L);
                 }
                 operation = operationSendPayload;
+                break;
+            case REQUEST_PAYLOAD:
+                OperationRequestPayload operationRequestPayload = new OperationRequestPayload();
+                operationRequestPayload.setResourceType(RESOURCE_TYPE.fromString(node.get("resourceType").asText()));
+                operationRequestPayload.setResourceId(node.get("resourceId").asInt());
+                operation = operationRequestPayload;
                 break;
             case SEND_PUSHBULLET_NOTE:
                 OperationSendPushbulletNote operationSendPushbulletNote = new OperationSendPushbulletNote();

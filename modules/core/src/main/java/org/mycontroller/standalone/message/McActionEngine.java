@@ -60,7 +60,19 @@ public class McActionEngine implements IMcActionEngine {
             default:
                 break;
         }
+    }
 
+    @Override
+    public void executeRequestPayload(ResourceModel resourceModel) {
+        switch (resourceModel.getResourceType()) {
+            case SENSOR_VARIABLE:
+                executeSensorVariableOperationRequestPayload((SensorVariable) resourceModel.getResource());
+                break;
+            default:
+                _logger.warn("I do not know how to handle other than sensor variable! received:{}", resourceModel
+                        .getResourceType().getText());
+                break;
+        }
     }
 
     //Private Methods
@@ -142,6 +154,21 @@ public class McActionEngine implements IMcActionEngine {
                 .acknowledge(false)
                 .subType(sensorVariable.getVariableType().getText())
                 .payload(payload)
+                .isTxMessage(true)
+                .build();
+        McMessageUtils.sendToProviderBridge(mcMessage);
+    }
+
+    //Execute Sensor Variable related operations
+    private void executeSensorVariableOperationRequestPayload(SensorVariable sensorVariable) {
+        McMessage mcMessage = McMessage.builder()
+                .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
+                .nodeEui(sensorVariable.getSensor().getNode().getEui())
+                .SensorId(sensorVariable.getSensor().getSensorId())
+                .type(MESSAGE_TYPE.C_REQ)
+                .acknowledge(false)
+                .subType(sensorVariable.getVariableType().getText())
+                .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
         McMessageUtils.sendToProviderBridge(mcMessage);

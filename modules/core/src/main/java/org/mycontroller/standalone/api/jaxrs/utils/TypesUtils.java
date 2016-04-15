@@ -316,8 +316,8 @@ public class TypesUtils {
                     case GATEWAY:
                     case NODE:
                         if (type == STATE.UP || type == STATE.DOWN || type == STATE.UNAVAILABLE) {
-                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                    .displayName(type.getText()).build());
+                            typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                    .id(type.getText()).displayName(type.getText()).build());
                         }
                         break;
                     case RESOURCES_GROUP:
@@ -325,8 +325,8 @@ public class TypesUtils {
                     case TIMER:
                     case SENSOR_VARIABLE:
                         if (type == STATE.ON || type == STATE.OFF) {
-                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                    .displayName(type.getText()).build());
+                            typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                    .id(type.getText()).displayName(type.getText()).build());
                         }
                         break;
                     default:
@@ -334,8 +334,8 @@ public class TypesUtils {
                         break;
                 }
             } else {
-                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
-                        .build());
+                typesIdNameMappers.add(TypesIdNameMapper.builder()
+                        .id(type.getText()).displayName(type.getText()).build());
             }
         }
         return typesIdNameMappers;
@@ -345,8 +345,8 @@ public class TypesUtils {
         TIMER_TYPE[] types = TIMER_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (TIMER_TYPE timerType : types) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(timerType.ordinal())
-                    .displayName(timerType.getText()).build());
+            typesIdNameMappers.add(TypesIdNameMapper.builder()
+                    .id(timerType.ordinal()).displayName(timerType.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -355,8 +355,8 @@ public class TypesUtils {
         FREQUENCY_TYPE[] types = FREQUENCY_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (FREQUENCY_TYPE type : types) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
-                    .build());
+            typesIdNameMappers.add(TypesIdNameMapper.builder()
+                    .id(type.getText()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -365,17 +365,18 @@ public class TypesUtils {
         WEEK_DAY[] types = WEEK_DAY.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (WEEK_DAY type : types) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
-                    .ticked(isAllDaysTicked).build());
+            typesIdNameMappers.add(TypesIdNameMapper.builder()
+                    .id(type.getText()).displayName(type.getText()).ticked(isAllDaysTicked).build());
         }
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getResourceTypes(User user, String resourceType, Boolean isSendPayload,
+    public static ArrayList<TypesIdNameMapper> getResourceTypes(User user, String resourceType, String operationType,
             String conditionTypeString) {
         RESOURCE_TYPE[] types = RESOURCE_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         RESOURCE_TYPE resourceTypeFilter = null;
+        OPERATION_TYPE operationTypeFilter = null;
         CONDITION_TYPE conditionType = CONDITION_TYPE.fromString(conditionTypeString);
         if (conditionType != null) {
             for (RESOURCE_TYPE type : types) {
@@ -385,8 +386,8 @@ public class TypesUtils {
                                 || type == RESOURCE_TYPE.NODE
                                 || type == RESOURCE_TYPE.SENSOR_VARIABLE
                                 || type == RESOURCE_TYPE.RESOURCES_GROUP) {
-                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                    .displayName(type.getText()).build());
+                            typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                    .id(type.getText()).displayName(type.getText()).build());
                         }
                         break;
                     default:
@@ -396,6 +397,9 @@ public class TypesUtils {
         } else {
             if (resourceType != null) {
                 resourceTypeFilter = RESOURCE_TYPE.fromString(resourceType);
+            }
+            if (operationType != null) {
+                operationTypeFilter = OPERATION_TYPE.fromString(operationType);
             }
 
             for (RESOURCE_TYPE type : types) {
@@ -408,33 +412,46 @@ public class TypesUtils {
                     switch (resourceTypeFilter) {
                         case RULE_DEFINITION:
                         case TIMER:
-                            if (isSendPayload && type != RESOURCE_TYPE.SENSOR) {
-                                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                        .displayName(type.getText()).build());
-                            } else if (type != RESOURCE_TYPE.SENSOR
+                            if (type != RESOURCE_TYPE.SENSOR
                                     && type != RESOURCE_TYPE.RULE_DEFINITION
                                     && type != RESOURCE_TYPE.TIMER) {
-                                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                        .displayName(type.getText()).build());
+                                typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                        .id(type.getText()).displayName(type.getText()).build());
                             }
-
                             break;
                         case RESOURCES_GROUP:
                             if (type != RESOURCE_TYPE.RULE_DEFINITION && type != RESOURCE_TYPE.TIMER
                                     && type != RESOURCE_TYPE.SENSOR
                                     && type != RESOURCE_TYPE.RESOURCES_GROUP) {
-                                typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                        .displayName(type.getText()).build());
+                                typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                        .id(type.getText()).displayName(type.getText()).build());
                             }
                             break;
                         default:
-                            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                    .displayName(type.getText()).build());
+                            typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                    .id(type.getText()).displayName(type.getText()).build());
+                            break;
+                    }
+                } else if (operationTypeFilter != null) {
+                    switch (operationTypeFilter) {
+                        case REQUEST_PAYLOAD:
+                            if (type == RESOURCE_TYPE.SENSOR_VARIABLE) {
+                                typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                        .id(type.getText()).displayName(type.getText()).build());
+                            }
+                            break;
+                        case SEND_PAYLOAD:
+                            if (type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.SCRIPT) {
+                                typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                        .id(type.getText()).displayName(type.getText()).build());
+                            }
+                            break;
+                        default:
                             break;
                     }
                 } else {
-                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
-                            .build());
+                    typesIdNameMappers.add(TypesIdNameMapper.builder()
+                            .id(type.getText()).displayName(type.getText()).build());
                 }
             }
 

@@ -23,6 +23,7 @@ import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.operation.model.OperationExecuteScript;
+import org.mycontroller.standalone.operation.model.OperationRequestPayload;
 import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.operation.model.OperationSendPushbulletNote;
@@ -45,6 +46,7 @@ public class OperationUtils {
 
     public enum OPERATION_TYPE {
         SEND_PAYLOAD("Send payload"),
+        REQUEST_PAYLOAD("Request payload"),
         SEND_SMS("Send SMS"),
         SEND_EMAIL("Send email"),
         SEND_PUSHBULLET_NOTE("Send pushbullet note"),
@@ -92,6 +94,8 @@ public class OperationUtils {
                 return new OperationSendPushbulletNote(operationTable);
             case SEND_SMS:
                 return new OperationSendSMS(operationTable);
+            case REQUEST_PAYLOAD:
+                return new OperationRequestPayload(operationTable);
             default:
                 return null;
         }

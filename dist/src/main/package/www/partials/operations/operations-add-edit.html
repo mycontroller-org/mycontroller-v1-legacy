@@ -139,11 +139,9 @@
                    <option ng-repeat="res in plResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="res.id == item.resourceId"></option>
                 </select>
               </div>
-
-
             </div>
 
-             <div class="form-group">
+            <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'PAYLOAD_DELAY' | translate }}</label>
               <div class="col-sm-4 mc-form-fixer-left" ng-if="item.resourceType === 'Sensor variable'">
                 <input class="form-control" placeholder="{{ 'PAYLOAD' | translate }}" ng-model="item.payload" required />
@@ -160,6 +158,25 @@
             </div>
           </div>
 
+
+          <!-- Request payload Operation -->
+          <div  ng-if="item.type === 'Request payload'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RESOURCE' | translate }}</label>
+              <div class="col-sm-4 mc-form-fixer-left">
+                <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in reqPlResourceTypes"
+                  ng-change="plResourcesList = getResources(item.resourceType);updatePayloadOperations(item.resourceType);" ng-model="item.resourceType" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+              <div class="col-sm-6 mc-form-fixer" ng-hide="item.resourceType === ''"><!-- List Resource -->
+                <select class="form-control" pf-select data-live-search="true" ng-model="item.resourceId" required>
+                   <option value="" ng-hide="true"></option>
+                   <option ng-repeat="res in plResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="res.id == item.resourceId"></option>
+                </select>
+              </div>
+            </div>
+          </div>
 
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>
