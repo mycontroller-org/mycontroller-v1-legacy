@@ -422,6 +422,7 @@
     "SECONDS": "Секунд",
     "SELECT": "Выбрать",
     "SEND": "Send",
+    "SENDING": "Sending...",
     "SEND_RAW_MESSAGE": "Send raw message",
     "SENSORS": "Сенсоры",
     "SENSORS_ACTION": "Действия датчиков",
