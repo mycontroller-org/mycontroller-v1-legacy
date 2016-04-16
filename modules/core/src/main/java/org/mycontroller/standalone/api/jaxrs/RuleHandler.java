@@ -36,7 +36,6 @@ import javax.ws.rs.core.Response.Status;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.RuleApi;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
@@ -84,15 +83,13 @@ public class RuleHandler extends AccessEngine {
         filters.put(RuleDefinitionTable.KEY_CONDITION_TYPE, CONDITION_TYPE.fromString(conditionType));
         filters.put(RuleDefinitionTable.KEY_DAMPENING_TYPE, DAMPENING_TYPE.fromString(dampeningType));
 
-        QueryResponse queryResponse = ruleApi.getAllRaw(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : RuleDefinitionTable.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        return RestUtils.getResponse(Status.OK, ruleApi.getAllRaw(filters));
     }
 
     @POST

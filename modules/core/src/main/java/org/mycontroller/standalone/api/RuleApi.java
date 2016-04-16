@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -37,16 +38,16 @@ public class RuleApi {
         return DaoUtils.getRuleDefinitionDao().getById(id);
     }
 
-    public QueryResponse getAllRaw(Query query) {
-        return DaoUtils.getRuleDefinitionDao().getAll(query);
+    public QueryResponse getAllRaw(HashMap<String, Object> filters) {
+        return DaoUtils.getRuleDefinitionDao().getAll(Query.get(filters));
     }
 
     public RuleDefinition get(int id) {
         return RuleUtils.getRuleDefinition(getRaw(id));
     }
 
-    public QueryResponse getAll(Query query) {
-        QueryResponse queryResponse = getAllRaw(query);
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        QueryResponse queryResponse = getAllRaw(filters);
         ArrayList<RuleDefinition> gateways = new ArrayList<RuleDefinition>();
         @SuppressWarnings("unchecked")
         List<RuleDefinitionTable> rows = (List<RuleDefinitionTable>) queryResponse.getData();

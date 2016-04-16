@@ -74,13 +74,16 @@ public class ScriptsHandler extends AccessEngine {
         filters.put(KEY_EXTENSION, extension);
         filters.put(KEY_LESS_INFO, lessInfo);
 
-        Query query = Query.builder()
-                .order(order != null ? order : Query.ORDER_ASC)
-                .orderBy(orderBy != null ? orderBy : KEY_NAME)
-                .filters(filters)
-                .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                .page(page != null ? page : 1L)
-                .build();
+        if (orderBy == null) {
+            orderBy = KEY_NAME;
+        }
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        Query query = Query.get(filters);
         try {
             if (lessInfo) {
                 return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query).getData());

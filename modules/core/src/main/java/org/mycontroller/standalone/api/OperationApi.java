@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.mail.EmailException;
@@ -41,16 +42,16 @@ public class OperationApi {
         return DaoUtils.getOperationDao().getById(id);
     }
 
-    public QueryResponse getAllRaw(Query query) {
-        return DaoUtils.getOperationDao().getAll(query);
+    public QueryResponse getAllRaw(HashMap<String, Object> filters) {
+        return DaoUtils.getOperationDao().getAll(Query.get(filters));
     }
 
     public Operation get(int id) {
         return OperationUtils.getOperation(getRaw(id));
     }
 
-    public QueryResponse getAll(Query query) {
-        QueryResponse queryResponse = getAllRaw(query);
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        QueryResponse queryResponse = getAllRaw(filters);
         ArrayList<Operation> gateways = new ArrayList<Operation>();
         @SuppressWarnings("unchecked")
         List<OperationTable> rows = (List<OperationTable>) queryResponse.getData();

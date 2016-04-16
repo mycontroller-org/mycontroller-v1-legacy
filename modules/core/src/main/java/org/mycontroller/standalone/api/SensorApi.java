@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.McObjectManager;
@@ -44,8 +45,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SensorApi {
 
-    public QueryResponse getAll(Query query) {
-        return DaoUtils.getSensorDao().getAll(query);
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        return DaoUtils.getSensorDao().getAll(Query.get(filters));
     }
 
     public Sensor get(int id) {

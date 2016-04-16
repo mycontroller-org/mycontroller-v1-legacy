@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
@@ -32,8 +33,8 @@ import org.mycontroller.standalone.model.ResourceModel;
  * @since 0.0.3
  */
 public class UidTagApi {
-    public QueryResponse getAll(Query query) {
-        return DaoUtils.getUidTagDao().getAll(query);
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        return DaoUtils.getUidTagDao().getAll(Query.get(filters));
     }
 
     public UidTag get(int id) {

@@ -34,7 +34,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Firmware;
@@ -66,15 +65,13 @@ public class FirmwareHandler {
 
         filters.put(FirmwareType.KEY_NAME, name);
 
-        QueryResponse queryResponse = DaoUtils.getFirmwareTypeDao().getAll(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : FirmwareType.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareTypeDao().getAll(Query.get(filters)));
     }
 
     @GET
@@ -120,15 +117,13 @@ public class FirmwareHandler {
 
         filters.put(FirmwareVersion.KEY_VERSION, version);
 
-        QueryResponse queryResponse = DaoUtils.getFirmwareVersionDao().getAll(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : FirmwareVersion.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareVersionDao().getAll(Query.get(filters)));
     }
 
     @GET
@@ -176,15 +171,13 @@ public class FirmwareHandler {
         filters.put(Firmware.KEY_TYPE_ID, typeId);
         filters.put(Firmware.KEY_VERSION_ID, versionId);
 
-        QueryResponse queryResponse = DaoUtils.getFirmwareDao().getAll(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : FirmwareVersion.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareDao().getAll(Query.get(filters)));
     }
 
     @GET

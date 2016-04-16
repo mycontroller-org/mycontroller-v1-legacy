@@ -377,8 +377,7 @@ public class MetricsAggregationBase {
                         .timestampTo(toTimestamp).build());
     }
 
-    /** Get metric data for boolean type */
-
+    //Get metric data for boolean type
     public static List<MetricsBinaryTypeDevice> getMetricsBinaryData(
             SensorVariable sensorVariable,
             Long fromTimestamp) {

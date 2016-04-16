@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.McObjectManager;
@@ -35,8 +36,8 @@ import org.mycontroller.standalone.message.McMessageUtils;
  */
 public class NodeApi {
 
-    public QueryResponse getAllNodes(Query query) {
-        return DaoUtils.getNodeDao().getAll(query);
+    public QueryResponse getAllNodes(HashMap<String, Object> filters) {
+        return DaoUtils.getNodeDao().getAll(Query.get(filters));
     }
 
     public Node get(int id) {

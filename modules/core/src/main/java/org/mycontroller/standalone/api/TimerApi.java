@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -35,8 +36,8 @@ public class TimerApi {
         return DaoUtils.getTimerDao().getById(id);
     }
 
-    public QueryResponse getAll(Query query) {
-        return DaoUtils.getTimerDao().getAll(query);
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        return DaoUtils.getTimerDao().getAll(Query.get(filters));
     }
 
     public void update(Timer timer) {

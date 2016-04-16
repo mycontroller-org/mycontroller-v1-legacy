@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.McObjectManager;
@@ -40,16 +41,16 @@ public class GatewayApi {
         return DaoUtils.getGatewayDao().getById(gatewayId);
     }
 
-    public QueryResponse getAllRaw(Query query) {
-        return DaoUtils.getGatewayDao().getAll(query);
+    public QueryResponse getAllRaw(HashMap<String, Object> filters) {
+        return DaoUtils.getGatewayDao().getAll(Query.get(filters));
     }
 
     public Gateway get(Integer gatewayId) {
         return GatewayUtils.getGateway(getRaw(gatewayId));
     }
 
-    public QueryResponse getAll(Query query) {
-        QueryResponse queryResponse = getAllRaw(query);
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        QueryResponse queryResponse = getAllRaw(filters);
         ArrayList<Gateway> gateways = new ArrayList<Gateway>();
         @SuppressWarnings("unchecked")
         List<GatewayTable> gatewayTables = (List<GatewayTable>) queryResponse.getData();

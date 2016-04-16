@@ -39,7 +39,6 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.json.RoleJson;
 import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.json.UserJson;
@@ -48,7 +47,6 @@ import org.mycontroller.standalone.api.jaxrs.utils.UserMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Role;
 import org.mycontroller.standalone.db.tables.User;
 
@@ -89,15 +87,13 @@ public class SecurityHandler extends AccessEngine {
             filters.put(Role.KEY_DESCRIPTION, description);
             filters.put(Role.KEY_PERMISSION, PERMISSION_TYPE.fromString(permission));
 
-            QueryResponse queryResponse = DaoUtils.getRoleDao().getAll(
-                    Query.builder()
-                            .order(order != null ? order : Query.ORDER_ASC)
-                            .orderBy(orderBy != null ? orderBy : Node.KEY_ID)
-                            .filters(filters)
-                            .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                            .page(page != null ? page : 1L)
-                            .build());
-            return RestUtils.getResponse(Status.OK, queryResponse);
+            //Query primary filters
+            filters.put(Query.ORDER, order);
+            filters.put(Query.ORDER_BY, orderBy);
+            filters.put(Query.PAGE_LIMIT, pageLimit);
+            filters.put(Query.PAGE, page);
+
+            return RestUtils.getResponse(Status.OK, DaoUtils.getRoleDao().getAll(Query.get(filters)));
         }
     }
 
@@ -162,15 +158,13 @@ public class SecurityHandler extends AccessEngine {
             filters.put(User.KEY_ENABLED, enabled);
             filters.put(User.KEY_EMAIL, email);
 
-            QueryResponse queryResponse = DaoUtils.getUserDao().getAll(
-                    Query.builder()
-                            .order(order != null ? order : Query.ORDER_ASC)
-                            .orderBy(orderBy != null ? orderBy : Node.KEY_ID)
-                            .filters(filters)
-                            .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                            .page(page != null ? page : 1L)
-                            .build());
-            return RestUtils.getResponse(Status.OK, queryResponse);
+            //Query primary filters
+            filters.put(Query.ORDER, order);
+            filters.put(Query.ORDER_BY, orderBy);
+            filters.put(Query.PAGE_LIMIT, pageLimit);
+            filters.put(Query.PAGE, page);
+
+            return RestUtils.getResponse(Status.OK, DaoUtils.getUserDao().getAll(Query.get(filters)));
         }
 
     }

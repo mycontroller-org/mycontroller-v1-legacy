@@ -35,7 +35,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.TimerApi;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
@@ -79,15 +78,13 @@ public class TimerHandler extends AccessEngine {
         filters.put(Timer.KEY_FREQUENCY, FREQUENCY_TYPE.fromString(frequency));
         filters.put(Timer.KEY_ENABLED, enabled);
 
-        QueryResponse queryResponse = timerApi.getAll(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : Timer.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        return RestUtils.getResponse(Status.OK, timerApi.getAll(filters));
     }
 
     @PUT
