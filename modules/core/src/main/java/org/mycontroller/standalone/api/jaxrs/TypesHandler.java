@@ -36,6 +36,7 @@ import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
 
@@ -337,6 +338,22 @@ public class TypesHandler extends AccessEngine {
         return RestUtils.getResponse(Status.OK, TypesUtils.getRooms());
     }
 
+    @GET
+    @Path("/messageTypes")
+    public Response getMessageTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageTypes());
+    }
+
+    @GET
+    @Path("/messageSubTypes")
+    public Response getMessageSubTypes(@QueryParam("messageType") String typeString) {
+        MESSAGE_TYPE type = MESSAGE_TYPE.fromString(typeString);
+        if (type == null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Invalid 'type'!"));
+        }
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageSubTypes(type));
+    }
+
     //----------------- review required
 
     @GET
@@ -357,18 +374,6 @@ public class TypesHandler extends AccessEngine {
     @Path("/graphSensorVariableTypes/{sensorRefId}")
     public Response getGraphSensorVariableTypes(@PathParam("sensorRefId") int sensorRefId) {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGraphSensorVariableTypes(sensorRefId));
-    }
-
-    @GET
-    @Path("/messageTypes")
-    public Response getMessageTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageTypes());
-    }
-
-    @GET
-    @Path("/messageSubTypes/{messageType}")
-    public Response getMessageSubTypes(@PathParam("messageType") int messageType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageSubTypes(messageType));
     }
 
     @GET

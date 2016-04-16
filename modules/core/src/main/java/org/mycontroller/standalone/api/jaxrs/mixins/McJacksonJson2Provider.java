@@ -47,6 +47,7 @@ import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.UidTag;
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.gateway.model.Gateway;
+import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 import org.mycontroller.standalone.scripts.McScript;
@@ -130,6 +131,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(User.class, UserMixin.class);
         mapper.addMixIn(McScript.class, McScriptMixin.class);
         mapper.addMixIn(UidTag.class, UidTagMixin.class);
+        mapper.addMixIn(McMessage.class, McMessageMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
 

@@ -45,7 +45,7 @@ public class McMessage {
     @NonNull
     private Integer gatewayId;
     private String nodeEui;
-    private String SensorId;
+    private String sensorId;
     private MESSAGE_TYPE type;
     private String subType;
     private boolean acknowledge;
@@ -53,4 +53,15 @@ public class McMessage {
     private boolean isTxMessage;
     private NETWORK_TYPE networkType;
     private boolean isScreeningDone = false;
+
+    public boolean validate() {
+        if (gatewayId == null
+                || nodeEui == null
+                || sensorId == null
+                || type == null
+                || subType == null) {
+            return false;
+        }
+        return true;
+    }
 }

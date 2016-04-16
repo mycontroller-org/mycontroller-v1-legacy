@@ -69,7 +69,7 @@ public class McNodeDiscover implements Runnable {
                 McMessage mcMessage = McMessage.builder()
                         .gatewayId(gatewayId)
                         .nodeEui(node.getEui())
-                        .SensorId(McMessage.SENSOR_BROADCAST_ID)
+                        .sensorId(McMessage.SENSOR_BROADCAST_ID)
                         .type(MESSAGE_TYPE.C_INTERNAL)
                         .subType(MESSAGE_TYPE_INTERNAL.I_PRESENTATION.getText())
                         .acknowledge(false)

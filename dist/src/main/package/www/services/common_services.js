@@ -194,13 +194,15 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
 
 
   // get resources
-  commonService.getResources= function(resourceType){
+  commonService.getResources= function(resourceType, resourceId){
     if(resourceType === 'Sensor variable'){
       return TypesFactory.getSensorVariables();
     }else if(resourceType === 'Gateway' || resourceType === 'Gateway state'){
       return TypesFactory.getGateways();
     }else if(resourceType === 'Node' || resourceType === 'Node state'){
-      return TypesFactory.getNodes();
+      return TypesFactory.getNodes({"gatewayId":resourceId});
+    }else if(resourceType === 'Sensors'){
+      return TypesFactory.getSensors({"nodeId":resourceId});
     }else if(resourceType === 'Resources group'){
       return TypesFactory.getResourcesGroups();
     }else if(resourceType === 'Alarm definition'){

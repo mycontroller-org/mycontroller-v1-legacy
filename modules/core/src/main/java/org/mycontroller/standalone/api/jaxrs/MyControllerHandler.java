@@ -43,8 +43,8 @@ import org.mycontroller.standalone.api.jaxrs.utils.McServerFileUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
-import org.mycontroller.standalone.message.RawMessageQueue;
-import org.mycontroller.standalone.provider.mysensors.MySensorsRawMessage;
+import org.mycontroller.standalone.message.McMessage;
+import org.mycontroller.standalone.message.McMessageUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -146,19 +146,19 @@ public class MyControllerHandler extends AccessEngine {
         return RestUtils.getResponse(Status.OK, new StatusJVM());
     }
 
-    //TODO: remove this method, no longer in use
-    @GET
-    @Path("/gatewayInfo")
-    public Response serialport() {
-        return RestUtils.getResponse(Status.OK, null);
-    }
-
+    @RolesAllowed({ "Admin" })
     @POST
     @Path("/sendRawMessage")
-    public Response sendRawMessage(MySensorsRawMessage mySensorsRawMessage) {
+    public Response sendRawMessage(McMessage mcMessage) {
         try {
-            mySensorsRawMessage.setTxMessage(true);
-            RawMessageQueue.getInstance().putMessage(mySensorsRawMessage.getRawMessage());
+            mcMessage.setTxMessage(true);
+            mcMessage.setScreeningDone(false);
+            if (mcMessage.validate()) {
+                McMessageUtils.sendToProviderBridge(mcMessage);
+            } else {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Required field is missing! "
+                        + mcMessage));
+            }
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

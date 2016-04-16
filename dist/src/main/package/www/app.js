@@ -231,6 +231,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('sendRawMessage', {
+      url:"/actionboard/sendrawmessage",
+      templateUrl: "partials/send-raw-message/send-raw-message.html",
+      controller: "SendRawMessageController",
+       data: {
+        requireLogin: true
+      }
     }).state('roomsList', {
       url:"/resources/rooms/list",
       templateUrl: "partials/rooms/rooms-list.html",
@@ -478,20 +485,6 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       url:"/forwardPayload/:id",
       templateUrl: "partials/forwardPayload/forwardPayload.html",
       controller: "ForwardPayloadController",
-       data: {
-        requireLogin: true
-      }
-    }).state('uidtag', {
-      url:"/uidtag",
-      templateUrl: "partials/uidTag/uidTag.html",
-      controller: "UidTagController",
-       data: {
-        requireLogin: true
-      }
-    }).state('sendRawMessage', {
-      url:"/utils/sendRawMessage",
-      templateUrl: "partials/rawMessage/rawMessage.html",
-      controller: "RawMessageController",
        data: {
         requireLogin: true
       }

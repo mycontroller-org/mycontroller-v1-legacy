@@ -176,7 +176,7 @@
     <script src="controllers/forward-payload.js"></script>
     <script src="controllers/firmwares.js"></script>
     <script src="controllers/status.js"></script>
-    <script src="controllers/rawMessage.js"></script>
+    <script src="controllers/send-raw-message.js"></script>
     <script src="controllers/variables-mapper.js"></script>
     <script src="controllers/gateways.js"></script>
     <script src="controllers/resources-group.js"></script>
@@ -281,6 +281,7 @@
             <a ui-sref="actionBoardSensorsList"><i class="fa fa-magic fa-lg"></i> {{ 'ACTION_BOARD' | translate }}</a>
             <ul class="nav navbar-nav navbar-persistent">
               <li ng-class="{ active: $state.current.name.indexOf('actionBoardSensors') == 0 }"><a ui-sref="actionBoardSensorsList"><i class="fa fa-eye fa-lg"></i> {{ 'SENSORS_ACTION' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('sendRawMessage') == 0 }"><a ui-sref="sendRawMessage"><i class="pficon pficon-memory fa-lg mc-margin-right"></i>{{ 'SEND_RAW_MESSAGE' | translate }}</a></li>
             </ul>
           </li>
           <!-- Status -->

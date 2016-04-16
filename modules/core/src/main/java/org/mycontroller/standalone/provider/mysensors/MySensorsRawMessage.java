@@ -216,7 +216,7 @@ public class MySensorsRawMessage {
                 .acknowledge(ack == 0)
                 .gatewayId(gatewayId)
                 .nodeEui(nodeId)
-                .SensorId(sensorId)
+                .sensorId(sensorId)
                 .networkType(NETWORK_TYPE.MY_SENSORS)
                 .type(MESSAGE_TYPE.fromString(MYS_MESSAGE_TYPE.get(messageType).getText()))
                 .subType(getMcMessageSubType())
