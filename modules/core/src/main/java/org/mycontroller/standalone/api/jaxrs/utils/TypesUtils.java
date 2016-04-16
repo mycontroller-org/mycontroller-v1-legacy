@@ -851,7 +851,9 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (MESSAGE_TYPE type : types) {
             typesIdNameMappers
-                    .add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
+                    .add(TypesIdNameMapper.builder().id(type.getText())
+                            .displayName(McObjectManager.getMcLocale().getString(type.name()))
+                            .build());
         }
         return typesIdNameMappers;
     }
@@ -862,14 +864,16 @@ public class TypesUtils {
             case C_INTERNAL:
                 MESSAGE_TYPE_INTERNAL[] typesInt = MESSAGE_TYPE_INTERNAL.values();
                 for (MESSAGE_TYPE_INTERNAL type : typesInt) {
-                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
+                            .displayName(McObjectManager.getMcLocale().getString(type.name()))
                             .build());
                 }
                 break;
             case C_PRESENTATION:
                 MESSAGE_TYPE_PRESENTATION[] typesPre = MESSAGE_TYPE_PRESENTATION.values();
                 for (MESSAGE_TYPE_PRESENTATION type : typesPre) {
-                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
+                            .displayName(McObjectManager.getMcLocale().getString(type.name()))
                             .build());
                 }
                 break;
@@ -877,14 +881,16 @@ public class TypesUtils {
             case C_SET:
                 MESSAGE_TYPE_SET_REQ[] typesSetReq = MESSAGE_TYPE_SET_REQ.values();
                 for (MESSAGE_TYPE_SET_REQ type : typesSetReq) {
-                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
+                            .displayName(McObjectManager.getMcLocale().getString(type.name()))
                             .build());
                 }
                 break;
             case C_STREAM:
                 MESSAGE_TYPE_STREAM[] typesStr = MESSAGE_TYPE_STREAM.values();
                 for (MESSAGE_TYPE_STREAM type : typesStr) {
-                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText())
+                    typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
+                            .displayName(McObjectManager.getMcLocale().getString(type.name()))
                             .build());
                 }
                 break;
