@@ -266,7 +266,7 @@ public class McMessageUtils {
         V_CURRENT("Current"),
         V_RGB("RGB"),
         V_RGBW("RGBW"),
-        V_ID("KEY_ID"),
+        V_ID("Id"),
         V_UNIT_PREFIX("Unit prefix"),
         V_HVAC_SETPOINT_COOL("HVAC setpoint cool"),
         V_HVAC_SETPOINT_HEAT("HVAC setpoint heat"),
