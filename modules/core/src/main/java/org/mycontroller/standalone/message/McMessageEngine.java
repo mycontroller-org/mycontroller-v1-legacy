@@ -160,7 +160,10 @@ public class McMessageEngine implements Runnable {
 
     private void internalSubMessageTypeSelector(McMessage mcMessage) {
         //Get node, if node not available create
-        Node node = getNode(mcMessage);
+        Node node = null;
+        if (!mcMessage.getNodeEui().equalsIgnoreCase(McMessage.NODE_BROADCAST_ID)) {
+            node = getNode(mcMessage);
+        }
         //ResourcesLogs message data
         if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
             this.setSensorOtherData(LOG_LEVEL.NOTICE,
@@ -214,8 +217,10 @@ public class McMessageEngine implements Runnable {
                 try {
                     if (mcMessage.getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
                         int nodeId = MySensorsUtils.getNextNodeId(mcMessage.getGatewayId());
-                        mcMessage.setPayload(String.valueOf(nodeId));
+                        mcMessage.setAcknowledge(false);
                         mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_ID_RESPONSE.getText());
+                        mcMessage.setPayload(String.valueOf(nodeId));
+                        mcMessage.setScreeningDone(false);
                         mcMessage.setTxMessage(true);
                         McMessageUtils.sendToProviderBridge(mcMessage);
                         _logger.debug("New Id[{}] sent to node", nodeId);
@@ -747,7 +752,13 @@ public class McMessageEngine implements Runnable {
 
     private void setSensorOtherData(LOG_LEVEL logLevel, McMessage mcMessage,
             String messageSubType, String extraMessage) {
-        if (mcMessage.getSensorId() == McMessage.SENSOR_BROADCAST_ID) {
+        if (mcMessage.getNodeEui().equalsIgnoreCase(McMessage.NODE_BROADCAST_ID)) {
+            this.setSensorOtherData(
+                    RESOURCE_TYPE.GATEWAY, mcMessage.getGatewayId(),
+                    logLevel, mcMessage.getType(),
+                    messageSubType, mcMessage.isTxMessage(),
+                    mcMessage.getPayload(), extraMessage);
+        } else if (mcMessage.getSensorId().equalsIgnoreCase(McMessage.SENSOR_BROADCAST_ID)) {
             Node node = DaoUtils.getNodeDao().get(
                     mcMessage.getGatewayId(), mcMessage.getNodeEui());
             this.setSensorOtherData(

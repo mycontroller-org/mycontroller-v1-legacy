@@ -57,7 +57,9 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     @Override
     public void deleteBySensorId(Integer sId) {
         List<Integer> senosrVariableIds = DaoUtils.getSensorVariableDao().getSensorVariableIds(sId);
-        deleteBySensorVariableIds(senosrVariableIds);
+        if (senosrVariableIds != null && !senosrVariableIds.isEmpty()) {
+            deleteBySensorVariableIds(senosrVariableIds);
+        }
     }
 
     @Override
