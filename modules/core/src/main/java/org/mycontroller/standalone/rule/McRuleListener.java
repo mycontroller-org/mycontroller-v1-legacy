@@ -30,7 +30,7 @@ public class McRuleListener implements RuleListener {
 
     @Override
     public void beforeExecute(Rule rule) {
-        _logger.debug("McGuiSettings to execute the rule:{}", rule);
+        _logger.debug("About to execute the rule:{}", rule);
     }
 
     @Override
