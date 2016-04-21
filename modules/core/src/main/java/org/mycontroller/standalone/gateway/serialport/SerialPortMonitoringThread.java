@@ -18,6 +18,7 @@ package org.mycontroller.standalone.gateway.serialport;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayException;
 import org.mycontroller.standalone.gateway.GatewayUtils;
@@ -43,7 +44,7 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
 
     public SerialPortMonitoringThread(GatewayTable gatewayTable) {
         this.gateway = new GatewaySerial(gatewayTable);
-        RETRY_WAIT_TIME = this.gateway.getRetryFrequency() * 1000;
+        RETRY_WAIT_TIME = this.gateway.getRetryFrequency() * McUtils.ONE_SECOND;
         this.connect();
     }
 

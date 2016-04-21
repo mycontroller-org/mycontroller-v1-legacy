@@ -196,9 +196,19 @@ public class GatewayUtils {
 
     public static synchronized void loadAllGateways() {
         List<GatewayTable> gateways = DaoUtils.getGatewayDao().getAllEnabled();
+        //Before load all gateways, make state to unavailable
+        for (GatewayTable gatewayTable : gateways) {
+            gatewayTable.setState(STATE.UNAVAILABLE);
+            gatewayTable.setStatusSince(System.currentTimeMillis());
+            gatewayTable.setStatusMessage("Yet to start this gateway!");
+            DaoUtils.getGatewayDao().update(gatewayTable);
+        }
+        //Load all the enabled gateways
+        gateways = DaoUtils.getGatewayDao().getAllEnabled();
         for (GatewayTable gatewayTable : gateways) {
             loadGateway(gatewayTable);
         }
+
     }
 
     public static synchronized void unloadAllGateways() {
@@ -246,14 +256,15 @@ public class GatewayUtils {
         unloadGateway(gatewayId);
         GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
         gatewayTable.setEnabled(true);
-        loadGateway(gatewayTable);
         DaoUtils.getGatewayDao().update(gatewayTable);
+        loadGateway(gatewayTable);
     }
 
     public static void disableGateway(Integer gatewayId) {
         unloadGateway(gatewayId);
         GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
         gatewayTable.setEnabled(false);
+        gatewayTable.setStatusSince(System.currentTimeMillis());
         gatewayTable.setState(STATE.UNAVAILABLE);
         gatewayTable.setStatusMessage("Disabled by user");
         DaoUtils.getGatewayDao().update(gatewayTable);
