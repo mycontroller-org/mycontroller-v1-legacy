@@ -31,7 +31,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(includeFieldNames = true)
-public class About {
+public class McGuiSettings {
     private String timezone;
     private Integer timezoneMilliseconds;
     private String timezoneString;
@@ -50,7 +50,7 @@ public class About {
     private Integer dashboardLimit;
     private Integer tableRowsLimit;
 
-    public About() {
+    public McGuiSettings() {
         Date date = new Date();
         appName = AppProperties.APPLICATION_NAME;
         timezoneMilliseconds = TimeZone.getDefault().getOffset(System.currentTimeMillis());

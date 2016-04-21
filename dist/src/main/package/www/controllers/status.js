@@ -27,6 +27,15 @@ $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
 
 });
 
+myControllerModule.controller('McAboutController', function(alertService,
+$scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
+  //GUI page settings
+  $scope.headerStringList = "About";
+
+  //About MC
+   $scope.mcAbout = StatusFactory.getMcAbout();
+});
+
 myControllerModule.controller('StatusMcLogController', function(alertService,
 $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
 

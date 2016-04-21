@@ -354,6 +354,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       data: {
         requireLogin: true
       }
+    }).state('aboutMyController', {
+      url:"/status/about",
+      templateUrl: "partials/status/about.html",
+      controller: "McAboutController",
+      data: {
+        requireLogin: true
+      }
     })
 
 

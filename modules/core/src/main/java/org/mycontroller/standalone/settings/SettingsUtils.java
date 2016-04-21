@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.api.jaxrs.json.About;
+import org.mycontroller.standalone.api.jaxrs.json.McGuiSettings;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 
@@ -116,7 +116,7 @@ public class SettingsUtils {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             _logger.debug("controller information static file location:[{}]", fileLocation);
-            objectMapper.writeValue(new File(fileLocation), new About());
+            objectMapper.writeValue(new File(fileLocation), new McGuiSettings());
         } catch (Exception ex) {
             _logger.error("Unable to write static json information file! location:[{}]", fileLocation, ex);
         }

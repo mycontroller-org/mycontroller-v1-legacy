@@ -17,6 +17,7 @@
 package org.mycontroller.standalone;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -52,6 +53,7 @@ public class AppProperties {
 
     private String tmpLocation;
     private String scriptLocation;
+    private String appDirectory;
 
     private String dbH2DbLocation;
     private String webFileLocation;
@@ -341,6 +343,13 @@ public class AppProperties {
     }
 
     public void loadProperties(Properties properties) {
+        //Application Directory
+        try {
+            appDirectory = FileUtils.getFile(McUtils.getDirectoryLocation("../")).getCanonicalPath();
+        } catch (IOException ex) {
+            appDirectory = McUtils.getDirectoryLocation("../");
+            _logger.error("Unable to set application directory!", ex);
+        }
         //Create tmp location
         tmpLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.tmp.location", "/tmp"));
 
@@ -601,6 +610,10 @@ public class AppProperties {
 
     public String getScriptOperationsLocation() {
         return getScriptLocation() + OPERATIONS_SCRIPT_DIRECTORY;
+    }
+
+    public String getAppDirectory() {
+        return appDirectory;
     }
 
 }

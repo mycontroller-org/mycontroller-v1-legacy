@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -37,8 +38,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.api.jaxrs.json.About;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
+import org.mycontroller.standalone.api.jaxrs.json.McAbout;
+import org.mycontroller.standalone.api.jaxrs.json.McGuiSettings;
 import org.mycontroller.standalone.api.jaxrs.utils.McServerFileUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
@@ -65,20 +67,23 @@ public class MyControllerHandler extends AccessEngine {
 
     @GET
     @Path("/timestamp")
-    public Response timestamp() {
-        return RestUtils.getResponse(Status.OK, "{\"timestamp\":" + System.currentTimeMillis() + "}");
-    }
-
-    @GET
-    @Path("/time")
     public Response time() {
-        return RestUtils.getResponse(Status.OK, "{\"time\":" + new Date().toString() + "}");
+        HashMap<String, Object> responseObject = new HashMap<String, Object>();
+        responseObject.put("timestamp", System.currentTimeMillis());
+        responseObject.put("time", new Date().toString());
+        return RestUtils.getResponse(Status.OK, responseObject);
     }
 
     @GET
-    @Path("/about")
+    @Path("/guiSettings")
     public Response about() {
-        return RestUtils.getResponse(Status.OK, new About());
+        return RestUtils.getResponse(Status.OK, new McGuiSettings());
+    }
+
+    @GET
+    @Path("/mcAbout")
+    public Response getMcAbout() {
+        return RestUtils.getResponse(Status.OK, new McAbout());
     }
 
     @RolesAllowed({ "Admin" })

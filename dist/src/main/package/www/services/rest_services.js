@@ -335,7 +335,8 @@ myControllerModule.factory('StatusFactory', function ($resource) {
   return $resource('/mc/rest/:type', {}, {
    getOsStatus: { method: 'GET', params: {type:'osStatus'} },
    getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
-   getConfig: { method: 'GET', params: {type:'about'} },
+   getConfig: { method: 'GET', params: {type:'guiSettings'} },
+   getMcAbout: { method: 'GET', params: {type:'mcAbout'} },
    getTimestamp: { method: 'GET', params: {type:'timestamp'} },
    sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
 
