@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.mycontroller</groupId>
     <artifactId>mycontroller-parent</artifactId>
-    <version>1</version>
+    <version>2</version>
   </parent>
 
   <groupId>org.mycontroller.standalone</groupId>
