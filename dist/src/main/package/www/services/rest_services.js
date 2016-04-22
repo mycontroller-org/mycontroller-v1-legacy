@@ -407,10 +407,10 @@ myControllerModule.factory('DashboardFactory', function ($resource) {
 //Backup and restore services
 myControllerModule.factory('BackupRestoreFactory', function ($resource) {
   return $resource('/mc/rest/backup/:type', {}, {
-    getBackupList:  { method: 'GET', isArray: true, params: {type: 'backupList'}},
+    getAll:  { method: 'GET', isArray: false, params: {type: 'backupFiles'}},
     backupNow:  { method: 'PUT', params: {type: 'backupNow'}},
     restore:  { method: 'POST', params: {type: 'restore'}},
-    delete:  { method: 'POST', params: {type: 'delete'}},
+    deleteIds:  { method: 'POST', params: {type: 'delete'}},
     getBackupSettings:  { method: 'GET', params: {type: 'backupSettings'}},
     updateBackupSettings:  { method: 'PUT', params: {type: 'backupSettings'}},
 

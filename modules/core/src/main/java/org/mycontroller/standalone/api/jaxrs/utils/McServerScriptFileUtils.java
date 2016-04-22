@@ -169,16 +169,15 @@ public class McServerScriptFileUtils {
                 AppProperties.getInstance().getScriptLocation()).getCanonicalPath());
         for (String scriptFile : scriptFiles) {
             String fileFullPath = scriptsFileLocation + scriptFile;
-            if (isInScope(scriptsFileLocation, fileFullPath)) {
+            if (McUtils.isInScope(scriptsFileLocation, fileFullPath)) {
                 if (FileUtils.deleteQuietly(FileUtils.getFile(fileFullPath))) {
-                    _logger.debug("File deletion successfully! {}", fileFullPath);
+                    _logger.debug("File deleted successfully! {}", fileFullPath);
                 } else {
                     _logger.warn("File deletion failed! {}", fileFullPath);
                 }
             } else {
                 _logger.warn("Trying to delete file from outside scope! Filepath:{}, CanonicalPath:{}",
-                        fileFullPath,
-                        FileUtils.getFile(fileFullPath).getCanonicalPath());
+                        fileFullPath, FileUtils.getFile(fileFullPath).getCanonicalPath());
             }
         }
     }
@@ -188,7 +187,7 @@ public class McServerScriptFileUtils {
         String scriptsFileLocation = McUtils.getDirectoryLocation(FileUtils.getFile(
                 AppProperties.getInstance().getScriptLocation()).getCanonicalPath());
         String fileFullPath = scriptsFileLocation + scriptFile;
-        if (isInScope(scriptsFileLocation, fileFullPath)) {
+        if (McUtils.isInScope(scriptsFileLocation, fileFullPath)) {
             if (!FileUtils.getFile(fileFullPath).exists()) {
                 throw new McBadRequestException("File not found! " + fileFullPath);
             }
@@ -243,12 +242,5 @@ public class McServerScriptFileUtils {
         }
         FileUtils.writeStringToFile(FileUtils.getFile(fileFullPath), (String) mcScript.getData(), false);
         _logger.debug("Write success! File:{}", fileFullPath);
-    }
-
-    private static boolean isInScope(String scopeLocation, String fileFullPath) throws IOException {
-        if (FileUtils.getFile(fileFullPath).getCanonicalPath().startsWith(scopeLocation)) {
-            return true;
-        }
-        return false;
     }
 }

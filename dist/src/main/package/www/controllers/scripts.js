@@ -42,7 +42,7 @@ $scope, ScriptsFactory, $state, $uibModal, $stateParams, displayRestError, mchel
     $scope.query.resourceId = $stateParams.resourceId;
   }
 
-  //get all Sensors
+  //get all items
   $scope.getAllItems = function(){
     ScriptsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;

@@ -19,25 +19,28 @@
 <div class="container-fluid"> <!-- Container-fluid -->
 
   <!-- Loading icon disaplay -->
-  <div ng-if="!orgList.$resolved">
+  <div ng-hide="queryResponse.$resolved">
     <div ng-include src="'partials/common-html/loading.html'"></div>
   </div>
 
-  <div ng-if="orgList.$resolved"> <!-- Main Message -->
+  <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
 
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
     <div class="col-md-12">
       <div class="btn-toolbar pull-right" role="toolbar">
+        <div class="btn-group mc-side-space" ng-show="filteredList.length > 0">
+          <label class="mc-align-center mc-top-space-5px">Showing {{(query.pageLimit * (query.page - 1))+1}} to {{getMin(getMin(query.pageLimit * query.page, queryResponse.query.totalItems), queryResponse.query.filteredCount)}} of {{queryResponse.query.totalItems}} items</label>
+        </div>
         <!-- Single button -->
-        <div class="btn-group">
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="!itemName">
+        <div class="btn-group" ng-if="filteredList.length > 0">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="itemIds.length == 0">
             {{ 'ACTIONS' | translate }} <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            <li ng-class="{'disabled': !itemName}"><a href='' ng-click="!itemName || delete()" class="text-danger"><i class="fa fa-lg fa-trash"></i> {{ 'DELETE' | translate }}</a></li>
-            <li ng-class="{'disabled': !itemName}"><a href='' ng-click="!itemName || restoreItemFn()" class="text-danger"><i class="fa fa-lg fa-undo"></i> {{ 'RESTORE' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || delete()" class="text-danger"><i class="fa fa-lg fa-trash"></i> {{ 'DELETE' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length != 1}"><a href='' ng-click="itemIds.length != 1 || restoreItemFn()" class="text-default"><i class="fa fa-lg fa-undo"></i> {{ 'RESTORE' | translate }}</a></li>
           </ul>
         </div>
         <!-- Single button -->
@@ -49,47 +52,41 @@
           <a class="btn btn-primary" ng-disabled="disableRunBackup" type="button" ng-click="backupNow()">{{ 'RUN_BACKUP' | translate }}</a></a>
         </div>
       </div>
-      <div pf-filter id="itemsFilter" config="filterConfig" ng-show="orgList.length > 0"></div>
+
+      <!-- for now always hide sort by. this moment this feature not supported -->
+      <div class="pull-right mc-v-margin" ng-show="false">
+        <div pf-sort id="itemsSort" config="sortConfig"></div>
+      </div>
+
+      <div pf-filter id="itemsFilter" config="filterConfig" ng-show="queryResponse.query.totalItems > 0"></div>
     </div>
+
+    <!-- Display No Items on system -->
+    <div ng-include src="'partials/common-html/no-items-system.html'"></div>
 
     <!-- Display When no data on table -->
-    <div ng-if="orgList.length > 0 && filteredList.length == 0">
-      <legend></legend>
-      <div class="blank-slate-pf" >
-        <div class="blank-slate-pf-icon">
-          <i class="fa fa-exclamation-triangle"></i>
-        </div>
-        <h1>{{ 'NO_ITEMS_IN_FILTER' | translate }}</h1>
-      </div>
-    </div>
+    <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
 
-    <!-- Display When no data on system -->
-    <div ng-show="orgList.length == 0" class="mc-top-space-2x">
-      <div class="blank-slate-pf">
-        <div class="blank-slate-pf-icon">
-          <i class="fa fa-database"></i>
-        </div>
-        <h1>{{ 'NO_BACKUPS_SETUP' | translate }}</h1>
-      </div>
-    </div>
-
-    <div ng-if="filteredList.length > 0">
+    <div ng-show="filteredList.length > 0">
       <!-- Table -->
       <table class="table table-hover table-bordered table-striped mc-table">
         <thead>
-          <th class="col-md-3">{{ 'FILE_NAME' | translate }}</th>
-          <th class="col-md-2">{{ 'FILE_SIZE' | translate }}</th>
-          <th class="col-md-7">{{ 'BACKUP_ON' | translate }}</th>
+          <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
+          <th>{{ 'FILE_NAME' | translate }}</th>
+          <th>{{ 'FILE_SIZE' | translate }}</th>
+          <th>{{ 'BACKUP_ON' | translate }}</th>
         </thead>
         <tbody>
-          <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" pagination-id="backup-list" ng-click="selectItem(item)" ng-class="{'mc-selected': itemName === item.name}" >
+          <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"
+            ng-class="{'mc-selected': itemIds.indexOf(item.name) != -1}" ng-click="selectItem(item)">
+            <td class="mc-align-center"><input type="checkbox" ng-checked="itemIds.indexOf(item.name) != -1"></td>
             <td>{{item.name}}</td>
             <td>{{item.size | byteToFriendlyConvertor}}</td>
-            <td><span uib-tooltip="{{item.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">{{item.friendlyTime}}</span></td>
+            <td><span uib-tooltip="{{item.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left" am-time-ago="item.timestamp"></span></td>
           </tr>
         </tbody>
       </table>
-      <dir-pagination-controls class="pull-right" boundary-links="true" pagination-id="backup-list"></dir-pagination-controls>
+      <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
     </div>
 
   </div> <!-- Main Message -->

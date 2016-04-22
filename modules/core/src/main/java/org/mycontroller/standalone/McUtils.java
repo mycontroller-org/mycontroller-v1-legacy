@@ -321,4 +321,11 @@ public class McUtils {
         return directoryLocation;
     }
 
+    public static boolean isInScope(String scopeLocation, String fileFullPath) throws IOException {
+        if (FileUtils.getFile(fileFullPath).getCanonicalPath().startsWith(scopeLocation)) {
+            return true;
+        }
+        return false;
+    }
+
 }

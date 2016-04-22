@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.jobs;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SystemBackupJob extends Job {
     private static boolean isBackupRunning = false;
 
-    private void removeOldFiles(BackupSettings backupSettings) {
+    private void removeOldFiles(BackupSettings backupSettings) throws IOException {
         String[] filter = { "zip" };
         Collection<File> zipFiles = FileUtils.listFiles(
                 FileUtils.getFile(AppProperties.getInstance().getBackupSettings().getBackupLocation()),
@@ -53,7 +54,7 @@ public class SystemBackupJob extends Job {
                         .name(zipFile.getName())
                         .size(zipFile.length())
                         .timestamp(zipFile.lastModified())
-                        .absolutePath(zipFile.getAbsolutePath())
+                        .canonicalPath(zipFile.getCanonicalPath())
                         .build());
             }
         }
@@ -65,7 +66,7 @@ public class SystemBackupJob extends Job {
                     backupSettings.getRetainMax());
             for (int deleteIndex = backupSettings.getRetainMax(); deleteIndex < backupFiles.size(); deleteIndex++) {
                 try {
-                    FileUtils.forceDelete(FileUtils.getFile(backupFiles.get(deleteIndex).getAbsolutePath()));
+                    FileUtils.forceDelete(FileUtils.getFile(backupFiles.get(deleteIndex).getCanonicalPath()));
                     _logger.info("Backup file deleted, {}", backupFiles.get(deleteIndex));
                 } catch (Exception ex) {
                     _logger.error("Backup file deletion failed", ex);

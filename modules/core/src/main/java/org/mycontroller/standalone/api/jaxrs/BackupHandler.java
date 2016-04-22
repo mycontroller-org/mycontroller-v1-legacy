@@ -18,6 +18,10 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -25,6 +29,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -32,7 +37,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.BackupApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
-import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
+import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.settings.BackupSettings;
 
@@ -53,15 +58,31 @@ public class BackupHandler {
     private BackupApi backupApi = new BackupApi();
 
     @GET
-    @Path("/backupList")
-    public Response getBackupList() {
+    @Path("/backupFiles")
+    public Response getBackupList(@QueryParam(BackupApi.KEY_NAME) List<String> name,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) Long page,
+            @QueryParam(Query.ORDER_BY) String orderBy,
+            @QueryParam(Query.ORDER) String order) {
+
+        HashMap<String, Object> filters = new HashMap<String, Object>();
+        filters.put(BackupApi.KEY_NAME, name);
+
+        if (orderBy == null) {
+            orderBy = BackupApi.KEY_NAME;
+        }
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
         try {
-            return RestUtils.getResponse(Status.OK, backupApi.getBackupList());
+            return RestUtils.getResponse(Status.OK, backupApi.getBackupFiles(filters));
         } catch (Exception ex) {
             _logger.error("Error,", ex);
             return RestUtils.getResponse(Status.INTERNAL_SERVER_ERROR, new ApiError(ex.getMessage()));
         }
-
     }
 
     @GET
@@ -92,18 +113,18 @@ public class BackupHandler {
 
     @POST
     @Path("/delete")
-    public Response deleteBackup(BackupFile backupFile) {
+    public Response deleteIds(List<String> backupFiles) {
         try {
-            backupApi.deleteBackup(backupFile);
-            return RestUtils.getResponse(Status.OK);
-        } catch (Exception ex) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+            backupApi.deleteBackupFiles(backupFiles);
+        } catch (IOException ex) {
+            RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
+        return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @POST
     @Path("/restore")
-    public Response restore(BackupFile backupFile) {
+    public Response restore(String backupFile) {
         try {
             backupApi.restore(backupFile);
             return RestUtils.getResponse(Status.OK, new ApiMessage(

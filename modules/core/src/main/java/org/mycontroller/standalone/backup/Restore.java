@@ -61,15 +61,17 @@ public class Restore implements Runnable {
 
         BRCommons.setBackupRestoreRunning(true);
 
+        _logger.info("About to restore a backup, {}", backupFile);
+
         String extractedLocation = AppProperties.getInstance().getTmpLocation()
                 + backupFile.getName().replaceAll(".zip", "");
         try {
 
             String oldDatabaseLocation = AppProperties.getInstance().getDbH2DbLocation();
             //Extract zip file
-            _logger.debug("Zip file:{}", backupFile.getAbsolutePath());
+            _logger.debug("Zip file:{}", backupFile.getCanonicalPath());
 
-            extractZipFile(backupFile.getAbsolutePath(), extractedLocation);
+            extractZipFile(backupFile.getCanonicalPath(), extractedLocation);
             _logger.debug("All the files extracted to '{}'", extractedLocation);
 
             //Validate required files
