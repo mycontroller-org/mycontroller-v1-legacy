@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -54,28 +53,6 @@ public class BackupApi {
     public static final String KEY_NAME = "name";
     public static final String[] BACKUP_FILE_SUFFIX_FILTER = { "zip", "ZIP" };
 
-    public List<BackupFile> getBackupList() {
-        String[] filter = { "zip" };
-        Collection<File> zipFiles = FileUtils.listFiles(
-                FileUtils.getFile(AppProperties.getInstance().getBackupSettings().getBackupLocation()),
-                filter, true);
-        List<BackupFile> backupFiles = new ArrayList<BackupFile>();
-        for (File zipFile : zipFiles) {
-            if (zipFile.getName().contains(BRCommons.FILE_NAME_IDENTITY)) {
-                backupFiles.add(BackupFile.builder()
-                        .name(zipFile.getName())
-                        .size(zipFile.length())
-                        .timestamp(zipFile.lastModified())
-                        .canonicalPath(zipFile.getAbsolutePath())
-                        .build());
-            }
-
-        }
-        //Do order reverse
-        Collections.sort(backupFiles, Collections.reverseOrder());
-        return backupFiles;
-    }
-
     public QueryResponse getBackupFiles(HashMap<String, Object> filters) throws IOException {
         Query query = Query.get(filters);
 
@@ -93,6 +70,11 @@ public class BackupApi {
             IOFileFilter nameFileFilter = null;
             @SuppressWarnings("unchecked")
             List<String> fileNames = (List<String>) query.getFilters().get(KEY_NAME);
+            if (fileNames == null) {
+                fileNames = new ArrayList<String>();
+            }
+            fileNames.add(BRCommons.FILE_NAME_IDENTITY);
+
             if (fileNames != null && !fileNames.isEmpty()) {
                 for (String fileName : fileNames) {
                     if (nameFileFilter == null) {
