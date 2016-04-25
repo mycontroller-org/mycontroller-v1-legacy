@@ -33,6 +33,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
+import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.McServerScriptFileUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -114,6 +115,18 @@ public class ScriptsHandler extends AccessEngine {
         }
         try {
             return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFile(scriptName));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @POST
+    @Path("/runNow")
+    public Response runNow(String scriptName) {
+        try {
+            McServerScriptFileUtils.runNowScriptFile(scriptName);
+            return RestUtils.getResponse(Status.OK, new ApiMessage(scriptName
+                    + " script executed, check log file for more information."));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }

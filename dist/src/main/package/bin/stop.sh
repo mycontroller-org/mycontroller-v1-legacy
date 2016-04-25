@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-MC_PID=`ps -ef | grep mycontroller-dist-standalone | grep -v grep | awk '{ print $2 }'`
+MC_PID=`ps -ef | grep "org.mycontroller.standalone.StartApp" | grep -v grep | awk '{ print $2 }'`
 if [ ! -z "$MC_PID" ]
 then
   kill -15 ${MC_PID}

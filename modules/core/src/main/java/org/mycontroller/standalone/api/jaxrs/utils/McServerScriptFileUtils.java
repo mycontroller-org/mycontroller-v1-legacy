@@ -39,6 +39,7 @@ import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.scripts.McScript;
+import org.mycontroller.standalone.scripts.McScriptEngine;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 
 import lombok.experimental.UtilityClass;
@@ -198,6 +199,7 @@ public class McServerScriptFileUtils {
                     .size(fileScript.length())
                     .lastModified(fileScript.lastModified())
                     .data(FileUtils.readFileToString(fileScript, StandardCharsets.UTF_8))
+                    .canonicalPath(fileScript.getCanonicalPath())
                     .build();
 
             String name = fileScript.getCanonicalPath().replace(scriptsFileLocation, "");
@@ -213,11 +215,18 @@ public class McServerScriptFileUtils {
             mcScript.setName(FilenameUtils.getBaseName(name));
             return mcScript;
         } else {
-            _logger.warn("Trying to delete file from outside scope! Filepath:{}, CanonicalPath:{}",
+            _logger.warn("Trying to get file from outside scope! Filepath:{}, CanonicalPath:{}",
                     fileFullPath,
                     FileUtils.getFile(fileFullPath).getCanonicalPath());
-            throw new IllegalAccessException("Trying to delete file from outside scope!");
+            throw new IllegalAccessException("Trying to get file from outside scope!");
         }
+    }
+
+    public static void runNowScriptFile(String scriptFile) throws IOException, IllegalAccessException,
+            McBadRequestException {
+        McScript mcScript = getScriptFile(scriptFile);
+        mcScript.setData(null);//Remove this data, which is not required
+        new Thread(new McScriptEngine(mcScript)).start();
     }
 
     public static void uploadScript(McScript mcScript) throws IOException, IllegalAccessException,

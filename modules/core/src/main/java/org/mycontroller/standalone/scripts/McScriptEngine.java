@@ -18,8 +18,11 @@ package org.mycontroller.standalone.scripts;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.List;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import lombok.AllArgsConstructor;
@@ -51,6 +54,7 @@ public class McScriptEngine implements Runnable {
         }
         //check requested engine is available
         if (engine == null) {
+            listAvailableEngines();
             throw new McScriptException("Requested engine is not available! " + mcScript);
         }
 
@@ -58,11 +62,17 @@ public class McScriptEngine implements Runnable {
         McScriptEngineUtils.updateMcApi(engine);
 
         // evaluate JavaScript code from String
-        Object result = engine.eval(new FileReader(mcScript.getName()));
+        FileReader scriptFileReader = null;
+        if (mcScript.getCanonicalPath() != null) {
+            scriptFileReader = new FileReader(mcScript.getCanonicalPath());
+        } else {
+            scriptFileReader = new FileReader(mcScript.getName());
+        }
+        Object result = engine.eval(scriptFileReader);
         if (result == null) {
             result = engine.get(McScriptEngineUtils.MC_SCRIPT_RESULT);
         }
-        _logger.debug("Script result:[{}], {}", result, mcScript);
+        _logger.info("Script result:[{}], {}", result, mcScript);
         return result;
     }
 
@@ -75,5 +85,25 @@ public class McScriptEngine implements Runnable {
         } catch (Exception ex) {
             _logger.error("Error,", ex);
         }
+    }
+
+    public void listAvailableEngines() {
+        if (_logger.isInfoEnabled()) {
+            ScriptEngineManager mgr = McScriptEngineUtils.getScriptEngineManager();
+            List<ScriptEngineFactory> factories = mgr.getEngineFactories();
+            StringBuilder builder = new StringBuilder();
+            for (ScriptEngineFactory factory : factories) {
+                builder.append("\n\n*****************************************************")
+                        .append("\nEngineName:").append(factory.getEngineName())
+                        .append("\nEngineVersion:").append(factory.getEngineVersion())
+                        .append("\nLanguageName:").append(factory.getLanguageName())
+                        .append("\nLanguageVersion:").append(factory.getLanguageVersion())
+                        .append("\nExtensions:").append(factory.getExtensions())
+                        .append("\nAlias:").append(factory.getNames())
+                        .append("\n*****************************************************");
+            }
+            _logger.info("Available script engines information:{}", builder.toString());
+        }
+
     }
 }

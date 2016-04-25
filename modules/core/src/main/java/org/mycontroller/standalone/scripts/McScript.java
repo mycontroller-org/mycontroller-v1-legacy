@@ -45,6 +45,7 @@ public class McScript {
     private String mimeType;
     private String extension;
     private String name;
+    private String canonicalPath;
     private SCRIPT_TYPE type;
     private long size;
     private long lastModified;

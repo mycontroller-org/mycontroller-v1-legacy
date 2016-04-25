@@ -146,10 +146,22 @@ $scope, ScriptsFactory, $state, $uibModal, $stateParams, displayRestError, mchel
     }
   };
 
-    //Edit item
+  //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("scriptsAddEdit",{'name':$base64.encode($scope.itemIds[0])});
+    }
+  };
+
+  //execute item
+  $scope.runNow = function () {
+    if($scope.itemIds.length == 1){
+      ScriptsFactory.runNow($scope.itemIds[0], function(response) {
+        alertService.success(response.message);
+        $scope.itemIds = [];
+      },function(error){
+        displayRestError.display(error);
+      });
     }
   };
 
