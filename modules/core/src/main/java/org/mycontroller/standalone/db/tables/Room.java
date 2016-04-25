@@ -43,6 +43,7 @@ public class Room {
     public static final String KEY_NAME = "name";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_PARENT_ID = "parentId";
+    public static final String KEY_ICON = "icon";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -55,6 +56,9 @@ public class Room {
 
     @DatabaseField(columnName = KEY_PARENT_ID, canBeNull = true)
     private Integer parentId;
+
+    @DatabaseField(columnName = KEY_ICON, canBeNull = true)
+    private String icon;
 
     private String fullPath;
 
