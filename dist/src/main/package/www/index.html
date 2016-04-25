@@ -252,10 +252,13 @@
         <!-- Main Menu (header type)-->
         <ul ng-if="!mchelper.userSettings.hideMenu" class="nav navbar-nav navbar-primary persistent-secondary">
           <!-- Dashboard -->
-          <li ng-class="{ active: $state.current.url.indexOf('/dashboard') == 0 }">
-            <a ui-sref="dashboard"><i class="fa fa-tachometer fa-lg"></i> {{ 'DASHBOARDS' | translate }}</a>
+          <li ng-class="{ active: $state.current.name.indexOf('dashboard') == 0 }">
+            <a ui-sref="dashboardMain"><i class="fa fa-tachometer fa-lg"></i> {{ 'DASHBOARDS' | translate }}</a>
             <ul class="nav navbar-nav navbar-persistent">
-              <li ui-view="dashboardList" ng-class="{ active: $state.current.url.indexOf('/dashboard') == 0 }"><a ui-sref="dashboard" >{{ 'DASHBOARDS' | translate }}</a></li>
+              <li ui-view="dashboardList" ng-class="{ active: $state.current.name.indexOf('dashboardMain') == 0 }"><a ui-sref="dashboardMain" >{{ 'DASHBOARDS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('dashboardRoomsSensorsList') == 0 }">
+                <a ui-sref="dashboardRoomsSensorsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS_DETAIL' | translate }}</a>
+              </li>
             </ul>
           </li>
           <!-- Resources -->

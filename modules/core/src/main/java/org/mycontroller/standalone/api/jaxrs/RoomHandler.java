@@ -35,6 +35,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.json.RoomJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -57,23 +58,31 @@ public class RoomHandler extends AccessEngine {
     public Response getAllRooms(
             @QueryParam(Room.KEY_NAME) List<String> name,
             @QueryParam(Room.KEY_DESCRIPTION) List<String> description,
+            @QueryParam(Room.KEY_PARENT_ID) Integer parentId,
+            @QueryParam("isSimpleQuery") Boolean isSimpleQuery,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
             @QueryParam(Query.ORDER) String order) {
 
-        HashMap<String, Object> filters = new HashMap<String, Object>();
+        if (isSimpleQuery != null && isSimpleQuery) {
+            return RestUtils.getResponse(Status.OK,
+                    QueryResponse.builder().data(DaoUtils.getRoomDao().getByParentId(parentId)).build());
+        } else {
+            HashMap<String, Object> filters = new HashMap<String, Object>();
 
-        filters.put(Room.KEY_NAME, name);
-        filters.put(Room.KEY_DESCRIPTION, description);
+            filters.put(Room.KEY_NAME, name);
+            filters.put(Room.KEY_DESCRIPTION, description);
+            filters.put(Room.KEY_PARENT_ID, parentId);
 
-        //Query primary filters
-        filters.put(Query.ORDER, order);
-        filters.put(Query.ORDER_BY, orderBy);
-        filters.put(Query.PAGE_LIMIT, pageLimit);
-        filters.put(Query.PAGE, page);
+            //Query primary filters
+            filters.put(Query.ORDER, order);
+            filters.put(Query.ORDER_BY, orderBy);
+            filters.put(Query.PAGE_LIMIT, pageLimit);
+            filters.put(Query.PAGE, page);
 
-        return RestUtils.getResponse(Status.OK, DaoUtils.getRoomDao().getAll(Query.get(filters)));
+            return RestUtils.getResponse(Status.OK, DaoUtils.getRoomDao().getAll(Query.get(filters)));
+        }
     }
 
     @GET

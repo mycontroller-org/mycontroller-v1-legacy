@@ -70,10 +70,17 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/dashboard');
 
   $stateProvider
-    .state('dashboard', {
+    .state('dashboardMain', {
       url:"/dashboard",
       templateUrl: "partials/dashboard/dashboard.html",
       controller: "DashboardListController",
+       data: {
+        requireLogin: true
+      }
+    }).state('dashboardRoomsSensorsList', {
+      url:"/dashboard/rooms/list/:id",
+      templateUrl: "partials/rooms/rooms-sensors-list.html",
+      controller: "RoomsSensorsControllerList",
        data: {
         requireLogin: true
       }
@@ -531,7 +538,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: false
       },
       params: {
-      'toState': 'dashboard', // default state to proceed to after login
+      'toState': 'dashboardMain', // default state to proceed to after login
       'toParams': {}
     },
     });

@@ -695,13 +695,20 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getRooms() {
+    public static ArrayList<TypesIdNameMapper> getRooms(Integer selfId) {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<Room> rooms = DaoUtils.getRoomDao().getAll();
         if (rooms != null) {
             for (Room room : rooms) {
-                typesIdNameMappers.add(TypesIdNameMapper.builder().id(room.getId())
-                        .displayName(room.getName()).build());
+                if (selfId != null && selfId.equals(room.getId())) {
+                    //Nothing to do
+                } else {
+                    typesIdNameMappers.add(TypesIdNameMapper.builder()
+                            .id(room.getId())
+                            .subId(room.getName())
+                            .displayName(room.getFullPath())
+                            .build());
+                }
             }
         }
         return typesIdNameMappers;

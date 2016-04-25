@@ -65,6 +65,20 @@ public class RoomDaoImpl extends BaseAbstractDaoImpl<Room, Integer> implements R
     }
 
     @Override
+    public List<Room> getByParentId(Integer parentId) {
+        if (parentId == null) {
+            try {
+                return this.getDao().queryBuilder().where().isNull(Room.KEY_PARENT_ID).query();
+            } catch (SQLException ex) {
+                _logger.error("unable to get parent", ex);
+                return null;
+            }
+        } else {
+            return super.getAll(Room.KEY_PARENT_ID, parentId);
+        }
+    }
+
+    @Override
     public Room getByName(String name) {
         List<Room> rooms = super.getAll(Room.KEY_NAME, name);
         if (rooms != null && !rooms.isEmpty()) {

@@ -334,8 +334,8 @@ public class TypesHandler extends AccessEngine {
 
     @GET
     @Path("/rooms")
-    public Response getRooms() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getRooms());
+    public Response getRooms(@QueryParam("selfId") Integer selfId) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getRooms(selfId));
     }
 
     @GET

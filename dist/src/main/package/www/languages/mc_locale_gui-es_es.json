@@ -310,6 +310,7 @@
     "NODE_STATUS": "Detalles del nodo",
     "NODE_TYPE": "Tipo de Nodo",
     "NON_HEAP_MEMORY": "No hay Memoria de montón",
+    "NOTHING_SELECTED": "Nothing selected",
     "NOTIFICATIONS": "Notificaciones",
     "NOT_SET": "No establecido",
     "NO_ACK": "No ack",

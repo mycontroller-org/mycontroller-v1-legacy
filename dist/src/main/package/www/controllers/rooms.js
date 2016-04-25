@@ -165,12 +165,14 @@ myControllerModule.controller('RoomsControllerAddEdit', function ($scope, $state
   if($stateParams.id){
     RoomsFactory.get({"id":$stateParams.id},function(response) {
         $scope.item = response;
+        $scope.rooms = TypesFactory.getRooms({"selfId": response.id});
       },function(error){
         displayRestError.display(error);
       });
     $scope.sensors = TypesFactory.getSensors({"roomId":$stateParams.id, "enableNoRoomFilter":true});
   }else{
     $scope.sensors = TypesFactory.getSensors({"enableNoRoomFilter":true});
+    $scope.rooms = TypesFactory.getRooms();
   }
 
   $scope.save = function(){
@@ -193,4 +195,105 @@ myControllerModule.controller('RoomsControllerAddEdit', function ($scope, $state
       });
     }
   }
+});
+
+//room list with sensors detail
+myControllerModule.controller('RoomsSensorsControllerList', function(alertService, $stateParams,
+$scope, RoomsFactory, SensorsFactory, TypesFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $filter) {
+
+  //GUI page settings
+  $scope.roomHeader = '/';
+  $scope.showLoading = true;
+  $scope.noItemsSystemMsg = $filter('translate')('NO_ROOMS_SETUP');
+  $scope.noItemsSystemIcon = "fa fa-object-group";
+
+  //load empty, configuration, etc.,
+  $scope.mchelper = mchelper;
+  $scope.cs = CommonServices;
+  $scope.tooltipPlacement = 'top';
+  $scope.tooltipEnabled=true;
+  $scope.showNoRoomsSetup=false;
+  $scope.queryResponse = {};
+  $scope.queryResponse.query = {};
+  $scope.query = {};
+  $scope.query.pageLimit = -1;
+  $scope.query.isSimpleQuery = true;
+  $scope.sensorsQueryResponse = {};
+  $scope.sensorsList = {};
+
+  //get all Sensors
+  $scope.getAllSensors = function(){
+    SensorsFactory.getAll($scope.query, function(response) {
+      $scope.sensorsQueryResponse = response;
+      $scope.sensorsList = $scope.sensorsQueryResponse.data;
+      $scope.showLoading = false;
+    },function(error){
+      displayRestError.display(error);
+    });
+  }
+
+  //get all items
+  $scope.getAllItems = function(){
+    RoomsFactory.getAll($scope.query, function(response) {
+      $scope.queryResponse = response;
+      $scope.queryResponse.query = {};
+      if(response.data.length == 0){
+        $scope.queryResponse.query.totalItems = 0;
+      }
+    },function(error){
+      displayRestError.display(error);
+    });
+  }
+
+  //pre-load
+  if($stateParams.id){
+    $scope.query.parentId = $stateParams.id;
+    $scope.query.roomId = $stateParams.id;
+    RoomsFactory.get({"id":$stateParams.id},function(response) {
+        $scope.parentRoom = response;
+        $scope.roomHeader = $scope.parentRoom.room.fullPath;
+        $scope.getAllSensors(); //Get sensors
+      },function(error){
+        displayRestError.display(error);
+      });
+  }else{
+    $scope.showNoRoomsSetup=true;
+    $scope.showLoading = false;
+  }
+  $scope.getAllItems();
+
+  //Load room
+  $scope.getRoom = function(item){
+    $state.go("dashboardRoomsSensorsList", {'id':item.id});
+  };
+
+
+  //Load room - root
+  $scope.getRoomRoot = function(){
+    //console.log("root room...");
+    $state.go('dashboardRoomsSensorsList', {'id':''}, { reload: true });
+  };
+
+  //Update Variable / Send Payload
+  $scope.updateVariable = function(variable){
+    SensorsFactory.updateVariable(variable, function(){
+      //update Success
+    },function(error){
+      displayRestError.display(error);
+    });
+  };
+
+  //HVAC heater options - HVAC flow state
+  $scope.hvacOptionsFlowState = TypesFactory.getHvacOptionsFlowState();
+  //HVAC heater options - HVAC flow mode
+  $scope.hvacOptionsFlowMode = TypesFactory.getHvacOptionsFlowMode();
+  //HVAC heater options - HVAC fan speed
+  $scope.hvacOptionsFanSpeed = TypesFactory.getHvacOptionsFanSpeed();
+
+  //Defined variable types list
+  $scope.definedVariableTypes = CommonServices.getSensorVariablesKnownList();
+
+  //Hide variable names
+  $scope.hideVariableName=false;
+
 });

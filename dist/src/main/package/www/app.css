@@ -644,9 +644,16 @@ input.mc-color-steel-blue{
 
 
 
+/* sensors list under rooms page */
+.mc-sensors-room {
+  display: flex;
+  justify-content: center;
+}
 
-
-
+.mc-sensors-hr {
+  margin-top: 3px;
+  margin-bottom: 0px;
+}
 
 
 

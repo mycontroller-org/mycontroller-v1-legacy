@@ -345,7 +345,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     return chOptions;
   }
 
-    //Update Variable / Send Payload
+  //Update Variable / Send Payload
   $scope.updateVariable = function(variable){
     SensorsFactory.updateVariable(variable, function(){
       //update Success

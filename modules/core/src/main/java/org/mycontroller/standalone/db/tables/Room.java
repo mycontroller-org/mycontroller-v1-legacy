@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.db.RoomUtils;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -41,6 +42,7 @@ public class Room {
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
     public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_PARENT_ID = "parentId";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -50,4 +52,16 @@ public class Room {
 
     @DatabaseField(columnName = KEY_DESCRIPTION, canBeNull = true)
     private String description;
+
+    @DatabaseField(columnName = KEY_PARENT_ID, canBeNull = true)
+    private Integer parentId;
+
+    private String fullPath;
+
+    public String getFullPath() {
+        if (fullPath == null) {
+            fullPath = RoomUtils.getFullPath(this);
+        }
+        return fullPath;
+    }
 }

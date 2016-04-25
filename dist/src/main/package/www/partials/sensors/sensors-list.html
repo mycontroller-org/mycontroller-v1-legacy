@@ -92,7 +92,7 @@
             <td>{{item.name}}</td>
             <td>{{item.type.locale}}</td>
             <td>{{getSensorVariableTypes(item.variables)}}</td>
-            <td>{{item.room.name}}</td>
+            <td ng-bind-html="item.room.fullPath | mcResourceRepresentation"></td>
             <td><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left" am-time-ago="item.lastSeen"></span></td>
             <td class="mc-align-center">
               <a class="btn btn-link" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-trigger tooltip-placement="top"></i></a>
