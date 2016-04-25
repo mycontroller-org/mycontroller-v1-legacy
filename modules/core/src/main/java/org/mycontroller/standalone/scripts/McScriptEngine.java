@@ -76,18 +76,6 @@ public class McScriptEngine implements Runnable {
         return result;
     }
 
-    @Override
-    public void run() {
-        try {
-            _logger.debug("Script execution started for ", mcScript);
-            Object result = executeScript();
-            _logger.debug("Script result:[{}], {}", result, mcScript);
-            _logger.debug("Script execution completed for ", mcScript);
-        } catch (Exception ex) {
-            _logger.error("Error,", ex);
-        }
-    }
-
     public void listAvailableEngines() {
         if (_logger.isInfoEnabled()) {
             ScriptEngineManager mgr = McScriptEngineUtils.getScriptEngineManager();
@@ -105,6 +93,17 @@ public class McScriptEngine implements Runnable {
             }
             _logger.info("Available script engines information:{}", builder.toString());
         }
+    }
 
+    @Override
+    public void run() {
+        try {
+            _logger.debug("Script execution started for ", mcScript);
+            Object result = executeScript();
+            _logger.info("Script result:[{}], {}", result, mcScript);
+            _logger.debug("Script execution completed for ", mcScript);
+        } catch (Exception ex) {
+            _logger.error("Error,", ex);
+        }
     }
 }
