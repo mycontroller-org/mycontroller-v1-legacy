@@ -28,6 +28,7 @@ import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.SensorUtils;
+import org.mycontroller.standalone.db.tables.Room;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
@@ -144,5 +145,15 @@ public class SensorApi {
         } else {
             throw new McBadRequestException("null not allowed");
         }
+    }
+
+    public Sensor getSensor(String sensorName, String... roomsName) {
+        RoomApi roomApi = new RoomApi();
+        Room room = roomApi.getRoom(roomsName);
+        return getSensor(sensorName, room.getId());
+    }
+
+    public Sensor getSensor(String sensorName, Integer roomId) {
+        return DaoUtils.getSensorDao().getByRoomId(roomId, sensorName);
     }
 }

@@ -19,10 +19,12 @@ package org.mycontroller.standalone.db.tables;
 import java.util.List;
 
 import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -84,6 +86,11 @@ public class Sensor {
             this.variableTypes = SensorUtils.getVariableTypes(this);
         }
         return this.variableTypes;
+    }
+
+    @JsonIgnore
+    public List<SensorVariable> getVariables() {
+        return DaoUtils.getSensorVariableDao().getAllBySensorId(this.getId());
     }
 
     //This method is used to create variables for this sensor,

@@ -72,7 +72,7 @@ public class McScriptEngine implements Runnable {
         if (result == null) {
             result = engine.get(McScriptEngineUtils.MC_SCRIPT_RESULT);
         }
-        _logger.info("Script result:[{}], {}", result, mcScript);
+        _logger.debug("Script result:[{}], {}", result, mcScript);
         return result;
     }
 
@@ -80,7 +80,8 @@ public class McScriptEngine implements Runnable {
     public void run() {
         try {
             _logger.debug("Script execution started for ", mcScript);
-            executeScript();
+            Object result = executeScript();
+            _logger.debug("Script result:[{}], {}", result, mcScript);
             _logger.debug("Script execution completed for ", mcScript);
         } catch (Exception ex) {
             _logger.error("Error,", ex);
