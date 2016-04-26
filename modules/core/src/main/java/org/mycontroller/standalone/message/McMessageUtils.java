@@ -423,7 +423,7 @@ public class McMessageUtils {
             case V_UP:
             case V_DOWN:
             case V_STOP:
-                return PAYLOAD_TYPE.PL_STRING;
+                return PAYLOAD_TYPE.PL_DOUBLE;
             case V_IR_SEND:
             case V_IR_RECEIVE:
                 return PAYLOAD_TYPE.PL_HEX;
