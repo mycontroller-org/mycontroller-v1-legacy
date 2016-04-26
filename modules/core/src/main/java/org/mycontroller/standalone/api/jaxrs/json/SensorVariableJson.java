@@ -66,7 +66,6 @@ public class SensorVariableJson {
         timestamp = sensorVariable.getTimestamp();
         sensorName = sensorVariable.getSensor().getName();
         resourceName = new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails();
-
     }
 
 }

@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.message;
 
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 
@@ -39,7 +40,7 @@ public class MessageMonitorThread implements Runnable {
     public static synchronized void setTerminationIssued(boolean terminationIssued) {
         MessageMonitorThread.terminationIssued = terminationIssued;
         long start = System.currentTimeMillis();
-        long waitTime = 1000 * 60 * 5;
+        long waitTime = McUtils.ONE_MINUTE;
         while (!terminated) {
             try {
                 Thread.sleep(10);
@@ -73,11 +74,6 @@ public class MessageMonitorThread implements Runnable {
                 _logger.error("GatewayTable not available! dropping message... GatewayTable[{}], RawMessage[{}]",
                         gatewayTable, rawMessage);
             }
-
-        }
-        if (!RawMessageQueue.getInstance().isEmpty()) {
-            _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!",
-                    RawMessageQueue.getInstance().getQueueSize());
         }
     }
 
@@ -92,6 +88,10 @@ public class MessageMonitorThread implements Runnable {
                 } catch (InterruptedException ex) {
                     _logger.debug("Exception in sleep thread,", ex);
                 }
+            }
+            if (!RawMessageQueue.getInstance().isEmpty()) {
+                _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!",
+                        RawMessageQueue.getInstance().getQueueSize());
             }
             if (isTerminationIssued()) {
                 _logger.debug("MessageMonitorThread termination issues. Terminating.");

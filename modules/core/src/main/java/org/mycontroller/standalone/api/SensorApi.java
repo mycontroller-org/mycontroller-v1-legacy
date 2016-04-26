@@ -156,4 +156,21 @@ public class SensorApi {
     public Sensor getSensor(String sensorName, Integer roomId) {
         return DaoUtils.getSensorDao().getByRoomId(roomId, sensorName);
     }
+
+    private SensorVariable getSensorVariable(Sensor sensor, String variableType) {
+        for (SensorVariable sv : sensor.getVariables()) {
+            if (sv.getVariableType().getText().equalsIgnoreCase(variableType)) {
+                return sv;
+            }
+        }
+        return null;
+    }
+
+    public SensorVariable getSensorVariable(String sensorName, String variableType, String... roomsName) {
+        return getSensorVariable(getSensor(sensorName, roomsName), variableType);
+    }
+
+    public SensorVariable getSensorVariable(String sensorName, String variableType, Integer roomId) {
+        return getSensorVariable(getSensor(sensorName, roomId), variableType);
+    }
 }
