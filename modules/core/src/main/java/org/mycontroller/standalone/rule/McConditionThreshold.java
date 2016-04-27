@@ -48,12 +48,12 @@ public class McConditionThreshold extends McRuleBase {
         boolean triggerOperation = false;
         //Update current value
         try {
-            actualValue = super.getResourceValue(rdThreshold.getResourceType(), rdThreshold.getResourceId());
+            setActualValue(super.getResourceValue(rdThreshold.getResourceType(), rdThreshold.getResourceId()));
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        _logger.debug("Actual value:{}", actualValue);
+        _logger.debug("Actual value:{}", getActualValue());
         String thresholdValue = null;
 
         //Get threshold value
@@ -75,32 +75,32 @@ public class McConditionThreshold extends McRuleBase {
 
         switch (rdThreshold.getOperator()) {
             case EQ:
-                if (actualValue.equals(thresholdValue)) {
+                if (getActualValue().equals(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case GT:
-                if (McUtils.getDouble(actualValue) > McUtils.getDouble(thresholdValue)) {
+                if (McUtils.getDouble(getActualValue()) > McUtils.getDouble(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case GTE:
-                if (McUtils.getDouble(actualValue) >= McUtils.getDouble(thresholdValue)) {
+                if (McUtils.getDouble(getActualValue()) >= McUtils.getDouble(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case LT:
-                if (McUtils.getDouble(actualValue) < McUtils.getDouble(thresholdValue)) {
+                if (McUtils.getDouble(getActualValue()) < McUtils.getDouble(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case LTE:
-                if (McUtils.getDouble(actualValue) <= McUtils.getDouble(thresholdValue)) {
+                if (McUtils.getDouble(getActualValue()) <= McUtils.getDouble(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case NEQ:
-                if (!actualValue.equals(thresholdValue)) {
+                if (!getActualValue().equals(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;

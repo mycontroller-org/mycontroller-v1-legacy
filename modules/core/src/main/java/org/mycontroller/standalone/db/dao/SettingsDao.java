@@ -18,6 +18,8 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.Settings;
 
 /**
@@ -33,5 +35,7 @@ public interface SettingsDao extends BaseDao<Settings, Integer> {
     void update(String key, String subKey, String value);
 
     void update(String key, String subKey, String value, String altValue);
+
+    QueryResponse getAll(Query query, String alterdTotalCountKey);
 
 }

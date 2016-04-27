@@ -55,7 +55,7 @@ public class McConditionScript extends McRuleBase {
         //execute script
         try {
             File scriptFile = FileUtils.getFile(
-                    AppProperties.getInstance().getScriptLocation() + rdScript.getScriptFile());
+                    AppProperties.getInstance().getScriptsLocation() + rdScript.getScriptFile());
             McScript mcScript = McScript.builder()
                     .name(scriptFile.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(scriptFile.getCanonicalPath()))

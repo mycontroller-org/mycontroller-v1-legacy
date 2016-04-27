@@ -18,8 +18,10 @@ package org.mycontroller.standalone.scripts;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 import org.apache.commons.io.FileUtils;
@@ -28,6 +30,7 @@ import org.mycontroller.standalone.scripts.api.McScriptApi;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -35,6 +38,7 @@ import lombok.NoArgsConstructor;
  */
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class McScriptEngineUtils {
     private static ScriptEngineManager scriptEngineManager = null;
     public static final String MC_API = "mcApi";
@@ -48,9 +52,9 @@ public class McScriptEngineUtils {
     }
 
     public static File getScriptFile(String scriptFileName) throws IllegalAccessException, IOException {
-        File scriptFile = FileUtils.getFile(AppProperties.getInstance().getScriptLocation() + scriptFileName);
+        File scriptFile = FileUtils.getFile(AppProperties.getInstance().getScriptsLocation() + scriptFileName);
         String scriptCanonicalPath = scriptFile.getCanonicalPath();
-        String scriptLocation = FileUtils.getFile(AppProperties.getInstance().getScriptLocation())
+        String scriptLocation = FileUtils.getFile(AppProperties.getInstance().getScriptsLocation())
                 .getCanonicalPath();
         //Check is file available and has access to read
         if (!scriptFile.exists() || !scriptFile.canRead()) {
@@ -67,6 +71,25 @@ public class McScriptEngineUtils {
     //Load mc api details
     public static void updateMcApi(ScriptEngine engine) {
         engine.put(MC_API, new McScriptApi());
+    }
+
+    public static void listAvailableEngines() {
+        if (_logger.isInfoEnabled()) {
+            ScriptEngineManager mgr = McScriptEngineUtils.getScriptEngineManager();
+            List<ScriptEngineFactory> factories = mgr.getEngineFactories();
+            StringBuilder builder = new StringBuilder();
+            builder.append("\n*****************************************************");
+            for (ScriptEngineFactory factory : factories) {
+                builder.append("\nEngineName      :").append(factory.getEngineName())
+                        .append("\nEngineVersion   :").append(factory.getEngineVersion())
+                        .append("\nLanguageName    :").append(factory.getLanguageName())
+                        .append("\nLanguageVersion :").append(factory.getLanguageVersion())
+                        .append("\nExtensions      :").append(factory.getExtensions())
+                        .append("\nAlias           :").append(factory.getNames());
+                builder.append("\n*****************************************************");
+            }
+            _logger.info("Available script engines information:{}", builder.toString());
+        }
     }
 
     public enum SCRIPT_TYPE {

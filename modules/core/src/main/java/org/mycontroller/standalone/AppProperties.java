@@ -48,11 +48,13 @@ public class AppProperties {
     private static AppProperties _instance = new AppProperties();
 
     public static final String APPLICATION_NAME = "MyController.org";
-    public static final String CONDITIONS_SCRIPT_DIRECTORY = "conditions" + File.separator;
-    public static final String OPERATIONS_SCRIPT_DIRECTORY = "operations" + File.separator;
+    private static final String TEMPLATES_DIRECTORY = "templates" + File.separator;
+    private static final String SCRIPTS_DIRECTORY = "scripts" + File.separator;
+    public static final String CONDITIONS_SCRIPTS_DIRECTORY = "conditions" + File.separator;
+    public static final String OPERATIONS_SCRIPTS_DIRECTORY = "operations" + File.separator;
 
     private String tmpLocation;
-    private String scriptLocation;
+    private String resourcesLocation;
     private String appDirectory;
 
     private String dbH2DbLocation;
@@ -355,13 +357,20 @@ public class AppProperties {
 
         createDirectoryLocation(tmpLocation);
 
-        //create script location
-        scriptLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.script.location", "../conf/scripts"));
-        createDirectoryLocation(scriptLocation);
+        //get/create resources location
+        resourcesLocation = McUtils.getDirectoryLocation(
+                getValue(properties, "mcc.resources.location", "../conf/resources"));
+
+        //create resources location
+        createDirectoryLocation(resourcesLocation);
+        //create templates location
+        createDirectoryLocation(getTemplatesLocation());
+        //create scripts location
+        createDirectoryLocation(getScriptsLocation());
         //create scripts, conditions directory
-        createDirectoryLocation(scriptLocation + CONDITIONS_SCRIPT_DIRECTORY);
+        createDirectoryLocation(getScriptsConditionsLocation());
         //create scripts, operations directory
-        createDirectoryLocation(scriptLocation + OPERATIONS_SCRIPT_DIRECTORY);
+        createDirectoryLocation(getScriptsOperationsLocation());
 
         //database location
         dbH2DbLocation = getValue(properties, "mcc.db.h2db.location", "../conf/mycontroller");
@@ -600,20 +609,27 @@ public class AppProperties {
         this.pushbulletSettings = pushbulletSettings;
     }
 
-    public String getScriptLocation() {
-        return scriptLocation;
+    public String getResourcesLocation() {
+        return resourcesLocation;
     }
 
-    public String getScriptConditionsLocation() {
-        return getScriptLocation() + CONDITIONS_SCRIPT_DIRECTORY;
+    public String getScriptsLocation() {
+        return getResourcesLocation() + SCRIPTS_DIRECTORY;
     }
 
-    public String getScriptOperationsLocation() {
-        return getScriptLocation() + OPERATIONS_SCRIPT_DIRECTORY;
+    public String getTemplatesLocation() {
+        return getResourcesLocation() + TEMPLATES_DIRECTORY;
+    }
+
+    public String getScriptsConditionsLocation() {
+        return getScriptsLocation() + CONDITIONS_SCRIPTS_DIRECTORY;
+    }
+
+    public String getScriptsOperationsLocation() {
+        return getScriptsLocation() + OPERATIONS_SCRIPTS_DIRECTORY;
     }
 
     public String getAppDirectory() {
         return appDirectory;
     }
-
 }

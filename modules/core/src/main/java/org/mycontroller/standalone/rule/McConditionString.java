@@ -45,76 +45,76 @@ public class McConditionString extends McRuleBase {
         boolean triggerOperation = false;
         //Update current value
         try {
-            actualValue = super.getResourceValue(rdString.getResourceType(), rdString.getResourceId());
+            setActualValue(super.getResourceValue(rdString.getResourceType(), rdString.getResourceId()));
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        _logger.debug("Actual value:{}", actualValue);
+        _logger.debug("Actual value:{}", getActualValue());
 
         switch (rdString.getOperator()) {
             case CONTAINS:
                 if (rdString.isIgnoreCase()) {
-                    if (actualValue.toLowerCase().contains(rdString.getPattern().toLowerCase())) {
+                    if (getActualValue().toLowerCase().contains(rdString.getPattern().toLowerCase())) {
                         triggerOperation = true;
                     }
                 } else {
-                    if (actualValue.contains(rdString.getPattern())) {
+                    if (getActualValue().contains(rdString.getPattern())) {
                         triggerOperation = true;
                     }
                 }
                 break;
             case ENDS_WITH:
                 if (rdString.isIgnoreCase()) {
-                    if (actualValue.toLowerCase().endsWith(rdString.getPattern().toLowerCase())) {
+                    if (getActualValue().toLowerCase().endsWith(rdString.getPattern().toLowerCase())) {
                         triggerOperation = true;
                     }
                 } else {
-                    if (actualValue.endsWith(rdString.getPattern())) {
+                    if (getActualValue().endsWith(rdString.getPattern())) {
                         triggerOperation = true;
                     }
                 }
                 break;
             case EQUAL:
                 if (rdString.isIgnoreCase()) {
-                    if (actualValue.equalsIgnoreCase(rdString.getPattern())) {
+                    if (getActualValue().equalsIgnoreCase(rdString.getPattern())) {
                         triggerOperation = true;
                     }
                 } else {
-                    if (actualValue.equals(rdString.getPattern())) {
+                    if (getActualValue().equals(rdString.getPattern())) {
                         triggerOperation = true;
                     }
                 }
                 break;
             case MATCH:
                 if (rdString.isIgnoreCase()) {
-                    if (actualValue.toLowerCase().matches(rdString.getPattern().toLowerCase())) {
+                    if (getActualValue().toLowerCase().matches(rdString.getPattern().toLowerCase())) {
                         triggerOperation = true;
                     }
                 } else {
-                    if (actualValue.matches(rdString.getPattern())) {
+                    if (getActualValue().matches(rdString.getPattern())) {
                         triggerOperation = true;
                     }
                 }
                 break;
             case NOT_EQUAL:
                 if (rdString.isIgnoreCase()) {
-                    if (!actualValue.equalsIgnoreCase(rdString.getPattern())) {
+                    if (!getActualValue().equalsIgnoreCase(rdString.getPattern())) {
                         triggerOperation = true;
                     }
                 } else {
-                    if (!actualValue.equals(rdString.getPattern())) {
+                    if (!getActualValue().equals(rdString.getPattern())) {
                         triggerOperation = true;
                     }
                 }
                 break;
             case STARTS_WITH:
                 if (rdString.isIgnoreCase()) {
-                    if (actualValue.toLowerCase().startsWith(rdString.getPattern().toLowerCase())) {
+                    if (getActualValue().toLowerCase().startsWith(rdString.getPattern().toLowerCase())) {
                         triggerOperation = true;
                     }
                 } else {
-                    if (actualValue.startsWith(rdString.getPattern())) {
+                    if (getActualValue().startsWith(rdString.getPattern())) {
                         triggerOperation = true;
                     }
                 }

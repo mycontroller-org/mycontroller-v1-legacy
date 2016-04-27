@@ -105,16 +105,14 @@ public class Restore implements Runnable {
                         FileUtils.getFile(AppProperties.getInstance().getWebSslKeystoreFile()));
             }
 
-            //Restore scripts directory
+            //Restore resources directory
             //Remove old files
-            FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getScriptLocation()));
-            //restore scripts directory, if exists
-            File scriptsDir = FileUtils.getFile(extractedLocation + File.separator + BRCommons.SCRIPTS_LOCATION);
-            if (scriptsDir.exists()) {
+            FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()));
+            //restore resources directory, if exists
+            File resourcesDir = FileUtils.getFile(extractedLocation + File.separator + BRCommons.RESOURCES_LOCATION);
+            if (resourcesDir.exists()) {
                 FileUtils.copyDirectory(
-                        scriptsDir,
-                        FileUtils.getFile(AppProperties.getInstance().getScriptLocation()),
-                        true);
+                        resourcesDir, FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()), true);
             }
 
             //remove old database

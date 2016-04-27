@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.scripts;
+package org.mycontroller.standalone.model;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -40,42 +40,23 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class McScript {
-    private String engineName;
-    private String mimeType;
+public class McTemplate {
     private String extension;
     private String name;
     private String canonicalPath;
-    private SCRIPT_TYPE type;
     private long size;
     private long lastModified;
     private Object data;
 
     @JsonIgnore
-    public boolean isValid() {
-        if (engineName == null && mimeType == null && extension == null) {
-            return false;
-        }
-        return true;
-    }
-
-    public SCRIPT_TYPE getType() {
-        if (type == null) {
-            if (name.startsWith(AppProperties.CONDITIONS_SCRIPTS_DIRECTORY)) {
-                type = SCRIPT_TYPE.CONDITION;
-            } else {
-                type = SCRIPT_TYPE.OPERATION;
-            }
-        }
-        return type;
-    }
-
-    @JsonIgnore
-    public static McScript getMcScript(String scriptFileName) throws IllegalAccessException, IOException {
-        File scriptFile = McScriptEngineUtils.getScriptFile(scriptFileName);
-        return McScript.builder()
-                .extension(FilenameUtils.getExtension(scriptFile.getCanonicalPath()))
-                .name(scriptFile.getCanonicalPath())
+    public static McTemplate get(String fileName) throws IllegalAccessException, IOException {
+        File templateFile = FileUtils.getFile(AppProperties.getInstance().getTemplatesLocation() + fileName);
+        return McTemplate.builder()
+                .extension(FilenameUtils.getExtension(templateFile.getCanonicalPath()))
+                .canonicalPath(templateFile.getCanonicalPath())
+                .name(templateFile.getCanonicalPath())
+                .lastModified(templateFile.lastModified())
+                .size(templateFile.length())
                 .build();
     }
 }

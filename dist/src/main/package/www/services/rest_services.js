@@ -439,3 +439,25 @@ myControllerModule.factory('ScriptsFactory', function ($resource) {
     deleteIds: { method: 'POST', params: {id: 'delete'} },
   })
 });
+
+//Templates Services
+myControllerModule.factory('TemplatesFactory', function ($resource) {
+  return $resource('/mc/rest/templates/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null} },
+    getAllLessInfo: { method: 'GET', isArray: true, params: {id: null, 'lessInfo':true} },
+    get:    { method: 'GET', params: {id: 'get'}},
+    upload: { method: 'POST', params: {id: null} },
+    deleteIds: { method: 'POST', params: {id: 'delete'} },
+  })
+});
+
+//Variables repository Services
+myControllerModule.factory('VariablesRepositoryFactory', function ($resource) {
+  return $resource('/mc/rest/variables/:pid', {pid: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {pid: null} },
+    get:    { method: 'GET', params: {pid: 'get'}},
+    create: { method: 'POST', params: {pid: null} },
+    update: { method: 'PUT', params: {pid: null} },
+    deleteIds: { method: 'POST', params: {pid: 'delete'} },
+  })
+});

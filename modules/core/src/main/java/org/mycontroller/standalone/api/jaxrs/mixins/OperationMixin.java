@@ -88,6 +88,7 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                 OperationSendEmail operationSendEmail = new OperationSendEmail();
                 operationSendEmail.setEmailSubject(node.get("emailSubject").asText());
                 operationSendEmail.setToEmailAddresses(node.get("toEmailAddresses").asText());
+                operationSendEmail.setTemplate(node.get("template").asText());
                 operation = operationSendEmail;
                 break;
             case SEND_PAYLOAD:

@@ -164,12 +164,12 @@
     <script src="controllers/dashboard.js"></script>
     <script src="controllers/sensors.js"></script>
     <script src="controllers/nodes.js"></script>
-    <script src="controllers/sensorsAction.js"></script>
-    <script src="controllers/charts.js"></script>
     <script src="controllers/users.js"></script>
     <script src="controllers/rule-engine.js"></script>
     <script src="controllers/operations.js"></script>
     <script src="controllers/scripts.js"></script>
+    <script src="controllers/templates.js"></script>
+    <script src="controllers/variables-repository.js"></script>
     <script src="controllers/timers.js"></script>
     <script src="controllers/settings.js"></script>
     <script src="controllers/resources-logs.js"></script>
@@ -271,12 +271,9 @@
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rules') == 0 }"><a ui-sref="rulesList"><i class="fa fa-cogs fa-lg"></i> {{ 'RULES' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> {{ 'TIMERS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('operations') == 0 }"><a ui-sref="operationsList"><i class="fa fa-tasks fa-lg"></i> {{ 'OPERATIONS' | translate }}</a></li>
-              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('scripts') == 0 }"><a ui-sref="scriptsList"><i class="fa fa-code fa-lg"></i> {{ 'SCRIPTS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('forwardPayload') == 0 }"><a ui-sref="forwardPayloadList"><i class="fa fa-forward fa-lg"></i> {{ 'FORWARD_PAYLOAD' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>{{ 'GROUPS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rooms') == 0 }"><a ui-sref="roomsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS' | translate }}</a></li>
-              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>
-              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('uidTags') == 0 }"><a ui-sref="uidTagsList"><i class="fa fa-tags fa-lg"></i> {{ 'UID_TAGS' | translate }}</a></li>
             </ul>
           </li>
           <!-- Action Board -->
@@ -295,6 +292,17 @@
               <li ng-class="{ active: $state.current.name.indexOf('statusSystem') == 0 }"><a ui-sref="statusSystem"><i class="fa fa-heartbeat fa-lg"></i> {{ 'SYSTEM_STATUS' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('resourcesLogs') == 0 }"><a ui-sref="resourcesLogsList"><i class="fa fa-list fa-lg"></i> {{ 'RESOURCES_LOGS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('mycontrollerLogList') == 0 }"><a ui-sref="mycontrollerLogList"><i class="fa fa-list fa-lg"></i> {{ 'MYCONTROLLER_SERVER_LOG' | translate }}</a></li>
+            </ul>
+          </li>
+          <!-- Utils -->
+          <li ng-class="{ active: $state.current.url.indexOf('/utilities') == 0 }">
+            <a ui-sref="scriptsList"><i class="fa fa-cube fa-lg"></i> {{ 'UTILITIES' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('scripts') == 0 }"><a ui-sref="scriptsList"><i class="fa fa-code fa-lg"></i> {{ 'SCRIPTS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('templates') == 0 }"><a ui-sref="templatesList"><i class="fa fa-file-text fa-lg"></i> {{ 'TEMPLATES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('variables') == 0 }"><a ui-sref="variablesRepositoryList"><i class="fa fa-list-alt fa-lg"></i> {{ 'VARIABLES_REPOSITORY' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('uidTags') == 0 }"><a ui-sref="uidTagsList"><i class="fa fa-tags fa-lg"></i> {{ 'UID_TAGS' | translate }}</a></li>
             </ul>
           </li>
           <!-- Settings -->

@@ -1,0 +1,77 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="showData">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-if="showData"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div><!-- div-main -->
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-7">
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
+            <div class="col-sm-10">
+              <input ng-if="!editMode" class="form-control" placeholder="{{ 'FILE_NAME' | translate }}" ng-model="item.name" required />
+              <span ng-if="editMode" >{{item.name}}</span>
+            </div>
+          </div>
+
+          <!-- extension -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'EXTENSION' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-model="item.extension" ng-disabled="editMode" required >
+                <option value="" ng-hide="true"></option>
+                <option value="html">HTML</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- File -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'FILE' | translate }}</label>
+            <div class="col-sm-5">
+              <input type="file" class="form-control" id="firmware.file" on-read-file="displayFileContents(contents)" ng-accept="'.*'" ng-model="file">
+            </div>
+          </div>
+
+          <!-- File content list -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'CONTENT' | translate }}</label>
+            <div class="col-sm-10">
+              <textarea  class="form-control" rows="21" style="resize:none" ng-model="item.data"  required ></textarea>
+            </div>
+          </div>
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div><!-- div-main -->
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

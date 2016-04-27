@@ -98,10 +98,10 @@ public class Backup {
                         FileUtils.getFile(KEY_STORE_FILE),
                         true);
             }
-            //Copy scripts directory
+            //Copy resources directory
             FileUtils.copyDirectory(
-                    FileUtils.getFile(AppProperties.getInstance().getScriptLocation()),
-                    FileUtils.getFile(applicationBackupDir + File.separator + BRCommons.SCRIPTS_LOCATION),
+                    FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()),
+                    FileUtils.getFile(applicationBackupDir + File.separator + BRCommons.RESOURCES_LOCATION),
                     true);
 
         } catch (IOException ex) {

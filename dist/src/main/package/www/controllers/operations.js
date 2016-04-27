@@ -214,7 +214,7 @@ $scope, OperationsFactory, $state, $uibModal, $stateParams, displayRestError, mc
 
 //Add Edit notification controller
 myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $stateParams, $state, GatewaysFactory,
-  NodesFactory, SensorsFactory, TypesFactory, OperationsFactory, ScriptsFactory, mchelper, alertService, displayRestError, $filter, CommonServices) {
+  NodesFactory, SensorsFactory, TypesFactory, OperationsFactory, ScriptsFactory, TemplatesFactory, mchelper, alertService, displayRestError, $filter, CommonServices) {
   $scope.mchelper = mchelper;
   $scope.item = {};
   $scope.item.enabled = true;
@@ -277,6 +277,7 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
   $scope.spResourceTypes = TypesFactory.getResourceTypes({"operationType": "Send payload"});
   $scope.reqPlResourceTypes = TypesFactory.getResourceTypes({"operationType": "Request payload"});
   $scope.operationTypes = TypesFactory.getOperationTypes();
+  $scope.templatesList = TemplatesFactory.getAllLessInfo();
   $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Operation"});
 
   //GUI page settings

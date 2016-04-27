@@ -50,17 +50,17 @@ public class McConditionState extends McRuleBase {
 
         //Update current value
         try {
-            actualValue = super.getResourceValue(rdState.getResourceType(), rdState.getResourceId());
+            setActualValue(super.getResourceValue(rdState.getResourceType(), rdState.getResourceId()));
             if (rdState.getResourceType() == RESOURCE_TYPE.SENSOR_VARIABLE) {
-                actualState = McUtils.getInteger(actualValue) > 0 ? STATE.ON : STATE.OFF;
+                actualState = McUtils.getInteger(getActualValue()) > 0 ? STATE.ON : STATE.OFF;
             } else {
-                actualState = STATE.fromString(actualValue);
+                actualState = STATE.fromString(getActualValue());
             }
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        _logger.debug("Actual value:{}", actualValue);
+        _logger.debug("Actual value:{}", getActualValue());
 
         switch (rdState.getOperator()) {
             case EQ:

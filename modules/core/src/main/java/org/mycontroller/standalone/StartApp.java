@@ -46,9 +46,11 @@ import org.mycontroller.standalone.api.jaxrs.ScriptsHandler;
 import org.mycontroller.standalone.api.jaxrs.SecurityHandler;
 import org.mycontroller.standalone.api.jaxrs.SensorHandler;
 import org.mycontroller.standalone.api.jaxrs.SettingsHandler;
+import org.mycontroller.standalone.api.jaxrs.TemplatesHandler;
 import org.mycontroller.standalone.api.jaxrs.TimerHandler;
 import org.mycontroller.standalone.api.jaxrs.TypesHandler;
 import org.mycontroller.standalone.api.jaxrs.UidTagHandler;
+import org.mycontroller.standalone.api.jaxrs.VariablesHandler;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.ApplicationExceptionMapper;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.BadRequestExceptionMapper;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.DefaultOptionsMethodExceptionMapper;
@@ -66,6 +68,7 @@ import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -143,6 +146,8 @@ public class StartApp {
         resources.add(UidTagHandler.class.getName());
         resources.add(MyControllerHandler.class.getName());
         resources.add(ScriptsHandler.class.getName());
+        resources.add(TemplatesHandler.class.getName());
+        resources.add(VariablesHandler.class.getName());
 
         //Add PreFlight handler
         resources.add(OptionsHandler.class.getName());
@@ -236,6 +241,9 @@ public class StartApp {
         //Set to locale actual
         McUtils.updateLocale(MC_LANGUAGE.fromString(AppProperties.getInstance().getControllerSettings()
                 .getLanguage()));
+
+        //List available script engines information
+        McScriptEngineUtils.listAvailableEngines();
 
         //Start message Monitor Thread
         //Create new thread to monitor received logs

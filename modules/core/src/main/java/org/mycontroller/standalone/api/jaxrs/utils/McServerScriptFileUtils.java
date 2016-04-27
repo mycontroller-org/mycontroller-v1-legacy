@@ -65,19 +65,19 @@ public class McServerScriptFileUtils {
             query.setPageLimit(-1);
         }
 
-        String scriptsFileLocation = AppProperties.getInstance().getScriptLocation();
+        String scriptsFileLocation = AppProperties.getInstance().getScriptsLocation();
 
         String filesLocation = null;
         if (query.getFilters().get(ScriptsHandler.KEY_TYPE) == null) {
             filesLocation = scriptsFileLocation;
         } else if (query.getFilters().get(ScriptsHandler.KEY_TYPE) == SCRIPT_TYPE.CONDITION) {
-            filesLocation = AppProperties.getInstance().getScriptConditionsLocation();
+            filesLocation = AppProperties.getInstance().getScriptsConditionsLocation();
         } else if (query.getFilters().get(ScriptsHandler.KEY_TYPE) == SCRIPT_TYPE.OPERATION) {
-            filesLocation = AppProperties.getInstance().getScriptOperationsLocation();
+            filesLocation = AppProperties.getInstance().getScriptsOperationsLocation();
         }
 
-        String locationCanonicalPath = McUtils.getDirectoryLocation(FileUtils.getFile(scriptsFileLocation)
-                .getCanonicalPath());
+        String locationCanonicalPath = McUtils.getDirectoryLocation(
+                FileUtils.getFile(scriptsFileLocation).getCanonicalPath());
 
         if (FileUtils.getFile(filesLocation).exists()) {
             List<McScript> files = new ArrayList<McScript>();
@@ -167,7 +167,7 @@ public class McServerScriptFileUtils {
 
     public static void deleteScriptFiles(List<String> scriptFiles) throws IOException {
         String scriptsFileLocation = McUtils.getDirectoryLocation(FileUtils.getFile(
-                AppProperties.getInstance().getScriptLocation()).getCanonicalPath());
+                AppProperties.getInstance().getScriptsLocation()).getCanonicalPath());
         for (String scriptFile : scriptFiles) {
             String fileFullPath = scriptsFileLocation + scriptFile;
             if (McUtils.isInScope(scriptsFileLocation, fileFullPath)) {
@@ -186,7 +186,7 @@ public class McServerScriptFileUtils {
     public static McScript getScriptFile(String scriptFile) throws IOException, IllegalAccessException,
             McBadRequestException {
         String scriptsFileLocation = McUtils.getDirectoryLocation(FileUtils.getFile(
-                AppProperties.getInstance().getScriptLocation()).getCanonicalPath());
+                AppProperties.getInstance().getScriptsLocation()).getCanonicalPath());
         String fileFullPath = scriptsFileLocation + scriptFile;
         if (McUtils.isInScope(scriptsFileLocation, fileFullPath)) {
             if (!FileUtils.getFile(fileFullPath).exists()) {
@@ -204,14 +204,14 @@ public class McServerScriptFileUtils {
 
             String name = fileScript.getCanonicalPath().replace(scriptsFileLocation, "");
             SCRIPT_TYPE type = null;
-            if (name.startsWith(AppProperties.CONDITIONS_SCRIPT_DIRECTORY)) {
+            if (name.startsWith(AppProperties.CONDITIONS_SCRIPTS_DIRECTORY)) {
                 type = SCRIPT_TYPE.CONDITION;
             } else {
                 type = SCRIPT_TYPE.OPERATION;
             }
             mcScript.setType(type);
-            name = name.replace(AppProperties.CONDITIONS_SCRIPT_DIRECTORY, "")
-                    .replace(AppProperties.OPERATIONS_SCRIPT_DIRECTORY, "");
+            name = name.replace(AppProperties.CONDITIONS_SCRIPTS_DIRECTORY, "")
+                    .replace(AppProperties.OPERATIONS_SCRIPTS_DIRECTORY, "");
             mcScript.setName(FilenameUtils.getBaseName(name));
             return mcScript;
         } else {
@@ -239,14 +239,12 @@ public class McServerScriptFileUtils {
                 || mcScript.getName() == null) {
             throw new McBadRequestException("Required parameter(s) missing!");
         }
-        String fileLocation = McUtils.getDirectoryLocation(FileUtils.getFile(
-                AppProperties.getInstance().getScriptLocation()).getCanonicalPath());
         String fileFullPath = null;
         if (mcScript.getType() == SCRIPT_TYPE.CONDITION) {
-            fileFullPath = fileLocation + AppProperties.CONDITIONS_SCRIPT_DIRECTORY
+            fileFullPath = AppProperties.getInstance().getScriptsConditionsLocation()
                     + mcScript.getName() + "." + mcScript.getExtension();
         } else {
-            fileFullPath = fileLocation + AppProperties.OPERATIONS_SCRIPT_DIRECTORY
+            fileFullPath = AppProperties.getInstance().getScriptsOperationsLocation()
                     + mcScript.getName() + "." + mcScript.getExtension();
         }
         FileUtils.writeStringToFile(FileUtils.getFile(fileFullPath), (String) mcScript.getData(), false);

@@ -80,6 +80,15 @@
               </div>
             </div>
 
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TEMPLATE' | translate }}</label>
+              <div class="col-sm-10">
+                <select class="form-control" pf-select ng-options="rT as rT for rT in templatesList" ng-model="item.template" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+            </div>
+
           </div>
 
           <!-- SMS Operation -->

@@ -46,15 +46,15 @@ public class McConditionThresholdRange extends McRuleBase {
         boolean triggerOperation = false;
         //Update current value
         try {
-            actualValue = super.getResourceValue(rdThRange.getResourceType(), rdThRange.getResourceId());
+            setActualValue(super.getResourceValue(rdThRange.getResourceType(), rdThRange.getResourceId()));
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
 
-        Double avDouble = McUtils.getDouble(actualValue);
+        Double avDouble = McUtils.getDouble(getActualValue());
 
-        _logger.debug("Actual value:{}", actualValue);
+        _logger.debug("Actual value:{}", getActualValue());
 
         if (rdThRange.isIncludeOperatorLow() && rdThRange.isIncludeOperatorHigh()) {
             if (avDouble >= rdThRange.getThresholdLow() && avDouble <= rdThRange.getThresholdHigh()) {

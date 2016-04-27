@@ -34,7 +34,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class McRuleBase extends BasicRule {
     private RuleDefinition ruleDefinition;
-    protected String actualValue = null;
+
+    protected String getActualValue() {
+        return ruleDefinition.getActualValue();
+    }
+
+    protected void setActualValue(String actualValue) {
+        ruleDefinition.setActualValue(actualValue);
+    }
 
     public RuleDefinition getRuleDefinitionBase() {
         return ruleDefinition;
