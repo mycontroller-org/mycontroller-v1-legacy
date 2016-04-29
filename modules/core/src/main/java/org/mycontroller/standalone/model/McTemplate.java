@@ -18,6 +18,7 @@ package org.mycontroller.standalone.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -46,7 +47,7 @@ public class McTemplate {
     private String canonicalPath;
     private long size;
     private long lastModified;
-    private Object data;
+    private String data;
 
     @JsonIgnore
     public static McTemplate get(String fileName) throws IllegalAccessException, IOException {
@@ -58,5 +59,10 @@ public class McTemplate {
                 .lastModified(templateFile.lastModified())
                 .size(templateFile.length())
                 .build();
+    }
+
+    @JsonIgnore
+    public String getMappedString(Map<String, Object> keyValueMap) {
+        return null;
     }
 }

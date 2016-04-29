@@ -28,7 +28,7 @@ import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.model.McTemplate;
-import org.mycontroller.standalone.operation.OperationNotification;
+import org.mycontroller.standalone.operation.Notification;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -100,7 +100,7 @@ public class OperationSendEmail extends Operation {
                     + ruleDefinition.getName());
         }
 
-        OperationNotification operationNotification = new OperationNotification(ruleDefinition);
+        Notification notification = new Notification(ruleDefinition);
         String emailBody = null;
         try {
             McTemplate mcTemplate = McTemplate.get(template);
@@ -119,10 +119,10 @@ public class OperationSendEmail extends Operation {
             builder.append("\nError message: ").append(ex.getMessage());
 
             //Add message details in text format
-            builder.append("\n\nRule definition name: ").append("${ruleName}");
-            builder.append("\nCondition: ").append("${ruleCondition}");
-            builder.append("\nActual value: ").append("${actualValue}");
-            builder.append("\nTriggered at: ").append("${triggeredAt}");
+            builder.append("\n\nRule definition name: ").append("${notification.ruleName}");
+            builder.append("\nCondition: ").append("${notification.ruleCondition}");
+            builder.append("\nActual value: ").append("${notification.actualValue}");
+            builder.append("\nTriggered at: ").append("${notification.triggeredAt}");
             builder.append("\n\n\n-- Powered by").append(" www.MyController.org");
             emailBody = builder.toString();
         }
@@ -130,8 +130,8 @@ public class OperationSendEmail extends Operation {
         try {
             EmailUtils.sendSimpleEmail(
                     toEmailAddresses,
-                    operationNotification.updateReferances(emailSubject),
-                    operationNotification.updateReferances(emailBody));
+                    Notification.updateTemplate(notification, emailSubject),
+                    Notification.updateTemplate(notification, emailBody));
         } catch (EmailException ex) {
             _logger.error("Error on sending email, ", ex);
         }

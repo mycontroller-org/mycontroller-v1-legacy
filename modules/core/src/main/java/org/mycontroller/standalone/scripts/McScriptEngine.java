@@ -18,11 +18,13 @@ package org.mycontroller.standalone.scripts;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.HashMap;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,11 +32,20 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.3
  */
 @Slf4j
-@AllArgsConstructor
 public class McScriptEngine implements Runnable {
     private McScript mcScript;
+    private Bindings engineScopes;
+
+    public McScriptEngine(McScript mcScript) {
+        this.mcScript = mcScript;
+    }
 
     public Object executeScript() throws McScriptException, ScriptException, FileNotFoundException {
+        return executeScript(null);
+    }
+
+    public Object executeScript(HashMap<String, Object> bindings) throws McScriptException, ScriptException,
+            FileNotFoundException {
         if (!mcScript.isValid()) {
             throw new McScriptException("Cannot create script engine, required field is missing!");
         }
@@ -58,19 +69,42 @@ public class McScriptEngine implements Runnable {
         //Load pre-conditions
         McScriptEngineUtils.updateMcApi(engine);
 
-        // evaluate JavaScript code from String
-        FileReader scriptFileReader = null;
-        if (mcScript.getCanonicalPath() != null) {
-            scriptFileReader = new FileReader(mcScript.getCanonicalPath());
-        } else {
-            scriptFileReader = new FileReader(mcScript.getName());
+        //Load bindings, if we have any
+        if (bindings != null) {
+            for (String key : bindings.keySet()) {
+                engine.put(key, bindings.get(key));
+            }
         }
-        Object result = engine.eval(scriptFileReader);
+
+        Object result = null;
+        // evaluate JavaScript code from String
+        if (mcScript.getData() != null) {
+            result = engine.eval(mcScript.getData());
+        } else { // evaluate JavaScript code from file
+            FileReader scriptFileReader = null;
+            if (mcScript.getCanonicalPath() != null) {
+                scriptFileReader = new FileReader(mcScript.getCanonicalPath());
+            } else {
+                scriptFileReader = new FileReader(mcScript.getName());
+            }
+            result = engine.eval(scriptFileReader);
+        }
+
         if (result == null) {
             result = engine.get(McScriptEngineUtils.MC_SCRIPT_RESULT);
         }
-        _logger.debug("Script result:[{}], {}", result, mcScript);
+        engineScopes = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        _logger.debug("{}, \nResult: {}", mcScript, result);
+        _logger.debug("Script bindings:[{}]\n{}", getBindings(), mcScript);
         return result;
+    }
+
+    public HashMap<String, Object> getBindings() {
+        if (engineScopes != null) {
+            return McScriptEngineUtils.getBindings(engineScopes);
+        } else {
+            return new HashMap<String, Object>();
+        }
     }
 
     @Override
@@ -78,10 +112,16 @@ public class McScriptEngine implements Runnable {
         try {
             _logger.debug("Script execution started for ", mcScript);
             Object result = executeScript();
-            _logger.info("Script result:[{}], {}", result, mcScript);
+            //If debug enabled this line will be printed in in executeScript method. do not duplicate
+            if (!_logger.isDebugEnabled()) {
+                _logger.info("{}, \nResult: {}", mcScript, result);
+                if (engineScopes != null) {
+                    _logger.info("ScriptEngine bindings:[{}]", getBindings());
+                }
+            }
             _logger.debug("Script execution completed for ", mcScript);
         } catch (Exception ex) {
-            _logger.error("Error,", ex);
+            _logger.error("Exception happened when executing script: {},", mcScript, ex);
         }
     }
 }

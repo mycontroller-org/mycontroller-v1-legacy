@@ -49,7 +49,7 @@ public class McScript {
     private SCRIPT_TYPE type;
     private long size;
     private long lastModified;
-    private Object data;
+    private String data;
 
     @JsonIgnore
     public boolean isValid() {

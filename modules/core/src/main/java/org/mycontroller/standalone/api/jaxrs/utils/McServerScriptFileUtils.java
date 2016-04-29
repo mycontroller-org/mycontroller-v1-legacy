@@ -35,11 +35,14 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.ScriptsHandler;
+import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
+import org.mycontroller.standalone.model.McTemplate;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngine;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 
 import lombok.experimental.UtilityClass;
@@ -227,6 +230,52 @@ public class McServerScriptFileUtils {
         McScript mcScript = getScriptFile(scriptFile);
         mcScript.setData(null);//Remove this data, which is not required
         new Thread(new McScriptEngine(mcScript)).start();
+    }
+
+    public static ApiMessage executeScriptFileWithTemplate(String scriptName, String templateName) throws IOException,
+            IllegalAccessException, McBadRequestException {
+        McTemplate mcTemplate = McTemplateUtils.getFile(templateName);
+        if (mcTemplate == null) {
+            throw new McBadRequestException("Template[" + templateName + "] not available!");
+        }
+        ApiMessage templateResult = null;
+        //Execute script
+        McScript mcScript = null, mcTemplateScript = null;
+        McScriptEngine scriptEngine = null;
+        try {
+            mcScript = getScriptFile(scriptName);
+            mcScript.setData(null);//Remove this data, which is not required
+            scriptEngine = new McScriptEngine(mcScript);
+            scriptEngine.executeScript();
+        } catch (Exception ex) {
+            if (ex.getMessage() == null) {
+                templateResult = new ApiMessage("null");
+            } else {
+                templateResult = new ApiMessage(ex.getMessage());
+            }
+            _logger.error("Exception:{},", mcScript, ex);
+            return templateResult;
+        }
+
+        //Map and execute script result with template
+        try {
+            mcTemplateScript = McScript.builder()
+                    .canonicalPath(mcTemplate.getCanonicalPath())
+                    .type(SCRIPT_TYPE.OPERATION)
+                    .engineName(McScriptEngineUtils.MC_SCRIPT_ENGINE_HTTL)
+                    .build();
+            McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
+            templateResult = new ApiMessage((String) templateEngine.executeScript(scriptEngine.getBindings()));
+        } catch (Exception ex) {
+            if (ex.getMessage() == null) {
+                templateResult = new ApiMessage("null");
+            } else {
+                templateResult = new ApiMessage(ex.getMessage());
+            }
+            _logger.error("Exception:{},", mcTemplateScript, ex);
+            return templateResult;
+        }
+        return templateResult;
     }
 
     public static void uploadScript(McScript mcScript) throws IOException, IllegalAccessException,

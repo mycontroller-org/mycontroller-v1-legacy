@@ -143,4 +143,20 @@ public class ScriptsHandler extends AccessEngine {
         }
     }
 
+    @GET
+    @Path("/getHtml")
+    public Response executeWithTemplate(
+            @QueryParam("template") String templateName,
+            @QueryParam("script") String scriptName) {
+        if (templateName == null || scriptName == null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("template and script name missing!"));
+        }
+        try {
+            return RestUtils.getResponse(Status.OK,
+                    McServerScriptFileUtils.executeScriptFileWithTemplate(scriptName, templateName));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
 }

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.operation.OperationNotification;
+import org.mycontroller.standalone.operation.Notification;
 import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 
@@ -92,11 +92,11 @@ public class OperationSendSMS extends Operation {
                     + ruleDefinition.getName());
         }
         try {
-            OperationNotification operationNotification = new OperationNotification(ruleDefinition);
+            Notification notification = new Notification(ruleDefinition);
             if (customMessage != null && customMessage.trim().length() > 0) {
-                SMSUtils.sendSMS(toPhoneNumbers, operationNotification.updateReferances(customMessage));
+                SMSUtils.sendSMS(toPhoneNumbers, Notification.updateTemplate(notification, customMessage));
             } else {
-                SMSUtils.sendSMS(toPhoneNumbers, operationNotification.toString());
+                SMSUtils.sendSMS(toPhoneNumbers, notification.toString());
             }
         } catch (Exception ex) {
             _logger.error("Exception,", ex);

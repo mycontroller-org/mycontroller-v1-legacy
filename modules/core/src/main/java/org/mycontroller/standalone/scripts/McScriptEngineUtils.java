@@ -18,8 +18,10 @@ package org.mycontroller.standalone.scripts;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
@@ -43,6 +45,7 @@ public class McScriptEngineUtils {
     private static ScriptEngineManager scriptEngineManager = null;
     public static final String MC_API = "mcApi";
     public static final String MC_SCRIPT_RESULT = "mcResult";
+    public static final String MC_SCRIPT_ENGINE_HTTL = "httl";
 
     public static synchronized ScriptEngineManager getScriptEngineManager() {
         if (scriptEngineManager == null) {
@@ -73,12 +76,23 @@ public class McScriptEngineUtils {
         engine.put(MC_API, new McScriptApi());
     }
 
+    public static HashMap<String, Object> getBindings(Bindings bindings) {
+        HashMap<String, Object> engineScopes = new HashMap<String, Object>();
+        for (String key : bindings.keySet()) {
+            //Do not add mcApi and __builtins__
+            if (!key.equals(MC_API) && !key.startsWith("__")) {
+                engineScopes.put(key, bindings.get(key));
+            }
+        }
+        return engineScopes;
+    }
+
     public static void listAvailableEngines() {
         if (_logger.isInfoEnabled()) {
             ScriptEngineManager mgr = McScriptEngineUtils.getScriptEngineManager();
             List<ScriptEngineFactory> factories = mgr.getEngineFactories();
             StringBuilder builder = new StringBuilder();
-            builder.append("\n*****************************************************");
+            builder.append("\n************ Available script engines ***************");
             for (ScriptEngineFactory factory : factories) {
                 builder.append("\nEngineName      :").append(factory.getEngineName())
                         .append("\nEngineVersion   :").append(factory.getEngineVersion())
@@ -88,7 +102,7 @@ public class McScriptEngineUtils {
                         .append("\nAlias           :").append(factory.getNames());
                 builder.append("\n*****************************************************");
             }
-            _logger.info("Available script engines information:{}", builder.toString());
+            _logger.info("Script engines list:{}", builder.toString());
         }
     }
 

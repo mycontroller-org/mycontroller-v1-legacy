@@ -228,6 +228,17 @@
       <artifactId>easyrules-core</artifactId>
     </dependency>
 
+    <!-- HTTL - template engine -->
+    <dependency>
+      <groupId>com.github.httl</groupId>
+      <artifactId>httl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.httl</groupId>
+      <artifactId>httl-script</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -242,6 +253,8 @@
               <exclude>**/mc_locale/**</exclude>
               <!-- Ignore lombok config files -->
               <exclude>**/lombok.config</exclude>
+              <!-- Ignore resources files -->
+              <exclude>**/package/conf/resources/**</exclude>
             </excludes>
           </configuration>
         </plugin>

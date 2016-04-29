@@ -16,14 +16,23 @@
  */
 package org.mycontroller.standalone.operation;
 
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+
+import javax.script.ScriptException;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.scripts.McScript;
+import org.mycontroller.standalone.scripts.McScriptEngine;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
+import org.mycontroller.standalone.scripts.McScriptException;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -31,13 +40,8 @@ import lombok.Getter;
  */
 
 @Getter
-public class OperationNotification {
-    public static final String KEY_RULE_DEFINITION_NAME = Pattern.quote("${ruleName}");
-    public static final String KEY_RULE_CONDITION = Pattern.quote("${ruleCondition}");
-    public static final String KEY_ACTUAL_VALUE = Pattern.quote("${actualValue}");
-    public static final String KEY_TRIGGERED_AT = Pattern.quote("${triggeredAt}");
-    public static final String KEY_OPERATION_NAME = Pattern.quote("${operationName}");
-
+@Slf4j
+public class Notification {
     private String ruleName;
     private String ruleCondition;
     private String actualValue;
@@ -45,7 +49,7 @@ public class OperationNotification {
 
     private String operationName;
 
-    public OperationNotification(RuleDefinition ruleDefinition) {
+    public Notification(RuleDefinition ruleDefinition) {
         ruleName = ruleDefinition.getName();
         ruleCondition = ruleDefinition.getConditionString();
         actualValue = ruleDefinition.getActualValue();
@@ -71,12 +75,21 @@ public class OperationNotification {
         return toString("\n");
     }
 
-    public String updateReferances(String source) {
-        return source.replaceAll(KEY_RULE_DEFINITION_NAME, ruleName)
-                .replaceAll(KEY_RULE_CONDITION, ruleCondition)
-                .replaceAll(KEY_ACTUAL_VALUE, actualValue)
-                .replaceAll(KEY_TRIGGERED_AT, triggeredAt)
-                .replaceAll(KEY_OPERATION_NAME, operationName);
+    public static String updateTemplate(Notification notification, String source) {
+        McScript mcTemplateScript = McScript.builder()
+                .type(SCRIPT_TYPE.OPERATION)
+                .engineName(McScriptEngineUtils.MC_SCRIPT_ENGINE_HTTL)
+                .data("#set(org.mycontroller.standalone.operation.Notification notification)" + source)
+                .build();
+        McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
+        HashMap<String, Object> bindings = new HashMap<String, Object>();
+        bindings.put("notification", notification);
+        try {
+            return (String) templateEngine.executeScript(bindings);
+        } catch (FileNotFoundException | McScriptException | ScriptException ex) {
+            _logger.error("Exception: {}", mcTemplateScript, ex);
+            return "<pre>Exception: " + ex.getMessage()+"</pre>";
+        }
     }
 
 }
