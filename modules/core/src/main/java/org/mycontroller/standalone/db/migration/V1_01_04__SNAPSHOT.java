@@ -18,11 +18,11 @@ package org.mycontroller.standalone.db.migration;
 
 import java.sql.Connection;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -16,7 +16,7 @@
  */
 package org.mycontroller.standalone.metrics;
 
-import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

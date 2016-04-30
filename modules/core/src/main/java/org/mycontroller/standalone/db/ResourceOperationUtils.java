@@ -16,7 +16,7 @@
  */
 package org.mycontroller.standalone.db;
 
-import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 public class ResourceOperationUtils {
 

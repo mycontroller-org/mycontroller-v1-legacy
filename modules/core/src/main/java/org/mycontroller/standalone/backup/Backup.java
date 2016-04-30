@@ -25,9 +25,9 @@ import javax.ws.rs.BadRequestException;
 
 import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.exceptions.McException;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

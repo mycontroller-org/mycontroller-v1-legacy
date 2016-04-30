@@ -16,11 +16,11 @@
  */
 package org.mycontroller.standalone.rule;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -27,7 +27,6 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
@@ -59,6 +58,7 @@ import org.mycontroller.standalone.provider.mysensors.structs.FirmwareRequest;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareResponse;
 import org.mycontroller.standalone.rule.McRuleEngine;
 import org.mycontroller.standalone.uidtag.ExecuteUidTag;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

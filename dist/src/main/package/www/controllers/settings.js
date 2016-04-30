@@ -89,6 +89,8 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
           });
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.controller = false;
+        $scope.updateSettingsController();
+        $scope.editEnable.controller = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.controller = false;
@@ -171,6 +173,8 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
     SettingsFactory.saveEmail($scope.emailSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.email = false;
+        $scope.updateSettingsEmail();
+        $scope.editEnable.email = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.email = false;
@@ -184,6 +188,8 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
     SettingsFactory.saveSms($scope.smsSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.sms = false;
+        $scope.updateSettingsSms();
+        $scope.editEnable.sms = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.sms = false;
@@ -241,6 +247,8 @@ myControllerModule.controller('SettingsSystemMySensors', function(alertService, 
     SettingsFactory.saveMySensors($scope.mySensorsSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.mySensors = false;
+        $scope.updateSettingsMySensors();
+        $scope.editEnable.mySensors = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.mySensors = false;
@@ -295,6 +303,8 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
     SettingsFactory.saveMetrics($scope.metricsSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.metrics = false;
+        $scope.updateSettingsMetrics();
+        $scope.editEnable.metrics = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.metrics = false;
@@ -316,6 +326,8 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
     SettingsFactory.saveMetricsRetention($scope.metricsRetention,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.metricsRetention = false;
+        $scope.updateSettingsMetricsRetention();
+        $scope.editEnable.metricsDataRetention = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.metricsRetention = false;

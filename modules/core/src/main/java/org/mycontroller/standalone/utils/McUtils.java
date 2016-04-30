@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone;
+package org.mycontroller.standalone.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +31,9 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
+import org.mycontroller.standalone.McObjectManager;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

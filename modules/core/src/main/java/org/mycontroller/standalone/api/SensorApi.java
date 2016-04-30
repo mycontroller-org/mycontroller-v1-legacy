@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
@@ -36,6 +35,7 @@ import org.mycontroller.standalone.exceptions.McDuplicateException;
 import org.mycontroller.standalone.exceptions.McException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
 import org.mycontroller.standalone.message.McMessageUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -154,7 +154,11 @@ public class SensorApi {
     }
 
     public Sensor getSensor(String sensorName, Integer roomId) {
-        return DaoUtils.getSensorDao().getByRoomId(roomId, sensorName);
+        return DaoUtils.getSensorDao().getByRoomId(sensorName, roomId);
+    }
+
+    public Sensor getSensor(String sensorName) {
+        return DaoUtils.getSensorDao().getByRoomId(sensorName, null);
     }
 
     private SensorVariable getSensorVariable(Sensor sensor, String variableType) {

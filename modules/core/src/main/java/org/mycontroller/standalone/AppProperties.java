@@ -31,6 +31,7 @@ import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

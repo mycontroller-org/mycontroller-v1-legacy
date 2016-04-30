@@ -30,7 +30,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
@@ -49,6 +48,7 @@ import org.mycontroller.standalone.settings.SmsSettings;
 import org.mycontroller.standalone.settings.UnitsSettings;
 import org.mycontroller.standalone.settings.UserNativeSettings;
 import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

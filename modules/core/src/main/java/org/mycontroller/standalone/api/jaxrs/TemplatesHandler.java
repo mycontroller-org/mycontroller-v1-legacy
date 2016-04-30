@@ -33,10 +33,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
+import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.utils.McTemplateUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.model.McTemplate;
+import org.mycontroller.standalone.utils.McTemplateUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -82,9 +83,9 @@ public class TemplatesHandler extends AccessEngine {
         Query query = Query.get(filters);
         try {
             if (lessInfo) {
-                return RestUtils.getResponse(Status.OK, McTemplateUtils.getFiles(query).getData());
+                return RestUtils.getResponse(Status.OK, McTemplateUtils.get(query).getData());
             } else {
-                return RestUtils.getResponse(Status.OK, McTemplateUtils.getFiles(query));
+                return RestUtils.getResponse(Status.OK, McTemplateUtils.get(query));
             }
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
@@ -95,7 +96,7 @@ public class TemplatesHandler extends AccessEngine {
     @Path("/delete")
     public Response deleteIds(List<String> files) {
         try {
-            McTemplateUtils.deleteFiles(files);
+            McTemplateUtils.delete(files);
         } catch (IOException ex) {
             RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
@@ -109,7 +110,23 @@ public class TemplatesHandler extends AccessEngine {
             return RestUtils.getResponse(Status.BAD_REQUEST);
         }
         try {
-            return RestUtils.getResponse(Status.OK, McTemplateUtils.getFile(fileName));
+            return RestUtils.getResponse(Status.OK, McTemplateUtils.get(fileName));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @GET
+    @Path("/getHtml")
+    public Response executeWithTemplate(
+            @QueryParam("template") String templateName,
+            @QueryParam("script") String scriptName) {
+        if (templateName == null || scriptName == null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("template and script name missing!"));
+        }
+        try {
+            return RestUtils.getResponse(Status.OK,
+                    new ApiMessage(McTemplateUtils.execute(templateName, scriptName)));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }

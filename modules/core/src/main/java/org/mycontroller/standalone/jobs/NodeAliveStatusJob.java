@@ -23,9 +23,9 @@ import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.utils.McUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

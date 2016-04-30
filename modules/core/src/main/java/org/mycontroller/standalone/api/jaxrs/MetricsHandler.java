@@ -36,7 +36,6 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.MetricApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsBulletChartNVD3;
@@ -57,6 +56,7 @@ import org.mycontroller.standalone.scripts.McScriptException;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.utils.McUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

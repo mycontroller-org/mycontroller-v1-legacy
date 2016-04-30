@@ -19,10 +19,10 @@ package org.mycontroller.standalone.settings;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.User;
+import org.mycontroller.standalone.utils.McUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

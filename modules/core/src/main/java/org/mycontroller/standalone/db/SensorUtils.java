@@ -22,13 +22,13 @@ import java.util.List;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.KeyValue;
 import org.mycontroller.standalone.api.jaxrs.json.KeyValue.TYPE;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.settings.Unit;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

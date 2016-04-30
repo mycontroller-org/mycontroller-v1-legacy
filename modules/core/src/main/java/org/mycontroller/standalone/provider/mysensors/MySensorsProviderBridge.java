@@ -17,7 +17,6 @@
 package org.mycontroller.standalone.provider.mysensors;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.message.IProviderBridge;
@@ -25,6 +24,7 @@ import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageException;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -23,7 +23,6 @@ import java.util.List;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DataBaseUtils;
@@ -59,6 +58,7 @@ import org.mycontroller.standalone.rule.model.RuleDefinitionString;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -33,12 +33,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.utils.McServerScriptFileUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
+import org.mycontroller.standalone.utils.McScriptFileUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -87,9 +86,9 @@ public class ScriptsHandler extends AccessEngine {
         Query query = Query.get(filters);
         try {
             if (lessInfo) {
-                return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query).getData());
+                return RestUtils.getResponse(Status.OK, McScriptFileUtils.getScriptFiles(query).getData());
             } else {
-                return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query));
+                return RestUtils.getResponse(Status.OK, McScriptFileUtils.getScriptFiles(query));
             }
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.EXPECTATION_FAILED, new ApiError(ex.getMessage()));
@@ -100,7 +99,7 @@ public class ScriptsHandler extends AccessEngine {
     @Path("/delete")
     public Response deleteIds(List<String> scriptFiles) {
         try {
-            McServerScriptFileUtils.deleteScriptFiles(scriptFiles);
+            McScriptFileUtils.deleteScriptFiles(scriptFiles);
         } catch (IOException ex) {
             RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
@@ -114,19 +113,17 @@ public class ScriptsHandler extends AccessEngine {
             return RestUtils.getResponse(Status.BAD_REQUEST);
         }
         try {
-            return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFile(scriptName));
+            return RestUtils.getResponse(Status.OK, McScriptFileUtils.getScriptFile(scriptName));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }
 
-    @POST
+    @GET
     @Path("/runNow")
-    public Response runNow(String scriptName) {
+    public Response runNow(@QueryParam("script") String scriptName) {
         try {
-            McServerScriptFileUtils.runNowScriptFile(scriptName);
-            return RestUtils.getResponse(Status.OK, new ApiMessage(scriptName
-                    + " script executed, check log file for more information."));
+            return RestUtils.getResponse(Status.OK, McScriptFileUtils.executeScript(scriptName));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
@@ -136,24 +133,8 @@ public class ScriptsHandler extends AccessEngine {
     @Path("/")
     public Response upload(McScript mcScript) {
         try {
-            McServerScriptFileUtils.uploadScript(mcScript);
+            McScriptFileUtils.uploadScript(mcScript);
             return RestUtils.getResponse(Status.OK);
-        } catch (Exception ex) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
-        }
-    }
-
-    @GET
-    @Path("/getHtml")
-    public Response executeWithTemplate(
-            @QueryParam("template") String templateName,
-            @QueryParam("script") String scriptName) {
-        if (templateName == null || scriptName == null) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("template and script name missing!"));
-        }
-        try {
-            return RestUtils.getResponse(Status.OK,
-                    McServerScriptFileUtils.executeScriptFileWithTemplate(scriptName, templateName));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }

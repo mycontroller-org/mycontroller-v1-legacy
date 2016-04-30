@@ -92,6 +92,8 @@ public class McScriptEngine implements Runnable {
 
         if (result == null) {
             result = engine.get(McScriptEngineUtils.MC_SCRIPT_RESULT);
+        } else if (engine.get(McScriptEngineUtils.MC_SCRIPT_RESULT) == null) {
+            engine.put(McScriptEngineUtils.MC_SCRIPT_RESULT, result);
         }
         engineScopes = engine.getBindings(ScriptContext.ENGINE_SCOPE);
         _logger.debug("{}, \nResult: {}", mcScript, result);

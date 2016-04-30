@@ -18,10 +18,10 @@ package org.mycontroller.standalone.jobs;
 
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

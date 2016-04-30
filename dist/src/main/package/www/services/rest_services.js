@@ -434,7 +434,7 @@ myControllerModule.factory('ScriptsFactory', function ($resource) {
     getAll: { method: 'GET', isArray: false, params: {id: null} },
     getAllLessInfo: { method: 'GET', isArray: true, params: {id: null, 'lessInfo':true} },
     get:    { method: 'GET', params: {id: 'get'}},
-    runNow:    { method: 'POST', params: {id: 'runNow'}},
+    runNow:    { method: 'GET', params: {id: 'runNow'}},
     upload: { method: 'POST', params: {id: null} },
     deleteIds: { method: 'POST', params: {id: 'delete'} },
   })
@@ -446,6 +446,7 @@ myControllerModule.factory('TemplatesFactory', function ($resource) {
     getAll: { method: 'GET', isArray: false, params: {id: null} },
     getAllLessInfo: { method: 'GET', isArray: true, params: {id: null, 'lessInfo':true} },
     get:    { method: 'GET', params: {id: 'get'}},
+    getHtml:    { method: 'GET', params: {id: 'getHtml'}},
     upload: { method: 'POST', params: {id: null} },
     deleteIds: { method: 'POST', params: {id: 'delete'} },
   })

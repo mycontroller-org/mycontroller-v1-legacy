@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.utils;
+package org.mycontroller.standalone.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -33,12 +34,15 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.TemplatesHandler;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.model.McTemplate;
+import org.mycontroller.standalone.scripts.McScript;
+import org.mycontroller.standalone.scripts.McScriptEngine;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -57,7 +61,7 @@ public class McTemplateUtils {
     private static final String[] MC_SCRIPT_SUFFIX_FILTER = { "html" };
 
     @SuppressWarnings("unchecked")
-    public static QueryResponse getFiles(Query query) throws IOException {
+    public static QueryResponse get(Query query) throws IOException {
         //Check less info available and true, if true set less info return
         Boolean lessInfo = (Boolean) query.getFilters().get(TemplatesHandler.KEY_LESS_INFO);
         if (lessInfo) {
@@ -156,10 +160,10 @@ public class McTemplateUtils {
         }
     }
 
-    public static void deleteFiles(List<String> files) throws IOException {
+    public static void delete(List<String> templateFiles) throws IOException {
         String templatesLocation = McUtils.getDirectoryLocation(FileUtils.getFile(
                 AppProperties.getInstance().getTemplatesLocation()).getCanonicalPath());
-        for (String templateFile : files) {
+        for (String templateFile : templateFiles) {
             String fileFullPath = templatesLocation + templateFile;
             if (McUtils.isInScope(templatesLocation, fileFullPath)) {
                 if (FileUtils.deleteQuietly(FileUtils.getFile(fileFullPath))) {
@@ -174,11 +178,11 @@ public class McTemplateUtils {
         }
     }
 
-    public static McTemplate getFile(String fileName) throws IOException, IllegalAccessException,
+    public static McTemplate get(String templateName) throws IOException, IllegalAccessException,
             McBadRequestException {
         String templatesLocation = McUtils.getDirectoryLocation(FileUtils.getFile(
                 AppProperties.getInstance().getTemplatesLocation()).getCanonicalPath());
-        String fileFullPath = templatesLocation + fileName;
+        String fileFullPath = templatesLocation + templateName;
         if (McUtils.isInScope(templatesLocation, fileFullPath)) {
             if (!FileUtils.getFile(fileFullPath).exists()) {
                 throw new McBadRequestException("File not found! " + fileFullPath);
@@ -200,6 +204,38 @@ public class McTemplateUtils {
                     FileUtils.getFile(fileFullPath).getCanonicalPath());
             throw new IllegalAccessException("Trying to get file from outside scope!");
         }
+    }
+
+    public static String execute(String templateName, String scriptName) throws Exception {
+        return execute(templateName, McScriptFileUtils.executeScript(scriptName));
+    }
+
+    public static String execute(String templateName, HashMap<String, Object> bindings) throws Exception {
+        McTemplate mcTemplate = McTemplateUtils.get(templateName);
+        if (mcTemplate == null) {
+            throw new McBadRequestException("Template[" + templateName + "] not available!");
+        }
+        McScript mcTemplateScript = null;
+        String templateResult = null;
+        //Map and execute script result with template
+        try {
+            mcTemplateScript = McScript.builder()
+                    .canonicalPath(mcTemplate.getCanonicalPath())
+                    .type(SCRIPT_TYPE.OPERATION)
+                    .engineName(McScriptEngineUtils.MC_SCRIPT_ENGINE_HTTL)
+                    .build();
+            McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
+            templateResult = (String) templateEngine.executeScript(bindings);
+        } catch (Exception ex) {
+            if (ex.getMessage() == null) {
+                templateResult = "Exception: null";
+            } else {
+                templateResult = ex.getMessage();
+            }
+            _logger.error("Exception:{},", mcTemplateScript, ex);
+            throw ex;
+        }
+        return templateResult;
     }
 
     public static void upload(McTemplate mcTemplate) throws IOException, IllegalAccessException,

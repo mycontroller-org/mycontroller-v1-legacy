@@ -50,7 +50,7 @@ public interface SensorDao extends BaseDao<Sensor, Integer> {
 
     List<Sensor> getAllByNodeId(Integer nodeId);
 
-    Sensor getByRoomId(Integer roomId, String sensorName);
+    Sensor getByRoomId(String sensorName, Integer roomId);
 
     List<Sensor> getAllByRoomId(Integer roomId);
 

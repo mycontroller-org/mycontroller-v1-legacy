@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.knowm.sundial.SundialJobScheduler;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
@@ -35,6 +34,7 @@ import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
 import org.mycontroller.standalone.timer.jobs.TimerJob;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -78,7 +78,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'SMTP_PASSWORD' | translate }}</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpPassword"/>
+                <input type="password" ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpPassword"/>
                 <span ng-hide="editEnable.email">**********</span>
               </div>
             </div>

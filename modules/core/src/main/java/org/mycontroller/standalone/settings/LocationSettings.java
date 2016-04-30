@@ -16,7 +16,7 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

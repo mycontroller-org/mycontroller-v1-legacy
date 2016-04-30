@@ -34,11 +34,11 @@ import javax.ws.rs.core.Response.Status;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.utils.TypesUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

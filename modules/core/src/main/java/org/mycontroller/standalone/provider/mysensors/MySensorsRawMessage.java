@@ -18,7 +18,6 @@ package org.mycontroller.standalone.provider.mysensors;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
@@ -31,6 +30,7 @@ import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_STREAM;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.Data;
 import lombok.ToString;

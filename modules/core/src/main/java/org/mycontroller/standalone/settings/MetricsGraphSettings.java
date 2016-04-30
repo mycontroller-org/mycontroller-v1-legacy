@@ -19,9 +19,9 @@ package org.mycontroller.standalone.settings;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

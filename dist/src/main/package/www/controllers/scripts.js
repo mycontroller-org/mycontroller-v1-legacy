@@ -156,8 +156,9 @@ $scope, ScriptsFactory, $state, $uibModal, $stateParams, displayRestError, mchel
   //execute item
   $scope.runNow = function () {
     if($scope.itemIds.length == 1){
-      ScriptsFactory.runNow($scope.itemIds[0], function(response) {
-        alertService.success(response.message);
+      ScriptsFactory.runNow({"script":$scope.itemIds[0]}, function(response) {
+        alertService.success('Result printed in console also.<br>'+angular.toJson(response));
+        console.log('Script['+$scope.itemIds[0]+'] result:\n'+angular.toJson(response));
         $scope.itemIds = [];
       },function(error){
         displayRestError.display(error);

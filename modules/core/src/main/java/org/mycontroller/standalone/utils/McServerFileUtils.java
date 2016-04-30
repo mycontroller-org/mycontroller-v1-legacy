@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.utils;
+package org.mycontroller.standalone.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,7 +37,6 @@ import org.apache.commons.io.filefilter.SizeFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.ImageFile;
 import org.mycontroller.standalone.api.jaxrs.json.LogFile;
 

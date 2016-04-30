@@ -16,8 +16,8 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.auth.McCrypt;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

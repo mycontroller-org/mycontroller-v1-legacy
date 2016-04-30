@@ -19,10 +19,10 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;

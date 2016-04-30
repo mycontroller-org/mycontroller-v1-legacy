@@ -19,11 +19,11 @@ package org.mycontroller.standalone.rule.model;
 import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.rule.RuleUtils.DATA_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.OPERATOR;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;

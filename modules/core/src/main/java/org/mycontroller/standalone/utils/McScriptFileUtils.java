@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.utils;
+package org.mycontroller.standalone.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -33,19 +34,16 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.ScriptsHandler;
-import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
-import org.mycontroller.standalone.model.McTemplate;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngine;
-import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 
-import lombok.experimental.UtilityClass;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -53,9 +51,9 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.3
  */
 
-@UtilityClass
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
-public class McServerScriptFileUtils {
+public class McScriptFileUtils {
 
     //mc script file filter
     private static final String[] MC_SCRIPT_SUFFIX_FILTER = { "js", "py", "rb", "groovy" };
@@ -225,57 +223,17 @@ public class McServerScriptFileUtils {
         }
     }
 
-    public static void runNowScriptFile(String scriptFile) throws IOException, IllegalAccessException,
-            McBadRequestException {
-        McScript mcScript = getScriptFile(scriptFile);
-        mcScript.setData(null);//Remove this data, which is not required
-        new Thread(new McScriptEngine(mcScript)).start();
-    }
-
-    public static ApiMessage executeScriptFileWithTemplate(String scriptName, String templateName) throws IOException,
-            IllegalAccessException, McBadRequestException {
-        McTemplate mcTemplate = McTemplateUtils.getFile(templateName);
-        if (mcTemplate == null) {
-            throw new McBadRequestException("Template[" + templateName + "] not available!");
-        }
-        ApiMessage templateResult = null;
-        //Execute script
-        McScript mcScript = null, mcTemplateScript = null;
-        McScriptEngine scriptEngine = null;
+    public static HashMap<String, Object> executeScript(String scriptName) throws Exception {
+        McScript mcScript = null;
         try {
             mcScript = getScriptFile(scriptName);
-            mcScript.setData(null);//Remove this data, which is not required
-            scriptEngine = new McScriptEngine(mcScript);
+            McScriptEngine scriptEngine = new McScriptEngine(mcScript);
             scriptEngine.executeScript();
+            return scriptEngine.getBindings();
         } catch (Exception ex) {
-            if (ex.getMessage() == null) {
-                templateResult = new ApiMessage("null");
-            } else {
-                templateResult = new ApiMessage(ex.getMessage());
-            }
             _logger.error("Exception:{},", mcScript, ex);
-            return templateResult;
+            throw ex;
         }
-
-        //Map and execute script result with template
-        try {
-            mcTemplateScript = McScript.builder()
-                    .canonicalPath(mcTemplate.getCanonicalPath())
-                    .type(SCRIPT_TYPE.OPERATION)
-                    .engineName(McScriptEngineUtils.MC_SCRIPT_ENGINE_HTTL)
-                    .build();
-            McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
-            templateResult = new ApiMessage((String) templateEngine.executeScript(scriptEngine.getBindings()));
-        } catch (Exception ex) {
-            if (ex.getMessage() == null) {
-                templateResult = new ApiMessage("null");
-            } else {
-                templateResult = new ApiMessage(ex.getMessage());
-            }
-            _logger.error("Exception:{},", mcTemplateScript, ex);
-            return templateResult;
-        }
-        return templateResult;
     }
 
     public static void uploadScript(McScript mcScript) throws IOException, IllegalAccessException,
