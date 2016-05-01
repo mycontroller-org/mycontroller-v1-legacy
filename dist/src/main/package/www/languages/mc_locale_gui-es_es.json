@@ -355,6 +355,7 @@
     "OPERATIONS_DETAIL": "Detalle de las operaciones",
     "OPERATION_NAME": "Nombre de operación",
     "OPERATION_TYPE": "Tipo de operación",
+    "PARENT": "Parent",
     "PASSWORD": "Contraseña",
     "PATTERN": "Patrón",
     "PAYLOAD": "Capacidad de carga",

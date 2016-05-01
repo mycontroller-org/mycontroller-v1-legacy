@@ -355,6 +355,7 @@
     "OPERATIONS_DETAIL": "Детали Операций",
     "OPERATION_NAME": "Имя операции",
     "OPERATION_TYPE": "Тип операции",
+    "PARENT": "Parent",
     "PASSWORD": "Пароль",
     "PATTERN": "Шаблон",
     "PAYLOAD": "Значение",

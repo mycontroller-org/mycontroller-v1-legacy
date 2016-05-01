@@ -355,6 +355,7 @@
     "OPERATIONS_DETAIL": "Bewerkings detail",
     "OPERATION_NAME": "Naam van de bewerking",
     "OPERATION_TYPE": "Bewerkings type",
+    "PARENT": "Parent",
     "PASSWORD": "Wachtwoord",
     "PATTERN": "Patroon",
     "PAYLOAD": "Payload",

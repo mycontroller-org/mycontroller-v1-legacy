@@ -346,7 +346,8 @@ public class TypesUtils {
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (TIMER_TYPE timerType : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder()
-                    .id(timerType.ordinal()).displayName(timerType.getText()).build());
+                    .id(timerType.getText()).displayName(McObjectManager.getMcLocale().getString(timerType.name()))
+                    .build());
         }
         return typesIdNameMappers;
     }
