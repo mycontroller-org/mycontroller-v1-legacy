@@ -54,6 +54,7 @@ var myControllerModule = angular.module('myController',[
   'adf.widget.myc-time',
   'adf.widget.myc-sunrisetime',
   'adf.widget.news',
+  'adf.widget.myc-custom-widget',
   'ngMap',
 ]);
 

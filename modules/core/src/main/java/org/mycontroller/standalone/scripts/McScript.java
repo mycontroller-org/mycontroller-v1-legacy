@@ -37,7 +37,7 @@ import lombok.ToString;
  */
 @Data
 @Builder
-@ToString
+@ToString(exclude={"data"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class McScript {
