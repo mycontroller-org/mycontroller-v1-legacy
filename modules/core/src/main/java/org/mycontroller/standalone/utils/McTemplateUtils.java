@@ -207,6 +207,10 @@ public class McTemplateUtils {
     }
 
     public static String execute(String templateName, String scriptName) throws Exception {
+        if (scriptName == null || scriptName.length() == 0) {
+            McTemplate mcTemplate = McTemplateUtils.get(templateName);
+            return mcTemplate.getData();
+        }
         return execute(templateName, McScriptFileUtils.executeScript(scriptName));
     }
 

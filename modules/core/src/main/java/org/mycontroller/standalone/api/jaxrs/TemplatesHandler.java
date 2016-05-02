@@ -121,8 +121,8 @@ public class TemplatesHandler extends AccessEngine {
     public Response executeWithTemplate(
             @QueryParam("template") String templateName,
             @QueryParam("script") String scriptName) {
-        if (templateName == null || scriptName == null) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("template and script name missing!"));
+        if (templateName == null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("template name missing!"));
         }
         try {
             return RestUtils.getResponse(Status.OK,
