@@ -194,7 +194,7 @@ public class McActionEngine implements IMcActionEngine {
     public boolean checkEthernetGatewayAliveState(GatewayEthernet gatewayEthernet) {
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(gatewayEthernet.getId())
-                .nodeEui(McMessage.GATEWAY_NODE_ID)
+                .nodeEui(McMessageUtils.getGatewayNodeId(gatewayEthernet.getNetworkType()))
                 .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_INTERNAL)
                 .acknowledge(false)

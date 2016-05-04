@@ -77,6 +77,8 @@ public class MySensorsRawMessage {
         gatewayId = mcMessage.getGatewayId();
         if (mcMessage.getNodeEui().equalsIgnoreCase(McMessage.NODE_BROADCAST_ID)) {
             nodeId = MySensorsUtils.NODE_ID_BROADCAST;
+        } else if (mcMessage.getNodeEui().equalsIgnoreCase(McMessage.GATEWAY_NODE_ID)) {
+            nodeId = MySensorsUtils.GATEWAY_ID;
         } else {
             nodeId = McUtils.getInteger(mcMessage.getNodeEui());
         }

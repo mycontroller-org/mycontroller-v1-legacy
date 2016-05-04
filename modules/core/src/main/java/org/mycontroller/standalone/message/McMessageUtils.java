@@ -27,6 +27,7 @@ import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
+import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -566,6 +567,16 @@ public class McMessageUtils {
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
         }
+    }
+
+    public static String getGatewayNodeId(NETWORK_TYPE type) {
+        switch (type) {
+            case MY_SENSORS:
+                return String.valueOf(MySensorsUtils.GATEWAY_ID);
+            default:
+                break;
+        }
+        return McMessage.GATEWAY_NODE_ID;
     }
 
 }
