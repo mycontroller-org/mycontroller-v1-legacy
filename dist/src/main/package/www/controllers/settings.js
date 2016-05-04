@@ -181,6 +181,14 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
       });
   };
 
+  //Send test email
+  $scope.sendTestEmail = function(){
+    SettingsFactory.saveEmail({'testOnly': true}, $scope.emailSettings, function(response) {
+        alertService.success(response.message);
+      },function(error){
+        displayRestError.display(error);
+      });
+  };
 
   //Save sms
   $scope.saveSms = function(){

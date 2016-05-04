@@ -486,6 +486,7 @@
     "TEMPLATE": "Template",
     "TEMPLATES": "Templates",
     "TEMPLATES_DETAIL": "Templates detail",
+    "TEST_CONNECTION": "Test connection",
     "THREADS_COUNT": "Threads count",
     "THRESHOLD_VALUE": "Threshold value",
     "THRESHOLD_VALUE_HIGH": "Threshold value high",

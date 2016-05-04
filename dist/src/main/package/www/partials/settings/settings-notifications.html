@@ -88,6 +88,8 @@
           <div class="form-actions text-right">
             <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.email" ng-click="editEnable.email = true">{{ 'EDIT' | translate }}</button>
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.email" ng-click="updateSettingsEmail();editEnable.email = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.email" ng-click="sendTestEmail()"
+              ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">{{ 'TEST_CONNECTION' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveEmail()"  ng-show="editEnable.email" ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">
               <div ng-show="saveProgress.email" class="spinner spinner-xs"></div>
               {{ 'SAVE' | translate }}

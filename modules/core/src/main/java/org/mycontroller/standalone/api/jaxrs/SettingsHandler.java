@@ -25,14 +25,18 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.mail.EmailException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
+import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.restclient.pushbullet.model.User;
@@ -143,10 +147,20 @@ public class SettingsHandler extends AccessEngine {
 
     @POST
     @Path("/email")
-    public Response saveEmail(EmailSettings emailSettings) {
-        emailSettings.save();
-        SettingsUtils.updateAllSettings();
-        return RestUtils.getResponse(Status.OK);
+    public Response saveEmail(EmailSettings emailSettings, @QueryParam("testOnly") Boolean isTestOnly) {
+        if (isTestOnly != null && isTestOnly) {
+            try {
+                EmailUtils.sendTestEmail(emailSettings);
+                return RestUtils.getResponse(Status.OK, new ApiMessage("Email sent successfully. Check inbox of '"
+                        + emailSettings.getFromAddress() + "'"));
+            } catch (EmailException ex) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+            }
+        } else {
+            emailSettings.save();
+            SettingsUtils.updateAllSettings();
+            return RestUtils.getResponse(Status.OK);
+        }
     }
 
     @GET
