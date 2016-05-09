@@ -24,7 +24,7 @@
       <pattern>%date %level [%thread] [%logger:%line] %msg%n</pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <FileNamePattern>mycontroller_%i.log.zip</FileNamePattern>
+      <FileNamePattern>../logs/mycontroller_%i.log.zip</FileNamePattern>
       <MinIndex>1</MinIndex>
       <MaxIndex>5</MaxIndex>
     </rollingPolicy>
