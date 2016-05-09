@@ -205,6 +205,7 @@
   "FROM_ADDRESS": "From address",
   "FROM_PHONE_NUMBER": "From phone number",
   "FULL_NAME": "Full name",
+  "FULL_PATH": "Full path",
   "GARBAGE_COLLECTOR": "Garbage Collector",
   "GATEWAY": "Gateway",
   "GATEWAYS": "Gateways",

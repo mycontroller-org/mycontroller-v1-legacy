@@ -205,6 +205,7 @@
     "FROM_ADDRESS": "முகவரியிலிருந்து",
     "FROM_PHONE_NUMBER": "தொலைபேசி எண்ணில் இருந்து",
     "FULL_NAME": "முழு பெயர்",
+    "FULL_PATH": "Full path",
     "GARBAGE_COLLECTOR": "Garbage Collector",
     "GATEWAY": "நுழைவாயில்",
     "GATEWAYS": "Gateways",

@@ -18,7 +18,6 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -36,7 +35,6 @@ import lombok.ToString;
 @ToString
 @Data
 @DatabaseTable(tableName = DB_TABLES.UID_TAG)
-@JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class UidTag {

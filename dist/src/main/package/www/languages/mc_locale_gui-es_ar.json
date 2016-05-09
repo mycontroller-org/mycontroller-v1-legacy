@@ -205,6 +205,7 @@
     "FROM_ADDRESS": "Dirección origen",
     "FROM_PHONE_NUMBER": "Número de teléfono de origen",
     "FULL_NAME": "Nombre completo",
+    "FULL_PATH": "Full path",
     "GARBAGE_COLLECTOR": "Recolector de basura",
     "GATEWAY": "Puerta de enlace",
     "GATEWAYS": "Puertas de enlace",

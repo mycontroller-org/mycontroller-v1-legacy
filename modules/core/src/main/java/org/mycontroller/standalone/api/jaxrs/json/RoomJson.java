@@ -56,46 +56,4 @@ public class RoomJson {
         }
         return this;
     }
-
-    @JsonIgnore
-    public void createOrUpdate() {
-        if (room.getId() != null) {
-            //Update room
-            DaoUtils.getRoomDao().update(room);
-            //clear all old mapping
-            removeMapping(room.getId());
-        } else {
-            //Create room
-            DaoUtils.getRoomDao().create(room);
-            //update created room id
-            room = DaoUtils.getRoomDao().getByName(room.getName());
-        }
-
-        //Update sensors
-        if (sensorIds != null && !sensorIds.isEmpty()) {
-            List<Sensor> sensors = DaoUtils.getSensorDao().getAll(sensorIds);
-            for (Sensor sensor : sensors) {
-                sensor.setRoom(room);
-                DaoUtils.getSensorDao().update(sensor);
-            }
-        }
-    }
-
-    @JsonIgnore
-    public void delete(List<Integer> roomIds) {
-        for (Integer id : roomIds) {
-            removeMapping(id);
-        }
-        DaoUtils.getRoomDao().deleteByIds(roomIds);
-    }
-
-    @JsonIgnore
-    private void removeMapping(Integer id) {
-        //clear all old mapping
-        List<Sensor> sensors = DaoUtils.getSensorDao().getAllByRoomId(id);
-        for (Sensor sensor : sensors) {
-            sensor.setRoom(null);
-            DaoUtils.getSensorDao().update(sensor);
-        }
-    }
 }

@@ -16,10 +16,15 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.RoomUtils;
 import org.mycontroller.standalone.db.tables.Room;
+import org.mycontroller.standalone.exceptions.McDuplicateException;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -57,6 +62,30 @@ public class RoomApi {
             }
         }
         return roomTmp;
+    }
+
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        return DaoUtils.getRoomDao().getAll(Query.get(filters));
+    }
+
+    public Room get(Integer id) {
+        return DaoUtils.getRoomDao().getById(id);
+    }
+
+    public void delete(List<Integer> ids) {
+        RoomUtils.delete(ids);
+    }
+
+    public void createOrUpdate(Room room) throws McDuplicateException {
+        createOrUpdate(room, null);
+    }
+
+    public void createOrUpdate(Room room, List<Integer> sensorIds) throws McDuplicateException {
+        Room availabilityCheck = DaoUtils.getRoomDao().getByName(room.getName());
+        if (availabilityCheck != null && room.getId() != availabilityCheck.getId()) {
+            throw new McDuplicateException("A room available with this name!");
+        }
+        RoomUtils.createOrUpdate(room, sensorIds);
     }
 
 }

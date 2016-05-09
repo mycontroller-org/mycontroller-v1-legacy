@@ -19,8 +19,10 @@ package org.mycontroller.standalone.db;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.mycontroller.standalone.db.tables.Room;
+import org.mycontroller.standalone.db.tables.Sensor;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -50,7 +52,59 @@ public class RoomUtils {
         names.add(room.getName());
         if (room.getParentId() != null) {
             room = DaoUtils.getRoomDao().getById(room.getParentId());
-            addNamePath(names, room);
+            if (room != null) {
+                addNamePath(names, room);
+            }
+        }
+    }
+
+    public static void createOrUpdate(Room room, List<Integer> sensorIds) {
+        if (room.getId() != null) {
+            //Update room
+            DaoUtils.getRoomDao().update(room);
+        } else {
+            //Create room
+            DaoUtils.getRoomDao().create(room);
+            //update created room id
+            room = DaoUtils.getRoomDao().getByName(room.getName());
+        }
+
+        //Update sensors
+        if (sensorIds != null && !sensorIds.isEmpty()) {
+            //clear all old mapping
+            removeSensorMapping(room.getId());
+            List<Sensor> sensors = DaoUtils.getSensorDao().getAll(sensorIds);
+            for (Sensor sensor : sensors) {
+                sensor.setRoom(room);
+                DaoUtils.getSensorDao().update(sensor);
+            }
+        }
+
+    }
+
+    public static void delete(List<Integer> ids) {
+        for (Integer id : ids) {
+            removeSensorMapping(id);
+            removeParentMapping(id);
+        }
+        DaoUtils.getRoomDao().deleteByIds(ids);
+    }
+
+    private static void removeSensorMapping(Integer id) {
+        //clear all old mapping
+        List<Sensor> sensors = DaoUtils.getSensorDao().getAllByRoomId(id);
+        for (Sensor sensor : sensors) {
+            sensor.setRoom(null);
+            DaoUtils.getSensorDao().update(sensor);
+        }
+    }
+
+    private static void removeParentMapping(Integer id) {
+        //clear all old mapping
+        List<Room> rooms = DaoUtils.getRoomDao().getByParentId(id);
+        for (Room room : rooms) {
+            room.setParentId(null);
+            DaoUtils.getRoomDao().update(room);
         }
     }
 }
