@@ -16,10 +16,16 @@
  */
 package org.mycontroller.standalone.api.jaxrs.json;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+
 import org.mycontroller.standalone.AppProperties;
 
 import lombok.Data;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -27,6 +33,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
+@Slf4j
 public class McAbout {
     private String applicationVersion;
     private String applicationDbVersion;
@@ -42,6 +49,14 @@ public class McAbout {
     private String osName;
     private String osVersion;
 
+    private String gitBranch;
+    private String gitVersion;
+    private String gitBuiltBy;
+    private String gitCommit;
+    private String gitCreatedBy;
+    private String gitBuildJdk;
+    private String gitBuiltOn;
+
     public McAbout() {
         applicationVersion = AppProperties.getInstance().getControllerSettings().getVersion();
         applicationDbVersion = AppProperties.getInstance().getControllerSettings().getDbVersion();
@@ -55,5 +70,29 @@ public class McAbout {
         osArch = AppProperties.getOsArch();
         osName = AppProperties.getOsName();
         osVersion = AppProperties.getOsVersion();
+
+        //Load git commit related details from MANIFEST.MF file
+        String className = this.getClass().getSimpleName() + ".class";
+        String classPath = this.getClass().getResource(className).toString();
+        if (!classPath.startsWith("jar")) {
+            // Class not from JAR
+            return;
+        }
+        String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
+        try {
+            Manifest manifest;
+            manifest = new Manifest(new URL(manifestPath).openStream());
+            Attributes attr = manifest.getMainAttributes();
+            gitBranch = attr.getValue("Built-From-Git-Branch");
+            gitVersion = attr.getValue("Implementation-Version");
+            gitBuiltBy = attr.getValue("Built-By");
+            gitCommit = attr.getValue("Built-From-Git-SHA1");
+            gitCreatedBy = attr.getValue("Created-By");
+            gitBuildJdk = attr.getValue("Build-Jdk");
+            gitBuiltOn = attr.getValue("Built-On");
+        } catch (IOException ex) {
+            _logger.error("Error, ", ex);
+        }
+
     }
 }

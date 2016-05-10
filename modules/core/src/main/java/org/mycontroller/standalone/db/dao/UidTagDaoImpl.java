@@ -41,7 +41,7 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
 
     @Override
     public UidTag get(UidTag uidTag) {
-        return super.getById(uidTag.getUid());
+        return super.getById(uidTag.getId());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     }
 
     @Override
-    public UidTag getByUId(Integer uid) {
+    public UidTag getByUId(String uid) {
         List<UidTag> uidTags = super.getAll(UidTag.KEY_UID, uid);
         if (uidTags != null && !uidTags.isEmpty()) {
             return uidTags.get(0);

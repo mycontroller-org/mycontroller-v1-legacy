@@ -53,7 +53,7 @@ class UidTagDeserializer extends JsonDeserializer<UidTag> {
         }
 
         UidTag uidTag = UidTag.builder()
-                .uid(node.get("uid").asInt())
+                .uid(node.get("uid").asText())
                 .sensorVariable(SensorVariable.builder().id(sVariableNode.get("id").asInt()).build())
                 .build();
         if (node.get("id") != null) {

@@ -46,7 +46,7 @@ public class UidTag {
     private Integer id;
 
     @DatabaseField(canBeNull = false, unique = true, columnName = KEY_UID)
-    private Integer uid;
+    private String uid;
 
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE,
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 5)

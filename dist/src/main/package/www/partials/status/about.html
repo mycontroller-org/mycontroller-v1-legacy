@@ -32,7 +32,10 @@
           <dl class="dl-horizontal">
             <dt>{{ 'VERSION' | translate }}</dt> <dd>{{mcAbout.applicationVersion}}</dd>
             <dt>{{ 'DATABASE_VERSION' | translate }}</dt> <dd>{{mcAbout.applicationDbVersion}}</dd>
-            <dt>{{ 'LOCATION' | translate }}</dt> <dd>{{mcAbout.applicationLocation}}</dd>
+            <dt>{{ 'GIT_COMMIT_BRANCH' | translate }}</dt> <dd>{{mcAbout.gitCommit}}:{{mcAbout.gitBranch}}</dd>
+            <dt>{{ 'BUILT_ON' | translate }}</dt> <dd>{{mcAbout.gitBuiltOn}}</dd>
+            <dt>{{ 'BUILD_JDK' | translate }}</dt> <dd>{{mcAbout.gitBuildJdk}}</dd>
+            <dt>{{ 'BUILD_TOOL' | translate }}</dt> <dd>{{mcAbout.gitCreatedBy}}</dd>
           </dl>
 
           <legend><small><small>{{ 'JAVA_VIRTUAL_MACHINE_SPECIFICATION' | translate }}</small></small></legend>
@@ -48,6 +51,7 @@
             <dt>{{ 'OPERATING_SYSTEM' | translate }}</dt> <dd>{{mcAbout.osName}}</dd>
             <dt>{{ 'ARCHITECTURE' | translate }}</dt> <dd>{{mcAbout.osArch}}</dd>
             <dt>{{ 'VERSION_KERNEL' | translate }}</dt> <dd>{{mcAbout.osVersion}}</dd>
+            <dt>{{ 'LOCATION' | translate }}</dt> <dd>{{mcAbout.applicationLocation}}</dd>
           </dl>
 
         </div>

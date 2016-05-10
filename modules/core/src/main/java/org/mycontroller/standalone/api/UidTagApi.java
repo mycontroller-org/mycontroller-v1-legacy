@@ -41,7 +41,7 @@ public class UidTagApi {
         return DaoUtils.getUidTagDao().getById(id);
     }
 
-    public UidTag getByUid(int uid) {
+    public UidTag getByUid(String uid) {
         return DaoUtils.getUidTagDao().getByUId(uid);
     }
 

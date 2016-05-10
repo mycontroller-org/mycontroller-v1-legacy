@@ -35,7 +35,7 @@ public interface UidTagDao extends BaseDao<UidTag, Integer> {
 
     UidTag getBySensorVariableId(Integer sVariableId);
 
-    UidTag getByUId(Integer uid);
+    UidTag getByUId(String uid);
 
     QueryResponse getAll(Query query);
 
