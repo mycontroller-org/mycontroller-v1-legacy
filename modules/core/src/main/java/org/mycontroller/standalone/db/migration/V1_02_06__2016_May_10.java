@@ -40,7 +40,7 @@ public class V1_02_06__2016_May_10 extends MigrationBase {
          **/
 
         /** Migration #1
-         * Change 'uid_tag' table 'uid' column to varchar from integer  
+         * Change 'uid_tag' table 'uid' column to varchar from integer
          * steps
          * 1. Alter column to string
          * */
