@@ -59,6 +59,7 @@ public class DataBaseUtils {
     private static final String DB_USERNAME = "mycontroller";
     private static final String DB_PASSWORD = "mycontroller";
     private static final String DB_MIGRATION_LOCATION = "org/mycontroller/standalone/db/migration";
+
     //private static final String APP_VERSION = "0.0.3-alpha2-SNAPSHOT";
 
     // private static String databaseUrl = "jdbc:sqlite:/tmp/mysensors.db";
@@ -125,6 +126,8 @@ public class DataBaseUtils {
             }
 
             //set recent migration version to application table.
+            //load/reload settings
+            AppProperties.getInstance().loadPropertiesFromDb();
             McAbout mcAbout = new McAbout();
             if (migrationsCount > 0) {
                 MyControllerSettings
