@@ -89,6 +89,18 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
         filterType: 'integer',
       },
       {
+        id: 'nodeName',
+        title:  $filter('translate')('NODE_NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
+        filterType: 'text',
+      },
+      {
+        id: 'nodeEui',
+        title:  $filter('translate')('NODE_EUI'),
+        placeholder: $filter('translate')('FILTER_BY_EUI'),
+        filterType: 'text',
+      },
+      {
         id: 'type',
         title: $filter('translate')('TYPE'),
         placeholder: $filter('translate')('FILTER_BY_TYPE'),
@@ -127,6 +139,16 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
       {
         id: 'type',
         title: $filter('translate')('TYPE'),
+        sortType: 'text'
+      },
+      {
+        id: 'nodeEui',
+        title: $filter('translate')('NODE_EUI'),
+        sortType: 'text'
+      },
+      {
+        id: 'nodeName',
+        title: $filter('translate')('NODE_NAME'),
         sortType: 'text'
       },
       {

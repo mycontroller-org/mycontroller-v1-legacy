@@ -72,6 +72,7 @@
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
           <th>{{ 'NETWORK_TYPE' | translate }}</th>
           <th>{{ 'GATEWAY' | translate }}</th>
+          <th>{{ 'NODE_NAME' | translate }}</th>
           <th>{{ 'NODE_EUI' | translate }}</th>
           <th>{{ 'SENSOR_ID' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
@@ -87,6 +88,7 @@
             <td class="mc-align-center"><input type="checkbox" ng-checked="itemIds.indexOf(item.id) != -1"></td>
             <td>{{item.node.gateway.networkType}}</td>
             <td>{{item.node.gateway.name}} [{{item.node.gateway.type}}]</td>
+            <td>{{item.node.name}}</td>
             <td>{{item.node.eui}}</td>
             <td>{{item.sensorId}}</td>
             <td>{{item.name}}</td>

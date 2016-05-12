@@ -24,6 +24,7 @@ import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
+import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.SensorUtils;
@@ -47,7 +48,13 @@ import lombok.extern.slf4j.Slf4j;
 public class SensorApi {
 
     public QueryResponse getAll(HashMap<String, Object> filters) {
-        return DaoUtils.getSensorDao().getAll(Query.get(filters));
+        Query query = Query.get(filters);
+        if (query.getOrderBy().equalsIgnoreCase(Sensor.KEY_NODE_EUI)) {
+            query.setOrderByRawQuery(DB_QUERY.ORDER_BY_NODE_EUI);
+        } else if (query.getOrderBy().equalsIgnoreCase(Sensor.KEY_NODE_NAME)) {
+            query.setOrderByRawQuery(DB_QUERY.ORDER_BY_NODE_NAME);
+        }
+        return DaoUtils.getSensorDao().getAll(query);
     }
 
     public Sensor get(int id) {

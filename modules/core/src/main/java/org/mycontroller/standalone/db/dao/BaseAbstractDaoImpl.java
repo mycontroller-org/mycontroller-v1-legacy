@@ -157,8 +157,14 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             queryBuilder.setWhere(where);
         }
 
-        queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
-                .orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
+        if (query.isOrderByRaw()) {
+            queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
+                    .orderByRaw(query.getOrderBy() + query.getOrder());
+        } else {
+            queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
+                    .orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
+        }
+
         //Remove allowed resources from query, to avoid send list to user
         query.getFilters().put(AllowedResources.KEY_ALLOWED_RESOURCES, null);
         return QueryResponse.builder().data(queryBuilder.query()).query(query).build();
