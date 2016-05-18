@@ -90,6 +90,7 @@ public class AppProperties {
         EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
+        FR_FR("Français (FR)"),
         NL_NL("Nederlands (NL)"),
         PT_BR("Português (BR)"),
         RU_RU("Русский (RU)"),
