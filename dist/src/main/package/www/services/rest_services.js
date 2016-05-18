@@ -365,14 +365,14 @@ myControllerModule.factory('GatewaysFactory', function ($resource) {
 
 //ResourcesGroup Services
 myControllerModule.factory('ResourcesGroupFactory', function ($resource) {
-  return $resource('/mc/rest/resources/group/:id', {id: '@id'}, {
-    getAll: { method: 'GET', isArray: false, params: {id: null} },
-    get:    { method: 'GET' },
-    create: { method: 'POST', params: {id: null}},
-    update: { method: 'PUT', params: {id: null} },
-    deleteIds: { method: 'POST', params: {id: 'delete'} },
-    turnOnIds: { method: 'POST', params: {id: 'on'} },
-    turnOffIds: { method: 'POST', params: {id: 'off'} },
+  return $resource('/mc/rest/resources/group/:_id', {_id: '@_id'}, {
+    getAll: { method: 'GET', isArray: false, params: {_id: null} },
+    get:    { method: 'GET'},
+    create: { method: 'POST', params: {_id: null}},
+    update: { method: 'PUT', params: {_id: null} },
+    deleteIds: { method: 'POST', params: {_id: 'delete'} },
+    turnOnIds: { method: 'POST', params: {_id: 'on'} },
+    turnOffIds: { method: 'POST', params: {_id: 'off'} },
   })
 });
 

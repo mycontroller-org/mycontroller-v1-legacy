@@ -220,7 +220,7 @@ myControllerModule.controller('ResourcesGroupControllerAddEdit', function ($scop
 
 
   if($stateParams.id){
-    ResourcesGroupFactory.get({"id":$stateParams.id},function(response) {
+    ResourcesGroupFactory.get({'_id':$stateParams.id},function(response) {
         $scope.group = response;
       },function(error){
         displayRestError.display(error);

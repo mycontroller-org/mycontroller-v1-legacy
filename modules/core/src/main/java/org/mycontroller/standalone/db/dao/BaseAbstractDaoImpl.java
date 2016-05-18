@@ -130,7 +130,9 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             totalItemsBuilder.where().eq(isAlterdTotalCountKey, query.getFilters().get(isAlterdTotalCountKey));
             totalItemsAndCount++;
         } else {
-            if (query.getFilters().get(idColumn) != null) {
+            @SuppressWarnings("unchecked")
+            List<Object> idColumnList = (List<Object>) query.getFilters().get(idColumn);
+            if (idColumnList != null && !idColumnList.isEmpty()) {
                 totalItemsBuilder.where().in(idColumn, (List<?>) query.getFilters().get(idColumn));
                 totalItemsAndCount++;
             }

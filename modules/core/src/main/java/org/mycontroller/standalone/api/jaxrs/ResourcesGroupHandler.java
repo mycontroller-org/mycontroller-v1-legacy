@@ -77,8 +77,9 @@ public class ResourcesGroupHandler {
     @GET
     @Path("/")
     public Response getAllResourcesGroups(
-            @QueryParam(ResourcesGroup.KEY_NAME) List<String> name,
-            @QueryParam(ResourcesGroup.KEY_DESCRIPTION) List<String> description,
+            @QueryParam(ResourcesGroup.KEY_ID) List<Integer> ids,
+            @QueryParam(ResourcesGroup.KEY_NAME) List<String> names,
+            @QueryParam(ResourcesGroup.KEY_DESCRIPTION) List<String> descriptions,
             @QueryParam(ResourcesGroup.KEY_STATE) String state,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
@@ -86,8 +87,9 @@ public class ResourcesGroupHandler {
             @QueryParam(Query.ORDER) String order) {
         HashMap<String, Object> filters = new HashMap<String, Object>();
 
-        filters.put(ResourcesGroup.KEY_NAME, name);
-        filters.put(ResourcesGroup.KEY_DESCRIPTION, description);
+        filters.put(ResourcesGroup.KEY_ID, ids);
+        filters.put(ResourcesGroup.KEY_NAME, names);
+        filters.put(ResourcesGroup.KEY_DESCRIPTION, descriptions);
         filters.put(ResourcesGroup.KEY_STATE, STATE.fromString(state));
 
         //Query primary filters

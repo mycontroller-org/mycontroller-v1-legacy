@@ -51,6 +51,7 @@ var myControllerModule = angular.module('myController',[
   'adf.widget.myc-heat-map',
   'adf.widget.myc-custom-buttons',
   'adf.widget.myc-dsi',
+  'adf.widget.myc-groups',
   'adf.widget.myc-time',
   'adf.widget.myc-sunrisetime',
   'adf.widget.news',

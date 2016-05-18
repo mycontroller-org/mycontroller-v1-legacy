@@ -142,7 +142,7 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, ResourcesGroup.KEY_ID);
+            return super.getQueryResponse(query, ResourcesGroup.KEY_ID);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
