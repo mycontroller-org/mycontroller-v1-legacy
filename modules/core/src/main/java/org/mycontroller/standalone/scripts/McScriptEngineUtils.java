@@ -18,6 +18,7 @@ package org.mycontroller.standalone.scripts;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -87,22 +88,38 @@ public class McScriptEngineUtils {
         return engineScopes;
     }
 
+    public static List<HashMap<String, Object>> getScriptEnginesDetail() {
+        List<HashMap<String, Object>> engines = new ArrayList<HashMap<String, Object>>();
+        ScriptEngineManager mgr = McScriptEngineUtils.getScriptEngineManager();
+        List<ScriptEngineFactory> factories = mgr.getEngineFactories();
+        for (ScriptEngineFactory factory : factories) {
+            HashMap<String, Object> engine = new HashMap<String, Object>();
+            engine.put("engineName", factory.getEngineName());
+            engine.put("engineVersion", factory.getEngineVersion());
+            engine.put("languageName", factory.getLanguageName());
+            engine.put("languageVersion", factory.getLanguageVersion());
+            engine.put("extensions", factory.getExtensions());
+            engine.put("alias", factory.getNames());
+            engines.add(engine);
+        }
+        return engines;
+    }
+
     public static void listAvailableEngines() {
-        if (_logger.isInfoEnabled()) {
-            ScriptEngineManager mgr = McScriptEngineUtils.getScriptEngineManager();
-            List<ScriptEngineFactory> factories = mgr.getEngineFactories();
+        if (_logger.isDebugEnabled()) {
+            List<HashMap<String, Object>> engines = getScriptEnginesDetail();
             StringBuilder builder = new StringBuilder();
             builder.append("\n************ Available script engines ***************");
-            for (ScriptEngineFactory factory : factories) {
-                builder.append("\nEngineName      :").append(factory.getEngineName())
-                        .append("\nEngineVersion   :").append(factory.getEngineVersion())
-                        .append("\nLanguageName    :").append(factory.getLanguageName())
-                        .append("\nLanguageVersion :").append(factory.getLanguageVersion())
-                        .append("\nExtensions      :").append(factory.getExtensions())
-                        .append("\nAlias           :").append(factory.getNames());
+            for (HashMap<String, Object> engine : engines) {
+                builder.append("\nEngineName      :").append(engine.get("engineName"))
+                        .append("\nEngineVersion   :").append(engine.get("engineVersion"))
+                        .append("\nLanguageName    :").append(engine.get("languageName"))
+                        .append("\nLanguageVersion :").append(engine.get("languageVersion"))
+                        .append("\nExtensions      :").append(engine.get("extensions"))
+                        .append("\nAlias           :").append(engine.get("alias"));
                 builder.append("\n*****************************************************");
             }
-            _logger.info("Script engines list:{}", builder.toString());
+            _logger.debug("Script engines list:{}", builder.toString());
         }
     }
 

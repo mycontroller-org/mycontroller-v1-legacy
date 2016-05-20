@@ -327,6 +327,8 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     saveMetricsRetention: { method: 'POST', params: {type:'metricsRetention'} },
     getUserSettings: { method: 'GET', isArray: false, params: {type:'userSettings'} },
     saveUserSettings: { method: 'POST', params: {type:'userSettings'} },
+    getMqttBroker: { method: 'GET', isArray: false, params: {type:'mqttBroker'} },
+    saveMqttBroker: { method: 'POST', params: {type:'mqttBroker'} },
   })
 });
 
@@ -335,6 +337,7 @@ myControllerModule.factory('StatusFactory', function ($resource) {
   return $resource('/mc/rest/:type', {}, {
    getOsStatus: { method: 'GET', params: {type:'osStatus'} },
    getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
+   getScriptEngines: { method: 'GET', isArray: true, params: {type:'scriptEngines'} },
    getConfig: { method: 'GET', params: {type:'guiSettings'} },
    getMcAbout: { method: 'GET', params: {type:'mcAbout'} },
    getTimestamp: { method: 'GET', params: {type:'timestamp'} },

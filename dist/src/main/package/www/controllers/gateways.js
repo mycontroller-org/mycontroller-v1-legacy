@@ -199,6 +199,8 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
       GatewaysFactory.reload($scope.itemIds, function(response) {
         alertService.success($filter('translate')('RELOAD_INITIATED_SUCCESSFULLY'));
         $scope.itemIds = [];
+        //Update display table
+        $scope.getAllItems();
       },function(error){
         displayRestError.display(error);
       });

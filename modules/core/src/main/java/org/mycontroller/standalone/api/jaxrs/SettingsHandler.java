@@ -37,6 +37,7 @@ import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.email.EmailUtils;
+import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.restclient.pushbullet.model.User;
@@ -44,6 +45,7 @@ import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.settings.MqttBrokerSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
@@ -269,6 +271,21 @@ public class SettingsHandler extends AccessEngine {
     public Response saveMetricsRetention(MetricsDataRetentionSettings metricsDataRetentionSettings) {
         metricsDataRetentionSettings.save();
         SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/mqttBroker")
+    public Response getMqttBroker() {
+        return RestUtils.getResponse(Status.OK, AppProperties.getInstance().getMqttBrokerSettings());
+    }
+
+    @POST
+    @Path("/mqttBroker")
+    public Response saveMqttBroker(MqttBrokerSettings mqttBrokerSettings) {
+        mqttBrokerSettings.save();
+        SettingsUtils.updateAllSettings();
+        MoquetteMqttBroker.restart();
         return RestUtils.getResponse(Status.OK);
     }
 }

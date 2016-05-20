@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.auth;
 
+import java.util.List;
+
 import javax.ws.rs.core.SecurityContext;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
@@ -108,12 +110,43 @@ public class AuthUtils {
         return false;
     }
 
+    public static boolean canReadMqttPermission(String username, String topic) {
+        return checkMqttPermission(username, topic, true);
+    }
+
+    public static boolean canWriteMqttPermission(String username, String topic) {
+        return checkMqttPermission(username, topic, false);
+    }
+
+    public static boolean checkMqttPermission(String username, String topic, boolean isReadPermission) {
+        User user = DaoUtils.getUserDao().getByUsername(username);
+        if (user.getEnabled()) {
+            if (isSuperAdmin(user)) {
+                return true;
+            } else if (hasPermission(user, PERMISSION_TYPE.MQTT_USER)) {
+                List<String> _topics = null;
+                if (isReadPermission) {
+                    _topics = user.getAllowedResources().getMqttReadTopics();
+                } else {
+                    _topics = user.getAllowedResources().getMqttWriteTopics();
+                }
+                for (String _topic : _topics) {
+                    _topic = _topic.replaceAll("\\+", "\\\\w+").replaceAll("#", "\\.*");
+                    if (topic.matches(_topic)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public static boolean authenticateMqttUser(String aUsername, String aPassword) {
         _logger.debug("MQTT authentication: User:{}", aUsername);
         User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
-            if (McCrypt.decrypt(user.getPassword()).equals(aPassword)) {
+            if (user.getEnabled() && McCrypt.decrypt(user.getPassword()).equals(aPassword)) {
                 user.setPassword(null);
                 if (isSuperAdmin(user) || hasPermission(user, PERMISSION_TYPE.MQTT_USER)) {
                     return true;

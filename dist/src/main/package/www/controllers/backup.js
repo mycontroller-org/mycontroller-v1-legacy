@@ -146,7 +146,7 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
     templateUrl: 'partials/backup/restore-confirmation-modal.html',
     controller: 'BackupControllerRestore',
     size: size,
-    resolve: {backupFile: function () {return $scope.restoreItem;}}
+    resolve: {backupFile: function () {return {'name': $scope.itemIds[0]}}}
     });
 
     addModalInstance.result.then(function () {

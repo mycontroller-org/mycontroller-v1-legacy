@@ -21,9 +21,11 @@ $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
   $scope.headerStringList = "System status";
 
   //OS Status
-   $scope.osStatus = StatusFactory.getOsStatus();
+  $scope.osStatus = StatusFactory.getOsStatus();
   //JVM Status
-   $scope.jvmStatus = StatusFactory.getJvmStatus();
+  $scope.jvmStatus = StatusFactory.getJvmStatus();
+  //Script engines
+  $scope.scriptEngines = StatusFactory.getScriptEngines();
 
 });
 

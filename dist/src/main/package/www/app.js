@@ -432,6 +432,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('settingsMqttBroker', {
+      url:"/settings/mqttbroker",
+      templateUrl: "partials/settings/settings-mqtt-broker.html",
+      controller: "SettingsMqttBrokerController",
+       data: {
+        requireLogin: true
+      }
     }).state('settingsMetrics', {
       url:"/settings/metrics",
       templateUrl: "partials/settings/settings-metrics.html",

@@ -46,6 +46,7 @@ import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.utils.McServerFileUtils;
 
 /**
@@ -149,6 +150,12 @@ public class MyControllerHandler extends AccessEngine {
     @Path("/jvmStatus")
     public Response getJvmStatus() {
         return RestUtils.getResponse(Status.OK, new StatusJVM());
+    }
+
+    @GET
+    @Path("/scriptEngines")
+    public Response getScriptEngines() {
+        return RestUtils.getResponse(Status.OK, McScriptEngineUtils.getScriptEnginesDetail());
     }
 
     @RolesAllowed({ "Admin" })

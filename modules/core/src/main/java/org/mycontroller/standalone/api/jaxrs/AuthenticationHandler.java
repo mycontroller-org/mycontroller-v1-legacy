@@ -18,6 +18,8 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.security.Principal;
+
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -56,7 +58,9 @@ public class AuthenticationHandler {
         _logger.debug("User Detail:{}", RestUtils.getUser(request));
         _logger.debug("Login user: " + userCredential.getUsername());
         try {
-            if (BasicAthenticationSecurityDomain.login(userCredential.getUsername(), userCredential.getPassword())) {
+            Principal principal = new BasicAthenticationSecurityDomain().authenticate(userCredential.getUsername(),
+                    userCredential.getPassword());
+            if (principal != null) {
                 Authentication authJson = Authentication.builder().success(true)
                         .user(DaoUtils.getUserDao().getByUsername(userCredential.getUsername())).build();
                 return RestUtils.getResponse(Status.OK, authJson);
@@ -64,7 +68,7 @@ public class AuthenticationHandler {
                 return RestUtils.getResponse(Status.UNAUTHORIZED,
                         Authentication.builder().success(false).message("Invalid user or passowrd!").build());
             }
-        } catch (IllegalAccessException ex) {
+        } catch (SecurityException ex) {
             return RestUtils.getResponse(Status.UNAUTHORIZED,
                     Authentication.builder().success(false).message(ex.getMessage()).build());
         }

@@ -26,6 +26,7 @@ import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.settings.MqttBrokerSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
@@ -67,10 +68,6 @@ public class AppProperties {
     private String webSslKeystoreType;
     private String webBindAddress;
 
-    private boolean mqttBrokerEnable;
-    private String mqttBrokerBindAddress;
-    private Integer mqttBrokerPort;
-    private Integer mqttBrokerWebsocketPort;
     private String mqttBrokerPersistentStore;
 
     MyControllerSettings controllerSettings;
@@ -83,6 +80,7 @@ public class AppProperties {
     MetricsGraphSettings metricsGraphSettings;
     MetricsDataRetentionSettings metricsDataRetentionSettings;
     BackupSettings backupSettings;
+    MqttBrokerSettings mqttBrokerSettings;
 
     public enum MC_LANGUAGE {
         CA_ES("català (ES)"),
@@ -90,6 +88,7 @@ public class AppProperties {
         EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
+        MK_MK("Македонски (MK)"),
         FR_FR("Français (FR)"),
         NL_NL("Nederlands (NL)"),
         PT_BR("Português (BR)"),
@@ -392,15 +391,9 @@ public class AppProperties {
         }
         webBindAddress = getValue(properties, "mcc.web.bind.address", "0.0.0.0");
 
-        //MQTT Broker details
-        mqttBrokerEnable = Boolean.valueOf(getValue(properties, "mcc.mqtt.broker.enable", "true"));
-        if (mqttBrokerEnable) {
-            mqttBrokerBindAddress = getValue(properties, "mcc.mqtt.broker.bind.address", "0.0.0.0");
-            mqttBrokerPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.port", "1883"));
-            mqttBrokerWebsocketPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.websocket.port", "7080"));
-            mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store",
-                    "../conf/moquette/moquette_store.mapdb");
-        }
+        //MQTT Broker mqttBrokerPersistentStore
+        mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store",
+                "../conf/moquette/moquette_store.mapdb");
     }
 
     private void createDirectoryLocation(String directoryLocation) {
@@ -438,6 +431,7 @@ public class AppProperties {
         metricsDataRetentionSettings = MetricsDataRetentionSettings.get();
         backupSettings = BackupSettings.get();
         pushbulletSettings = PushbulletSettings.get();
+        mqttBrokerSettings = MqttBrokerSettings.get();
     }
 
     private boolean is12HoursSelected() {
@@ -535,22 +529,6 @@ public class AppProperties {
         return webBindAddress;
     }
 
-    public boolean isMqttBrokerEnabled() {
-        return mqttBrokerEnable;
-    }
-
-    public String getMqttBrokerBindAddress() {
-        return mqttBrokerBindAddress;
-    }
-
-    public Integer getMqttBrokerPort() {
-        return mqttBrokerPort;
-    }
-
-    public Integer getMqttBrokerWebsocketPort() {
-        return mqttBrokerWebsocketPort;
-    }
-
     public String getMqttBrokerPersistentStore() {
         return mqttBrokerPersistentStore;
     }
@@ -633,5 +611,9 @@ public class AppProperties {
 
     public String getAppDirectory() {
         return appDirectory;
+    }
+
+    public MqttBrokerSettings getMqttBrokerSettings() {
+        return mqttBrokerSettings;
     }
 }

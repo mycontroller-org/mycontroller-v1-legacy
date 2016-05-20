@@ -70,6 +70,7 @@ public class UserJson {
             //Update user
             DaoUtils.getUserDao().update(user);
         } else {
+            user.setPassword(McCrypt.encrypt(user.getPassword()));
             DaoUtils.getUserDao().create(user);
         }
 

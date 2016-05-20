@@ -53,18 +53,24 @@ public class BrokerConfiguration implements IConfig {
     }
 
     private void loadProperties() {
-        m_properties.put(HOST_PROPERTY_NAME, AppProperties.getInstance().getMqttBrokerBindAddress());
-        m_properties.put(PORT_PROPERTY_NAME, String.valueOf(AppProperties.getInstance().getMqttBrokerPort()));
+        m_properties.put(HOST_PROPERTY_NAME, AppProperties.getInstance().getMqttBrokerSettings().getBindAddress());
+        m_properties.put(PORT_PROPERTY_NAME,
+                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getHttpPort()));
         m_properties.put(WEB_SOCKET_PORT_PROPERTY_NAME,
-                String.valueOf(AppProperties.getInstance().getMqttBrokerWebsocketPort()));
+                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getWebsocketPort()));
 
         m_properties.put(PASSWORD_FILE_PROPERTY_NAME, "");
         m_properties.put(PERSISTENT_STORE_PROPERTY_NAME,
                 AppProperties.getInstance().getMqttBrokerPersistentStore());
-        m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, "true");
+        //Enable authentication and role based tpoics actions
+        if (AppProperties.getInstance().getMqttBrokerSettings().getAllowAnonymous()) {
+            m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, "true");
+        } else {
+            m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, "false");
+            m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
+            m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
+        }
 
-        m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
-        m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
         _logger.debug("Properties:[{}]", m_properties);
     }
 

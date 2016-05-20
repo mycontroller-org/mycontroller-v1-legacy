@@ -39,8 +39,12 @@ body {
   margin-top: 25px;
 }
 
+.mc-top-space-1x{
+  margin-top: 30px;
+}
+
 .mc-top-space-2x{
-  margin-top: 60px;
+  margin-top: 40px;
 }
 
 .mc-bottom-space{

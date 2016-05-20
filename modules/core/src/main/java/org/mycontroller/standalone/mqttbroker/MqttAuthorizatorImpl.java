@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.mqttbroker;
 
+import org.mycontroller.standalone.auth.AuthUtils;
+
 import io.moquette.spi.security.IAuthorizator;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,15 +29,15 @@ import lombok.extern.slf4j.Slf4j;
 public class MqttAuthorizatorImpl implements IAuthorizator {
 
     @Override
-    public boolean canRead(String topic, String user, String client) {
-        _logger.debug("Can read check for Topic:{}, User:{}, Client:{}", topic, user, client);
-        return true;
+    public boolean canRead(String topic, String username, String client) {
+        _logger.debug("Can read check for Topic:{}, Username:{}, Client:{}", topic, username, client);
+        return AuthUtils.canReadMqttPermission(username, topic);
     }
 
     @Override
-    public boolean canWrite(String topic, String user, String client) {
-        _logger.debug("Can write check for Topic:{}, User:{}, Client:{}", topic, user, client);
-        return true;
+    public boolean canWrite(String topic, String username, String client) {
+        _logger.debug("Can write check for Topic:{}, Username:{}, Client:{}", topic, username, client);
+        return AuthUtils.canWriteMqttPermission(username, topic);
     }
 
 }

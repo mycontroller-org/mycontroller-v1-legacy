@@ -44,7 +44,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(includeFieldNames = true)
+@ToString(exclude = { "password" })
 public class User implements Principal {
     public static final Logger _logger = LoggerFactory.getLogger(User.class);
 

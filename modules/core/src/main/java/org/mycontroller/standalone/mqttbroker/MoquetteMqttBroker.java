@@ -36,7 +36,7 @@ public class MoquetteMqttBroker {
     private static Server mqttServer = null;
 
     public static synchronized void start() {
-        if (!AppProperties.getInstance().isMqttBrokerEnabled()) {
+        if (!AppProperties.getInstance().getMqttBrokerSettings().getEnabled()) {
             _logger.debug("InBuilt MQTT broker is not enabled... Skipping to start...");
             return;
         }
@@ -48,25 +48,29 @@ public class MoquetteMqttBroker {
             mqttServer = new Server();
             mqttServer.startServer(new BrokerConfiguration());
             isRunning = true;
-            _logger.debug("MQTT Broker started successfully");
+            _logger.info("MQTT Broker started successfully. {}", AppProperties.getInstance().getMqttBrokerSettings());
         } catch (IOException ex) {
             _logger.error("Unable to start MQTT Broker, Exception, ", ex);
         }
     }
 
     public static synchronized void stop() {
-        if (!AppProperties.getInstance().isMqttBrokerEnabled()) {
-            _logger.debug("InBuilt MQTT broker is not enabled... Skipping to stop...");
-            return;
-        }
         if (!isRunning) {
-            _logger.info("MQTT Broker is not running, nothing to do...");
+            _logger.debug("MQTT Broker is not running, nothing to do...");
             return;
         }
-        mqttServer.stopServer();
-        mqttServer = null;
-        isRunning = false;
-        _logger.debug("MQTT Broker has been stopped successfully");
+        if (mqttServer != null) {
+            mqttServer.stopServer();
+            mqttServer = null;
+            isRunning = false;
+            _logger.info("MQTT Broker has been stopped successfully");
+        }
+    }
+
+    public static synchronized void restart() {
+        _logger.info("MQTT broker restart triggered...");
+        stop();
+        start();
     }
 
 }

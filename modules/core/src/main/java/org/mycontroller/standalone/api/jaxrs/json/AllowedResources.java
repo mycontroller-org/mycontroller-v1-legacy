@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api.jaxrs.json;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.db.DaoUtils;
@@ -47,6 +48,8 @@ public class AllowedResources {
     private List<Integer> nodeIds;
     private List<Integer> sensorIds;
     private List<Integer> sensorVariableIds;
+    private List<String> mqttReadTopics;
+    private List<String> mqttWriteTopics;
 
     public List<Integer> getGatewayIds() {
         if (gatewayIds == null || gatewayIds.size() == 0) {
@@ -86,6 +89,25 @@ public class AllowedResources {
             }
         }
         return sensorVariableIds;
+    }
+
+    private void updateMqttTopics() {
+        if (mqttReadTopics == null || mqttReadTopics.size() == 0
+                || mqttWriteTopics == null || mqttWriteTopics.size() == 0) {
+            HashMap<String, List<String>> topics = DaoUtils.getRoleDao().getMqttTopics(userId);
+            mqttReadTopics = topics.get("subscribe");
+            mqttWriteTopics = topics.get("publish");
+        }
+    }
+
+    public List<String> getMqttReadTopics() {
+        updateMqttTopics();
+        return mqttReadTopics;
+    }
+
+    public List<String> getMqttWriteTopics() {
+        updateMqttTopics();
+        return mqttWriteTopics;
     }
 
 }

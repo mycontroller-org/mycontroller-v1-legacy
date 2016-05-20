@@ -124,6 +124,8 @@ myControllerModule.controller('SettingsUnitsController', function(alertService, 
     SettingsFactory.saveUnits($scope.unitsSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.units = false;
+        $scope.updateSettingsUnits();
+        $scope.editEnable.units = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.units = false;
@@ -342,13 +344,13 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
       });
   };
 
-    //Restore
+  //edit confirmation
   $scope.retentionWarning = function (size) {
     var addModalInstance = $uibModal.open({
-    templateUrl: 'partials/settings/retention-confirmation-modal.html',
+    templateUrl: 'partials/common-html/edit-confirmation-modal.html',
     controller: 'MetricsRetentionWarnController',
     size: size,
-    resolve: {backupFile: function () {return $scope.restoreItem;}}
+    resolve: {}
     });
     addModalInstance.result.then(function () {
       $scope.editEnable.metricsDataRetention = true;
@@ -361,9 +363,77 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
 });
 
 //retention change Modal
-myControllerModule.controller('MetricsRetentionWarnController', function ($scope, $uibModalInstance, $filter, backupFile) {
-  $scope.header = $filter('translate')('RETENTION_DIALOG_TITLE', backupFile);
-  $scope.message = $filter('translate')('RETENTION_DIALOG_CONFIRMATION_MSG', backupFile);
+myControllerModule.controller('MetricsRetentionWarnController', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('RETENTION_DIALOG_TITLE');
+  $scope.message = $filter('translate')('RETENTION_DIALOG_CONFIRMATION_MSG');
+  $scope.continute = function() {$uibModalInstance.close(); };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
+});
+
+
+myControllerModule.controller('SettingsMqttBrokerController', function(alertService, $scope, $filter, SettingsFactory, CommonServices, displayRestError, $uibModal) {
+
+  //config, language, user, etc.,
+  $scope.cs = CommonServices;
+
+  //editable settings
+  $scope.editEnable = {};
+  $scope.saveProgress = {};
+
+
+  //settings mqtt broker
+  $scope.updateSettingsMqttBroker = function(){
+    SettingsFactory.getMqttBroker(function(response){
+      $scope.mqttBrokerSettings = response;
+      if(response.defaultFirmware){
+        FirmwaresFactory.getFirmware({"refId": response.defaultFirmware},function(response){
+          $scope.defaultFirmware = response.firmwareName;
+        });
+      }
+    });
+  };
+
+  //Pre-load
+  $scope.mqttBrokerSettings = {};
+  $scope.updateSettingsMqttBroker();
+
+  //Save settings
+  $scope.saveMqttBroker = function(){
+    $scope.saveProgress.mqttBroker = true;
+    SettingsFactory.saveMqttBroker($scope.mqttBrokerSettings,function(response) {
+        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
+        $scope.saveProgress.mqttBroker = false;
+        $scope.updateSettingsMqttBroker();
+        $scope.editEnable.mqttBroker = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.mqttBroker = false;
+      });
+  };
+
+
+  //edit confirmation
+  $scope.editWarning = function (size) {
+    var addModalInstance = $uibModal.open({
+    templateUrl: 'partials/common-html/edit-confirmation-modal.html',
+    controller: 'MqttBrokerChangeController',
+    size: size,
+    resolve: {}
+    });
+    addModalInstance.result.then(function () {
+      $scope.editEnable.mqttBroker = true;
+    }),
+    function () {
+      //console.log('Modal dismissed at: ' + new Date());
+    }
+  };
+
+});
+
+//Mqtt broker change warning
+myControllerModule.controller('MqttBrokerChangeController', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('MQTT_BROKER_EDIT_DIALOG');
+  $scope.message = $filter('translate')('MQTT_BROKER_EDIT_CONFIRMATION_MSG');
   $scope.continute = function() {$uibModalInstance.close(); };
   $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });
