@@ -67,6 +67,14 @@
               </div>
             </div>
 
+            <div class="form-group" ng-if="emailSettings.enableSsl">
+              <label class="col-sm-2 control-label">{{ 'USE' | translate }}</label>
+              <div class="col-sm-5">
+                <label class="mc-margin-right"><input ng-disabled="!editEnable.email" type="radio" ng-model="emailSettings.useStartTLS"data-ng-value="false"> SSL</label>
+                <label><input ng-disabled="!editEnable.email" type="radio" ng-model="emailSettings.useStartTLS" data-ng-value="true"> STARTTLS</label>
+              </div>
+            </div>
+
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'SMTP_USERNAME' | translate }}</label>
               <div class="col-sm-5">
@@ -89,7 +97,10 @@
             <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.email" ng-click="editEnable.email = true">{{ 'EDIT' | translate }}</button>
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.email" ng-click="updateSettingsEmail();editEnable.email = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.email" ng-click="sendTestEmail()"
-              ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">{{ 'TEST_CONNECTION' | translate }}</button>
+              ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">
+              <div ng-if="testing.email" class="spinner spinner-xs"></div>
+                {{testing.email? ('TESTING' | translate):('TEST_CONNECTION' | translate)}}
+            </button>
             <button type="button" class="btn btn-primary" ng-click="saveEmail()"  ng-show="editEnable.email" ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">
               <div ng-show="saveProgress.email" class="spinner spinner-xs"></div>
               {{ 'SAVE' | translate }}

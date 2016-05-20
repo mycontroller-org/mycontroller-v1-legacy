@@ -143,6 +143,7 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
   //editable settings
   $scope.editEnable = {};
   $scope.saveProgress = {};
+  $scope.testing = {};
 
   //settings Email
   $scope.updateSettingsEmail = function(){
@@ -185,10 +186,13 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
 
   //Send test email
   $scope.sendTestEmail = function(){
+    $scope.testing.email = true;
     SettingsFactory.saveEmail({'testOnly': true}, $scope.emailSettings, function(response) {
         alertService.success(response.message);
+        $scope.testing.email = false;
       },function(error){
         displayRestError.display(error);
+        $scope.testing.email = false;
       });
   };
 

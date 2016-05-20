@@ -64,7 +64,13 @@ public class EmailUtils {
                     emailSettings.getSmtpUsername(),
                     emailSettings.getSmtpPassword()));
         }
-        email.setSSLOnConnect(emailSettings.getEnableSsl());
+        if (emailSettings.getEnableSsl()) {
+            if (emailSettings.getUseStartTLS()) {
+                email.setStartTLSEnabled(emailSettings.getEnableSsl());
+            } else {
+                email.setSSLOnConnect(emailSettings.getEnableSsl());
+            }
+        }
         email.setFrom(emailSettings.getFromAddress());
     }
 
