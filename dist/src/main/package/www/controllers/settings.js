@@ -413,7 +413,7 @@ myControllerModule.controller('SettingsMqttBrokerController', function(alertServ
 
 
   //edit confirmation
-  $scope.editWarning = function (size) {
+  $scope.saveSettings = function (size) {
     var addModalInstance = $uibModal.open({
     templateUrl: 'partials/common-html/edit-confirmation-modal.html',
     controller: 'MqttBrokerChangeController',
@@ -421,7 +421,7 @@ myControllerModule.controller('SettingsMqttBrokerController', function(alertServ
     resolve: {}
     });
     addModalInstance.result.then(function () {
-      $scope.editEnable.mqttBroker = true;
+      $scope.saveMqttBroker();
     }),
     function () {
       //console.log('Modal dismissed at: ' + new Date());

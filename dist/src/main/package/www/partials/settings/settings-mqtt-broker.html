@@ -81,9 +81,9 @@
           </form>
 
           <div class="form-actions text-right">
-            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.mqttBroker" ng-click="editWarning()">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.mqttBroker" ng-click="editEnable.mqttBroker = true">{{ 'EDIT' | translate }}</button>
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.mqttBroker" ng-click="updateSettingsMqttBroker();editEnable.mqttBroker = false">{{ 'CANCEL' | translate }}</button>
-            <button type="button" class="btn btn-primary" ng-click="saveMqttBroker()"  ng-show="editEnable.mqttBroker" ng-disabled="saveProgress.mqttBroker || mcFormMqttBroker.$invalid">
+            <button type="button" class="btn btn-primary" ng-click="saveSettings()"  ng-show="editEnable.mqttBroker" ng-disabled="saveProgress.mqttBroker || mcFormMqttBroker.$invalid">
               <div ng-show="saveProgress.mqttBroker" class="spinner spinner-xs"></div>
               {{ 'SAVE' | translate }}
             </button>
