@@ -244,6 +244,13 @@ public class MetricsHandler extends AccessEngine {
         List<Sensor> sensors = DaoUtils.getSensorDao().getAll();
         for (Sensor sensor : sensors) {
             String source = "S-" + sensor.getId();
+            LocaleString subType = null;
+            if (sensor.getType() != null) {
+                subType = LocaleString.builder().en(sensor.getType().getText())
+                        .locale(McObjectManager.getMcLocale().getString(sensor.getType().name())).build();
+            } else {
+                subType = LocaleString.builder().en("Undefined").locale("Undefined").build();
+            }
             items.put(
                     source,
                     TopologyItem
@@ -251,9 +258,7 @@ public class MetricsHandler extends AccessEngine {
                             .name(sensor.getName())
                             .id(sensor.getId())
                             .type(RESOURCE_TYPE.SENSOR)
-                            .subType(LocaleString.builder()
-                                    .en(sensor.getType().getText())
-                                    .locale(McObjectManager.getMcLocale().getString(sensor.getType().name())).build())
+                            .subType(subType)
                             .kind("Sensor")
                             .build());
             relations.add(TopologyRelation.builder()
