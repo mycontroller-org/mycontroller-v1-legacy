@@ -42,7 +42,7 @@ public class UidTagApi {
     }
 
     public UidTag getByUid(String uid) {
-        return DaoUtils.getUidTagDao().getByUId(uid);
+        return DaoUtils.getUidTagDao().getByUid(uid);
     }
 
     public UidTag getBySensorVariableId(int sVariableId) {
@@ -53,14 +53,14 @@ public class UidTagApi {
         DaoUtils.getUidTagDao().deleteByIds(ids);
     }
 
-    public void deleteByUid(Integer uid) {
-        DaoUtils.getUidTagDao().deleteByUId(uid);
+    public void deleteByUid(String uid) {
+        DaoUtils.getUidTagDao().deleteByUid(uid);
     }
 
     public void update(UidTag uidTag) throws McDuplicateException, McBadRequestException {
         UidTag availabilityCheck = DaoUtils.getUidTagDao().getById(uidTag.getId());
         if (availabilityCheck != null) {
-            UidTag uidAvailabilityCheck = DaoUtils.getUidTagDao().getByUId(uidTag.getUid());
+            UidTag uidAvailabilityCheck = DaoUtils.getUidTagDao().getByUid(uidTag.getUid());
             if (uidAvailabilityCheck != null && !uidAvailabilityCheck.getId().equals(availabilityCheck.getId())) {
                 throw new McDuplicateException(
                         "This UID["
@@ -84,7 +84,7 @@ public class UidTagApi {
     }
 
     public void add(UidTag uidTag) throws McDuplicateException {
-        UidTag availabilityCheck = DaoUtils.getUidTagDao().getByUId(uidTag.getUid());
+        UidTag availabilityCheck = DaoUtils.getUidTagDao().getByUid(uidTag.getUid());
         if (availabilityCheck != null) {
             throw new McDuplicateException("This UID[" + uidTag.getUid() + "] tagged with another sensor variable["
                     + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck

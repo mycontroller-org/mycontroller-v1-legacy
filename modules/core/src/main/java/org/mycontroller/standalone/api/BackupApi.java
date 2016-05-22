@@ -45,6 +45,8 @@ import org.mycontroller.standalone.utils.McUtils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * This class used to call system backup and restore functions.
+ * <p>Like list of available backup files, run new backup, to restore a backup
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
@@ -53,6 +55,19 @@ public class BackupApi {
     public static final String KEY_NAME = "name";
     public static final String[] BACKUP_FILE_SUFFIX_FILTER = { "zip", "ZIP" };
 
+    /**
+     * Call this method to get list of available backup files.
+     * <p><b>Filter(s):</b>
+     * <p>name - {@link List} of backup file names
+     * <p><b>Page filter(s):</b>
+     * <p>pageLimit - Set number of items per page
+     * <p>page - Request page number
+     * <p>order - Set order. <b>Option:</b> asc, desc
+     * <p>orderBy - column name for order. <b>Option:</b> name
+     * @param filters Supports various filter options.
+     * @return QueryResponse Contains input filter and response
+     * @throws IOException throws when problem with backup location
+     */
     public QueryResponse getBackupFiles(HashMap<String, Object> filters) throws IOException {
         Query query = Query.get(filters);
 
@@ -133,6 +148,11 @@ public class BackupApi {
         }
     }
 
+    /**
+     * Call this method to delete list of backup files
+     * @param backupFiles List of backup file names with extension
+     * @throws IOException throws when problem with backup location
+     */
     public void deleteBackupFiles(List<String> backupFiles) throws IOException {
         String backupFileLocation = McUtils.getDirectoryLocation(FileUtils.getFile(
                 AppProperties.getInstance().getBackupSettings().getBackupLocation()).getCanonicalPath());
@@ -151,15 +171,36 @@ public class BackupApi {
         }
     }
 
+    /**
+     * Call this method to run immediate system backup
+     * @param backupFilePrefix backup file prefix name
+     * @return backed up file name
+     * @throws IOException throws when problem with backup location
+     * @throws McException internal issue
+     */
     public String backupNow(String backupFilePrefix) throws McException, IOException {
         _logger.debug("Backup triggered.");
         return Backup.backup(backupFilePrefix);
     }
 
+    /**
+     * Call this method to run immediate system backup
+     * <p> calls {@link #backupNow(String)} with 'on-demand' string
+     * @return backed up file name
+     * @throws IOException throws when problem with backup location
+     * @throws McException internal issue
+     */
     public String backupNow() throws McException, IOException {
         return backupNow("on-demand");
     }
 
+    /**
+     * Call this method to restore a backup file
+     * @param fileName backup file name to restore
+     * <p><b>Warning:</b> After successful restore you have to start the server manually
+     * @throws IOException throws when problem with backup location
+     * @throws McBadRequestException given file name not available
+     */
     public void restore(String fileName) throws IOException, McBadRequestException {
         if (fileName == null) {
             throw new McBadRequestException("backup file should not be null");

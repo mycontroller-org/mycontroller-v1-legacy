@@ -27,6 +27,8 @@ $scope, MetricsFactory, $state, displayRestError, mchelper, CommonServices, $fil
   var self = this;
   $scope.vs = null;
   var d3 = window.d3;
+  $scope.data = {};
+  $scope.search = {};
 
   $scope.kinds = {
     "Gateway": "#vertex-Gateway",
@@ -37,18 +39,22 @@ $scope, MetricsFactory, $state, displayRestError, mchelper, CommonServices, $fil
 
   $scope.refresh = function() {
     MetricsFactory.getTopologyData(function(data){
-        $scope.items = data.items;
-        $scope.relations = data.relations;
+        $scope.data = data;
+        //$scope.relations = data.relations;
         //$scope.kinds = data.kinds;
       },function(error){
       displayRestError.display(error);
     });
 
-    };
+  };
 
-    $scope.checkboxModel = {
-        value : true
-    };
+  $scope.isEmpty = function(item){
+    return angular.equals({}, item);
+  }
+
+  $scope.checkboxModel = {
+    value : true
+  };
     $scope.legendTooltip = "Click here to show/hide entities of this type";
 
     $scope.show_hide_names = function() {

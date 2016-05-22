@@ -45,8 +45,8 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     }
 
     @Override
-    public List<UidTag> getAll(List<Integer> ids) {
-        return super.getAll(UidTag.KEY_UID, ids);
+    public List<UidTag> getAllByUid(List<String> uids) {
+        return super.getAll(UidTag.KEY_UID, uids);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     }
 
     @Override
-    public UidTag getByUId(String uid) {
+    public UidTag getByUid(String uid) {
         List<UidTag> uidTags = super.getAll(UidTag.KEY_UID, uid);
         if (uidTags != null && !uidTags.isEmpty()) {
             return uidTags.get(0);
@@ -91,8 +91,13 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     }
 
     @Override
-    public void deleteByUId(Integer uid) {
-        super.delete(UidTag.KEY_SENSOR_VARIABLE, uid);
+    public void deleteByUid(String uid) {
+        super.delete(UidTag.KEY_UID, uid);
+    }
+
+    @Override
+    public List<UidTag> getAll(List<Integer> ids) {
+        return super.getAll(UidTag.KEY_ID, ids);
     }
 
 }

@@ -31,11 +31,13 @@ public interface UidTagDao extends BaseDao<UidTag, Integer> {
 
     void deleteBySensorId(Integer sId);
 
-    void deleteByUId(Integer uid);
+    void deleteByUid(String uid);
+
+    List<UidTag> getAllByUid(List<String> uids);
 
     UidTag getBySensorVariableId(Integer sVariableId);
 
-    UidTag getByUId(String uid);
+    UidTag getByUid(String uid);
 
     QueryResponse getAll(Query query);
 

@@ -31,11 +31,39 @@ import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.model.Gateway;
 
 /**
+ * Using this API's can do activities on gateway
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
 
 public class GatewayApi {
+
+    /**
+     * Gives list of gateways with filter
+     * <p><b>Filter(s):</b>
+     * <p>name - {@link List} of gateway names
+     * <p>networkType - MySensors
+     * <p>type - Serial, Ethernet, MQTT
+     * <p>state - Up, Down, Unavailable
+     * <p><b>Page filter(s):</b>
+     * <p>pageLimit - Set number of items per page
+     * <p>page - Request page number
+     * <p>order - Set order. <b>Option:</b> asc, desc
+     * <p>orderBy - column name for order. <b>Options:</b> name, networkType, type, state, enabled, statusMessage
+     * @param filters refer Filter(s)
+     * @return QueryResponse Contains input filter and response
+     */
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        QueryResponse queryResponse = getAllRaw(filters);
+        ArrayList<Gateway> gateways = new ArrayList<Gateway>();
+        @SuppressWarnings("unchecked")
+        List<GatewayTable> gatewayTables = (List<GatewayTable>) queryResponse.getData();
+        for (GatewayTable gatewayTable : gatewayTables) {
+            gateways.add(GatewayUtils.getGateway(gatewayTable));
+        }
+        queryResponse.setData(gateways);
+        return queryResponse;
+    }
 
     public GatewayTable getRaw(Integer gatewayId) {
         return DaoUtils.getGatewayDao().getById(gatewayId);
@@ -47,18 +75,6 @@ public class GatewayApi {
 
     public Gateway get(Integer gatewayId) {
         return GatewayUtils.getGateway(getRaw(gatewayId));
-    }
-
-    public QueryResponse getAll(HashMap<String, Object> filters) {
-        QueryResponse queryResponse = getAllRaw(filters);
-        ArrayList<Gateway> gateways = new ArrayList<Gateway>();
-        @SuppressWarnings("unchecked")
-        List<GatewayTable> gatewayTables = (List<GatewayTable>) queryResponse.getData();
-        for (GatewayTable gatewayTable : gatewayTables) {
-            gateways.add(GatewayUtils.getGateway(gatewayTable));
-        }
-        queryResponse.setData(gateways);
-        return queryResponse;
     }
 
     public void add(Gateway gateway) {
