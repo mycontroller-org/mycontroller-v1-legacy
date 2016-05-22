@@ -57,6 +57,7 @@ var myControllerModule = angular.module('myController',[
   'adf.widget.news',
   'adf.widget.myc-custom-widget',
   'ngMap',
+  'kubernetesUI',
 ]);
 
 myControllerModule.constant("mchelper", {
@@ -85,6 +86,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       url:"/dashboard/rooms/list/:id",
       templateUrl: "partials/rooms/rooms-sensors-list.html",
       controller: "RoomsSensorsControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('dashboardTopology', {
+      url:"/dashboard/topology",
+      templateUrl: "partials/topology/topology.html",
+      controller: "TopologyController",
        data: {
         requireLogin: true
       }

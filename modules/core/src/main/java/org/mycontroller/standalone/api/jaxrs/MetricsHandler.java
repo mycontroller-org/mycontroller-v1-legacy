@@ -20,6 +20,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -38,15 +39,22 @@ import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.MetricApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
+import org.mycontroller.standalone.api.jaxrs.json.LocaleString;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsBulletChartNVD3;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataGroupNVD3;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataNVD3;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataXY;
+import org.mycontroller.standalone.api.jaxrs.json.TopologyItem;
+import org.mycontroller.standalone.api.jaxrs.json.TopologyRelation;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.SensorUtils;
+import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.metrics.MetricDouble;
@@ -194,6 +202,94 @@ public class MetricsHandler extends AccessEngine {
         return RestUtils.getResponse(Status.OK,
                 getMetricsBatteryJsonNVD3(nodeId, timestampFrom, timestampTo,
                         withMinMax != null ? withMinMax : false));
+    }
+
+    @GET
+    @Path("/topology")
+    public Response getTopology() {
+        HashMap<String, Object> data = new HashMap<String, Object>();
+        HashMap<String, TopologyItem> items = new HashMap<String, TopologyItem>();
+        List<TopologyRelation> relations = new ArrayList<TopologyRelation>();
+
+        data.put("items", items);
+        data.put("relations", relations);
+
+        //Update sensor variables
+        List<SensorVariable> sVariables = DaoUtils.getSensorVariableDao().getAll();
+        for (SensorVariable sVariable : sVariables) {
+            String source = "SV-" + sVariable.getId();
+            items.put(
+                    source,
+                    TopologyItem
+                            .builder()
+                            .name(sVariable.getVariableType().getText())
+                            .id(sVariable.getId())
+                            .type(RESOURCE_TYPE.SENSOR_VARIABLE)
+                            .subType(LocaleString.builder()
+                                    .en(sVariable.getVariableType().getText())
+                                    .locale(McObjectManager.getMcLocale().getString(
+                                            sVariable.getVariableType().name())).build())
+                            .displayKind(RESOURCE_TYPE.SENSOR_VARIABLE.getText())
+                            .kind("SensorVariable")
+                            .status(SensorUtils.getValue(sVariable))
+                            .lastSeen(sVariable.getTimestamp())
+                            .build());
+            relations.add(TopologyRelation.builder()
+                    .source(source)
+                    .target("S-" + sVariable.getSensor().getId())
+                    .build());
+
+        }
+        //Update sensors
+        List<Sensor> sensors = DaoUtils.getSensorDao().getAll();
+        for (Sensor sensor : sensors) {
+            String source = "S-" + sensor.getId();
+            items.put(
+                    source,
+                    TopologyItem
+                            .builder()
+                            .name(sensor.getName())
+                            .id(sensor.getId())
+                            .type(RESOURCE_TYPE.SENSOR)
+                            .subType(LocaleString.builder()
+                                    .en(sensor.getType().getText())
+                                    .locale(McObjectManager.getMcLocale().getString(sensor.getType().name())).build())
+                            .kind("Sensor")
+                            .build());
+            relations.add(TopologyRelation.builder()
+                    .source(source)
+                    .target("N-" + sensor.getNode().getId())
+                    .build());
+        }
+        //Update nodes
+        List<Node> nodes = DaoUtils.getNodeDao().getAll();
+        for (Node node : nodes) {
+            String source = "N-" + node.getId();
+            items.put(source, TopologyItem.builder()
+                    .name(node.getName())
+                    .id(node.getId())
+                    .type(RESOURCE_TYPE.NODE)
+                    .kind("Node")
+                    .status(node.getState().getText())
+                    .build());
+            relations.add(TopologyRelation.builder()
+                    .source(source)
+                    .target("G-" + node.getGatewayTable().getId())
+                    .build());
+        }
+        //Update Gateways
+        List<GatewayTable> gateways = DaoUtils.getGatewayDao().getAll();
+        for (GatewayTable gateway : gateways) {
+            String source = "G-" + gateway.getId();
+            items.put(source, TopologyItem.builder()
+                    .name(gateway.getName())
+                    .id(gateway.getId())
+                    .type(RESOURCE_TYPE.GATEWAY)
+                    .kind("Gateway")
+                    .status(gateway.getState().getText())
+                    .build());
+        }
+        return RestUtils.getResponse(Status.OK, data);
     }
 
     private List<MetricsBulletChartNVD3> getMetricsBulletChart(List<Integer> variableIds,

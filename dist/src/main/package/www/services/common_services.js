@@ -331,21 +331,57 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
 
   //Sensor icons
     var sensorIcons = [
-        { id:"na",value:"na"},{id:"Door",value:"fa fa-building-o"},{ id:"Motion",value:"fa fa-paw"},{ id:"Smoke",value:"wi wi-smoke"},{ id:"Binary",value:"fa fa-power-off"},{ id:"Dimmer",value:"fa fa-lightbulb-o"},
-        { id:"Cover",value:"fa fa-archive"},{ id:"Temperature",value:"wi wi-thermometer"},{ id:"Humidity",value:"wi wi-humidity"},{ id:"Barometer",value:"wi wi-barometer"},{ id:"Wind",value:"wi wi-windy"},
-        { id:"Rain",value:"wi wi-raindrops"},{ id:"UV",value:"fa fa-star-o"},{ id:"Weight",value:"fa fa-balance-scale"},{ id:"Power",value:"fa fa-bolt"},{ id:"Heater",value:"fa fa-star-o"},{ id:"Distance",value:"fa fa-binoculars"},
-        { id:"Light level",value:"wi wi-moon-alt-waxing-crescent-5"},{ id:"Node",value:"fa fa-sitemap"},{ id:"Repeater node",value:"fa fa-sitemap"},{ id:"Lock",value:"fa fa-lock"},{ id:"IR",value:"fa fa-star-o"},
-        { id:"Water",value:"fa fa-star-o"},{ id:"Air quality",value:"fa fa-star-o"},{ id:"Custom",value:"fa fa-star-o"},    { id:"Dust",value:"wi wi-dust"},{ id:"Scene controller",value:"fa fa-picture-o"},
-        { id:"RGB light",value:"fa fa-star-o"},{ id:"RGBW light",value:"fa fa-star-o"},{ id:"Color sensor",value:"fa fa-star-o"},{ id:"HVAC",value:"fa fa-star-o"},{ id:"Multimeter",value:"fa fa-calculator"},
-        { id:"Sprinkler",value:"fa fa-star-o"},{ id:"Water leak",value:"fa fa-tint"},{ id:"Sound",value:"fa fa-volume-up"},{ id:"Vibration",value:"fa fa-star-o"},{ id:"Moisture",value:"fa fa-star-o"},
-        { id:"Information",value:"fa fa-info"},{ id:"Gas",value:"fa fa-star-o"},{ id:"GPS",value:"fa fa-star-o"},
+        {id:"default", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Door", value:"fa fa-building-o", ucode:"\uf0f7", fname:"FontAwesome"},
+        {id:"Motion", value:"fa fa-paw", ucode:"\uf1b0", fname:"FontAwesome"},
+        {id:"Smoke", value:"wi wi-smoke", ucode:"\uf062", fname:"weathericons"},
+        {id:"Binary", value:"fa fa-power-off", ucode:"\uf011", fname:"FontAwesome"},
+        {id:"Dimmer", value:"fa fa-lightbulb-o", ucode:"\uf0eb", fname:"FontAwesome"},
+        {id:"Cover", value:"fa fa-archive", ucode:"\uf187", fname:"FontAwesome"},
+        {id:"Temperature", value:"wi wi-thermometer", ucode:"\uf055", fname:"weathericons"},
+        {id:"Humidity", value:"wi wi-humidity", ucode:"\uf07a", fname:"weathericons"},
+        {id:"Barometer", value:"wi wi-barometer", ucode:"\uf079", fname:"weathericons"},
+        {id:"Wind", value:"wi wi-windy", ucode:"\uf079", fname:"weathericons"},
+        {id:"Rain", value:"wi wi-raindrops", ucode:"\uf04e", fname:"weathericons"},
+        {id:"UV", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Weight", value:"fa fa-balance-scale", ucode:"\uf24e", fname:"FontAwesome"},
+        {id:"Power", value:"fa fa-bolt", ucode:"\uf0e7", fname:"FontAwesome"},
+        {id:"Heater", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Distance", value:"fa fa-binoculars", ucode:"\uf1e5", fname:"FontAwesome"},
+        {id:"Light level", value:"wi wi-moon-alt-waxing-crescent-5", ucode:"\uf0d4", fname:"weathericons"},
+        {id:"Node", value:"fa fa-sitemap", ucode:"\uf0e8", fname:"FontAwesome"},
+        {id:"Repeater node", value:"fa fa-sitemap", ucode:"\uf0e8", fname:"FontAwesome"},
+        {id:"Lock", value:"fa fa-lock", ucode:"\uf023", fname:"FontAwesome"},
+        {id:"IR", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Water", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Air quality", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Custom", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Dust", value:"wi wi-dust", ucode:"\uf063", fname:"weathericons"},
+        {id:"Scene controller", value:"fa fa-picture-o", ucode:"\uf03e", fname:"FontAwesome"},
+        {id:"RGB light", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"RGBW light", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Color sensor", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"HVAC", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Multimeter", value:"fa fa-calculator", ucode:"\uf1ec", fname:"FontAwesome"},
+        {id:"Sprinkler", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Water leak", value:"fa fa-tint", ucode:"\uf043", fname:"FontAwesome"},
+        {id:"Sound", value:"fa fa-volume-up", ucode:"\uf028", fname:"FontAwesome"},
+        {id:"Vibration", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Moisture", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Information", value:"fa fa-info", ucode:"\uf129", fname:"FontAwesome"},
+        {id:"Gas", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"GPS", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
       ];
 
   commonService.getSensorIcon = function(key){
+    return commonService.getSensorIconData(key).value;
+  };
+
+  commonService.getSensorIconData = function(key){
     if(key === undefined){
-      key = 'na';
+      key = 'default';
     }
-    return $filter('filter')(sensorIcons, {id: key}, true)[0].value;
+    return $filter('filter')(sensorIcons, {id: key}, true)[0];
   };
 
 

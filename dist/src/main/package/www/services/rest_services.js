@@ -146,6 +146,7 @@ myControllerModule.factory('MetricsFactory', function ($resource) {
     getMetricsData: { method: 'GET', isArray: true, params: {type: 'metricsData'}},
     getBatteryMetrics: { method: 'GET', isArray: false, params: {type: 'metricsBattery'}},
     getBulletChart: { method: 'GET', isArray: true, params: {type: 'bulletChart'}},
+    getTopologyData: { method: 'GET', isArray: false, params: {type: 'topology'}},
 
     getHeatMapBatteryLevel: { method: 'GET', isArray: true, params: {type: 'heatMapBatteryLevel'}},
     getHeatMapHeatMapNodeStatus: { method: 'GET', isArray: true, params: {type: 'heatMapNodeStatus'}},
