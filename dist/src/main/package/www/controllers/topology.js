@@ -53,7 +53,7 @@ $scope, MetricsFactory, $state, displayRestError, mchelper, CommonServices, $fil
   }
 
   $scope.checkboxModel = {
-    value : true
+    value : false
   };
     $scope.legendTooltip = "Click here to show/hide entities of this type";
 
