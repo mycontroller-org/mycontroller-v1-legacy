@@ -666,10 +666,7 @@ input.mc-color-steel-blue{
 
 kubernetes-topology-graph {
   border: 1px solid lightgray;
-  position: fixed;
-  height: 74%;
-  width: 96%;
-  padding: 10px;
+  height: 720px;
 }
 
 .container_topology .legend {
