@@ -90,7 +90,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     }).state('dashboardTopology', {
-      url:"/dashboard/topology",
+      url:"/dashboard/topology/:resourceType/:resourceId",
       templateUrl: "partials/topology/topology.html",
       controller: "TopologyController",
        data: {

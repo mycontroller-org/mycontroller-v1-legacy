@@ -20,6 +20,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,6 +79,15 @@ import org.mycontroller.standalone.utils.McUtils;
 public class MetricsHandler extends AccessEngine {
     public static final String COLOR_MINIMUM = "#2ca02c";
     public static final String COLOR_MAXIMUM = "#802b00";
+
+    public static final String TOPOLOGY_PREFIX_GATEWAY = "G-";
+    public static final String TOPOLOGY_PREFIX_NODE = "N-";
+    public static final String TOPOLOGY_PREFIX_SENSOR = "S-";
+    public static final String TOPOLOGY_PREFIX_SENSOR_VARIABLE = "SV-";
+    public static final String TOPOLOGY_KIND_GATEWAY = "Gateway";
+    public static final String TOPOLOGY_KIND_NODE = "Node";
+    public static final String TOPOLOGY_KIND_SENSOR = "Sensor";
+    public static final String TOPOLOGY_KIND_SENSOR_VARIABLE = "SensorVariable";
 
     private MetricApi metricApi = new MetricApi();
 
@@ -206,7 +216,9 @@ public class MetricsHandler extends AccessEngine {
 
     @GET
     @Path("/topology")
-    public Response getTopology() {
+    public Response getTopology(
+            @QueryParam("resourceType") RESOURCE_TYPE resourceType,
+            @QueryParam("resourceId") Integer resourceId) {
         HashMap<String, Object> data = new HashMap<String, Object>();
         HashMap<String, TopologyItem> items = new HashMap<String, TopologyItem>();
         List<TopologyRelation> relations = new ArrayList<TopologyRelation>();
@@ -214,36 +226,93 @@ public class MetricsHandler extends AccessEngine {
         data.put("items", items);
         data.put("relations", relations);
 
-        //Update sensor variables
-        List<SensorVariable> sVariables = DaoUtils.getSensorVariableDao().getAll();
-        for (SensorVariable sVariable : sVariables) {
-            String source = "SV-" + sVariable.getId();
-            items.put(
-                    source,
-                    TopologyItem
-                            .builder()
-                            .name(sVariable.getVariableType().getText())
-                            .id(sVariable.getId())
-                            .type(RESOURCE_TYPE.SENSOR_VARIABLE)
-                            .subType(LocaleString.builder()
-                                    .en(sVariable.getVariableType().getText())
-                                    .locale(McObjectManager.getMcLocale().getString(
-                                            sVariable.getVariableType().name())).build())
-                            .displayKind(RESOURCE_TYPE.SENSOR_VARIABLE.getText())
-                            .kind("SensorVariable")
-                            .status(SensorUtils.getValue(sVariable))
-                            .lastSeen(sVariable.getTimestamp())
-                            .build());
+        if (resourceType != null && resourceId != null) {
+            switch (resourceType) {
+                case GATEWAY:
+                    updateGatewayTopology(items, relations, resourceId);
+                    break;
+                case NODE:
+                    updateNodeTopology(items, relations, null, resourceId);
+                    break;
+                case SENSOR:
+                    updateSensorTopology(items, relations, null, resourceId);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            updateGatewayTopology(items, relations, null);
+        }
+
+        return RestUtils.getResponse(Status.OK, data);
+    }
+
+    private void updateGatewayTopology(HashMap<String, TopologyItem> items,
+            List<TopologyRelation> relations,
+            Integer gatewayId) {
+        List<GatewayTable> gateways = null;
+        if (gatewayId != null) {
+            gateways = DaoUtils.getGatewayDao().getAll(Collections.singletonList(gatewayId));
+        } else {
+            gateways = DaoUtils.getGatewayDao().getAll();
+        }
+
+        //Update Gateways
+        for (GatewayTable gateway : gateways) {
+            String source = TOPOLOGY_PREFIX_GATEWAY + gateway.getId();
+            items.put(source, TopologyItem.builder()
+                    .name(gateway.getName())
+                    .id(gateway.getId())
+                    .type(RESOURCE_TYPE.GATEWAY)
+                    .kind(TOPOLOGY_KIND_GATEWAY)
+                    .status(gateway.getState().getText())
+                    .build());
+            //Update node topology
+            updateNodeTopology(items, relations, gateway.getId(), null);
+        }
+    }
+
+    private void updateNodeTopology(HashMap<String, TopologyItem> items,
+            List<TopologyRelation> relations,
+            Integer gatewayId, Integer nodeId) {
+        List<Node> nodes = null;
+        if (gatewayId != null) {
+            nodes = DaoUtils.getNodeDao().getAllByGatewayId(gatewayId);
+        } else if (nodeId != null) {
+            nodes = DaoUtils.getNodeDao().getAll(Collections.singletonList(nodeId));
+        } else {
+            return;
+        }
+        for (Node node : nodes) {
+            String source = TOPOLOGY_PREFIX_NODE + node.getId();
+            items.put(source, TopologyItem.builder()
+                    .name(node.getName())
+                    .id(node.getId())
+                    .type(RESOURCE_TYPE.NODE)
+                    .kind(TOPOLOGY_KIND_NODE)
+                    .status(node.getState().getText())
+                    .build());
             relations.add(TopologyRelation.builder()
                     .source(source)
-                    .target("S-" + sVariable.getSensor().getId())
+                    .target(TOPOLOGY_PREFIX_GATEWAY + node.getGatewayTable().getId())
                     .build());
-
+            updateSensorTopology(items, relations, node.getId(), null);
         }
-        //Update sensors
-        List<Sensor> sensors = DaoUtils.getSensorDao().getAll();
+    }
+
+    private void updateSensorTopology(HashMap<String, TopologyItem> items,
+            List<TopologyRelation> relations,
+            Integer nodeId, Integer sensorId) {
+        List<Sensor> sensors = null;
+        if (nodeId != null) {
+            sensors = DaoUtils.getSensorDao().getAllByNodeId(nodeId);
+        } else if (sensorId != null) {
+            sensors = DaoUtils.getSensorDao().getAll(Collections.singletonList(sensorId));
+        } else {
+            return;
+        }
         for (Sensor sensor : sensors) {
-            String source = "S-" + sensor.getId();
+            String source = TOPOLOGY_PREFIX_SENSOR + sensor.getId();
             LocaleString subType = null;
             if (sensor.getType() != null) {
                 subType = LocaleString.builder().en(sensor.getType().getText())
@@ -251,50 +320,45 @@ public class MetricsHandler extends AccessEngine {
             } else {
                 subType = LocaleString.builder().en("Undefined").locale("Undefined").build();
             }
-            items.put(
-                    source,
-                    TopologyItem
-                            .builder()
-                            .name(sensor.getName())
-                            .id(sensor.getId())
-                            .type(RESOURCE_TYPE.SENSOR)
-                            .subType(subType)
-                            .kind("Sensor")
-                            .build());
-            relations.add(TopologyRelation.builder()
-                    .source(source)
-                    .target("N-" + sensor.getNode().getId())
-                    .build());
-        }
-        //Update nodes
-        List<Node> nodes = DaoUtils.getNodeDao().getAll();
-        for (Node node : nodes) {
-            String source = "N-" + node.getId();
             items.put(source, TopologyItem.builder()
-                    .name(node.getName())
-                    .id(node.getId())
-                    .type(RESOURCE_TYPE.NODE)
-                    .kind("Node")
-                    .status(node.getState().getText())
+                    .name(sensor.getName())
+                    .id(sensor.getId())
+                    .type(RESOURCE_TYPE.SENSOR)
+                    .subType(subType)
+                    .kind(TOPOLOGY_KIND_SENSOR)
                     .build());
             relations.add(TopologyRelation.builder()
                     .source(source)
-                    .target("G-" + node.getGatewayTable().getId())
+                    .target(TOPOLOGY_PREFIX_NODE + sensor.getNode().getId())
                     .build());
+            updateSensorVariableTopology(items, relations, sensor.getId());
         }
-        //Update Gateways
-        List<GatewayTable> gateways = DaoUtils.getGatewayDao().getAll();
-        for (GatewayTable gateway : gateways) {
-            String source = "G-" + gateway.getId();
+    }
+
+    private void updateSensorVariableTopology(HashMap<String, TopologyItem> items,
+            List<TopologyRelation> relations,
+            int sensorId) {
+        List<SensorVariable> sVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+        for (SensorVariable sVariable : sVariables) {
+            String source = TOPOLOGY_PREFIX_SENSOR_VARIABLE + sVariable.getId();
             items.put(source, TopologyItem.builder()
-                    .name(gateway.getName())
-                    .id(gateway.getId())
-                    .type(RESOURCE_TYPE.GATEWAY)
-                    .kind("Gateway")
-                    .status(gateway.getState().getText())
+                    .name(sVariable.getVariableType().getText())
+                    .id(sVariable.getId())
+                    .type(RESOURCE_TYPE.SENSOR_VARIABLE)
+                    .subType(LocaleString.builder()
+                            .en(sVariable.getVariableType().getText())
+                            .locale(McObjectManager.getMcLocale().getString(
+                                    sVariable.getVariableType().name())).build())
+                    .displayKind(RESOURCE_TYPE.SENSOR_VARIABLE.getText())
+                    .kind(TOPOLOGY_KIND_SENSOR_VARIABLE)
+                    .status(SensorUtils.getValue(sVariable))
+                    .lastSeen(sVariable.getTimestamp())
+                    .build());
+            relations.add(TopologyRelation.builder()
+                    .source(source)
+                    .target(TOPOLOGY_PREFIX_SENSOR + sVariable.getSensor().getId())
                     .build());
         }
-        return RestUtils.getResponse(Status.OK, data);
     }
 
     private List<MetricsBulletChartNVD3> getMetricsBulletChart(List<Integer> variableIds,

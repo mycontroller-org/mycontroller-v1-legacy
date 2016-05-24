@@ -67,17 +67,18 @@
                 </dd>
                 <dt>{{ 'FIRMWARE' | translate }}</dt> <dd>{{item.firmware.firmwareName}}</dd>
                 <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.lastSeen"></span></dd>
+                <dt>{{ 'TOPOLOGY' | translate }}</dt> <dd><a class="mc-inline-editer-ab" ui-sref="dashboardTopology({ resourceType: 'Node', resourceId: item.id})"><span class="pficon pficon-topology mc-icon-lg"></span></a></dd>
 
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
                 <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt>
                 <dd>
-                  <a  ng-hide="resourceCount.sensors == 0" ui-sref="sensorsList({ nodeId: item.id})">{{resourceCount.sensors}}</a>
-                  <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.sensors > 0" ui-sref="sensorsList({ nodeId: item.id})">{{resourceCount.sensors}}</a>
+                  <span ng-if="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
                 </dd>
                 <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
                 <dd>
-                  <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
-                  <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.resourcesGroups > 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
+                  <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
                 </dd>
               </dl>
             </div>

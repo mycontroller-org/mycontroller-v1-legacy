@@ -57,6 +57,8 @@ public interface BaseDao<Tdao, Tid> {
 
     long countOf(HashMap<String, List<Object>> columnValues);
 
+    long countOf(String key, Object data);
+
     Dao<Tdao, Tid> getDao();
 
     TableInfo<Tdao, Tid> getTableInfo();

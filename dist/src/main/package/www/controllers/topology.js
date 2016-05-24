@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('TopologyController', function(alertService,
-$scope, MetricsFactory, $state, displayRestError, mchelper, CommonServices, $filter, TopologyService, $interval, mchelper) {
+$scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, CommonServices, $filter, TopologyService, $interval, mchelper) {
 
   //GUI page settings
   $scope.headerStringList = $filter('translate')('TOPOLOGY');
@@ -23,6 +23,12 @@ $scope, MetricsFactory, $state, displayRestError, mchelper, CommonServices, $fil
   $scope.noItemsSystemIcon = "pficon pficon-topology";
 
   $scope.mchelper = mchelper;
+
+  $scope.query = {};
+  //Update $stateParams
+  if($stateParams.resourceType && $stateParams.resourceId){
+    $scope.query = {'resourceType': $stateParams.resourceType, 'resourceId': $stateParams.resourceId};
+  }
 
   var self = this;
   $scope.vs = null;
@@ -38,7 +44,7 @@ $scope, MetricsFactory, $state, displayRestError, mchelper, CommonServices, $fil
   };
 
   $scope.refresh = function() {
-    MetricsFactory.getTopologyData(function(data){
+    MetricsFactory.getTopologyData($scope.query, function(data){
         $scope.data = data;
         //$scope.relations = data.relations;
         //$scope.kinds = data.kinds;

@@ -308,12 +308,17 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         return null;
     }
 
-    public Long countOf(String key, Object value) {
+    @SuppressWarnings("unchecked")
+    public long countOf(String key, Object data) {
         try {
-            return this.getDao().queryBuilder().where().eq(key, value).countOf();
+            if (data instanceof List) {
+                return this.getDao().queryBuilder().where().in(key, ((List<Object>) data)).countOf();
+            } else {
+                return this.getDao().queryBuilder().where().eq(key, data).countOf();
+            }
         } catch (SQLException ex) {
-            _logger.error("unable to get count key:{}, value:{}", key, value, ex);
-            return null;
+            _logger.error("unable to get count key:{}, data:{}", key, data, ex);
+            return 0;
         }
     }
 

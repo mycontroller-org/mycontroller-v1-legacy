@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter) {
+$scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter) {
 
   //GUI page settings
   $scope.headerStringList = $filter('translate')('NODES_DETAIL');
@@ -35,6 +35,10 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
   };
+
+  if($stateParams.gatewayId){
+    $scope.query.gatewayId = $stateParams.gatewayId;
+  }
 
   //get all Nodes
   $scope.getAllItems = function(){
