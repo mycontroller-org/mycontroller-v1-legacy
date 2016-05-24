@@ -71,40 +71,40 @@
 
       </div>
 
-      <div class="container_topology">
+      <div class="container_topology" id="topology_kind_list">
         <div class="legend">
-          <kubernetes-topology-icon kind="Gateway">
+          <kubernetes-topology-icon kind="Gateway" ng-if="displayKinds.gateway">
            <svg class="kube-topology">
              <use xlink:href="#vertex-Gateway" x="21" y="22"></use>
            </svg>
-           <label>{{ 'GATEWAY' | translate }}</label>
+           <label>{{ 'GATEWAYS' | translate }}</label>
           </kubernetes-topology-icon>
 
-          <kubernetes-topology-icon kind="Node">
+          <kubernetes-topology-icon kind="Node"  ng-if="displayKinds.node">
             <svg class="kube-topology">
               <use xlink:href="#vertex-Node" x="21" y="22"></use>
             </svg>
-            <label>{{ 'NODE' | translate }}</label>
+            <label>{{ 'NODES' | translate }}</label>
           </kubernetes-topology-icon>
 
-          <kubernetes-topology-icon kind="Sensor">
+          <kubernetes-topology-icon kind="Sensor" ng-if="displayKinds.sensor">
             <svg class="kube-topology">
               <use xlink:href="#vertex-Sensor" x="21" y="22"></use>
             </svg>
-            <label>{{ 'SENSOR' | translate }}</label>
+            <label>{{ 'SENSORS' | translate }}</label>
           </kubernetes-topology-icon>
 
-          <kubernetes-topology-icon kind="SensorVariable">
+          <kubernetes-topology-icon kind="SensorVariable" ng-if="displayKinds.sensorVariable">
             <svg class="kube-topology">
               <use xlink:href="#vertex-SensorVariable" x="21" y="22"></use>
             </svg>
-            <label>{{ 'SENSOR_VARIABLE' | translate }}</label>
+            <label>{{ 'SENSOR_VARIABLES' | translate }}</label>
           </kubernetes-topology-icon>
 
         </div>
       </div>
 
-      <kubernetes-topology-graph items="data.items" relations="data.relations" kinds="kinds">
+      <kubernetes-topology-graph style="height: {{topologyHeight}}px" items="data.items" relations="data.relations" kinds="kinds">
       </kubernetes-topology-graph>
 
     </div>

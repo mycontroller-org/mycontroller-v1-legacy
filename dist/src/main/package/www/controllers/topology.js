@@ -35,6 +35,8 @@ $scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, Common
   var d3 = window.d3;
   $scope.data = {};
   $scope.search = {};
+  $scope.topologyHeight;
+  $scope.displayKinds= {};
 
   $scope.kinds = {
     "Gateway": "#vertex-Gateway",
@@ -47,7 +49,7 @@ $scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, Common
     MetricsFactory.getTopologyData($scope.query, function(data){
         $scope.data = data;
         //$scope.relations = data.relations;
-        //$scope.kinds = data.kinds;
+        $scope.displayKinds = data.kinds;
       },function(error){
       displayRestError.display(error);
     });
@@ -184,14 +186,25 @@ $scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, Common
     $scope.searchNode = function() {
       var svg = TopologyService.getSVG(d3);
       var query = $scope.search.query;
-
       TopologyService.searchNode(svg, query);
     };
 
     $scope.resetSearch = function() {
         TopologyService.resetSearch(d3);
-
         // Reset the search term in search input
         $scope.search.query = "";
     };
+
+  var resized = function(){
+    var height = window.innerHeight - 265;
+    if(height < 350){
+      $scope.topologyHeight = 350;
+    }else{
+      $scope.topologyHeight = height;
+    }
+  }
+
+  //set layout height
+  resized();
+
 });

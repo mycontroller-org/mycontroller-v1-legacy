@@ -665,8 +665,8 @@ input.mc-color-steel-blue{
 
 
 kubernetes-topology-graph {
-  border: 1px solid lightgray;
-  height: 720px;
+  border: 2px solid lightgray;
+  background-color: #FCFCFC;
 }
 
 .container_topology .legend {

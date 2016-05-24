@@ -46,6 +46,7 @@ import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataGroupNVD3;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataNVD3;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataXY;
 import org.mycontroller.standalone.api.jaxrs.json.TopologyItem;
+import org.mycontroller.standalone.api.jaxrs.json.TopologyKinds;
 import org.mycontroller.standalone.api.jaxrs.json.TopologyRelation;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -222,11 +223,14 @@ public class MetricsHandler extends AccessEngine {
         HashMap<String, Object> data = new HashMap<String, Object>();
         HashMap<String, TopologyItem> items = new HashMap<String, TopologyItem>();
         List<TopologyRelation> relations = new ArrayList<TopologyRelation>();
+        TopologyKinds kinds = TopologyKinds.builder().build();
 
         data.put("items", items);
         data.put("relations", relations);
+        data.put("kinds", kinds);
 
         if (resourceType != null && resourceId != null) {
+            kinds.update(resourceType);
             switch (resourceType) {
                 case GATEWAY:
                     updateGatewayTopology(items, relations, resourceId);
@@ -241,6 +245,7 @@ public class MetricsHandler extends AccessEngine {
                     break;
             }
         } else {
+            kinds.update(RESOURCE_TYPE.GATEWAY);
             updateGatewayTopology(items, relations, null);
         }
 
