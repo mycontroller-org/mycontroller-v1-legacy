@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.mycontroller</groupId>
     <artifactId>mycontroller-parent</artifactId>
-    <version>4</version>
+    <version>5</version>
   </parent>
 
   <groupId>org.mycontroller.standalone</groupId>
@@ -190,12 +190,6 @@
     <dependency>
       <groupId>io.moquette</groupId>
       <artifactId>moquette-broker</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- Apache HttpComponents -->
@@ -228,15 +222,16 @@
       <artifactId>easyrules-core</artifactId>
     </dependency>
 
-    <!-- HTTL - template engine -->
+    <!-- freemarker - template engine -->
     <dependency>
-      <groupId>com.github.httl</groupId>
-      <artifactId>httl</artifactId>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
     </dependency>
 
+    <!-- freemarker - template engine jsr 223 support-->
     <dependency>
-      <groupId>com.github.httl</groupId>
-      <artifactId>httl-script</artifactId>
+      <groupId>org.camunda.template-engines</groupId>
+      <artifactId>camunda-template-engines-freemarker</artifactId>
     </dependency>
 
   </dependencies>

@@ -226,7 +226,7 @@ public class McTemplateUtils {
             mcTemplateScript = McScript.builder()
                     .canonicalPath(mcTemplate.getCanonicalPath())
                     .type(SCRIPT_TYPE.OPERATION)
-                    .engineName(McScriptEngineUtils.MC_SCRIPT_ENGINE_HTTL)
+                    .engineName(McScriptEngineUtils.MC_TEMPLATE_ENGINE)
                     .build();
             McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
             templateResult = (String) templateEngine.executeScript(bindings);

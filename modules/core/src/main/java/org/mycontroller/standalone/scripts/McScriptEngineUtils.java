@@ -46,7 +46,7 @@ public class McScriptEngineUtils {
     private static ScriptEngineManager scriptEngineManager = null;
     public static final String MC_API = "mcApi";
     public static final String MC_SCRIPT_RESULT = "mcResult";
-    public static final String MC_SCRIPT_ENGINE_HTTL = "httl";
+    public static final String MC_TEMPLATE_ENGINE = "freemarker";
 
     public static synchronized ScriptEngineManager getScriptEngineManager() {
         if (scriptEngineManager == null) {

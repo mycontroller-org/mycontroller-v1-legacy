@@ -78,7 +78,7 @@ public class Notification {
     public static String updateTemplate(Notification notification, String source) {
         McScript mcTemplateScript = McScript.builder()
                 .type(SCRIPT_TYPE.OPERATION)
-                .engineName(McScriptEngineUtils.MC_SCRIPT_ENGINE_HTTL)
+                .engineName(McScriptEngineUtils.MC_TEMPLATE_ENGINE)
                 .data("#set(org.mycontroller.standalone.operation.Notification notification)" + source)
                 .build();
         McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
