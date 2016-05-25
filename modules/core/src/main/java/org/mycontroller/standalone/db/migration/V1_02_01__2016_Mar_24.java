@@ -76,6 +76,12 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
         //Load dao's
         loadDao();
 
+        /**
+         * Prerequisites: Need to done before this. V1_02_04__2016_Apr_25
+         */
+        V1_02_04__2016_Apr_25 prerequest = new V1_02_04__2016_Apr_25();
+        prerequest.migrate(connection);
+
         /** Migration comments
          *  Description:
          *  1. "gateway" table changed
@@ -384,7 +390,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
             properties.put(RuleDefinitionThreshold.KEY_OPERATOR, OPERATOR.NEQ.getText());
         }
 
-        _logger.info("Row data: {}", row);
+        _logger.debug("Row data: {}", row);
         switch (getConditionType(row)) {
             case STATE:
                 if (row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(

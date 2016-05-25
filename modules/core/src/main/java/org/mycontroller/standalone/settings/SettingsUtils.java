@@ -154,7 +154,7 @@ public class SettingsUtils {
 
     private static void loadHtmlHeaderFiles(HtmlHeaderFiles htmlHeaderFiles) {
         String htmlAdditionalHeaders = AppProperties.getInstance().getWebFileLocation()
-                + "partials" + File.separator + "additional-headers" + File.separator + "additional-headers.html";
+                + "additional-headers" + File.separator + "additional-headers.html";
         try {
             _logger.debug("Html additional headers file location:[{}], data:{}", htmlAdditionalHeaders,
                     htmlHeaderFiles);
