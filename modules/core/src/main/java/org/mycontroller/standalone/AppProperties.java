@@ -54,6 +54,7 @@ public class AppProperties {
     private static final String SCRIPTS_DIRECTORY = "scripts" + File.separator;
     public static final String CONDITIONS_SCRIPTS_DIRECTORY = "conditions" + File.separator;
     public static final String OPERATIONS_SCRIPTS_DIRECTORY = "operations" + File.separator;
+    public static final String HTML_INCLUDE_FILES = "mc-html-include-files.json";
 
     private String tmpLocation;
     private String resourcesLocation;
@@ -608,6 +609,10 @@ public class AppProperties {
 
     public String getScriptsOperationsLocation() {
         return getScriptsLocation() + OPERATIONS_SCRIPTS_DIRECTORY;
+    }
+
+    public String getHtmlIncludeFile() {
+        return getResourcesLocation() + HTML_INCLUDE_FILES;
     }
 
     public String getAppDirectory() {

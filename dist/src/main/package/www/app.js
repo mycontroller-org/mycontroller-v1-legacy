@@ -346,6 +346,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('additionalHeadersUpdate', {
+      url:"/utilities/additionalheaders/update",
+      templateUrl: "partials/additional-headers/additional-headers-update.html",
+      controller: "AdditionalHeadersUpdateController",
+       data: {
+        requireLogin: true
+      }
     }).state('variablesRepositoryList', {
       url:"/utilities/variables/list",
       templateUrl: "partials/variables-repository/variables-list.html",

@@ -147,18 +147,18 @@
     <script src="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.js"></script>
     <script src="libs/adf-structures-base/dist/adf-structures-base.min.js"></script>
     <script src="libs/adf-widget-news/dist/adf-widget-news.min.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-time/adf-myc-time.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-sunrisetime/adf-myc-sunrise.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-sen-vars/adf-myc-sen-vars.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-groups/adf-myc-groups.js"></script>
     <script src="controllers/adf-widgets/adf-myc-asg/adf-myc-a-sensor-graph.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-sgg/adf-myc-sensors-grouped-graph.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-smg/adf-myc-sensors-mixed-graph.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-hm/adf-myc-heat-map.js"></script>
     <script src="controllers/adf-widgets/adf-myc-cb/adf-myc-custom-buttons.js"></script>
     <script src="controllers/adf-widgets/adf-myc-cw/adf-myc-custom-widget.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-groups/adf-myc-groups.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-hm/adf-myc-heat-map.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-sen-vars/adf-myc-sen-vars.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-sgg/adf-myc-sensors-grouped-graph.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-smg/adf-myc-sensors-mixed-graph.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-sunrisetime/adf-myc-sunrise.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-time/adf-myc-time.js"></script>
 
     <!-- Google api for maps: https://github.com/allenhwkim/angularjs-google-maps -->
     <script src="libs/angularjs-google-maps/ng-map.min.js"></script>
@@ -167,37 +167,40 @@
 
     <!-- Application js-->
     <script src="app.js"></script>
-    <script src="services/alert_services.js"></script>
-    <script src="services/rest_services.js"></script>
-    <script src="services/common_services.js"></script>
-    <script src="services/validation_services.js"></script>
-    <script src="services/topology_service.js"></script>
-    <script src="controllers/dashboard.js"></script>
-    <script src="controllers/sensors.js"></script>
-    <script src="controllers/nodes.js"></script>
-    <script src="controllers/users.js"></script>
-    <script src="controllers/rule-engine.js"></script>
-    <script src="controllers/operations.js"></script>
-    <script src="controllers/scripts.js"></script>
-    <script src="controllers/templates.js"></script>
-    <script src="controllers/variables-repository.js"></script>
-    <script src="controllers/timers.js"></script>
-    <script src="controllers/settings.js"></script>
-    <script src="controllers/resources-logs.js"></script>
-    <script src="controllers/forward-payload.js"></script>
-    <script src="controllers/firmwares.js"></script>
-    <script src="controllers/status.js"></script>
-    <script src="controllers/send-raw-message.js"></script>
-    <script src="controllers/variables-mapper.js"></script>
-    <script src="controllers/gateways.js"></script>
-    <script src="controllers/resources-group.js"></script>
-    <script src="controllers/sensors-action.js"></script>
-    <script src="controllers/roles.js"></script>
+    <script src="controllers/additional-headers.js"></script>
     <script src="controllers/backup.js"></script>
+    <script src="controllers/dashboard.js"></script>
+    <script src="controllers/firmwares.js"></script>
+    <script src="controllers/forward-payload.js"></script>
+    <script src="controllers/gateways.js"></script>
+    <script src="controllers/nodes.js"></script>
+    <script src="controllers/operations.js"></script>
+    <script src="controllers/resources-group.js"></script>
+    <script src="controllers/resources-logs.js"></script>
+    <script src="controllers/roles.js"></script>
     <script src="controllers/rooms.js"></script>
+    <script src="controllers/rule-engine.js"></script>
+    <script src="controllers/scripts.js"></script>
+    <script src="controllers/send-raw-message.js"></script>
+    <script src="controllers/sensors-action.js"></script>
+    <script src="controllers/sensors.js"></script>
+    <script src="controllers/settings.js"></script>
+    <script src="controllers/status.js"></script>
+    <script src="controllers/templates.js"></script>
+    <script src="controllers/timers.js"></script>
     <script src="controllers/topology.js"></script>
     <script src="controllers/uid-tags.js"></script>
+    <script src="controllers/users.js"></script>
+    <script src="controllers/variables-mapper.js"></script>
+    <script src="controllers/variables-repository.js"></script>
+    <script src="services/alert_services.js"></script>
+    <script src="services/common_services.js"></script>
+    <script src="services/rest_services.js"></script>
+    <script src="services/topology_service.js"></script>
+    <script src="services/validation_services.js"></script>
 
+    <!-- Add additional headers -->
+    <link rel="import" href="/partials/additional-headers/additional-headers.html">
 
   </head>
 
@@ -315,6 +318,7 @@
             <ul class="nav navbar-nav navbar-persistent">
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('scripts') == 0 }"><a ui-sref="scriptsList"><i class="fa fa-code fa-lg"></i> {{ 'SCRIPTS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('templates') == 0 }"><a ui-sref="templatesList"><i class="fa fa-file-text fa-lg"></i> {{ 'TEMPLATES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('additionalHeaders') == 0 }"><a ui-sref="additionalHeadersUpdate"><i class="fa fa-file-text fa-lg"></i> {{ 'HTML_ADDITIONAL_HEADERS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('variables') == 0 }"><a ui-sref="variablesRepositoryList"><i class="fa fa-list-alt fa-lg"></i> {{ 'VARIABLES_REPOSITORY' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('uidTags') == 0 }"><a ui-sref="uidTagsList"><i class="fa fa-tags fa-lg"></i> {{ 'UID_TAGS' | translate }}</a></li>

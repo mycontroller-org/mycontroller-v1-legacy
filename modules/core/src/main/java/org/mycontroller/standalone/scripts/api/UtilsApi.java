@@ -19,6 +19,7 @@ package org.mycontroller.standalone.scripts.api;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -67,6 +68,10 @@ public class UtilsApi {
 
     public McHeatMap getHeatMap() {
         return McHeatMap.builder().build();
+    }
+
+    public String getUUID() {
+        return UUID.randomUUID().toString();
     }
 
 }

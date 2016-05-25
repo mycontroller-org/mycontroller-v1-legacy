@@ -34,6 +34,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
+import org.mycontroller.standalone.api.jaxrs.json.HtmlHeaderFiles;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.email.EmailUtils;
@@ -286,6 +287,20 @@ public class SettingsHandler extends AccessEngine {
         mqttBrokerSettings.save();
         SettingsUtils.updateAllSettings();
         MoquetteMqttBroker.restart();
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/htmlAdditionalHeaders")
+    public Response getHtmlHeaderFiles() {
+        return RestUtils.getResponse(Status.OK, SettingsUtils.getHtmlIncludeFiles());
+    }
+
+    @POST
+    @Path("/htmlAdditionalHeaders")
+    public Response saveHtmlHeaderFiles(HtmlHeaderFiles htmlHeaderFiles) {
+        htmlHeaderFiles.setLastUpdate(System.currentTimeMillis());
+        SettingsUtils.saveHtmlIncludeFiles(htmlHeaderFiles);
         return RestUtils.getResponse(Status.OK);
     }
 }

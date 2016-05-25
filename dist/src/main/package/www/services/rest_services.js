@@ -330,6 +330,8 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     saveUserSettings: { method: 'POST', params: {type:'userSettings'} },
     getMqttBroker: { method: 'GET', isArray: false, params: {type:'mqttBroker'} },
     saveMqttBroker: { method: 'POST', params: {type:'mqttBroker'} },
+    getHtmlAdditionalHeaders: { method: 'GET', isArray: false, params: {type:'htmlAdditionalHeaders'} },
+    updateHtmlAdditionalHeaders: { method: 'POST', params: {type:'htmlAdditionalHeaders'} },
   })
 });
 
