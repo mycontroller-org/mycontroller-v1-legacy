@@ -211,7 +211,9 @@ public class McTemplateUtils {
             McTemplate mcTemplate = McTemplateUtils.get(templateName);
             return mcTemplate.getData();
         }
-        return execute(templateName, McScriptFileUtils.executeScript(scriptName));
+        HashMap<String, Object> bindings = McScriptFileUtils.executeScript(scriptName);
+        bindings.put(McScriptEngineUtils.MC_SCRIPT_NAME, scriptName);
+        return execute(templateName, bindings);
     }
 
     public static String execute(String templateName, HashMap<String, Object> bindings) throws Exception {

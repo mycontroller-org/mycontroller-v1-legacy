@@ -79,7 +79,7 @@ public class Notification {
         McScript mcTemplateScript = McScript.builder()
                 .type(SCRIPT_TYPE.OPERATION)
                 .engineName(McScriptEngineUtils.MC_TEMPLATE_ENGINE)
-                .data("#set(org.mycontroller.standalone.operation.Notification notification)" + source)
+                .data(source)
                 .build();
         McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
         HashMap<String, Object> bindings = new HashMap<String, Object>();
@@ -88,7 +88,7 @@ public class Notification {
             return (String) templateEngine.executeScript(bindings);
         } catch (FileNotFoundException | McScriptException | ScriptException ex) {
             _logger.error("Exception: {}", mcTemplateScript, ex);
-            return "<pre>Exception: " + ex.getMessage()+"</pre>";
+            return "<pre>Exception: " + ex.getMessage() + "</pre>";
         }
     }
 

@@ -23,6 +23,7 @@ import org.mycontroller.standalone.api.NodeApi;
 import org.mycontroller.standalone.api.OperationApi;
 import org.mycontroller.standalone.api.RuleApi;
 import org.mycontroller.standalone.api.SensorApi;
+import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.TimerApi;
 import org.mycontroller.standalone.api.UidTagApi;
 import org.mycontroller.standalone.api.VariableApi;
@@ -44,6 +45,11 @@ public class McScriptApi {
     private VariableApi variableApi = new VariableApi();
     private LoggerApi logger = new LoggerApi();
     private UtilsApi utilsApi = new UtilsApi();
+    private SystemApi systemApi = new SystemApi();
+
+    public SystemApi system() {
+        return systemApi;
+    }
 
     public SensorApi sensor() {
         return sensorApi;

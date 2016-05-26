@@ -81,6 +81,12 @@
                 </dd>
             </span>
           </dl>
+
+          <div class="form-actions text-right">
+            <button ng-if="mchelper.user.permission === 'Super admin'" type="button" class="btn btn-default" class="button" ng-click="runGC()">
+              <i class="fa fa-recycle fa-lg"></i> {{ 'RUN_GARBAGE_COLLECTION' | translate }}
+            </button>
+          </div>
         </div>
 
 

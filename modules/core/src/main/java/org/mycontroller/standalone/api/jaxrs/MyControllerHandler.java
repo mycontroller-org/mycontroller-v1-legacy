@@ -27,7 +27,7 @@ import java.util.HashMap;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -38,15 +38,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.McAbout;
-import org.mycontroller.standalone.api.jaxrs.json.McGuiSettings;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
-import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
-import org.mycontroller.standalone.message.McMessage;
-import org.mycontroller.standalone.message.McMessageUtils;
-import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.utils.McServerFileUtils;
 
 /**
@@ -59,6 +53,8 @@ import org.mycontroller.standalone.utils.McServerFileUtils;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
 public class MyControllerHandler extends AccessEngine {
+
+    SystemApi systemApi = new SystemApi();
 
     @GET
     @Path("/ping")
@@ -78,13 +74,13 @@ public class MyControllerHandler extends AccessEngine {
     @GET
     @Path("/guiSettings")
     public Response about() {
-        return RestUtils.getResponse(Status.OK, new McGuiSettings());
+        return RestUtils.getResponse(Status.OK, systemApi.getGuiSettings());
     }
 
     @GET
     @Path("/mcAbout")
     public Response getMcAbout() {
-        return RestUtils.getResponse(Status.OK, new McAbout());
+        return RestUtils.getResponse(Status.OK, systemApi.getAbout());
     }
 
     @RolesAllowed({ "Admin" })
@@ -143,38 +139,26 @@ public class MyControllerHandler extends AccessEngine {
     @GET
     @Path("/osStatus")
     public Response getOsStatus() {
-        return RestUtils.getResponse(Status.OK, new StatusOS());
+        return RestUtils.getResponse(Status.OK, systemApi.getOS());
     }
 
     @GET
     @Path("/jvmStatus")
     public Response getJvmStatus() {
-        return RestUtils.getResponse(Status.OK, new StatusJVM());
+        return RestUtils.getResponse(Status.OK, systemApi.getJVM());
     }
 
     @GET
     @Path("/scriptEngines")
     public Response getScriptEngines() {
-        return RestUtils.getResponse(Status.OK, McScriptEngineUtils.getScriptEnginesDetail());
+        return RestUtils.getResponse(Status.OK, systemApi.getScriptEngines());
     }
 
     @RolesAllowed({ "Admin" })
-    @POST
-    @Path("/sendRawMessage")
-    public Response sendRawMessage(McMessage mcMessage) {
-        try {
-            mcMessage.setTxMessage(true);
-            mcMessage.setScreeningDone(false);
-            if (mcMessage.validate()) {
-                McMessageUtils.sendToProviderBridge(mcMessage);
-            } else {
-                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Required field is missing! "
-                        + mcMessage));
-            }
-            return RestUtils.getResponse(Status.OK);
-        } catch (Exception ex) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
-        }
+    @PUT
+    @Path("/runGarbageCollection")
+    public Response runGarbageCollection() {
+        systemApi.runGarbageCollection();
+        return RestUtils.getResponse(Status.OK, systemApi.getJVM());
     }
-
 }

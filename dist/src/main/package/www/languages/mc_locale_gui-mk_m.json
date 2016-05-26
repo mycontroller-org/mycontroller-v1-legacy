@@ -443,6 +443,7 @@
     "RULES_DETAIL": "Rules detail",
     "RULE_NAME": "Rule name",
     "RUN_BACKUP": "Run backup",
+    "RUN_GARBAGE_COLLECTION": "Run garbage collection",
     "RUN_NOW": "Стартувај сега",
     "SAVE": "Зачувај",
     "SAVE_CHANGES": "Зачувај промени",

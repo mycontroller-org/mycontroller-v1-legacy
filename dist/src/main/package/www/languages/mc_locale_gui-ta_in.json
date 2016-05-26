@@ -443,6 +443,7 @@
     "RULES_DETAIL": "கட்டளயின் விவரங்கள்",
     "RULE_NAME": "கட்டளயின் பெயர்",
     "RUN_BACKUP": "Run backup",
+    "RUN_GARBAGE_COLLECTION": "Run garbage collection",
     "RUN_NOW": "Run now",
     "SAVE": "சேமிக்க",
     "SAVE_CHANGES": "Save changes",

@@ -29,7 +29,7 @@ angular.module('adf.widget.myc-custom-widget', [])
         config: {
           script: null,
           template: null,
-          refreshTime:30,
+          refreshTime:-1,
         },
         edit: {
           templateUrl: 'controllers/adf-widgets/adf-myc-cw/edit.html',
@@ -43,6 +43,7 @@ angular.module('adf.widget.myc-custom-widget', [])
     mycCustomWidget.showLoading = true;
     mycCustomWidget.isSyncing = false;
     mycCustomWidget.htmlData = null;
+    mycCustomWidget.trustedHtml = "";
 
     function updateState(){
       mycCustomWidget.dataAvailable = true;
@@ -56,6 +57,7 @@ angular.module('adf.widget.myc-custom-widget', [])
       mycCustomWidget.isSyncing = true;
       TemplatesFactory.getHtml({'script':config.script,"template":config.template}, function(response){
         mycCustomWidget.htmlData = response.message;
+        mycCustomWidget.trustedHtml = $sce.trustAsHtml(response.message);
         updateState();
       },function(error){
         mycCustomWidget.htmlData = '<pre>'+error.data.errorMessage+'</pre>';
@@ -71,11 +73,6 @@ angular.module('adf.widget.myc-custom-widget', [])
       }
     }
 
-    //Trust as html
-    mycCustomWidget.trustAsHtml = function(string) {
-        return $sce.trustAsHtml(string);
-    };
-
     //load variables initially
     if(config.dataKey !== null){
       updateData();
@@ -83,13 +80,14 @@ angular.module('adf.widget.myc-custom-widget', [])
       mycCustomWidget.showLoading = false;
     }
 
-    // refresh every second
-    var promise = $interval(updateData, config.refreshTime*1000);
-
-    // cancel interval on scope destroy
-    $scope.$on('$destroy', function(){
-      $interval.cancel(promise);
-    });
+    // refresh every second, if config.refreshTime has positive value
+    if(config.refreshTime > 0){
+      var promise = $interval(updateData, config.refreshTime*1000);
+      // cancel interval on scope destroy
+      $scope.$on('$destroy', function(){
+        $interval.cancel(promise);
+      });
+    }
 
   }).controller('mycCustomWidgetEditController', function($scope, $interval, config, TypesFactory, ScriptsFactory, TemplatesFactory, CommonServices){
     var mycCustomWidgetEdit = this;

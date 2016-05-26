@@ -443,6 +443,7 @@
     "RULES_DETAIL": "Detalle de los roles",
     "RULE_NAME": "Nombre del Rol",
     "RUN_BACKUP": "Ejecutar copia de seguridad",
+    "RUN_GARBAGE_COLLECTION": "Run garbage collection",
     "RUN_NOW": "Ejecutar ahora",
     "SAVE": "Guardar",
     "SAVE_CHANGES": "Guardar los cambios",

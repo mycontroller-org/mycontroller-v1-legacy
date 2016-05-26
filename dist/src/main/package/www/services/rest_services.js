@@ -28,6 +28,7 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     updateVariable: { method: 'PUT', params: {sensorId: 'updateVariable', id:null}},
     updateVariableUnit:  { method: 'PUT', params: {sensorId: 'updateVariableUnit', id:null}},
     getVariables: { method: 'GET', isArray: true, params: {sensorId: 'getVariables', id:null}},
+    sendRawMessage: { method: 'POST', params: {sensorId:'sendRawMessage'} },
 
     getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
     sendPayload: { method: 'POST'},
@@ -340,13 +341,11 @@ myControllerModule.factory('StatusFactory', function ($resource) {
   return $resource('/mc/rest/:type', {}, {
    getOsStatus: { method: 'GET', params: {type:'osStatus'} },
    getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
+   runGarbageCollection: { method: 'PUT', params: {type:'runGarbageCollection'} },
    getScriptEngines: { method: 'GET', isArray: true, params: {type:'scriptEngines'} },
    getConfig: { method: 'GET', params: {type:'guiSettings'} },
    getMcAbout: { method: 'GET', params: {type:'mcAbout'} },
    getTimestamp: { method: 'GET', params: {type:'timestamp'} },
-   sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
-
-   getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
    getMcServerLog: { method: 'GET', isArray: false, params: {type:'mcServerLogFile'} },
    getStaticImageFile: { method: 'GET', isArray: false, params: {type:'imageFiles'} },
    getStaticImageFilesList: { method: 'GET', isArray: true, params: {type:'imageFiles'} },
@@ -396,7 +395,7 @@ myControllerModule.factory('ResourcesGroupMapFactory', function ($resource) {
 //Read static files
 myControllerModule.factory('ReadFileFactory', function ($resource) {
   return $resource('/:fileName', {}, {
-   getConfigFile: { method: 'GET', isArray: false, params: {fileName:'configMyController.json'} },
+   getConfigFile: { method: 'GET', isArray: false, params: {fileName:'configurations/mycontroller-configs.json'} },
   })
 });
 

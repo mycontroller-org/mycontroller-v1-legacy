@@ -35,6 +35,7 @@ import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McDuplicateException;
 import org.mycontroller.standalone.exceptions.McException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
+import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
@@ -183,5 +184,15 @@ public class SensorApi {
 
     public SensorVariable getSensorVariable(String sensorName, String variableType, Integer roomId) {
         return getSensorVariable(getSensor(sensorName, roomId), variableType);
+    }
+
+    public void sendRawMessage(McMessage mcMessage) throws McBadRequestException {
+        mcMessage.setTxMessage(true);
+        mcMessage.setScreeningDone(false);
+        if (mcMessage.validate()) {
+            McMessageUtils.sendToProviderBridge(mcMessage);
+        } else {
+            throw new McBadRequestException("Required field is missing! " + mcMessage);
+        }
     }
 }

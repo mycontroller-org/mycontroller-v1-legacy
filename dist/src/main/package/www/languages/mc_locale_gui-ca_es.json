@@ -443,6 +443,7 @@
     "RULES_DETAIL": "Detall de les normes",
     "RULE_NAME": "Nom de la norma",
     "RUN_BACKUP": "Executar la còpia de seguretat",
+    "RUN_GARBAGE_COLLECTION": "Run garbage collection",
     "RUN_NOW": "Ara executi",
     "SAVE": "Desa",
     "SAVE_CHANGES": "Desa els canvis",

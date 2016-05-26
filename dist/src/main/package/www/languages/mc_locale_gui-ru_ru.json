@@ -443,6 +443,7 @@
     "RULES_DETAIL": "Детали собитий",
     "RULE_NAME": "Имя события",
     "RUN_BACKUP": "Выполнить резервное копирование",
+    "RUN_GARBAGE_COLLECTION": "Run garbage collection",
     "RUN_NOW": "Выполнить сейчас",
     "SAVE": "Сохранить",
     "SAVE_CHANGES": "Сохранить изменения",

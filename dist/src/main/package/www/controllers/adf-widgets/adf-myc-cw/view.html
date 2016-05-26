@@ -22,7 +22,7 @@
   </div>
 
   <div ng-if="!mycCustomWidget.showLoading">
-    <div ng-bind-html="mycCustomWidget.trustAsHtml(mycCustomWidget.htmlData)"></div>
+    <mc-dynamic ng-bind-html="mycCustomWidget.trustedHtml"></mc-dynamic>
     <div ng-if="!mycCustomWidget.htmlData"><span>{{'NO_DATA_AVAILABLE' | translate}}</span></div>
   </div>
 </div>

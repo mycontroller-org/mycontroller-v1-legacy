@@ -54,7 +54,8 @@ public class AppProperties {
     private static final String SCRIPTS_DIRECTORY = "scripts" + File.separator;
     public static final String CONDITIONS_SCRIPTS_DIRECTORY = "conditions" + File.separator;
     public static final String OPERATIONS_SCRIPTS_DIRECTORY = "operations" + File.separator;
-    public static final String HTML_INCLUDE_FILES = "mc-html-include-files.json";
+    private static final String WEB_CONFIGURATIONS_DIR = "configurations";
+    private static final String HTML_HEADERS_FILE = "html-headers.json";
 
     private String tmpLocation;
     private String resourcesLocation;
@@ -381,6 +382,9 @@ public class AppProperties {
         //mycontroller web location
         webFileLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.web.file.location", "../www"));
 
+        //create WEB configurations directory
+        createDirectoryLocation(getWebFileLocation() + WEB_CONFIGURATIONS_DIR);
+
         //update web details
         webHttpPort = Integer.valueOf(getValue(properties, "mcc.web.http.port", "8443"));
         if (getValue(properties, "mcc.web.enable.https", "true") != null) {
@@ -611,8 +615,12 @@ public class AppProperties {
         return getScriptsLocation() + OPERATIONS_SCRIPTS_DIRECTORY;
     }
 
-    public String getHtmlIncludeFile() {
-        return getResourcesLocation() + HTML_INCLUDE_FILES;
+    public String getHtmlHeadersFile() {
+        return getResourcesLocation() + HTML_HEADERS_FILE;
+    }
+
+    public String getWebConfigurationsLocation() {
+        return McUtils.getDirectoryLocation(getWebFileLocation() + WEB_CONFIGURATIONS_DIR);
     }
 
     public String getAppDirectory() {

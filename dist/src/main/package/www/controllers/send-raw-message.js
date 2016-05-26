@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-myControllerModule.controller('SendRawMessageController', function(alertService, $scope, displayRestError, TypesFactory, StatusFactory, $filter, CommonServices) {
+myControllerModule.controller('SendRawMessageController', function(alertService, $scope, displayRestError, TypesFactory, SensorsFactory, $filter, CommonServices) {
 
   //GUI page settings
   $scope.headerStringAdd = $filter('translate')('SEND_RAW_MESSAGE');
@@ -36,7 +36,7 @@ myControllerModule.controller('SendRawMessageController', function(alertService,
   //Send raw message
   $scope.send = function(){
     $scope.saveProgress = true;
-    StatusFactory.sendRawMessage($scope.message, function(response) {
+    SensorsFactory.sendRawMessage($scope.message, function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
         $scope.saveProgress = false;
       },function(error){

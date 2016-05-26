@@ -27,6 +27,16 @@ $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
   //Script engines
   $scope.scriptEngines = StatusFactory.getScriptEngines();
 
+  //Run Garbage Collection
+  $scope.runGC = function(){
+    StatusFactory.runGarbageCollection(function(response) {
+      //Update display data
+      $scope.jvmStatus = response;
+    },function(error){
+      displayRestError.display(error);
+    });
+  }
+
 });
 
 myControllerModule.controller('McAboutController', function(alertService,

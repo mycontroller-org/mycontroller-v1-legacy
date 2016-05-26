@@ -122,7 +122,7 @@ public class SettingsUtils {
     //As all of our REST API basic authentication,
     //without authentication we need to serve some information about our controller
     public static void updateStaticJsonInformationFile() {
-        String fileLocation = AppProperties.getInstance().getWebFileLocation() + "configMyController.json";
+        String fileLocation = AppProperties.getInstance().getWebConfigurationsLocation() + "mycontroller-configs.json";
         try {
             _logger.debug("controller information static file location:[{}]", fileLocation);
             OBJECT_MAPPER.writeValue(new File(fileLocation), new McGuiSettings());
@@ -138,7 +138,7 @@ public class SettingsUtils {
     }
 
     public static HtmlHeaderFiles getHtmlIncludeFiles() {
-        File htmlIncludeFile = FileUtils.getFile(AppProperties.getInstance().getHtmlIncludeFile());
+        File htmlIncludeFile = FileUtils.getFile(AppProperties.getInstance().getHtmlHeadersFile());
         if (htmlIncludeFile.exists()) {
             try {
                 return OBJECT_MAPPER.readValue(htmlIncludeFile, HtmlHeaderFiles.class);
@@ -153,8 +153,8 @@ public class SettingsUtils {
     }
 
     private static void loadHtmlHeaderFiles(HtmlHeaderFiles htmlHeaderFiles) {
-        String htmlAdditionalHeaders = AppProperties.getInstance().getWebFileLocation()
-                + "additional-headers" + File.separator + "additional-headers.html";
+        String htmlAdditionalHeaders = AppProperties.getInstance().getWebConfigurationsLocation()
+                + "additional-headers.html";
         try {
             _logger.debug("Html additional headers file location:[{}], data:{}", htmlAdditionalHeaders,
                     htmlHeaderFiles);
@@ -181,7 +181,7 @@ public class SettingsUtils {
 
     public static void saveHtmlIncludeFiles(HtmlHeaderFiles htmlHeaderFiles) {
         try {
-            OBJECT_MAPPER.writeValue(new File(AppProperties.getInstance().getHtmlIncludeFile()), htmlHeaderFiles);
+            OBJECT_MAPPER.writeValue(new File(AppProperties.getInstance().getHtmlHeadersFile()), htmlHeaderFiles);
             loadHtmlHeaderFiles(htmlHeaderFiles);
         } catch (IOException ex) {
             _logger.error("Exception, ", ex);

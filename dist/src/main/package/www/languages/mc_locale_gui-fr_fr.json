@@ -443,6 +443,7 @@
     "RULES_DETAIL": "Détail des règles",
     "RULE_NAME": "Nom règle",
     "RUN_BACKUP": "Exécuter la sauvegarde",
+    "RUN_GARBAGE_COLLECTION": "Run garbage collection",
     "RUN_NOW": "Exécuter maintenant",
     "SAVE": "Enregistrer",
     "SAVE_CHANGES": "Enregistrer les modifications",

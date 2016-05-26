@@ -45,6 +45,7 @@ import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
+import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import lombok.extern.slf4j.Slf4j;
@@ -196,6 +197,18 @@ public class SensorHandler extends AccessEngine {
             }
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST);
+        }
+    }
+
+    @RolesAllowed({ "Admin" })
+    @POST
+    @Path("/sendRawMessage")
+    public Response sendRawMessage(McMessage mcMessage) {
+        try {
+            sensorApi.sendRawMessage(mcMessage);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }
 
