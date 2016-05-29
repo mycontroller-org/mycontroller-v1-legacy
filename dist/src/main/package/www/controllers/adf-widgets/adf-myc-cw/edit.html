@@ -39,7 +39,8 @@
 
   <div class="form-group" ng-if="config.script">
     <label>{{ 'SCRIPT_BINDINGS' | translate }}</label>
-    <input type="text" class="form-control" id="refreshTime" placeholder="{{'SCRIPT_BINDINGS' | translate}}" ng-model="config.bindings">
+    <input type="text" class="form-control" id="refreshTime" placeholder="{{'SCRIPT_BINDINGS' | translate}}" ng-model="config.bindings" pf-validation="mycCustomWidgetEdit.cs.isJsonString(input)" required>
+    <span class="help-block">{{ 'SYNTAX_ERROR' | translate }}</span>
   </div>
 
 </form>
