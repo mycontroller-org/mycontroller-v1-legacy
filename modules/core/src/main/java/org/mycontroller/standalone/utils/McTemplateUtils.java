@@ -206,14 +206,15 @@ public class McTemplateUtils {
         }
     }
 
-    public static String execute(String templateName, String scriptName) throws Exception {
+    public static String execute(String templateName, String scriptName, HashMap<String, Object> bindings)
+            throws Exception {
         if (scriptName == null || scriptName.length() == 0) {
             McTemplate mcTemplate = McTemplateUtils.get(templateName);
             return mcTemplate.getData();
         }
-        HashMap<String, Object> bindings = McScriptFileUtils.executeScript(scriptName);
-        bindings.put(McScriptEngineUtils.MC_SCRIPT_NAME, scriptName);
-        return execute(templateName, bindings);
+        HashMap<String, Object> bindingsFinal = McScriptFileUtils.executeScript(scriptName, bindings);
+        bindingsFinal.put(McScriptEngineUtils.MC_SCRIPT_NAME, scriptName);
+        return execute(templateName, bindingsFinal);
     }
 
     public static String execute(String templateName, HashMap<String, Object> bindings) throws Exception {
@@ -229,9 +230,10 @@ public class McTemplateUtils {
                     .canonicalPath(mcTemplate.getCanonicalPath())
                     .type(SCRIPT_TYPE.OPERATION)
                     .engineName(McScriptEngineUtils.MC_TEMPLATE_ENGINE)
+                    .bindings(bindings)
                     .build();
             McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
-            templateResult = (String) templateEngine.executeScript(bindings);
+            templateResult = (String) templateEngine.executeScript();
         } catch (Exception ex) {
             if (ex.getMessage() == null) {
                 templateResult = "Exception: null";

@@ -62,6 +62,16 @@ public class OperationApi {
         return queryResponse;
     }
 
+    public Operation get(HashMap<String, Object> filters) {
+        QueryResponse response = getAll(filters);
+        @SuppressWarnings("unchecked")
+        List<OperationTable> items = (List<OperationTable>) response.getData();
+        if (items != null && !items.isEmpty()) {
+            return OperationUtils.getOperation(items.get(0));
+        }
+        return null;
+    }
+
     public void add(Operation operation) {
         DaoUtils.getOperationDao().create(operation.getOperationTable());
     }

@@ -39,8 +39,10 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 public class RuleDefinitionScript extends RuleDefinition {
     public static final String KEY_SCRIPT_FILE = "scriptFile";
+    public static final String KEY_SCRIPT_BINDINGS = "scriptBindings";
 
     private String scriptFile;
+    private HashMap<String, Object> scriptBindings;
 
     public RuleDefinitionScript(RuleDefinitionTable ruleDefinitionTable) {
         updateRuleDefinition(ruleDefinitionTable);
@@ -52,15 +54,26 @@ public class RuleDefinitionScript extends RuleDefinition {
         RuleDefinitionTable ruleDefinitionTable = super.getRuleDefinitionTable();
         HashMap<String, Object> conditionProperties = new HashMap<String, Object>();
         conditionProperties.put(KEY_SCRIPT_FILE, scriptFile);
+        conditionProperties.put(KEY_SCRIPT_BINDINGS, scriptBindings);
         ruleDefinitionTable.setConditionProperties(conditionProperties);
         return ruleDefinitionTable;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @JsonIgnore
     public void updateRuleDefinition(RuleDefinitionTable ruleDefinitionTable) {
         super.updateRuleDefinition(ruleDefinitionTable);
         scriptFile = (String) ruleDefinitionTable.getConditionProperties().get(KEY_SCRIPT_FILE);
+        scriptBindings = (HashMap<String, Object>) ruleDefinitionTable.getConditionProperties().get(
+                KEY_SCRIPT_BINDINGS);
+    }
+
+    public HashMap<String, Object> getScriptBindings() {
+        if (scriptBindings == null) {
+            return new HashMap<String, Object>();
+        }
+        return scriptBindings;
     }
 
     @Override
@@ -68,7 +81,7 @@ public class RuleDefinitionScript extends RuleDefinition {
         try {
             StringBuilder builder = new StringBuilder();
             builder.append(super.getConditionType().getText()).append(" [ ");
-            builder.append(scriptFile).append(" ]");
+            builder.append(scriptFile).append(" <= ").append(scriptBindings).append(" ]");
             return builder.toString();
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);

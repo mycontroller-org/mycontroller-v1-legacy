@@ -223,10 +223,12 @@ public class McScriptFileUtils {
         }
     }
 
-    public static HashMap<String, Object> executeScript(String scriptName) throws Exception {
+    public static HashMap<String, Object> executeScript(String scriptName, HashMap<String, Object> bindings)
+            throws Exception {
         McScript mcScript = null;
         try {
             mcScript = getScriptFile(scriptName);
+            mcScript.setBindings(bindings);
             McScriptEngine scriptEngine = new McScriptEngine(mcScript);
             scriptEngine.executeScript();
             return scriptEngine.getBindings();

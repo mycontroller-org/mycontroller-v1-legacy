@@ -40,6 +40,16 @@ public class TimerApi {
         return DaoUtils.getTimerDao().getAll(Query.get(filters));
     }
 
+    public Timer get(HashMap<String, Object> filters) {
+        QueryResponse response = getAll(filters);
+        @SuppressWarnings("unchecked")
+        List<Timer> items = (List<Timer>) response.getData();
+        if (items != null && !items.isEmpty()) {
+            return items.get(0);
+        }
+        return null;
+    }
+
     public void update(Timer timer) {
         TimerUtils.updateTimer(timer);
     }

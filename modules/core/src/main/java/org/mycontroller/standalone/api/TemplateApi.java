@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.model.McTemplate;
@@ -28,8 +29,8 @@ import org.mycontroller.standalone.utils.McTemplateUtils;
  */
 
 public class TemplateApi {
-    public String get(String templateName, String scriptName) throws Exception {
-        return McTemplateUtils.execute(templateName, scriptName);
+    public String get(String templateName, String scriptName, HashMap<String, Object> bindings) throws Exception {
+        return McTemplateUtils.execute(templateName, scriptName, bindings);
     }
 
     public McTemplate getTemplate(String templateName)

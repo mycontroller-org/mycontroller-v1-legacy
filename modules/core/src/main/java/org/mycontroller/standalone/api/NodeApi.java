@@ -36,8 +36,18 @@ import org.mycontroller.standalone.message.McMessageUtils;
  */
 public class NodeApi {
 
-    public QueryResponse getAllNodes(HashMap<String, Object> filters) {
+    public QueryResponse getAll(HashMap<String, Object> filters) {
         return DaoUtils.getNodeDao().getAll(Query.get(filters));
+    }
+
+    public Node get(HashMap<String, Object> filters) {
+        QueryResponse response = getAll(filters);
+        @SuppressWarnings("unchecked")
+        List<Node> items = (List<Node>) response.getData();
+        if (items != null && !items.isEmpty()) {
+            return items.get(0);
+        }
+        return null;
     }
 
     public Node get(int id) {

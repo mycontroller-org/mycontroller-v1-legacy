@@ -319,11 +319,11 @@
           </li>
           <!-- Utils -->
           <li ng-class="{ active: $state.current.url.indexOf('/utilities') == 0 }">
-            <a ui-sref="templatesList"><i class="fa fa-cube fa-lg"></i> {{ 'UTILITIES' | translate }}</a>
+            <a ui-sref="scriptsList"><i class="fa fa-cube fa-lg"></i> {{ 'UTILITIES' | translate }}</a>
             <ul class="nav navbar-nav navbar-persistent">
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('scripts') == 0 }"><a ui-sref="scriptsList"><i class="fa fa-code fa-lg"></i> {{ 'SCRIPTS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('templates') == 0 }"><a ui-sref="templatesList"><i class="fa fa-file-text fa-lg"></i> {{ 'TEMPLATES' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('additionalHeaders') == 0 }"><a ui-sref="additionalHeadersUpdate"><i class="fa fa-file-text fa-lg"></i> {{ 'HTML_ADDITIONAL_HEADERS' | translate }}</a></li>
-              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('scripts') == 0 }"><a ui-sref="scriptsList"><i class="fa fa-code fa-lg"></i> {{ 'SCRIPTS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('variables') == 0 }"><a ui-sref="variablesRepositoryList"><i class="fa fa-list-alt fa-lg"></i> {{ 'VARIABLES_REPOSITORY' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('uidTags') == 0 }"><a ui-sref="uidTagsList"><i class="fa fa-tags fa-lg"></i> {{ 'UID_TAGS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>

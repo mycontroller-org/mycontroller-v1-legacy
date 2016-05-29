@@ -39,6 +39,8 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.model.McTemplate;
 import org.mycontroller.standalone.utils.McTemplateUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
@@ -120,13 +122,22 @@ public class TemplatesHandler extends AccessEngine {
     @Path("/getHtml")
     public Response executeWithTemplate(
             @QueryParam("template") String templateName,
-            @QueryParam("script") String scriptName) {
+            @QueryParam("script") String scriptName,
+            @QueryParam("scriptBindings") String jsonBindings) {
         if (templateName == null) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("template name missing!"));
         }
         try {
+            HashMap<String, Object> bindings = null;
+            if (jsonBindings != null) {
+                bindings = RestUtils.getObjectMapper().readValue(
+                        jsonBindings, new TypeReference<HashMap<String, Object>>() {
+                        });
+            } else {
+                bindings = new HashMap<String, Object>();
+            }
             return RestUtils.getResponse(Status.OK,
-                    new ApiMessage(McTemplateUtils.execute(templateName, scriptName)));
+                    new ApiMessage(McTemplateUtils.execute(templateName, scriptName, bindings)));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }

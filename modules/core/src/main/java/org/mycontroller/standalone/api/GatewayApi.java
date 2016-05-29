@@ -65,6 +65,16 @@ public class GatewayApi {
         return queryResponse;
     }
 
+    public Gateway get(HashMap<String, Object> filters) {
+        QueryResponse response = getAllRaw(filters);
+        @SuppressWarnings("unchecked")
+        List<GatewayTable> items = (List<GatewayTable>) response.getData();
+        if (items != null && !items.isEmpty()) {
+            return GatewayUtils.getGateway(items.get(0));
+        }
+        return null;
+    }
+
     public GatewayTable getRaw(Integer gatewayId) {
         return DaoUtils.getGatewayDao().getById(gatewayId);
     }

@@ -59,6 +59,7 @@ public class McConditionScript extends McRuleBase {
             McScript mcScript = McScript.builder()
                     .name(scriptFile.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(scriptFile.getCanonicalPath()))
+                    .bindings(rdScript.getScriptBindings())
                     .build();
             McScriptEngine mcScriptEngine = new McScriptEngine(mcScript);
             Object result = mcScriptEngine.executeScript();

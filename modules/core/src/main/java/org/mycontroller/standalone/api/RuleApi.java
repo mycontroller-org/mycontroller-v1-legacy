@@ -58,6 +58,16 @@ public class RuleApi {
         return queryResponse;
     }
 
+    public RuleDefinition get(HashMap<String, Object> filters) {
+        QueryResponse response = getAll(filters);
+        @SuppressWarnings("unchecked")
+        List<RuleDefinitionTable> items = (List<RuleDefinitionTable>) response.getData();
+        if (items != null && !items.isEmpty()) {
+            return RuleUtils.getRuleDefinition(items.get(0));
+        }
+        return null;
+    }
+
     public void add(RuleDefinition ruleDefinition) {
         ruleDefinition.reset();
         RuleUtils.addRuleDefinition(ruleDefinition);

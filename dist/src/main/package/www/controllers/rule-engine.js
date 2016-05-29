@@ -347,6 +347,7 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
             $scope.ruleOperatorTypes = TypesFactory.getRuleOperatorTypes({"conditionType":$scope.item.conditionType});
           }else if($scope.item.conditionType === 'Script'){
             $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Condition"});
+            $scope.item.scriptBindings = angular.toJson(response.scriptBindings);
           }
 
 
@@ -369,6 +370,8 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
       },function(error){
         displayRestError.display(error);
       });
+  }else{
+    $scope.item.scriptBindings='{ }';
   }
 
   //--------------pre load -----------
@@ -388,6 +391,10 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
     //Update dampening active time
     if($scope.item.dampeningType === 'Active time'){
       $scope.item.dampening.activeTime = $scope.item.dampening.activeTime * $scope.item.dampening.activeTimeConstant;
+    }
+    //Change string to JSON string
+    if($scope.item.conditionType === 'Script'){
+      $scope.item.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.scriptBindings+')')));
     }
     $scope.saveProgress = true;
 

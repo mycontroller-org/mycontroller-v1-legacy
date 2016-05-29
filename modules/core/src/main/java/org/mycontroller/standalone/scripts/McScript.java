@@ -18,6 +18,7 @@ package org.mycontroller.standalone.scripts;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.commons.io.FilenameUtils;
 import org.mycontroller.standalone.AppProperties;
@@ -37,7 +38,7 @@ import lombok.ToString;
  */
 @Data
 @Builder
-@ToString(exclude={"data"})
+@ToString(exclude = { "data" })
 @NoArgsConstructor
 @AllArgsConstructor
 public class McScript {
@@ -50,6 +51,7 @@ public class McScript {
     private long size;
     private long lastModified;
     private String data;
+    private HashMap<String, Object> bindings;
 
     @JsonIgnore
     public boolean isValid() {

@@ -260,6 +260,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
           if($scope.item.resourceType !== 'Sensor variable'){
             $scope.updatePayloadOperations($scope.item.resourceType);
           }
+        }else if($scope.item.type === 'Execute script'){
+          $scope.item.scriptBindings = angular.toJson(response.scriptBindings);
         }
 
         //Update delay time
@@ -270,6 +272,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
       },function(error){
         displayRestError.display(error);
       });
+  }else{
+    $scope.item.scriptBindings='{ }';
   }
 
   //--------------pre load -----------
@@ -293,7 +297,10 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
     if($scope.item.dt){
       $scope.item.delayTime = $scope.item.dt*1000;
     }
-
+    //Change string to JSON string
+    if($scope.item.type === 'Execute script'){
+      $scope.item.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.scriptBindings+')')));
+    }
     $scope.saveProgress = true;
     if($stateParams.id){
       OperationsFactory.update($scope.item, function(response) {

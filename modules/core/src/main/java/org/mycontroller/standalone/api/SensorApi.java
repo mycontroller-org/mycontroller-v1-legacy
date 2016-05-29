@@ -58,6 +58,16 @@ public class SensorApi {
         return DaoUtils.getSensorDao().getAll(query);
     }
 
+    public Sensor get(HashMap<String, Object> filters) {
+        QueryResponse response = getAll(filters);
+        @SuppressWarnings("unchecked")
+        List<Sensor> items = (List<Sensor>) response.getData();
+        if (items != null && !items.isEmpty()) {
+            return items.get(0);
+        }
+        return null;
+    }
+
     public Sensor get(int id) {
         return DaoUtils.getSensorDao().getById(id);
     }

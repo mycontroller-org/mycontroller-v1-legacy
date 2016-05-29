@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -82,6 +84,11 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
             case EXECUTE_SCRIPT:
                 OperationExecuteScript operationExecuteScript = new OperationExecuteScript();
                 operationExecuteScript.setScriptFile(node.get("scriptFile").asText());
+                if (node.get("scriptBindings") != null) {
+                    operationExecuteScript.setScriptBindings(RestUtils.getObjectMapper().convertValue(
+                            node.get("scriptBindings"), new TypeReference<HashMap<String, Object>>() {
+                            }));
+                }
                 operation = operationExecuteScript;
                 break;
             case SEND_EMAIL:
@@ -111,9 +118,13 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                 break;
             case SEND_PUSHBULLET_NOTE:
                 OperationSendPushbulletNote operationSendPushbulletNote = new OperationSendPushbulletNote();
-                operationSendPushbulletNote.setIdens(node.get("idens").asText());
                 operationSendPushbulletNote.setTitle(node.get("title").asText());
-                operationSendPushbulletNote.setBody(node.get("body").asText());
+                if (node.get("idens") != null) {
+                    operationSendPushbulletNote.setIdens(node.get("idens").asText());
+                }
+                if (node.get("body") != null) {
+                    operationSendPushbulletNote.setBody(node.get("body").asText());
+                }
                 operation = operationSendPushbulletNote;
                 break;
             case SEND_SMS:

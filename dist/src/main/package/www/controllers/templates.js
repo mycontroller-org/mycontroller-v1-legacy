@@ -146,6 +146,58 @@ $scope, TemplatesFactory, $state, $uibModal, $stateParams, displayRestError, mch
     }
   };
 
+  //Execute item
+  $scope.runNow = function (size) {
+    if($scope.itemIds.length != 1){
+      return;
+    }
+    var modalInstance = $uibModal.open({
+    templateUrl: 'partials/templates/run-now-modal.html',
+    controller: 'ControllerTemplateRunNowModal',
+    size: size,
+    resolve: {itemId: function () {return $scope.itemIds[0]}}
+    });
+
+    modalInstance.result.then(function () {
+      ScriptsFactory.deleteIds($scope.itemIds, function(response) {
+        //Nothing to do...
+      },function(error){
+        displayRestError.display(error);
+      });
+    }),
+    function () {
+      //console.log('Modal dismissed at: ' + new Date());
+    }
+  };
+
+});
+
+//Template run now Modal
+myControllerModule.controller('ControllerTemplateRunNowModal', function ($scope, $uibModalInstance, $filter, CommonServices, ScriptsFactory, TemplatesFactory, $sce, itemId) {
+  $scope.header = $filter('translate')('RUN_NOW', itemId);
+  $scope.cs = CommonServices;
+  $scope.request = {};
+  $scope.request.template = itemId;
+  $scope.scripts = ScriptsFactory.getAllLessInfo({"type":"Operation"});
+  $scope.request.bindings = '{ }';
+  //$uibModalInstance.close();
+  $scope.runNow = function() {
+    $scope.runningInProgress = true;
+    $scope.request.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.request.bindings+')')));
+    TemplatesFactory.getHtml($scope.request, function(response) {
+      $scope.templateResult = $sce.trustAsHtml(response.message);
+      $scope.runningInProgress = false;
+    },function(error){
+      if(error.data.errorMessage){
+        $scope.templateResult = $sce.trustAsHtml('<pre class=\"pre-scrollable\">'+error.data.errorMessage+'</pre>');
+      }else{
+        $scope.templateResult = $sce.trustAsHtml('<pre class=\"pre-scrollable\">'+angular.toJson(error.data)+'</pre>');
+      }
+      $scope.runningInProgress = false;
+      displayRestError.display(error);
+    });
+  };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });
 
 //Add Edit script controller

@@ -40,11 +40,7 @@ public class McScriptEngine implements Runnable {
         this.mcScript = mcScript;
     }
 
-    public Object executeScript() throws McScriptException, ScriptException, FileNotFoundException {
-        return executeScript(null);
-    }
-
-    public Object executeScript(HashMap<String, Object> bindings) throws McScriptException, ScriptException,
+    public Object executeScript() throws McScriptException, ScriptException,
             FileNotFoundException {
         if (!mcScript.isValid()) {
             throw new McScriptException("Cannot create script engine, required field is missing!");
@@ -70,9 +66,9 @@ public class McScriptEngine implements Runnable {
         McScriptEngineUtils.updateMcApi(engine);
 
         //Load bindings, if we have any
-        if (bindings != null) {
-            for (String key : bindings.keySet()) {
-                engine.put(key, bindings.get(key));
+        if (mcScript.getBindings() != null) {
+            for (String key : mcScript.getBindings().keySet()) {
+                engine.put(key, mcScript.getBindings().get(key));
             }
         }
 

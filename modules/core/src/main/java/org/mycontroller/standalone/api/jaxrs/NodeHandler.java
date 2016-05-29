@@ -86,7 +86,7 @@ public class NodeHandler extends AccessEngine {
             filters.put(Node.KEY_ID, getUser().getAllowedResources().getNodeIds());
         }
 
-        return RestUtils.getResponse(Status.OK, nodeApi.getAllNodes(filters));
+        return RestUtils.getResponse(Status.OK, nodeApi.getAll(filters));
     }
 
     @GET

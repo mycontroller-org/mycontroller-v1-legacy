@@ -24,17 +24,22 @@
   </div>
 
   <div class="form-group">
+    <label>{{ 'TEMPLATE' | translate }}</label>
+    <select class="form-control" pf-select data-live-search="true" ng-options="template for template in mycCustomWidgetEdit.templates"  ng-model="config.template" required>
+      <option value="" ng-hide="true"></option>
+    </select>
+  </div>
+
+  <div class="form-group">
     <label>{{ 'SCRIPT' | translate }}</label>
     <select class="form-control" pf-select data-live-search="true" ng-options="script for script in mycCustomWidgetEdit.scripts"  ng-model="config.script" >
       <option value="" ng-hide="false">{{ 'NOTHING_SELECTED' | translate }}</option>
     </select>
   </div>
 
-  <div class="form-group">
-    <label>{{ 'TEMPLATE' | translate }}</label>
-    <select class="form-control" pf-select data-live-search="true" ng-options="template for template in mycCustomWidgetEdit.templates"  ng-model="config.template" required>
-      <option value="" ng-hide="true"></option>
-    </select>
+  <div class="form-group" ng-if="config.script">
+    <label>{{ 'SCRIPT_BINDINGS' | translate }}</label>
+    <input type="text" class="form-control" id="refreshTime" placeholder="{{'SCRIPT_BINDINGS' | translate}}" ng-model="config.bindings">
   </div>
 
 </form>

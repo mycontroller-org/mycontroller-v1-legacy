@@ -95,6 +95,15 @@
               </div>
             </div>
           </div>
+          <div ng-if="item.conditionType === 'Script' && item.scriptFile">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'SCRIPT_BINDINGS' | translate }}</label>
+              <div class="col-sm-10 mc-form-fixer-left">
+                <input class="form-control" placeholder="{{ 'SCRIPT_BINDINGS' | translate }}" ng-model="item.scriptBindings" pf-validation="cs.isJsonString(input)" required />
+                <span class="help-block">{{ 'SYNTAX_ERROR' | translate }}</span>
+              </div>
+            </div>
+          </div>
 
           <!-- Threshold -->
           <div ng-if="item.conditionType === 'Threshold'">

@@ -30,6 +30,7 @@ angular.module('adf.widget.myc-custom-widget', [])
           script: null,
           template: null,
           refreshTime:-1,
+          bindings: '{}',
         },
         edit: {
           templateUrl: 'controllers/adf-widgets/adf-myc-cw/edit.html',
@@ -55,7 +56,7 @@ angular.module('adf.widget.myc-custom-widget', [])
 
     function loadData(){
       mycCustomWidget.isSyncing = true;
-      TemplatesFactory.getHtml({'script':config.script,"template":config.template}, function(response){
+      TemplatesFactory.getHtml({'template':config.template, 'script':config.script, 'scriptBindings':JSON.stringify(eval('('+config.bindings+')'))}, function(response){
         mycCustomWidget.htmlData = response.message;
         mycCustomWidget.trustedHtml = $sce.trustAsHtml(response.message);
         updateState();

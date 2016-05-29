@@ -76,16 +76,17 @@ public class Notification {
     }
 
     public static String updateTemplate(Notification notification, String source) {
+        HashMap<String, Object> bindings = new HashMap<String, Object>();
+        bindings.put("notification", notification);
         McScript mcTemplateScript = McScript.builder()
                 .type(SCRIPT_TYPE.OPERATION)
                 .engineName(McScriptEngineUtils.MC_TEMPLATE_ENGINE)
                 .data(source)
+                .bindings(bindings)
                 .build();
         McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
-        HashMap<String, Object> bindings = new HashMap<String, Object>();
-        bindings.put("notification", notification);
         try {
-            return (String) templateEngine.executeScript(bindings);
+            return (String) templateEngine.executeScript();
         } catch (FileNotFoundException | McScriptException | ScriptException ex) {
             _logger.error("Exception: {}", mcTemplateScript, ex);
             return "<pre>Exception: " + ex.getMessage() + "</pre>";

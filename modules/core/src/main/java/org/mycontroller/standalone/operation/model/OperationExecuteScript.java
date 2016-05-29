@@ -49,17 +49,21 @@ import lombok.extern.slf4j.Slf4j;
 public class OperationExecuteScript extends Operation {
 
     public static final String KEY_SCRIPT_FILE = "scriptFile";
+    public static final String KEY_SCRIPT_BINDINGS = "scriptBindings";
 
     private String scriptFile;
+    private HashMap<String, Object> scriptBindings;
 
     public OperationExecuteScript(OperationTable operationTable) {
         this.updateOperation(operationTable);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void updateOperation(OperationTable operationTable) {
         super.updateOperation(operationTable);
         scriptFile = (String) operationTable.getProperties().get(KEY_SCRIPT_FILE);
+        scriptBindings = (HashMap<String, Object>) operationTable.getProperties().get(KEY_SCRIPT_BINDINGS);
     }
 
     @Override
@@ -68,6 +72,7 @@ public class OperationExecuteScript extends Operation {
         OperationTable operationTable = super.getOperationTable();
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(KEY_SCRIPT_FILE, scriptFile);
+        properties.put(KEY_SCRIPT_BINDINGS, scriptBindings);
         operationTable.setProperties(properties);
         return operationTable;
     }
@@ -76,8 +81,15 @@ public class OperationExecuteScript extends Operation {
     public String getOperationString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.getType().getText()).append(" [ ");
-        stringBuilder.append(scriptFile).append(" ]");
+        stringBuilder.append(scriptFile).append(" <= ").append(scriptBindings).append(" ]");
         return stringBuilder.toString();
+    }
+
+    public HashMap<String, Object> getScriptBindings() {
+        if (scriptBindings == null) {
+            return new HashMap<String, Object>();
+        }
+        return scriptBindings;
     }
 
     @Override
@@ -111,6 +123,7 @@ public class OperationExecuteScript extends Operation {
             McScript mcScript = McScript.builder()
                     .name(script.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(script.getCanonicalPath()))
+                    .bindings(getScriptBindings())
                     .build();
             McScriptEngine mcScriptEngine = new McScriptEngine(mcScript);
             Object result = mcScriptEngine.executeScript();

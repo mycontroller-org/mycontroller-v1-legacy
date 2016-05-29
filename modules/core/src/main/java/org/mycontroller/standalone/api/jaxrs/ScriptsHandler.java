@@ -39,6 +39,8 @@ import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 import org.mycontroller.standalone.utils.McScriptFileUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
@@ -121,9 +123,20 @@ public class ScriptsHandler extends AccessEngine {
 
     @GET
     @Path("/runNow")
-    public Response runNow(@QueryParam("script") String scriptName) {
+    public Response runNow(@QueryParam("script") String scriptName,
+            @QueryParam("scriptBindings") String jsonBindings) {
         try {
-            return RestUtils.getResponse(Status.OK, McScriptFileUtils.executeScript(scriptName));
+            HashMap<String, Object> bindings = null;
+            if (jsonBindings != null) {
+                bindings = RestUtils.getObjectMapper().readValue(
+                        jsonBindings, new TypeReference<HashMap<String, Object>>() {
+                        });
+            } else {
+                bindings = new HashMap<String, Object>();
+            }
+            return RestUtils.getResponse(
+                    Status.OK, RestUtils.getObjectMapper().writeValueAsString(
+                            McScriptFileUtils.executeScript(scriptName, bindings)));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }

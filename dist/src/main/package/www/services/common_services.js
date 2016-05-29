@@ -446,6 +446,16 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     return true;
   };
 
+  //is valid JSON
+  commonService.isJsonString = function (value) {
+    try {
+        JSON.stringify(eval('('+value+')'));
+        return true;
+    } catch(err) {
+        return false;
+    }
+  };
+
   //guid helper
   var s4 = function() {
     return Math.floor((1 + Math.random()) * 0x10000)

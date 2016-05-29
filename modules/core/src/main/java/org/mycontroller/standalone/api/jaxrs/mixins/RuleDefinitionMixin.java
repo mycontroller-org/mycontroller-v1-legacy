@@ -18,6 +18,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
@@ -47,6 +48,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -133,6 +135,11 @@ class RuleDefinitionDeserializer extends JsonDeserializer<RuleDefinition> {
             case SCRIPT:
                 RuleDefinitionScript ruleDefinitionScript = new RuleDefinitionScript();
                 ruleDefinitionScript.setScriptFile(node.get("scriptFile").asText());
+                if (node.get("scriptBindings") != null) {
+                    ruleDefinitionScript.setScriptBindings(RestUtils.getObjectMapper().convertValue(
+                            node.get("scriptBindings"), new TypeReference<HashMap<String, Object>>() {
+                            }));
+                }
                 ruleDefinition = ruleDefinitionScript;
                 break;
             default:
