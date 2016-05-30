@@ -128,7 +128,7 @@ public class McTemplateUtils {
                 fileTo = templateFiles.size();
                 fileFrom = 0;
             } else {
-                fileFrom = query.getStartingRow().intValue();
+                fileFrom = (int) (query.getStartingRow() * query.getPage());
                 fileTo = (int) (query.getPage() * query.getPageLimit());
             }
             for (; fileFrom < fileTo; fileFrom++) {

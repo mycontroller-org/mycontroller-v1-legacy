@@ -121,7 +121,7 @@ public class BackupApi {
                 fileTo = backupFiles.size();
                 fileFrom = 0;
             } else {
-                fileFrom = query.getStartingRow().intValue();
+                fileFrom = (int) (query.getStartingRow() * query.getPage());
                 fileTo = (int) (query.getPage() * query.getPageLimit());
             }
             for (File backupFile : backupFiles) {
