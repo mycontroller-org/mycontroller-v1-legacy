@@ -378,6 +378,8 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
         $scope.lTriggerTime = new Date();
       }
       $scope.lTriggerTime.setFullYear(0000,00,00);
+      //set seconds to zero until the issue resolved >> https://github.com/mycontroller-org/mycontroller/issues/214
+      $scope.lTriggerTime.setSeconds(00);
       $scope.timer.triggerTime = $scope.lTriggerTime.getTime();
     }
       $scope.saveProgress = true;
