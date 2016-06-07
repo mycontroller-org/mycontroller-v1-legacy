@@ -51,7 +51,7 @@ if [[ "$_java" ]]; then
         then
           echo "Mycontroller.org server is already running on pid[${MC_PID}]"
         else
-          java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -cp "../lib/*" org.mycontroller.standalone.StartApp >> ../logs/mycontroller.log 2>&1 &
+          $_java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -cp "../lib/*" org.mycontroller.standalone.StartApp >> ../logs/mycontroller.log 2>&1 &
           echo 'Start issued for Mycontroller'
         fi
     else
