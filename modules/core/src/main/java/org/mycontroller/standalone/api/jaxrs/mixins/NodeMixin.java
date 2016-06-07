@@ -21,9 +21,11 @@ import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.NodeTypeDeseri
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.StateDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.NodeTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.StateSerializer;
+import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -49,5 +51,8 @@ abstract class NodeMixin {
     @JsonSetter(value = "gateway")
     @JsonDeserialize(using = GatewayTableDeserializer.class)
     public abstract void setGatewayTable(GatewayTable gatewayTable);
+
+    @JsonIgnoreProperties({ "data" })
+    public abstract Firmware getFirmware();
 
 }
