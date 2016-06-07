@@ -174,7 +174,7 @@ $scope, TemplatesFactory, $state, $uibModal, $stateParams, displayRestError, mch
 
 //Template run now Modal
 myControllerModule.controller('ControllerTemplateRunNowModal', function ($scope, $uibModalInstance, $filter, CommonServices, ScriptsFactory, TemplatesFactory, $sce, itemId) {
-  $scope.header = $filter('translate')('RUN_NOW', itemId);
+  $scope.header = $filter('translate')('RUN_NOW');
   $scope.cs = CommonServices;
   $scope.request = {};
   $scope.request.template = itemId;
