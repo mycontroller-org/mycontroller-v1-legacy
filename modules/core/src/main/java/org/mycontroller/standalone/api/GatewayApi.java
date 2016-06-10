@@ -65,6 +65,10 @@ public class GatewayApi {
         return queryResponse;
     }
 
+    public Gateway getGateway(GatewayTable gatewayTable) {
+        return GatewayUtils.getGateway(gatewayTable);
+    }
+
     public Gateway get(HashMap<String, Object> filters) {
         QueryResponse response = getAllRaw(filters);
         @SuppressWarnings("unchecked")
