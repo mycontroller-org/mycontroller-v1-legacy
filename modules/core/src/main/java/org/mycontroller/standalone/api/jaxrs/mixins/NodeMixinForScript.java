@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import org.mycontroller.standalone.db.tables.Firmware;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

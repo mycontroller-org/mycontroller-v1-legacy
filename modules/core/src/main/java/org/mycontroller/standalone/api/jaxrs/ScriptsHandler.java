@@ -138,7 +138,7 @@ public class ScriptsHandler extends AccessEngine {
             }
             HashMap<String, Object> bindingsFinal = McScriptFileUtils.executeScript(scriptName, bindings);
             //If script type is python, add mixins,
-            //refer: https://github.com/mycontroller-org/mycontroller/issues/223 
+            //refer: https://github.com/mycontroller-org/mycontroller/issues/223
             if (scriptName.endsWith("py")) {
                 RestUtils.getObjectMapper().addMixIn(PyType.class, PyTypeSerializer.class);
             }
