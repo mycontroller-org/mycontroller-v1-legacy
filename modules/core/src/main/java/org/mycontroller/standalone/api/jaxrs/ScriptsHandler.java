@@ -34,10 +34,12 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.PyTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
 import org.mycontroller.standalone.utils.McScriptFileUtils;
+import org.python.core.PyType;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -134,9 +136,13 @@ public class ScriptsHandler extends AccessEngine {
             } else {
                 bindings = new HashMap<String, Object>();
             }
-            return RestUtils.getResponse(
-                    Status.OK, RestUtils.getObjectMapper().writeValueAsString(
-                            McScriptFileUtils.executeScript(scriptName, bindings)));
+            HashMap<String, Object> bindingsFinal = McScriptFileUtils.executeScript(scriptName, bindings);
+            //If script type is python, add mixins,
+            //refer: https://github.com/mycontroller-org/mycontroller/issues/223 
+            if (scriptName.endsWith("py")) {
+                RestUtils.getObjectMapper().addMixIn(PyType.class, PyTypeSerializer.class);
+            }
+            return RestUtils.getResponse(Status.OK, RestUtils.getObjectMapper().writeValueAsString(bindingsFinal));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }

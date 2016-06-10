@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.mycontroller</groupId>
     <artifactId>mycontroller-parent</artifactId>
-    <version>6</version>
+    <version>7</version>
   </parent>
 
   <groupId>org.mycontroller.standalone</groupId>
@@ -244,6 +244,12 @@
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-jsr223</artifactId>
+    </dependency>
+
+    <!-- Jython dependency only to compile -->
+    <dependency>
+      <groupId>org.python</groupId>
+      <artifactId>jython</artifactId>
     </dependency>
 
   </dependencies>
