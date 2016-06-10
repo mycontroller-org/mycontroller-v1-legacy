@@ -149,12 +149,16 @@ public class SettingsUtils {
         return HtmlHeaderFiles.builder()
                 .lastUpdate(System.currentTimeMillis())
                 .scripts(new ArrayList<String>())
-                .links(new ArrayList<String>()).build();
+                .links(new ArrayList<String>())
+                .angularjsCustomControllers("")
+                .build();
     }
 
     private static void loadHtmlHeaderFiles(HtmlHeaderFiles htmlHeaderFiles) {
         String htmlAdditionalHeaders = AppProperties.getInstance().getWebConfigurationsLocation()
                 + "additional-headers.html";
+        String angularJsCustomControllers = AppProperties.getInstance().getWebConfigurationsLocation()
+                + "custom-controllers.js";
         try {
             _logger.debug("Html additional headers file location:[{}], data:{}", htmlAdditionalHeaders,
                     htmlHeaderFiles);
@@ -173,6 +177,9 @@ public class SettingsUtils {
                 }
             }
             FileUtils.writeStringToFile(FileUtils.getFile(htmlAdditionalHeaders), builder.toString());
+            //Add custom controllers file in to www location
+            FileUtils.writeStringToFile(FileUtils.getFile(angularJsCustomControllers),
+                    htmlHeaderFiles.getAngularjsCustomControllers());
         } catch (Exception ex) {
             _logger.error("Unable to write static html header information file! location:[{}]",
                     htmlAdditionalHeaders, ex);
@@ -181,7 +188,8 @@ public class SettingsUtils {
 
     public static void saveHtmlIncludeFiles(HtmlHeaderFiles htmlHeaderFiles) {
         try {
-            OBJECT_MAPPER.writeValue(new File(AppProperties.getInstance().getHtmlHeadersFile()), htmlHeaderFiles);
+            OBJECT_MAPPER.writeValue(FileUtils.getFile(AppProperties.getInstance().getHtmlHeadersFile()),
+                    htmlHeaderFiles);
             loadHtmlHeaderFiles(htmlHeaderFiles);
         } catch (IOException ex) {
             _logger.error("Exception, ", ex);

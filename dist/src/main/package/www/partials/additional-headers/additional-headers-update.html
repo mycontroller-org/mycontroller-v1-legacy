@@ -34,14 +34,22 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'CSS_FILES' | translate }}</label>
             <div class="col-sm-10">
-              <textarea  class="form-control" rows="9" style="resize:none" ng-model="additionalHeaders.links" ng-list="&#10;" ng-trim="false"></textarea>
+              <textarea  class="form-control" rows="4" style="resize:none" ng-model="additionalHeaders.links" ng-list="&#10;" ng-trim="false"></textarea>
             </div>
           </div>
           <!-- Java script Files -->
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'SCRIPT_FILES' | translate }}</label>
             <div class="col-sm-10">
-              <textarea  class="form-control" rows="9" style="resize:none" ng-model="additionalHeaders.scripts" ng-list="&#10;" ng-trim="false"></textarea>
+              <textarea  class="form-control" rows="4" style="resize:none" ng-model="additionalHeaders.scripts" ng-list="&#10;" ng-trim="false"></textarea>
+            </div>
+          </div>
+
+          <!-- Angular custom controllers -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ANGULARJS_CUSTOM_CONTROLLERS' | translate }}</label>
+            <div class="col-sm-10">
+              <textarea  class="form-control" rows="21" style="resize:none" ng-model="additionalHeaders.angularjsCustomControllers"></textarea>
             </div>
           </div>
 

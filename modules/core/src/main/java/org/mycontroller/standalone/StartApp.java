@@ -69,6 +69,7 @@ import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
+import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
@@ -238,6 +239,9 @@ public class StartApp {
 
         //Start DB service
         DataBaseUtils.loadDatabase();
+
+        //Create or update static json file used for GUI before login
+        SettingsUtils.updateStaticJsonInformationFile();
 
         //Set to locale actual
         McUtils.updateLocale(MC_LANGUAGE.fromString(AppProperties.getInstance().getControllerSettings()
