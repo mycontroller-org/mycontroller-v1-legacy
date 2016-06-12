@@ -290,6 +290,11 @@ public class MetricsHandler extends AccessEngine {
         }
         for (Node node : nodes) {
             String source = TOPOLOGY_PREFIX_NODE + node.getId();
+            String nodeName = node.getName();
+            //If node name is null, update node eui as node name
+            if (nodeName == null) {
+                nodeName = node.getEui();
+            }
             items.put(source, TopologyItem.builder()
                     .name(node.getName())
                     .id(node.getId())
@@ -301,6 +306,7 @@ public class MetricsHandler extends AccessEngine {
                     .source(source)
                     .target(TOPOLOGY_PREFIX_GATEWAY + node.getGatewayTable().getId())
                     .build());
+
             updateSensorTopology(items, relations, node.getId(), null);
         }
     }
@@ -325,8 +331,18 @@ public class MetricsHandler extends AccessEngine {
             } else {
                 subType = LocaleString.builder().en("Undefined").locale("Undefined").build();
             }
+            String sensorName = sensor.getName();
+            //If sensor name is null, update with sensor type and sensorId
+            if (sensorName == null) {
+                if (sensor.getType() != null) {
+                    sensorName = McObjectManager.getMcLocale().getString(sensor.getType().name())
+                            + "-" + sensor.getSensorId();
+                } else {
+                    sensorName = sensor.getSensorId();
+                }
+            }
             items.put(source, TopologyItem.builder()
-                    .name(sensor.getName())
+                    .name(sensorName)
                     .id(sensor.getId())
                     .type(RESOURCE_TYPE.SENSOR)
                     .subType(subType)
