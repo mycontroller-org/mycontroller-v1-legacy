@@ -394,8 +394,8 @@ myControllerModule.factory('ResourcesGroupMapFactory', function ($resource) {
 
 //Read static files
 myControllerModule.factory('ReadFileFactory', function ($resource) {
-  return $resource('/:fileName', {}, {
-   getConfigFile: { method: 'GET', isArray: false, params: {fileName:'configurations/mycontroller-configs.json'} },
+  return $resource('/:locationName/:fileName', {}, {
+   getConfigFile: { method: 'GET', isArray: false, params: {locationName: 'configurations', fileName:'mycontroller-configs.json'} },
   })
 });
 

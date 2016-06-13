@@ -34,7 +34,7 @@
     "ALIAS": "Alias",
     "ALIVE_TEST_FREQUENCY": "Frecvența verificare stare (seconds)",
     "ALLOW_ANONYMOUS": "Permite anonim",
-    "ANGULARJS_CUSTOM_CONTROLLERS": "AngularJS custom controllers",
+    "ANGULARJS_CUSTOM_CONTROLLERS": "Controlere personalizate AngularJS",
     "APP.DESCRIPTION": "Controller-ul Open Source",
     "APP.LOG_IN_TO_MESSAGE": "AUTENTIFICARE LA <b>MYCONTROLLER.ORG</b>",
     "APP.WELCOME_MESSAGE": "Bun venit pe <b>MyController.org</b>! Controller-ul Open Source.",
