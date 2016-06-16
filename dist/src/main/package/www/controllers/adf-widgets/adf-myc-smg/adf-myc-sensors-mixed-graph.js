@@ -48,7 +48,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     var mycSensorsMixedGraph = this;
     mycSensorsMixedGraph.showLoading = true;
     mycSensorsMixedGraph.showError = false;
-    mycSensorsMixedGraph.isSyncing = true;
+    mycSensorsMixedGraph.isSyncing = false;
 
     mycSensorsMixedGraph.chartOptions = {
         chart: {
@@ -145,7 +145,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     }
 
     //load graph initially
-    updateChart();
+    updateVariables();
 
     // refresh every second
     var promise = $interval(updateChart, config.refreshTime*1000);
