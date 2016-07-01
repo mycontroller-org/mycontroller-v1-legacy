@@ -32,6 +32,8 @@ import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDao;
 import org.mycontroller.standalone.db.dao.MetricsBatteryUsageDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsBinaryTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsBinaryTypeDeviceDaoImpl;
+import org.mycontroller.standalone.db.dao.MetricsCounterTypeDeviceDao;
+import org.mycontroller.standalone.db.dao.MetricsCounterTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.NodeDao;
@@ -104,6 +106,7 @@ public class DaoUtils {
     private static UserSettingsDao userSettingsDao = null;
     private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
     private static MetricsBinaryTypeDeviceDao metricsBinaryTypeDeviceDao = null;
+    private static MetricsCounterTypeDeviceDao metricsCounterTypeDeviceDao = null;
     private static SystemJobDao systemJobDao = null;
     private static UserDao userDao = null;
     private static RuleDefinitionDao ruleDefinitionDao = null;
@@ -142,6 +145,7 @@ public class DaoUtils {
             settingsDao = new SettingsDaoImpl(DataBaseUtils.getConnectionSource());
             metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             metricsBinaryTypeDeviceDao = new MetricsBinaryTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsCounterTypeDeviceDao = new MetricsCounterTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             systemJobDao = new SystemJobDaoImpl(DataBaseUtils.getConnectionSource());
             userDao = new UserDaoImpl(DataBaseUtils.getConnectionSource());
             ruleDefinitionDao = new RuleDefinitionDaoImpl(DataBaseUtils.getConnectionSource());
@@ -312,6 +316,10 @@ public class DaoUtils {
 
     public static RoomDao getRoomDao() {
         return roomDao;
+    }
+
+    public static MetricsCounterTypeDeviceDao getMetricsCounterTypeDeviceDao() {
+        return metricsCounterTypeDeviceDao;
     }
 
 }

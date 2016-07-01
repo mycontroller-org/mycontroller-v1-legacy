@@ -31,6 +31,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
+import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -99,6 +100,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(User.class, UserMixin.class);
         mapper.addMixIn(McScript.class, McScriptMixin.class);
         mapper.addMixIn(SensorVariable.class, SensorVariableMixin.class);
+        mapper.addMixIn(SensorVariableJson.class, SensorVariableJsonMixin.class);
 
         if (_logger.isDebugEnabled()) {
             _logger.debug("Response: Headers:{}", httpHeaders);
@@ -132,6 +134,8 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(McScript.class, McScriptMixin.class);
         mapper.addMixIn(UidTag.class, UidTagMixin.class);
         mapper.addMixIn(McMessage.class, McMessageMixin.class);
+        mapper.addMixIn(SensorVariableJson.class, SensorVariableJsonMixin.class);
+
 
         _logger.debug("Request: Headers:{}", httpHeaders);
 

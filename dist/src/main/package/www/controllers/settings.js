@@ -99,41 +99,6 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
 
 });
 
-myControllerModule.controller('SettingsUnitsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper) {
-
-  //config, language, user, etc.,
-  $scope.mchelper = mchelper;
-
-  //editable settings
-  $scope.editEnable = {};
-  $scope.saveProgress = {};
-
-  //settings Units
-  $scope.updateSettingsUnits = function(){
-    $scope.unitsSettings = SettingsFactory.getUnits();
-  };
-
-
-  //Pre-load
-  $scope.unitsSettings = {};
-  $scope.updateSettingsUnits();
-
-  //Save units
-  $scope.saveUnits = function(){
-    $scope.saveProgress.units = true;
-    SettingsFactory.saveUnits($scope.unitsSettings,function(response) {
-        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
-        $scope.saveProgress.units = false;
-        $scope.updateSettingsUnits();
-        $scope.editEnable.units = false;
-      },function(error){
-        displayRestError.display(error);
-        $scope.saveProgress.units = false;
-      });
-  };
-
-});
-
 myControllerModule.controller('SettingsNotificationsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper, CommonServices) {
 
   //config, language, user, etc.,

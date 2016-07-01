@@ -118,7 +118,13 @@ public class McMessageUtils {
         I_PRESENTATION("Presentation"),
         I_DISCOVER("Discover"),
         I_DISCOVER_RESPONSE("Discover respone"),
-        I_HEARTBEAT_RESPONSE("Heartbeat Response");
+        I_HEARTBEAT_RESPONSE("Heartbeat Response"),
+        I_LOCKED("Locked"),
+        I_PING("Ping"),
+        I_PONG("Pong"),
+        I_REGISTRATION_REQUEST("Register request"),
+        I_REGISTRATION_RESPONSE("Register response"),
+        I_DEBUG("Debug");
         public static MESSAGE_TYPE_INTERNAL get(int id) {
             for (MESSAGE_TYPE_INTERNAL type : values()) {
                 if (type.ordinal() == id) {
@@ -190,7 +196,8 @@ public class McMessageUtils {
         S_MOISTURE("Moisture"),
         S_INFO("Information"),
         S_GAS("Gas"),
-        S_GPS("GPS");
+        S_GPS("GPS"),
+        S_WATER_QUALITY("Water quality");
 
         public static MESSAGE_TYPE_PRESENTATION get(int id) {
             for (MESSAGE_TYPE_PRESENTATION type : values()) {
@@ -275,7 +282,13 @@ public class McMessageUtils {
         V_TEXT("Text"),
         V_CUSTOM("Custom"),
         V_POSITION("Position"),
-        V_IR_RECORD("IR record");
+        V_IR_RECORD("IR record"),
+        V_PH("PH"),
+        V_ORP("ORP"),
+        V_EC("EC"),
+        V_VAR("Volt-ampere reactive"),
+        V_VA("Volt-ampere"),
+        V_POWER_FACTOR("Power factor");
 
         public static MESSAGE_TYPE_SET_REQ get(int id) {
             for (MESSAGE_TYPE_SET_REQ type : values()) {
@@ -348,7 +361,7 @@ public class McMessageUtils {
     }
 
     public enum PAYLOAD_TYPE {
-        PL_DOUBLE, PL_BOOLEAN, PL_INTEGER, PL_FLOAT, PL_BYTE, PL_HEX, PL_STRING;
+        PL_DOUBLE, PL_BOOLEAN, PL_HEX, PL_STRING, PL_LONG;
     }
 
     public static METRIC_TYPE getMetricType(PAYLOAD_TYPE payloadType) {
@@ -357,6 +370,8 @@ public class McMessageUtils {
                 return METRIC_TYPE.BINARY;
             case PL_DOUBLE:
                 return METRIC_TYPE.DOUBLE;
+            case PL_LONG:
+                return METRIC_TYPE.COUNTER;
             default:
                 return METRIC_TYPE.NONE;
         }
@@ -424,7 +439,7 @@ public class McMessageUtils {
             case V_UP:
             case V_DOWN:
             case V_STOP:
-                return PAYLOAD_TYPE.PL_DOUBLE;
+                return PAYLOAD_TYPE.PL_STRING;
             case V_IR_SEND:
             case V_IR_RECEIVE:
                 return PAYLOAD_TYPE.PL_HEX;

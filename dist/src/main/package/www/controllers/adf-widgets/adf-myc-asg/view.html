@@ -16,11 +16,11 @@
 
 -->
 <!-- Loading icon disaplay -->
-<div ng-show="mycSingleSensorGraph.showLoading">
+<div ng-if="mycSingleSensorGraph.showLoading">
   <div ng-include src="'partials/common-html/loading-sm.html'"></div>
 </div>
 
-<div ng-show="mycSingleSensorGraph.showError">
+<div ng-if="mycSingleSensorGraph.showError">
   <div ng-include src="'partials/common-html/error-sm.html'"></div>
 </div>
 

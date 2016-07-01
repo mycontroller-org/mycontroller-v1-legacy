@@ -16,11 +16,15 @@
  */
 package org.mycontroller.standalone.api.jaxrs.json;
 
+import java.util.HashMap;
+
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.units.UnitUtils;
+import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -37,14 +41,20 @@ import lombok.Data;
 public class SensorVariableJson {
 
     private Integer id;
+    private Integer sensorId;
     private LocaleString type;
     private String metricType;
     private String unit;
+    private UNIT_TYPE unitType;
     private Object value;
     private String friendlyValue;
     private Long timestamp;
     private String sensorName;
     private String resourceName;
+    private Boolean readOnly;
+    private Double offset;
+    private Integer priority;
+    private HashMap<String, Object> graphProperties;
 
     @JsonCreator
     private SensorVariableJson() {
@@ -53,6 +63,7 @@ public class SensorVariableJson {
 
     public SensorVariableJson(SensorVariable sensorVariable) {
         id = sensorVariable.getId();
+        sensorId = sensorVariable.getSensor().getId();
         if (sensorVariable.getVariableType() != null) {
             type = LocaleString.builder().en(sensorVariable.getVariableType().getText())
                     .locale(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name())).build();
@@ -60,7 +71,12 @@ public class SensorVariableJson {
         if (sensorVariable.getMetricType() != null) {
             metricType = sensorVariable.getMetricType().getText();
         }
-        unit = sensorVariable.getUnit();
+        unit = UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit();
+        unitType = sensorVariable.getUnitType();
+        readOnly = sensorVariable.getReadOnly();
+        offset = sensorVariable.getOffset();
+        priority = sensorVariable.getPriority();
+        graphProperties = sensorVariable.getGraphProperties();
         value = sensorVariable.getValue();
         friendlyValue = SensorUtils.getValue(sensorVariable);
         timestamp = sensorVariable.getTimestamp();

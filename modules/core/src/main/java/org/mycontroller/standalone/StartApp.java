@@ -32,7 +32,6 @@ import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
 import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
 import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
-import org.mycontroller.standalone.api.jaxrs.ImperiHomeISSHandler;
 import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
 import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
 import org.mycontroller.standalone.api.jaxrs.NodeHandler;
@@ -133,7 +132,6 @@ public class StartApp {
         resources.add(FirmwareHandler.class.getName());
         resources.add(ForwardPayloadHandler.class.getName());
         resources.add(GatewayHandler.class.getName());
-        resources.add(ImperiHomeISSHandler.class.getName());
         resources.add(MetricsHandler.class.getName());
         resources.add(NodeHandler.class.getName());
         resources.add(OperationHandler.class.getName());

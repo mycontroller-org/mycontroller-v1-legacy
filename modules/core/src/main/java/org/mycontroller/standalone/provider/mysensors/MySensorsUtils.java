@@ -131,7 +131,13 @@ public class MySensorsUtils {
         I_PRESENTATION("Presentation"),
         I_DISCOVER("Discover"),
         I_DISCOVER_RESPONSE("Discover respone"),
-        I_HEARTBEAT_RESPONSE("Heartbeat Response");
+        I_HEARTBEAT_RESPONSE("Heartbeat Response"),
+        I_LOCKED("Locked"),
+        I_PING("Ping"),
+        I_PONG("Pong"),
+        I_REGISTRATION_REQUEST("Register request"),
+        I_REGISTRATION_RESPONSE("Register response"),
+        I_DEBUG("Debug");
         public static MYS_MESSAGE_TYPE_INTERNAL get(int id) {
             for (MYS_MESSAGE_TYPE_INTERNAL type : values()) {
                 if (type.ordinal() == id) {
@@ -207,7 +213,8 @@ public class MySensorsUtils {
                                 // V_LEVEL (water content or moisture in percentage?)
         S_INFO("Information"),     // LCD text device / Simple information device on controller, V_TEXT
         S_GAS("Gas"),      // Gas meter, V_FLOW, V_VOLUME
-        S_GPS("GPS");      // GPS Sensor, V_POSITION
+        S_GPS("GPS"),      // GPS Sensor, V_POSITION
+        S_WATER_QUALITY("Water quality"); //!< V_TEMP, V_PH, V_ORP, V_EC, V_STATUS
 
         public static MYS_MESSAGE_TYPE_PRESENTATION get(int id) {
             for (MYS_MESSAGE_TYPE_PRESENTATION type : values()) {
@@ -309,7 +316,14 @@ public class MySensorsUtils {
         // preferably using S_CUSTOM device type.
         V_POSITION("Position"), // GPS position and altitude. Payload: latitude;longitude;altitude(m).
                                 // E.g. "55.722526;13.017972;18"
-        V_IR_RECORD("IR record");         // Record IR codes S_IR for playback
+        V_IR_RECORD("IR record"),         // Record IR codes S_IR for playback
+        V_PH("PH"), //!< S_WATER_QUALITY, water PH
+        V_ORP("ORP"), //!< S_WATER_QUALITY, water ORP : redox potential in mV
+        V_EC("EC"), //!< S_WATER_QUALITY, water electric conductivity μS/cm (microSiemens/cm)
+        V_VAR("Volt-ampere reactive"),  //!< S_POWER, Reactive power: volt-ampere reactive (var)
+        V_VA("Volt-ampere"),    //!< S_POWER, Apparent power: volt-ampere (VA)
+        V_POWER_FACTOR("Power factor"); //!< S_POWER, Ratio of real power to apparent power:
+                                        //floating point value in the range [-1,..,1]
 
         public static MYS_MESSAGE_TYPE_SET_REQ get(int id) {
             for (MYS_MESSAGE_TYPE_SET_REQ type : values()) {

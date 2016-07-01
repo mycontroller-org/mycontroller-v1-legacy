@@ -54,6 +54,7 @@ import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -65,7 +66,8 @@ import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.scripts.McScriptException;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
-import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.units.UnitUtils;
+import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
 import org.mycontroller.standalone.utils.McUtils;
 
 /**
@@ -395,7 +397,8 @@ public class MetricsHandler extends AccessEngine {
 
             MetricDouble metric = metricApi.getSensorVariableMetricDouble(sensorVariable, timestampFrom, timestampTo);
 
-            String unit = sensorVariable.getUnit() != "" ? " (" + sensorVariable.getUnit() + ")" : "";
+            String unit = sensorVariable.getUnitType() != UNIT_TYPE.U_NONE ? " ("
+                    + UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit() + ")" : "";
 
             //If current value not available, do not allow any value
             if (metric.getCurrent() == null || metric.getMinimum() == null) {
@@ -494,7 +497,6 @@ public class MetricsHandler extends AccessEngine {
             return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
-        MetricsGraphSettings metricsGraphSettings = AppProperties.getInstance().getMetricsGraphSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         SensorVariable yaxis1Variable = null;
@@ -509,7 +511,7 @@ public class MetricsHandler extends AccessEngine {
         boolean isMultiChart = false;
 
         for (SensorVariable sensorVariable : sensorVariables) {
-            MetricsGraph metrics = metricsGraphSettings.getMetric(sensorVariable.getVariableType().getText());
+            MetricsGraph metrics = sensorVariable.getMetricsGraph();
             //Load initial settings
             if (!initialLoadDone) {
                 if (CHART_TYPE.MULTI_CHART == CHART_TYPE.fromString(chartType)) {
@@ -527,13 +529,13 @@ public class MetricsHandler extends AccessEngine {
             if (yaxis1Variable != null) {
                 if (yaxis1Variable.getVariableType() == sensorVariable.getVariableType()) {
                     yAxis = 1;
-                    unit = sensorVariable.getUnit();
+                    unit = UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit();
                 } else {
                     yAxis = 2;
-                    unit2 = sensorVariable.getUnit();
+                    unit2 = UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit();
                 }
             } else {
-                unit = sensorVariable.getUnit();
+                unit = UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit();
             }
 
             if (chartTypeInternal == null) {
@@ -575,6 +577,29 @@ public class MetricsHandler extends AccessEngine {
                                 .build().updateSubType(chartTypeInternal));
                     }
 
+                    break;
+                case COUNTER:
+                    List<MetricsCounterTypeDevice> counterMetrics = metricApi.getSensorVariableMetricsCounter(
+                            sensorVariable.getId(), timestampFrom, timestampTo);
+                    ArrayList<Object> metricCounterValues = new ArrayList<Object>();
+                    for (MetricsCounterTypeDevice metric : counterMetrics) {
+                        if (isMultiChart) {
+                            metricCounterValues.add(MetricsChartDataXY.builder().x(metric.getTimestamp())
+                                    .y(metric.getValue()).build());
+                        } else {
+                            metricCounterValues.add(new Object[] { metric.getTimestamp(), metric.getValue() });
+                        }
+                    }
+                    if (!counterMetrics.isEmpty()) {
+                        metricDataValues.add(MetricsChartDataNVD3
+                                .builder()
+                                .key(seriesName)
+                                .values(metricCounterValues)
+                                .type(metrics.getSubType())
+                                //.interpolate(metrics.getInterpolate())
+                                .yAxis(yAxis)
+                                .build().updateSubType(chartTypeInternal));
+                    }
                     break;
                 case BINARY:
                     List<MetricsBinaryTypeDevice> binaryMetrics = metricApi.getSensorVariableMetricsBinary(
@@ -648,11 +673,10 @@ public class MetricsHandler extends AccessEngine {
             return new ArrayList<MetricsChartDataGroupNVD3>();
         }
 
-        MetricsGraphSettings metricsGraphSettings = AppProperties.getInstance().getMetricsGraphSettings();
         ArrayList<MetricsChartDataGroupNVD3> finalData = new ArrayList<MetricsChartDataGroupNVD3>();
 
         for (SensorVariable sensorVariable : sensorVariables) {
-            MetricsGraph metrics = metricsGraphSettings.getMetric(sensorVariable.getVariableType().getText());
+            MetricsGraph metrics = sensorVariable.getMetricsGraph();
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
                     ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
@@ -692,7 +716,37 @@ public class MetricsHandler extends AccessEngine {
                             .builder()
                             .metricsChartDataNVD3(preDoubleData)
                             .id(sensorVariable.getId())
-                            .unit(sensorVariable.getUnit())
+                            .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
+                            .timeFormat(getTimeFormat(timestampFrom))
+                            .variableType(
+                                    McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
+                            .dataType(sensorVariable.getMetricType().getText())
+                            .resourceName(new ResourceModel(
+                                    RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
+                            .chartType(metrics.getType())
+                            .chartInterpolate(metrics.getInterpolate())
+                            .build());
+
+                    break;
+                case COUNTER:
+                    ArrayList<MetricsChartDataNVD3> preCounterData = new ArrayList<MetricsChartDataNVD3>();
+                    List<MetricsCounterTypeDevice> counterMetrics = metricApi.getSensorVariableMetricsCounter(
+                            sensorVariable.getId(), timestampFrom, timestampTo);
+                    ArrayList<Object> metricCounterValues = new ArrayList<Object>();
+                    for (MetricsCounterTypeDevice metric : counterMetrics) {
+                        metricCounterValues.add(new Object[] { metric.getTimestamp(), metric.getValue() });
+                    }
+                    preCounterData.add(MetricsChartDataNVD3.builder()
+                            .key(sensorVariable.getVariableType().getText())
+                            .values(metricCounterValues)
+                            .color(metrics.getColor())
+                            .type(metrics.getSubType())
+                            .build().updateSubType(metrics.getType()));
+                    finalData.add(MetricsChartDataGroupNVD3
+                            .builder()
+                            .metricsChartDataNVD3(preCounterData)
+                            .id(sensorVariable.getId())
+                            .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
                             .timeFormat(getTimeFormat(timestampFrom))
                             .variableType(
                                     McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
@@ -722,7 +776,7 @@ public class MetricsHandler extends AccessEngine {
                             .builder()
                             .metricsChartDataNVD3(preBinaryData)
                             .id(sensorVariable.getId())
-                            .unit(sensorVariable.getUnit())
+                            .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
                             .timeFormat(getTimeFormat(timestampFrom))
                             .variableType(
                                     McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))

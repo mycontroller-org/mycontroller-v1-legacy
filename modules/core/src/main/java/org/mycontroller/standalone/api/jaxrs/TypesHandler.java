@@ -172,6 +172,18 @@ public class TypesHandler extends AccessEngine {
     }
 
     @GET
+    @Path("/metricTypes")
+    public Response getMetricTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMetricTypes());
+    }
+
+    @GET
+    @Path("/unitTypes")
+    public Response getUnitTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getUnitTypes());
+    }
+
+    @GET
     @Path("/sensorVariableTypes")
     public Response getSensorVariableTypes(@QueryParam("sensorType") String sensorType,
             @QueryParam("sensorId") Integer sensorId,

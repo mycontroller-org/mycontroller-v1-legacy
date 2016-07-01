@@ -166,6 +166,13 @@ public class SensorHandler extends AccessEngine {
         return RestUtils.getResponse(Status.OK, sensorApi.getVariables(ids));
     }
 
+    @GET
+    @Path("/getVariable/{id}")
+    public Response getVariable(@PathParam("id") Integer id) {
+        hasAccessSensorVariable(id);
+        return RestUtils.getResponse(Status.OK, sensorApi.getVariable(id));
+    }
+
     @PUT
     @Path("/updateVariable")
     public Response sendpayload(SensorVariableJson sensorVariableJson) {
@@ -184,13 +191,13 @@ public class SensorHandler extends AccessEngine {
     }
 
     @PUT
-    @Path("/updateVariableUnit")
-    public Response updateVariableUnit(SensorVariableJson sensorVariableJson) {
+    @Path("/updateVariableConfig")
+    public Response updateVariableConfig(SensorVariableJson sensorVariableJson) {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
             hasAccessSensor(sensorVariable.getSensor().getId());
             try {
-                sensorApi.updateVariableUnit(sensorVariableJson);
+                sensorApi.updateVariable(sensorVariableJson);
                 return RestUtils.getResponse(Status.OK);
             } catch (McBadRequestException ex) {
                 return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

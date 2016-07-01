@@ -52,7 +52,6 @@ import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
-import org.mycontroller.standalone.settings.UnitsSettings;
 import org.mycontroller.standalone.settings.UserNativeSettings;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.utils.McUtils;
@@ -229,20 +228,6 @@ public class SettingsHandler extends AccessEngine {
     @Path("/mySensors")
     public Response saveMySensors(MySensorsSettings mySensorsSettings) {
         mySensorsSettings.save();
-        SettingsUtils.updateAllSettings();
-        return RestUtils.getResponse(Status.OK);
-    }
-
-    @GET
-    @Path("/units")
-    public Response getUnits() {
-        return RestUtils.getResponse(Status.OK, AppProperties.getInstance().getUnitsSettings());
-    }
-
-    @POST
-    @Path("/units")
-    public Response saveUnits(UnitsSettings unitsSettings) {
-        unitsSettings.save();
         SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
     }

@@ -37,6 +37,7 @@ import org.mycontroller.standalone.exceptions.McException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -128,6 +129,12 @@ public class SensorApi {
         return sensorVariableJson;
     }
 
+    public SensorVariableJson getVariable(Integer id) {
+        SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(id);
+        //Convert to SensorVariableJson
+        return new SensorVariableJson(sensorVariable);
+    }
+
     public void sendpayload(SensorVariableJson sensorVariableJson) throws McInvalidException, McBadRequestException {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
@@ -154,11 +161,38 @@ public class SensorApi {
         }
     }
 
-    public void updateVariableUnit(SensorVariableJson sensorVariableJson) throws McBadRequestException {
+    public void updateVariable(SensorVariableJson sensorVariableJson) throws McBadRequestException {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
-            sensorVariable.setUnit(sensorVariableJson.getUnit());
-            //Update sensor unit
+            if (!sensorVariable.getMetricType().getText().equalsIgnoreCase(sensorVariableJson.getMetricType())) {
+                //clear existing data
+                switch (sensorVariable.getMetricType()) {
+                    case DOUBLE:
+                        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
+                        break;
+                    case BINARY:
+                        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
+                        break;
+                    case COUNTER:
+                        DaoUtils.getMetricsCounterTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
+                        break;
+                    default:
+                        break;
+                }
+                sensorVariable.setMetricType(METRIC_TYPE.fromString(sensorVariableJson.getMetricType()));
+            }
+            //Update Unit type
+            sensorVariable.setUnitType(sensorVariableJson.getUnitType());
+            //Update sensor variable readOnly option
+            sensorVariable.setReadOnly(sensorVariableJson.getReadOnly());
+            //Update offset
+            sensorVariable.setOffset(sensorVariableJson.getOffset());
+            //Update priority
+            sensorVariable.setPriority(sensorVariableJson.getPriority());
+            //Update Graph settings
+            sensorVariable.setGraphProperties(sensorVariableJson.getGraphProperties());
+
+            //Update sensor variable
             DaoUtils.getSensorVariableDao().update(sensorVariable);
         } else {
             throw new McBadRequestException("null not allowed");

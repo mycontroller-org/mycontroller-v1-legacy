@@ -288,7 +288,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
   commonService.getSensorVariablesKnownList = function(){
     var definedVariableTypes = ["Status","Watt","Temperature","Humidity","Pressure","Forecast","Armed","Tripped","Lock status","Percentage","Weight","Stop","Up","Down","Rain","Rain rate",
     "HVAC flow state","HVAC flow mode","HVAC speed","HVAC setpoint cool","HVAC setpoint heat","Variable 1","Variable 2","Variable 3","Variable 4","Variable 5","RGB","RGBW","Distance",
-    "Current","Voltage","Impedance"];
+    "Current","Voltage","Impedance", "Volume"];
     return definedVariableTypes;
   };
 

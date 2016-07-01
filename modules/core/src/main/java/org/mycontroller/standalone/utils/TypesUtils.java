@@ -67,6 +67,8 @@ import org.mycontroller.standalone.rule.RuleUtils.STRING_OPERATOR;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
+import org.mycontroller.standalone.units.UnitUtils;
+import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -105,6 +107,33 @@ public class TypesUtils {
                         .id(type.getText())
                         .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
             }
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getMetricTypes() {
+        METRIC_TYPE[] types = METRIC_TYPE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (METRIC_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper
+                    .builder()
+                    .id(type.getText())
+                    //.displayName(McObjectManager.getMcLocale().getString(type.name()))
+                    .build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getUnitTypes() {
+        UNIT_TYPE[] types = UNIT_TYPE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (UNIT_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper
+                    .builder()
+                    .id(type.getText())
+                    .displayName(type.getText()
+                            + (type == UNIT_TYPE.U_NONE ? "" : " (" + UnitUtils.getUnit(type).getUnit() + ")"))
+                    .build());
         }
         return typesIdNameMappers;
     }

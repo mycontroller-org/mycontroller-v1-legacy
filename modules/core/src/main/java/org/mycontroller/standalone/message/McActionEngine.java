@@ -307,6 +307,10 @@ public class McActionEngine implements IMcActionEngine {
 
     @Override
     public void sendPayload(SensorVariable sensorVariable) {
+        if (sensorVariable.getReadOnly()) {
+            _logger.warn("For 'readOnly' sensor variable, cannot send payload!, {}", sensorVariable);
+            return;
+        }
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
                 .nodeEui(sensorVariable.getSensor().getNode().getEui())

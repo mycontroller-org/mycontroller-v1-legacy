@@ -202,10 +202,17 @@ $scope, OperationsFactory, $state, $uibModal, $stateParams, displayRestError, mc
     }
   };
 
-    //Edit item
+  //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("operationsAddEdit",{'id':$scope.itemIds[0]});
+    }
+  };
+
+  //Clone item
+  $scope.clone = function () {
+    if($scope.itemIds.length == 1){
+      $state.go("operationsAddEdit",{'id':$scope.itemIds[0], 'action': 'clone'});
     }
   };
 
@@ -269,6 +276,12 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
           $scope.item.dt = $scope.item.delayTime/1000;
         }
 
+        if($stateParams.action === 'clone'){
+          $stateParams.id = undefined;
+          $scope.item.id = undefined;
+          $scope.item.name = $scope.item.name + '-' + $filter('translate')('CLONE');
+        }
+
       },function(error){
         displayRestError.display(error);
       });
@@ -285,7 +298,9 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
   $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Operation"});
 
   //GUI page settings
-  $scope.showHeaderUpdate = $stateParams.id;
+  if(!$stateParams.action || $stateParams.action !== 'clone'){
+      $scope.showHeaderUpdate = $stateParams.id;
+  }
   $scope.headerStringAdd = $filter('translate')('ADD_OPERATION');
   $scope.headerStringUpdate = $filter('translate')('UPDATE_OPERATION');
   $scope.cancelButtonState = "operationsList"; //Cancel button url

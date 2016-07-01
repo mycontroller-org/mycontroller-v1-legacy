@@ -126,7 +126,11 @@ public class McUtils {
 
     public static Long getLong(String value) {
         if (value != null) {
-            return Long.valueOf(value);
+            try {
+                return Long.valueOf(value);
+            } catch (NumberFormatException ex) {
+                return Double.valueOf(value).longValue();
+            }
         } else {
             return null;
         }

@@ -142,7 +142,7 @@ $scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, Common
           $state.go("sensorsDetail", {'id': d.item.id});
           break;
         case "SensorVariable":
-          //$state.go("sensorsDetail", {'id': d.item.id});
+          $state.go("sensorVariableEdit", {'id': d.item.id});
           break;
 
       }

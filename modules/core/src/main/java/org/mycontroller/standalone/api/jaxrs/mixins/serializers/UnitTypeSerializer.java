@@ -14,25 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.imperihome;
+package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.io.IOException;
+
+import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+public class UnitTypeSerializer extends JsonSerializer<UNIT_TYPE> {
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class DeviceParam {
-    private String key;
-    private String value;
-    private String unit;
-    private Boolean graphable;
+    @Override
+    public void serialize(UNIT_TYPE type, JsonGenerator jgen, SerializerProvider provider)
+            throws IOException, JsonProcessingException {
+        if (type != null) {
+            jgen.writeString(type.getText());
+        } else {
+            jgen.writeNull();
+        }
+    }
+
 }

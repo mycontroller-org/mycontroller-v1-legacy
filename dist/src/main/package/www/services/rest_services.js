@@ -26,15 +26,10 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     delete: { method: 'DELETE', params: {sensorId: '@sensorId'} },
     deleteIds: { method: 'POST', params: {sensorId: 'deleteIds'} },
     updateVariable: { method: 'PUT', params: {sensorId: 'updateVariable', id:null}},
-    updateVariableUnit:  { method: 'PUT', params: {sensorId: 'updateVariableUnit', id:null}},
+    updateVariableConfig: { method: 'PUT', params: {sensorId: 'updateVariableConfig', id:null}},
     getVariables: { method: 'GET', isArray: true, params: {sensorId: 'getVariables', id:null}},
+    getVariable: { method: 'GET', isArray: false, params: {sensorId: 'getVariable'}},
     sendRawMessage: { method: 'POST', params: {sensorId:'sendRawMessage'} },
-
-    getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
-    sendPayload: { method: 'POST'},
-    getSensorByRefId: { method: 'GET', params: {nodeId: 'sensorByRefId'}},
-    getOthers: { method: 'GET', isArray: true, params: {nodeId: 'getOthers'}},
-    updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}},
   })
 });
 
@@ -78,7 +73,9 @@ myControllerModule.factory('FirmwaresFactory', function ($resource) {
 myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
     getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
-    getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}  },
+    getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}},
+    getMetricTypes:  { method: 'GET', isArray: true, params: {type: 'metricTypes'}},
+    getUnitTypes:  { method: 'GET', isArray: true, params: {type: 'unitTypes'}},
     getSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypes', id : null}  },
     getGatewayTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayTypes'} },
     getGatewayNetworkTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayNetworkTypes'} },

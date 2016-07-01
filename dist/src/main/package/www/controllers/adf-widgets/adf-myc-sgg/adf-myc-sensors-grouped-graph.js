@@ -47,7 +47,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
     var mycSensorsGroupedGraph = this;
     mycSensorsGroupedGraph.showLoading = true;
     mycSensorsGroupedGraph.showError = false;
-    mycSensorsGroupedGraph.isSyncing = true;
+    mycSensorsGroupedGraph.isSyncing = false;
     mycSensorsGroupedGraph.cs = CommonServices;
 
     mycSensorsGroupedGraph.chartOptions = {
@@ -126,14 +126,16 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
         return;
       }else if(config.variableId.length !== 0){
         updateChart();
+      }else{
+        mycSensorsGroupedGraph.showLoading = false;
       }
     }
 
     //load graph initially
-    updateChart();
+    updateVariables();
 
     // refresh every second
-    var promise = $interval(updateChart, config.refreshTime*1000);
+    var promise = $interval(updateVariables, config.refreshTime*1000);
 
     // cancel interval on scope destroy
     $scope.$on('$destroy', function(){
@@ -155,7 +157,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
     };
 
     //Load variable types
-    mycSensorsGroupedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes({"metricType":["Double","Binary"]});
+    mycSensorsGroupedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes({"metricType":["Double","Binary", "Counter"]});
     if(config.variableType){
       var variableIdRef = config.variableId;
       mycSensorsGroupedGraphEdit.onVariableTypeChange();

@@ -35,6 +35,7 @@ import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -584,10 +585,26 @@ public class McMessageEngine implements Runnable {
                 MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()));
         METRIC_TYPE metricType = McMessageUtils.getMetricType(payloadType);
         if (sensorVariable == null) {
+            String data = null;
+            switch (metricType) {
+                case BINARY:
+                    data = mcMessage.getPayload().equalsIgnoreCase("0") ? "0" : "1";
+                    break;
+                case COUNTER:
+                    data = String.valueOf(McUtils.getLong(mcMessage.getPayload()));
+                    break;
+                case DOUBLE:
+                    data = String.valueOf(McUtils.getDoubleAsString(mcMessage.getPayload()));
+                    break;
+                default:
+                    data = mcMessage.getPayload();
+                    break;
+
+            }
             sensorVariable = SensorVariable.builder()
                     .sensor(sensor)
                     .variableType(MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()))
-                    .value(mcMessage.getPayload())
+                    .value(data)
                     .timestamp(System.currentTimeMillis())
                     .metricType(metricType).build().updateUnitAndMetricType();
             _logger.debug("This SensorVariable:[{}] for Sensor:{}] is not available in our DB, Adding...",
@@ -596,7 +613,30 @@ public class McMessageEngine implements Runnable {
             DaoUtils.getSensorVariableDao().create(sensorVariable);
             sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariable);
         } else {
-            sensorVariable.setValue(mcMessage.getPayload());
+            switch (sensorVariable.getMetricType()) {
+                case COUNTER:
+                    long oldValue = sensorVariable.getValue() == null ? 0L : McUtils
+                            .getLong(sensorVariable.getValue());
+                    long newValue = McUtils.getLong(mcMessage.getPayload());
+                    sensorVariable.setValue(String.valueOf(oldValue + newValue));
+                    break;
+                case DOUBLE:
+                    //If it is received message, update with offset
+                    if (mcMessage.isTxMessage()) {
+                        sensorVariable.setValue(McUtils.getDoubleAsString(McUtils.getDouble(mcMessage.getPayload())));
+                    } else {
+                        sensorVariable.setValue(
+                                McUtils.getDoubleAsString(
+                                        McUtils.getDouble(mcMessage.getPayload()) + sensorVariable.getOffset()));
+                    }
+                    break;
+                case BINARY:
+                    sensorVariable.setValue(mcMessage.getPayload().equalsIgnoreCase("0") ? "0" : "1");
+                    break;
+                default:
+                    sensorVariable.setValue(mcMessage.getPayload());
+                    break;
+            }
             sensorVariable.setTimestamp(System.currentTimeMillis());
             DaoUtils.getSensorVariableDao().update(sensorVariable);
         }
@@ -693,7 +733,7 @@ public class McMessageEngine implements Runnable {
                                 .sensorVariable(sensorVariable)
                                 .aggregationType(AGGREGATION_TYPE.RAW)
                                 .timestamp(System.currentTimeMillis())
-                                .avg(McUtils.getDouble(mcMessage.getPayload()))
+                                .avg(McUtils.getDouble(sensorVariable.getValue()))
                                 .samples(1).build());
 
                 break;
@@ -702,13 +742,21 @@ public class McMessageEngine implements Runnable {
                         .create(MetricsBinaryTypeDevice.builder()
                                 .sensorVariable(sensorVariable)
                                 .timestamp(System.currentTimeMillis())
-                                .state(McUtils.getBoolean(mcMessage.getPayload())).build());
+                                .state(McUtils.getBoolean(sensorVariable.getValue())).build());
+                break;
+            case COUNTER:
+                DaoUtils.getMetricsCounterTypeDeviceDao()
+                        .create(MetricsCounterTypeDevice.builder()
+                                .sensorVariable(sensorVariable)
+                                .aggregationType(AGGREGATION_TYPE.RAW)
+                                .timestamp(System.currentTimeMillis())
+                                .value(McUtils.getLong(mcMessage.getPayload()))
+                                .samples(1).build());
                 break;
             default:
                 _logger.debug(
                         "This type not be implemented yet, PayloadType:{}, MessageType:{}, McMessage:{}",
-                        payloadType, MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType())
-                                .toString(),
+                        payloadType, MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()).toString(),
                         mcMessage.getPayload());
                 break;
         }

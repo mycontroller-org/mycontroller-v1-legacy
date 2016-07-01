@@ -16,11 +16,17 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import java.util.HashMap;
+
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DB_TABLES;
-import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.message.McMessageUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.settings.MetricsGraph;
+import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
+import org.mycontroller.standalone.units.UnitUtils;
+import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -41,7 +47,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(includeFieldNames = true)
+@ToString
 public class SensorVariable {
     public static final String KEY_ID = "id";
     public static final String KEY_SENSOR_DB_ID = "sensorDbId";
@@ -50,7 +56,17 @@ public class SensorVariable {
     public static final String KEY_VALUE = "value";
     public static final String KEY_PREVIOUS_VALUE = "previousValue";
     public static final String KEY_METRIC = "metricType";
-    public static final String KEY_UNIT = "unit";
+    public static final String KEY_UNIT_TYPE = "unitType";
+    public static final String KEY_READ_ONLY = "readOnly";
+    public static final String KEY_OFFSET = "offset";
+    public static final String KEY_PRIORITY = "priority";
+    public static final String KEY_GRAPH_PROPERTIES = "graphProperties";
+
+    public static final String KEY_GP_USE_GLOBAL = "useGlobal";
+    public static final String KEY_GP_TYPE = "type";
+    public static final String KEY_GP_INTERPOLATE = "interpolate";
+    public static final String KEY_GP_SUBTYPE = "subType";
+    public static final String KEY_GP_COLOR = "color";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -75,13 +91,24 @@ public class SensorVariable {
     @DatabaseField(columnName = KEY_PREVIOUS_VALUE, canBeNull = true)
     private String previousValue;
 
-    @DatabaseField(columnName = KEY_UNIT, canBeNull = true)
-    private String unit;
+    @DatabaseField(columnName = KEY_UNIT_TYPE, canBeNull = true, dataType = DataType.ENUM_STRING)
+    private UNIT_TYPE unitType;
+
+    @DatabaseField(columnName = KEY_READ_ONLY, canBeNull = false, defaultValue = "false")
+    private Boolean readOnly;
+
+    @DatabaseField(columnName = KEY_OFFSET, canBeNull = false, defaultValue = "0.0")
+    private Double offset;
+
+    @DatabaseField(columnName = KEY_PRIORITY, canBeNull = false, defaultValue = "100")
+    private Integer priority;
+
+    @DatabaseField(canBeNull = true, columnName = KEY_GRAPH_PROPERTIES, dataType = DataType.SERIALIZABLE)
+    private HashMap<String, Object> graphProperties;
 
     public SensorVariable updateUnitAndMetricType() {
-        if (this.unit == null) {
-            String unit = SensorUtils.getUnit(variableType);
-            this.unit = unit == null ? "" : unit;
+        if (this.unitType == null) {
+            this.unitType = UnitUtils.getUnit(variableType);
         }
         if (this.metricType == null) {
             this.metricType = McMessageUtils.getMetricType(this.variableType);
@@ -94,4 +121,23 @@ public class SensorVariable {
         this.value = value;
     }
 
+    public HashMap<String, Object> getGraphProperties() {
+        if (graphProperties == null) {
+            graphProperties = new HashMap<String, Object>();
+            graphProperties.put(KEY_GP_USE_GLOBAL, true);
+            graphProperties.put(KEY_GP_TYPE, CHART_TYPE.LINE_CHART.getText());
+            graphProperties.put(KEY_GP_INTERPOLATE, "linear");
+            graphProperties.put(KEY_GP_SUBTYPE, "line");
+            graphProperties.put(KEY_GP_COLOR, "#ff7f0e");
+        }
+        return graphProperties;
+    }
+
+    public MetricsGraph getMetricsGraph() {
+        if ((boolean) getGraphProperties().get(KEY_GP_USE_GLOBAL)) {
+            return AppProperties.getInstance().getMetricsGraphSettings().getMetric(variableType.getText());
+        } else {
+            return MetricsGraph.get(graphProperties);
+        }
+    }
 }
