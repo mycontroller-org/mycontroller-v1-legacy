@@ -113,15 +113,14 @@ public class BackupApi {
             query.setFilteredCount((long) backupFiles.size());
             //Get total items without filter
             query.setTotalItems((long) FileUtils.listFiles(FileUtils.getFile(locationCanonicalPath),
-                    new SuffixFileFilter(BACKUP_FILE_SUFFIX_FILTER, IOCase.INSENSITIVE),
-                    TrueFileFilter.INSTANCE).size());
+                    extensionFilter, TrueFileFilter.INSTANCE).size());
             int fileFrom;
             int fileTo;
             if (query.getPageLimit() == -1) {
                 fileTo = backupFiles.size();
                 fileFrom = 0;
             } else {
-                fileFrom = (int) (query.getStartingRow() * query.getPage());
+                fileFrom = query.getStartingRow().intValue();
                 fileTo = (int) (query.getPage() * query.getPageLimit());
             }
             for (File backupFile : backupFiles) {
