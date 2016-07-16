@@ -380,6 +380,7 @@
     "OPERATION_NAME": "Имя операции",
     "OPERATION_TYPE": "Тип операции",
     "PARENT": "Родитель",
+    "PARENT_NODE_EUI": "Parent node EUI",
     "PASSWORD": "Пароль",
     "PATTERN": "Шаблон",
     "PAYLOAD": "Значение",

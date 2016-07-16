@@ -380,6 +380,7 @@
     "OPERATION_NAME": "Naam van de bewerking",
     "OPERATION_TYPE": "Bewerkings type",
     "PARENT": "Parent",
+    "PARENT_NODE_EUI": "Parent node EUI",
     "PASSWORD": "Wachtwoord",
     "PATTERN": "Patroon",
     "PAYLOAD": "Payload",

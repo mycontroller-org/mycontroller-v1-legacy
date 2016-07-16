@@ -312,8 +312,9 @@ public class MetricsHandler extends AccessEngine {
                     .status(node.getState().getText())
                     .build());
             if (realtime) {
-                if (node.getParentId() != null) {
-                    Node parentNode = DaoUtils.getNodeDao().get(node.getGatewayTable().getId(), node.getParentId());
+                if (node.getParentNodeEui() != null) {
+                    Node parentNode = DaoUtils.getNodeDao().get(node.getGatewayTable().getId(),
+                            node.getParentNodeEui());
                     if (parentNode != null) {
                         relations.add(TopologyRelation.builder()
                                 .source(source)

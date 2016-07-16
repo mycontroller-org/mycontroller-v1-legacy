@@ -380,6 +380,7 @@
     "OPERATION_NAME": "செயலின் பெயர்",
     "OPERATION_TYPE": "செயலின் வகை",
     "PARENT": "Parent",
+    "PARENT_NODE_EUI": "Parent node EUI",
     "PASSWORD": "கடவுச்சொல்",
     "PATTERN": "Pattern",
     "PAYLOAD": "Payload",

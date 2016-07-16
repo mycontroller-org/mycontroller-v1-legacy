@@ -380,6 +380,7 @@
     "OPERATION_NAME": "Nume acțiune",
     "OPERATION_TYPE": "Tip acțiune",
     "PARENT": "Părinte",
+    "PARENT_NODE_EUI": "Parent node EUI",
     "PASSWORD": "Parola",
     "PATTERN": "Model",
     "PAYLOAD": "Payload",

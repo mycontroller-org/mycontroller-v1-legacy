@@ -368,7 +368,7 @@ public class McMessageEngine implements Runnable {
                     return;
                 }
                 node = getNode(mcMessage);
-                node.setParentId(mcMessage.getPayload());
+                node.setParentNodeEui(mcMessage.getPayload());
                 updateNode(node);
                 break;
             case I_DEBUG:

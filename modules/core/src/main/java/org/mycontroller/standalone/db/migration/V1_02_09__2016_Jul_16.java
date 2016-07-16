@@ -57,7 +57,7 @@ public class V1_02_09__2016_Jul_16 extends MigrationBase {
          * */
         //Execute only if changes not available in database
         if (!hasColumn("NODE", "REGISTRATIONSTATE")) {
-            addColumn("NODE", "PARENTID", "VARCHAR(255)");
+            addColumn("NODE", "PARENTNODEEUI", "VARCHAR(255)");
             addColumn("NODE", "PROPERTIES", "BLOB");
             dropColumn("NODE", "OTHERDATA");
             addColumn("NODE", "REGISTRATIONSTATE", "VARCHAR(100)");

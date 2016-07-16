@@ -380,6 +380,7 @@
     "OPERATION_NAME": "Nombre de operación",
     "OPERATION_TYPE": "Tipo de operación",
     "PARENT": "Padres",
+    "PARENT_NODE_EUI": "Parent node EUI",
     "PASSWORD": "Contraseña",
     "PATTERN": "Patrón",
     "PAYLOAD": "Capacidad de carga",

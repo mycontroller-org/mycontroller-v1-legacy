@@ -380,6 +380,7 @@
     "OPERATION_NAME": "Nom d'operació",
     "OPERATION_TYPE": "Tipus d'operació",
     "PARENT": "Pare",
+    "PARENT_NODE_EUI": "Parent node EUI",
     "PASSWORD": "Clau",
     "PATTERN": "Patró",
     "PAYLOAD": "Càrrega útil",

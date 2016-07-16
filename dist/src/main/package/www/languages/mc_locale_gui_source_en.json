@@ -380,6 +380,7 @@
   "OPERATION_NAME": "Operation name",
   "OPERATION_TYPE": "Operation type",
   "PARENT": "Parent",
+  "PARENT_NODE_EUI": "Parent node EUI",
   "PASSWORD": "Password",
   "PATTERN": "Pattern",
   "PAYLOAD": "Payload",

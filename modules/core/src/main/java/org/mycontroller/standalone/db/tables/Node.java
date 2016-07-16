@@ -59,7 +59,7 @@ public class Node {
     public static final String KEY_LAST_SEEN = "laseSeen";
     public static final String KEY_RSSI = "rssi";
     public static final String KEY_PROPERTIES = "properties";
-    public static final String KEY_PARENT_ID = "parentId";
+    public static final String KEY_PARENT_NODE_EUI = "parentNodeEui";
     public static final String KEY_REGISTRATION_STATE = "registrationState";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
@@ -106,8 +106,8 @@ public class Node {
     @DatabaseField(canBeNull = true, columnName = KEY_PROPERTIES, dataType = DataType.SERIALIZABLE)
     private HashMap<String, Object> properties;
 
-    @DatabaseField(canBeNull = true, columnName = KEY_PARENT_ID)
-    private String parentId;
+    @DatabaseField(canBeNull = true, columnName = KEY_PARENT_NODE_EUI)
+    private String parentNodeEui;
 
     @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING, columnName = KEY_REGISTRATION_STATE)
     private NODE_REGISTRATION_STATE registrationState = NODE_REGISTRATION_STATE.NEW;

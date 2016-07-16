@@ -40,6 +40,7 @@
                 <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
                 <dt>{{ 'REGISTRATION_STATUS' | translate }}</dt> <dd>{{item.registrationState}}</dd>
                 <dt>{{ 'EUI' | translate }}</dt> <dd>{{item.eui}}</dd>
+                <dt>{{ 'PARENT_NODE_EUI' | translate }}</dt> <dd>{{item.parentNodeEui}}</dd>
                 <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
                 <dt>{{ 'GATEWAY_NAME' | translate }}</dt> <dd>{{item.gateway.name}}</dd>
                 <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.gateway.type}}</dd>
@@ -88,7 +89,7 @@
 
         <!-- custom buttons -->
         <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8">
-          <div class="card-pf card-pf-accented" style="min-height:488px">
+          <div class="card-pf card-pf-accented" style="min-height:350px">
             <div class="card-pf-heading">
               <div ng-if="item.batteryLevel" class="dropdown card-pf-time-frame-filter">
                 <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"

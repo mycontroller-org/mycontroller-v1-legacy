@@ -275,7 +275,7 @@ public class McActionEngine implements IMcActionEngine {
     public void discover(Integer gatewayId) {
         _logger.debug("Sending Node discover");
         //Before start node discover, remove existing map for this gateway
-        DaoUtils.getNodeDao().updateBulk(Node.KEY_PARENT_ID, null, Node.KEY_GATEWAY_ID, gatewayId);
+        DaoUtils.getNodeDao().updateBulk(Node.KEY_PARENT_NODE_EUI, null, Node.KEY_GATEWAY_ID, gatewayId);
         //Send discover broadcast message
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(gatewayId)
