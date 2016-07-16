@@ -31,6 +31,7 @@ import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
 import org.mycontroller.standalone.db.ResourceOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
@@ -146,6 +147,16 @@ public class TypesUtils {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
                         .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
             }
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getNodeRegistrationStatuses() {
+        NODE_REGISTRATION_STATE[] types = NODE_REGISTRATION_STATE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (NODE_REGISTRATION_STATE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
+                    .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
         }
         return typesIdNameMappers;
     }

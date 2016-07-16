@@ -36,6 +36,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
       $scope.controllerSettings = resource;
       $scope.aliveCheckMinutes = $scope.controllerSettings.aliveCheckInterval / 60000;
       $scope.globalPageRefreshTime = $scope.controllerSettings.globalPageRefreshTime / 1000;
+      $scope.executeDiscoverMinutes = $scope.controllerSettings.executeDiscoverInterval / 60000;
     });
   };
 
@@ -78,6 +79,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.saveController = function(){
     $scope.saveProgress.controller = true;
     $scope.controllerSettings.aliveCheckInterval = $scope.aliveCheckMinutes * 60000;
+    $scope.controllerSettings.executeDiscoverInterval = $scope.executeDiscoverMinutes * 60000;
     $scope.controllerSettings.globalPageRefreshTime = $scope.globalPageRefreshTime * 1000;
     SettingsFactory.saveController($scope.controllerSettings,function(response) {
           StatusFactory.getConfig(function(response) {

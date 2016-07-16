@@ -43,6 +43,11 @@ public class NodeAliveStatusJob extends Job {
 
     @Override
     public void doRun() throws JobInterruptException {
+        _logger.debug("Executing 'node alive check' job");
+        if (AppProperties.getInstance().getControllerSettings().getAliveCheckInterval() < McUtils.MINUTE) {
+            //Nothing to do, just return from here
+            return;
+        }
         try {
             this.sendHearbeat();
             long referenceTimestamp = 0;
@@ -63,7 +68,9 @@ public class NodeAliveStatusJob extends Job {
     private void sendHearbeat() {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
         for (Node node : nodes) {
-            McObjectManager.getMcActionEngine().sendAliveStatusRequest(node);
+            if (node.getGatewayTable().getEnabled()) {
+                McObjectManager.getMcActionEngine().sendAliveStatusRequest(node);
+            }
         }
     }
 
@@ -76,7 +83,11 @@ public class NodeAliveStatusJob extends Job {
         for (Node node : nodes) {
             if (node.getLastSeen() == null
                     || node.getLastSeen() <= (System.currentTimeMillis() - aliveCheckInterval)) {
-                node.setState(STATE.DOWN);
+                if (node.getGatewayTable().getEnabled()) {
+                    node.setState(STATE.DOWN);
+                } else {
+                    node.setState(STATE.UNAVAILABLE);
+                }
                 DaoUtils.getNodeDao().update(node);
                 _logger.debug("Node is in not reachable state, Node:[{}]", node);
             }

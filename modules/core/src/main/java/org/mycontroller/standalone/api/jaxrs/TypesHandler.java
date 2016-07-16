@@ -75,6 +75,12 @@ public class TypesHandler extends AccessEngine {
     }
 
     @GET
+    @Path("/nodeRegistrationStatuses")
+    public Response getNodeRegistrationStatuses() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNodeRegistrationStatuses());
+    }
+
+    @GET
     @Path("/resourceTypes")
     public Response getResourceTypes(
             @QueryParam("resourceType") String resourceType,

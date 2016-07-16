@@ -28,6 +28,7 @@ import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.Firmware;
@@ -75,6 +76,19 @@ public class McMessageEngine implements Runnable {
     private McMessage mcMessage;
 
     public McMessageEngine(McMessage mcMessage) {
+        switch (mcMessage.getNetworkType()) {
+            case MY_SENSORS:
+                if (mcMessage.getNodeEui().equals("255")) {
+                    mcMessage.setNodeEui(McMessage.NODE_BROADCAST_ID);
+                }
+                if (mcMessage.getSensorId().equals("255")) {
+                    mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
+                }
+                break;
+            default:
+                //Nothing to do
+                break;
+        }
         this.mcMessage = mcMessage;
     }
 
@@ -97,16 +111,28 @@ public class McMessageEngine implements Runnable {
                 }
                 break;
             case C_SET:
-                this.recordSetTypeData(mcMessage);
+                if (isNodeRegistered(mcMessage)) {
+                    this.recordSetTypeData(mcMessage);
+                } else {
+                    unauthorizedSensor(mcMessage);
+                }
                 break;
             case C_REQ:
-                this.responseReqTypeData(mcMessage);
+                if (isNodeRegistered(mcMessage)) {
+                    this.responseReqTypeData(mcMessage);
+                } else {
+                    unauthorizedSensor(mcMessage);
+                }
                 break;
             case C_INTERNAL:
                 this.internalSubMessageTypeSelector(mcMessage);
                 break;
             case C_STREAM:
-                streamSubMessageTypeSelector(mcMessage);
+                if (isNodeRegistered(mcMessage)) {
+                    streamSubMessageTypeSelector(mcMessage);
+                } else {
+                    unauthorizedSensor(mcMessage);
+                }
                 break;
             default:
                 _logger.warn("Unknown message type, "
@@ -121,6 +147,34 @@ public class McMessageEngine implements Runnable {
                 updateNode(node);
             }
         }
+    }
+
+    private void unauthorizedSensor(McMessage mcMessage) {
+        if (mcMessage.isTxMessage()) {
+            _logger.warn("Message cannot send to unauthorized sensor. {}", mcMessage);
+        } else {
+            _logger.warn("Message received from unauthorized sensor. {}", mcMessage);
+        }
+    }
+
+    private boolean isNodeRegistered(McMessage mcMessage) {
+        Node node = getNode(mcMessage);
+        if (node.getRegistrationState() == NODE_REGISTRATION_STATE.BLOCKED) {
+            return false;
+        } else if (node.getRegistrationState() == NODE_REGISTRATION_STATE.REGISTERED) {
+            return true;
+        } else if (node.getRegistrationState() == NODE_REGISTRATION_STATE.NEW) {
+            if (AppProperties.getInstance().getControllerSettings().getAutoNodeRegistration()) {
+                node.setRegistrationState(NODE_REGISTRATION_STATE.REGISTERED);
+                updateNode(node);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
     }
 
     private void presentationSubMessageTypeSelector(McMessage mcMessage) {
@@ -305,6 +359,50 @@ public class McMessageEngine implements Runnable {
                 node.setState(STATE.UP);
                 updateNode(node);
                 break;
+            case I_DISCOVER:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+            case I_DISCOVER_RESPONSE:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                node = getNode(mcMessage);
+                node.setParentId(mcMessage.getPayload());
+                updateNode(node);
+                break;
+            case I_DEBUG:
+                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+                    this.setSensorOtherData(
+                            LOG_LEVEL.NOTICE,
+                            mcMessage,
+                            MESSAGE_TYPE_PRESENTATION.fromString(mcMessage.getSubType()).getText(),
+                            mcMessage.getPayload());
+                }
+                break;
+            case I_REGISTRATION_REQUEST:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                if (AppProperties.getInstance().getControllerSettings().getAutoNodeRegistration()) {
+                    mcMessage.setAcknowledge(false);
+                    mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_REGISTRATION_RESPONSE.getText());
+                    mcMessage.setScreeningDone(false);
+                    mcMessage.setTxMessage(true);
+                    McMessageUtils.sendToProviderBridge(mcMessage);
+                    _logger.debug("Registration response sent to gateway:{}, node:{}", mcMessage.getGatewayId(),
+                            mcMessage.getNodeEui());
+                }
+                break;
+            case I_REGISTRATION_RESPONSE:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                //TODO: do some action, if controller want to react for this type of message
+            case I_PRESENTATION:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
             default:
                 _logger.warn(
                         "Internal Message[type:{},payload:{}], "
@@ -672,8 +770,15 @@ public class McMessageEngine implements Runnable {
         Node node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());
         if (node == null) {
             _logger.debug("This Node[{}] not available in our DB, Adding...", mcMessage.getNodeEui());
-            node = Node.builder().gatewayTable(GatewayTable.builder().id(mcMessage.getGatewayId()).build())
-                    .eui(mcMessage.getNodeEui()).state(STATE.UP).build();
+            node = Node
+                    .builder()
+                    .gatewayTable(GatewayTable.builder().id(mcMessage.getGatewayId()).build())
+                    .eui(mcMessage.getNodeEui())
+                    .state(STATE.UP)
+                    .registrationState(
+                            AppProperties.getInstance().getControllerSettings().getAutoNodeRegistration()
+                                    ? NODE_REGISTRATION_STATE.REGISTERED : NODE_REGISTRATION_STATE.NEW)
+                    .build();
             node.setLastSeen(System.currentTimeMillis());
             DaoUtils.getNodeDao().create(node);
             node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());

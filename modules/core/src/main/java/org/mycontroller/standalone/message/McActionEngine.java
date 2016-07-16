@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.message;
 
+import java.util.List;
+
 import org.apache.commons.codec.binary.Hex;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -271,11 +273,21 @@ public class McActionEngine implements IMcActionEngine {
 
     @Override
     public void discover(Integer gatewayId) {
-        if (McMessageUtils.isDiscoverRunning(gatewayId)) {
-            throw new RuntimeException("Discover already running! nothing to do..");
-        } else {
-            new Thread(new McNodeDiscover(gatewayId)).start();
-        }
+        _logger.debug("Sending Node discover");
+        //Before start node discover, remove existing map for this gateway
+        DaoUtils.getNodeDao().updateBulk(Node.KEY_PARENT_ID, null, Node.KEY_GATEWAY_ID, gatewayId);
+        //Send discover broadcast message
+        McMessage mcMessage = McMessage.builder()
+                .gatewayId(gatewayId)
+                .nodeEui(McMessage.NODE_BROADCAST_ID)
+                .sensorId(McMessage.SENSOR_BROADCAST_ID)
+                .type(MESSAGE_TYPE.C_INTERNAL)
+                .subType(MESSAGE_TYPE_INTERNAL.I_DISCOVER.getText())
+                .acknowledge(false)
+                .payload(McMessage.PAYLOAD_EMPTY)
+                .isTxMessage(true)
+                .build();
+        McMessageUtils.sendToProviderBridge(mcMessage);
     }
 
     @Override
@@ -322,6 +334,16 @@ public class McActionEngine implements IMcActionEngine {
                 .isTxMessage(true)
                 .build();
         McMessageUtils.sendToProviderBridge(mcMessage);
+    }
+
+    @Override
+    public void updateNodeInformations(Integer gatewayId, List<Integer> nodeIds) {
+        if (gatewayId != null && McMessageUtils.isNodeInfoUpdateRunning(gatewayId)) {
+            //Nothing to do already running
+            return;
+        }
+        //Trigger node info update function
+        new Thread(new McNodeInfoUpdate(gatewayId, nodeIds)).run();
     }
 
 }

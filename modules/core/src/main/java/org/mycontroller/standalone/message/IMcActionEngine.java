@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.message;
 
+import java.util.List;
+
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Node;
@@ -45,6 +47,8 @@ public interface IMcActionEngine {
     void uploadFirmware(Node node);
 
     void discover(Integer gateway);
+
+    void updateNodeInformations(Integer gatewayId, List<Integer> nodeIds);
 
     void sendPayload(SensorVariable sensorVariable);
 

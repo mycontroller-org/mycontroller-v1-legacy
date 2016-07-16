@@ -378,7 +378,7 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
   };
 
   commonService.getSensorIconData = function(key){
-    if(key === undefined){
+    if(key === undefined || key == 'Undefined'){
       key = 'default';
     }
     return $filter('filter')(sensorIcons, {id: key}, true)[0];

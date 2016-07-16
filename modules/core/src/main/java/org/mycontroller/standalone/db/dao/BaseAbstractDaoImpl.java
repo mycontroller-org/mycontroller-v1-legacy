@@ -32,6 +32,7 @@ import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableInfo;
@@ -216,6 +217,32 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Updated item:[{}], Update count:{}", tdao, count);
         } catch (SQLException ex) {
             _logger.error("unable to update item:[{}]", tdao, ex);
+        }
+    }
+
+    //Update items with out where condition
+    public void updateBulk(String setColName, Object setColValue) {
+        this.updateBulk(setColName, setColValue, null, null);
+    }
+
+    //Update items with where condition.
+    public void updateBulk(String setColName, Object setColValue, String whereColName, Object whereColValue) {
+        try {
+            UpdateBuilder<Tdao, Tid> updateBuilder = this.getDao().updateBuilder();
+            updateBuilder.updateColumnValue(setColName, setColValue);
+            if (whereColName != null) {
+                if (whereColValue != null) {
+                    updateBuilder.where().eq(whereColName, whereColValue);
+                } else {
+                    updateBuilder.where().isNull(whereColName);
+                }
+            }
+            Integer updateCount = updateBuilder.update();
+            _logger.debug("Updated column[{}] with value[{}] where column[{}] == value[{}], Updated row count:{}",
+                    setColName, setColValue, whereColName, whereColValue, updateCount);
+        } catch (SQLException ex) {
+            _logger.error("unable to update column[{}] with value[{}] where column[{}] == value[{}]", setColName,
+                    setColValue, whereColName, whereColValue, ex);
         }
     }
 

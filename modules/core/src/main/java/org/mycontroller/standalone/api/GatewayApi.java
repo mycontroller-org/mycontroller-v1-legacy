@@ -129,4 +129,18 @@ public class GatewayApi {
         }
     }
 
+    public void executeNodeInfoUpdate(List<Integer> ids) throws McBadRequestException {
+        try {
+            for (Integer id : ids) {
+                GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(id);
+                if (gatewayTable.getEnabled()) {
+                    McObjectManager.getMcActionEngine().updateNodeInformations(id, null);
+                }
+            }
+
+        } catch (Exception ex) {
+            throw new McBadRequestException(ex.getMessage());
+        }
+    }
+
 }

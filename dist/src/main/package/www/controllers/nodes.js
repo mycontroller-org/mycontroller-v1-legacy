@@ -206,6 +206,17 @@ $scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonS
     }
   };
 
+  //Refresh nodes information
+  $scope.refreshNodesInfo = function (size) {
+    if($scope.itemIds.length > 0){
+      NodesFactory.executeNodeInfoUpdate($scope.itemIds,function(response) {
+        alertService.success($filter('translate')('REFRESH_NODES_INFO_INITIATED_SUCCESSFULLY'));
+      },function(error){
+        displayRestError.display(error);
+      });
+    }
+  };
+
   //Reboot a Node
   $scope.reboot = function (size) {
     var addModalInstance = $uibModal.open({
@@ -264,6 +275,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
   $scope.node.gateway = {};
   $scope.gateways = TypesFactory.getGateways();
   $scope.nodeTypes = TypesFactory.getNodeTypes();
+  $scope.nodeRstatuses = TypesFactory.getNodeRegistrationStatuses();
   $scope.firmwares = TypesFactory.getFirmwares();
 
   //GUI page settings

@@ -25,4 +25,7 @@ public class MC_LOCALE {
     public static final String MINUMUM = "MINIMUM";
     public static final String MAXIMUM = "MAXIMUM";
     public static final String AVERAGE = "AVERAGE";
+    public static final String CORRUPTED_DATA = "CORRUPTED_DATA";
+    public static final String UNDEFINED = "UNDEFINED";
+
 }

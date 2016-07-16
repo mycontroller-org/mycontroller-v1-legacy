@@ -221,11 +221,16 @@ public class MetricsHandler extends AccessEngine {
     @Path("/topology")
     public Response getTopology(
             @QueryParam("resourceType") RESOURCE_TYPE resourceType,
-            @QueryParam("resourceId") Integer resourceId) {
+            @QueryParam("resourceId") Integer resourceId,
+            @QueryParam("realtime") Boolean realtime) {
         HashMap<String, Object> data = new HashMap<String, Object>();
         HashMap<String, TopologyItem> items = new HashMap<String, TopologyItem>();
         List<TopologyRelation> relations = new ArrayList<TopologyRelation>();
         TopologyKinds kinds = TopologyKinds.builder().build();
+
+        if (realtime == null) {
+            realtime = false;
+        }
 
         data.put("items", items);
         data.put("relations", relations);
@@ -235,10 +240,10 @@ public class MetricsHandler extends AccessEngine {
             kinds.update(resourceType);
             switch (resourceType) {
                 case GATEWAY:
-                    updateGatewayTopology(items, relations, resourceId);
+                    updateGatewayTopology(items, relations, resourceId, realtime);
                     break;
                 case NODE:
-                    updateNodeTopology(items, relations, null, resourceId);
+                    updateNodeTopology(items, relations, null, resourceId, realtime);
                     break;
                 case SENSOR:
                     updateSensorTopology(items, relations, null, resourceId);
@@ -248,7 +253,7 @@ public class MetricsHandler extends AccessEngine {
             }
         } else {
             kinds.update(RESOURCE_TYPE.GATEWAY);
-            updateGatewayTopology(items, relations, null);
+            updateGatewayTopology(items, relations, null, realtime);
         }
 
         return RestUtils.getResponse(Status.OK, data);
@@ -256,7 +261,7 @@ public class MetricsHandler extends AccessEngine {
 
     private void updateGatewayTopology(HashMap<String, TopologyItem> items,
             List<TopologyRelation> relations,
-            Integer gatewayId) {
+            Integer gatewayId, boolean realtime) {
         List<GatewayTable> gateways = null;
         if (gatewayId != null) {
             gateways = DaoUtils.getGatewayDao().getAll(Collections.singletonList(gatewayId));
@@ -275,13 +280,13 @@ public class MetricsHandler extends AccessEngine {
                     .status(gateway.getState().getText())
                     .build());
             //Update node topology
-            updateNodeTopology(items, relations, gateway.getId(), null);
+            updateNodeTopology(items, relations, gateway.getId(), null, realtime);
         }
     }
 
     private void updateNodeTopology(HashMap<String, TopologyItem> items,
             List<TopologyRelation> relations,
-            Integer gatewayId, Integer nodeId) {
+            Integer gatewayId, Integer nodeId, boolean realtime) {
         List<Node> nodes = null;
         if (gatewayId != null) {
             nodes = DaoUtils.getNodeDao().getAllByGatewayId(gatewayId);
@@ -298,17 +303,28 @@ public class MetricsHandler extends AccessEngine {
                 nodeName = node.getEui();
             }
             items.put(source, TopologyItem.builder()
-                    .name(node.getName())
+                    .name(nodeName)
                     .id(node.getId())
                     .type(RESOURCE_TYPE.NODE)
                     .kind(TOPOLOGY_KIND_NODE)
                     .status(node.getState().getText())
                     .build());
-            relations.add(TopologyRelation.builder()
-                    .source(source)
-                    .target(TOPOLOGY_PREFIX_GATEWAY + node.getGatewayTable().getId())
-                    .build());
-
+            if (realtime) {
+                if (node.getParentId() != null) {
+                    Node parentNode = DaoUtils.getNodeDao().get(node.getGatewayTable().getId(), node.getParentId());
+                    if (parentNode != null) {
+                        relations.add(TopologyRelation.builder()
+                                .source(source)
+                                .target(TOPOLOGY_PREFIX_NODE + parentNode.getId())
+                                .build());
+                    }
+                }
+            } else {
+                relations.add(TopologyRelation.builder()
+                        .source(source)
+                        .target(TOPOLOGY_PREFIX_GATEWAY + node.getGatewayTable().getId())
+                        .build());
+            }
             updateSensorTopology(items, relations, node.getId(), null);
         }
     }
@@ -331,7 +347,8 @@ public class MetricsHandler extends AccessEngine {
                 subType = LocaleString.builder().en(sensor.getType().getText())
                         .locale(McObjectManager.getMcLocale().getString(sensor.getType().name())).build();
             } else {
-                subType = LocaleString.builder().en("Undefined").locale("Undefined").build();
+                subType = LocaleString.builder().en("Undefined")
+                        .locale(McObjectManager.getMcLocale().getString(MC_LOCALE.UNDEFINED)).build();
             }
             String sensorName = sensor.getName();
             //If sensor name is null, update with sensor type and sensorId

@@ -193,6 +193,19 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
     }
   };
 
+  //Update noe informations
+  $scope.refreshNodesInfo = function () {
+    if($scope.itemIds.length > 0){
+      GatewaysFactory.executeNodeInfoUpdate($scope.itemIds, function(response) {
+        alertService.success($filter('translate')('REFRESH_NODES_INFO_INITIATED_SUCCESSFULLY'));
+        $scope.itemIds = [];
+      },function(error){
+        displayRestError.display(error);
+      });
+    }
+  };
+
+
   //Reload items
   $scope.reload = function () {
     if($scope.itemIds.length > 0){

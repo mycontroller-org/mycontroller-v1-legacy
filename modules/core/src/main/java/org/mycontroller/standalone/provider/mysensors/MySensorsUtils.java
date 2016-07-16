@@ -135,8 +135,8 @@ public class MySensorsUtils {
         I_LOCKED("Locked"),
         I_PING("Ping"),
         I_PONG("Pong"),
-        I_REGISTRATION_REQUEST("Register request"),
-        I_REGISTRATION_RESPONSE("Register response"),
+        I_REGISTRATION_REQUEST("Registration request"),
+        I_REGISTRATION_RESPONSE("Registration response"),
         I_DEBUG("Debug");
         public static MYS_MESSAGE_TYPE_INTERNAL get(int id) {
             for (MYS_MESSAGE_TYPE_INTERNAL type : values()) {

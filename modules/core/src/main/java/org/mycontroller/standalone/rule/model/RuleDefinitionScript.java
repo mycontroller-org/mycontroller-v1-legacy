@@ -71,7 +71,7 @@ public class RuleDefinitionScript extends RuleDefinition {
 
     public HashMap<String, Object> getScriptBindings() {
         if (scriptBindings == null) {
-            return new HashMap<String, Object>();
+            scriptBindings = new HashMap<String, Object>();
         }
         return scriptBindings;
     }
@@ -81,7 +81,7 @@ public class RuleDefinitionScript extends RuleDefinition {
         try {
             StringBuilder builder = new StringBuilder();
             builder.append(super.getConditionType().getText()).append(" [ ");
-            builder.append(scriptFile).append(" <= ").append(scriptBindings).append(" ]");
+            builder.append(scriptFile).append(" <= ").append(getScriptBindings()).append(" ]");
             return builder.toString();
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);

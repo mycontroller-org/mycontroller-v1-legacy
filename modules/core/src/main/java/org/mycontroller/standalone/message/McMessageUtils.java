@@ -42,17 +42,17 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class McMessageUtils {
 
-    private static HashMap<Integer, Boolean> discoverRunning = new HashMap<Integer, Boolean>();
+    private static HashMap<Integer, Boolean> nodeInfoUpdateRunning = new HashMap<Integer, Boolean>();
 
-    public static synchronized boolean isDiscoverRunning(int gatewayId) {
-        if (discoverRunning.get(gatewayId) == null) {
-            discoverRunning.put(gatewayId, false);
+    public static synchronized boolean isNodeInfoUpdateRunning(int gatewayId) {
+        if (nodeInfoUpdateRunning.get(gatewayId) == null) {
+            nodeInfoUpdateRunning.put(gatewayId, false);
         }
-        return discoverRunning.get(gatewayId);
+        return nodeInfoUpdateRunning.get(gatewayId);
     }
 
-    public static synchronized void updateDiscoverRunning(int gatewayId, boolean status) {
-        discoverRunning.put(gatewayId, status);
+    public static synchronized void updateNodeInfoRunningState(int gatewayId, boolean status) {
+        nodeInfoUpdateRunning.put(gatewayId, status);
     }
 
     // Message types
@@ -122,8 +122,8 @@ public class McMessageUtils {
         I_LOCKED("Locked"),
         I_PING("Ping"),
         I_PONG("Pong"),
-        I_REGISTRATION_REQUEST("Register request"),
-        I_REGISTRATION_RESPONSE("Register response"),
+        I_REGISTRATION_REQUEST("Registration request"),
+        I_REGISTRATION_RESPONSE("Registration response"),
         I_DEBUG("Debug");
         public static MESSAGE_TYPE_INTERNAL get(int id) {
             for (MESSAGE_TYPE_INTERNAL type : values()) {
@@ -593,5 +593,4 @@ public class McMessageUtils {
         }
         return McMessage.GATEWAY_NODE_ID;
     }
-
 }

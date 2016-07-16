@@ -44,6 +44,7 @@ myControllerModule.factory('NodesFactory', function ($resource) {
     deleteIds: { method: 'POST', params: {nodeId: 'deleteIds'}},
     reboot: { method: 'POST', params: {nodeId: 'reboot'}},
     eraseConfiguration: { method: 'POST', params: {nodeId: 'eraseConfiguration'}},
+    executeNodeInfoUpdate: { method: 'POST', params: {nodeId: 'executeNodeInfoUpdate'}},
     uploadFirmware: { method: 'POST', params: {nodeId: 'uploadFirmware'}},
   })
 });
@@ -73,6 +74,7 @@ myControllerModule.factory('FirmwaresFactory', function ($resource) {
 myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
     getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
+    getNodeRegistrationStatuses:  { method: 'GET', isArray: true, params: {type: 'nodeRegistrationStatuses'}  },
     getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}},
     getMetricTypes:  { method: 'GET', isArray: true, params: {type: 'metricTypes'}},
     getUnitTypes:  { method: 'GET', isArray: true, params: {type: 'unitTypes'}},
@@ -361,6 +363,7 @@ myControllerModule.factory('GatewaysFactory', function ($resource) {
     disable: { method: 'POST', params: {gatewayId:'disable'} },
     reload: { method: 'POST', params: {gatewayId:'reload'} },
     discover: { method: 'POST', params: {gatewayId:'discover'} },
+    executeNodeInfoUpdate: { method: 'POST', params: {gatewayId:'executeNodeInfoUpdate'} },
   })
 });
 

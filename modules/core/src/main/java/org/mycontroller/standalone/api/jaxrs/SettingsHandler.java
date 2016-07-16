@@ -42,6 +42,7 @@ import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.restclient.pushbullet.model.User;
+import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
@@ -117,6 +118,8 @@ public class SettingsHandler extends AccessEngine {
     public Response saveController(MyControllerSettings myControllerSettings) {
         myControllerSettings.save();
         SettingsUtils.updateAllSettings();
+        //Reload controller jobs
+        SchedulerUtils.reloadControllerJobs();
         //update locale
         McUtils.updateLocale();
         //Update sunriuse and sun set timings
