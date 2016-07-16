@@ -35,6 +35,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
@@ -63,6 +64,7 @@ import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.metrics.MetricDouble;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
 import org.mycontroller.standalone.scripts.McScriptException;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
@@ -318,6 +320,12 @@ public class MetricsHandler extends AccessEngine {
                                 .target(TOPOLOGY_PREFIX_NODE + parentNode.getId())
                                 .build());
                     }
+                } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
+                        && node.getEui().equals(String.valueOf(MySensorsUtils.GATEWAY_ID))) {
+                    relations.add(TopologyRelation.builder()
+                            .source(source)
+                            .target(TOPOLOGY_PREFIX_GATEWAY + node.getGatewayTable().getId())
+                            .build());
                 }
             } else {
                 relations.add(TopologyRelation.builder()
