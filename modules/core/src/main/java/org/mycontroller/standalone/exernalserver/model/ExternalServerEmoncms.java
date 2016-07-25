@@ -83,7 +83,7 @@ public class ExternalServerEmoncms extends ExternalServer {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append("URL: ").append(url)
-                .append(", TrustHost").append(getTrustHostType().getText());
+                .append(", TrustHost: ").append(getTrustHostType().getText());
         return stringBuilder.toString();
     }
 
