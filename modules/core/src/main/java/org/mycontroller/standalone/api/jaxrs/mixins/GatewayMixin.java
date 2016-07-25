@@ -27,7 +27,9 @@ import org.mycontroller.standalone.gateway.GatewayUtils.SERIAL_PORT_DRIVER;
 import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
+import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -104,7 +106,15 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 gatewayMQTT.setPassword(node.get("password").asText());
                 gateway = gatewayMQTT;
                 break;
-
+            case PHANT_IO:
+                GatewayPhantIO gatewayPhantIO = new GatewayPhantIO();
+                gatewayPhantIO.setUrl(node.get("url").asText());
+                gatewayPhantIO.setPublicKey(node.get("publicKey").asText());
+                gatewayPhantIO.setPrivateKey(node.get("privateKey").asText());
+                gatewayPhantIO.setPollFrequency(node.get("pollFrequency").asInt());
+                gatewayPhantIO.setRecordsLimit(node.get("recordsLimit").asLong());
+                gatewayPhantIO.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));
+                gateway = gatewayPhantIO;
             default:
                 break;
         }

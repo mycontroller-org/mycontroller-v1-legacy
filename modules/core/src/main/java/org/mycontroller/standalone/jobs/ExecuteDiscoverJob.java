@@ -22,6 +22,7 @@ import java.util.List;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.GatewayApi;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -50,7 +51,10 @@ public class ExecuteDiscoverJob extends Job {
             List<GatewayTable> gateways = DaoUtils.getGatewayDao().getAllEnabled();
             List<Integer> gatewayIds = new ArrayList<Integer>();
             for (GatewayTable gateway : gateways) {
-                gatewayIds.add(gateway.getId());
+                //For now supports only for mySensors
+                if (gateway.getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+                    gatewayIds.add(gateway.getId());
+                }
             }
             new GatewayApi().executeNodeDiscover(gatewayIds);
         } catch (Exception ex) {

@@ -74,6 +74,8 @@ myControllerModule.factory('FirmwaresFactory', function ($resource) {
 myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
     getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
+    getExternalServerTypes:  { method: 'GET', isArray: true, params: {type: 'externalServerTypes'}  },
+    getTrustHostTypes:  { method: 'GET', isArray: true, params: {type: 'trustHostTypes'}  },
     getNodeRegistrationStatuses:  { method: 'GET', isArray: true, params: {type: 'nodeRegistrationStatuses'}  },
     getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}},
     getMetricTypes:  { method: 'GET', isArray: true, params: {type: 'metricTypes'}},
@@ -85,6 +87,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getResourceTypes:  { method: 'GET', isArray: true, params: {type: 'resourceTypes'} },
     getGateways:  { method: 'GET', isArray: true, params: {type: 'gateways'}  },
     getNodes:  { method: 'GET', isArray: true, params: {type: 'nodes'}  },
+    getExternalServers:  { method: 'GET', isArray: true, params: {type: 'externalServers'}  },
     getSensors:  { method: 'GET', isArray: true, params: {type: 'sensors'} },
     getSensorVariables:  { method: 'GET', isArray: true, params: {type: 'sensorVariables'} },
     getRuleDefinitions:  { method: 'GET', isArray: true, params: {type: 'ruleDefinitions'} },
@@ -465,5 +468,32 @@ myControllerModule.factory('VariablesRepositoryFactory', function ($resource) {
     create: { method: 'POST', params: {pid: null} },
     update: { method: 'PUT', params: {pid: null} },
     deleteIds: { method: 'POST', params: {pid: 'delete'} },
+  })
+});
+
+
+//Resources Data Services
+myControllerModule.factory('ResourcesDataFactory', function ($resource) {
+  return $resource('/mc/rest/resourcesdata/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null}},
+    create: { method: 'POST', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    enableIds: { method: 'POST', params: {id: 'enable'}},
+    disableIds: { method: 'POST', params: {id: 'disable'}},
+    get: { method: 'GET'},
+    update: { method: 'PUT', params: {id: null}},
+  })
+});
+
+//External Server Services
+myControllerModule.factory('ExternalServersFactory', function ($resource) {
+  return $resource('/mc/rest/externalserver/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null}},
+    create: { method: 'POST', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    enableIds: { method: 'POST', params: {id: 'enable'}},
+    disableIds: { method: 'POST', params: {id: 'disable'}},
+    get: { method: 'GET'},
+    update: { method: 'PUT', params: {id: null}},
   })
 });

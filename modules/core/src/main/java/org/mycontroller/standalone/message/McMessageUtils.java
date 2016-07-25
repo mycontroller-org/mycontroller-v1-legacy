@@ -28,6 +28,7 @@ import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
+import org.mycontroller.standalone.provider.phantio.PhantIOProviderBridge;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -512,6 +513,7 @@ public class McMessageUtils {
 
     //Sensor provider bridge
     private static IProviderBridge mySensorsBridge = new MySensorsProviderBridge();
+    private static IProviderBridge phantIOBridge = new PhantIOProviderBridge();
 
     public static synchronized void sendToGateway(RawMessage rawMessage) {
         //Send message to nodes [going out from MyController]
@@ -533,6 +535,9 @@ public class McMessageUtils {
             case MY_SENSORS:
                 mySensorsBridge.executeRawMessage(rawMessage);
                 break;
+            case PHANT_IO:
+                phantIOBridge.executeRawMessage(rawMessage);
+                break;
             default:
                 _logger.warn("Unknown provider: {}", rawMessage.getNetworkType());
                 break;
@@ -551,6 +556,9 @@ public class McMessageUtils {
             case MY_SENSORS:
                 mySensorsBridge.executeMcMessage(mcMessage);
                 break;
+            case PHANT_IO:
+                phantIOBridge.executeMcMessage(mcMessage);
+                break;
             default:
                 _logger.warn("Unknown provider: {}", mcMessage.getNetworkType());
                 break;
@@ -567,6 +575,8 @@ public class McMessageUtils {
         switch (networkType) {
             case MY_SENSORS:
                 return mySensorsBridge.validateNodeId(node);
+            case PHANT_IO:
+                return phantIOBridge.validateNodeId(node);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
@@ -578,6 +588,8 @@ public class McMessageUtils {
         switch (networkType) {
             case MY_SENSORS:
                 return mySensorsBridge.validateSensorId(sensor);
+            case PHANT_IO:
+                return phantIOBridge.validateSensorId(sensor);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;

@@ -18,6 +18,10 @@ package org.mycontroller.standalone.db;
 
 import java.sql.SQLException;
 
+import org.mycontroller.standalone.db.dao.ExternalServerDao;
+import org.mycontroller.standalone.db.dao.ExternalServerDaoImpl;
+import org.mycontroller.standalone.db.dao.ExternalServerResourceMapDao;
+import org.mycontroller.standalone.db.dao.ExternalServerResourceMapDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareDao;
 import org.mycontroller.standalone.db.dao.FirmwareDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareTypeDao;
@@ -44,6 +48,8 @@ import org.mycontroller.standalone.db.dao.OperationRuleDefinitionMapDao;
 import org.mycontroller.standalone.db.dao.OperationRuleDefinitionMapDaoImpl;
 import org.mycontroller.standalone.db.dao.OperationTimerMapDao;
 import org.mycontroller.standalone.db.dao.OperationTimerMapDaoImpl;
+import org.mycontroller.standalone.db.dao.ResourceDao;
+import org.mycontroller.standalone.db.dao.ResourceDaoImpl;
 import org.mycontroller.standalone.db.dao.ResourcesGroupDao;
 import org.mycontroller.standalone.db.dao.ResourcesGroupDaoImpl;
 import org.mycontroller.standalone.db.dao.ResourcesGroupMapDao;
@@ -99,39 +105,42 @@ public class DaoUtils {
 
     private static boolean isDaoInitialized = false;
 
-    private static NodeDao nodeDao = null;
-    private static SensorDao sensorDao = null;
-    private static SensorVariableDao sensorVariableDao = null;
-    private static SettingsDao settingsDao = null;
-    private static UserSettingsDao userSettingsDao = null;
-    private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
-    private static MetricsBinaryTypeDeviceDao metricsBinaryTypeDeviceDao = null;
-    private static MetricsCounterTypeDeviceDao metricsCounterTypeDeviceDao = null;
-    private static SystemJobDao systemJobDao = null;
-    private static UserDao userDao = null;
-    private static RuleDefinitionDao ruleDefinitionDao = null;
-    private static ResourcesLogsDao resourcesLogsDao = null;
-    private static TimerDao timerDao = null;
-    private static ForwardPayloadDao forwardPayloadDao = null;
-    private static UidTagDao uidTagDao = null;
+    private static ExternalServerDao externalServerDao = null;
+    private static ExternalServerResourceMapDao externalServerResourceMapDao = null;
     private static FirmwareDao firmwareDao = null;
     private static FirmwareTypeDao firmwareTypeDao = null;
     private static FirmwareVersionDao firmwareVersionDao = null;
-    private static MetricsBatteryUsageDao metricsBatteryUsageDao = null;
-    private static SensorsVariablesMapDao sensorsVariablesMapDao = null;
+    private static ForwardPayloadDao forwardPayloadDao = null;
     private static GatewayDao gatewayDao = null;
-    private static ResourcesGroupDao resourcesGroupDao = null;
-    private static ResourcesGroupMapDao resourcesGroupMapDao = null;
-    private static RoleDao roleDao = null;
-    private static RoleUserMapDao roleUserMapDao = null;
-    private static RoleGatewayMapDao roleGatewayMapDao = null;
-    private static RoleNodeMapDao roleNodeMapDao = null;
-    private static RoleSensorMapDao roleSensorMapDao = null;
-    private static RoleMqttMapDao roleMqttMapDao = null;
+    private static MetricsBatteryUsageDao metricsBatteryUsageDao = null;
+    private static MetricsBinaryTypeDeviceDao metricsBinaryTypeDeviceDao = null;
+    private static MetricsCounterTypeDeviceDao metricsCounterTypeDeviceDao = null;
+    private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
+    private static NodeDao nodeDao = null;
     private static OperationDao operationDao = null;
     private static OperationRuleDefinitionMapDao operationRuleDefinitionMapDao = null;
     private static OperationTimerMapDao operationTimerMapDao = null;
+    private static ResourceDao resourceDao = null;
+    private static ResourcesGroupDao resourcesGroupDao = null;
+    private static ResourcesGroupMapDao resourcesGroupMapDao = null;
+    private static ResourcesLogsDao resourcesLogsDao = null;
+    private static RoleDao roleDao = null;
+    private static RoleGatewayMapDao roleGatewayMapDao = null;
+    private static RoleMqttMapDao roleMqttMapDao = null;
+    private static RoleNodeMapDao roleNodeMapDao = null;
+    private static RoleSensorMapDao roleSensorMapDao = null;
+    private static RoleUserMapDao roleUserMapDao = null;
     private static RoomDao roomDao = null;
+    private static RuleDefinitionDao ruleDefinitionDao = null;
+    private static SensorDao sensorDao = null;
+    private static SensorsVariablesMapDao sensorsVariablesMapDao = null;
+    private static SensorVariableDao sensorVariableDao = null;
+    private static SettingsDao settingsDao = null;
+    private static SystemJobDao systemJobDao = null;
+    private static TimerDao timerDao = null;
+    private static UidTagDao uidTagDao = null;
+    private static UserDao userDao = null;
+    private static UserSettingsDao userSettingsDao = null;
 
     public static void loadAllDao() {
         if (isDaoInitialized) {
@@ -139,40 +148,42 @@ public class DaoUtils {
             return;
         }
         try {
-            nodeDao = new NodeDaoImpl(DataBaseUtils.getConnectionSource());
-            sensorDao = new SensorDaoImpl(DataBaseUtils.getConnectionSource());
-            sensorVariableDao = new SensorVariableDaoImpl(DataBaseUtils.getConnectionSource());
-            settingsDao = new SettingsDaoImpl(DataBaseUtils.getConnectionSource());
-            metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
-            metricsBinaryTypeDeviceDao = new MetricsBinaryTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
-            metricsCounterTypeDeviceDao = new MetricsCounterTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
-            systemJobDao = new SystemJobDaoImpl(DataBaseUtils.getConnectionSource());
-            userDao = new UserDaoImpl(DataBaseUtils.getConnectionSource());
-            ruleDefinitionDao = new RuleDefinitionDaoImpl(DataBaseUtils.getConnectionSource());
-            resourcesLogsDao = new ResourcesLogsDaoImpl(DataBaseUtils.getConnectionSource());
-            timerDao = new TimerDaoImpl(DataBaseUtils.getConnectionSource());
-            forwardPayloadDao = new ForwardPayloadDaoImpl(DataBaseUtils.getConnectionSource());
-            uidTagDao = new UidTagDaoImpl(DataBaseUtils.getConnectionSource());
+            externalServerDao = new ExternalServerDaoImpl(DataBaseUtils.getConnectionSource());
+            externalServerResourceMapDao = new ExternalServerResourceMapDaoImpl(DataBaseUtils.getConnectionSource());
+            firmwareDao = new FirmwareDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareTypeDao = new FirmwareTypeDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareVersionDao = new FirmwareVersionDaoImpl(DataBaseUtils.getConnectionSource());
-            firmwareDao = new FirmwareDaoImpl(DataBaseUtils.getConnectionSource());
-            metricsBatteryUsageDao = new MetricsBatteryUsageDaoImpl(DataBaseUtils.getConnectionSource());
-            sensorsVariablesMapDao = new SensorsVariablesMapDaoImpl(DataBaseUtils.getConnectionSource());
+            forwardPayloadDao = new ForwardPayloadDaoImpl(DataBaseUtils.getConnectionSource());
             gatewayDao = new GatewayDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsBatteryUsageDao = new MetricsBatteryUsageDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsBinaryTypeDeviceDao = new MetricsBinaryTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsCounterTypeDeviceDao = new MetricsCounterTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
+            nodeDao = new NodeDaoImpl(DataBaseUtils.getConnectionSource());
+            operationDao = new OperationDaoImpl(DataBaseUtils.getConnectionSource());
+            operationRuleDefinitionMapDao = new OperationRuleDefinitionMapDaoImpl(DataBaseUtils.getConnectionSource());
+            operationTimerMapDao = new OperationTimerMapDaoImpl(DataBaseUtils.getConnectionSource());
+            resourceDao = new ResourceDaoImpl(DataBaseUtils.getConnectionSource());
             resourcesGroupDao = new ResourcesGroupDaoImpl(DataBaseUtils.getConnectionSource());
             resourcesGroupMapDao = new ResourcesGroupMapDaoImpl(DataBaseUtils.getConnectionSource());
-            userSettingsDao = new UserSettingsDaoImpl(DataBaseUtils.getConnectionSource());
+            resourcesLogsDao = new ResourcesLogsDaoImpl(DataBaseUtils.getConnectionSource());
             roleDao = new RoleDaoImpl(DataBaseUtils.getConnectionSource());
-            roleUserMapDao = new RoleUserMapDaoImpl(DataBaseUtils.getConnectionSource());
             roleGatewayMapDao = new RoleGatewayMapDaoImpl(DataBaseUtils.getConnectionSource());
+            roleMqttMapDao = new RoleMqttMapDaoImpl(DataBaseUtils.getConnectionSource());
             roleNodeMapDao = new RoleNodeMapDaoImpl(DataBaseUtils.getConnectionSource());
             roleSensorMapDao = new RoleSensorMapDaoImpl(DataBaseUtils.getConnectionSource());
-            roleMqttMapDao = new RoleMqttMapDaoImpl(DataBaseUtils.getConnectionSource());
-            operationDao = new OperationDaoImpl(DataBaseUtils.getConnectionSource());
-            operationRuleDefinitionMapDao = new OperationRuleDefinitionMapDaoImpl(
-                    DataBaseUtils.getConnectionSource());
-            operationTimerMapDao = new OperationTimerMapDaoImpl(DataBaseUtils.getConnectionSource());
+            roleUserMapDao = new RoleUserMapDaoImpl(DataBaseUtils.getConnectionSource());
             roomDao = new RoomDaoImpl(DataBaseUtils.getConnectionSource());
+            ruleDefinitionDao = new RuleDefinitionDaoImpl(DataBaseUtils.getConnectionSource());
+            sensorDao = new SensorDaoImpl(DataBaseUtils.getConnectionSource());
+            sensorsVariablesMapDao = new SensorsVariablesMapDaoImpl(DataBaseUtils.getConnectionSource());
+            sensorVariableDao = new SensorVariableDaoImpl(DataBaseUtils.getConnectionSource());
+            settingsDao = new SettingsDaoImpl(DataBaseUtils.getConnectionSource());
+            systemJobDao = new SystemJobDaoImpl(DataBaseUtils.getConnectionSource());
+            timerDao = new TimerDaoImpl(DataBaseUtils.getConnectionSource());
+            uidTagDao = new UidTagDaoImpl(DataBaseUtils.getConnectionSource());
+            userDao = new UserDaoImpl(DataBaseUtils.getConnectionSource());
+            userSettingsDao = new UserSettingsDaoImpl(DataBaseUtils.getConnectionSource());
             //Initialized dao
             isDaoInitialized = true;
         } catch (SQLException sqlEx) {
@@ -320,6 +331,18 @@ public class DaoUtils {
 
     public static MetricsCounterTypeDeviceDao getMetricsCounterTypeDeviceDao() {
         return metricsCounterTypeDeviceDao;
+    }
+
+    public static ExternalServerDao getExternalServerTableDao() {
+        return externalServerDao;
+    }
+
+    public static ExternalServerResourceMapDao getExternalServerResourceMapDao() {
+        return externalServerResourceMapDao;
+    }
+
+    public static ResourceDao getResourceDao() {
+        return resourceDao;
     }
 
 }

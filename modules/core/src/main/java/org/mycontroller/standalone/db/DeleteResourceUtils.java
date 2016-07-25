@@ -21,6 +21,7 @@ import java.util.List;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Resource;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -81,6 +82,9 @@ public class DeleteResourceUtils {
         DaoUtils.getForwardPayloadDao().delete(ForwardPayload.KEY_SOURCE_ID, sensorVariable.getId());
         DaoUtils.getForwardPayloadDao().delete(ForwardPayload.KEY_DESTINATION_ID, sensorVariable.getId());
 
+        //Delete from resource table
+        deleteResource(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId());
+
         //Delete UID tags
         //TODO: complete this, when UUID is enabled
 
@@ -107,6 +111,9 @@ public class DeleteResourceUtils {
         //Delete from sensor logs
         DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.SENSOR, sensor.getId());
 
+        //Delete from resource table
+        deleteResource(RESOURCE_TYPE.SENSOR, sensor.getId());
+
         //Delete UID tags
         DaoUtils.getUidTagDao().deleteBySensorId(sensor.getId());
 
@@ -126,6 +133,9 @@ public class DeleteResourceUtils {
 
         //Delete AlarmDefinitions
         //deleteAlarmDefinitions(RESOURCE_TYPE.NODE, node.getId());
+
+        //Delete from resource table
+        deleteResource(RESOURCE_TYPE.NODE, node.getId());
 
         //Delete from resources logs
         DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.NODE, node.getId());
@@ -148,6 +158,9 @@ public class DeleteResourceUtils {
 
         //Delete AlarmDefinitions
         // deleteAlarmDefinitions(RESOURCE_TYPE.GATEWAY, id);
+
+        //Delete from resource table
+        deleteResource(RESOURCE_TYPE.GATEWAY, id);
 
         //Delete resources logs
         DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.GATEWAY, id);
@@ -196,6 +209,17 @@ public class DeleteResourceUtils {
     public static synchronized void deleteResourcesGroup(List<Integer> ids) {
         for (Integer id : ids) {
             deleteResourcesGroup(id);
+        }
+    }
+
+    //Delete resource and mappings
+    public static void deleteResource(RESOURCE_TYPE resourceType, Integer resourceId) {
+        Resource resource = DaoUtils.getResourceDao().get(resourceType, resourceId);
+        if (resource != null) {
+            //Delete external server and resource mapping
+            DaoUtils.getExternalServerResourceMapDao().deleteByResourceId(resource.getId());
+            //Delete resource
+            DaoUtils.getResourceDao().delete(resource);
         }
     }
 }

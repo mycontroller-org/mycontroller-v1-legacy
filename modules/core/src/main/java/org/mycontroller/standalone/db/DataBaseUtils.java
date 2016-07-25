@@ -145,7 +145,12 @@ public class DataBaseUtils {
             //After executed migration, reload settings again
             AppProperties.getInstance().loadPropertiesFromDb();
 
-            _logger.info("Number of migrations done:{}", migrationsCount);
+            if (migrationsCount > 0) {
+                _logger.info("Number of migrations done:{}", migrationsCount);
+            } else {
+                _logger.debug("Number of migrations done:{}", migrationsCount);
+            }
+
             _logger.info("Application information: [Version:{}, Database version:{}]",
                     AppProperties.getInstance().getControllerSettings().getVersion(),
                     AppProperties.getInstance().getControllerSettings().getDbVersion());

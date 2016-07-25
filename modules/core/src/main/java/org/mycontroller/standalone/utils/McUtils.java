@@ -334,4 +334,10 @@ public class McUtils {
         return false;
     }
 
+    public static String getString(String value) {
+        if (value != null && value.length() > 0) {
+            return value;
+        }
+        return "-";
+    }
 }

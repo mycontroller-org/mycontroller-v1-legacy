@@ -430,6 +430,34 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('resourcesDataList', {
+      url:"/utilities/resourcesdata/list",
+      templateUrl: "partials/resources-data/resources-data-list.html",
+      controller: "ResourcesDataController",
+       data: {
+        requireLogin: true
+      }
+    }).state('resourcesDataAddEdit', {
+      url:"/utilities/resourcesdata/addedit/:id",
+      templateUrl: "partials/resources-data/resources-data-add-edit.html",
+      controller: "ResourcesDataControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('externalServersList', {
+      url:"/utilities/externalserver/list",
+      templateUrl: "partials/external-servers/external-servers-list.html",
+      controller: "ExternalServerController",
+       data: {
+        requireLogin: true
+      }
+    }).state('externalServersAddEdit', {
+      url:"/utilities/externalserver/addedit/:id",
+      templateUrl: "partials/external-servers/external-server-add-edit.html",
+      controller: "ExternalServersControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
     })
 
     /* Settings */

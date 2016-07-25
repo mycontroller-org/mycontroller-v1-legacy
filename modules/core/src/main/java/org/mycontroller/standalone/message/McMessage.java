@@ -53,6 +53,7 @@ public class McMessage {
     private boolean isTxMessage;
     private NETWORK_TYPE networkType;
     private boolean isScreeningDone = false;
+    private Long timestamp;
 
     public boolean validate() {
         if (gatewayId == null
@@ -63,5 +64,12 @@ public class McMessage {
             return false;
         }
         return true;
+    }
+
+    public long getTimestamp() {
+        if (timestamp == null) {
+            timestamp = System.currentTimeMillis();
+        }
+        return timestamp;
     }
 }

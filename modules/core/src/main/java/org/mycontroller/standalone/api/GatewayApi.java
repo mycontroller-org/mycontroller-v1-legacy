@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
@@ -120,6 +121,11 @@ public class GatewayApi {
             for (Integer id : ids) {
                 GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(id);
                 if (gatewayTable.getEnabled()) {
+                    //If gateway not available, do not send
+                    if (McObjectManager.getGateway(gatewayTable.getId()) == null
+                            || McObjectManager.getGateway(gatewayTable.getId()).getGateway().getState() != STATE.UP) {
+                        return;
+                    }
                     McObjectManager.getMcActionEngine().discover(id);
                 }
             }

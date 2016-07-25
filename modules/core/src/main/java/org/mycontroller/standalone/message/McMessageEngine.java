@@ -43,6 +43,7 @@ import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.NodeIdException;
+import org.mycontroller.standalone.externalserver.ExternalServerEngine;
 import org.mycontroller.standalone.fwpayload.ExecuteForwardPayload;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
@@ -703,7 +704,7 @@ public class McMessageEngine implements Runnable {
                     .sensor(sensor)
                     .variableType(MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()))
                     .value(data)
-                    .timestamp(System.currentTimeMillis())
+                    .timestamp(mcMessage.getTimestamp())
                     .metricType(metricType).build().updateUnitAndMetricType();
             _logger.debug("This SensorVariable:[{}] for Sensor:{}] is not available in our DB, Adding...",
                     sensorVariable, sensor);
@@ -735,7 +736,7 @@ public class McMessageEngine implements Runnable {
                     sensorVariable.setValue(mcMessage.getPayload());
                     break;
             }
-            sensorVariable.setTimestamp(System.currentTimeMillis());
+            sensorVariable.setTimestamp(mcMessage.getTimestamp());
             DaoUtils.getSensorVariableDao().update(sensorVariable);
         }
 
@@ -837,7 +838,7 @@ public class McMessageEngine implements Runnable {
                         .create(MetricsDoubleTypeDevice.builder()
                                 .sensorVariable(sensorVariable)
                                 .aggregationType(AGGREGATION_TYPE.RAW)
-                                .timestamp(System.currentTimeMillis())
+                                .timestamp(sensorVariable.getTimestamp())
                                 .avg(McUtils.getDouble(sensorVariable.getValue()))
                                 .samples(1).build());
 
@@ -846,7 +847,7 @@ public class McMessageEngine implements Runnable {
                 DaoUtils.getMetricsBinaryTypeDeviceDao()
                         .create(MetricsBinaryTypeDevice.builder()
                                 .sensorVariable(sensorVariable)
-                                .timestamp(System.currentTimeMillis())
+                                .timestamp(sensorVariable.getTimestamp())
                                 .state(McUtils.getBoolean(sensorVariable.getValue())).build());
                 break;
             case COUNTER:
@@ -854,7 +855,7 @@ public class McMessageEngine implements Runnable {
                         .create(MetricsCounterTypeDevice.builder()
                                 .sensorVariable(sensorVariable)
                                 .aggregationType(AGGREGATION_TYPE.RAW)
-                                .timestamp(System.currentTimeMillis())
+                                .timestamp(sensorVariable.getTimestamp())
                                 .value(McUtils.getLong(mcMessage.getPayload()))
                                 .samples(1).build());
                 break;
@@ -892,6 +893,9 @@ public class McMessageEngine implements Runnable {
 
         //Execute Rules for this sensor variable
         new Thread(new McRuleEngine(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId())).start();
+
+        //Execute Send Payload to external server
+        new Thread(new ExternalServerEngine(sensorVariable)).start();
 
     }
 

@@ -201,7 +201,8 @@ public class AppProperties {
     }
 
     public enum NETWORK_TYPE {
-        MY_SENSORS("MySensors");
+        MY_SENSORS("MySensors"),
+        PHANT_IO("Sparkfun [phant.io]");
 
         private final String type;
 

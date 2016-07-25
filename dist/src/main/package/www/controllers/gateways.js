@@ -248,15 +248,20 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
 });
 
 
-myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService, $filter, CommonServices) {
+myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService, $filter, CommonServices, displayRestError) {
   $scope.gateway = {};
   $scope.gateway.enabled = true;
+  $scope.gatewayTypes = {};
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
-  $scope.gatewayTypes = TypesFactory.getGatewayTypes();
   $scope.cs = CommonServices;
 
   if($stateParams.id){
-    $scope.gateway = GatewaysFactory.get({"gatewayId":$stateParams.id});
+    GatewaysFactory.get({"gatewayId":$stateParams.id}, function(response){
+      $scope.gateway = response;
+      $scope.updateGatewayTypes();
+    },function(error){
+        displayRestError.display(error);
+    });
   }
 
   $scope.gatewaySerialDrivers = TypesFactory.getGatewaySerialDrivers();
@@ -278,6 +283,12 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.gateway.topicsSubscribe='';
       $scope.gateway.username='';
       $scope.gateway.password='';
+    }else if($scope.gateway.type === 'Sparkfun [phant.io]'){
+      $scope.gateway.url='https://data.sparkfun.com';
+      $scope.gateway.publicKey='';
+      $scope.gateway.privateKey='';
+      $scope.gateway.pollFrequency='1';
+      $scope.gateway.recordsLimit='10';
     }
   };
 
@@ -288,6 +299,11 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   $scope.cancelButtonState = "gatewaysList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
+
+  // Update gateway types
+  $scope.updateGatewayTypes = function(){
+    $scope.gatewayTypes = TypesFactory.getGatewayTypes({"networkType": $scope.gateway.networkType});
+  }
 
   $scope.save = function(){
       $scope.saveProgress = true;

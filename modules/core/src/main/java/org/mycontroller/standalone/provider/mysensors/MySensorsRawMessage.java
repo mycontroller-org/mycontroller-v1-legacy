@@ -59,11 +59,11 @@ public class MySensorsRawMessage {
         isTxMessage = rawMessage.isTxMessage();
         switch (McObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getType()) {
             case MQTT:
-                updateMQTTMessage(rawMessage.getSubData(), rawMessage.getData());
+                updateMQTTMessage(rawMessage.getSubData(), (String)rawMessage.getData());
                 break;
             case ETHERNET:
             case SERIAL:
-                updateSerialMessage(rawMessage.getData());
+                updateSerialMessage((String)rawMessage.getData());
                 break;
             default:
                 _logger.warn(
