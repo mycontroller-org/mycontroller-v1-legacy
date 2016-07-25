@@ -20,7 +20,9 @@ import java.util.HashMap;
 
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
+import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -36,6 +38,7 @@ import lombok.ToString;
 @ToString(callSuper = true, exclude = { "privateKey" })
 public class GatewayPhantIO extends Gateway {
     public static final String KEY_URL = "url";
+    public static final String KEY_TRUST_HOST_TYPE = "trustHostType";
     public static final String KEY_PUBLIC_KEY = "publicKey";
     public static final String KEY_PRIVATE_KEY = "privateKey";
     public static final String KEY_POLL_FREQUENCY = "pollFrequency";
@@ -43,6 +46,7 @@ public class GatewayPhantIO extends Gateway {
     public static final String KEY_LAST_UPDATE = "lastUpdate";
 
     private String url;
+    private TRUST_HOST_TYPE trustHostType;
     private String publicKey;
     private String privateKey;
     private Integer pollFrequency;
@@ -63,6 +67,7 @@ public class GatewayPhantIO extends Gateway {
         GatewayTable gatewayTable = super.getGatewayTable();
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(KEY_URL, url);
+        properties.put(KEY_TRUST_HOST_TYPE, trustHostType.getText());
         properties.put(KEY_PUBLIC_KEY, publicKey);
         properties.put(KEY_PRIVATE_KEY, privateKey);
         properties.put(KEY_POLL_FREQUENCY, pollFrequency);
@@ -77,6 +82,8 @@ public class GatewayPhantIO extends Gateway {
     public void updateGateway(GatewayTable gatewayTable) {
         super.updateGateway(gatewayTable);
         url = (String) gatewayTable.getProperties().get(KEY_URL);
+        trustHostType = TRUST_HOST_TYPE.fromString((String) gatewayTable.getProperties().get(
+                KEY_TRUST_HOST_TYPE));
         publicKey = (String) gatewayTable.getProperties().get(KEY_PUBLIC_KEY);
         privateKey = (String) gatewayTable.getProperties().get(KEY_PRIVATE_KEY);
         pollFrequency = (Integer) gatewayTable.getProperties().get(KEY_POLL_FREQUENCY);
@@ -97,5 +104,10 @@ public class GatewayPhantIO extends Gateway {
     public void updateLastPollTime(long timestamp) {
         lastUpdate = timestamp;
         DaoUtils.getGatewayDao().update(getGatewayTable());
+    }
+
+    @JsonGetter("trustHostType")
+    private String getTrustHost() {
+        return getTrustHostType().getText();
     }
 }

@@ -29,6 +29,7 @@ import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
+import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -109,6 +110,7 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
             case PHANT_IO:
                 GatewayPhantIO gatewayPhantIO = new GatewayPhantIO();
                 gatewayPhantIO.setUrl(node.get("url").asText());
+                gatewayPhantIO.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
                 gatewayPhantIO.setPublicKey(node.get("publicKey").asText());
                 if (node.get("privateKey") != null) {
                     gatewayPhantIO.setPrivateKey(node.get("privateKey").asText());

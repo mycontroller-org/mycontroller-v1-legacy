@@ -252,6 +252,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   $scope.gateway = {};
   $scope.gateway.enabled = true;
   $scope.gatewayTypes = {};
+  $scope.trustHostTypes = TypesFactory.getTrustHostTypes();
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
   $scope.cs = CommonServices;
 
@@ -289,6 +290,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.gateway.privateKey='';
       $scope.gateway.pollFrequency='1';
       $scope.gateway.recordsLimit='10';
+      $scope.gateway.trustHostType='';
     }
   };
 

@@ -26,7 +26,6 @@ import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
 import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.restclient.phantio.PhantIOClient;
 import org.mycontroller.standalone.restclient.phantio.PhantIOClientImpl;
 import org.mycontroller.standalone.restclient.phantio.model.PostResponse;
@@ -53,7 +52,7 @@ public class PhantIOGatewayPoller implements Runnable {
                 gateway.getUrl(),
                 gateway.getPublicKey(),
                 gateway.getPrivateKey(),
-                TRUST_HOST_TYPE.DEFAULT);
+                gateway.getTrustHostType());
     }
 
     @Override

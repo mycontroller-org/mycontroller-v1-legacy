@@ -39,8 +39,8 @@ public class PhantIOGatewayImpl implements IGateway {
         try {
             phantIOGatewayPoller = new PhantIOGatewayPoller(gateway);
             new Thread(phantIOGatewayPoller).start();
-            _logger.info("Connected successfully with phantIOGatewayPoller[{}, PublicKey:{}]",
-                    gateway.getUrl(), gateway.getPublicKey());
+            _logger.info("Connected successfully with phantIOGatewayPoller[{}, PublicKey:{}, TrustHostType:{}]",
+                    gateway.getUrl(), gateway.getPublicKey(), gateway.getTrustHostType().getText());
             gateway.setStatus(STATE.UP, "Connected Successfully");
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
