@@ -16,7 +16,6 @@
  */
 package org.mycontroller.standalone.gateway.model;
 
-import java.util.Date;
 import java.util.HashMap;
 
 import org.mycontroller.standalone.db.DaoUtils;
@@ -34,7 +33,7 @@ import lombok.ToString;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = { "privateKey" })
 public class GatewayPhantIO extends Gateway {
     public static final String KEY_URL = "url";
     public static final String KEY_PUBLIC_KEY = "publicKey";
@@ -92,7 +91,6 @@ public class GatewayPhantIO extends Gateway {
         builder.append(", PublicKey:").append(getPublicKey());
         builder.append(", PollFrequency:").append(getPollFrequency());
         builder.append(", RecordLimit:").append(getRecordsLimit());
-        builder.append(", LastUpdate:").append(getLastUpdate() == null ? "-" : new Date(getLastUpdate()));
         return builder.toString();
     }
 

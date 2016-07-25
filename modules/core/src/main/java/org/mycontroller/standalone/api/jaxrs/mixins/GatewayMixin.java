@@ -110,7 +110,9 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 GatewayPhantIO gatewayPhantIO = new GatewayPhantIO();
                 gatewayPhantIO.setUrl(node.get("url").asText());
                 gatewayPhantIO.setPublicKey(node.get("publicKey").asText());
-                gatewayPhantIO.setPrivateKey(node.get("privateKey").asText());
+                if (node.get("privateKey") != null) {
+                    gatewayPhantIO.setPrivateKey(node.get("privateKey").asText());
+                }
                 gatewayPhantIO.setPollFrequency(node.get("pollFrequency").asInt());
                 gatewayPhantIO.setRecordsLimit(node.get("recordsLimit").asLong());
                 gatewayPhantIO.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));

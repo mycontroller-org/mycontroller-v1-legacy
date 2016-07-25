@@ -122,18 +122,21 @@ public class PhantIOGatewayPoller implements Runnable {
     }
 
     public void write(RawMessage rawMessage) {
-        _logger.debug("Send data: {}, {}", this.gateway, rawMessage);
-        @SuppressWarnings("unchecked")
-        List<String> data = (List<String>) rawMessage.getData();
-        if (data.size() == 2) {
-            ClientResponse<PostResponse> clientResponse = phantIOClient.post(data.get(0), data.get(1));
-            if (!clientResponse.isSuccess()) {
-                _logger.error("Failed to send data:{}, {}, {}", rawMessage, this.gateway, clientResponse);
+        if (gateway.getPrivateKey() != null && gateway.getPrivateKey().length() > 0) {
+            _logger.debug("Send data: {}, {}", this.gateway, rawMessage);
+            @SuppressWarnings("unchecked")
+            List<String> data = (List<String>) rawMessage.getData();
+            if (data.size() == 2) {
+                ClientResponse<PostResponse> clientResponse = phantIOClient.post(data.get(0), data.get(1));
+                if (!clientResponse.isSuccess()) {
+                    _logger.error("Failed to send data:{}, {}, {}", rawMessage, this.gateway, clientResponse);
+                }
+            } else {
+                _logger.error("data array size should be exactly 2, data:{}", data);
             }
         } else {
-            _logger.error("data array size should be exactly 2, data:{}", data);
+            _logger.warn("Private key not set for this {}", gateway);
         }
-
     }
 
     public GatewayPhantIO getGateway() {
