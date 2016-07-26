@@ -21,7 +21,7 @@ import java.util.HashMap;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.operation.OperationNotification;
+import org.mycontroller.standalone.operation.Notification;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 
@@ -94,17 +94,17 @@ public class OperationSendPushbulletNote extends Operation {
             return;
         }
         try {
-            OperationNotification operationNotification = new OperationNotification(ruleDefinition);
+            Notification notification = new Notification(ruleDefinition);
             if (body != null && body.trim().length() > 0) {
                 PushbulletUtils.sendNote(
                         idens,
-                        operationNotification.updateReferances(title),
-                        operationNotification.updateReferances(body));
+                        Notification.updateTemplate(notification, title),
+                        Notification.updateTemplate(notification, body));
             } else {
                 PushbulletUtils.sendNote(
                         idens,
-                        operationNotification.updateReferances(title),
-                        operationNotification.toString());
+                        Notification.updateTemplate(notification, title),
+                        notification.toString());
             }
         } catch (Exception ex) {
             _logger.error("Exception,", ex);

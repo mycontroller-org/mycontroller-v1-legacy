@@ -16,9 +16,9 @@
  */
 package org.mycontroller.standalone.rule;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThresholdRange;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,17 +46,15 @@ public class McConditionThresholdRange extends McRuleBase {
         boolean triggerOperation = false;
         //Update current value
         try {
-            actualValue = super.getResourceValue(rdThRange.getResourceType(), rdThRange.getResourceId());
+            setActualValue(super.getResourceValue(rdThRange.getResourceType(), rdThRange.getResourceId()));
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
 
-        Double avDouble = McUtils.getDouble(actualValue);
+        Double avDouble = McUtils.getDouble(getActualValue());
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Actual value:{}", actualValue);
-        }
+        _logger.debug("Actual value:{}", getActualValue());
 
         if (rdThRange.isIncludeOperatorLow() && rdThRange.isIncludeOperatorHigh()) {
             if (avDouble >= rdThRange.getThresholdLow() && avDouble <= rdThRange.getThresholdHigh()) {
@@ -96,9 +94,7 @@ public class McConditionThresholdRange extends McRuleBase {
             return false;
         }
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

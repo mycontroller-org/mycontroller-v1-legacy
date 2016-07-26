@@ -19,6 +19,7 @@ package org.mycontroller.standalone.api.jaxrs.json;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.auth.McCrypt;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Role;
 import org.mycontroller.standalone.db.tables.RoleUserMap;
@@ -62,11 +63,14 @@ public class UserJson {
             if (user.getPassword() == null) {
                 User userOld = DaoUtils.getUserDao().get(user);
                 user.setPassword(userOld.getPassword());
+            } else {
+                user.setPassword(McCrypt.encrypt(user.getPassword()));
             }
             removeMapping(user.getId());
             //Update user
             DaoUtils.getUserDao().update(user);
         } else {
+            user.setPassword(McCrypt.encrypt(user.getPassword()));
             DaoUtils.getUserDao().create(user);
         }
 
@@ -91,8 +95,10 @@ public class UserJson {
                     || user.getPassword().length() == 0 || currentPassword.length() == 0) {
                 user.setPassword(userOld.getPassword());
             } else if (user.getPassword() != null && currentPassword != null) {
-                if (!userOld.getPassword().equals(currentPassword)) {
+                if (!McCrypt.decrypt(userOld.getPassword()).equals(currentPassword)) {
                     throw new IllegalAccessError("Incorrect current password!");
+                }else{
+                    user.setPassword(McCrypt.encrypt(user.getPassword()));
                 }
             }
             //Update user

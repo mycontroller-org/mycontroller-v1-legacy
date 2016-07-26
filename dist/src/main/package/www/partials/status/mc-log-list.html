@@ -27,9 +27,10 @@
     <!-- Page Header -->
     <div ng-include src="'partials/common-html/header-list.html'"></div>
 
+     <div class="btn-toolbar" style="margin-bottom: 10px;">
     <!-- buttons -->
-    <div style="margin-bottom: 10px;">
-        <button class="btn btn-default" ng-click="refreshLogs()" type="button" uib-tooltip="{{ 'REFRESH' | translate }}" tooltip-placement="top"><i class="fa fa-refresh"></i></button>
+        <button class="btn btn-default pull-right" ng-click="refreshLogs()" type="button">
+          <i class="fa fa-refresh"></i> {{ 'REFRESH' | translate }}</button>
     </div>
 
     <!--

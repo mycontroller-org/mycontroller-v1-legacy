@@ -22,11 +22,11 @@ import java.net.Socket;
 
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.gateway.GatewayException;
 import org.mycontroller.standalone.gateway.IGateway.GATEWAY_STATUS;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.message.RawMessage;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

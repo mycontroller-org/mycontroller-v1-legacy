@@ -22,11 +22,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -37,14 +38,10 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.api.jaxrs.json.About;
+import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.utils.McServerFileUtils;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
-import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
-import org.mycontroller.standalone.message.RawMessageQueue;
-import org.mycontroller.standalone.provider.mysensors.MySensorsRawMessage;
+import org.mycontroller.standalone.utils.McServerFileUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -57,6 +54,8 @@ import org.mycontroller.standalone.provider.mysensors.MySensorsRawMessage;
 @RolesAllowed({ "User" })
 public class MyControllerHandler extends AccessEngine {
 
+    SystemApi systemApi = new SystemApi();
+
     @GET
     @Path("/ping")
     public Response ping() {
@@ -65,20 +64,23 @@ public class MyControllerHandler extends AccessEngine {
 
     @GET
     @Path("/timestamp")
-    public Response timestamp() {
-        return RestUtils.getResponse(Status.OK, "{\"timestamp\":" + System.currentTimeMillis() + "}");
-    }
-
-    @GET
-    @Path("/time")
     public Response time() {
-        return RestUtils.getResponse(Status.OK, "{\"time\":" + new Date().toString() + "}");
+        HashMap<String, Object> responseObject = new HashMap<String, Object>();
+        responseObject.put("timestamp", System.currentTimeMillis());
+        responseObject.put("time", new Date().toString());
+        return RestUtils.getResponse(Status.OK, responseObject);
     }
 
     @GET
-    @Path("/about")
+    @Path("/guiSettings")
     public Response about() {
-        return RestUtils.getResponse(Status.OK, new About());
+        return RestUtils.getResponse(Status.OK, systemApi.getGuiSettings());
+    }
+
+    @GET
+    @Path("/mcAbout")
+    public Response getMcAbout() {
+        return RestUtils.getResponse(Status.OK, systemApi.getAbout());
     }
 
     @RolesAllowed({ "Admin" })
@@ -137,32 +139,26 @@ public class MyControllerHandler extends AccessEngine {
     @GET
     @Path("/osStatus")
     public Response getOsStatus() {
-        return RestUtils.getResponse(Status.OK, new StatusOS());
+        return RestUtils.getResponse(Status.OK, systemApi.getOS());
     }
 
     @GET
     @Path("/jvmStatus")
     public Response getJvmStatus() {
-        return RestUtils.getResponse(Status.OK, new StatusJVM());
+        return RestUtils.getResponse(Status.OK, systemApi.getJVM());
     }
 
-    //TODO: remove this method, no longer in use
     @GET
-    @Path("/gatewayInfo")
-    public Response serialport() {
-        return RestUtils.getResponse(Status.OK, null);
+    @Path("/scriptEngines")
+    public Response getScriptEngines() {
+        return RestUtils.getResponse(Status.OK, systemApi.getScriptEngines());
     }
 
-    @POST
-    @Path("/sendRawMessage")
-    public Response sendRawMessage(MySensorsRawMessage mySensorsRawMessage) {
-        try {
-            mySensorsRawMessage.setTxMessage(true);
-            RawMessageQueue.getInstance().putMessage(mySensorsRawMessage.getRawMessage());
-            return RestUtils.getResponse(Status.OK);
-        } catch (Exception ex) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
-        }
+    @RolesAllowed({ "Admin" })
+    @PUT
+    @Path("/runGarbageCollection")
+    public Response runGarbageCollection() {
+        systemApi.runGarbageCollection();
+        return RestUtils.getResponse(Status.OK, systemApi.getJVM());
     }
-
 }

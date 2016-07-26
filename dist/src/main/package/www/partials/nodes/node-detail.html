@@ -31,14 +31,16 @@
       <div class="row row-cards-pf"> <!-- row-details -->
 
         <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
-          <div class="card-pf card-pf-utilization card-pf-accented"  style="min-height:450px">
+          <div class="card-pf card-pf-utilization card-pf-accented"  style="min-height:488px">
             <div class="card-pf-heading">
               <h2 class="card-pf-title">{{ 'DETAILS' | translate }} <a class="btn btn-link pull-right" ui-sref="nodesAddEdit({ id: item.id })"><i class="fa fa-edit"></i> {{ 'EDIT' | translate }} </a></h2>
             </div>
             <div class="card-pf-body">
               <dl class="dl-horizontal">
                 <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
+                <dt>{{ 'REGISTRATION_STATUS' | translate }}</dt> <dd>{{item.registrationState}}</dd>
                 <dt>{{ 'EUI' | translate }}</dt> <dd>{{item.eui}}</dd>
+                <dt>{{ 'PARENT_NODE_EUI' | translate }}</dt> <dd>{{item.parentNodeEui}}</dd>
                 <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
                 <dt>{{ 'GATEWAY_NAME' | translate }}</dt> <dd>{{item.gateway.name}}</dd>
                 <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.gateway.type}}</dd>
@@ -67,17 +69,18 @@
                 </dd>
                 <dt>{{ 'FIRMWARE' | translate }}</dt> <dd>{{item.firmware.firmwareName}}</dd>
                 <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.lastSeen"></span></dd>
+                <dt>{{ 'TOPOLOGY' | translate }}</dt> <dd><a class="mc-inline-editer-ab" ui-sref="dashboardTopology({ resourceType: 'Node', resourceId: item.id})"><span class="pficon pficon-topology mc-icon-lg"></span></a></dd>
 
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
                 <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt>
                 <dd>
-                  <a  ng-hide="resourceCount.sensors == 0" ui-sref="sensorsList({ nodeId: item.id})">{{resourceCount.sensors}}</a>
-                  <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.sensors > 0" ui-sref="sensorsList({ nodeId: item.id})">{{resourceCount.sensors}}</a>
+                  <span ng-if="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
                 </dd>
                 <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
                 <dd>
-                  <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
-                  <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.resourcesGroups > 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
+                  <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
                 </dd>
               </dl>
             </div>
@@ -86,9 +89,9 @@
 
         <!-- custom buttons -->
         <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8">
-          <div class="card-pf card-pf-accented" style="min-height:450px">
+          <div class="card-pf card-pf-accented" style="min-height:350px">
             <div class="card-pf-heading">
-              <div ng-show="item.batteryLevel" class="dropdown card-pf-time-frame-filter">
+              <div ng-if="item.batteryLevel" class="dropdown card-pf-time-frame-filter">
                 <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"
                     switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="" switch-label-width="70px"
                     switch-label="{{ 'MIN_MAX' | translate }}" ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}" >
@@ -107,7 +110,7 @@
               <h2 class="card-pf-title"><i class="fa fa-battery-full"></i> {{ 'BATTERY_USAGE' | translate }}</h2>
             </div>
             <div class="card-pf-body">
-              <div class="blank-slate-pf" ng-hide="item.batteryLevel">
+              <div class="blank-slate-pf" ng-if="!item.batteryLevel">
                 <div class="blank-slate-pf-icon">
                   <i class="fa fa-exclamation-triangle"></i>
                 </div>

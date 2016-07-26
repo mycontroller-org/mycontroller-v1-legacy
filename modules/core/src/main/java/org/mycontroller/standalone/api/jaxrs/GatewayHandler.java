@@ -39,7 +39,6 @@ import org.mycontroller.standalone.api.GatewayApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -99,21 +98,18 @@ public class GatewayHandler extends AccessEngine {
         filters.put(GatewayTable.KEY_TYPE, GATEWAY_TYPE.fromString(type));
         filters.put(GatewayTable.KEY_STATE, STATE.fromString(state));
 
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
         //Add id filter if he is non-admin
         if (!AuthUtils.isSuperAdmin(securityContext)) {
             filters.put(GatewayTable.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds());
         }
 
-        QueryResponse queryResponse = gatewayApi.getAllRaw(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : GatewayTable.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        return RestUtils.getResponse(Status.OK, gatewayApi.getAllRaw(filters));
     }
 
     @POST
@@ -157,6 +153,19 @@ public class GatewayHandler extends AccessEngine {
             return RestUtils.getResponse(Status.OK,
                     ApiMessage.builder().message("Node Discover util started successfully").build());
 
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @POST
+    @Path("/executeNodeInfoUpdate")
+    public Response executeNodeInfoUpdate(List<Integer> ids) {
+        updateGatewayIds(ids);
+        try {
+            gatewayApi.executeNodeInfoUpdate(ids);
+            return RestUtils.getResponse(Status.OK,
+                    ApiMessage.builder().message("'Node info refresh' util started successfully").build());
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }

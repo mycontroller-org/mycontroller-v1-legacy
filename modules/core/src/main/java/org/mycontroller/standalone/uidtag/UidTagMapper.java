@@ -16,73 +16,47 @@
  */
 package org.mycontroller.standalone.uidtag;
 
-import org.mycontroller.standalone.db.tables.UidTag;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.mycontroller.standalone.provider.mysensors.structs.UidTagStruct;
+import org.mycontroller.standalone.uidtag.UidTagUtils.UIDQ_TYPE;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@ToString
+@Data
+@Builder
 public class UidTagMapper {
-    private boolean query;
     private Integer uid;
+    private UIDQ_TYPE type;
     private String payload;
 
-    public UidTagMapper() {
+    public static UidTagMapper get(String payload) throws DecoderException {
+        UidTagStruct uidTagStruct = new UidTagStruct();
+        uidTagStruct.setByteBuffer(
+                ByteBuffer.wrap(Hex.decodeHex(payload.toCharArray()))
+                        .order(ByteOrder.LITTLE_ENDIAN), 0);
+        return UidTagMapper.builder()
+                .uid(uidTagStruct.getPayload())
+                .type(UIDQ_TYPE.get(uidTagStruct.getType()))
+                .payload(String.valueOf(uidTagStruct.getPayload()))
+                .build();
     }
 
-    public UidTagMapper(String uidString) {
-        //Change this while change splitter value, if required
-        String[] uidArray = uidString.split("\\" + UidTag.SPLITER);
-        if (uidArray.length != 4) {
-            throw new IllegalArgumentException("uidString should have exactly four values with spliter["
-                    + UidTag.SPLITER + "], received: " + uidString);
-        } else {
-            //Update query or response message
-            uid = Integer.valueOf(uidArray[1].trim());
-            query = uidArray[2].trim().equalsIgnoreCase("0") ? true : false;
-            payload = uidArray[3].trim();
-        }
-    }
-
-    public UidTagMapper(boolean request, Integer uid, String payload) {
-        this.query = request;
-        this.uid = uid;
-        this.payload = payload;
-    }
-
-    public String getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
-
-    public boolean isQuery() {
-        return query;
-    }
-
-    public void setQuery(boolean request) {
-        this.query = request;
-    }
-
-    public Integer getUid() {
-        return uid;
-    }
-
-    public void setUid(Integer uid) {
-        this.uid = uid;
-    }
-
-    public String getUidTagRawMessage() {
-        StringBuilder builder = new StringBuilder(UidTag.STARTS_WITH);
-        /*builder.append(UidTag.SPLITER).append(uid);
-        builder.append(UidTag.SPLITER).append(isQuery() ? "0" : "1");
-        builder.append(UidTag.SPLITER).append(payload);*/
-        builder.append(",").append(uid);
-        builder.append(",").append(isQuery() ? "0" : "1");
-        builder.append(",").append(payload);
-
-        return builder.toString();
+    public String getStructString(){
+        UidTagStruct uidTagStruct = new UidTagStruct();
+        uidTagStruct.setUid(uid);
+        uidTagStruct.setType(type.ordinal());
+        uidTagStruct.setPayload(Integer.valueOf(payload));
+        return Hex.encodeHexString(uidTagStruct.getByteBuffer().array());
     }
 }

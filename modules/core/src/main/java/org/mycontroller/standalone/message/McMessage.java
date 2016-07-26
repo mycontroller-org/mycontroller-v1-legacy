@@ -45,7 +45,7 @@ public class McMessage {
     @NonNull
     private Integer gatewayId;
     private String nodeEui;
-    private String SensorId;
+    private String sensorId;
     private MESSAGE_TYPE type;
     private String subType;
     private boolean acknowledge;
@@ -53,4 +53,23 @@ public class McMessage {
     private boolean isTxMessage;
     private NETWORK_TYPE networkType;
     private boolean isScreeningDone = false;
+    private Long timestamp;
+
+    public boolean validate() {
+        if (gatewayId == null
+                || nodeEui == null
+                || sensorId == null
+                || type == null
+                || subType == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public long getTimestamp() {
+        if (timestamp == null) {
+            timestamp = System.currentTimeMillis();
+        }
+        return timestamp;
+    }
 }

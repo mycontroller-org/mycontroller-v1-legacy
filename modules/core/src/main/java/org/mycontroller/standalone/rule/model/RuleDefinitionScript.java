@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,14 +36,13 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
+@NoArgsConstructor
 public class RuleDefinitionScript extends RuleDefinition {
     public static final String KEY_SCRIPT_FILE = "scriptFile";
+    public static final String KEY_SCRIPT_BINDINGS = "scriptBindings";
 
     private String scriptFile;
-
-    public RuleDefinitionScript() {
-
-    }
+    private HashMap<String, Object> scriptBindings;
 
     public RuleDefinitionScript(RuleDefinitionTable ruleDefinitionTable) {
         updateRuleDefinition(ruleDefinitionTable);
@@ -54,15 +54,26 @@ public class RuleDefinitionScript extends RuleDefinition {
         RuleDefinitionTable ruleDefinitionTable = super.getRuleDefinitionTable();
         HashMap<String, Object> conditionProperties = new HashMap<String, Object>();
         conditionProperties.put(KEY_SCRIPT_FILE, scriptFile);
+        conditionProperties.put(KEY_SCRIPT_BINDINGS, scriptBindings);
         ruleDefinitionTable.setConditionProperties(conditionProperties);
         return ruleDefinitionTable;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @JsonIgnore
     public void updateRuleDefinition(RuleDefinitionTable ruleDefinitionTable) {
         super.updateRuleDefinition(ruleDefinitionTable);
         scriptFile = (String) ruleDefinitionTable.getConditionProperties().get(KEY_SCRIPT_FILE);
+        scriptBindings = (HashMap<String, Object>) ruleDefinitionTable.getConditionProperties().get(
+                KEY_SCRIPT_BINDINGS);
+    }
+
+    public HashMap<String, Object> getScriptBindings() {
+        if (scriptBindings == null) {
+            scriptBindings = new HashMap<String, Object>();
+        }
+        return scriptBindings;
     }
 
     @Override
@@ -70,7 +81,7 @@ public class RuleDefinitionScript extends RuleDefinition {
         try {
             StringBuilder builder = new StringBuilder();
             builder.append(super.getConditionType().getText()).append(" [ ");
-            builder.append(scriptFile).append(" ]");
+            builder.append(scriptFile).append(" <= ").append(getScriptBindings()).append(" ]");
             return builder.toString();
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);

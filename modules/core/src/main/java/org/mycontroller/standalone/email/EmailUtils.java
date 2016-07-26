@@ -20,7 +20,10 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.settings.EmailSettings;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -28,16 +31,20 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EmailUtils {
 
     private static HtmlEmail email = null;
 
-    private EmailUtils() {
-
+    public static void sendSimpleEmail(String emails, String subject, String message) throws EmailException {
+        sendSimpleEmail(emails, subject, message, true);
     }
 
-    public static void sendSimpleEmail(String emails, String subject, String message) throws EmailException {
-        initializeEmail();
+    public static void sendSimpleEmail(String emails, String subject, String message, boolean initializeEmail)
+            throws EmailException {
+        if (initializeEmail) {
+            initializeEmail(AppProperties.getInstance().getEmailSettings());
+        }
         email.setSubject(subject);
         email.setHtmlMsg(message);
         email.addTo(emails.split(","));
@@ -46,17 +53,30 @@ public class EmailUtils {
         _logger.debug("EmailSettings successfully sent to [{}], Message:[{}]", emails, message);
     }
 
-    public static void initializeEmail() throws EmailException {
+    private static void initializeEmail(EmailSettings emailSettings) throws EmailException {
+        _logger.info("{}", emailSettings);
         email = new HtmlEmail();
-        email.setHostName(AppProperties.getInstance().getEmailSettings().getSmtpHost());
-        email.setSmtpPort(AppProperties.getInstance().getEmailSettings().getSmtpPort());
-        if (AppProperties.getInstance().getEmailSettings().getSmtpUsername() != null
-                && AppProperties.getInstance().getEmailSettings().getSmtpUsername().length() > 0) {
-            email.setAuthenticator(new DefaultAuthenticator(AppProperties.getInstance().getEmailSettings()
-                    .getSmtpUsername(),
-                    AppProperties.getInstance().getEmailSettings().getSmtpPassword()));
+        email.setHostName(emailSettings.getSmtpHost());
+        email.setSmtpPort(emailSettings.getSmtpPort());
+        if (emailSettings.getSmtpUsername() != null
+                && emailSettings.getSmtpUsername().length() > 0) {
+            email.setAuthenticator(new DefaultAuthenticator(
+                    emailSettings.getSmtpUsername(),
+                    emailSettings.getSmtpPassword()));
         }
-        email.setSSLOnConnect(AppProperties.getInstance().getEmailSettings().getEnableSsl());
-        email.setFrom(AppProperties.getInstance().getEmailSettings().getFromAddress());
+        if (emailSettings.getEnableSsl()) {
+            if (emailSettings.getUseStartTLS()) {
+                email.setStartTLSEnabled(emailSettings.getEnableSsl());
+            } else {
+                email.setSSLOnConnect(emailSettings.getEnableSsl());
+            }
+        }
+        email.setFrom(emailSettings.getFromAddress());
+    }
+
+    public static void sendTestEmail(EmailSettings emailSettings) throws EmailException {
+        initializeEmail(emailSettings);
+        sendSimpleEmail(emailSettings.getFromAddress(), "Test email from MyController.org",
+                "Message: Test email from MyController.org", false);
     }
 }

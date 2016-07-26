@@ -48,7 +48,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     var mycSensorsMixedGraph = this;
     mycSensorsMixedGraph.showLoading = true;
     mycSensorsMixedGraph.showError = false;
-    mycSensorsMixedGraph.isSyncing = true;
+    mycSensorsMixedGraph.isSyncing = false;
 
     mycSensorsMixedGraph.chartOptions = {
         chart: {
@@ -145,7 +145,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     }
 
     //load graph initially
-    updateChart();
+    updateVariables();
 
     // refresh every second
     var promise = $interval(updateChart, config.refreshTime*1000);
@@ -180,7 +180,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
     //Pre load
     mycSensorsMixedGraphEdit.cs = CommonServices;
     //Load variable types
-    mycSensorsMixedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes({"metricType":["Double","Binary"]});
+    mycSensorsMixedGraphEdit.variableTypes = TypesFactory.getSensorVariableTypes({"metricType":["Double","Binary","Counter"]});
     if(config.variableType.length > 0){
       var variableIdRef = config.variableId;
       mycSensorsMixedGraphEdit.onVariableTypeChange();

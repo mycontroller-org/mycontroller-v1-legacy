@@ -34,10 +34,14 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.utils.McServerScriptFileUtils;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.PyTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
+import org.mycontroller.standalone.utils.McScriptFileUtils;
+import org.python.core.PyType;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -74,18 +78,21 @@ public class ScriptsHandler extends AccessEngine {
         filters.put(KEY_EXTENSION, extension);
         filters.put(KEY_LESS_INFO, lessInfo);
 
-        Query query = Query.builder()
-                .order(order != null ? order : Query.ORDER_ASC)
-                .orderBy(orderBy != null ? orderBy : KEY_NAME)
-                .filters(filters)
-                .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                .page(page != null ? page : 1L)
-                .build();
+        if (orderBy == null) {
+            orderBy = KEY_NAME;
+        }
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        Query query = Query.get(filters);
         try {
             if (lessInfo) {
-                return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query).getData());
+                return RestUtils.getResponse(Status.OK, McScriptFileUtils.getScriptFiles(query).getData());
             } else {
-                return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFiles(query));
+                return RestUtils.getResponse(Status.OK, McScriptFileUtils.getScriptFiles(query));
             }
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.EXPECTATION_FAILED, new ApiError(ex.getMessage()));
@@ -96,7 +103,7 @@ public class ScriptsHandler extends AccessEngine {
     @Path("/delete")
     public Response deleteIds(List<String> scriptFiles) {
         try {
-            McServerScriptFileUtils.deleteScriptFiles(scriptFiles);
+            McScriptFileUtils.deleteScriptFiles(scriptFiles);
         } catch (IOException ex) {
             RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
@@ -110,7 +117,32 @@ public class ScriptsHandler extends AccessEngine {
             return RestUtils.getResponse(Status.BAD_REQUEST);
         }
         try {
-            return RestUtils.getResponse(Status.OK, McServerScriptFileUtils.getScriptFile(scriptName));
+            return RestUtils.getResponse(Status.OK, McScriptFileUtils.getScriptFile(scriptName));
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @GET
+    @Path("/runNow")
+    public Response runNow(@QueryParam("script") String scriptName,
+            @QueryParam("scriptBindings") String jsonBindings) {
+        try {
+            HashMap<String, Object> bindings = null;
+            if (jsonBindings != null) {
+                bindings = RestUtils.getObjectMapper().readValue(
+                        jsonBindings, new TypeReference<HashMap<String, Object>>() {
+                        });
+            } else {
+                bindings = new HashMap<String, Object>();
+            }
+            HashMap<String, Object> bindingsFinal = McScriptFileUtils.executeScript(scriptName, bindings);
+            //If script type is python, add mixins,
+            //refer: https://github.com/mycontroller-org/mycontroller/issues/223
+            if (scriptName.endsWith("py")) {
+                RestUtils.getObjectMapper().addMixIn(PyType.class, PyTypeSerializer.class);
+            }
+            return RestUtils.getResponse(Status.OK, RestUtils.getObjectMapper().writeValueAsString(bindingsFinal));
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
@@ -120,7 +152,7 @@ public class ScriptsHandler extends AccessEngine {
     @Path("/")
     public Response upload(McScript mcScript) {
         try {
-            McServerScriptFileUtils.uploadScript(mcScript);
+            McScriptFileUtils.uploadScript(mcScript);
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

@@ -34,10 +34,11 @@ import javax.ws.rs.core.Response.Status;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.api.jaxrs.utils.TypesUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.utils.TypesUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -51,14 +52,20 @@ import org.mycontroller.standalone.settings.MetricsGraphSettings;
 public class TypesHandler extends AccessEngine {
     @GET
     @Path("/gatewayTypes")
-    public Response getGatewayTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayTypes());
+    public Response getGatewayTypes(@QueryParam("networkType") String networkType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayTypes(networkType));
     }
 
     @GET
     @Path("/gatewayNetworkTypes")
     public Response getGatewaySubTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayNetworkTypes());
+    }
+
+    @GET
+    @Path("/externalServerTypes")
+    public Response getExternalServerTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getExternalServerTypes());
     }
 
     @GET
@@ -74,16 +81,19 @@ public class TypesHandler extends AccessEngine {
     }
 
     @GET
+    @Path("/nodeRegistrationStatuses")
+    public Response getNodeRegistrationStatuses() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNodeRegistrationStatuses());
+    }
+
+    @GET
     @Path("/resourceTypes")
     public Response getResourceTypes(
             @QueryParam("resourceType") String resourceType,
-            @QueryParam("isSendPayload") Boolean isSendPayload,
+            @QueryParam("operationType") String operationType,
             @QueryParam("conditionType") String conditionType) {
-        if (isSendPayload == null) {
-            isSendPayload = false;
-        }
         return RestUtils.getResponse(Status.OK,
-                TypesUtils.getResourceTypes(AuthUtils.getUser(securityContext), resourceType, isSendPayload,
+                TypesUtils.getResourceTypes(AuthUtils.getUser(securityContext), resourceType, operationType,
                         conditionType));
     }
 
@@ -104,6 +114,18 @@ public class TypesHandler extends AccessEngine {
     @Path("/nodes")
     public Response getNodes(@QueryParam("gatewayId") Integer gatewayId) {
         return RestUtils.getResponse(Status.OK, TypesUtils.getNodes(AuthUtils.getUser(securityContext), gatewayId));
+    }
+
+    @GET
+    @Path("/externalServers")
+    public Response getExternalServers() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getExternalServers(AuthUtils.getUser(securityContext)));
+    }
+
+    @GET
+    @Path("/trustHostTypes")
+    public Response getTrustHostTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTrustHostTypes());
     }
 
     @GET
@@ -171,6 +193,18 @@ public class TypesHandler extends AccessEngine {
     @Path("/sensorTypes")
     public Response getSensorTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getSensorTypes());
+    }
+
+    @GET
+    @Path("/metricTypes")
+    public Response getMetricTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMetricTypes());
+    }
+
+    @GET
+    @Path("/unitTypes")
+    public Response getUnitTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getUnitTypes());
     }
 
     @GET
@@ -336,8 +370,24 @@ public class TypesHandler extends AccessEngine {
 
     @GET
     @Path("/rooms")
-    public Response getRooms() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getRooms());
+    public Response getRooms(@QueryParam("selfId") Integer selfId) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getRooms(selfId));
+    }
+
+    @GET
+    @Path("/messageTypes")
+    public Response getMessageTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageTypes());
+    }
+
+    @GET
+    @Path("/messageSubTypes")
+    public Response getMessageSubTypes(@QueryParam("messageType") String typeString) {
+        MESSAGE_TYPE type = MESSAGE_TYPE.fromString(typeString);
+        if (type == null) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Invalid 'type'!"));
+        }
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageSubTypes(type));
     }
 
     //----------------- review required
@@ -360,18 +410,6 @@ public class TypesHandler extends AccessEngine {
     @Path("/graphSensorVariableTypes/{sensorRefId}")
     public Response getGraphSensorVariableTypes(@PathParam("sensorRefId") int sensorRefId) {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGraphSensorVariableTypes(sensorRefId));
-    }
-
-    @GET
-    @Path("/messageTypes")
-    public Response getMessageTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageTypes());
-    }
-
-    @GET
-    @Path("/messageSubTypes/{messageType}")
-    public Response getMessageSubTypes(@PathParam("messageType") int messageType) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getMessageSubTypes(messageType));
     }
 
     @GET

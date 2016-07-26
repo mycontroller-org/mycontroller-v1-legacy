@@ -76,11 +76,9 @@ public abstract class Gateway {
 
     public void setStatus(STATE state, String statusMessage) {
         if (this.state != state) {
+            this.state = state;
             this.setStatusSince(System.currentTimeMillis());
         }
-        this.state = state;
-        //TODO: review required. how to keep status since?
-        //setStatusSince(System.currentTimeMillis());
         setStatusMessage(statusMessage);
         DaoUtils.getGatewayDao().update(getGatewayTable());
     }

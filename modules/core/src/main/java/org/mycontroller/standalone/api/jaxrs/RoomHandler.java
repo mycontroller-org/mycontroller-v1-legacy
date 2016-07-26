@@ -33,6 +33,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.api.RoomApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
@@ -40,6 +41,7 @@ import org.mycontroller.standalone.api.jaxrs.json.RoomJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Room;
+import org.mycontroller.standalone.exceptions.McDuplicateException;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -52,68 +54,69 @@ import org.mycontroller.standalone.db.tables.Room;
 @RolesAllowed({ "Admin" })
 public class RoomHandler extends AccessEngine {
 
+    RoomApi roomApi = new RoomApi();
+
     @RolesAllowed({ "User" })
     @GET
     @Path("/")
     public Response getAllRooms(
             @QueryParam(Room.KEY_NAME) List<String> name,
             @QueryParam(Room.KEY_DESCRIPTION) List<String> description,
+            @QueryParam(Room.KEY_PARENT_ID) Integer parentId,
+            @QueryParam("isSimpleQuery") Boolean isSimpleQuery,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
             @QueryParam(Query.ORDER) String order) {
 
-        HashMap<String, Object> filters = new HashMap<String, Object>();
+        if (isSimpleQuery != null && isSimpleQuery) {
+            return RestUtils.getResponse(Status.OK,
+                    QueryResponse.builder().data(DaoUtils.getRoomDao().getByParentId(parentId)).build());
+        } else {
+            HashMap<String, Object> filters = new HashMap<String, Object>();
 
-        filters.put(Room.KEY_NAME, name);
-        filters.put(Room.KEY_DESCRIPTION, description);
+            filters.put(Room.KEY_NAME, name);
+            filters.put(Room.KEY_DESCRIPTION, description);
+            filters.put(Room.KEY_PARENT_ID, parentId);
 
-        QueryResponse queryResponse = DaoUtils.getRoomDao().getAll(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : Room.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+            //Query primary filters
+            filters.put(Query.ORDER, order);
+            filters.put(Query.ORDER_BY, orderBy);
+            filters.put(Query.PAGE_LIMIT, pageLimit);
+            filters.put(Query.PAGE, page);
+
+            return RestUtils.getResponse(Status.OK, roomApi.getAll(filters));
+        }
     }
 
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") Integer id) {
-        return RestUtils.getResponse(Status.OK, new RoomJson(DaoUtils.getRoomDao().getById(id)).mapResources());
+        return RestUtils.getResponse(Status.OK, new RoomJson(roomApi.get(id)).mapResources());
     }
 
     @POST
     @Path("/delete")
     public Response deleteIds(List<Integer> ids) {
-        new RoomJson().delete(ids);
+        roomApi.delete(ids);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
     @PUT
     @Path("/")
     public Response update(RoomJson roomJson) {
-        Room availabilityCheck = DaoUtils.getRoomDao().getByName(roomJson.getRoom().getName());
-        if (availabilityCheck != null && roomJson.getRoom().getId() != availabilityCheck.getId()) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A room available with this name!"));
-        }
-        roomJson.createOrUpdate();
-        return RestUtils.getResponse(Status.NO_CONTENT);
-
+        return add(roomJson);
     }
 
     @POST
     @Path("/")
     public Response add(RoomJson roomJson) {
-        Room availabilityCheck = DaoUtils.getRoomDao().getByName(roomJson.getRoom().getName());
-        if (availabilityCheck != null) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("A room available with this name!"));
+        try {
+            roomApi.createOrUpdate(roomJson.getRoom(), roomJson.getSensorIds());
+        } catch (McDuplicateException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
-        roomJson.createOrUpdate();
-        return RestUtils.getResponse(Status.CREATED);
-
+        return RestUtils.getResponse(Status.OK);
     }
 
 }

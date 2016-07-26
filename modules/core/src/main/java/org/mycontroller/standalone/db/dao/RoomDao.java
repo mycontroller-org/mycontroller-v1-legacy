@@ -30,6 +30,8 @@ public interface RoomDao extends BaseDao<Room, Integer> {
 
     QueryResponse getAll(Query query);
 
+    List<Room> getByParentId(Integer parentId);
+
     void deleteIds(List<Integer> ids);
 
     Room getByName(String name);

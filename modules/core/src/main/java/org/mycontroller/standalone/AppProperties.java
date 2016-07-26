@@ -17,6 +17,7 @@
 package org.mycontroller.standalone;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -25,11 +26,12 @@ import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.settings.MqttBrokerSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
-import org.mycontroller.standalone.settings.UnitsSettings;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -47,11 +49,16 @@ public class AppProperties {
     private static AppProperties _instance = new AppProperties();
 
     public static final String APPLICATION_NAME = "MyController.org";
-    public static final String CONDITIONS_SCRIPT_DIRECTORY = "conditions" + File.separator;
-    public static final String OPERATIONS_SCRIPT_DIRECTORY = "operations" + File.separator;
+    private static final String TEMPLATES_DIRECTORY = "templates" + File.separator;
+    private static final String SCRIPTS_DIRECTORY = "scripts" + File.separator;
+    public static final String CONDITIONS_SCRIPTS_DIRECTORY = "conditions" + File.separator;
+    public static final String OPERATIONS_SCRIPTS_DIRECTORY = "operations" + File.separator;
+    private static final String WEB_CONFIGURATIONS_DIR = "configurations";
+    private static final String HTML_HEADERS_FILE = "html-headers.json";
 
     private String tmpLocation;
-    private String scriptLocation;
+    private String resourcesLocation;
+    private String appDirectory;
 
     private String dbH2DbLocation;
     private String webFileLocation;
@@ -62,10 +69,6 @@ public class AppProperties {
     private String webSslKeystoreType;
     private String webBindAddress;
 
-    private boolean mqttBrokerEnable;
-    private String mqttBrokerBindAddress;
-    private Integer mqttBrokerPort;
-    private Integer mqttBrokerWebsocketPort;
     private String mqttBrokerPersistentStore;
 
     MyControllerSettings controllerSettings;
@@ -73,11 +76,11 @@ public class AppProperties {
     MySensorsSettings mySensorsSettings;
     SmsSettings smsSettings;
     PushbulletSettings pushbulletSettings;
-    UnitsSettings unitsSettings;
     LocationSettings locationSettings;
     MetricsGraphSettings metricsGraphSettings;
     MetricsDataRetentionSettings metricsDataRetentionSettings;
     BackupSettings backupSettings;
+    MqttBrokerSettings mqttBrokerSettings;
 
     public enum MC_LANGUAGE {
         CA_ES("català (ES)"),
@@ -85,7 +88,11 @@ public class AppProperties {
         EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
+        MK_MK("Македонски (MK)"),
+        FR_FR("Français (FR)"),
         NL_NL("Nederlands (NL)"),
+        PT_BR("Português (BR)"),
+        RO_RO("Română (RO)"),
         RU_RU("Русский (RU)"),
         TA_IN("தமிழ் (IN)");
 
@@ -194,7 +201,8 @@ public class AppProperties {
     }
 
     public enum NETWORK_TYPE {
-        MY_SENSORS("MySensors");
+        MY_SENSORS("MySensors"),
+        PHANT_IO("Sparkfun [phant.io]");
 
         private final String type;
 
@@ -340,24 +348,41 @@ public class AppProperties {
     }
 
     public void loadProperties(Properties properties) {
+        //Application Directory
+        try {
+            appDirectory = FileUtils.getFile(McUtils.getDirectoryLocation("../")).getCanonicalPath();
+        } catch (IOException ex) {
+            appDirectory = McUtils.getDirectoryLocation("../");
+            _logger.error("Unable to set application directory!", ex);
+        }
         //Create tmp location
         tmpLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.tmp.location", "/tmp"));
 
         createDirectoryLocation(tmpLocation);
 
-        //create script location
-        scriptLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.script.location", "../conf/scripts"));
-        createDirectoryLocation(scriptLocation);
+        //get/create resources location
+        resourcesLocation = McUtils.getDirectoryLocation(
+                getValue(properties, "mcc.resources.location", "../conf/resources"));
+
+        //create resources location
+        createDirectoryLocation(resourcesLocation);
+        //create templates location
+        createDirectoryLocation(getTemplatesLocation());
+        //create scripts location
+        createDirectoryLocation(getScriptsLocation());
         //create scripts, conditions directory
-        createDirectoryLocation(scriptLocation + CONDITIONS_SCRIPT_DIRECTORY);
+        createDirectoryLocation(getScriptsConditionsLocation());
         //create scripts, operations directory
-        createDirectoryLocation(scriptLocation + OPERATIONS_SCRIPT_DIRECTORY);
+        createDirectoryLocation(getScriptsOperationsLocation());
 
         //database location
         dbH2DbLocation = getValue(properties, "mcc.db.h2db.location", "../conf/mycontroller");
 
         //mycontroller web location
         webFileLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.web.file.location", "../www"));
+
+        //create WEB configurations directory
+        createDirectoryLocation(getWebFileLocation() + WEB_CONFIGURATIONS_DIR);
 
         //update web details
         webHttpPort = Integer.valueOf(getValue(properties, "mcc.web.http.port", "8443"));
@@ -371,15 +396,9 @@ public class AppProperties {
         }
         webBindAddress = getValue(properties, "mcc.web.bind.address", "0.0.0.0");
 
-        //MQTT Broker details
-        mqttBrokerEnable = Boolean.valueOf(getValue(properties, "mcc.mqtt.broker.enable", "true"));
-        if (mqttBrokerEnable) {
-            mqttBrokerBindAddress = getValue(properties, "mcc.mqtt.broker.bind.address", "0.0.0.0");
-            mqttBrokerPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.port", "1883"));
-            mqttBrokerWebsocketPort = Integer.valueOf(getValue(properties, "mcc.mqtt.broker.websocket.port", "7080"));
-            mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store",
-                    "../conf/moquette/moquette_store.mapdb");
-        }
+        //MQTT Broker mqttBrokerPersistentStore
+        mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store",
+                "../conf/moquette/moquette_store.mapdb");
     }
 
     private void createDirectoryLocation(String directoryLocation) {
@@ -412,11 +431,11 @@ public class AppProperties {
         mySensorsSettings = MySensorsSettings.get();
         emailSettings = EmailSettings.get();
         smsSettings = SmsSettings.get();
-        unitsSettings = UnitsSettings.get();
         metricsGraphSettings = MetricsGraphSettings.get();
         metricsDataRetentionSettings = MetricsDataRetentionSettings.get();
         backupSettings = BackupSettings.get();
         pushbulletSettings = PushbulletSettings.get();
+        mqttBrokerSettings = MqttBrokerSettings.get();
     }
 
     private boolean is12HoursSelected() {
@@ -514,22 +533,6 @@ public class AppProperties {
         return webBindAddress;
     }
 
-    public boolean isMqttBrokerEnabled() {
-        return mqttBrokerEnable;
-    }
-
-    public String getMqttBrokerBindAddress() {
-        return mqttBrokerBindAddress;
-    }
-
-    public Integer getMqttBrokerPort() {
-        return mqttBrokerPort;
-    }
-
-    public Integer getMqttBrokerWebsocketPort() {
-        return mqttBrokerWebsocketPort;
-    }
-
     public String getMqttBrokerPersistentStore() {
         return mqttBrokerPersistentStore;
     }
@@ -548,10 +551,6 @@ public class AppProperties {
 
     public SmsSettings getSmsSettings() {
         return smsSettings;
-    }
-
-    public UnitsSettings getUnitsSettings() {
-        return unitsSettings;
     }
 
     public LocationSettings getLocationSettings() {
@@ -590,16 +589,39 @@ public class AppProperties {
         this.pushbulletSettings = pushbulletSettings;
     }
 
-    public String getScriptLocation() {
-        return scriptLocation;
+    public String getResourcesLocation() {
+        return resourcesLocation;
     }
 
-    public String getScriptConditionsLocation() {
-        return getScriptLocation() + CONDITIONS_SCRIPT_DIRECTORY;
+    public String getScriptsLocation() {
+        return getResourcesLocation() + SCRIPTS_DIRECTORY;
     }
 
-    public String getScriptOperationsLocation() {
-        return getScriptLocation() + OPERATIONS_SCRIPT_DIRECTORY;
+    public String getTemplatesLocation() {
+        return getResourcesLocation() + TEMPLATES_DIRECTORY;
     }
 
+    public String getScriptsConditionsLocation() {
+        return getScriptsLocation() + CONDITIONS_SCRIPTS_DIRECTORY;
+    }
+
+    public String getScriptsOperationsLocation() {
+        return getScriptsLocation() + OPERATIONS_SCRIPTS_DIRECTORY;
+    }
+
+    public String getHtmlHeadersFile() {
+        return getResourcesLocation() + HTML_HEADERS_FILE;
+    }
+
+    public String getWebConfigurationsLocation() {
+        return McUtils.getDirectoryLocation(getWebFileLocation() + WEB_CONFIGURATIONS_DIR);
+    }
+
+    public String getAppDirectory() {
+        return appDirectory;
+    }
+
+    public MqttBrokerSettings getMqttBrokerSettings() {
+        return mqttBrokerSettings;
+    }
 }

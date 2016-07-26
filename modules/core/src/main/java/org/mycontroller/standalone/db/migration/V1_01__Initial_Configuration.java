@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.AppProperties.MC_TIME_FORMAT;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DataBaseUtils;
@@ -48,8 +47,7 @@ import org.mycontroller.standalone.settings.MetricsGraphSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
-import org.mycontroller.standalone.settings.Unit;
-import org.mycontroller.standalone.settings.UnitsSettings;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,48 +64,18 @@ public class V1_01__Initial_Configuration extends MigrationBase {
 
         loadDao();
 
-        // Metric or Imperial to sensors
-        ArrayList<Unit> unitVariables = new ArrayList<Unit>();
-
-        //NOTE: do not forget to put entry under "org.mycontroller.standalone.settings.Unit"
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_CURRENT.getText(), "A", "A"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_CUSTOM.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_DIRECTION.getText(), "°", "°"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_DISTANCE.getText(), "cm", "cm"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_FLOW.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_GUST.getText(), "mph", "mph"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_HUM.getText(), "%", "%"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_HVAC_SETPOINT_COOL.getText(), "°C", "°F"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_HVAC_SETPOINT_HEAT.getText(), "°C", "°F"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_IMPEDANCE.getText(), "Ω", "Ω"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_KWH.getText(), "kWh", "kWh"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_LEVEL.getText(), "%", "%"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL.getText(), "%", "%"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_PERCENTAGE.getText(), "%", "%"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_POSITION.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_PRESSURE.getText(), "psi", "psi"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_RAIN.getText(), "mm", "mm"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_RAINRATE.getText(), "mm/hr", "mm/hr"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_TEMP.getText(), "°C", "°F"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_UV.getText(), "mj/cm2", "mj/cm2"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR1.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR2.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR3.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR4.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VAR5.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VOLTAGE.getText(), "V", "V"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_VOLUME.getText(), "", ""));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_WATT.getText(), "W", "W"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_WEIGHT.getText(), "kg", "kg"));
-        unitVariables.add(new Unit(MESSAGE_TYPE_SET_REQ.V_WIND.getText(), "mph", "mph"));
-
-        //Update unit values into table
-        UnitsSettings.builder().variables(unitVariables).build().save();
-
         //Update metrics settings
         ArrayList<MetricsGraph> metrics = new ArrayList<MetricsGraph>();
         for (MESSAGE_TYPE_SET_REQ type : MetricsGraph.variables) {
-            if (McMessageUtils.getMetricType(type) == METRIC_TYPE.DOUBLE) {
+            if (McMessageUtils.getMetricType(type) == METRIC_TYPE.BINARY) {
+                metrics.add(MetricsGraph.builder()
+                        .metricName(type.getText())
+                        .type(CHART_TYPE.LINE_CHART.getText())
+                        .interpolate("step-after")
+                        .color("#ff7f0e")
+                        .subType("line")
+                        .build());
+            } else if (McMessageUtils.getMetricType(type) == METRIC_TYPE.DOUBLE) {
                 metrics.add(MetricsGraph.builder()
                         .metricName(type.getText())
                         .type(CHART_TYPE.LINE_CHART.getText())
@@ -115,11 +83,11 @@ public class V1_01__Initial_Configuration extends MigrationBase {
                         .color("#ff7f0e")
                         .subType("line")
                         .build());
-            } else if (McMessageUtils.getMetricType(type) == METRIC_TYPE.BINARY) {
+            } else {
                 metrics.add(MetricsGraph.builder()
                         .metricName(type.getText())
                         .type(CHART_TYPE.LINE_CHART.getText())
-                        .interpolate("step-after")
+                        .interpolate("linear")
                         .color("#ff7f0e")
                         .subType("line")
                         .build());

@@ -21,11 +21,11 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionScript;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngine;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,10 +55,11 @@ public class McConditionScript extends McRuleBase {
         //execute script
         try {
             File scriptFile = FileUtils.getFile(
-                    AppProperties.getInstance().getScriptLocation() + rdScript.getScriptFile());
+                    AppProperties.getInstance().getScriptsLocation() + rdScript.getScriptFile());
             McScript mcScript = McScript.builder()
                     .name(scriptFile.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(scriptFile.getCanonicalPath()))
+                    .bindings(rdScript.getScriptBindings())
                     .build();
             McScriptEngine mcScriptEngine = new McScriptEngine(mcScript);
             Object result = mcScriptEngine.executeScript();
@@ -73,9 +74,7 @@ public class McConditionScript extends McRuleBase {
             rdScript.setEnabled(false);
         }
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

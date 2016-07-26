@@ -16,12 +16,16 @@
  */
 package org.mycontroller.standalone.auth;
 
+import java.util.List;
+
 import javax.ws.rs.core.SecurityContext;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,11 +33,8 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.2
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthUtils {
-
-    private AuthUtils() {
-
-    }
 
     public enum PERMISSION_TYPE {
         SUPER_ADMIN("Super admin"),
@@ -109,16 +110,43 @@ public class AuthUtils {
         return false;
     }
 
-    public static boolean authenticateMqttUser(String aUsername, String aPassword) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("MQTT authentication: User:{}", aUsername);
+    public static boolean canReadMqttPermission(String username, String topic) {
+        return checkMqttPermission(username, topic, true);
+    }
+
+    public static boolean canWriteMqttPermission(String username, String topic) {
+        return checkMqttPermission(username, topic, false);
+    }
+
+    public static boolean checkMqttPermission(String username, String topic, boolean isReadPermission) {
+        User user = DaoUtils.getUserDao().getByUsername(username);
+        if (user.getEnabled()) {
+            if (isSuperAdmin(user)) {
+                return true;
+            } else if (hasPermission(user, PERMISSION_TYPE.MQTT_USER)) {
+                List<String> _topics = null;
+                if (isReadPermission) {
+                    _topics = user.getAllowedResources().getMqttReadTopics();
+                } else {
+                    _topics = user.getAllowedResources().getMqttWriteTopics();
+                }
+                for (String _topic : _topics) {
+                    _topic = _topic.replaceAll("\\+", "\\\\w+").replaceAll("#", "\\.*");
+                    if (topic.matches(_topic)) {
+                        return true;
+                    }
+                }
+            }
         }
+        return false;
+    }
+
+    public static boolean authenticateMqttUser(String aUsername, String aPassword) {
+        _logger.debug("MQTT authentication: User:{}", aUsername);
         User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("User Found...User:{}", user);
-            }
-            if (user.getPassword().equals(aPassword)) {
+            _logger.debug("User Found...User:{}", user);
+            if (user.getEnabled() && McCrypt.decrypt(user.getPassword()).equals(aPassword)) {
                 user.setPassword(null);
                 if (isSuperAdmin(user) || hasPermission(user, PERMISSION_TYPE.MQTT_USER)) {
                     return true;
@@ -126,14 +154,10 @@ public class AuthUtils {
                 _logger.warn("User[{}] does not have MQTT access permission!", user.getUsername());
                 return false;
             }
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Invalid password for the user: {}", user.getUsername());
-            }
+            _logger.debug("Invalid password for the user: {}", user.getUsername());
             return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("user[{}] not found!", aUsername);
-        }
+        _logger.debug("user[{}] not found!", aUsername);
         return false;
     }
 }

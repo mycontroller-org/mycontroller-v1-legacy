@@ -60,19 +60,20 @@ public class MqttGatewayImpl implements IGateway {
                 connectOptions.setPassword(this.gateway.getPassword().toCharArray());
             }
             mqttClient.connect(connectOptions);
-            mqttCallbackListener = new MqttCallbackListener(mqttClient, this.gateway);
+            mqttCallbackListener = new MqttCallbackListener(mqttClient, this.gateway, connectOptions);
             mqttClient.setCallback(mqttCallbackListener);
             String[] topicsSubscribe = gateway.getTopicsSubscribe().split(GatewayMQTT.TOPICS_SPLITER);
             for (int topicId = 0; topicId < topicsSubscribe.length; topicId++) {
                 topicsSubscribe[topicId] += "/#";
             }
             mqttClient.subscribe(topicsSubscribe);
-            _logger.info("MQTT GatewayTable[{}] connected successfully..", mqttClient.getServerURI());
+            _logger.info("MQTT Gateway[{}] connected successfully..", mqttClient.getServerURI());
             this.gateway.setStatus(STATE.UP, "Connected Successfully");
         } catch (MqttException ex) {
-            this.gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+            this.gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage()
+                    + ", Reload this gateway when MQTT Broker comes UP");
             _logger.error("Unable to connect with MQTT broker gateway[{}], Reason Code: {}, "
-                    + "Reload gateway [Id:{}, Name:{}] service once MQTT Broker gateway comes UP!",
+                    + "Reload gateway [Id:{}, Name:{}] service when MQTT Broker comes UP!",
                     mqttClient.getServerURI(), ex.getReasonCode(), gateway.getName(), ex);
         }
     }
@@ -82,7 +83,7 @@ public class MqttGatewayImpl implements IGateway {
         _logger.debug("Message to send, Topic:[{}], PayLoad:[{}]", rawMessage.getSubData(),
                 rawMessage.getData());
         try {
-            MqttMessage message = new MqttMessage(rawMessage.getData().getBytes());
+            MqttMessage message = new MqttMessage(((String) rawMessage.getData()).getBytes());
             message.setQos(MY_SENSORS_QOS);
             String[] topicsPublish = rawMessage.getSubData().split(GatewayMQTT.TOPICS_SPLITER);
             for (String topic : topicsPublish) {
@@ -103,9 +104,15 @@ public class MqttGatewayImpl implements IGateway {
     @Override
     public void close() {
         try {
-            mqttCallbackListener.setReconnect(false);
-            mqttClient.disconnect(DISCONNECT_TIME_OUT);
-            mqttClient.close();
+            if (mqttCallbackListener != null) {
+                mqttCallbackListener.stopReconnect();
+            }
+            if (mqttClient != null) {
+                if (mqttClient.isConnected()) {
+                    mqttClient.disconnect(DISCONNECT_TIME_OUT);
+                }
+                mqttClient.close();
+            }
         } catch (Exception ex) {
             _logger.error("Exception,", ex);
         }

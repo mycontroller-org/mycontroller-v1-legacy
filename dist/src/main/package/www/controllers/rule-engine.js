@@ -214,10 +214,17 @@ $scope, RulesFactory, $state, $uibModal, $stateParams, displayRestError, mchelpe
     }
   };
 
-    //Edit item
+  //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("rulesAddEdit",{'id':$scope.itemIds[0]});
+    }
+  };
+
+  //Clone item
+  $scope.clone = function () {
+    if($scope.itemIds.length == 1){
+      $state.go("rulesAddEdit",{'id':$scope.itemIds[0], 'action': 'clone'});
     }
   };
 
@@ -326,7 +333,6 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
   if($stateParams.id){
     RulesFactory.get({"id":$stateParams.id},function(response) {
           $scope.item = response;
-
           if($scope.item.conditionType === 'Threshold'){
             $scope.sensorVariablesList = TypesFactory.getSensorVariables({"metricType":"Double"});
             $scope.ruleOperatorTypes = TypesFactory.getRuleOperatorTypes({"conditionType":$scope.item.conditionType});
@@ -347,6 +353,7 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
             $scope.ruleOperatorTypes = TypesFactory.getRuleOperatorTypes({"conditionType":$scope.item.conditionType});
           }else if($scope.item.conditionType === 'Script'){
             $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Condition"});
+            $scope.item.scriptBindings = angular.toJson(response.scriptBindings);
           }
 
 
@@ -366,9 +373,16 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
             $scope.item.dampening.activeTimeConstant = "1000";
           }
         }
+        if($stateParams.action === 'clone'){
+          $stateParams.id = undefined;
+          $scope.item.id = undefined;
+          $scope.item.name = $scope.item.name + '-' + $filter('translate')('CLONE');
+        }
       },function(error){
         displayRestError.display(error);
       });
+  }else{
+    $scope.item.scriptBindings='{ }';
   }
 
   //--------------pre load -----------
@@ -377,7 +391,9 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
   $scope.ruleConditionTypes = TypesFactory.getRuleConditionTypes();
 
   //GUI page settings
-  $scope.showHeaderUpdate = $stateParams.id;
+  if(!$stateParams.action || $stateParams.action !== 'clone'){
+      $scope.showHeaderUpdate = $stateParams.id;
+  }
   $scope.headerStringAdd = $filter('translate')('ADD_RULE');
   $scope.headerStringUpdate = $filter('translate')('UPDATE_RULE');
   $scope.cancelButtonState = "rulesList"; //Cancel button url
@@ -388,6 +404,10 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
     //Update dampening active time
     if($scope.item.dampeningType === 'Active time'){
       $scope.item.dampening.activeTime = $scope.item.dampening.activeTime * $scope.item.dampening.activeTimeConstant;
+    }
+    //Change string to JSON string
+    if($scope.item.conditionType === 'Script'){
+      $scope.item.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.scriptBindings+')')));
     }
     $scope.saveProgress = true;
 

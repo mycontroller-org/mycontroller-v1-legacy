@@ -26,7 +26,7 @@ public class BRCommons {
     public static final String DATABASE_FILENAME = "database_backup.zip";
     public static final String APP_PROPERTIES_FILENAME = "mycontroller.properties";
     public static final String APP_CONF_LOCATION = "../conf/";
-    public static final String SCRIPTS_LOCATION = "scripts" + File.separator;
+    public static final String RESOURCES_LOCATION = "resources" + File.separator;
     public static final String FILE_NAME_IDENTITY = "_mc_backup-";
 
     private static boolean isbackupRestoreRunning = false;

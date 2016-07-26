@@ -29,10 +29,10 @@ import javax.ws.rs.BadRequestException;
 
 import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.StartApp;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.db.DataBaseUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,15 +61,17 @@ public class Restore implements Runnable {
 
         BRCommons.setBackupRestoreRunning(true);
 
+        _logger.info("About to restore a backup, {}", backupFile);
+
         String extractedLocation = AppProperties.getInstance().getTmpLocation()
                 + backupFile.getName().replaceAll(".zip", "");
         try {
 
             String oldDatabaseLocation = AppProperties.getInstance().getDbH2DbLocation();
             //Extract zip file
-            _logger.debug("Zip file:{}", backupFile.getAbsolutePath());
+            _logger.debug("Zip file:{}", backupFile.getCanonicalPath());
 
-            extractZipFile(backupFile.getAbsolutePath(), extractedLocation);
+            extractZipFile(backupFile.getCanonicalPath(), extractedLocation);
             _logger.debug("All the files extracted to '{}'", extractedLocation);
 
             //Validate required files
@@ -103,14 +105,15 @@ public class Restore implements Runnable {
                         FileUtils.getFile(AppProperties.getInstance().getWebSslKeystoreFile()));
             }
 
-            //Restore scripts directory
+            //Restore resources directory
             //Remove old files
-            FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getScriptLocation()));
-            //restore
-            FileUtils.copyDirectory(
-                    FileUtils.getFile(extractedLocation + File.separator + BRCommons.SCRIPTS_LOCATION),
-                    FileUtils.getFile(AppProperties.getInstance().getScriptLocation()),
-                    true);
+            FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()));
+            //restore resources directory, if exists
+            File resourcesDir = FileUtils.getFile(extractedLocation + File.separator + BRCommons.RESOURCES_LOCATION);
+            if (resourcesDir.exists()) {
+                FileUtils.copyDirectory(
+                        resourcesDir, FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()), true);
+            }
 
             //remove old database
             if (FileUtils.deleteQuietly(FileUtils.getFile(oldDatabaseLocation + ".h2.db"))) {

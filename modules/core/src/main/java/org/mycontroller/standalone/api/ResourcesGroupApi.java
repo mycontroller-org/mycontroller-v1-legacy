@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -48,8 +49,8 @@ public class ResourcesGroupApi {
         return DaoUtils.getResourcesGroupDao().get(groupId);
     }
 
-    public QueryResponse getAllResourcesGroups(Query query) {
-        return DaoUtils.getResourcesGroupDao().getAll(query);
+    public QueryResponse getAllResourcesGroups(HashMap<String, Object> filters) {
+        return DaoUtils.getResourcesGroupDao().getAll(Query.get(filters));
     }
 
     public void deleteResourcesGroup(List<Integer> ids) {
@@ -77,8 +78,8 @@ public class ResourcesGroupApi {
         return DaoUtils.getResourcesGroupMapDao().get(id);
     }
 
-    public QueryResponse getAllResourcesGroupsMap(Query query) {
-        return DaoUtils.getResourcesGroupMapDao().getAll(query);
+    public QueryResponse getAllResourcesGroupsMap(HashMap<String, Object> filters) {
+        return DaoUtils.getResourcesGroupMapDao().getAll(Query.get(filters));
     }
 
     public void deleteResourcesGroupMap(List<Integer> ids) {

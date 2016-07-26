@@ -25,30 +25,37 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.mail.EmailException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
+import org.mycontroller.standalone.api.jaxrs.json.ApiMessage;
+import org.mycontroller.standalone.api.jaxrs.json.HtmlHeaderFiles;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.email.EmailUtils;
+import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.restclient.pushbullet.model.User;
+import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
+import org.mycontroller.standalone.settings.MqttBrokerSettings;
 import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
-import org.mycontroller.standalone.settings.UnitsSettings;
 import org.mycontroller.standalone.settings.UserNativeSettings;
 import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -111,6 +118,8 @@ public class SettingsHandler extends AccessEngine {
     public Response saveController(MyControllerSettings myControllerSettings) {
         myControllerSettings.save();
         SettingsUtils.updateAllSettings();
+        //Reload controller jobs
+        SchedulerUtils.reloadControllerJobs();
         //update locale
         McUtils.updateLocale();
         //Update sunriuse and sun set timings
@@ -143,10 +152,20 @@ public class SettingsHandler extends AccessEngine {
 
     @POST
     @Path("/email")
-    public Response saveEmail(EmailSettings emailSettings) {
-        emailSettings.save();
-        SettingsUtils.updateAllSettings();
-        return RestUtils.getResponse(Status.OK);
+    public Response saveEmail(EmailSettings emailSettings, @QueryParam("testOnly") Boolean isTestOnly) {
+        if (isTestOnly != null && isTestOnly) {
+            try {
+                EmailUtils.sendTestEmail(emailSettings);
+                return RestUtils.getResponse(Status.OK, new ApiMessage("Email sent successfully. Check inbox of '"
+                        + emailSettings.getFromAddress() + "'"));
+            } catch (EmailException ex) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+            }
+        } else {
+            emailSettings.save();
+            SettingsUtils.updateAllSettings();
+            return RestUtils.getResponse(Status.OK);
+        }
     }
 
     @GET
@@ -217,20 +236,6 @@ public class SettingsHandler extends AccessEngine {
     }
 
     @GET
-    @Path("/units")
-    public Response getUnits() {
-        return RestUtils.getResponse(Status.OK, AppProperties.getInstance().getUnitsSettings());
-    }
-
-    @POST
-    @Path("/units")
-    public Response saveUnits(UnitsSettings unitsSettings) {
-        unitsSettings.save();
-        SettingsUtils.updateAllSettings();
-        return RestUtils.getResponse(Status.OK);
-    }
-
-    @GET
     @Path("/metricsGraph")
     public Response getMetrics() {
         return RestUtils.getResponse(Status.OK, AppProperties.getInstance().getMetricsGraphSettings());
@@ -255,6 +260,35 @@ public class SettingsHandler extends AccessEngine {
     public Response saveMetricsRetention(MetricsDataRetentionSettings metricsDataRetentionSettings) {
         metricsDataRetentionSettings.save();
         SettingsUtils.updateAllSettings();
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/mqttBroker")
+    public Response getMqttBroker() {
+        return RestUtils.getResponse(Status.OK, AppProperties.getInstance().getMqttBrokerSettings());
+    }
+
+    @POST
+    @Path("/mqttBroker")
+    public Response saveMqttBroker(MqttBrokerSettings mqttBrokerSettings) {
+        mqttBrokerSettings.save();
+        SettingsUtils.updateAllSettings();
+        MoquetteMqttBroker.restart();
+        return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/htmlAdditionalHeaders")
+    public Response getHtmlHeaderFiles() {
+        return RestUtils.getResponse(Status.OK, SettingsUtils.getHtmlIncludeFiles());
+    }
+
+    @POST
+    @Path("/htmlAdditionalHeaders")
+    public Response saveHtmlHeaderFiles(HtmlHeaderFiles htmlHeaderFiles) {
+        htmlHeaderFiles.setLastUpdate(System.currentTimeMillis());
+        SettingsUtils.saveHtmlIncludeFiles(htmlHeaderFiles);
         return RestUtils.getResponse(Status.OK);
     }
 }

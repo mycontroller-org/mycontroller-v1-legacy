@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.message;
 
+import java.util.List;
+
 import org.apache.commons.codec.binary.Hex;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -60,7 +62,19 @@ public class McActionEngine implements IMcActionEngine {
             default:
                 break;
         }
+    }
 
+    @Override
+    public void executeRequestPayload(ResourceModel resourceModel) {
+        switch (resourceModel.getResourceType()) {
+            case SENSOR_VARIABLE:
+                executeSensorVariableOperationRequestPayload((SensorVariable) resourceModel.getResource());
+                break;
+            default:
+                _logger.warn("I do not know how to handle other than sensor variable! received:{}", resourceModel
+                        .getResourceType().getText());
+                break;
+        }
     }
 
     //Private Methods
@@ -73,7 +87,7 @@ public class McActionEngine implements IMcActionEngine {
                     mcMessage = McMessage.builder()
                             .gatewayId(node.getGatewayTable().getId())
                             .nodeEui(node.getEui())
-                            .SensorId(McMessage.SENSOR_BROADCAST_ID)
+                            .sensorId(McMessage.SENSOR_BROADCAST_ID)
                             .type(MESSAGE_TYPE.C_INTERNAL)
                             .acknowledge(false)
                             .subType(MESSAGE_TYPE_INTERNAL.I_REBOOT.getText())
@@ -137,11 +151,26 @@ public class McActionEngine implements IMcActionEngine {
         mcMessage = McMessage.builder()
                 .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
                 .nodeEui(sensorVariable.getSensor().getNode().getEui())
-                .SensorId(sensorVariable.getSensor().getSensorId())
+                .sensorId(sensorVariable.getSensor().getSensorId())
                 .type(MESSAGE_TYPE.C_SET)
                 .acknowledge(false)
                 .subType(sensorVariable.getVariableType().getText())
                 .payload(payload)
+                .isTxMessage(true)
+                .build();
+        McMessageUtils.sendToProviderBridge(mcMessage);
+    }
+
+    //Execute Sensor Variable related operations
+    private void executeSensorVariableOperationRequestPayload(SensorVariable sensorVariable) {
+        McMessage mcMessage = McMessage.builder()
+                .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
+                .nodeEui(sensorVariable.getSensor().getNode().getEui())
+                .sensorId(sensorVariable.getSensor().getSensorId())
+                .type(MESSAGE_TYPE.C_REQ)
+                .acknowledge(false)
+                .subType(sensorVariable.getVariableType().getText())
+                .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
         McMessageUtils.sendToProviderBridge(mcMessage);
@@ -152,7 +181,7 @@ public class McActionEngine implements IMcActionEngine {
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(node.getGatewayTable().getId())
                 .nodeEui(node.getEui())
-                .SensorId(McMessage.SENSOR_BROADCAST_ID)
+                .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_INTERNAL)
                 .acknowledge(false)
                 .subType(MESSAGE_TYPE_INTERNAL.I_HEARTBEAT.getText())
@@ -167,8 +196,8 @@ public class McActionEngine implements IMcActionEngine {
     public boolean checkEthernetGatewayAliveState(GatewayEthernet gatewayEthernet) {
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(gatewayEthernet.getId())
-                .nodeEui(McMessage.GATEWAY_NODE_ID)
-                .SensorId(McMessage.SENSOR_BROADCAST_ID)
+                .nodeEui(McMessageUtils.getGatewayNodeId(gatewayEthernet.getNetworkType()))
+                .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_INTERNAL)
                 .acknowledge(false)
                 .subType(MESSAGE_TYPE_INTERNAL.I_VERSION.getText())
@@ -195,7 +224,7 @@ public class McActionEngine implements IMcActionEngine {
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(forwardPayload.getDestination().getSensor().getNode().getGatewayTable().getId())
                 .nodeEui(forwardPayload.getDestination().getSensor().getNode().getEui())
-                .SensorId(forwardPayload.getDestination().getSensor().getSensorId())
+                .sensorId(forwardPayload.getDestination().getSensor().getSensorId())
                 .type(MESSAGE_TYPE.C_SET)
                 .acknowledge(false)
                 .subType(forwardPayload.getDestination().getVariableType().getText())
@@ -210,7 +239,7 @@ public class McActionEngine implements IMcActionEngine {
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(node.getGatewayTable().getId())
                 .nodeEui(node.getEui())
-                .SensorId(McMessage.SENSOR_BROADCAST_ID)
+                .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_INTERNAL)
                 .acknowledge(false)
                 .subType(MESSAGE_TYPE_INTERNAL.I_REBOOT.getText())
@@ -232,7 +261,7 @@ public class McActionEngine implements IMcActionEngine {
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(node.getGatewayTable().getId())
                 .nodeEui(node.getEui())
-                .SensorId(McMessage.SENSOR_BROADCAST_ID)
+                .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_STREAM)
                 .acknowledge(false)
                 .subType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.getText())
@@ -244,11 +273,21 @@ public class McActionEngine implements IMcActionEngine {
 
     @Override
     public void discover(Integer gatewayId) {
-        if (McMessageUtils.isDiscoverRunning(gatewayId)) {
-            throw new RuntimeException("Discover already running! nothing to do..");
-        } else {
-            new Thread(new McNodeDiscover(gatewayId)).start();
-        }
+        _logger.debug("Sending Node discover");
+        //Before start node discover, remove existing map for this gateway
+        DaoUtils.getNodeDao().updateBulk(Node.KEY_PARENT_NODE_EUI, null, Node.KEY_GATEWAY_ID, gatewayId);
+        //Send discover broadcast message
+        McMessage mcMessage = McMessage.builder()
+                .gatewayId(gatewayId)
+                .nodeEui(McMessage.NODE_BROADCAST_ID)
+                .sensorId(McMessage.SENSOR_BROADCAST_ID)
+                .type(MESSAGE_TYPE.C_INTERNAL)
+                .subType(MESSAGE_TYPE_INTERNAL.I_DISCOVER.getText())
+                .acknowledge(false)
+                .payload(McMessage.PAYLOAD_EMPTY)
+                .isTxMessage(true)
+                .build();
+        McMessageUtils.sendToProviderBridge(mcMessage);
     }
 
     @Override
@@ -280,10 +319,14 @@ public class McActionEngine implements IMcActionEngine {
 
     @Override
     public void sendPayload(SensorVariable sensorVariable) {
+        if (sensorVariable.getReadOnly()) {
+            _logger.warn("For 'readOnly' sensor variable, cannot send payload!, {}", sensorVariable);
+            return;
+        }
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
                 .nodeEui(sensorVariable.getSensor().getNode().getEui())
-                .SensorId(sensorVariable.getSensor().getSensorId())
+                .sensorId(sensorVariable.getSensor().getSensorId())
                 .type(MESSAGE_TYPE.C_SET)
                 .subType(sensorVariable.getVariableType().getText())
                 .acknowledge(false)
@@ -291,6 +334,16 @@ public class McActionEngine implements IMcActionEngine {
                 .isTxMessage(true)
                 .build();
         McMessageUtils.sendToProviderBridge(mcMessage);
+    }
+
+    @Override
+    public void updateNodeInformations(Integer gatewayId, List<Integer> nodeIds) {
+        if (gatewayId != null && McMessageUtils.isNodeInfoUpdateRunning(gatewayId)) {
+            //Nothing to do already running
+            return;
+        }
+        //Trigger node info update function
+        new Thread(new McNodeInfoUpdate(gatewayId, nodeIds)).run();
     }
 
 }

@@ -35,6 +35,8 @@ import org.mycontroller.standalone.rule.model.RuleDefinitionString;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThresholdRange;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -42,11 +44,8 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RuleUtils {
-
-    private RuleUtils() {
-
-    }
 
     public enum CONDITION_TYPE {
         THRESHOLD("Threshold"),

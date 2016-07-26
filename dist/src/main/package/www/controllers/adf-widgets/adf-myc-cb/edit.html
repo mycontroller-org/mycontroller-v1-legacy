@@ -1,0 +1,49 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<form role="form">
+  <div class="form-group">
+    <label>{{ 'REFRESH_TIME_SECONDS' | translate }}</label>
+    <input type="text" class="form-control" id="refreshTime" placeholder="{{'REFRESH_TIME_SECONDS' | translate}}" ng-model="config.refreshTime" pf-validation="mycCBtnsEdit.cs.isNumber(input)" required>
+    <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+  </div>
+
+  <div class="form-group">
+    <label>{{ 'SENSOR_VARIABLE' | translate }}</label>
+    <select id="mycCBtns" class="form-control" pf-select data-live-search="true" ng-model="config.variableId" required>
+      <option value="" ng-hide="true"></option>
+      <option ng-repeat="res in mycCBtnsEdit.variables" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="res.id.toString().indexOf(config.variableId) != -1"></option>
+    </select>
+  </div>
+
+  <legend><small>{{ 'BUTTON_SETTINGS' | translate }}</small></legend>
+
+  <div class="form-group">
+    <label class="mc-margin-right">{{ 'MINIMUM_HEIGHT' | translate }}</label>
+    <input type="text" id="height-min" class="mc-margin-right" placeholder="{{'MINIMUM_HEIGHT' | translate}}" ng-model="config.minBtnHeight" pf-validation="mycCBtnsEdit.cs.isNumber(input)" required>
+    <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+    <label class="mc-margin-right">{{ 'MINIMUM_WIDTH' | translate }}</label>
+    <input type="text" id="width-min" placeholder="{{'MINIMUM_WIDTH' | translate}}" ng-model="config.minBtnWidth" pf-validation="mycCBtnsEdit.cs.isNumber(input)" required>
+    <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+  </div>
+
+  <div class="form-group">
+      <label>{{ 'JSON' | translate }}</label>
+      <textarea  class="form-control" rows="12" style="resize:none" ng-model="config.buttonsJson"  required ></textarea>
+  </div>
+
+</form>

@@ -18,22 +18,27 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.UidTag;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface UidTagDao {
-    void create(UidTag uidTag);
+public interface UidTagDao extends BaseDao<UidTag, Integer> {
+    void deleteBySensorVariableIds(List<Integer> sVariableIds);
 
-    void delete(int uid);
+    void deleteBySensorId(Integer sId);
 
-    void deleteBySensorRefId(int sensorRefId);
+    void deleteByUid(String uid);
 
-    List<UidTag> getAll();
+    List<UidTag> getAllByUid(List<String> uids);
 
-    UidTag getBySensorRefId(int sensorRefId);
+    UidTag getBySensorVariableId(Integer sVariableId);
 
-    UidTag get(int uid);
+    UidTag getByUid(String uid);
+
+    QueryResponse getAll(Query query);
+
 }

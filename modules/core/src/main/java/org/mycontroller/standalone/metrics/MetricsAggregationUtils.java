@@ -20,14 +20,15 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MetricsAggregationUtils {
-
-    private MetricsAggregationUtils() {
-    }
 
     public static void removePreviousData(AGGREGATION_TYPE type, long timestamp) {
         DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(

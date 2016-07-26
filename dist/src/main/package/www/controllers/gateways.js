@@ -193,12 +193,27 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
     }
   };
 
+  //Update noe informations
+  $scope.refreshNodesInfo = function () {
+    if($scope.itemIds.length > 0){
+      GatewaysFactory.executeNodeInfoUpdate($scope.itemIds, function(response) {
+        alertService.success($filter('translate')('REFRESH_NODES_INFO_INITIATED_SUCCESSFULLY'));
+        $scope.itemIds = [];
+      },function(error){
+        displayRestError.display(error);
+      });
+    }
+  };
+
+
   //Reload items
   $scope.reload = function () {
     if($scope.itemIds.length > 0){
       GatewaysFactory.reload($scope.itemIds, function(response) {
         alertService.success($filter('translate')('RELOAD_INITIATED_SUCCESSFULLY'));
         $scope.itemIds = [];
+        //Update display table
+        $scope.getAllItems();
       },function(error){
         displayRestError.display(error);
       });
@@ -233,15 +248,21 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
 });
 
 
-myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService, $filter, CommonServices) {
+myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService, $filter, CommonServices, displayRestError) {
   $scope.gateway = {};
   $scope.gateway.enabled = true;
+  $scope.gatewayTypes = {};
+  $scope.trustHostTypes = TypesFactory.getTrustHostTypes();
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
-  $scope.gatewayTypes = TypesFactory.getGatewayTypes();
   $scope.cs = CommonServices;
 
   if($stateParams.id){
-    $scope.gateway = GatewaysFactory.get({"gatewayId":$stateParams.id});
+    GatewaysFactory.get({"gatewayId":$stateParams.id}, function(response){
+      $scope.gateway = response;
+      $scope.updateGatewayTypes();
+    },function(error){
+        displayRestError.display(error);
+    });
   }
 
   $scope.gatewaySerialDrivers = TypesFactory.getGatewaySerialDrivers();
@@ -263,6 +284,13 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.gateway.topicsSubscribe='';
       $scope.gateway.username='';
       $scope.gateway.password='';
+    }else if($scope.gateway.type === 'Sparkfun [phant.io]'){
+      $scope.gateway.url='https://data.sparkfun.com';
+      $scope.gateway.publicKey='';
+      $scope.gateway.privateKey='';
+      $scope.gateway.pollFrequency='1';
+      $scope.gateway.recordsLimit='10';
+      $scope.gateway.trustHostType='';
     }
   };
 
@@ -273,6 +301,11 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   $scope.cancelButtonState = "gatewaysList"; //Cancel button state
   $scope.saveProgress = false;
   //$scope.isSettingChange = false;
+
+  // Update gateway types
+  $scope.updateGatewayTypes = function(){
+    $scope.gatewayTypes = TypesFactory.getGatewayTypes({"networkType": $scope.gateway.networkType});
+  }
 
   $scope.save = function(){
       $scope.saveProgress = true;

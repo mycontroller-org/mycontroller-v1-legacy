@@ -17,6 +17,8 @@
 myControllerModule.controller('BackupControllerList', function(alertService, $scope, $filter, displayRestError, BackupRestoreFactory, $filter, mchelper, CommonServices, $uibModal) {
   //GUI page settings
   $scope.headerStringList = $filter('translate')('BACKUPS_DETAIL');
+  $scope.noItemsSystemMsg = $filter('translate')('NO_BACKUPS_SETUP');
+  $scope.noItemsSystemIcon = "fa fa-database";
 
   //load empty, configuration, etc.,
   $scope.mchelper = mchelper;
@@ -27,38 +29,52 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
   $scope.query = CommonServices.getQuery();
   $scope.queryResponse = {};
 
+  //Get min number
+  $scope.getMin = function(item1, item2){
+    return CommonServices.getMin(item1, item2);
+  };
 
   //get all items
   $scope.getAllItems = function(){
-    BackupRestoreFactory.getBackupList(function(response) {
-      $scope.orgList = response;
-      $scope.filteredList = $scope.orgList;
-      $scope.filterConfig.resultsCount = $scope.filteredList.length;
+    BackupRestoreFactory.getAll($scope.query, function(response) {
+      $scope.queryResponse = response;
+      $scope.filteredList = $scope.queryResponse.data;
+      $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
     },function(error){
+      $scope.queryResponse.$resolved = true;
       displayRestError.display(error);
-      $scope.orgList = {};
-      $scope.orgList.$resolved = true;
     });
   }
 
-  //Pre load
-  $scope.getAllItems();
-  $scope.itemName = null;
-  $scope.disableRunBackup = false;
+
+  //Hold all the selected item ids
+  $scope.itemIds = [];
+
+  $scope.selectAllItems = function(){
+    CommonServices.selectAllItems($scope, 'name');
+  };
+
+  $scope.selectItem = function(item){
+    CommonServices.selectItem($scope, item, 'name');
+  };
+
+  //On page change
+  $scope.pageChanged = function(newPage){
+    CommonServices.updatePageChange($scope, newPage);
+  };
 
   //Filter change method
   var filterChange = function (filters) {
     //Reset filter fields and update items
-    CommonServices.filterChangeLocal(filters, $scope);
-    $scope.itemName = null;
+    CommonServices.updateFiltersChange($scope, filters);
   };
 
   $scope.filterConfig = {
     fields: [
       {
         id: 'name',
-        title:  $filter('translate')('FILE_NAME'),
-        placeholder:  $filter('translate')('FILTER_BY_FILE_NAME'),
+        title:  $filter('translate')('NAME'),
+        placeholder: $filter('translate')('FILTER_BY_NAME'),
         filterType: 'text'
       }
     ],
@@ -67,13 +83,47 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
     onFilterChange: filterChange
   };
 
-   //Select item
-  $scope.selectItem = function (item) {
-    $scope.restoreItem = item;
-    if($scope.itemName === item.name){
-      $scope.itemName = null;
-    }else{
-      $scope.itemName = item.name;
+  //Sort columns [*** NOT IN USE ***]
+  var sortChange = function (sortId, isAscending) {
+    //Reset sort type and update items
+    CommonServices.updateSortChange($scope, sortId, isAscending);
+  };
+
+  $scope.sortConfig = {
+    fields: [
+      {
+        id: 'name',
+        title:  $filter('translate')('NAME'),
+        sortType: 'text'
+      }
+    ],
+    onSortChange: sortChange
+  };
+
+  //Pre load
+  $scope.disableRunBackup = false;
+
+  //Delete item(s)
+  $scope.delete = function (size) {
+    var modalInstance = $uibModal.open({
+    templateUrl: 'partials/common-html/delete-modal.html',
+    controller: 'ControllerDeleteModal',
+    size: size,
+    resolve: {}
+    });
+
+    modalInstance.result.then(function () {
+      BackupRestoreFactory.deleteIds($scope.itemIds, function(response) {
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
+        //Update display table
+        $scope.getAllItems();
+        $scope.itemIds = [];
+      },function(error){
+        displayRestError.display(error);
+      });
+    }),
+    function () {
+      //console.log('Modal dismissed at: ' + new Date());
     }
   };
 
@@ -90,18 +140,17 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
     });
   };
 
-
   //Restore
   $scope.restoreItemFn = function (size) {
     var addModalInstance = $uibModal.open({
     templateUrl: 'partials/backup/restore-confirmation-modal.html',
     controller: 'BackupControllerRestore',
     size: size,
-    resolve: {backupFile: function () {return $scope.restoreItem;}}
+    resolve: {backupFile: function () {return {'name': $scope.itemIds[0]}}}
     });
 
     addModalInstance.result.then(function () {
-      BackupRestoreFactory.restore($scope.restoreItem, function(response) {
+      BackupRestoreFactory.restore($scope.itemIds[0], function(response) {
         alertService.success($filter('translate')('RESTORE_INITIATED_SUCCESSFULLY')+' '+response.message);
       },function(error){
         displayRestError.display(error);
@@ -112,29 +161,6 @@ myControllerModule.controller('BackupControllerList', function(alertService, $sc
     }
   };
 
-  //Delete Item
-  $scope.delete = function (size) {
-    var modalInstance = $uibModal.open({
-    templateUrl: 'partials/common-html/delete-modal.html',
-    controller: 'ControllerDeleteModal',
-    size: size,
-    resolve: {}
-    });
-
-    modalInstance.result.then(function () {
-      BackupRestoreFactory.delete($scope.restoreItem, function(response) {
-        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
-        //Update display table
-        $scope.getAllItems();
-        $scope.itemName = null;
-      },function(error){
-        displayRestError.display(error);
-      });
-    }),
-    function () {
-      //console.log('Modal dismissed at: ' + new Date());
-    }
-  };
 });
 
 //restore Modal

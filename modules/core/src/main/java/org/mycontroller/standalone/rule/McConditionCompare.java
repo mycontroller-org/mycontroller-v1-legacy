@@ -16,9 +16,9 @@
  */
 package org.mycontroller.standalone.rule;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionCompare;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,25 +47,21 @@ public class McConditionCompare extends McRuleBase {
         String date2ValueString = null;
         //Update current value
         try {
-            actualValue = super.getResourceValue(rdCompare.getResourceType(), rdCompare.getResourceId());
+            setActualValue(super.getResourceValue(rdCompare.getResourceType(), rdCompare.getResourceId()));
             date2ValueString = super
                     .getResourceValue(rdCompare.getData2ResourceType(), rdCompare.getData2ResourceId());
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Actual value:{}, data2Value:{}", actualValue, date2ValueString);
-        }
+        _logger.debug("Actual value:{}, data2Value:{}", getActualValue(), date2ValueString);
         //If either value is NULL cannot execute
-        if (actualValue == null || date2ValueString == null) {
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("compare can not be executed with NULL. actualValue:{}, date2ValueString:{}",
-                        actualValue, date2ValueString);
-            }
+        if (getActualValue() == null || date2ValueString == null) {
+            _logger.debug("compare can not be executed with NULL. actualValue:{}, date2ValueString:{}",
+                    getActualValue(), date2ValueString);
             return false;
         }
-        double avDouble = McUtils.getDouble(actualValue);
+        double avDouble = McUtils.getDouble(getActualValue());
         double data2Value = McUtils.getDouble(date2ValueString);
         //Multiplier will be in percentage, change it double value
         double data2Multiplier = rdCompare.getData2Multiplier() / 100.0;
@@ -106,9 +102,7 @@ public class McConditionCompare extends McRuleBase {
                 return false;
         }
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

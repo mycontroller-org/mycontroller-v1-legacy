@@ -45,7 +45,6 @@ public class OperationTable {
     public static final String KEY_ID = "id";
     public static final String KEY_ENABLED = "enabled";
     public static final String KEY_USER_ID = "userId";
-    public static final String KEY_PUBLIC_ACCESS = "publicAccess";
     public static final String KEY_NAME = "name";
     public static final String KEY_LAST_EXECUTION = "lastExecution";
     public static final String KEY_TYPE = "type";
@@ -56,9 +55,6 @@ public class OperationTable {
 
     @DatabaseField(canBeNull = false, columnName = KEY_ENABLED)
     private Boolean enabled;
-
-    @DatabaseField(canBeNull = false, columnName = KEY_PUBLIC_ACCESS)
-    private Boolean publicAccess;
 
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_USER_ID, foreign = true,
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 0)

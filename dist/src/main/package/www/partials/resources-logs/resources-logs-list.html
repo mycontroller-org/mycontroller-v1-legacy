@@ -65,7 +65,8 @@
         </div>
 
         <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group" ng-show="queryResponse.query.totalItems > 0">
-          <button class="btn btn-default" type="button" ng-click="getAllItems()" uib-tooltip="{{ 'REFRESH' | translate }}" tooltip-placement="top"><i class="fa fa-refresh"></i></button>
+          <button class="btn btn-default" type="button" ng-click="getAllItems()">
+            <i class="fa fa-refresh"></i> {{ 'REFRESH' | translate }}</button>
         </div>
 
       </div>

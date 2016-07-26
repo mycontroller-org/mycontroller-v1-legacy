@@ -30,7 +30,7 @@
 
   <div class="form-group">
     <label>{{ 'INTERPOLATE_TYPE' | translate }}</label>
-    <select class="form-control" pf-select ng-model="config.chartInterpolate">
+    <select class="form-control" pf-select ng-model="config.chartInterpolate" required>
       <option value="" ng-hide="true"></option>
       <option value="linear">{{ 'LINEAR' | translate }}</option>
       <option value="basis">{{ 'BASIS' | translate }}</option>
@@ -48,7 +48,7 @@
 
   <div class="form-group">
     <label>{{ 'TIME_RANGE' | translate }}</label>
-    <select id="panelSize" class="form-control" pf-select ng-model="config.chartFromTimestamp">
+    <select id="panelSize" class="form-control" pf-select ng-model="config.chartFromTimestamp" required>
       <option value="" ng-hide="true"></option>
         <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
         <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
@@ -62,15 +62,15 @@
 
   <div class="form-group">
     <label>{{ 'SENSOR_VARIABLE_TYPE' | translate }}</label>
-    <select id="senVarsTypes" class="form-control" multiple pf-select data-live-search="true" ng-model="config.variableType" ng-change="mycSensorsMixedGraphEdit.onVariableTypeChange()">
+    <select id="senVarsTypes" class="form-control" multiple pf-select data-live-search="true" ng-model="config.variableType" ng-change="mycSensorsMixedGraphEdit.onVariableTypeChange()" required>
       <option value="" ng-hide="true"></option>
-      <option ng-repeat="vType in mycSensorsMixedGraphEdit.variableTypes" value="{{vType.displayName}}"  ng-selected="config.variableType.indexOf(vType.displayName) !== -1 ">{{vType.displayName}}</option>
+      <option ng-repeat="vType in mycSensorsMixedGraphEdit.variableTypes" value="{{vType.id}}"  ng-selected="config.variableType.indexOf(vType.id) !== -1 ">{{vType.displayName}}</option>
     </select>
   </div>
 
   <div class="form-group">
     <label>{{ 'SENSOR_VARIABLE' | translate }}</label>
-    <select id="senVars" class="form-control" multiple pf-select data-live-search="true" ng-model="config.variableId">
+    <select id="senVars" class="form-control" multiple pf-select data-live-search="true" ng-model="config.variableId" required>
       <option value="" ng-hide="true"></option>
       <option ng-repeat="res in mycSensorsMixedGraphEdit.variables" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"
         ng-selected="config.variableId.indexOf(res.id.toString()) !== -1 "></option>

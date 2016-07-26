@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter) {
+$scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter) {
 
   //GUI page settings
   $scope.headerStringList = $filter('translate')('NODES_DETAIL');
@@ -35,6 +35,10 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
   $scope.getMin = function(item1, item2){
     return CommonServices.getMin(item1, item2);
   };
+
+  if($stateParams.gatewayId){
+    $scope.query.gatewayId = $stateParams.gatewayId;
+  }
 
   //get all Nodes
   $scope.getAllItems = function(){
@@ -202,6 +206,17 @@ $scope, NodesFactory, $state, $uibModal, displayRestError, CommonServices, mchel
     }
   };
 
+  //Refresh nodes information
+  $scope.refreshNodesInfo = function (size) {
+    if($scope.itemIds.length > 0){
+      NodesFactory.executeNodeInfoUpdate($scope.itemIds,function(response) {
+        alertService.success($filter('translate')('REFRESH_NODES_INFO_INITIATED_SUCCESSFULLY'));
+      },function(error){
+        displayRestError.display(error);
+      });
+    }
+  };
+
   //Reboot a Node
   $scope.reboot = function (size) {
     var addModalInstance = $uibModal.open({
@@ -260,6 +275,7 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
   $scope.node.gateway = {};
   $scope.gateways = TypesFactory.getGateways();
   $scope.nodeTypes = TypesFactory.getNodeTypes();
+  $scope.nodeRstatuses = TypesFactory.getNodeRegistrationStatuses();
   $scope.firmwares = TypesFactory.getFirmwares();
 
   //GUI page settings

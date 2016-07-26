@@ -16,8 +16,11 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import java.util.HashMap;
+
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import com.j256.ormlite.field.DataType;
@@ -55,7 +58,9 @@ public class Node {
     public static final String KEY_ERASE_CONFIG = "eraseConfig";
     public static final String KEY_LAST_SEEN = "laseSeen";
     public static final String KEY_RSSI = "rssi";
-    public static final String KEY_OTHER_DATA = "otherData";
+    public static final String KEY_PROPERTIES = "properties";
+    public static final String KEY_PARENT_NODE_EUI = "parentNodeEui";
+    public static final String KEY_REGISTRATION_STATE = "registrationState";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -98,7 +103,20 @@ public class Node {
     @DatabaseField(canBeNull = true, columnName = KEY_RSSI)
     private String rssi;
 
-    @DatabaseField(canBeNull = true, columnName = KEY_OTHER_DATA)
-    private String otherData;
+    @DatabaseField(canBeNull = true, columnName = KEY_PROPERTIES, dataType = DataType.SERIALIZABLE)
+    private HashMap<String, Object> properties;
+
+    @DatabaseField(canBeNull = true, columnName = KEY_PARENT_NODE_EUI)
+    private String parentNodeEui;
+
+    @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING, columnName = KEY_REGISTRATION_STATE)
+    private NODE_REGISTRATION_STATE registrationState = NODE_REGISTRATION_STATE.NEW;
+
+    public HashMap<String, Object> getProperties() {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        }
+        return properties;
+    }
 
 }

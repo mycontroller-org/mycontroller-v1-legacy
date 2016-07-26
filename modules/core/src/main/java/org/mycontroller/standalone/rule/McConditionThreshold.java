@@ -16,11 +16,11 @@
  */
 package org.mycontroller.standalone.rule;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,14 +48,12 @@ public class McConditionThreshold extends McRuleBase {
         boolean triggerOperation = false;
         //Update current value
         try {
-            actualValue = super.getResourceValue(rdThreshold.getResourceType(), rdThreshold.getResourceId());
+            setActualValue(super.getResourceValue(rdThreshold.getResourceType(), rdThreshold.getResourceId()));
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Actual value:{}", actualValue);
-        }
+        _logger.debug("Actual value:{}", getActualValue());
         String thresholdValue = null;
 
         //Get threshold value
@@ -77,32 +75,32 @@ public class McConditionThreshold extends McRuleBase {
 
         switch (rdThreshold.getOperator()) {
             case EQ:
-                if (actualValue.equals(thresholdValue)) {
+                if (getActualValue().equals(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case GT:
-                if (McUtils.getDouble(actualValue) > McUtils.getDouble(thresholdValue)) {
+                if (McUtils.getDouble(getActualValue()) > McUtils.getDouble(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case GTE:
-                if (McUtils.getDouble(actualValue) >= McUtils.getDouble(thresholdValue)) {
+                if (McUtils.getDouble(getActualValue()) >= McUtils.getDouble(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case LT:
-                if (McUtils.getDouble(actualValue) < McUtils.getDouble(thresholdValue)) {
+                if (McUtils.getDouble(getActualValue()) < McUtils.getDouble(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case LTE:
-                if (McUtils.getDouble(actualValue) <= McUtils.getDouble(thresholdValue)) {
+                if (McUtils.getDouble(getActualValue()) <= McUtils.getDouble(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
             case NEQ:
-                if (!actualValue.equals(thresholdValue)) {
+                if (!getActualValue().equals(thresholdValue)) {
                     triggerOperation = true;
                 }
                 break;
@@ -110,9 +108,7 @@ public class McConditionThreshold extends McRuleBase {
                 _logger.warn("Operater[{}] not supported!", rdThreshold.getOperator());
                 return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

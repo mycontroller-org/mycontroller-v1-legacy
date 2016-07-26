@@ -45,21 +45,13 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{{ 'PUBLIC_ACCESS' | translate }}</label>
-            <div class="col-sm-10">
-              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="item.publicAccess">
-            </div>
-          </div>
-
           <legend><small>{{ 'OPERATION' | translate }}</small></legend>
 
 
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-4 mc-form-fixer-left">
-              <select class="form-control" pf-select ng-options="nt.displayName as nt.displayName for nt in operationTypes" ng-model="item.type"
-                ng-change="item.variable1 = item.variable2 = item.variable3 = item.variable4 = ''" required>
+              <select class="form-control" pf-select ng-options="nt.displayName as nt.displayName for nt in operationTypes" ng-model="item.type" required>
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
@@ -68,6 +60,15 @@
               <select class="form-control" pf-select ng-options="rT as rT for rT in scriptsList" ng-model="item.scriptFile" required>
                 <option value="" ng-hide="true"></option>
               </select>
+            </div>
+          </div>
+          <div ng-if="item.type === 'Execute script' && item.scriptFile">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'SCRIPT_BINDINGS' | translate }}</label>
+              <div class="col-sm-10 mc-form-fixer-left">
+                <input class="form-control" placeholder="{{ 'SCRIPT_BINDINGS' | translate }}" ng-model="item.scriptBindings" pf-validation="cs.isJsonString(input)" required />
+                <span class="help-block">{{ 'SYNTAX_ERROR' | translate }}</span>
+              </div>
             </div>
           </div>
 
@@ -84,6 +85,15 @@
               <label class="col-sm-2 control-label">{{ 'EMAILS' | translate }}</label>
               <div class="col-sm-10">
                 <textarea class="form-control" placeholder="{{ 'EMAIL_ADDRESSES_COMMA_SEPARATED' | translate }}" ng-model="item.toEmailAddresses" rows="4" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TEMPLATE' | translate }}</label>
+              <div class="col-sm-10">
+                <select class="form-control" pf-select ng-options="rT as rT for rT in templatesList" ng-model="item.template" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
               </div>
             </div>
 
@@ -146,11 +156,9 @@
                    <option ng-repeat="res in plResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="res.id == item.resourceId"></option>
                 </select>
               </div>
-
-
             </div>
 
-             <div class="form-group">
+            <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'PAYLOAD_DELAY' | translate }}</label>
               <div class="col-sm-4 mc-form-fixer-left" ng-if="item.resourceType === 'Sensor variable'">
                 <input class="form-control" placeholder="{{ 'PAYLOAD' | translate }}" ng-model="item.payload" required />
@@ -167,6 +175,25 @@
             </div>
           </div>
 
+
+          <!-- Request payload Operation -->
+          <div  ng-if="item.type === 'Request payload'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RESOURCE' | translate }}</label>
+              <div class="col-sm-4 mc-form-fixer-left">
+                <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in reqPlResourceTypes"
+                  ng-change="plResourcesList = getResources(item.resourceType);updatePayloadOperations(item.resourceType);" ng-model="item.resourceType" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+              <div class="col-sm-6 mc-form-fixer" ng-hide="item.resourceType === ''"><!-- List Resource -->
+                <select class="form-control" pf-select data-live-search="true" ng-model="item.resourceId" required>
+                   <option value="" ng-hide="true"></option>
+                   <option ng-repeat="res in plResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="res.id == item.resourceId"></option>
+                </select>
+              </div>
+            </div>
+          </div>
 
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>

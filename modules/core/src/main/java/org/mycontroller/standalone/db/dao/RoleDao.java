@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.db.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -34,6 +35,8 @@ public interface RoleDao extends BaseDao<Role, Integer> {
     List<Integer> getGatewayIds(Integer userId);
 
     List<Integer> getNodeIds(Integer userId);
+
+    HashMap<String, List<String>> getMqttTopics(Integer userId);
 
     List<Integer> getSensorIds(Integer userId);
 

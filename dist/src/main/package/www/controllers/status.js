@@ -21,10 +21,31 @@ $scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
   $scope.headerStringList = "System status";
 
   //OS Status
-   $scope.osStatus = StatusFactory.getOsStatus();
+  $scope.osStatus = StatusFactory.getOsStatus();
   //JVM Status
-   $scope.jvmStatus = StatusFactory.getJvmStatus();
+  $scope.jvmStatus = StatusFactory.getJvmStatus();
+  //Script engines
+  $scope.scriptEngines = StatusFactory.getScriptEngines();
 
+  //Run Garbage Collection
+  $scope.runGC = function(){
+    StatusFactory.runGarbageCollection(function(response) {
+      //Update display data
+      $scope.jvmStatus = response;
+    },function(error){
+      displayRestError.display(error);
+    });
+  }
+
+});
+
+myControllerModule.controller('McAboutController', function(alertService,
+$scope, $filter, StatusFactory, $uibModal, $stateParams, displayRestError) {
+  //GUI page settings
+  $scope.headerStringList = "About";
+
+  //About MC
+   $scope.mcAbout = StatusFactory.getMcAbout();
 });
 
 myControllerModule.controller('StatusMcLogController', function(alertService,

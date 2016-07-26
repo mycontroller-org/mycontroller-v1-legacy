@@ -47,7 +47,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
 
     mycSingleSensorGraph.showLoading = true;
     mycSingleSensorGraph.showError = false;
-    mycSingleSensorGraph.isSyncing = true;
+    mycSingleSensorGraph.isSyncing = false;
     mycSingleSensorGraph.variables = {};
     $scope.tooltipEnabled = false;
     $scope.hideVariableName=true;
@@ -108,7 +108,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
 
           if(resource[0].dataType === 'Double'){
             mycSingleSensorGraph.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + resource[0].unit};
-          }else if(resource[0].dataType === 'Binary'){
+          }else if(resource[0].dataType === 'Binary' || resource[0].dataType === 'Counter'){
             mycSingleSensorGraph.chartOptions.chart.yAxis.tickFormat = function(d){return d3.format('.0f')(d)};
           }
           mycSingleSensorGraph.chartOptions.title.text = resource[0].variableType;
@@ -130,14 +130,16 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
         return;
       }else if(config.variableId !== null){
         updateChart();
+      }else{
+        mycSingleSensorGraph.showLoading = false;
       }
     }
 
     //load graph initially
-    updateChart();
+    updateVariables();
 
     // refresh every second
-    var promise = $interval(updateChart, config.refreshTime*1000);
+    var promise = $interval(updateVariables, config.refreshTime*1000);
 
     // cancel interval on scope destroy
     $scope.$on('$destroy', function(){
@@ -145,6 +147,6 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
     });
   }).controller('mycSingleSensorGraphEditController', function($scope, $interval, config, mchelper, $filter, TypesFactory, CommonServices){
     var mycSingleSensorGraphEdit = this;
-    mycSingleSensorGraphEdit.variables = TypesFactory.getSensorVariables({"metricType":["Double","Binary"]});
+    mycSingleSensorGraphEdit.variables = TypesFactory.getSensorVariables({"metricType":["Double","Binary","Counter"]});
     mycSingleSensorGraphEdit.cs = CommonServices;
   });

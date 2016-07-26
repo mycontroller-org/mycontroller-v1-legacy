@@ -24,6 +24,8 @@ import org.mycontroller.standalone.restclient.pushbullet.model.Push;
 import org.mycontroller.standalone.restclient.pushbullet.model.PushResponse;
 import org.mycontroller.standalone.restclient.pushbullet.model.User;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,14 +33,11 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.3
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PushbulletUtils {
 
     // Create a rest clients
     private static PushbulletClient pushbulletClient = null;
-
-    private PushbulletUtils() {
-
-    }
 
     public static synchronized void sendNote(String idens, String title, String body) {
         updateClient();

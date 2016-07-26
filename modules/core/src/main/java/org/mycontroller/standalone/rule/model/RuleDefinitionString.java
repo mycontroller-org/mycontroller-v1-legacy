@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
+@NoArgsConstructor
 public class RuleDefinitionString extends RuleDefinition {
     public static final String KEY_OPERATOR = "operator";
     public static final String KEY_PATTERN = "pattern";
@@ -46,10 +48,6 @@ public class RuleDefinitionString extends RuleDefinition {
     private STRING_OPERATOR operator;
     private String pattern;
     private boolean ignoreCase;
-
-    public RuleDefinitionString() {
-
-    }
 
     public RuleDefinitionString(RuleDefinitionTable ruleDefinitionTable) {
         updateRuleDefinition(ruleDefinitionTable);

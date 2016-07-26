@@ -18,6 +18,7 @@ package org.mycontroller.standalone.scripts;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.commons.io.FilenameUtils;
 import org.mycontroller.standalone.AppProperties;
@@ -37,7 +38,7 @@ import lombok.ToString;
  */
 @Data
 @Builder
-@ToString
+@ToString(exclude = { "data" })
 @NoArgsConstructor
 @AllArgsConstructor
 public class McScript {
@@ -45,10 +46,12 @@ public class McScript {
     private String mimeType;
     private String extension;
     private String name;
+    private String canonicalPath;
     private SCRIPT_TYPE type;
     private long size;
     private long lastModified;
-    private Object data;
+    private String data;
+    private HashMap<String, Object> bindings;
 
     @JsonIgnore
     public boolean isValid() {
@@ -60,7 +63,7 @@ public class McScript {
 
     public SCRIPT_TYPE getType() {
         if (type == null) {
-            if (name.startsWith(AppProperties.CONDITIONS_SCRIPT_DIRECTORY)) {
+            if (name.startsWith(AppProperties.CONDITIONS_SCRIPTS_DIRECTORY)) {
                 type = SCRIPT_TYPE.CONDITION;
             } else {
                 type = SCRIPT_TYPE.OPERATION;

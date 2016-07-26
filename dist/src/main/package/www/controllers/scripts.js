@@ -42,7 +42,7 @@ $scope, ScriptsFactory, $state, $uibModal, $stateParams, displayRestError, mchel
     $scope.query.resourceId = $stateParams.resourceId;
   }
 
-  //get all Sensors
+  //get all items
   $scope.getAllItems = function(){
     ScriptsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
@@ -146,13 +146,75 @@ $scope, ScriptsFactory, $state, $uibModal, $stateParams, displayRestError, mchel
     }
   };
 
-    //Edit item
+  //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("scriptsAddEdit",{'name':$base64.encode($scope.itemIds[0])});
     }
   };
+/*
+  //execute item
+  $scope.runNow = function () {
+    if($scope.itemIds.length == 1){
+      ScriptsFactory.runNow({"script":$scope.itemIds[0]}, function(response) {
+        alertService.success('Result printed in console also.<br>'+angular.toJson(response));
+        console.log('Script['+$scope.itemIds[0]+'] result:\n'+angular.toJson(response));
+        $scope.itemIds = [];
+      },function(error){
+        displayRestError.display(error);
+      });
+    }
+  };
 
+*/
+  //Execute item
+  $scope.runNow = function (size) {
+    if($scope.itemIds.length != 1){
+      return;
+    }
+    var modalInstance = $uibModal.open({
+    templateUrl: 'partials/scripts/run-now-modal.html',
+    controller: 'ControllerScriptRunNowModal',
+    size: size,
+    resolve: {itemId: function () {return $scope.itemIds[0]}}
+    });
+
+    modalInstance.result.then(function () {
+      //Nothing to do...
+    }),
+    function () {
+      //console.log('Modal dismissed at: ' + new Date());
+    }
+  };
+
+});
+
+//Script run now Modal
+myControllerModule.controller('ControllerScriptRunNowModal', function ($scope, $uibModalInstance, $filter, CommonServices, ScriptsFactory, itemId) {
+  $scope.header = $filter('translate')('RUN_NOW');
+  $scope.cs = CommonServices;
+  $scope.request = {};
+  $scope.request.script = itemId;
+  $scope.request.bindings = '{ }';
+  //$uibModalInstance.close();
+  $scope.runNow = function() {
+    $scope.runningInProgress = true;
+    $scope.request.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.request.bindings+')')));
+    ScriptsFactory.runNow($scope.request, function(response) {
+      $scope.scriptResult = angular.toJson(response, true);
+      $scope.runningInProgress = false;
+    },function(error){
+      if(error.data.errorMessage){
+        $scope.scriptResult = error.data.errorMessage;
+      }else{
+        $scope.scriptResult = angular.toJson(error.data);
+      }
+      $scope.scriptResult = angular.toJson(error.data, true);
+      $scope.runningInProgress = false;
+      displayRestError.display(error);
+    });
+  };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });
 
 //Add Edit script controller

@@ -25,6 +25,7 @@ import org.mycontroller.standalone.gateway.GatewayUtils.SERIAL_PORT_DRIVER;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.message.RawMessage;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +44,7 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
 
     public SerialPortMonitoringThread(GatewayTable gatewayTable) {
         this.gateway = new GatewaySerial(gatewayTable);
-        RETRY_WAIT_TIME = this.gateway.getRetryFrequency() * 1000;
+        RETRY_WAIT_TIME = this.gateway.getRetryFrequency() * McUtils.ONE_SECOND;
         this.connect();
     }
 
@@ -85,7 +86,7 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
         // Reconnect serial port
         connect();
         if (gateway.getState() == STATE.UP) {
-            _logger.info("Serial GatewayTable:[{}], Successfully reconnected!", gateway);
+            _logger.info("Serial Gateway:[{}], Successfully reconnected!", gateway);
         } else {
             _logger.info("Serial GatewayTable[{}], Unable to reconnected! Will do next try after {} second(s)",
                     gateway, gateway.getRetryFrequency());
@@ -130,7 +131,7 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
         if (gateway.getState() == STATE.UP) {
             serialGateway.write(rawMessage);
         } else {
-            throw new GatewayException("GatewayTable not available! GatewayTable:[" + gateway.toString() + "]");
+            throw new GatewayException("Gateway not available! GatewayTable:[" + gateway.toString() + "]");
         }
     }
 

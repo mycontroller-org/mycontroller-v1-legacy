@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties;
@@ -26,6 +27,7 @@ import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Role;
 import org.mycontroller.standalone.db.tables.RoleGatewayMap;
+import org.mycontroller.standalone.db.tables.RoleMqttMap;
 import org.mycontroller.standalone.db.tables.RoleNodeMap;
 import org.mycontroller.standalone.db.tables.RoleSensorMap;
 import org.mycontroller.standalone.db.tables.RoleUserMap;
@@ -166,6 +168,32 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
             _logger.error("Exception, ", ex);
         }
         return ids;
+    }
+
+    @Override
+    public HashMap<String, List<String>> getMqttTopics(Integer userId) {
+        HashMap<String, List<String>> topics = new HashMap<String, List<String>>();
+        List<String> publishTopics = new ArrayList<String>();
+        List<String> subscribeTopics = new ArrayList<String>();
+        topics.put("publish", publishTopics);
+        topics.put("subscribe", subscribeTopics);
+        try {
+            //Get role ids for this user
+            List<Integer> roleIds = DaoUtils.getRoleUserMapDao().getRolesByUserId(userId);
+            //if role id is not null do not execute
+            if (roleIds != null && roleIds.size() != 0) {
+                QueryBuilder<RoleMqttMap, Object> roleMqttQuery = DaoUtils.getRoleMqttMapDao().getDao().queryBuilder();
+                List<RoleMqttMap> roleMqttMaps = roleMqttQuery.where()
+                        .in(RoleSensorMap.KEY_ROLE_ID, roleIds).query();
+                for (RoleMqttMap roleMqttMap : roleMqttMaps) {
+                    publishTopics.addAll(roleMqttMap.getPublish());
+                    subscribeTopics.addAll(roleMqttMap.getSubscribe());
+                }
+            }
+        } catch (SQLException ex) {
+            _logger.error("Exception, ", ex);
+        }
+        return topics;
     }
 
     @Override

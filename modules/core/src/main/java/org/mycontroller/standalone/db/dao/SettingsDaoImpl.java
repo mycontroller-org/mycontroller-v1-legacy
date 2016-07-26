@@ -19,6 +19,8 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.Settings;
 
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -123,4 +125,13 @@ public class SettingsDaoImpl extends BaseAbstractDaoImpl<Settings, Integer> impl
         }
     }
 
+    @Override
+    public QueryResponse getAll(Query query, String isAlterdTotalCountKey) {
+        try {
+            return this.getQueryResponse(query, Settings.KEY_ID, isAlterdTotalCountKey);
+        } catch (SQLException ex) {
+            _logger.error("unable to run query:[{}]", query, ex);
+            return null;
+        }
+    }
 }

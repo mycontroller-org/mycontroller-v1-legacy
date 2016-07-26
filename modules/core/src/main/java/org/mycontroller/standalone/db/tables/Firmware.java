@@ -39,7 +39,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(includeFieldNames = true)
+@ToString(exclude = { "data" })
 public class Firmware {
 
     public static final String KEY_ID = "id";

@@ -53,45 +53,43 @@ public class BrokerConfiguration implements IConfig {
     }
 
     private void loadProperties() {
-        m_properties.put(HOST_PROPERTY_NAME, AppProperties.getInstance().getMqttBrokerBindAddress());
-        m_properties.put(PORT_PROPERTY_NAME, String.valueOf(AppProperties.getInstance().getMqttBrokerPort()));
+        m_properties.put(HOST_PROPERTY_NAME, AppProperties.getInstance().getMqttBrokerSettings().getBindAddress());
+        m_properties.put(PORT_PROPERTY_NAME,
+                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getHttpPort()));
         m_properties.put(WEB_SOCKET_PORT_PROPERTY_NAME,
-                String.valueOf(AppProperties.getInstance().getMqttBrokerWebsocketPort()));
+                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getWebsocketPort()));
 
         m_properties.put(PASSWORD_FILE_PROPERTY_NAME, "");
         m_properties.put(PERSISTENT_STORE_PROPERTY_NAME,
                 AppProperties.getInstance().getMqttBrokerPersistentStore());
-        m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, "true");
-
-        m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
-        m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Properties:[{}]", m_properties);
+        //Enable authentication and role based tpoics actions
+        if (AppProperties.getInstance().getMqttBrokerSettings().getAllowAnonymous()) {
+            m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, "true");
+        } else {
+            m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, "false");
+            m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
+            m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
         }
+
+        _logger.debug("Properties:[{}]", m_properties);
     }
 
     @Override
     public void setProperty(String name, String value) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Set property [name:{}, value:{}]", name, value);
-        }
+        _logger.debug("Set property [name:{}, value:{}]", name, value);
         m_properties.setProperty(name, value);
     }
 
     @Override
     public String getProperty(String name) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Get property [name:{}, value:{}]", name, m_properties.getProperty(name));
-        }
+        _logger.debug("Get property [name:{}, value:{}]", name, m_properties.getProperty(name));
         return m_properties.getProperty(name);
     }
 
     @Override
     public String getProperty(String name, String defaultValue) {
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Get property with default value [name:{}, value:{}, defaultValue:{}]", name,
-                    m_properties.getProperty(name), defaultValue);
-        }
+        _logger.debug("Get property with default value [name:{}, value:{}, defaultValue:{}]", name,
+                m_properties.getProperty(name), defaultValue);
         return m_properties.getProperty(name, defaultValue);
     }
 

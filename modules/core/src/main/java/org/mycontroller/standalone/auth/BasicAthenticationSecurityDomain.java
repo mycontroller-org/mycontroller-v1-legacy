@@ -38,10 +38,15 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
         User user = DaoUtils.getUserDao().getByUsername(aUsername);
         if (user != null) {
             _logger.debug("User Found...User:{}", user);
-            if (user.getPassword().equals(aPassword)) {
-                user.setPassword(null);
-                return user;
+            if (user.getEnabled()) {
+                if (McCrypt.decrypt(user.getPassword()).equals(aPassword)) {
+                    user.setPassword(null);
+                    return user;
+                }
+            } else {
+                throw new SecurityException("User disabled " + aUsername);
             }
+
         }
         throw new SecurityException("Access denied to user " + aUsername);
     }
@@ -60,26 +65,6 @@ public class BasicAthenticationSecurityDomain implements SecurityDomain {
         } else {
             _logger.info("Roles mismatch for user[{}], api permission[{}], user permission[{}]", user.getUsername(),
                     permission, user.getPermissions());
-        }
-        return false;
-    }
-
-    public static boolean login(String aUsername, String aPassword) throws IllegalAccessException {
-        if (aUsername == null || aPassword == null) {
-            return false;
-        }
-        _logger.debug("User:{},Password:{}", aUsername, aPassword);
-        User user = DaoUtils.getUserDao().getByUsername(aUsername);
-        if (user != null) {
-            _logger.debug("User Found...User:{}", user);
-            if (user.getPassword().equals(aPassword)) {
-                if (user.getPermission() != null && !user.getPermission().equalsIgnoreCase("MQTT user")) {
-                    return true;
-                } else {
-                    throw new IllegalAccessException(
-                            "There is no suitable role assigned for you! Contact administrator.");
-                }
-            }
         }
         return false;
     }

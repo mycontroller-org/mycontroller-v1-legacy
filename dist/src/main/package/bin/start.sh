@@ -26,10 +26,9 @@ cd ${ACTUAL_LOCATION}
 
 #Java Heap settings
 HEAP_MIN=-Xms8m
-HEAP_MAX=-Xmx40m
+HEAP_MAX=-Xmx100m
 
 JAVA_VERSION="1.7"
-MC_VERSION="0.0.3.Alpha2-SNAPSHOT"
 
 #configuration file location
 CONF_PROPERTIES_FILE=../conf/mycontroller.properties
@@ -47,12 +46,12 @@ if [[ "$_java" ]]; then
     version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
     echo "java version: $version"
     if [[ "$version" > "$JAVA_VERSION" ]]; then
-        MC_PID=`ps -ef | grep mycontroller-standalone | grep -v grep | awk '{ print $2 }'`
+        MC_PID=`ps -ef | grep "org.mycontroller.standalone.StartApp" | grep -v grep | awk '{ print $2 }'`
         if [ ! -z "$MC_PID" ]
         then
           echo "Mycontroller.org server is already running on pid[${MC_PID}]"
         else
-          java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -jar ../lib/mycontroller-dist-standalone-${MC_VERSION}-single.jar >> ../logs/mycontroller.log 2>&1 &
+          $_java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -cp "../lib/*" org.mycontroller.standalone.StartApp >> ../logs/mycontroller.log 2>&1 &
           echo 'Start issued for Mycontroller'
         fi
     else

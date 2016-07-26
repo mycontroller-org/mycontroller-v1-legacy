@@ -36,6 +36,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
       $scope.controllerSettings = resource;
       $scope.aliveCheckMinutes = $scope.controllerSettings.aliveCheckInterval / 60000;
       $scope.globalPageRefreshTime = $scope.controllerSettings.globalPageRefreshTime / 1000;
+      $scope.executeDiscoverMinutes = $scope.controllerSettings.executeDiscoverInterval / 60000;
     });
   };
 
@@ -78,6 +79,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.saveController = function(){
     $scope.saveProgress.controller = true;
     $scope.controllerSettings.aliveCheckInterval = $scope.aliveCheckMinutes * 60000;
+    $scope.controllerSettings.executeDiscoverInterval = $scope.executeDiscoverMinutes * 60000;
     $scope.controllerSettings.globalPageRefreshTime = $scope.globalPageRefreshTime * 1000;
     SettingsFactory.saveController($scope.controllerSettings,function(response) {
           StatusFactory.getConfig(function(response) {
@@ -89,42 +91,11 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
           });
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.controller = false;
+        $scope.updateSettingsController();
+        $scope.editEnable.controller = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.controller = false;
-      });
-  };
-
-});
-
-myControllerModule.controller('SettingsUnitsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper) {
-
-  //config, language, user, etc.,
-  $scope.mchelper = mchelper;
-
-  //editable settings
-  $scope.editEnable = {};
-  $scope.saveProgress = {};
-
-  //settings Units
-  $scope.updateSettingsUnits = function(){
-    $scope.unitsSettings = SettingsFactory.getUnits();
-  };
-
-
-  //Pre-load
-  $scope.unitsSettings = {};
-  $scope.updateSettingsUnits();
-
-  //Save units
-  $scope.saveUnits = function(){
-    $scope.saveProgress.units = true;
-    SettingsFactory.saveUnits($scope.unitsSettings,function(response) {
-        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
-        $scope.saveProgress.units = false;
-      },function(error){
-        displayRestError.display(error);
-        $scope.saveProgress.units = false;
       });
   };
 
@@ -139,6 +110,7 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
   //editable settings
   $scope.editEnable = {};
   $scope.saveProgress = {};
+  $scope.testing = {};
 
   //settings Email
   $scope.updateSettingsEmail = function(){
@@ -171,12 +143,25 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
     SettingsFactory.saveEmail($scope.emailSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.email = false;
+        $scope.updateSettingsEmail();
+        $scope.editEnable.email = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.email = false;
       });
   };
 
+  //Send test email
+  $scope.sendTestEmail = function(){
+    $scope.testing.email = true;
+    SettingsFactory.saveEmail({'testOnly': true}, $scope.emailSettings, function(response) {
+        alertService.success(response.message);
+        $scope.testing.email = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.testing.email = false;
+      });
+  };
 
   //Save sms
   $scope.saveSms = function(){
@@ -184,6 +169,8 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
     SettingsFactory.saveSms($scope.smsSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.sms = false;
+        $scope.updateSettingsSms();
+        $scope.editEnable.sms = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.sms = false;
@@ -241,6 +228,8 @@ myControllerModule.controller('SettingsSystemMySensors', function(alertService, 
     SettingsFactory.saveMySensors($scope.mySensorsSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.mySensors = false;
+        $scope.updateSettingsMySensors();
+        $scope.editEnable.mySensors = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.mySensors = false;
@@ -295,6 +284,8 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
     SettingsFactory.saveMetrics($scope.metricsSettings,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.metrics = false;
+        $scope.updateSettingsMetrics();
+        $scope.editEnable.metrics = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.metrics = false;
@@ -316,19 +307,21 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
     SettingsFactory.saveMetricsRetention($scope.metricsRetention,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
         $scope.saveProgress.metricsRetention = false;
+        $scope.updateSettingsMetricsRetention();
+        $scope.editEnable.metricsDataRetention = false;
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.metricsRetention = false;
       });
   };
 
-    //Restore
+  //edit confirmation
   $scope.retentionWarning = function (size) {
     var addModalInstance = $uibModal.open({
-    templateUrl: 'partials/settings/retention-confirmation-modal.html',
+    templateUrl: 'partials/common-html/edit-confirmation-modal.html',
     controller: 'MetricsRetentionWarnController',
     size: size,
-    resolve: {backupFile: function () {return $scope.restoreItem;}}
+    resolve: {}
     });
     addModalInstance.result.then(function () {
       $scope.editEnable.metricsDataRetention = true;
@@ -341,9 +334,77 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
 });
 
 //retention change Modal
-myControllerModule.controller('MetricsRetentionWarnController', function ($scope, $uibModalInstance, $filter, backupFile) {
-  $scope.header = $filter('translate')('RETENTION_DIALOG_TITLE', backupFile);
-  $scope.message = $filter('translate')('RETENTION_DIALOG_CONFIRMATION_MSG', backupFile);
+myControllerModule.controller('MetricsRetentionWarnController', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('RETENTION_DIALOG_TITLE');
+  $scope.message = $filter('translate')('RETENTION_DIALOG_CONFIRMATION_MSG');
+  $scope.continute = function() {$uibModalInstance.close(); };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
+});
+
+
+myControllerModule.controller('SettingsMqttBrokerController', function(alertService, $scope, $filter, SettingsFactory, CommonServices, displayRestError, $uibModal) {
+
+  //config, language, user, etc.,
+  $scope.cs = CommonServices;
+
+  //editable settings
+  $scope.editEnable = {};
+  $scope.saveProgress = {};
+
+
+  //settings mqtt broker
+  $scope.updateSettingsMqttBroker = function(){
+    SettingsFactory.getMqttBroker(function(response){
+      $scope.mqttBrokerSettings = response;
+      if(response.defaultFirmware){
+        FirmwaresFactory.getFirmware({"refId": response.defaultFirmware},function(response){
+          $scope.defaultFirmware = response.firmwareName;
+        });
+      }
+    });
+  };
+
+  //Pre-load
+  $scope.mqttBrokerSettings = {};
+  $scope.updateSettingsMqttBroker();
+
+  //Save settings
+  $scope.saveMqttBroker = function(){
+    $scope.saveProgress.mqttBroker = true;
+    SettingsFactory.saveMqttBroker($scope.mqttBrokerSettings,function(response) {
+        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
+        $scope.saveProgress.mqttBroker = false;
+        $scope.updateSettingsMqttBroker();
+        $scope.editEnable.mqttBroker = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.mqttBroker = false;
+      });
+  };
+
+
+  //edit confirmation
+  $scope.saveSettings = function (size) {
+    var addModalInstance = $uibModal.open({
+    templateUrl: 'partials/common-html/edit-confirmation-modal.html',
+    controller: 'MqttBrokerChangeController',
+    size: size,
+    resolve: {}
+    });
+    addModalInstance.result.then(function () {
+      $scope.saveMqttBroker();
+    }),
+    function () {
+      //console.log('Modal dismissed at: ' + new Date());
+    }
+  };
+
+});
+
+//Mqtt broker change warning
+myControllerModule.controller('MqttBrokerChangeController', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('MQTT_BROKER_EDIT_DIALOG');
+  $scope.message = $filter('translate')('MQTT_BROKER_EDIT_CONFIRMATION_MSG');
   $scope.continute = function() {$uibModalInstance.close(); };
   $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });

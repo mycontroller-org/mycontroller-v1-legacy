@@ -36,7 +36,6 @@ import javax.ws.rs.core.Response.Status;
 import org.mycontroller.standalone.api.SensorApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
@@ -46,6 +45,7 @@ import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
+import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +72,7 @@ public class SensorHandler extends AccessEngine {
             @QueryParam(Sensor.KEY_TYPE) String type,
             @QueryParam(Sensor.KEY_SENSOR_ID) List<Integer> sensorId,
             @QueryParam(Sensor.KEY_NAME) List<String> name,
+            @QueryParam(Sensor.KEY_ROOM_ID) List<Integer> roomId,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
@@ -81,7 +82,14 @@ public class SensorHandler extends AccessEngine {
 
         filters.put(Sensor.KEY_TYPE, MESSAGE_TYPE_PRESENTATION.fromString(type));
         filters.put(Sensor.KEY_SENSOR_ID, sensorId);
+        filters.put(Sensor.KEY_ROOM_ID, roomId);
         filters.put(Sensor.KEY_NAME, name);
+
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
 
         //If nodeName or nodeEui is not null, fetch nodeIds
         if (nodeName.size() > 0 || nodeEui.size() > 0) {
@@ -89,14 +97,11 @@ public class SensorHandler extends AccessEngine {
             nodeFilters.put(Node.KEY_NAME, nodeName);
             nodeFilters.put(Node.KEY_EUI, nodeEui);
             nodeFilters.put(Node.KEY_ID, nodeIds);
-            nodeIds = DaoUtils.getNodeDao().getAllIds(
-                    Query.builder()
-                            .order(Query.ORDER_ASC)
-                            .orderBy(Node.KEY_ID)
-                            .filters(nodeFilters)
-                            .pageLimit(Query.MAX_ITEMS_UNLIMITED)
-                            .page(1L)
-                            .build());
+
+            //Query primary filters
+            nodeFilters.put(Query.PAGE_LIMIT, Query.MAX_ITEMS_UNLIMITED);
+
+            nodeIds = DaoUtils.getNodeDao().getAllIds(Query.get(nodeFilters));
             if (nodeIds.size() == 0) {
                 nodeIds.add(-1);//If there is no node available, return empty
             }
@@ -110,15 +115,7 @@ public class SensorHandler extends AccessEngine {
             filters.put(Sensor.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds());
         }
 
-        QueryResponse queryResponse = sensorApi.getAll(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : Sensor.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        return RestUtils.getResponse(Status.OK, sensorApi.getAll(filters));
     }
 
     @GET
@@ -169,6 +166,13 @@ public class SensorHandler extends AccessEngine {
         return RestUtils.getResponse(Status.OK, sensorApi.getVariables(ids));
     }
 
+    @GET
+    @Path("/getVariable/{id}")
+    public Response getVariable(@PathParam("id") Integer id) {
+        hasAccessSensorVariable(id);
+        return RestUtils.getResponse(Status.OK, sensorApi.getVariable(id));
+    }
+
     @PUT
     @Path("/updateVariable")
     public Response sendpayload(SensorVariableJson sensorVariableJson) {
@@ -187,19 +191,31 @@ public class SensorHandler extends AccessEngine {
     }
 
     @PUT
-    @Path("/updateVariableUnit")
-    public Response updateVariableUnit(SensorVariableJson sensorVariableJson) {
+    @Path("/updateVariableConfig")
+    public Response updateVariableConfig(SensorVariableJson sensorVariableJson) {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
             hasAccessSensor(sensorVariable.getSensor().getId());
             try {
-                sensorApi.updateVariableUnit(sensorVariableJson);
+                sensorApi.updateVariable(sensorVariableJson);
                 return RestUtils.getResponse(Status.OK);
             } catch (McBadRequestException ex) {
                 return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
             }
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST);
+        }
+    }
+
+    @RolesAllowed({ "Admin" })
+    @POST
+    @Path("/sendRawMessage")
+    public Response sendRawMessage(McMessage mcMessage) {
+        try {
+            sensorApi.sendRawMessage(mcMessage);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }
 

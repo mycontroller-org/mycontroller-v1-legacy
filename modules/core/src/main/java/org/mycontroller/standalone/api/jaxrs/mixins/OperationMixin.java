@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
@@ -25,6 +26,7 @@ import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.operation.model.OperationExecuteScript;
+import org.mycontroller.standalone.operation.model.OperationRequestPayload;
 import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.operation.model.OperationSendPushbulletNote;
@@ -34,6 +36,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -81,12 +84,18 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
             case EXECUTE_SCRIPT:
                 OperationExecuteScript operationExecuteScript = new OperationExecuteScript();
                 operationExecuteScript.setScriptFile(node.get("scriptFile").asText());
+                if (node.get("scriptBindings") != null) {
+                    operationExecuteScript.setScriptBindings(RestUtils.getObjectMapper().convertValue(
+                            node.get("scriptBindings"), new TypeReference<HashMap<String, Object>>() {
+                            }));
+                }
                 operation = operationExecuteScript;
                 break;
             case SEND_EMAIL:
                 OperationSendEmail operationSendEmail = new OperationSendEmail();
                 operationSendEmail.setEmailSubject(node.get("emailSubject").asText());
                 operationSendEmail.setToEmailAddresses(node.get("toEmailAddresses").asText());
+                operationSendEmail.setTemplate(node.get("template").asText());
                 operation = operationSendEmail;
                 break;
             case SEND_PAYLOAD:
@@ -101,11 +110,21 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                 }
                 operation = operationSendPayload;
                 break;
+            case REQUEST_PAYLOAD:
+                OperationRequestPayload operationRequestPayload = new OperationRequestPayload();
+                operationRequestPayload.setResourceType(RESOURCE_TYPE.fromString(node.get("resourceType").asText()));
+                operationRequestPayload.setResourceId(node.get("resourceId").asInt());
+                operation = operationRequestPayload;
+                break;
             case SEND_PUSHBULLET_NOTE:
                 OperationSendPushbulletNote operationSendPushbulletNote = new OperationSendPushbulletNote();
-                operationSendPushbulletNote.setIdens(node.get("idens").asText());
                 operationSendPushbulletNote.setTitle(node.get("title").asText());
-                operationSendPushbulletNote.setBody(node.get("body").asText());
+                if (node.get("idens") != null) {
+                    operationSendPushbulletNote.setIdens(node.get("idens").asText());
+                }
+                if (node.get("body") != null) {
+                    operationSendPushbulletNote.setBody(node.get("body").asText());
+                }
                 operation = operationSendPushbulletNote;
                 break;
             case SEND_SMS:
@@ -124,7 +143,6 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
         operation.setEnabled(node.get("enabled").asBoolean());
         operation.setName(node.get("name").asText());
         operation.setType(operationType);
-        operation.setPublicAccess(node.get("publicAccess").asBoolean());
         //operation.setUser(User.builder().id(node.get("user").get("id").intValue()).build());
         return operation;
     }

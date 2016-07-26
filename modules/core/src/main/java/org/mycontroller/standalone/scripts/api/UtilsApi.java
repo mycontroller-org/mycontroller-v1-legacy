@@ -19,6 +19,7 @@ package org.mycontroller.standalone.scripts.api;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -31,6 +32,7 @@ import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.RuleUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.utils.McUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -69,4 +71,14 @@ public class UtilsApi {
         return McHeatMap.builder().build();
     }
 
+    public String getUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    public String friendlyTime(Long timestamp) {
+        if (timestamp == null) {
+            return "Never";
+        }
+        return McUtils.getFriendlyTime(System.currentTimeMillis() - timestamp, true);
+    }
 }

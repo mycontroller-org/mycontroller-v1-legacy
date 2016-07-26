@@ -24,10 +24,10 @@ import java.util.Map;
 
 import org.knowm.sundial.SundialJobScheduler;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.jobs.ExecuteDiscoverJob;
 import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.timer.TimerSimple;
@@ -35,7 +35,10 @@ import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
 import org.mycontroller.standalone.timer.jobs.TimerJob;
+import org.mycontroller.standalone.utils.McUtils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -43,15 +46,13 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SchedulerUtils {
     public static final String JOB_DATA = "job-data";
     public static final String SYSTEM_JOB_REF = "SYS_";
     public static final String TIMER_JOB_REF = "TIMER_";
     public static final String CRON_TRIGGER_REF = "_Cron_Trigger";
     private static final long FROM_TIME_DELAY = McUtils.ONE_SECOND;
-
-    private SchedulerUtils() {
-    }
 
     public static void startScheduler() {
         SundialJobScheduler.startScheduler();
@@ -78,6 +79,7 @@ public class SchedulerUtils {
         //Update all other jobs
         //MySensorsSettings heartbeat job
         startNodeAliveCheckJob();
+        startExecuteDiscoverJob();
 
     }
 
@@ -309,6 +311,10 @@ public class SchedulerUtils {
     }
 
     public static void startNodeAliveCheckJob() {
+        if (AppProperties.getInstance().getControllerSettings().getAliveCheckInterval() < McUtils.MINUTE) {
+            //Nothing to do, just return from here
+            return;
+        }
         SundialJobScheduler.addJob(NodeAliveStatusJob.NAME, NodeAliveStatusJob.class.getName());
         SundialJobScheduler.addSimpleTrigger(
                 NodeAliveStatusJob.TRIGGER_NAME,
@@ -327,5 +333,35 @@ public class SchedulerUtils {
     public static void reloadMySensorHearbeatJob() {
         stopNodeAliveCheckJob();
         startNodeAliveCheckJob();
+    }
+
+    public static void startExecuteDiscoverJob() {
+        if (AppProperties.getInstance().getControllerSettings().getExecuteDiscoverInterval() < McUtils.MINUTE) {
+            //Nothing to do, just return from here
+            return;
+        }
+        SundialJobScheduler.addJob(ExecuteDiscoverJob.NAME, ExecuteDiscoverJob.class.getName());
+        SundialJobScheduler.addSimpleTrigger(
+                ExecuteDiscoverJob.TRIGGER_NAME,
+                ExecuteDiscoverJob.NAME,
+                -1,
+                AppProperties.getInstance().getControllerSettings().getExecuteDiscoverInterval(),
+                //Start this job after 20 seconds
+                new Date(System.currentTimeMillis() + (McUtils.ONE_SECOND * 20)),
+                null);
+    }
+
+    public static void stopExecuteDiscoverJob() {
+        SundialJobScheduler.removeJob(ExecuteDiscoverJob.NAME);
+    }
+
+    public static void reloadExecuteDiscoverJob() {
+        stopExecuteDiscoverJob();
+        startExecuteDiscoverJob();
+    }
+
+    public static synchronized void reloadControllerJobs() {
+        reloadMySensorHearbeatJob();
+        reloadExecuteDiscoverJob();
     }
 }

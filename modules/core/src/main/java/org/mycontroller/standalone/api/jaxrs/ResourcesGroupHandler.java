@@ -37,7 +37,6 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.api.ResourcesGroupApi;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.ResourcesGroupMap;
@@ -78,8 +77,9 @@ public class ResourcesGroupHandler {
     @GET
     @Path("/")
     public Response getAllResourcesGroups(
-            @QueryParam(ResourcesGroup.KEY_NAME) List<String> name,
-            @QueryParam(ResourcesGroup.KEY_DESCRIPTION) List<String> description,
+            @QueryParam(ResourcesGroup.KEY_ID) List<Integer> ids,
+            @QueryParam(ResourcesGroup.KEY_NAME) List<String> names,
+            @QueryParam(ResourcesGroup.KEY_DESCRIPTION) List<String> descriptions,
             @QueryParam(ResourcesGroup.KEY_STATE) String state,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
@@ -87,19 +87,18 @@ public class ResourcesGroupHandler {
             @QueryParam(Query.ORDER) String order) {
         HashMap<String, Object> filters = new HashMap<String, Object>();
 
-        filters.put(ResourcesGroup.KEY_NAME, name);
-        filters.put(ResourcesGroup.KEY_DESCRIPTION, description);
+        filters.put(ResourcesGroup.KEY_ID, ids);
+        filters.put(ResourcesGroup.KEY_NAME, names);
+        filters.put(ResourcesGroup.KEY_DESCRIPTION, descriptions);
         filters.put(ResourcesGroup.KEY_STATE, STATE.fromString(state));
 
-        QueryResponse queryResponse = resourcesGroupApi.getAllResourcesGroups(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : ResourcesGroup.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        return RestUtils.getResponse(Status.OK, resourcesGroupApi.getAllResourcesGroups(filters));
     }
 
     @POST
@@ -163,15 +162,13 @@ public class ResourcesGroupHandler {
         filters.put(ResourcesGroupMap.KEY_PAYLOAD_OFF, payloadOff);
         filters.put(ResourcesGroupMap.KEY_RESOURCE_TYPE, RESOURCE_TYPE.fromString(resourceType));
 
-        QueryResponse queryResponse = resourcesGroupApi.getAllResourcesGroupsMap(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : ResourcesGroupMap.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        return RestUtils.getResponse(Status.OK, resourcesGroupApi.getAllResourcesGroupsMap(filters));
     }
 
     @POST

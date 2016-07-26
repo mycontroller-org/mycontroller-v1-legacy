@@ -54,7 +54,8 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select data-live-search="true" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes  | orderBy:'displayName'" ng-change="refreshVariableTypes(sensor.type.en)" ng-model="sensor.type.en">
+              <select class="form-control" pf-select data-live-search="true" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes  | orderBy:'displayName'"
+                ng-change="refreshVariableTypes(sensor.type.en)" ng-model="sensor.type.en">
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
@@ -71,9 +72,10 @@
 
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'ROOM' | translate }}</label>
-            <div class="col-sm-5">
-              <select class="form-control" pf-select data-live-search="true" ng-options="room.id as room.displayName for room in rooms  | orderBy:'displayName'" ng-model="sensor.room.id">
-                <option value="" ng-hide="false"></option>
+            <div class="col-sm-10">
+              <select class="form-control" pf-select data-live-search="true" ng-model="sensor.room.id" >
+                <option value="">{{ 'NOTHING_SELECTED' | translate }}</option>
+                <option ng-repeat="room in rooms | orderBy:'displayName'" ng-bind-html="room.displayName | mcResourceRepresentation" value="{{room.id}}"  ng-selected="room.id == sensor.room.id"></option>
               </select>
             </div>
           </div>

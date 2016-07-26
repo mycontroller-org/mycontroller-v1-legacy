@@ -23,6 +23,7 @@ import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.operation.model.OperationExecuteScript;
+import org.mycontroller.standalone.operation.model.OperationRequestPayload;
 import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.operation.model.OperationSendPushbulletNote;
@@ -30,20 +31,22 @@ import org.mycontroller.standalone.operation.model.OperationSendSMS;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OperationUtils {
     public static final String OPERATION_SEND_PAYLOAD_TIMER_JOB = "operation_send_payload_";
     public static final String RULE_OPERATION = "rule_oper_";
     public static final String TIMER_OPERATION = "timer_oper_";
 
-    private OperationUtils() {
-    }
-
     public enum OPERATION_TYPE {
         SEND_PAYLOAD("Send payload"),
+        REQUEST_PAYLOAD("Request payload"),
         SEND_SMS("Send SMS"),
         SEND_EMAIL("Send email"),
         SEND_PUSHBULLET_NOTE("Send pushbullet note"),
@@ -91,6 +94,8 @@ public class OperationUtils {
                 return new OperationSendPushbulletNote(operationTable);
             case SEND_SMS:
                 return new OperationSendSMS(operationTable);
+            case REQUEST_PAYLOAD:
+                return new OperationRequestPayload(operationTable);
             default:
                 return null;
         }

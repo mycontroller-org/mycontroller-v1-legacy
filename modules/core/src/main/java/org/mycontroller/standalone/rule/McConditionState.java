@@ -18,9 +18,9 @@ package org.mycontroller.standalone.rule;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.model.RuleDefinitionState;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,19 +50,17 @@ public class McConditionState extends McRuleBase {
 
         //Update current value
         try {
-            actualValue = super.getResourceValue(rdState.getResourceType(), rdState.getResourceId());
+            setActualValue(super.getResourceValue(rdState.getResourceType(), rdState.getResourceId()));
             if (rdState.getResourceType() == RESOURCE_TYPE.SENSOR_VARIABLE) {
-                actualState = McUtils.getInteger(actualValue) > 0 ? STATE.ON : STATE.OFF;
+                actualState = McUtils.getInteger(getActualValue()) > 0 ? STATE.ON : STATE.OFF;
             } else {
-                actualState = STATE.fromString(actualValue);
+                actualState = STATE.fromString(getActualValue());
             }
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Actual value:{}", actualValue);
-        }
+        _logger.debug("Actual value:{}", getActualValue());
 
         switch (rdState.getOperator()) {
             case EQ:
@@ -80,9 +78,7 @@ public class McConditionState extends McRuleBase {
                 return false;
         }
 
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Rule evaluate result:{}", triggerOperation);
-        }
+        _logger.debug("Rule evaluate result:{}", triggerOperation);
         return executeDampening(triggerOperation);
     }
 }

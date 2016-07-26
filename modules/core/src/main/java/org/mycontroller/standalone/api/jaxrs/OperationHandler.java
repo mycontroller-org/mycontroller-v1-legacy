@@ -35,7 +35,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.api.OperationApi;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
@@ -64,7 +63,6 @@ public class OperationHandler extends AccessEngine {
     @Path("/")
     public Response getAll(
             @QueryParam(OperationTable.KEY_NAME) List<String> name,
-            @QueryParam(OperationTable.KEY_PUBLIC_ACCESS) Boolean publicAccess,
             @QueryParam(OperationTable.KEY_TYPE) String type,
             @QueryParam(OperationTable.KEY_ENABLED) Boolean enabled,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
@@ -75,18 +73,15 @@ public class OperationHandler extends AccessEngine {
 
         filters.put(OperationTable.KEY_NAME, name);
         filters.put(OperationTable.KEY_TYPE, OPERATION_TYPE.fromString(type));
-        filters.put(OperationTable.KEY_PUBLIC_ACCESS, publicAccess);
         filters.put(OperationTable.KEY_ENABLED, enabled);
 
-        QueryResponse queryResponse = operationApi.getAllRaw(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : OperationTable.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
+        return RestUtils.getResponse(Status.OK, operationApi.getAllRaw(filters));
     }
 
     @POST

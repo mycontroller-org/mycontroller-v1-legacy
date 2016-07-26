@@ -37,7 +37,6 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.api.NodeApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
@@ -76,20 +75,18 @@ public class NodeHandler extends AccessEngine {
         filters.put(Node.KEY_EUI, eui);
         filters.put(Node.KEY_NAME, name);
 
+        //Query primary filters
+        filters.put(Query.ORDER, order);
+        filters.put(Query.ORDER_BY, orderBy);
+        filters.put(Query.PAGE_LIMIT, pageLimit);
+        filters.put(Query.PAGE, page);
+
         //Add id filter if he is non-admin
         if (!isSuperAdmin()) {
             filters.put(Node.KEY_ID, getUser().getAllowedResources().getNodeIds());
         }
 
-        QueryResponse queryResponse = nodeApi.getAllNodes(
-                Query.builder()
-                        .order(order != null ? order : Query.ORDER_ASC)
-                        .orderBy(orderBy != null ? orderBy : Node.KEY_ID)
-                        .filters(filters)
-                        .pageLimit(pageLimit != null ? pageLimit : Query.MAX_ITEMS_PER_PAGE)
-                        .page(page != null ? page : 1L)
-                        .build());
-        return RestUtils.getResponse(Status.OK, queryResponse);
+        return RestUtils.getResponse(Status.OK, nodeApi.getAll(filters));
     }
 
     @GET
@@ -167,4 +164,15 @@ public class NodeHandler extends AccessEngine {
         }
     }
 
+    @POST
+    @Path("/executeNodeInfoUpdate")
+    public Response executeNodeInfoUpdate(List<Integer> ids) {
+        updateNodeIds(ids);
+        try {
+            nodeApi.executeNodeInfoUpdate(ids);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
 }

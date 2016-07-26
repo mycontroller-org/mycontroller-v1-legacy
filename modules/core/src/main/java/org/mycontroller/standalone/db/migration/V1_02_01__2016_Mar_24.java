@@ -23,7 +23,6 @@ import java.util.List;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DataBaseUtils;
@@ -59,6 +58,7 @@ import org.mycontroller.standalone.rule.model.RuleDefinitionString;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,6 +75,12 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
 
         //Load dao's
         loadDao();
+
+        /**
+         * Prerequisites: Need to done before this. V1_02_04__2016_Apr_25
+         */
+        V1_02_04__2016_Apr_25 prerequest = new V1_02_04__2016_Apr_25();
+        prerequest.migrate(connection);
 
         /** Migration comments
          *  Description:
@@ -100,9 +106,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
             //create table
             createTable(GatewayTable.class);
             List<HashMap<String, String>> rows = getRows(oldTableName);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Old table: {}", rows);
-            }
+            _logger.debug("Old table: {}", rows);
             for (HashMap<String, String> row : rows) {
                 DaoUtils.getGatewayDao().create(GatewayTable.builder()
                         .id(McUtils.getInteger(row.get(getColumnName(GatewayTable.KEY_ID))))
@@ -128,9 +132,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
         String notificationTable = "NOTIFICATION";
         if (hasTable(notificationTable)) {
             List<HashMap<String, String>> rows = getRows(notificationTable);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("{} table data: {}", notificationTable, rows);
-            }
+            _logger.debug("{} table data: {}", notificationTable, rows);
             for (HashMap<String, String> row : rows) {
                 if (row.get(getColumnName(OperationTable.KEY_TYPE)).equalsIgnoreCase("PUSHBULLET_NOTE")) {
                     row.put(getColumnName(OperationTable.KEY_TYPE), OPERATION_TYPE.SEND_PUSHBULLET_NOTE.name());
@@ -140,8 +142,6 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
                                 .builder()
                                 .id(McUtils.getInteger(row.get(getColumnName(OperationTable.KEY_ID))))
                                 .name(row.get(getColumnName(OperationTable.KEY_NAME)))
-                                .publicAccess(
-                                        McUtils.getBoolean(row.get(getColumnName(OperationTable.KEY_PUBLIC_ACCESS))))
                                 .type(OPERATION_TYPE.valueOf(row.get(getColumnName(OperationTable.KEY_TYPE))))
                                 .user(User.builder()
                                         .id(McUtils.getInteger(row.get(getColumnName(OperationTable.KEY_USER_ID))))
@@ -164,9 +164,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
         String alarmTable = "ALARM_DEFINITION";
         if (hasTable(alarmTable)) {
             List<HashMap<String, String>> rows = getRows(alarmTable);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("{} table data: {}", alarmTable, rows);
-            }
+            _logger.debug("{} table data: {}", alarmTable, rows);
             for (HashMap<String, String> row : rows) {
                 DaoUtils.getRuleDefinitionDao()
                         .create(RuleDefinitionTable
@@ -210,9 +208,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
         String alarmNotificationMapTable = "ALARM_NOTIFICATION_MAP";
         if (hasTable(alarmNotificationMapTable)) {
             List<HashMap<String, String>> rows = getRows(alarmNotificationMapTable);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("{} table data: {}", alarmNotificationMapTable, rows);
-            }
+            _logger.debug("{} table data: {}", alarmNotificationMapTable, rows);
             for (HashMap<String, String> row : rows) {
                 DaoUtils.getOperationRuleDefinitionMapDao().create(
                         OperationRuleDefinitionMap
@@ -240,9 +236,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
             //create table
             createTable(Timer.class);
             List<HashMap<String, String>> rows = getRows(oldTableName);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Timer old table: {}", rows);
-            }
+            _logger.debug("Timer old table: {}", rows);
             for (HashMap<String, String> row : rows) {
                 //Create operation
                 String operationName = row.get(getColumnName(GatewayTable.KEY_NAME)) + " - DB Migration";
@@ -259,7 +253,6 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
                                 .name(operationName)
                                 .enabled(true)
                                 .type(OPERATION_TYPE.SEND_PAYLOAD)
-                                .publicAccess(false)
                                 .user(getAdminUser())
                                 .properties(properties)
                                 .build());
@@ -397,7 +390,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
             properties.put(RuleDefinitionThreshold.KEY_OPERATOR, OPERATOR.NEQ.getText());
         }
 
-        _logger.info("Row data: {}", row);
+        _logger.debug("Row data: {}", row);
         switch (getConditionType(row)) {
             case STATE:
                 if (row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(

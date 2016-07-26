@@ -26,9 +26,14 @@ import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.util.Base64;
+import org.mycontroller.standalone.api.jaxrs.mixins.NodeMixinForScript;
+import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.User;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -38,13 +43,21 @@ public class RestUtils {
 
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
     private static final String AUTHENTICATION_SCHEME = "Basic";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static ObjectMapper OBJECT_MAPPER = null;
 
     private RestUtils() {
 
     }
 
     public static ObjectMapper getObjectMapper() {
+        if (OBJECT_MAPPER == null) {
+            OBJECT_MAPPER = new ObjectMapper();
+            OBJECT_MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true); // this creates a 'configured' mapper
+            OBJECT_MAPPER.setSerializationInclusion(Include.NON_NULL);
+            OBJECT_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            OBJECT_MAPPER.addMixIn(Node.class, NodeMixinForScript.class);
+        }
         return OBJECT_MAPPER;
     }
 

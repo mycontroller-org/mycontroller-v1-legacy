@@ -27,19 +27,21 @@ import javolution.io.Struct;
 public class UidTagStruct extends Struct {
     private Unsigned16 uid = new Unsigned16();
     private Unsigned16 type = new Unsigned16();
-    private Unsigned16 status = new Unsigned16();
     private Unsigned16 payload = new Unsigned16();
 
+    /*
+     * typedef struct {
+        uint16_t uid;
+        uint16_t status;
+        uint16_t payload;
+    } UID_STRUCT;
+     */
     public int getUid() {
         return uid.get();
     }
 
     public int getPayload() {
         return payload.get();
-    }
-
-    public int getStatus() {
-        return status.get();
     }
 
     @Override
@@ -52,17 +54,12 @@ public class UidTagStruct extends Struct {
         StringBuilder builder = new StringBuilder();
         builder.append("UID: ").append(uid);
         builder.append(", Type: ").append(type);
-        builder.append(", Status: ").append(status);
         builder.append(", Payload: ").append(payload);
         return builder.toString();
     }
 
     public void setUid(int uid) {
         this.uid.set(uid);
-    }
-
-    public void setStatus(int status) {
-        this.status.set(status);
     }
 
     public void setPayload(int payload) {

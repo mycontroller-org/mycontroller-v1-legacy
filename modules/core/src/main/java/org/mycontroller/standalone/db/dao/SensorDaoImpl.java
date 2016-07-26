@@ -328,4 +328,25 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             return null;
         }
     }
+
+    @Override
+    public Sensor getByRoomId(String sensorName, Integer roomId) {
+        try {
+            if (roomId == null) {
+                return this.getDao().queryForFirst(
+                        this.getDao().queryBuilder()
+                                .where().isNull(Sensor.KEY_ROOM_ID)
+                                .and().eq(Sensor.KEY_NAME, sensorName).prepare());
+            } else {
+                return this.getDao().queryForFirst(
+                        this.getDao().queryBuilder()
+                                .where().eq(Sensor.KEY_ROOM_ID, roomId)
+                                .and().eq(Sensor.KEY_NAME, sensorName).prepare());
+            }
+
+        } catch (SQLException ex) {
+            _logger.error("unable to get, roomId:{}, sensorName:{}", roomId, sensorName, ex);
+        }
+        return null;
+    }
 }

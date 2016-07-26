@@ -50,7 +50,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'TIMER_TYPE' | translate }}</label>
             <div class="col-sm-3 mc-form-fixer-left">
-              <select class="form-control" pf-select ng-change="timer.frequencyType=rpInterval=rpCount=''" ng-options="tt.displayName as tt.displayName for tt in timerTypes" ng-model="timer.timerType" required >
+              <select class="form-control" pf-select ng-change="timer.frequencyType=rpInterval=rpCount=''" ng-options="tt.id as tt.displayName for tt in timerTypes" ng-model="timer.timerType" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>

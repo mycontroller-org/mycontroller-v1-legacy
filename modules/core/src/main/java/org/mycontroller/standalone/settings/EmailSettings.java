@@ -16,7 +16,8 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.auth.McCrypt;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +31,7 @@ import lombok.ToString;
  */
 
 @Builder
-@ToString(includeFieldNames = true)
+@ToString(exclude = { "smtpPassword" })
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +41,7 @@ public class EmailSettings {
     public static final String SKEY_SMTP_PORT = "smtpPort";
     public static final String SKEY_FROM_ADDRESS = "fromAddress";
     public static final String SKEY_ENABLE_SSL = "enableSsl";
+    public static final String SKEY_USE_STARTTLS = "useStartTLS";
     public static final String SKEY_SMTP_USERNAME = "smtpUsername";
     public static final String SKEY_SMTP_PASSWORD = "smtpPassword";
 
@@ -47,16 +49,29 @@ public class EmailSettings {
     private Integer smtpPort;
     private String fromAddress;
     private Boolean enableSsl;
+    private Boolean useStartTLS;
     private String smtpUsername;
     private String smtpPassword;
 
+    public Boolean getUseStartTLS() {
+        if (useStartTLS == null) {
+            return false;
+        }
+        return useStartTLS;
+    }
+
     public static EmailSettings get() {
+        String emailPassword = getValue(SKEY_SMTP_PASSWORD);
+        if (emailPassword != null) {
+            emailPassword = McCrypt.decrypt(emailPassword);
+        }
         return EmailSettings.builder().smtpHost(getValue(SKEY_SMTP_HOST))
                 .smtpPort(McUtils.getInteger(getValue(SKEY_SMTP_PORT)))
                 .fromAddress(getValue(SKEY_FROM_ADDRESS))
                 .enableSsl(McUtils.getBoolean(getValue(SKEY_ENABLE_SSL)))
+                .useStartTLS(McUtils.getBoolean(getValue(SKEY_USE_STARTTLS)))
                 .smtpUsername(getValue(SKEY_SMTP_USERNAME))
-                .smtpPassword(getValue(SKEY_SMTP_PASSWORD)).build();
+                .smtpPassword(emailPassword).build();
     }
 
     public void save() {
@@ -64,7 +79,13 @@ public class EmailSettings {
         updateValue(SKEY_SMTP_PORT, smtpPort);
         updateValue(SKEY_FROM_ADDRESS, fromAddress);
         updateValue(SKEY_ENABLE_SSL, enableSsl);
+        if (useStartTLS != null) {
+            updateValue(SKEY_USE_STARTTLS, useStartTLS);
+        }
         updateValue(SKEY_SMTP_USERNAME, smtpUsername);
+        if (smtpPassword != null) {
+            smtpPassword = McCrypt.encrypt(smtpPassword);
+        }
         updateValue(SKEY_SMTP_PASSWORD, smtpPassword);
     }
 

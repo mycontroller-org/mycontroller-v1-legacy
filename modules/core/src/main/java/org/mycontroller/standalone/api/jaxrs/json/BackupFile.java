@@ -16,8 +16,6 @@
  */
 package org.mycontroller.standalone.api.jaxrs.json;
 
-import org.mycontroller.standalone.McUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,16 +34,12 @@ import lombok.ToString;
 @ToString(includeFieldNames = true)
 public class BackupFile implements Comparable<BackupFile> {
     private String name;
-    private String absolutePath;
+    private String canonicalPath;
     private Long timestamp;
     private Long size;
 
     @Override
     public int compareTo(BackupFile file) {
         return this.timestamp.compareTo(file.getTimestamp());
-    }
-
-    public String getFriendlyTime() {
-        return McUtils.getDifferenceFriendlyTime(timestamp);
     }
 }

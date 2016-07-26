@@ -24,12 +24,11 @@
       <pattern>%date %level [%thread] [%logger:%line] %msg%n</pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <FileNamePattern>mycontroller_%i.log.zip</FileNamePattern>
+      <FileNamePattern>../logs/mycontroller_%i.log.zip</FileNamePattern>
       <MinIndex>1</MinIndex>
       <MaxIndex>5</MaxIndex>
     </rollingPolicy>
-    <triggeringPolicy
-      class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
       <MaxFileSize>5MB</MaxFileSize>
     </triggeringPolicy>
   </appender>
@@ -40,25 +39,41 @@
     </encoder>
   </appender>
 
-  <logger level="INFO" name="org.apache.http"/>
-  <logger level="INFO" name="org.jboss.resteasy.core"/>
-  <logger level="INFO" name="com.j256.ormlite"/>
-  <logger level="WARN" name="com.j256.ormlite.table.TableUtils"/>
-  <logger level="WARN" name="org.quartz"/>
-  <logger level="WARN" name="com.xeiam.sundial"/>
+  <logger level="INFO" name="com.j256.ormlite" />
+  <logger level="INFO" name="org.apache.http" />
+  <logger level="INFO" name="org.jboss.resteasy.core" />
+  <logger level="WARN" name="com.j256.ormlite.table.TableUtils" />
+  <logger level="WARN" name="com.xeiam.sundial" />
+  <logger level="WARN" name="org.quartz" />
 
-  <logger level="INFO" name="org.mycontroller.standalone.provider"/>
-  <logger level="INFO" name="org.mycontroller.standalone.message"/>
-  <logger level="INFO" name="org.mycontroller.standalone"/>
-  <logger level="INFO" name="org.mycontroller.standalone.mysensors"/>
-  <logger level="INFO" name="org.mycontroller.standalone.scheduler"/>
-  <logger level="INFO" name="org.mycontroller.standalone.jobs"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db"/>
-  <logger level="INFO" name="org.mycontroller.standalone.alarm"/>
-  <logger level="INFO" name="org.mycontroller.standalone.timer.TimerUtils"/>
-  <logger level="INFO" name="org.mycontroller.standalone.db.dao"/>
-  <logger level="INFO" name="org.mycontroller.standalone.gateway"/>
-  <logger level="INFO" name="org.mycontroller.standalone.mqttbroker"/>
+  <logger level="INFO" name="org.mycontroller.standalone" />
+  <logger level="INFO" name="org.mycontroller.standalone.api" />
+  <logger level="INFO" name="org.mycontroller.standalone.api.jaxrs" />
+  <logger level="INFO" name="org.mycontroller.standalone.auth" />
+  <logger level="INFO" name="org.mycontroller.standalone.backup" />
+  <logger level="INFO" name="org.mycontroller.standalone.db" />
+  <logger level="INFO" name="org.mycontroller.standalone.db.dao" />
+  <logger level="INFO" name="org.mycontroller.standalone.db.migration" />
+  <logger level="INFO" name="org.mycontroller.standalone.email" />
+  <logger level="INFO" name="org.mycontroller.standalone.fwpayload" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway.ethernet" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway.mqtt" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway.serialport" />
+  <logger level="INFO" name="org.mycontroller.standalone.group" />
+  <logger level="INFO" name="org.mycontroller.standalone.jobs" />
+  <logger level="INFO" name="org.mycontroller.standalone.message" />
+  <logger level="INFO" name="org.mycontroller.standalone.metrics" />
+  <logger level="INFO" name="org.mycontroller.standalone.metrics.jobs" />
+  <logger level="INFO" name="org.mycontroller.standalone.mqttbroker" />
+  <logger level="INFO" name="org.mycontroller.standalone.mysensors" />
+  <logger level="INFO" name="org.mycontroller.standalone.restclient" />
+  <logger level="INFO" name="org.mycontroller.standalone.rule" />
+  <logger level="INFO" name="org.mycontroller.standalone.scheduler" />
+  <logger level="INFO" name="org.mycontroller.standalone.scripts" />
+  <logger level="INFO" name="org.mycontroller.standalone.settings" />
+  <logger level="INFO" name="org.mycontroller.standalone.timer" />
+  <logger level="INFO" name="org.mycontroller.standalone.uidtag" />
 
   <root level="WARN">
     <appender-ref ref="FILE" />

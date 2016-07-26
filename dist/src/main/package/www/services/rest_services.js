@@ -25,16 +25,11 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     update: { method: 'PUT', params: {sensorId: null}},
     delete: { method: 'DELETE', params: {sensorId: '@sensorId'} },
     deleteIds: { method: 'POST', params: {sensorId: 'deleteIds'} },
-    getSensorVariable: { method: 'GET', params: {sensorId: 'sensorVariable'}},
     updateVariable: { method: 'PUT', params: {sensorId: 'updateVariable', id:null}},
-    updateVariableUnit:  { method: 'PUT', params: {sensorId: 'updateVariableUnit', id:null}},
+    updateVariableConfig: { method: 'PUT', params: {sensorId: 'updateVariableConfig', id:null}},
     getVariables: { method: 'GET', isArray: true, params: {sensorId: 'getVariables', id:null}},
-
-    getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
-    sendPayload: { method: 'POST'},
-    getSensorByRefId: { method: 'GET', params: {nodeId: 'sensorByRefId'}},
-    getOthers: { method: 'GET', isArray: true, params: {nodeId: 'getOthers'}},
-    updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}},
+    getVariable: { method: 'GET', isArray: false, params: {sensorId: 'getVariable'}},
+    sendRawMessage: { method: 'POST', params: {sensorId:'sendRawMessage'} },
   })
 });
 
@@ -49,6 +44,7 @@ myControllerModule.factory('NodesFactory', function ($resource) {
     deleteIds: { method: 'POST', params: {nodeId: 'deleteIds'}},
     reboot: { method: 'POST', params: {nodeId: 'reboot'}},
     eraseConfiguration: { method: 'POST', params: {nodeId: 'eraseConfiguration'}},
+    executeNodeInfoUpdate: { method: 'POST', params: {nodeId: 'executeNodeInfoUpdate'}},
     uploadFirmware: { method: 'POST', params: {nodeId: 'uploadFirmware'}},
   })
 });
@@ -78,7 +74,12 @@ myControllerModule.factory('FirmwaresFactory', function ($resource) {
 myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
     getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
-    getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}  },
+    getExternalServerTypes:  { method: 'GET', isArray: true, params: {type: 'externalServerTypes'}  },
+    getTrustHostTypes:  { method: 'GET', isArray: true, params: {type: 'trustHostTypes'}  },
+    getNodeRegistrationStatuses:  { method: 'GET', isArray: true, params: {type: 'nodeRegistrationStatuses'}  },
+    getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}},
+    getMetricTypes:  { method: 'GET', isArray: true, params: {type: 'metricTypes'}},
+    getUnitTypes:  { method: 'GET', isArray: true, params: {type: 'unitTypes'}},
     getSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypes', id : null}  },
     getGatewayTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayTypes'} },
     getGatewayNetworkTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayNetworkTypes'} },
@@ -86,6 +87,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getResourceTypes:  { method: 'GET', isArray: true, params: {type: 'resourceTypes'} },
     getGateways:  { method: 'GET', isArray: true, params: {type: 'gateways'}  },
     getNodes:  { method: 'GET', isArray: true, params: {type: 'nodes'}  },
+    getExternalServers:  { method: 'GET', isArray: true, params: {type: 'externalServers'}  },
     getSensors:  { method: 'GET', isArray: true, params: {type: 'sensors'} },
     getSensorVariables:  { method: 'GET', isArray: true, params: {type: 'sensorVariables'} },
     getRuleDefinitions:  { method: 'GET', isArray: true, params: {type: 'ruleDefinitions'} },
@@ -147,6 +149,7 @@ myControllerModule.factory('MetricsFactory', function ($resource) {
     getMetricsData: { method: 'GET', isArray: true, params: {type: 'metricsData'}},
     getBatteryMetrics: { method: 'GET', isArray: false, params: {type: 'metricsBattery'}},
     getBulletChart: { method: 'GET', isArray: true, params: {type: 'bulletChart'}},
+    getTopologyData: { method: 'GET', isArray: false, params: {type: 'topology'}},
 
     getHeatMapBatteryLevel: { method: 'GET', isArray: true, params: {type: 'heatMapBatteryLevel'}},
     getHeatMapHeatMapNodeStatus: { method: 'GET', isArray: true, params: {type: 'heatMapNodeStatus'}},
@@ -285,12 +288,13 @@ myControllerModule.factory('ForwardPayloadFactory', function ($resource) {
   })
 });
 
-//ForwardPayload Services
-myControllerModule.factory('UidTagFactory', function ($resource) {
-  return $resource('/mc/rest/uidtag/:id', {id: '@id'}, {
-    getAll: { method: 'GET', isArray: true},
-    create: { method: 'POST'},
-    delete: { method: 'DELETE'}
+//UidTags Services
+myControllerModule.factory('UidTagsFactory', function ($resource) {
+  return $resource('/mc/rest/uidtags/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null}},
+    create: { method: 'POST', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    update: { method: 'PUT', params: {id: null}},
   })
 });
 
@@ -327,6 +331,10 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     saveMetricsRetention: { method: 'POST', params: {type:'metricsRetention'} },
     getUserSettings: { method: 'GET', isArray: false, params: {type:'userSettings'} },
     saveUserSettings: { method: 'POST', params: {type:'userSettings'} },
+    getMqttBroker: { method: 'GET', isArray: false, params: {type:'mqttBroker'} },
+    saveMqttBroker: { method: 'POST', params: {type:'mqttBroker'} },
+    getHtmlAdditionalHeaders: { method: 'GET', isArray: false, params: {type:'htmlAdditionalHeaders'} },
+    updateHtmlAdditionalHeaders: { method: 'POST', params: {type:'htmlAdditionalHeaders'} },
   })
 });
 
@@ -335,11 +343,11 @@ myControllerModule.factory('StatusFactory', function ($resource) {
   return $resource('/mc/rest/:type', {}, {
    getOsStatus: { method: 'GET', params: {type:'osStatus'} },
    getJvmStatus: { method: 'GET', params: {type:'jvmStatus'} },
-   getConfig: { method: 'GET', params: {type:'about'} },
+   runGarbageCollection: { method: 'PUT', params: {type:'runGarbageCollection'} },
+   getScriptEngines: { method: 'GET', isArray: true, params: {type:'scriptEngines'} },
+   getConfig: { method: 'GET', params: {type:'guiSettings'} },
+   getMcAbout: { method: 'GET', params: {type:'mcAbout'} },
    getTimestamp: { method: 'GET', params: {type:'timestamp'} },
-
-   getGatewayInfo: { method: 'GET', params: {type:'gatewayInfo'} },
-   sendRawMessage: { method: 'POST', params: {type:'sendRawMessage'} },
    getMcServerLog: { method: 'GET', isArray: false, params: {type:'mcServerLogFile'} },
    getStaticImageFile: { method: 'GET', isArray: false, params: {type:'imageFiles'} },
    getStaticImageFilesList: { method: 'GET', isArray: true, params: {type:'imageFiles'} },
@@ -358,20 +366,21 @@ myControllerModule.factory('GatewaysFactory', function ($resource) {
     disable: { method: 'POST', params: {gatewayId:'disable'} },
     reload: { method: 'POST', params: {gatewayId:'reload'} },
     discover: { method: 'POST', params: {gatewayId:'discover'} },
+    executeNodeInfoUpdate: { method: 'POST', params: {gatewayId:'executeNodeInfoUpdate'} },
   })
 });
 
 
 //ResourcesGroup Services
 myControllerModule.factory('ResourcesGroupFactory', function ($resource) {
-  return $resource('/mc/rest/resources/group/:id', {id: '@id'}, {
-    getAll: { method: 'GET', isArray: false, params: {id: null} },
-    get:    { method: 'GET' },
-    create: { method: 'POST', params: {id: null}},
-    update: { method: 'PUT', params: {id: null} },
-    deleteIds: { method: 'POST', params: {id: 'delete'} },
-    turnOnIds: { method: 'POST', params: {id: 'on'} },
-    turnOffIds: { method: 'POST', params: {id: 'off'} },
+  return $resource('/mc/rest/resources/group/:_id', {_id: '@_id'}, {
+    getAll: { method: 'GET', isArray: false, params: {_id: null} },
+    get:    { method: 'GET'},
+    create: { method: 'POST', params: {_id: null}},
+    update: { method: 'PUT', params: {_id: null} },
+    deleteIds: { method: 'POST', params: {_id: 'delete'} },
+    turnOnIds: { method: 'POST', params: {_id: 'on'} },
+    turnOffIds: { method: 'POST', params: {_id: 'off'} },
   })
 });
 
@@ -388,8 +397,8 @@ myControllerModule.factory('ResourcesGroupMapFactory', function ($resource) {
 
 //Read static files
 myControllerModule.factory('ReadFileFactory', function ($resource) {
-  return $resource('/:fileName', {}, {
-   getConfigFile: { method: 'GET', isArray: false, params: {fileName:'configMyController.json'} },
+  return $resource('/:locationName/:fileName', {}, {
+   getConfigFile: { method: 'GET', isArray: false, params: {locationName: 'configurations', fileName:'mycontroller-configs.json'} },
   })
 });
 
@@ -406,10 +415,10 @@ myControllerModule.factory('DashboardFactory', function ($resource) {
 //Backup and restore services
 myControllerModule.factory('BackupRestoreFactory', function ($resource) {
   return $resource('/mc/rest/backup/:type', {}, {
-    getBackupList:  { method: 'GET', isArray: true, params: {type: 'backupList'}},
+    getAll:  { method: 'GET', isArray: false, params: {type: 'backupFiles'}},
     backupNow:  { method: 'PUT', params: {type: 'backupNow'}},
     restore:  { method: 'POST', params: {type: 'restore'}},
-    delete:  { method: 'POST', params: {type: 'delete'}},
+    deleteIds:  { method: 'POST', params: {type: 'delete'}},
     getBackupSettings:  { method: 'GET', params: {type: 'backupSettings'}},
     updateBackupSettings:  { method: 'PUT', params: {type: 'backupSettings'}},
 
@@ -433,7 +442,58 @@ myControllerModule.factory('ScriptsFactory', function ($resource) {
     getAll: { method: 'GET', isArray: false, params: {id: null} },
     getAllLessInfo: { method: 'GET', isArray: true, params: {id: null, 'lessInfo':true} },
     get:    { method: 'GET', params: {id: 'get'}},
+    runNow:    { method: 'GET', params: {id: 'runNow'}},
     upload: { method: 'POST', params: {id: null} },
     deleteIds: { method: 'POST', params: {id: 'delete'} },
+  })
+});
+
+//Templates Services
+myControllerModule.factory('TemplatesFactory', function ($resource) {
+  return $resource('/mc/rest/templates/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null} },
+    getAllLessInfo: { method: 'GET', isArray: true, params: {id: null, 'lessInfo':true} },
+    get:    { method: 'GET', params: {id: 'get'}},
+    getHtml:    { method: 'GET', params: {id: 'getHtml'}},
+    upload: { method: 'POST', params: {id: null} },
+    deleteIds: { method: 'POST', params: {id: 'delete'} },
+  })
+});
+
+//Variables repository Services
+myControllerModule.factory('VariablesRepositoryFactory', function ($resource) {
+  return $resource('/mc/rest/variables/:pid', {pid: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {pid: null} },
+    get:    { method: 'GET', params: {pid: 'get'}},
+    create: { method: 'POST', params: {pid: null} },
+    update: { method: 'PUT', params: {pid: null} },
+    deleteIds: { method: 'POST', params: {pid: 'delete'} },
+  })
+});
+
+
+//Resources Data Services
+myControllerModule.factory('ResourcesDataFactory', function ($resource) {
+  return $resource('/mc/rest/resourcesdata/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null}},
+    create: { method: 'POST', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    enableIds: { method: 'POST', params: {id: 'enable'}},
+    disableIds: { method: 'POST', params: {id: 'disable'}},
+    get: { method: 'GET'},
+    update: { method: 'PUT', params: {id: null}},
+  })
+});
+
+//External Server Services
+myControllerModule.factory('ExternalServersFactory', function ($resource) {
+  return $resource('/mc/rest/externalserver/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null}},
+    create: { method: 'POST', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    enableIds: { method: 'POST', params: {id: 'enable'}},
+    disableIds: { method: 'POST', params: {id: 'disable'}},
+    get: { method: 'GET'},
+    update: { method: 'PUT', params: {id: null}},
   })
 });

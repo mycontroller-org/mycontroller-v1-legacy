@@ -62,7 +62,7 @@ public class Timer {
     public static final String KEY_LAST_FIRE = "lastFire";
     public static final String KEY_INTERNAL_VARIABLE1 = "internalVariable1";
 
-    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true)
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
 
     @DatabaseField(canBeNull = false, columnName = KEY_ENABLED)

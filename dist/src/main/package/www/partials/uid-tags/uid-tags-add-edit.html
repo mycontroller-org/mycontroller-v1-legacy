@@ -1,0 +1,61 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="resources.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+
+  <div ng-show="resources.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div><!-- div-main -->
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-5">
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'UID' | translate }}</label>
+            <div class="col-sm-5">
+              <input class="form-control" ng-model="item.uid" placeholder="{{ 'UID' | translate }}" required />
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'SENSOR_VARIABLE' | translate }}</label>
+            <div class="col-sm-10">
+              <select class="form-control" pf-select data-live-search="true" ng-model="item.sensorVariable.id" required >
+                <option value="" ng-hide="true"></option>
+                <option ng-repeat="res in resources" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}" ng-selected="item.sensorVariable.id == res.id"></option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div><!-- div-main -->
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

@@ -29,15 +29,16 @@ import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.BackupHandler;
 import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
+import org.mycontroller.standalone.api.jaxrs.ExternalServerHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
 import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
 import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
-import org.mycontroller.standalone.api.jaxrs.ImperiHomeISSHandler;
 import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
 import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
 import org.mycontroller.standalone.api.jaxrs.NodeHandler;
 import org.mycontroller.standalone.api.jaxrs.OperationHandler;
 import org.mycontroller.standalone.api.jaxrs.OptionsHandler;
+import org.mycontroller.standalone.api.jaxrs.ResourcesDataHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesGroupHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesLogsHandler;
 import org.mycontroller.standalone.api.jaxrs.RoomHandler;
@@ -46,9 +47,11 @@ import org.mycontroller.standalone.api.jaxrs.ScriptsHandler;
 import org.mycontroller.standalone.api.jaxrs.SecurityHandler;
 import org.mycontroller.standalone.api.jaxrs.SensorHandler;
 import org.mycontroller.standalone.api.jaxrs.SettingsHandler;
+import org.mycontroller.standalone.api.jaxrs.TemplatesHandler;
 import org.mycontroller.standalone.api.jaxrs.TimerHandler;
 import org.mycontroller.standalone.api.jaxrs.TypesHandler;
 import org.mycontroller.standalone.api.jaxrs.UidTagHandler;
+import org.mycontroller.standalone.api.jaxrs.VariablesHandler;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.ApplicationExceptionMapper;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.BadRequestExceptionMapper;
 import org.mycontroller.standalone.api.jaxrs.exception.mappers.DefaultOptionsMethodExceptionMapper;
@@ -66,7 +69,10 @@ import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils;
+import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -121,28 +127,31 @@ public class StartApp {
             deployment = new ResteasyDeployment();
         }
         ArrayList<String> resources = new ArrayList<String>();
-        resources.add(RuleHandler.class.getName());
         resources.add(AuthenticationHandler.class.getName());
         resources.add(BackupHandler.class.getName());
         resources.add(DashboardHandler.class.getName());
+        resources.add(ExternalServerHandler.class.getName());
         resources.add(FirmwareHandler.class.getName());
         resources.add(ForwardPayloadHandler.class.getName());
         resources.add(GatewayHandler.class.getName());
-        resources.add(ImperiHomeISSHandler.class.getName());
         resources.add(MetricsHandler.class.getName());
+        resources.add(MyControllerHandler.class.getName());
         resources.add(NodeHandler.class.getName());
         resources.add(OperationHandler.class.getName());
+        resources.add(ResourcesDataHandler.class.getName());
         resources.add(ResourcesGroupHandler.class.getName());
         resources.add(ResourcesLogsHandler.class.getName());
         resources.add(RoomHandler.class.getName());
+        resources.add(RuleHandler.class.getName());
+        resources.add(ScriptsHandler.class.getName());
         resources.add(SecurityHandler.class.getName());
         resources.add(SensorHandler.class.getName());
         resources.add(SettingsHandler.class.getName());
+        resources.add(TemplatesHandler.class.getName());
         resources.add(TimerHandler.class.getName());
         resources.add(TypesHandler.class.getName());
         resources.add(UidTagHandler.class.getName());
-        resources.add(MyControllerHandler.class.getName());
-        resources.add(ScriptsHandler.class.getName());
+        resources.add(VariablesHandler.class.getName());
 
         //Add PreFlight handler
         resources.add(OptionsHandler.class.getName());
@@ -233,9 +242,15 @@ public class StartApp {
         //Start DB service
         DataBaseUtils.loadDatabase();
 
+        //Create or update static json file used for GUI before login
+        SettingsUtils.updateStaticJsonInformationFile();
+
         //Set to locale actual
         McUtils.updateLocale(MC_LANGUAGE.fromString(AppProperties.getInstance().getControllerSettings()
                 .getLanguage()));
+
+        //List available script engines information
+        McScriptEngineUtils.listAvailableEngines();
 
         //Start message Monitor Thread
         //Create new thread to monitor received logs

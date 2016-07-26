@@ -32,6 +32,7 @@ import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableInfo;
@@ -130,7 +131,9 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             totalItemsBuilder.where().eq(isAlterdTotalCountKey, query.getFilters().get(isAlterdTotalCountKey));
             totalItemsAndCount++;
         } else {
-            if (query.getFilters().get(idColumn) != null) {
+            @SuppressWarnings("unchecked")
+            List<Object> idColumnList = (List<Object>) query.getFilters().get(idColumn);
+            if (idColumnList != null && !idColumnList.isEmpty()) {
                 totalItemsBuilder.where().in(idColumn, (List<?>) query.getFilters().get(idColumn));
                 totalItemsAndCount++;
             }
@@ -157,8 +160,14 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             queryBuilder.setWhere(where);
         }
 
-        queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
-                .orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
+        if (query.isOrderByRaw()) {
+            queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
+                    .orderByRaw(query.getOrderBy() + query.getOrder());
+        } else {
+            queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
+                    .orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
+        }
+
         //Remove allowed resources from query, to avoid send list to user
         query.getFilters().put(AllowedResources.KEY_ALLOWED_RESOURCES, null);
         return QueryResponse.builder().data(queryBuilder.query()).query(query).build();
@@ -208,6 +217,32 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Updated item:[{}], Update count:{}", tdao, count);
         } catch (SQLException ex) {
             _logger.error("unable to update item:[{}]", tdao, ex);
+        }
+    }
+
+    //Update items with out where condition
+    public void updateBulk(String setColName, Object setColValue) {
+        this.updateBulk(setColName, setColValue, null, null);
+    }
+
+    //Update items with where condition.
+    public void updateBulk(String setColName, Object setColValue, String whereColName, Object whereColValue) {
+        try {
+            UpdateBuilder<Tdao, Tid> updateBuilder = this.getDao().updateBuilder();
+            updateBuilder.updateColumnValue(setColName, setColValue);
+            if (whereColName != null) {
+                if (whereColValue != null) {
+                    updateBuilder.where().eq(whereColName, whereColValue);
+                } else {
+                    updateBuilder.where().isNull(whereColName);
+                }
+            }
+            Integer updateCount = updateBuilder.update();
+            _logger.debug("Updated column[{}] with value[{}] where column[{}] == value[{}], Updated row count:{}",
+                    setColName, setColValue, whereColName, whereColValue, updateCount);
+        } catch (SQLException ex) {
+            _logger.error("unable to update column[{}] with value[{}] where column[{}] == value[{}]", setColName,
+                    setColValue, whereColName, whereColValue, ex);
         }
     }
 
@@ -300,12 +335,17 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         return null;
     }
 
-    public Long countOf(String key, Object value) {
+    @SuppressWarnings("unchecked")
+    public long countOf(String key, Object data) {
         try {
-            return this.getDao().queryBuilder().where().eq(key, value).countOf();
+            if (data instanceof List) {
+                return this.getDao().queryBuilder().where().in(key, ((List<Object>) data)).countOf();
+            } else {
+                return this.getDao().queryBuilder().where().eq(key, data).countOf();
+            }
         } catch (SQLException ex) {
-            _logger.error("unable to get count key:{}, value:{}", key, value, ex);
-            return null;
+            _logger.error("unable to get count key:{}, data:{}", key, data, ex);
+            return 0;
         }
     }
 

@@ -17,12 +17,10 @@
 
 @ECHO OFF
 SET HEAP_MIN=-Xms8m
-SET HEAP_MAX=-Xmx40m
-
-SET MC_VERSION=0.0.3-alpha2-SNAPSHOT
+SET HEAP_MAX=-Xmx100m
 
 SET CONF_PROPERTIES_FILE=../conf/mycontroller.properties
 SET CONF_LOG_FILE=../conf/logback.xml
 
 @ECHO ON
-java %HEAP_MIN% %HEAP_MAX% -Dlogback.configurationFile=%CONF_LOG_FILE% -Dmc.conf.file=%CONF_PROPERTIES_FILE% -jar ../lib/mycontroller-standalone-%MC_VERSION%-single.jar > ../logs/mycontroller_console.log 2>&1
+java %HEAP_MIN% %HEAP_MAX% -Dlogback.configurationFile=%CONF_LOG_FILE% -Dmc.conf.file=%CONF_PROPERTIES_FILE% -cp "../lib/*" org.mycontroller.standalone.StartApp > ../logs/mycontroller_console.log 2>&1

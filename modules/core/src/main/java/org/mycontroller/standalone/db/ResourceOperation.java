@@ -16,8 +16,8 @@
  */
 package org.mycontroller.standalone.db;
 
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.ResourceOperationUtils.SEND_PAYLOAD_OPERATIONS;
+import org.mycontroller.standalone.utils.McUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)

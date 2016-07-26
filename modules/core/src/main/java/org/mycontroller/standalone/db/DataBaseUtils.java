@@ -27,12 +27,12 @@ import org.apache.commons.io.FileUtils;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.api.jaxrs.json.McAbout;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.settings.MyControllerSettings;
-import org.mycontroller.standalone.settings.SettingsUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
@@ -58,7 +58,8 @@ public class DataBaseUtils {
     private static final String DB_USERNAME = "mycontroller";
     private static final String DB_PASSWORD = "mycontroller";
     private static final String DB_MIGRATION_LOCATION = "org/mycontroller/standalone/db/migration";
-    private static final String APP_VERSION = "0.0.3-alpha2-SNAPSHOT";
+
+    //private static final String APP_VERSION = "0.0.3-alpha2-SNAPSHOT";
 
     // private static String databaseUrl = "jdbc:sqlite:/tmp/mysensors.db";
 
@@ -124,30 +125,35 @@ public class DataBaseUtils {
             }
 
             //set recent migration version to application table.
+            //load/reload settings
+            AppProperties.getInstance().loadPropertiesFromDb();
+            McAbout mcAbout = new McAbout();
             if (migrationsCount > 0) {
                 MyControllerSettings
                         .builder()
-                        .version(APP_VERSION)
+                        .version(mcAbout.getGitVersion())
                         .dbVersion(flyway.info().current().getVersion()
                                 + " - " + flyway.info().current().getDescription())
                         .build().updateInternal();
             } else {
                 MyControllerSettings
                         .builder()
-                        .version(APP_VERSION)
+                        .version(mcAbout.getGitVersion())
                         .build().updateInternal();
             }
 
             //After executed migration, reload settings again
             AppProperties.getInstance().loadPropertiesFromDb();
 
-            _logger.info("Number of migrations done:{}", migrationsCount);
+            if (migrationsCount > 0) {
+                _logger.info("Number of migrations done:{}", migrationsCount);
+            } else {
+                _logger.debug("Number of migrations done:{}", migrationsCount);
+            }
+
             _logger.info("Application information: [Version:{}, Database version:{}]",
                     AppProperties.getInstance().getControllerSettings().getVersion(),
                     AppProperties.getInstance().getControllerSettings().getDbVersion());
-
-            //create or update static json file used for GUI before login
-            SettingsUtils.updateStaticJsonInformationFile();
         } else {
             _logger.warn("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", DB_URL);
         }

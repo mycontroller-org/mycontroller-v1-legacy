@@ -20,15 +20,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.McUtils;
-import org.mycontroller.standalone.api.jaxrs.json.KeyValue;
-import org.mycontroller.standalone.api.jaxrs.json.KeyValue.TYPE;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
-import org.mycontroller.standalone.settings.Unit;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.units.Unit;
+import org.mycontroller.standalone.units.UnitUtils;
+import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -191,13 +190,23 @@ public class SensorUtils {
                 data = null;
                 break;
         }
-        if (data == null) {
+        if (data == null || data.equals("-")) {
             return null;
         } else {
-            if (sensorVariable.getUnit() == null || sensorVariable.getUnit().length() == 0) {
+            if (sensorVariable.getUnitType() == UNIT_TYPE.U_NONE) {
                 return data;
+            } else if (sensorVariable.getMetricType() == METRIC_TYPE.DOUBLE) {
+                Unit unit = UnitUtils.getUnit(sensorVariable.getUnitType());
+                Double orgData = McUtils.getDouble(data);
+                if (orgData < unit.getLimitLow()) {
+                    return McUtils.getDoubleAsString(orgData * unit.getMtplLow()) + " " + unit.getUnitLow();
+                } else if (orgData > unit.getLimitHigh()) {
+                    return McUtils.getDoubleAsString(orgData * unit.getDivHigh()) + " " + unit.getUnitHigh();
+                } else {
+                    return data + " " + unit.getUnit();
+                }
             } else {
-                return data + " " + sensorVariable.getUnit();
+                return data + " " + UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit();
             }
         }
     }
@@ -234,55 +243,5 @@ public class SensorUtils {
                 }
             }
         }
-    }
-
-    public static void updateOthers(Integer sensorRefId, List<KeyValue> keyValues) {
-
-        for (KeyValue keyValue : keyValues) {
-            if (keyValue.getType() == TYPE.UNIT) {
-                SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorRefId,
-                        MESSAGE_TYPE_SET_REQ.valueOf(keyValue.getKey()));
-                sensorVariable.setUnit(keyValue.getValue() != null && keyValue.getValue().trim().length() > 0 ?
-                        keyValue.getValue() : "");
-                DaoUtils.getSensorVariableDao().update(sensorVariable);
-            } else if (keyValue.getType() == TYPE.ENABLE_PAYLOAD) {
-                //Sensor sensor = DaoUtils.getSensorDao().getById(sensorRefId);
-                // DaoUtils.getSensorDao().updateWithEnableSendPayload(sensor);
-            }
-        }
-    }
-
-    public static List<KeyValue> getOthers(Integer sensorRefId) {
-        List<KeyValue> keyValues = new ArrayList<KeyValue>();
-        //Add sensor Units
-        List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorRefId);
-        for (SensorVariable sensorVariable : sensorVariables) {
-            keyValues.add(new KeyValue(
-                    sensorVariable.getVariableType().getText(),
-                    sensorVariable.getUnit(),
-                    KeyValue.TYPE.UNIT));
-        }
-        return keyValues;
-    }
-
-    public static String getUnit(MESSAGE_TYPE_SET_REQ variableType) {
-        Unit unit = null;
-        for (Unit tmpUnit : AppProperties.getInstance().getUnitsSettings().getVariables()) {
-            if (tmpUnit.getVariable().equalsIgnoreCase(variableType.getText())) {
-                unit = tmpUnit;
-                break;
-            }
-        }
-
-        if (unit != null) {
-            if (AppProperties.getInstance().getControllerSettings().getUnitConfig()
-                    .equalsIgnoreCase(UNIT_CONFIG.METRIC.getText())) {
-                return unit.getMetric();
-            } else {
-                return unit.getImperial();
-            }
-        }
-        return "";
-
     }
 }

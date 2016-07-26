@@ -55,8 +55,8 @@ public class SerialPortPi4jImpl implements IGateway {
     private void initialize() {
         try {
             // create an instance of the serial communications class
-            this.serial = SerialFactory.createInstance();
-            this.dataListenerPi4J = new SerialDataListenerPi4j(gateway);
+            serial = SerialFactory.createInstance();
+            dataListenerPi4J = new SerialDataListenerPi4j(gateway);
             // create and register the serial data listener
             serial.addListener(dataListenerPi4J);
             // open the serial port

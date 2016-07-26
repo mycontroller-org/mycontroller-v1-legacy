@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.api;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.McObjectManager;
@@ -35,8 +36,18 @@ import org.mycontroller.standalone.message.McMessageUtils;
  */
 public class NodeApi {
 
-    public QueryResponse getAllNodes(Query query) {
-        return DaoUtils.getNodeDao().getAll(query);
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        return DaoUtils.getNodeDao().getAll(Query.get(filters));
+    }
+
+    public Node get(HashMap<String, Object> filters) {
+        QueryResponse response = getAll(filters);
+        @SuppressWarnings("unchecked")
+        List<Node> items = (List<Node>) response.getData();
+        if (items != null && !items.isEmpty()) {
+            return items.get(0);
+        }
+        return null;
     }
 
     public Node get(int id) {
@@ -102,6 +113,14 @@ public class NodeApi {
 
         } else {
             throw new McBadRequestException("Selected Node not available!");
+        }
+    }
+
+    public void executeNodeInfoUpdate(List<Integer> ids) throws McBadRequestException {
+        try {
+            McObjectManager.getMcActionEngine().updateNodeInformations(null, ids);
+        } catch (Exception ex) {
+            throw new McBadRequestException(ex.getMessage());
         }
     }
 

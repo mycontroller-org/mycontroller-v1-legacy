@@ -17,13 +17,18 @@
 package org.mycontroller.standalone.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.mail.EmailException;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
+import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.operation.OperationUtils;
+import org.mycontroller.standalone.operation.PushbulletUtils;
+import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.operation.model.Operation;
 
 /**
@@ -37,16 +42,16 @@ public class OperationApi {
         return DaoUtils.getOperationDao().getById(id);
     }
 
-    public QueryResponse getAllRaw(Query query) {
-        return DaoUtils.getOperationDao().getAll(query);
+    public QueryResponse getAllRaw(HashMap<String, Object> filters) {
+        return DaoUtils.getOperationDao().getAll(Query.get(filters));
     }
 
     public Operation get(int id) {
         return OperationUtils.getOperation(getRaw(id));
     }
 
-    public QueryResponse getAll(Query query) {
-        QueryResponse queryResponse = getAllRaw(query);
+    public QueryResponse getAll(HashMap<String, Object> filters) {
+        QueryResponse queryResponse = getAllRaw(filters);
         ArrayList<Operation> gateways = new ArrayList<Operation>();
         @SuppressWarnings("unchecked")
         List<OperationTable> rows = (List<OperationTable>) queryResponse.getData();
@@ -55,6 +60,16 @@ public class OperationApi {
         }
         queryResponse.setData(gateways);
         return queryResponse;
+    }
+
+    public Operation get(HashMap<String, Object> filters) {
+        QueryResponse response = getAll(filters);
+        @SuppressWarnings("unchecked")
+        List<OperationTable> items = (List<OperationTable>) response.getData();
+        if (items != null && !items.isEmpty()) {
+            return OperationUtils.getOperation(items.get(0));
+        }
+        return null;
     }
 
     public void add(Operation operation) {
@@ -86,6 +101,18 @@ public class OperationApi {
             operationTable.setEnabled(false);
             DaoUtils.getOperationDao().update(operationTable);
         }
+    }
+
+    public void sendSMS(String toPhoneNumbers, String message) {
+        SMSUtils.sendSMS(toPhoneNumbers, message);
+    }
+
+    public void sendEmail(String emails, String subject, String message) throws EmailException {
+        EmailUtils.sendSimpleEmail(emails, subject, message);
+    }
+
+    public void sendPushbulletNote(String idens, String title, String body) {
+        PushbulletUtils.sendNote(idens, title, body);
     }
 
 }

@@ -50,11 +50,12 @@
                 <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.node.gateway.networkType}}</dd>
                 <dt>{{ 'ROOM' | translate }}</dt> <dd>{{item.room.name}}</dd>
                 <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.lastSeen"></span></dd>
+                <dt>{{ 'TOPOLOGY' | translate }}</dt> <dd><a class="mc-inline-editer-ab" ui-sref="dashboardTopology({ resourceType: 'Sensor', resourceId: item.id})"><span class="pficon pficon-topology mc-icon-lg"></span></a></dd>
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
                 <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
                 <dd>
-                  <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
-                  <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.resourcesGroups > 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
+                  <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
                 </dd>
 
               </dl>
@@ -95,12 +96,9 @@
                 <!-- Sensor variables -->
                 <div ng-init="variable.showVariable = true">
                 <div ng-show="variable.showVariable" ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
-                  <span ng-if="variable.metricType !== 'Binary'" class="mc-inline-editer-ab" buttons="no" onhide="variable.showVariable = true" onshow="variable.showVariable = false"
-                    onbeforesave="updateVariableUnit(variable)" editable-text="variable.unit">
-                    <span>
-                      <i uib-tooltip="Edit unit" tooltip-placement="left" class="pull-right fa fa-edit"></i>
-                    </span>
-                  </span>
+                  <a ui-sref="sensorVariableEdit({ id: variable.id })">
+                    <i uib-tooltip="{{ 'EDIT' | translate}}" tooltip-placement="left" class="pull-right fa fa-edit"></i>
+                  </a>
                 </div>
               </div>
             </div>

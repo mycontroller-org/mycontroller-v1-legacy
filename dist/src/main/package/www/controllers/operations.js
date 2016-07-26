@@ -202,10 +202,17 @@ $scope, OperationsFactory, $state, $uibModal, $stateParams, displayRestError, mc
     }
   };
 
-    //Edit item
+  //Edit item
   $scope.edit = function () {
     if($scope.itemIds.length == 1){
       $state.go("operationsAddEdit",{'id':$scope.itemIds[0]});
+    }
+  };
+
+  //Clone item
+  $scope.clone = function () {
+    if($scope.itemIds.length == 1){
+      $state.go("operationsAddEdit",{'id':$scope.itemIds[0], 'action': 'clone'});
     }
   };
 
@@ -214,7 +221,7 @@ $scope, OperationsFactory, $state, $uibModal, $stateParams, displayRestError, mc
 
 //Add Edit notification controller
 myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $stateParams, $state, GatewaysFactory,
-  NodesFactory, SensorsFactory, TypesFactory, OperationsFactory, ScriptsFactory, mchelper, alertService, displayRestError, $filter, CommonServices) {
+  NodesFactory, SensorsFactory, TypesFactory, OperationsFactory, ScriptsFactory, TemplatesFactory, mchelper, alertService, displayRestError, $filter, CommonServices) {
   $scope.mchelper = mchelper;
   $scope.item = {};
   $scope.item.enabled = true;
@@ -260,6 +267,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
           if($scope.item.resourceType !== 'Sensor variable'){
             $scope.updatePayloadOperations($scope.item.resourceType);
           }
+        }else if($scope.item.type === 'Execute script'){
+          $scope.item.scriptBindings = angular.toJson(response.scriptBindings);
         }
 
         //Update delay time
@@ -267,19 +276,31 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
           $scope.item.dt = $scope.item.delayTime/1000;
         }
 
+        if($stateParams.action === 'clone'){
+          $stateParams.id = undefined;
+          $scope.item.id = undefined;
+          $scope.item.name = $scope.item.name + '-' + $filter('translate')('CLONE');
+        }
+
       },function(error){
         displayRestError.display(error);
       });
+  }else{
+    $scope.item.scriptBindings='{ }';
   }
 
   //--------------pre load -----------
   $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "Rule definition"});
-  $scope.spResourceTypes = TypesFactory.getResourceTypes({"resourceType": "Rule definition", "isSendPayload":true});
+  $scope.spResourceTypes = TypesFactory.getResourceTypes({"operationType": "Send payload"});
+  $scope.reqPlResourceTypes = TypesFactory.getResourceTypes({"operationType": "Request payload"});
   $scope.operationTypes = TypesFactory.getOperationTypes();
+  $scope.templatesList = TemplatesFactory.getAllLessInfo();
   $scope.scriptsList = ScriptsFactory.getAllLessInfo({"type":"Operation"});
 
   //GUI page settings
-  $scope.showHeaderUpdate = $stateParams.id;
+  if(!$stateParams.action || $stateParams.action !== 'clone'){
+      $scope.showHeaderUpdate = $stateParams.id;
+  }
   $scope.headerStringAdd = $filter('translate')('ADD_OPERATION');
   $scope.headerStringUpdate = $filter('translate')('UPDATE_OPERATION');
   $scope.cancelButtonState = "operationsList"; //Cancel button url
@@ -291,7 +312,10 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
     if($scope.item.dt){
       $scope.item.delayTime = $scope.item.dt*1000;
     }
-
+    //Change string to JSON string
+    if($scope.item.type === 'Execute script'){
+      $scope.item.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.scriptBindings+')')));
+    }
     $scope.saveProgress = true;
     if($stateParams.id){
       OperationsFactory.update($scope.item, function(response) {

@@ -19,10 +19,11 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.UidTag;
 
-import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,68 +40,64 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     }
 
     @Override
-    public void create(UidTag uidTag) {
-        try {
-            Integer count = this.getDao().create(uidTag);
-            _logger.debug("Created UidTag:[{}], Create count:{}", uidTag, count);
-        } catch (SQLException ex) {
-            _logger.error("unable to add UidTag:[{}]", uidTag, ex);
+    public UidTag get(UidTag uidTag) {
+        return super.getById(uidTag.getId());
+    }
+
+    @Override
+    public List<UidTag> getAllByUid(List<String> uids) {
+        return super.getAll(UidTag.KEY_UID, uids);
+    }
+
+    @Override
+    public void deleteBySensorVariableIds(List<Integer> sVariableIds) {
+        super.delete(UidTag.KEY_SENSOR_VARIABLE, sVariableIds);
+    }
+
+    @Override
+    public void deleteBySensorId(Integer sId) {
+        List<Integer> senosrVariableIds = DaoUtils.getSensorVariableDao().getSensorVariableIds(sId);
+        if (senosrVariableIds != null && !senosrVariableIds.isEmpty()) {
+            deleteBySensorVariableIds(senosrVariableIds);
         }
     }
 
     @Override
-    public void delete(int id) {
-        UidTag uidTag = new UidTag(id);
+    public QueryResponse getAll(Query query) {
         try {
-            int count = this.getDao().delete(uidTag);
-            _logger.debug("UidTag:[{}] deleted, Delete count:{}", uidTag, count);
+            return this.getQueryResponse(query, UidTag.KEY_ID);
         } catch (SQLException ex) {
-            _logger.error("unable to delete UidTag:[{}]", uidTag, ex);
-        }
-    }
-
-    @Override
-    public void deleteBySensorRefId(int sensorRefId) {
-        try {
-            DeleteBuilder<UidTag, Integer> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().eq(UidTag.SENSOR_REF_ID, sensorRefId);
-            int deleteCount = deleteBuilder.delete();
-            _logger.debug("Deleted sensorRefId:[{}], delete count:{}", sensorRefId, deleteCount);
-        } catch (SQLException ex) {
-            _logger.error("unable to delete sensorRefId:{}", sensorRefId, ex);
-        }
-    }
-
-    @Override
-    public List<UidTag> getAll() {
-        try {
-            return this.getDao().queryForAll();
-        } catch (SQLException ex) {
-            _logger.error("unable to get all list", ex);
+            _logger.error("unable to run query:[{}]", query, ex);
             return null;
         }
     }
 
     @Override
-    public UidTag get(int uid) {
-        try {
-            return this.getDao().queryForId(uid);
-        } catch (SQLException ex) {
-            _logger.error("unable to fetch uid:[{}]", uid, ex);
-            return null;
+    public UidTag getBySensorVariableId(Integer sVariableId) {
+        List<UidTag> uidTags = super.getAll(UidTag.KEY_SENSOR_VARIABLE, sVariableId);
+        if (uidTags != null && !uidTags.isEmpty()) {
+            return uidTags.get(0);
         }
+        return null;
     }
 
     @Override
-    public UidTag getBySensorRefId(int sensorRefId) {
-        try {
-            QueryBuilder<UidTag, Integer> queryBuilder = this.getDao().queryBuilder();
-            queryBuilder.where().eq(UidTag.SENSOR_REF_ID, sensorRefId);
-            return queryBuilder.queryForFirst();
-        } catch (SQLException ex) {
-            _logger.error("unable to fetch uid:[{}]", sensorRefId, ex);
-            return null;
+    public UidTag getByUid(String uid) {
+        List<UidTag> uidTags = super.getAll(UidTag.KEY_UID, uid);
+        if (uidTags != null && !uidTags.isEmpty()) {
+            return uidTags.get(0);
         }
+        return null;
+    }
+
+    @Override
+    public void deleteByUid(String uid) {
+        super.delete(UidTag.KEY_UID, uid);
+    }
+
+    @Override
+    public List<UidTag> getAll(List<Integer> ids) {
+        return super.getAll(UidTag.KEY_ID, ids);
     }
 
 }

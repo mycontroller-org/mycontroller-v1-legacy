@@ -17,14 +17,19 @@
 package org.mycontroller.standalone.settings;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.api.jaxrs.json.About;
+import org.mycontroller.standalone.api.jaxrs.json.HtmlHeaderFiles;
+import org.mycontroller.standalone.api.jaxrs.json.McGuiSettings;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +39,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SettingsUtils {
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    static {
+        OBJECT_MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true);
+    }
 
     private SettingsUtils() {
 
@@ -112,11 +122,11 @@ public class SettingsUtils {
     //As all of our REST API basic authentication,
     //without authentication we need to serve some information about our controller
     public static void updateStaticJsonInformationFile() {
-        String fileLocation = AppProperties.getInstance().getWebFileLocation() + "configMyController.json";
+        String fileLocation = AppProperties.getInstance().getWebConfigurationsLocation() + "mycontroller-configs.json";
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             _logger.debug("controller information static file location:[{}]", fileLocation);
-            objectMapper.writeValue(new File(fileLocation), new About());
+            OBJECT_MAPPER.writeValue(new File(fileLocation), new McGuiSettings());
+            loadHtmlHeaderFiles(getHtmlIncludeFiles());
         } catch (Exception ex) {
             _logger.error("Unable to write static json information file! location:[{}]", fileLocation, ex);
         }
@@ -125,5 +135,64 @@ public class SettingsUtils {
     public static void updateAllSettings() {
         AppProperties.getInstance().loadPropertiesFromDb();
         updateStaticJsonInformationFile();
+    }
+
+    public static HtmlHeaderFiles getHtmlIncludeFiles() {
+        File htmlIncludeFile = FileUtils.getFile(AppProperties.getInstance().getHtmlHeadersFile());
+        if (htmlIncludeFile.exists()) {
+            try {
+                return OBJECT_MAPPER.readValue(htmlIncludeFile, HtmlHeaderFiles.class);
+            } catch (IOException ex) {
+                _logger.error("Exception, ", ex);
+            }
+        }
+        return HtmlHeaderFiles.builder()
+                .lastUpdate(System.currentTimeMillis())
+                .scripts(new ArrayList<String>())
+                .links(new ArrayList<String>())
+                .angularjsCustomControllers("")
+                .build();
+    }
+
+    private static void loadHtmlHeaderFiles(HtmlHeaderFiles htmlHeaderFiles) {
+        String htmlAdditionalHeaders = AppProperties.getInstance().getWebConfigurationsLocation()
+                + "additional-headers.html";
+        String angularJsCustomControllers = AppProperties.getInstance().getWebConfigurationsLocation()
+                + "custom-controllers.js";
+        try {
+            _logger.debug("Html additional headers file location:[{}], data:{}", htmlAdditionalHeaders,
+                    htmlHeaderFiles);
+            StringBuilder builder = new StringBuilder();
+            //Add css files
+            for (String cssLink : htmlHeaderFiles.getLinks()) {
+                if (cssLink.trim().length() > 0) {
+                    builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"")
+                            .append(cssLink.trim()).append("\">\n");
+                }
+            }
+            //Add js files
+            for (String scriptFile : htmlHeaderFiles.getScripts()) {
+                if (scriptFile.trim().length() > 0) {
+                    builder.append("<script src=\"").append(scriptFile.trim()).append("\"></script>\n");
+                }
+            }
+            FileUtils.writeStringToFile(FileUtils.getFile(htmlAdditionalHeaders), builder.toString());
+            //Add custom controllers file in to www location
+            FileUtils.writeStringToFile(FileUtils.getFile(angularJsCustomControllers),
+                    htmlHeaderFiles.getAngularjsCustomControllers());
+        } catch (Exception ex) {
+            _logger.error("Unable to write static html header information file! location:[{}]",
+                    htmlAdditionalHeaders, ex);
+        }
+    }
+
+    public static void saveHtmlIncludeFiles(HtmlHeaderFiles htmlHeaderFiles) {
+        try {
+            OBJECT_MAPPER.writeValue(FileUtils.getFile(AppProperties.getInstance().getHtmlHeadersFile()),
+                    htmlHeaderFiles);
+            loadHtmlHeaderFiles(htmlHeaderFiles);
+        } catch (IOException ex) {
+            _logger.error("Exception, ", ex);
+        }
     }
 }

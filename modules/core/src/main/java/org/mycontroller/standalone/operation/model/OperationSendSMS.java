@@ -21,7 +21,7 @@ import java.util.HashMap;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.operation.OperationNotification;
+import org.mycontroller.standalone.operation.Notification;
 import org.mycontroller.standalone.operation.SMSUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 
@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @Slf4j
+@NoArgsConstructor
 public class OperationSendSMS extends Operation {
 
     public static final String KEY_TO_PHONE_NUMBERS = "toPhoneNumbers";
@@ -47,10 +49,6 @@ public class OperationSendSMS extends Operation {
 
     private String toPhoneNumbers;
     private String customMessage;
-
-    public OperationSendSMS() {
-
-    }
 
     public OperationSendSMS(OperationTable operationTable) {
         this.updateOperation(operationTable);
@@ -94,11 +92,11 @@ public class OperationSendSMS extends Operation {
                     + ruleDefinition.getName());
         }
         try {
-            OperationNotification operationNotification = new OperationNotification(ruleDefinition);
+            Notification notification = new Notification(ruleDefinition);
             if (customMessage != null && customMessage.trim().length() > 0) {
-                SMSUtils.sendSMS(toPhoneNumbers, operationNotification.updateReferances(customMessage));
+                SMSUtils.sendSMS(toPhoneNumbers, Notification.updateTemplate(notification, customMessage));
             } else {
-                SMSUtils.sendSMS(toPhoneNumbers, operationNotification.toString());
+                SMSUtils.sendSMS(toPhoneNumbers, notification.toString());
             }
         } catch (Exception ex) {
             _logger.error("Exception,", ex);

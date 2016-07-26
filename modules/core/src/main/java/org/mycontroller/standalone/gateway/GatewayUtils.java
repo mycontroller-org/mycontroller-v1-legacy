@@ -31,11 +31,15 @@ import org.mycontroller.standalone.gateway.ethernet.EthernetGatewayImpl;
 import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
+import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
+import org.mycontroller.standalone.gateway.phantio.PhantIOGatewayImpl;
 import org.mycontroller.standalone.gateway.serialport.MYCSerialPort;
 import org.mycontroller.standalone.model.ResourceModel;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -43,18 +47,16 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.2
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GatewayUtils {
 
     public static final String OS_ARCH_ARM = "arm";
 
-    private GatewayUtils() {
-
-    }
-
     public enum GATEWAY_TYPE {
         SERIAL("Serial"),
         ETHERNET("Ethernet"),
-        MQTT("MQTT");
+        MQTT("MQTT"),
+        PHANT_IO("Sparkfun [phant.io]");
         public static GATEWAY_TYPE get(int id) {
             for (GATEWAY_TYPE type : values()) {
                 if (type.ordinal() == id) {
@@ -134,6 +136,8 @@ public class GatewayUtils {
                 return new GatewayEthernet(gatewayTable);
             case MQTT:
                 return new GatewayMQTT(gatewayTable);
+            case PHANT_IO:
+                return new GatewayPhantIO(gatewayTable);
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());
                 return null;
@@ -179,6 +183,9 @@ public class GatewayUtils {
             case MQTT:
                 iGateway = new MqttGatewayImpl(gatewayTable);
                 break;
+            case PHANT_IO:
+                iGateway = new PhantIOGatewayImpl(gatewayTable);
+                break;
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());
         }
@@ -197,9 +204,19 @@ public class GatewayUtils {
 
     public static synchronized void loadAllGateways() {
         List<GatewayTable> gateways = DaoUtils.getGatewayDao().getAllEnabled();
+        //Before load all gateways, make state to unavailable
+        for (GatewayTable gatewayTable : gateways) {
+            gatewayTable.setState(STATE.UNAVAILABLE);
+            gatewayTable.setStatusSince(System.currentTimeMillis());
+            gatewayTable.setStatusMessage("Yet to start this gateway!");
+            DaoUtils.getGatewayDao().update(gatewayTable);
+        }
+        //Load all the enabled gateways
+        gateways = DaoUtils.getGatewayDao().getAllEnabled();
         for (GatewayTable gatewayTable : gateways) {
             loadGateway(gatewayTable);
         }
+
     }
 
     public static synchronized void unloadAllGateways() {
@@ -247,14 +264,15 @@ public class GatewayUtils {
         unloadGateway(gatewayId);
         GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
         gatewayTable.setEnabled(true);
-        loadGateway(gatewayTable);
         DaoUtils.getGatewayDao().update(gatewayTable);
+        loadGateway(gatewayTable);
     }
 
     public static void disableGateway(Integer gatewayId) {
         unloadGateway(gatewayId);
         GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
         gatewayTable.setEnabled(false);
+        gatewayTable.setStatusSince(System.currentTimeMillis());
         gatewayTable.setState(STATE.UNAVAILABLE);
         gatewayTable.setStatusMessage("Disabled by user");
         DaoUtils.getGatewayDao().update(gatewayTable);

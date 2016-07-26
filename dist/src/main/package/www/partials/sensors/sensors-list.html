@@ -72,6 +72,7 @@
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
           <th>{{ 'NETWORK_TYPE' | translate }}</th>
           <th>{{ 'GATEWAY' | translate }}</th>
+          <th>{{ 'NODE_NAME' | translate }}</th>
           <th>{{ 'NODE_EUI' | translate }}</th>
           <th>{{ 'SENSOR_ID' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
@@ -87,12 +88,13 @@
             <td class="mc-align-center"><input type="checkbox" ng-checked="itemIds.indexOf(item.id) != -1"></td>
             <td>{{item.node.gateway.networkType}}</td>
             <td>{{item.node.gateway.name}} [{{item.node.gateway.type}}]</td>
+            <td>{{item.node.name}}</td>
             <td>{{item.node.eui}}</td>
             <td>{{item.sensorId}}</td>
             <td>{{item.name}}</td>
             <td>{{item.type.locale}}</td>
             <td>{{getSensorVariableTypes(item.variables)}}</td>
-            <td>{{item.room.name}}</td>
+            <td ng-bind-html="item.room.fullPath | mcResourceRepresentation"></td>
             <td><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left" am-time-ago="item.lastSeen"></span></td>
             <td class="mc-align-center">
               <a class="btn btn-link" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right fa-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-trigger tooltip-placement="top"></i></a>

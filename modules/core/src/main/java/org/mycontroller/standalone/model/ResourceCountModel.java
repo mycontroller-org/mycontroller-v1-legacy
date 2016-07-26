@@ -16,8 +16,11 @@
  */
 package org.mycontroller.standalone.model;
 
+import java.util.Collections;
+
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.tables.Sensor;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -39,6 +42,8 @@ public class ResourceCountModel {
         switch (resourceType) {
             case GATEWAY:
                 nodes = DaoUtils.getNodeDao().countOf(resourceId);
+                sensors = DaoUtils.getSensorDao().countOf(Sensor.KEY_NODE_ID,
+                        DaoUtils.getNodeDao().getNodeIdsByGatewayIds(Collections.singletonList(resourceId)));
                 resourcesGroups = DaoUtils.getResourcesGroupMapDao().countOf(resourceType, resourceId);
                 break;
             case NODE:

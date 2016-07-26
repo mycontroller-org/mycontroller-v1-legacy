@@ -38,12 +38,15 @@ public class Query {
     public static final String ORDER = "order";
     public static final String ORDER_BY = "orderBy";
     public static final String ORDER_ASC = "asc";
+    public static final String ORDER_DESC = "desc";
+    public static final String KEY_ID = "id";
 
     private Long totalItems;
     private Long filteredCount;
     private long pageLimit;
     private long page;
     private String orderBy;
+    private boolean orderByRaw = false;
 
     @NonNull
     private String order;//asc or desc
@@ -51,5 +54,30 @@ public class Query {
 
     public Long getStartingRow() {
         return (getPage() - 1) * getPageLimit();
+    }
+
+    public void setOrderByRawQuery(String rawQuery) {
+        orderBy = rawQuery;
+        orderByRaw = true;
+    }
+
+    public static Query get(HashMap<String, Object> filters) {
+        Query query = Query.builder()
+                .order(filters.get(ORDER) != null ? (String) filters.get(ORDER) : ORDER_ASC)
+                .orderBy(filters.get(ORDER_BY) != null ? (String) filters.get(ORDER_BY) : KEY_ID)
+                .filters(filters)
+                .pageLimit(filters.get(PAGE_LIMIT) != null ? (Long) filters.get(PAGE_LIMIT) : MAX_ITEMS_PER_PAGE)
+                .page(filters.get(PAGE) != null ? (long) filters.get(PAGE) : 1L)
+                .build();
+        //Check order if not asc change to desc
+        if (!query.order.equalsIgnoreCase(ORDER_ASC)) {
+            query.setOrder(ORDER_DESC);
+        }
+        //remove unwanted from filters list
+        filters.remove(ORDER);
+        filters.remove(ORDER_BY);
+        filters.remove(PAGE_LIMIT);
+        filters.remove(PAGE);
+        return query;
     }
 }

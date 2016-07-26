@@ -23,11 +23,11 @@ import java.util.List;
 import javax.script.ScriptException;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -39,6 +39,7 @@ import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngine;
 import org.mycontroller.standalone.scripts.McScriptException;
+import org.mycontroller.standalone.utils.McUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -85,6 +86,15 @@ public class MetricApi {
                     .build();
         }
         return metricDouble;
+    }
+
+    public List<MetricsCounterTypeDevice> getSensorVariableMetricsCounter(Integer sensorVariableId,
+            Long timestampFrom, Long timestampTo) {
+        return DaoUtils.getMetricsCounterTypeDeviceDao().getAll(MetricsCounterTypeDevice.builder()
+                .timestampFrom(timestampFrom)
+                .timestampTo(timestampTo)
+                .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
+                .build());
     }
 
     public List<MetricsBinaryTypeDevice> getSensorVariableMetricsBinary(Integer sensorVariableId,
@@ -176,7 +186,6 @@ public class MetricApi {
         for (SensorVariable sVariable : sVariables) {
             if (sVariable.getValue() != null) {
                 value = McUtils.round(McUtils.getDouble(sVariable.getValue()) / upperLimit, 2);
-
                 mcHeatMap.add(McHeatMap.builder()
                         .id(sVariable.getId().longValue())
                         .altId(sVariable.getSensor().getId().longValue())

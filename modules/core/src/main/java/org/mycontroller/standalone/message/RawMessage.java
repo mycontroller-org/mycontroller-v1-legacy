@@ -36,7 +36,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class RawMessage {
     private Integer gatewayId;
-    private String data;
+    private Object data;
     private String subData;
     private boolean isTxMessage = false;
     private NETWORK_TYPE networkType;
@@ -50,7 +50,7 @@ public class RawMessage {
 
     //Return bytes
     public byte[] getGWBytes() {
-        return this.data.getBytes();
+        return ((String) this.data).getBytes();
     }
 
 }

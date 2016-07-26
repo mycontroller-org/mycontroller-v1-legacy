@@ -47,13 +47,14 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'NETWORK_TYPE' | translate }}</label>
             <div class="col-sm-5">
-              <select class="form-control" pf-select ng-options="gatewayNetworkType.id as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes | orderBy:'displayName'" ng-model="gateway.networkType" required >
+              <select class="form-control" pf-select ng-change="updateGatewayTypes()"
+                ng-options="gatewayNetworkType.id as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes | orderBy:'displayName'" ng-model="gateway.networkType" required >
                 <option value="" ng-hide="true"></option>
               </select>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-if="gateway.networkType">
             <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
             <div class="col-sm-5">
               <select class="form-control" pf-select ng-options="gatewayType.id as gatewayType.displayName for gatewayType in gatewayTypes | orderBy:'displayName'" ng-model="gateway.type" ng-change="updateTypeChange()" required >
@@ -170,6 +171,59 @@
               <label class="col-sm-2 control-label">{{ 'PASSWORD' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" placeholder="{{ 'PASSWORD' | translate }}" ng-model="gateway.password"/>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Sparkfun [phant.io] Gateway -->
+          <div ng-if="gateway.type === 'Sparkfun [phant.io]'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'URL' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'URL' | translate }}" ng-model="gateway.url" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'TRUST_HOST' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-options="type.id as type.displayName for type in trustHostTypes  | orderBy:'displayName'" ng-model="gateway.trustHostType" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'PUBLIC_KEY' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'PUBLIC_KEY' | translate }}" ng-model="gateway.publicKey" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'PRIVATE_KEY' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'PRIVATE_KEY' | translate }}" ng-model="gateway.privateKey" pf-validation="cs.isContainsSpace(input)" />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'POLL_FREQUENCY_MINUTES' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'POLL_FREQUENCY_MINUTES' | translate }}" ng-model="gateway.pollFrequency"  pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RECORDS_LIMIT' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'RECORDS_LIMIT' | translate }}" ng-model="gateway.recordsLimit"  pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
             </div>
 

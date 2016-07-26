@@ -58,8 +58,8 @@ public class FirmwareConfigResponse extends Struct {
         return builder.toString();
     }
 
-    //Refer https://github.com/mysensors/Arduino/blob/master/MYSBootloader/MYSBootloader.c#L261
-    //https://github.com/mysensors/Arduino/blob/master/MYSBootloader/MYSBootloader.h#L19
+    //Refer https://github.com/mysensors/MySensorsBootloaderRF24/blob/master/MYSBootloader.c#L261
+    //https://github.com/mysensors/MySensorsBootloaderRF24/blob/master/MYSBootloader.h#L19
     private void loadBootloaderCommand(Integer command) {
         setBlocks(0);
         setCrc(0xDA7A);

@@ -18,7 +18,6 @@ package org.mycontroller.standalone.provider.mysensors;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
@@ -31,6 +30,7 @@ import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE_STREAM;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.Data;
 import lombok.ToString;
@@ -55,15 +55,15 @@ public class MySensorsRawMessage {
     private boolean isTxMessage = false;
 
     public MySensorsRawMessage(RawMessage rawMessage) throws RawMessageException {
-        this.gatewayId = rawMessage.getGatewayId();
-        this.isTxMessage = rawMessage.isTxMessage();
+        gatewayId = rawMessage.getGatewayId();
+        isTxMessage = rawMessage.isTxMessage();
         switch (McObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getType()) {
             case MQTT:
-                this.updateMQTTMessage(rawMessage.getSubData(), rawMessage.getData());
+                updateMQTTMessage(rawMessage.getSubData(), (String)rawMessage.getData());
                 break;
             case ETHERNET:
             case SERIAL:
-                updateSerialMessage(rawMessage.getData());
+                updateSerialMessage((String)rawMessage.getData());
                 break;
             default:
                 _logger.warn(
@@ -77,6 +77,8 @@ public class MySensorsRawMessage {
         gatewayId = mcMessage.getGatewayId();
         if (mcMessage.getNodeEui().equalsIgnoreCase(McMessage.NODE_BROADCAST_ID)) {
             nodeId = MySensorsUtils.NODE_ID_BROADCAST;
+        } else if (mcMessage.getNodeEui().equalsIgnoreCase(McMessage.GATEWAY_NODE_ID)) {
+            nodeId = MySensorsUtils.GATEWAY_ID;
         } else {
             nodeId = McUtils.getInteger(mcMessage.getNodeEui());
         }
@@ -95,18 +97,18 @@ public class MySensorsRawMessage {
 
     private void updateMQTTMessage(String topic, String message) throws RawMessageException {
         if (message != null) {
-            this.payload = message;
+            payload = message;
         }
         // Topic structure:
         // MY_MQTT_TOPIC_PREFIX/NODE-KEY_ID/SENSOR_VARIABLE-KEY_ID/CMD-OPERATION_TYPE/ACK-FLAG/SUB-OPERATION_TYPE
         String[] msgArry = topic.split("/");
         if (msgArry.length == 6) {
-            this.nodeId = Integer.valueOf(msgArry[1]);
-            this.childSensorId = Integer.valueOf(msgArry[2]);
-            this.messageType = Integer.valueOf(msgArry[3]);
-            this.ack = Integer.valueOf(msgArry[4]);
-            this.subType = Integer.valueOf(msgArry[5]);
-            _logger.debug("Message: {}", this.toString());
+            nodeId = Integer.valueOf(msgArry[1]);
+            childSensorId = Integer.valueOf(msgArry[2]);
+            messageType = Integer.valueOf(msgArry[3]);
+            ack = Integer.valueOf(msgArry[4]);
+            subType = Integer.valueOf(msgArry[5]);
+            _logger.debug("Message: {}", toString());
         } else {
             _logger.debug("Unknown message format, Topic:[{}], PayLoad:[{}]", topic, message);
             throw new RawMessageException("Unknown message format, Topic:" + topic + ", PayLoad:" + message);
@@ -119,15 +121,15 @@ public class MySensorsRawMessage {
         }
         String[] msgArry = gateWayMessage.split(";");
         if (msgArry.length == 6) {
-            this.payload = msgArry[5];
+            payload = msgArry[5];
         }
         if (msgArry.length >= 5) {
-            this.nodeId = Integer.valueOf(msgArry[0]);
-            this.childSensorId = Integer.valueOf(msgArry[1]);
-            this.messageType = Integer.valueOf(msgArry[2]);
-            this.ack = Integer.valueOf(msgArry[3]);
-            this.subType = Integer.valueOf(msgArry[4]);
-            _logger.debug("Message: {}", this.toString());
+            nodeId = Integer.valueOf(msgArry[0]);
+            childSensorId = Integer.valueOf(msgArry[1]);
+            messageType = Integer.valueOf(msgArry[2]);
+            ack = Integer.valueOf(msgArry[3]);
+            subType = Integer.valueOf(msgArry[4]);
+            _logger.debug("Message: {}", toString());
         } else {
             _logger.debug("Unknown message format: [{}]", gateWayMessage);
             throw new RawMessageException("Unknown message format:[" + gateWayMessage + "]");
@@ -143,28 +145,28 @@ public class MySensorsRawMessage {
     }
 
     public void setPayload(Object payload) {
-        this.payload = String.valueOf(payload);
+        payload = String.valueOf(payload);
     }
 
     public Boolean getPayloadBoolean() {
-        if (this.payload.trim().equalsIgnoreCase("0")) {
+        if (payload.trim().equalsIgnoreCase("0")) {
             return false;
-        } else if (Integer.valueOf(this.payload.trim()) > 0) {
+        } else if (Integer.valueOf(payload.trim()) > 0) {
             return true;
         } else {
-            _logger.warn("Unable to convert as boolean, Unknown format:{}", this.payload);
+            _logger.warn("Unable to convert as boolean, Unknown format:{}", payload);
             return null;
         }
     }
 
     public String getGWString() {
         StringBuffer message = new StringBuffer();
-        message.append(this.nodeId).append(";");
-        message.append(this.childSensorId).append(";");
-        message.append(this.messageType).append(";");
-        message.append(this.ack).append(";");
-        message.append(this.subType).append(";");
-        message.append(this.payload).append("\n");
+        message.append(nodeId).append(";");
+        message.append(childSensorId).append(";");
+        message.append(messageType).append(";");
+        message.append(ack).append(";");
+        message.append(subType).append(";");
+        message.append(payload).append("\n");
         return message.toString();
     }
 
@@ -172,24 +174,24 @@ public class MySensorsRawMessage {
         // Topic structure:
         // MY_MQTT_TOPIC_PREFIX/NODE-KEY_ID/SENSOR_VARIABLE-KEY_ID/CMD-OPERATION_TYPE/ACK-FLAG/SUB-OPERATION_TYPE
         StringBuilder builder = new StringBuilder();
-        String[] topicsPublish = ((GatewayMQTT) McObjectManager.getGateway(this.gatewayId).getGateway())
+        String[] topicsPublish = ((GatewayMQTT) McObjectManager.getGateway(gatewayId).getGateway())
                 .getTopicsPublish().split(GatewayMQTT.TOPICS_SPLITER);
         for (String topic : topicsPublish) {
             if (builder.length() > 0) {
                 builder.append(GatewayMQTT.TOPICS_SPLITER);
             }
             builder.append(topic.trim());
-            builder.append("/").append(this.getNodeId());
-            builder.append("/").append(this.getChildSensorId());
-            builder.append("/").append(this.getMessageType());
-            builder.append("/").append(this.getAck());
-            builder.append("/").append(this.getSubType());
+            builder.append("/").append(getNodeId());
+            builder.append("/").append(getChildSensorId());
+            builder.append("/").append(getMessageType());
+            builder.append("/").append(getAck());
+            builder.append("/").append(getSubType());
         }
         return builder.toString();
     }
 
     public RawMessage getRawMessage() {
-        GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(this.gatewayId);
+        GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
         switch (gatewayTable.getType()) {
             case MQTT:
                 return RawMessage.builder()
@@ -216,7 +218,7 @@ public class MySensorsRawMessage {
                 .acknowledge(ack == 0)
                 .gatewayId(gatewayId)
                 .nodeEui(nodeId)
-                .SensorId(sensorId)
+                .sensorId(sensorId)
                 .networkType(NETWORK_TYPE.MY_SENSORS)
                 .type(MESSAGE_TYPE.fromString(MYS_MESSAGE_TYPE.get(messageType).getText()))
                 .subType(getMcMessageSubType())

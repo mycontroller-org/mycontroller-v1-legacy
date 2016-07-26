@@ -31,7 +31,7 @@
       <div class="row-cards-pf ">
 
         <div class="col-xs-6 col-sm-6 col-lg-6">
-          <div class="card-pf card-pf-utilization">
+          <div class="card-pf card-pf-utilization card-pf-accented">
             <div class="card-pf-heading">
               <h2 class="card-pf-title">{{ 'DETAILS' | translate }} <a class="btn btn-link pull-right" ui-sref="gatewaysAddEdit({ id: item.id })"><i class="fa fa-edit"></i> {{ 'EDIT' | translate }} </a></h2>
             </div>
@@ -58,22 +58,22 @@
                 </dd>
                 <dt>{{ 'STATUS_SINCE' | translate }}</dt> <dd><span uib-tooltip="{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.statusSince"></span></dd>
                 <dt>{{ 'STATUS_MESSAGE' | translate }}</dt> <dd>{{item.statusMessage}}</dd>
+                <dt>{{ 'TOPOLOGY' | translate }}</dt> <dd><a class="mc-inline-editer-ab" ui-sref="dashboardTopology({ resourceType: 'Gateway', resourceId: item.id})"><span class="pficon pficon-topology mc-icon-lg"></span></a></dd>
 
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
                 <dt><span class="fa fa-sitemap mc-icon-md-3"></span>{{ 'NODES' | translate }}</dt>
                 <dd>
-                  <a  ng-hide="resourceCount.sensors == 0" ui-sref="nodesList({ gatewayId: item.id})">{{resourceCount.nodes}}</a>
-                  <span ng-show="resourceCount.sensors == 0">{{resourceCount.nodes}}</span>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.nodes > 0" ui-sref="nodesList({ gatewayId: item.id})">{{resourceCount.nodes}}</a>
+                  <span ng-if="resourceCount.nodes == 0">{{resourceCount.nodes}}</span>
                 </dd>
                 <dt><span class="fa fa-eye mc-icon-md-3"></span>{{ 'SENSORS' | translate }}</dt>
                 <dd>
-                  <a  ng-hide="resourceCount.sensors == 0" >{{resourceCount.sensors}}</a>
-                  <span ng-show="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
+                  <span>{{resourceCount.sensors}}</span>
                 </dd>
                 <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
                 <dd>
-                  <a  ng-hide="resourceCount.resourcesGroups == 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
-                  <span ng-show="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.resourcesGroups > 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
+                  <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
                 </dd>
               </dl>
             </div>

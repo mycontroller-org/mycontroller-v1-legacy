@@ -83,6 +83,13 @@ public abstract class MigrationBase implements JdbcMigration {
         }
     }
 
+    protected void alterColumn(String tableName, String columnName, String columnDefinition) throws SQLException {
+        int alterCount = DaoUtils.getUserDao().getDao().executeRaw("ALTER TABLE "
+                + tableName.toUpperCase() + " ALTER COLUMN " + columnName.toUpperCase() + " " + columnDefinition);
+        _logger.debug("Altered column:{}, columnDefinition:{}, table:{}, add count:{}",
+                columnName, columnDefinition, tableName, alterCount);
+    }
+
     protected void addColumn(String tableName, String columnName, String columnDefinition) throws SQLException {
         int addCount = DaoUtils.getUserDao().getDao().executeRaw(
                 "ALTER TABLE " + tableName.toUpperCase() + " ADD COLUMN IF NOT EXISTS "
@@ -186,6 +193,11 @@ public abstract class MigrationBase implements JdbcMigration {
                     "There is no admin user in this database. For this migration a admin user required!");
         }
         return user;
+    }
+
+    protected void executeRaw(String rawQuery) throws SQLException {
+        int count = DaoUtils.getUserDao().getDao().executeRaw(rawQuery);
+        _logger.debug("count:{}", count);
     }
 
 }

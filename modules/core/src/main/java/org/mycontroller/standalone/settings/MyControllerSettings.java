@@ -16,7 +16,7 @@
  */
 package org.mycontroller.standalone.settings;
 
-import org.mycontroller.standalone.McUtils;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -50,12 +50,15 @@ public class MyControllerSettings {
     public static final String SKEY_DASHBOARD_LIMIT = "dashboardLimit";
     public static final String SKEY_WIDGET_IMAGE_FILES_LOCATION = "widgetImageFilesLocation";
     public static final String SKEY_TABLE_ROWS_LIMIT = "tableRowsLimit";
+    public static final String SKEY_AUTO_NODE_REGISTRATION = "autoNodeRegistration";
+    public static final String SKEY_EXECUTE_DISCOVER_INTERVAL = "executeDiscoverInterval";
 
     private String language;
     private String timeFormat;
     private String version;
     private String dbVersion;
     private Long aliveCheckInterval;
+    private Long executeDiscoverInterval;
     private String unitConfig;
     private String loginMessage;
     private Boolean grantAccessToChildResources;
@@ -64,6 +67,7 @@ public class MyControllerSettings {
     private Integer dashboardLimit;
     private String widgetImageFilesLocation;
     private Integer tableRowsLimit;
+    private Boolean autoNodeRegistration;
 
     public static MyControllerSettings get() {
         return MyControllerSettings.builder()
@@ -72,6 +76,7 @@ public class MyControllerSettings {
                 .version(getValue(SKEY_VERSION))
                 .dbVersion(getValue(SKEY_DB_VERSION))
                 .aliveCheckInterval(McUtils.getLong(getValue(SKEY_ALIVE_CHECK_INTERVAL)))
+                .executeDiscoverInterval(McUtils.getLong(getValue(SKEY_EXECUTE_DISCOVER_INTERVAL)))
                 .unitConfig(getValue(SKEY_UNIT_CONFIG))
                 .loginMessage(getValue(SKEY_LOGIN_MESSAGE))
                 .grantAccessToChildResources(McUtils.getBoolean(getValue(SKEY_GRANT_ACCESS_TO_CHILD_RESOURCES)))
@@ -80,6 +85,7 @@ public class MyControllerSettings {
                 .dashboardLimit(McUtils.getInteger(getValue(SKEY_DASHBOARD_LIMIT)))
                 .widgetImageFilesLocation(getValue(SKEY_WIDGET_IMAGE_FILES_LOCATION))
                 .tableRowsLimit(McUtils.getInteger(getValue(SKEY_TABLE_ROWS_LIMIT)))
+                .autoNodeRegistration(McUtils.getBoolean(getValue(SKEY_AUTO_NODE_REGISTRATION)))
                 .build();
     }
 
@@ -92,6 +98,9 @@ public class MyControllerSettings {
         }
         if (aliveCheckInterval != null) {
             updateValue(SKEY_ALIVE_CHECK_INTERVAL, aliveCheckInterval);
+        }
+        if (executeDiscoverInterval != null) {
+            updateValue(SKEY_EXECUTE_DISCOVER_INTERVAL, executeDiscoverInterval);
         }
         if (unitConfig != null) {
             updateValue(SKEY_UNIT_CONFIG, unitConfig);
@@ -116,6 +125,9 @@ public class MyControllerSettings {
         }
         if (tableRowsLimit != null) {
             updateValue(SKEY_TABLE_ROWS_LIMIT, tableRowsLimit);
+        }
+        if (autoNodeRegistration != null) {
+            updateValue(SKEY_AUTO_NODE_REGISTRATION, autoNodeRegistration);
         }
     }
 

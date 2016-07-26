@@ -17,77 +17,39 @@
 package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
-import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
+@Builder
+@ToString
+@Data
 @DatabaseTable(tableName = DB_TABLES.UID_TAG)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class UidTag {
-    public static final String SENSOR_REF_ID = "sensor_ref_id";
-    public static final String STARTS_WITH = "uid";
-    public static final String SPLITER = "|"; //Check it in UidTagMapper, for special chars we have added '\\'
+    public static final String KEY_ID = "id";
+    public static final String KEY_UID = "uid";
+    public static final String KEY_SENSOR_VARIABLE = "sensorVariable";
 
-    public UidTag() {
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
+    private Integer id;
 
-    }
+    @DatabaseField(canBeNull = false, unique = true, columnName = KEY_UID)
+    private String uid;
 
-    public UidTag(Integer uid) {
-        this(uid, null);
-    }
-
-    public UidTag(Integer uid, Sensor sensor) {
-        this.uid = uid;
-        this.sensor = sensor;
-    }
-
-    @DatabaseField(canBeNull = false, unique = true, id = true)
-    private Integer uid;
-
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = SENSOR_REF_ID,
-            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
-    private Sensor sensor;
-
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
-    private MESSAGE_TYPE_SET_REQ variableType;
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("UID:").append(this.uid);
-        builder.append(", Sensor:[").append(this.sensor).append("]");
-        builder.append(", Variable Type:").append(this.variableType);
-        return builder.toString();
-    }
-
-    public Integer getUid() {
-        return uid;
-    }
-
-    public Sensor getSensor() {
-        return sensor;
-    }
-
-    public void setUid(Integer uid) {
-        this.uid = uid;
-    }
-
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
-    }
-
-    public MESSAGE_TYPE_SET_REQ getVariableType() {
-        return variableType;
-    }
-
-    public void setVariableType(MESSAGE_TYPE_SET_REQ variableType) {
-        this.variableType = variableType;
-    }
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE,
+            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 5)
+    private SensorVariable sensorVariable;
 
 }

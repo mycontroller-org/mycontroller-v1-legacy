@@ -28,6 +28,8 @@ import java.util.List;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Firmware;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -35,12 +37,9 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FirmwareUtils {
     public static final int FIRMWARE_BLOCK_SIZE = 16;
-
-    private FirmwareUtils() {
-
-    }
 
     public static Firmware getFirmware(String fileName) {
         return getFirmware(new File(fileName));

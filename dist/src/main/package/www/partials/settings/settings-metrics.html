@@ -15,7 +15,7 @@
     limitations under the License.
 
 -->
-<div class="container mc-top-space-header">
+<div class="container mc-top-space-1x">
 
   <!-- Loading icon disaplay -->
   <div ng-hide="metricsSettings.$resolved">
@@ -26,7 +26,7 @@
 
     <!-- Units -->
     <div class="col-md-12">
-      <div class="card-pf">
+      <div class="card-pf card-pf-accented">
         <div >
           <ul ng-init="showGraphSettings=true" class="nav nav-tabs   nav-tabs-pf">
             <li ng-class="{'active' : showGraphSettings}"><a ng-click="showGraphSettings=true" href=""><i class="fa fa-area-chart fa-lg"></i> {{ 'GRAPHS_SETTINGS' | translate }}</i></a></li>
@@ -36,8 +36,15 @@
 
         <div ng-if="showGraphSettings"> <!-- Metrics Graph settings -->
           <div class="card-pf-body">
+            <div class="form-actions text-right">
+              <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metrics" ng-click="editEnable.metrics = true">{{ 'EDIT' | translate }}</button>
+              <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metrics" ng-click="updateSettingsMetrics();editEnable.metrics = false">{{ 'CANCEL' | translate }}</button>
+              <button type="button" class="btn btn-primary" ng-click="saveMetrics()"  ng-show="editEnable.metrics" ng-disabled="saveProgress.metrics">
+                <div ng-show="saveProgress.metrics" class="spinner spinner-xs"></div>
+                {{ 'SAVE' | translate }}
+              </button>
+            </div>
             <form class="form-horizontal">
-
               <div class="form-group">
                 <label class="col-sm-2 control-label">{{ 'ENABLE_MIN_MAX' | translate }}</label>
                 <div class="col-sm-10">

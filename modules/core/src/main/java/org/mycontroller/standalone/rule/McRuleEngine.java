@@ -24,14 +24,15 @@ import org.easyrules.core.RulesEngineBuilder;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DATA_TYPE;
 import org.mycontroller.standalone.rule.model.RuleDefinitionCompare;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
+import org.mycontroller.standalone.utils.McUtils;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -39,15 +40,12 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.3
  */
 @Slf4j
+@NoArgsConstructor
 public class McRuleEngine extends Job implements Runnable {
     public static final String MC_RULES_ENGINE_NAME = "mc_rules_engine";
 
     private RESOURCE_TYPE resourceType;
     private Integer resourceId;
-
-    public McRuleEngine() {
-
-    }
 
     public McRuleEngine(RESOURCE_TYPE resourceType, Integer resourceId) {
         this.resourceType = resourceType;

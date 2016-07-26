@@ -27,6 +27,7 @@ import org.mycontroller.standalone.metrics.MetricsUtils;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             this.nodeIdSensorIdnullCheck(sensorVariable);
             UpdateBuilder<SensorVariable, Integer> updateBuilder = this.getDao().updateBuilder();
 
-            updateBuilder.updateColumnValue(SensorVariable.KEY_UNIT, sensorVariable.getUnit());
+            updateBuilder.updateColumnValue(SensorVariable.KEY_UNIT_TYPE, sensorVariable.getUnitType());
 
             if (sensorVariable.getValue() != null) {
                 updateBuilder.updateColumnValue(SensorVariable.KEY_VALUE, sensorVariable.getValue());
@@ -85,7 +86,23 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             if (sensorVariable.getVariableType() != null) {
                 updateBuilder.updateColumnValue(SensorVariable.KEY_VARIABLE_TYPE, sensorVariable.getVariableType());
             }
-
+            if (sensorVariable.getReadOnly() != null) {
+                updateBuilder.updateColumnValue(SensorVariable.KEY_READ_ONLY, sensorVariable.getReadOnly());
+            }
+            if (sensorVariable.getOffset() != null) {
+                updateBuilder.updateColumnValue(SensorVariable.KEY_OFFSET, sensorVariable.getOffset());
+            }
+            if (sensorVariable.getPriority() != null) {
+                updateBuilder.updateColumnValue(SensorVariable.KEY_PRIORITY, sensorVariable.getPriority());
+            }
+            if (sensorVariable.getGraphProperties() != null) {
+                if ((boolean) sensorVariable.getGraphProperties().get(SensorVariable.KEY_GP_USE_GLOBAL)) {
+                    updateBuilder.updateColumnValue(SensorVariable.KEY_GRAPH_PROPERTIES, null);
+                } else {
+                    updateBuilder.updateColumnValue(SensorVariable.KEY_GRAPH_PROPERTIES,
+                            sensorVariable.getGraphProperties());
+                }
+            }
             if (sensorVariable.getId() != null) {
                 updateBuilder.where().eq(SensorVariable.KEY_ID, sensorVariable.getId());
             } else {
@@ -218,8 +235,8 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
     }
 
     @Override
-    public List<Integer> getSensorVariableIds(Integer sensorRefId) {
-        List<SensorVariable> variables = this.getAllBySensorId(sensorRefId);
+    public List<Integer> getSensorVariableIds(Integer sId) {
+        List<SensorVariable> variables = this.getAllBySensorId(sId);
         List<Integer> ids = new ArrayList<Integer>();
         //TODO: should modify by query (RAW query)
         for (SensorVariable sensorVariable : variables) {
@@ -230,7 +247,20 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
 
     @Override
     public List<SensorVariable> getAll(List<Integer> ids) {
-        return super.getAll(SensorVariable.KEY_ID, ids);
+        try {
+            if (ids != null && !ids.isEmpty()) {
+                QueryBuilder<SensorVariable, Integer> queryBuilder = this.getDao().queryBuilder();
+                Where<SensorVariable, Integer> where = queryBuilder.where();
+                where.in(SensorVariable.KEY_ID, ids);
+                queryBuilder.setWhere(where);
+                queryBuilder.orderBy(SensorVariable.KEY_PRIORITY, true);
+                return queryBuilder.query();
+            }
+            return new ArrayList<SensorVariable>();
+        } catch (SQLException ex) {
+            _logger.error("unable to get all items ids:{}", ids, ex);
+            return null;
+        }
     }
 
 }

@@ -27,8 +27,8 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
-import org.mycontroller.standalone.McUtils;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.Firmware;
@@ -36,11 +36,14 @@ import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.NodeIdException;
+import org.mycontroller.standalone.externalserver.ExternalServerEngine;
 import org.mycontroller.standalone.fwpayload.ExecuteForwardPayload;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
@@ -58,6 +61,7 @@ import org.mycontroller.standalone.provider.mysensors.structs.FirmwareRequest;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareResponse;
 import org.mycontroller.standalone.rule.McRuleEngine;
 import org.mycontroller.standalone.uidtag.ExecuteUidTag;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -73,14 +77,25 @@ public class McMessageEngine implements Runnable {
     private McMessage mcMessage;
 
     public McMessageEngine(McMessage mcMessage) {
+        switch (mcMessage.getNetworkType()) {
+            case MY_SENSORS:
+                if (mcMessage.getNodeEui().equals("255")) {
+                    mcMessage.setNodeEui(McMessage.NODE_BROADCAST_ID);
+                }
+                if (mcMessage.getSensorId().equals("255")) {
+                    mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
+                }
+                break;
+            default:
+                //Nothing to do
+                break;
+        }
         this.mcMessage = mcMessage;
     }
 
-    public void execute() {
+    public void execute() throws McBadRequestException {
         mcMessage.setScreeningDone(true);
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("McMessage:{}", mcMessage);
-        }
+        _logger.debug("McMessage:{}", mcMessage);
         switch (mcMessage.getType()) {
             case C_PRESENTATION:
                 if (mcMessage.isTxMessage()) {
@@ -97,16 +112,28 @@ public class McMessageEngine implements Runnable {
                 }
                 break;
             case C_SET:
-                this.recordSetTypeData(mcMessage);
+                if (isNodeRegistered(mcMessage)) {
+                    this.recordSetTypeData(mcMessage);
+                } else {
+                    unauthorizedSensor(mcMessage);
+                }
                 break;
             case C_REQ:
-                this.responseReqTypeData(mcMessage);
+                if (isNodeRegistered(mcMessage)) {
+                    this.responseReqTypeData(mcMessage);
+                } else {
+                    unauthorizedSensor(mcMessage);
+                }
                 break;
             case C_INTERNAL:
                 this.internalSubMessageTypeSelector(mcMessage);
                 break;
             case C_STREAM:
-                streamSubMessageTypeSelector(mcMessage);
+                if (isNodeRegistered(mcMessage)) {
+                    streamSubMessageTypeSelector(mcMessage);
+                } else {
+                    unauthorizedSensor(mcMessage);
+                }
                 break;
             default:
                 _logger.warn("Unknown message type, "
@@ -121,6 +148,34 @@ public class McMessageEngine implements Runnable {
                 updateNode(node);
             }
         }
+    }
+
+    private void unauthorizedSensor(McMessage mcMessage) {
+        if (mcMessage.isTxMessage()) {
+            _logger.warn("Message cannot send to unauthorized sensor. {}", mcMessage);
+        } else {
+            _logger.warn("Message received from unauthorized sensor. {}", mcMessage);
+        }
+    }
+
+    private boolean isNodeRegistered(McMessage mcMessage) {
+        Node node = getNode(mcMessage);
+        if (node.getRegistrationState() == NODE_REGISTRATION_STATE.BLOCKED) {
+            return false;
+        } else if (node.getRegistrationState() == NODE_REGISTRATION_STATE.REGISTERED) {
+            return true;
+        } else if (node.getRegistrationState() == NODE_REGISTRATION_STATE.NEW) {
+            if (AppProperties.getInstance().getControllerSettings().getAutoNodeRegistration()) {
+                node.setRegistrationState(NODE_REGISTRATION_STATE.REGISTERED);
+                updateNode(node);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
     }
 
     private void presentationSubMessageTypeSelector(McMessage mcMessage) {
@@ -146,11 +201,9 @@ public class McMessageEngine implements Runnable {
                 DaoUtils.getSensorDao().update(sensor);
             }
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Presentation Message[type:{},payload:{}]",
-                    MESSAGE_TYPE_PRESENTATION.fromString(mcMessage.getSubType()),
-                    mcMessage.getPayload());
-        }
+        _logger.debug("Presentation Message[type:{},payload:{}]",
+                MESSAGE_TYPE_PRESENTATION.fromString(mcMessage.getSubType()),
+                mcMessage.getPayload());
         //ResourcesLogs message data
         if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
             this.setSensorOtherData(LOG_LEVEL.NOTICE,
@@ -163,7 +216,10 @@ public class McMessageEngine implements Runnable {
 
     private void internalSubMessageTypeSelector(McMessage mcMessage) {
         //Get node, if node not available create
-        Node node = getNode(mcMessage);
+        Node node = null;
+        if (!mcMessage.getNodeEui().equalsIgnoreCase(McMessage.NODE_BROADCAST_ID)) {
+            node = getNode(mcMessage);
+        }
         //ResourcesLogs message data
         if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
             this.setSensorOtherData(LOG_LEVEL.NOTICE,
@@ -171,19 +227,15 @@ public class McMessageEngine implements Runnable {
                     MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()).getText(),
                     null);
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Message Type:{}", MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()).toString());
-        }
+        _logger.debug("Message Type:{}", MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()).toString());
         switch (MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType())) {
             case I_BATTERY_LEVEL:
                 if (mcMessage.isTxMessage()) {
                     return;
                 }
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Battery Level:[nodeId:{},Level:{}%]",
-                            mcMessage.getNodeEui(),
-                            mcMessage.getPayload());
-                }
+                _logger.debug("Battery Level:[nodeId:{},Level:{}%]",
+                        mcMessage.getNodeEui(),
+                        mcMessage.getPayload());
                 node.setBatteryLevel(mcMessage.getPayload());
                 updateNode(node);
                 //Update battery level in to metrics table
@@ -208,30 +260,26 @@ public class McMessageEngine implements Runnable {
                 long localTime = utcTime + timeOffset;
                 mcMessage.setPayload(String.valueOf(localTime / 1000));
                 mcMessage.setTxMessage(true);
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Time Message:[{}]", mcMessage);
-                }
+                _logger.debug("Time Message:[{}]", mcMessage);
                 McMessageUtils.sendToProviderBridge(mcMessage);
                 _logger.debug("Time request resolved.");
                 break;
             case I_VERSION:
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("GatewayTable version requested by {}! Message:{}",
-                            AppProperties.APPLICATION_NAME,
-                            mcMessage);
-                }
+                _logger.debug("GatewayTable version requested by {}! Message:{}",
+                        AppProperties.APPLICATION_NAME,
+                        mcMessage);
                 break;
             case I_ID_REQUEST:
                 try {
                     if (mcMessage.getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
                         int nodeId = MySensorsUtils.getNextNodeId(mcMessage.getGatewayId());
-                        mcMessage.setPayload(String.valueOf(nodeId));
+                        mcMessage.setAcknowledge(false);
                         mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_ID_RESPONSE.getText());
+                        mcMessage.setPayload(String.valueOf(nodeId));
+                        mcMessage.setScreeningDone(false);
                         mcMessage.setTxMessage(true);
                         McMessageUtils.sendToProviderBridge(mcMessage);
-                        if (_logger.isDebugEnabled()) {
-                            _logger.debug("New Id[{}] sent to node", nodeId);
-                        }
+                        _logger.debug("New Id[{}] sent to node", nodeId);
                     }
                 } catch (NodeIdException ex) {
                     _logger.error("Unable to generate new node Id,", ex);
@@ -256,30 +304,24 @@ public class McMessageEngine implements Runnable {
                 mcMessage.setPayload(McMessageUtils.getMetricType());
                 mcMessage.setTxMessage(true);
                 McMessageUtils.sendToProviderBridge(mcMessage);
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Configuration sent as follow[M/I]?:{}", mcMessage.getPayload());
-                }
+                _logger.debug("Configuration sent as follow[M/I]?:{}", mcMessage.getPayload());
                 break;
             case I_LOG_MESSAGE:
                 if (mcMessage.isTxMessage()) {
                     return;
                 }
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Node trace-log message[nodeId:{},sensorId:{},message:{}]",
-                            mcMessage.getNodeEui(),
-                            mcMessage.getSensorId(),
-                            mcMessage.getPayload());
-                }
+                _logger.debug("Node trace-log message[nodeId:{},sensorId:{},message:{}]",
+                        mcMessage.getNodeEui(),
+                        mcMessage.getSensorId(),
+                        mcMessage.getPayload());
                 break;
             case I_SKETCH_NAME:
                 if (mcMessage.isTxMessage()) {
                     return;
                 }
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Internal Message[type:{},name:{}]",
-                            MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()),
-                            mcMessage.getPayload());
-                }
+                _logger.debug("Internal Message[type:{},name:{}]",
+                        MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()),
+                        mcMessage.getPayload());
                 node = getNode(mcMessage);
                 node.setName(mcMessage.getPayload());
                 updateNode(node);
@@ -288,11 +330,9 @@ public class McMessageEngine implements Runnable {
                 if (mcMessage.isTxMessage()) {
                     return;
                 }
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Internal Message[type:{},version:{}]",
-                            MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()),
-                            mcMessage.getPayload());
-                }
+                _logger.debug("Internal Message[type:{},version:{}]",
+                        MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()),
+                        mcMessage.getPayload());
                 node = getNode(mcMessage);
                 node.setVersion(mcMessage.getPayload());
                 updateNode(node);
@@ -303,17 +343,13 @@ public class McMessageEngine implements Runnable {
                 if (mcMessage.isTxMessage()) {
                     return;
                 }
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("GatewayTable Ready[nodeId:{},message:{}]",
-                            mcMessage.getNodeEui(),
-                            mcMessage.getPayload());
-                }
+                _logger.debug("GatewayTable Ready[nodeId:{},message:{}]",
+                        mcMessage.getNodeEui(),
+                        mcMessage.getPayload());
                 break;
 
             case I_ID_RESPONSE:
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Internal Message, Type:I_ID_RESPONSE[{}]", mcMessage);
-                }
+                _logger.debug("Internal Message, Type:I_ID_RESPONSE[{}]", mcMessage);
                 return;
             case I_HEARTBEAT:
             case I_HEARTBEAT_RESPONSE:
@@ -324,6 +360,50 @@ public class McMessageEngine implements Runnable {
                 node.setState(STATE.UP);
                 updateNode(node);
                 break;
+            case I_DISCOVER:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+            case I_DISCOVER_RESPONSE:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                node = getNode(mcMessage);
+                node.setParentNodeEui(mcMessage.getPayload());
+                updateNode(node);
+                break;
+            case I_DEBUG:
+                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+                    this.setSensorOtherData(
+                            LOG_LEVEL.NOTICE,
+                            mcMessage,
+                            MESSAGE_TYPE_PRESENTATION.fromString(mcMessage.getSubType()).getText(),
+                            mcMessage.getPayload());
+                }
+                break;
+            case I_REGISTRATION_REQUEST:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                if (AppProperties.getInstance().getControllerSettings().getAutoNodeRegistration()) {
+                    mcMessage.setAcknowledge(false);
+                    mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_REGISTRATION_RESPONSE.getText());
+                    mcMessage.setScreeningDone(false);
+                    mcMessage.setTxMessage(true);
+                    McMessageUtils.sendToProviderBridge(mcMessage);
+                    _logger.debug("Registration response sent to gateway:{}, node:{}", mcMessage.getGatewayId(),
+                            mcMessage.getNodeEui());
+                }
+                break;
+            case I_REGISTRATION_RESPONSE:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                //TODO: do some action, if controller want to react for this type of message
+            case I_PRESENTATION:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
             default:
                 _logger.warn(
                         "Internal Message[type:{},payload:{}], "
@@ -381,11 +461,9 @@ public class McMessageEngine implements Runnable {
                             mcMessage,
                             MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()).getText(), null);
                 }
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug("Stream Message[type:{},payload:{}], This type not be implemented yet",
-                            MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()),
-                            mcMessage.getPayload());
-                }
+                _logger.debug("Stream Message[type:{},payload:{}], This type not be implemented yet",
+                        MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()),
+                        mcMessage.getPayload());
                 break;
         }
     }
@@ -396,11 +474,9 @@ public class McMessageEngine implements Runnable {
             firmwareRequest.setByteBuffer(
                     ByteBuffer.wrap(Hex.decodeHex(mcMessage.getPayload().toCharArray())).order(
                             ByteOrder.LITTLE_ENDIAN), 0);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Firmware Request:[Type:{},Version:{},Block:{}]", firmwareRequest.getType(),
-                        firmwareRequest.getVersion(),
-                        firmwareRequest.getBlock());
-            }
+            _logger.debug("Firmware Request:[Type:{},Version:{},Block:{}]", firmwareRequest.getType(),
+                    firmwareRequest.getVersion(),
+                    firmwareRequest.getBlock());
             boolean requestFirmwareReload = false;
             if (firmware == null) {
                 requestFirmwareReload = true;
@@ -459,10 +535,8 @@ public class McMessageEngine implements Runnable {
             mcMessage.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array())
                     + builder.toString());
             McMessageUtils.sendToProviderBridge(mcMessage);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
-                        firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
-            }
+            _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
+                    firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
             // Print firmware status in sensor logs
             if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0
                     || firmwareRequest.getBlock() == (firmware.getBlocks() - 1)) {
@@ -556,33 +630,39 @@ public class McMessageEngine implements Runnable {
             mcMessage
                     .setPayload(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase());
             McMessageUtils.sendToProviderBridge(mcMessage);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("FirmwareConfigRequest:[{}]", firmwareConfigRequest);
-                _logger.debug("FirmwareConfigResponse:[{}]", firmwareConfigResponse);
-            }
+            _logger.debug("FirmwareConfigRequest:[{}]", firmwareConfigRequest);
+            _logger.debug("FirmwareConfigResponse:[{}]", firmwareConfigResponse);
         } catch (DecoderException ex) {
             _logger.error("Exception, ", ex);
         }
     }
 
-    private void responseReqTypeData(McMessage mcMessage) {
+    private void responseReqTypeData(McMessage mcMessage) throws McBadRequestException {
         Sensor sensor = this.getSensor(mcMessage);
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensor.getId(),
                 MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()));
+        if (mcMessage.isTxMessage()) {
+            if (sensorVariable != null) {
+                //ResourcesLogs message data
+                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                    this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage, null);
+                }
+            } else {
+                throw new McBadRequestException("Selected sensor variable is not available!");
+            }
+            return;
+        }
         if (sensorVariable != null && sensorVariable.getValue() != null) {
             //ResourcesLogs message data
             if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
-                this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage,
-                        null);
+                this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage, null);
             }
             mcMessage.setTxMessage(true);
             mcMessage.setType(MESSAGE_TYPE.C_SET);
             mcMessage.setAcknowledge(false);
             mcMessage.setPayload(sensorVariable.getValue());
             McMessageUtils.sendToProviderBridge(mcMessage);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("Request processed! Message Sent: {}", mcMessage);
-            }
+            _logger.debug("Request processed! Message Sent: {}", mcMessage);
         } else {
             //If sensorVariable not available create new one.
             if (sensorVariable == null) {
@@ -592,13 +672,9 @@ public class McMessageEngine implements Runnable {
             //ResourcesLogs message data
             if (ResourcesLogsUtils.isLevel(LOG_LEVEL.WARNING)) {
                 this.setSensorVariableData(LOG_LEVEL.WARNING, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage,
-                        "Data not available in " + AppProperties.APPLICATION_NAME);
+                        "Failed: Data not available in " + AppProperties.APPLICATION_NAME);
             }
-            if (_logger.isWarnEnabled()) {
-                _logger.warn("Data not available! but there is request from sensor[{}], "
-                        + "Ignored this request!", mcMessage);
-            }
-
+            _logger.warn("Data not available! but there is request from sensor[{}], Ignored this request!", mcMessage);
         }
     }
 
@@ -608,22 +684,59 @@ public class McMessageEngine implements Runnable {
                 MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()));
         METRIC_TYPE metricType = McMessageUtils.getMetricType(payloadType);
         if (sensorVariable == null) {
+            String data = null;
+            switch (metricType) {
+                case BINARY:
+                    data = mcMessage.getPayload().equalsIgnoreCase("0") ? "0" : "1";
+                    break;
+                case COUNTER:
+                    data = String.valueOf(McUtils.getLong(mcMessage.getPayload()));
+                    break;
+                case DOUBLE:
+                    data = String.valueOf(McUtils.getDoubleAsString(mcMessage.getPayload()));
+                    break;
+                default:
+                    data = mcMessage.getPayload();
+                    break;
+
+            }
             sensorVariable = SensorVariable.builder()
                     .sensor(sensor)
                     .variableType(MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()))
-                    .value(mcMessage.getPayload())
-                    .timestamp(System.currentTimeMillis())
+                    .value(data)
+                    .timestamp(mcMessage.getTimestamp())
                     .metricType(metricType).build().updateUnitAndMetricType();
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("This SensorVariable:[{}] for Sensor:{}] is not available in our DB, Adding...",
-                        sensorVariable, sensor);
-            }
+            _logger.debug("This SensorVariable:[{}] for Sensor:{}] is not available in our DB, Adding...",
+                    sensorVariable, sensor);
 
             DaoUtils.getSensorVariableDao().create(sensorVariable);
             sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariable);
         } else {
-            sensorVariable.setValue(mcMessage.getPayload());
-            sensorVariable.setTimestamp(System.currentTimeMillis());
+            switch (sensorVariable.getMetricType()) {
+                case COUNTER:
+                    long oldValue = sensorVariable.getValue() == null ? 0L : McUtils
+                            .getLong(sensorVariable.getValue());
+                    long newValue = McUtils.getLong(mcMessage.getPayload());
+                    sensorVariable.setValue(String.valueOf(oldValue + newValue));
+                    break;
+                case DOUBLE:
+                    //If it is received message, update with offset
+                    if (mcMessage.isTxMessage()) {
+                        sensorVariable.setValue(McUtils.getDoubleAsString(McUtils.getDouble(mcMessage.getPayload())));
+                    } else {
+                        sensorVariable.setValue(
+                                McUtils.getDoubleAsString(
+                                        McUtils.getDouble(mcMessage.getPayload()) + sensorVariable.getOffset()));
+                    }
+                    break;
+                case BINARY:
+                    sensorVariable.setValue(mcMessage.getPayload().equalsIgnoreCase("0") ? "0" : "1");
+                    break;
+                default:
+                    sensorVariable.setValue(mcMessage.getPayload());
+                    break;
+            }
+            sensorVariable.setTimestamp(mcMessage.getTimestamp());
             DaoUtils.getSensorVariableDao().update(sensorVariable);
         }
 
@@ -641,10 +754,8 @@ public class McMessageEngine implements Runnable {
                 mcMessage.getSensorId());
         if (sensor == null) {
             getNode(mcMessage);
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("This sensor[{} from Node:{}] not available in our DB, Adding...",
-                        mcMessage.getSensorId(), mcMessage.getNodeEui());
-            }
+            _logger.debug("This sensor[{} from Node:{}] not available in our DB, Adding...",
+                    mcMessage.getSensorId(), mcMessage.getNodeEui());
             sensor = Sensor.builder().sensorId(mcMessage.getSensorId()).build();
             sensor.setNode(this.getNode(mcMessage));
             DaoUtils.getSensorDao().create(sensor);
@@ -659,18 +770,21 @@ public class McMessageEngine implements Runnable {
     private Node getNode(McMessage mcMessage) {
         Node node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());
         if (node == null) {
-            if (_logger.isDebugEnabled()) {
-                _logger.debug("This Node[{}] not available in our DB, Adding...", mcMessage.getNodeEui());
-            }
-            node = Node.builder().gatewayTable(GatewayTable.builder().id(mcMessage.getGatewayId()).build())
-                    .eui(mcMessage.getNodeEui()).state(STATE.UP).build();
+            _logger.debug("This Node[{}] not available in our DB, Adding...", mcMessage.getNodeEui());
+            node = Node
+                    .builder()
+                    .gatewayTable(GatewayTable.builder().id(mcMessage.getGatewayId()).build())
+                    .eui(mcMessage.getNodeEui())
+                    .state(STATE.UP)
+                    .registrationState(
+                            AppProperties.getInstance().getControllerSettings().getAutoNodeRegistration()
+                                    ? NODE_REGISTRATION_STATE.REGISTERED : NODE_REGISTRATION_STATE.NEW)
+                    .build();
             node.setLastSeen(System.currentTimeMillis());
             DaoUtils.getNodeDao().create(node);
             node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());
         }
-        if (_logger.isDebugEnabled()) {
-            _logger.debug("Node:[{}], message:[{}]", node, mcMessage);
-        }
+        _logger.debug("Node:[{}], message:[{}]", node, mcMessage);
         return node;
     }
 
@@ -693,16 +807,14 @@ public class McMessageEngine implements Runnable {
         }
 
         SensorVariable sensorVariable = this.updateSensorVariable(mcMessage, sensor, payloadType);
-        if (_logger.isDebugEnabled()) {
-            _logger.debug(
-                    "GatewayName:{}, SensorName:{}, NodeId:{}, SesnorId:{}, SubType:{}, PayloadType:{}, Payload:{}",
-                    sensor.getName(),
-                    sensor.getNode().getGatewayTable().getName(),
-                    sensor.getNode().getEui(), sensor.getSensorId(),
-                    MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()).getText(),
-                    payloadType.toString(),
-                    mcMessage.getPayload());
-        }
+        _logger.debug(
+                "GatewayName:{}, SensorName:{}, NodeId:{}, SesnorId:{}, SubType:{}, PayloadType:{}, Payload:{}",
+                sensor.getName(),
+                sensor.getNode().getGatewayTable().getName(),
+                sensor.getNode().getEui(), sensor.getSensorId(),
+                MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()).getText(),
+                payloadType.toString(),
+                mcMessage.getPayload());
         if (mcMessage.getSubType().equals(MESSAGE_TYPE_SET_REQ.V_UNIT_PREFIX.getText())) {
             //TODO: Add fix
             /*
@@ -726,8 +838,8 @@ public class McMessageEngine implements Runnable {
                         .create(MetricsDoubleTypeDevice.builder()
                                 .sensorVariable(sensorVariable)
                                 .aggregationType(AGGREGATION_TYPE.RAW)
-                                .timestamp(System.currentTimeMillis())
-                                .avg(McUtils.getDouble(mcMessage.getPayload()))
+                                .timestamp(sensorVariable.getTimestamp())
+                                .avg(McUtils.getDouble(sensorVariable.getValue()))
                                 .samples(1).build());
 
                 break;
@@ -735,17 +847,23 @@ public class McMessageEngine implements Runnable {
                 DaoUtils.getMetricsBinaryTypeDeviceDao()
                         .create(MetricsBinaryTypeDevice.builder()
                                 .sensorVariable(sensorVariable)
-                                .timestamp(System.currentTimeMillis())
-                                .state(McUtils.getBoolean(mcMessage.getPayload())).build());
+                                .timestamp(sensorVariable.getTimestamp())
+                                .state(McUtils.getBoolean(sensorVariable.getValue())).build());
+                break;
+            case COUNTER:
+                DaoUtils.getMetricsCounterTypeDeviceDao()
+                        .create(MetricsCounterTypeDevice.builder()
+                                .sensorVariable(sensorVariable)
+                                .aggregationType(AGGREGATION_TYPE.RAW)
+                                .timestamp(sensorVariable.getTimestamp())
+                                .value(McUtils.getLong(mcMessage.getPayload()))
+                                .samples(1).build());
                 break;
             default:
-                if (_logger.isDebugEnabled()) {
-                    _logger.debug(
-                            "This type not be implemented yet, PayloadType:{}, MessageType:{}, McMessage:{}",
-                            payloadType, MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType())
-                                    .toString(),
-                            mcMessage.getPayload());
-                }
+                _logger.debug(
+                        "This type not be implemented yet, PayloadType:{}, MessageType:{}, McMessage:{}",
+                        payloadType, MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()).toString(),
+                        mcMessage.getPayload());
                 break;
         }
 
@@ -759,8 +877,8 @@ public class McMessageEngine implements Runnable {
             if (sensor.getType() != null
                     && sensor.getType() != null
                     && sensor.getType() == MESSAGE_TYPE_PRESENTATION.S_CUSTOM
-                    && sensorVariable.getVariableType() == MESSAGE_TYPE_SET_REQ.V_VAR5) {
-                ExecuteUidTag executeUidTag = new ExecuteUidTag(sensor, sensorVariable);
+                    && sensorVariable.getVariableType() == MESSAGE_TYPE_SET_REQ.V_ID) {
+                ExecuteUidTag executeUidTag = new ExecuteUidTag(sensorVariable);
                 new Thread(executeUidTag).start();
             }
         }
@@ -776,6 +894,9 @@ public class McMessageEngine implements Runnable {
         //Execute Rules for this sensor variable
         new Thread(new McRuleEngine(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId())).start();
 
+        //Execute Send Payload to external server
+        new Thread(new ExternalServerEngine(sensorVariable)).start();
+
     }
 
     private void setSensorVariableData(LOG_LEVEL logLevel, MESSAGE_TYPE type, SensorVariable sensorVariable,
@@ -788,7 +909,13 @@ public class McMessageEngine implements Runnable {
 
     private void setSensorOtherData(LOG_LEVEL logLevel, McMessage mcMessage,
             String messageSubType, String extraMessage) {
-        if (mcMessage.getSensorId() == McMessage.SENSOR_BROADCAST_ID) {
+        if (mcMessage.getNodeEui().equalsIgnoreCase(McMessage.NODE_BROADCAST_ID)) {
+            this.setSensorOtherData(
+                    RESOURCE_TYPE.GATEWAY, mcMessage.getGatewayId(),
+                    logLevel, mcMessage.getType(),
+                    messageSubType, mcMessage.isTxMessage(),
+                    mcMessage.getPayload(), extraMessage);
+        } else if (mcMessage.getSensorId().equalsIgnoreCase(McMessage.SENSOR_BROADCAST_ID)) {
             Node node = DaoUtils.getNodeDao().get(
                     mcMessage.getGatewayId(), mcMessage.getNodeEui());
             this.setSensorOtherData(
@@ -831,7 +958,11 @@ public class McMessageEngine implements Runnable {
 
     @Override
     public void run() {
-        this.execute();
+        try {
+            this.execute();
+        } catch (McBadRequestException ex) {
+            _logger.error("Exception on processing {}", mcMessage, ex);
+        }
 
     }
 }
