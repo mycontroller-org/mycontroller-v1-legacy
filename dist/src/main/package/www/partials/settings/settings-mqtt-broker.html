@@ -1,0 +1,97 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-1x">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="mqttBrokerSettings.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="mqttBrokerSettings.$resolved"> <!-- Main Message -->
+
+    <!-- MySensors -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> {{ 'MQTT_BROKER' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcFormMqttBroker">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'STATUS' | translate }}</label>
+              <div class="col-sm-5">
+                <input bs-switch ng-change="editEnable.mqttBroker = true" ng-model="mqttBrokerSettings.enabled" type="checkbox"
+                      switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
+                      ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ALLOW_ANONYMOUS' | translate }}</label>
+              <div class="col-sm-5">
+                <input bs-switch ng-change="editEnable.mqttBroker = true" ng-model="mqttBrokerSettings.allowAnonymous" type="checkbox"
+                      switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
+                      switch-off-color="default" switch-on-color="danger" ng-true-value="true"
+                      ng-false-value="false" switch-on-text="{{ 'YES' | translate }}" switch-off-text="{{ 'NO' | translate }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'BIND_ADDRESS' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.mqttBroker" class="form-control" ng-model="mqttBrokerSettings.bindAddress" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+                <div ng-hide="editEnable.mqttBroker">{{mqttBrokerSettings.bindAddress}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'HTTP_PORT' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.mqttBroker" class="form-control" ng-model="mqttBrokerSettings.httpPort" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                <div ng-hide="editEnable.mqttBroker">{{mqttBrokerSettings.httpPort}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'WEBSOCKET_PORT' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.mqttBroker" class="form-control" ng-model="mqttBrokerSettings.websocketPort" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                <div ng-hide="editEnable.mqttBroker">{{mqttBrokerSettings.websocketPort}}</div>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.mqttBroker" ng-click="editEnable.mqttBroker = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.mqttBroker" ng-click="updateSettingsMqttBroker();editEnable.mqttBroker = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="saveSettings()"  ng-show="editEnable.mqttBroker" ng-disabled="saveProgress.mqttBroker || mcFormMqttBroker.$invalid">
+              <div ng-show="saveProgress.mqttBroker" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container -->

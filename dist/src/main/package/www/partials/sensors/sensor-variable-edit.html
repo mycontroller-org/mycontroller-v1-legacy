@@ -1,0 +1,154 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="metricTypes.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="metricTypes.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div>
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-6">
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'SENSOR' | translate }}</label>
+            <div class="col-sm-10 mc-form-fixer-left">
+              <label ng-bind-html="sensorVariable.resourceName | mcResourceRepresentation" ></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
+            <div class="col-sm-10 mc-form-fixer-left">
+              <span>{{ sensorVariable.type.locale}}</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'READ_ONLY' | translate }}</label>
+            <div class="col-sm-10 mc-form-fixer-left">
+              <input type="checkbox" ng-model="sensorVariable.readOnly">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'METRIC_TYPE' | translate }}</label>
+            <div class="col-sm-5 mc-form-fixer-left">
+              <select class="form-control" pf-select ng-options="mType.id as mType.id for mType in metricTypes" ng-model="sensorVariable.metricType">
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'UNIT' | translate }}</label>
+            <div class="col-sm-5 mc-form-fixer-left">
+              <select class="form-control" data-live-search="true" pf-select ng-options="uType.id as uType.displayName for uType in unitTypes" ng-model="sensorVariable.unitType">
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="sensorVariable.metricType === 'Double'">
+            <label class="col-sm-2 control-label">{{ 'OFFSET' | translate }}</label>
+            <div class="col-sm-5 mc-form-fixer-left">
+              <input class="form-control" placeholder="{{ 'OFFSET' | translate }}" ng-model="sensorVariable.offset" pf-validation="cs.isNumber(input)" required />
+              <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'PRIORITY' | translate }}</label>
+            <div class="col-sm-5 mc-form-fixer-left">
+              <input class="form-control" placeholder="{{ 'PRIORITY' | translate }}" ng-model="sensorVariable.priority" pf-validation="cs.isNumber(input)" required />
+              <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+            </div>
+          </div>
+
+          <legend><small>{{ 'GRAPH_SETTINGS' | translate }}</small></legend>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'USE_GLOBAL' | translate }}</label>
+            <div class="col-sm-10 mc-form-fixer-left">
+              <input type="checkbox" ng-model="sensorVariable.graphProperties.useGlobal">
+            </div>
+          </div>
+
+          <div ng-if="!sensorVariable.graphProperties.useGlobal">
+            <div class="form-group">
+              <label class="col-sm-2 control-label"></label>
+              <div class="col-sm-3 mc-form-fixer-left">
+                <select class="form-control" pf-select ng-model="sensorVariable.graphProperties.type">
+                  <option value="" ng-hide="true"></option>
+                  <option value="lineChart">{{ 'LINE_CHART' | translate }}</option>
+                  <option value="historicalBarChart">{{ 'HISTORICAL_BAR_CHART' | translate }}</option>
+                  <option value="stackedAreaChart">{{ 'STACKED_AREA_CHART' | translate }}</option>
+                </select>
+              </div>
+              <div class="col-sm-3 mc-form-fixer">
+                <select class="form-control" pf-select ng-model="sensorVariable.graphProperties.interpolate">
+                  <option value="" ng-hide="true"></option>
+                  <option value="linear">{{ 'LINEAR' | translate }}</option>
+                  <option value="basis">{{ 'BASIS' | translate }}</option>
+                  <option value="cardinal">{{ 'CARDINAL' | translate }}</option>
+                  <option value="monotone">{{ 'MONOTONE' | translate }}</option>
+                  <option value="bundle">{{ 'BUNDLE' | translate }}</option>
+                  <option value="step-before">{{ 'STEP_BEFORE' | translate }}</option>
+                  <option value="step-after">{{ 'STEP_AFTER' | translate }}</option>
+                  <option value="basis-open">{{ 'BASIS_OPEN' | translate }}</option>
+                  <option value="basis-closed">{{ 'BASIS_CLOSED' | translate }}</option>
+                  <option value="cardinal-open">{{ 'CARDINAL_OPEN' | translate }}</option>
+                  <option value="cardinal-closed">{{ 'CARDINAL_CLOSED' | translate }}</option>
+                </select>
+              </div>
+              <div class="col-sm-1 mc-form-fixer">
+                <button class="form-control" id="color-{{sensorVariable.id}}" style="background-color:{{sensorVariable.graphProperties.color}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top"
+                  ng-model="sensorVariable.graphProperties.color">{{sensorVariable.graphProperties.color || "-"}}</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-3 mc-form-fixer-left">
+                <label class="mc-padding">
+                  <input id="area-{{sensorVariable.id}}" type="radio" value="line" ng-model="sensorVariable.graphProperties.subType" /> {{ 'LINE' | translate }}
+                </label>
+                <label class="mc-padding">
+                  <input id="area-{{sensorVariable.id}}" type="radio" value="area" ng-model="sensorVariable.graphProperties.subType" /> {{ 'AREA' | translate }}
+                </label>
+                <label class="mc-padding">
+                  <input id="bar-{{sensorVariable.id}}"type="radio" value="bar" ng-model="sensorVariable.graphProperties.subType" /> {{ 'BAR' | translate }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div>
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

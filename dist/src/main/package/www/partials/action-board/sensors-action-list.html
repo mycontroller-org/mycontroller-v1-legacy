@@ -1,0 +1,161 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div>
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="queryResponse.$resolved && !dataLoading">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="queryResponse.$resolved && !dataLoading"> <!-- Main Message -->
+
+    <!-- top tool bar -->
+    <div class="col-md-12 mc-top-space" ng-show="queryResponse.query.totalItems > 0">
+      <div pf-toolbar id="sensorsDataToolbar" config="sensorsToolbarConfig"></div>
+    </div>
+
+    <!-- Display No Items on system -->
+    <div ng-include src="'partials/common-html/no-items-system.html'"></div>
+
+    <!-- Display When no data on table -->
+    <div ng-include src="'partials/common-html/no-items-filter.html'"></div>
+
+    <div ng-show="filteredList.length > 0">
+
+      <!-- list view -->
+      <div class="col-md-12" ng-if="viewType == 'listView'" > <!-- items container -->
+        <div class="data-list-pf"> <!-- data-list-pf -->
+          <div class="list-group-item mc-list-align" dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.filteredCount" current-page="currentPage"> <!-- ng-repeat -->
+            <div class="list-row"><!-- list-row -->
+
+              <!-- Sensor name -->
+              <div class="col-md-3">
+                <span><i class="fa fa-plug"></i> {{item.node.gateway.name}} <i class="fa fa-chevron-right"></i>
+                  <i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name}} <i class="fa fa-chevron-right"></i> <i class="fa fa-eye"></i> {{item.sensorId}}: <strong>{{item.name}}</strong></span>
+              </div>
+
+              <!-- Sensor type -->
+              <div class="col-md-1">
+                <span><i class="mc-icon-2x" ng-class="cs.getSensorIcon(item.type.en)"></i><span>{{item.type.locale ? item.type.locale : 'Undefined'}}</span></span>
+              </div>
+
+              <!-- Last seen -->
+              <div class="col-md-1" uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="left">
+                <span class="text-left">
+                  <i class="fa fa-clock-o mc-icon-lg" ></i><span am-time-ago="item.lastSeen"></span>
+                </span>
+              </div>
+
+              <!-- Variables, selects only one-->
+              <div ng-repeat="variable in item.variables | limitTo:6"> <!-- variables ng-repeat -->
+                <div class="col-md-1">
+
+                <!-- Sensor variables -->
+                <div ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
+
+              </div>
+            </div><!-- variables ng-repeat -->
+
+            <!-- fill empty space -->
+            <div ng-if="item.variables.length < 6" class="col-md-{{(6 -  item.variables.length)*1}}">
+              <span></span>
+            </div>
+
+            <!-- Quick access buttons -->
+            <div class="col-md-1">
+              <div class=" pull-right">
+                <a class="btn btn-link mc-padding" ng-model="radioModel" ng-click="refreshSensor(item)"><i class="fa fa-refresh  mc-icon-lg mc-inline-editer-ab" tooltip="{{ 'REFRESH' | translate }}" tooltip-placement="left"></i></a>
+                <a class="btn btn-link mc-padding" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right mc-icon-lg" tooltip="{{ 'VIEW_DETAILS' | translate }}" tooltip-placement="left"></i></a>
+              </div>
+            </div>
+
+          </div><!-- list-row -->
+        </div><!-- ng-repeat -->
+      </div><!-- data-list-pf -->
+
+      <div class="btn-group mc-side-space" ng-show="filteredList.length > 0">
+        <label class="mc-align-center mc-top-space-5px">Showing {{(query.pageLimit * (query.page - 1))+1}} to {{getMin(getMin(query.pageLimit * query.page, queryResponse.query.totalItems), queryResponse.query.filteredCount)}} of {{queryResponse.query.totalItems}} items</label>
+      </div>
+      <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)">
+
+      </dir-pagination-controls>
+    </div><!-- items container -->
+
+
+
+    <!-- box view -->
+    <div class="col-md-12 container-cards-pf" ng-if="viewType == 'cardView'">
+      <div class="row row-cards-pf" >
+        <!-- sensors ng-repeat -->
+        <div dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.filteredCount" current-page="currentPage">
+          <div class="col-xs-12 col-sm-6 col-md-4" ng-class="{'col-lg-3': colLg3, 'col-lg-2': !colLg3}">
+            <div class="card-pf card-pf-aggregate-status card-pf-accented mc-sensor-action-tiles">
+
+              <!-- card title -->
+              <div class="card-pf-title col-md-12">
+                  <i tooltip-enable="item.name.length > 21" uib-tooltip="{{item.name}}" class="fa fa-eye"> {{item.sensorId}}: <strong>{{item.name ? item.name : '-' | limitTo:21}}{{item.name.length > 21 ? '...' : ''}}</strong></i>
+              </div>
+
+              <!-- card body -->
+              <div class="card-pf-body col-md-12">
+                <!-- node name -->
+                <div class="mc-sa-tiles-variable col-md-12">
+                  <span tooltip-enable="(item.node.gateway.name.length + item.node.name.length) > 25" uib-tooltip-html="'[G]:'+item.node.gateway.name+' >> [N]:'+item.node.eui+':'+item.node.name | mcResourceRepresentation">
+                    <i class="fa fa-plug"></i> {{item.node.gateway.name ? item.node.gateway.name : '-' | limitTo:25}}{{item.node.gateway.name.length > 25 ? '...' : ''}}
+                    <span ng-show="item.node.gateway.name.length < 25">  <i class="fa fa-chevron-right"></i><i class="fa fa-sitemap"></i> {{item.node.eui}}:{{item.node.name ? item.node.name : '-' | limitTo:(25-item.node.gateway.name.length)}}{{item.node.name.length > (25-item.node.gateway.name.length) ? '...' : ''}}</span>
+                  </span>
+                </div>
+
+                <!-- Sensor type, Last seen -->
+                <div class="mc-sa-tiles-variable col-md-12">
+                  <span class="mc-padding"><i class="mc-icon-lg" ng-class="cs.getSensorIcon(item.type.en)"></i><span>{{item.type.locale ? item.type.locale : 'Undefined'}}</span></span>
+                  <span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="top"><span class="text-left"><i class="fa fa-clock-o fa-lg" ></i> <span am-time-ago="item.lastSeen"></span></span></span>
+                </div>
+                <legend style="margin:3px" ng-init="variableMaxSize=200"></legend>
+                <!-- Variables, selects only one-->
+                <div ng-repeat="variable in item.variables | limitTo:6" ng-init="vItems = cs.getMin(6,item.variables.length)" class="col-md-12 mc-sa-tiles-variable" style="height:{{variableMaxSize/vItems}}px;vertical-align: middle;line-height: {{variableMaxSize/vItems}}px;"> <!-- variables ng-repeat -->
+                  <!-- Sensor variables -->
+                  <div ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
+                </div><!-- variables ng-repeat -->
+                <!-- if there is no variable add this one -->
+                <div ng-if="item.variables == 0" class="col-md-12 mc-sa-tiles-variable" style="height: {{variableMaxSize}}px;vertical-align: middle;line-height: {{variableMaxSize}}px;">
+
+                </div>
+                <legend style="margin:3px"></legend>
+                <!-- buttons-->
+                <div class="col-md-12">
+                  <a class="btn btn-link mc-padding pull-left" ng-model="radioModel" ng-click="refreshSensor(item)"><i class="fa fa-refresh  mc-icon-lg mc-inline-editer-ab" tooltip="Refresh" tooltip-placement="right"></i></a>
+                  <a class="btn btn-link mc-padding pull-right" ui-sref="sensorsDetail({id:item.id})"><i class="fa fa-chevron-circle-right mc-icon-lg" tooltip="View details" tooltip-placement="left"></i></a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <legend style="margin:0px"></legend>
+
+      <div class="btn-group mc-side-space" ng-show="filteredList.length > 0">
+        <label class="mc-align-center mc-top-space-5px">Showing {{(query.pageLimit * (query.page - 1))+1}} to {{getMin(getMin(query.pageLimit * query.page, queryResponse.query.totalItems), queryResponse.query.filteredCount)}} of {{queryResponse.query.totalItems}} items</label>
+      </div>
+      <dir-pagination-controls class="pull-right" boundary-links="true" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+
+    </div><!-- items display container -->
+
+
+</div>

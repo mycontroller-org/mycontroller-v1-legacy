@@ -1,0 +1,141 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="rolePermissions.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="rolePermissions.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div>
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-8">
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="form-control" placeholder="{{ 'NAME' | translate }}" ng-model="item.name" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'DESCRIPTION' | translate }}</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" ng-model="item.description" placeholder="{{ 'DESCRIPTION' | translate }}" rows="3"></textarea>
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'PERMISSION' | translate }}</label>
+            <div class="col-sm-5">
+              <div ng-show="item.permission === 'Super admin'">
+                <label>{{item.permission}}</label>
+              </div>
+              <div ng-if="item.permission !== 'Super admin'">
+                <select class="form-control" pf-select ng-options="permission.displayName as permission.displayName for permission in rolePermissions" ng-change="refreshVariableTypes(sensor.type)" ng-model="item.permission" required >
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div ng-show="item.permission === 'MQTT user'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TOPICS_PUBLISH' | translate }}</label>
+              <div class="col-sm-10">
+                <textarea class="form-control" ng-model="item.topicsPublish" placeholder="topics publish comma separated" rows="3"></textarea>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TOPICS_SUBSCRIBE' | translate }}</label>
+              <div class="col-sm-10">
+                <textarea class="form-control" ng-model="item.topicsSubscribe" placeholder="topics subscribe comma separated" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div ng-show="item.permission !== undefined">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RESOURCES' | translate }}</label>
+              <div class="col-sm-10">
+                <div class="card-pf card-pf-accented">
+                  <div class="card-pf-body">
+                    <ul class="nav nav-tabs" ng-init="showResource = 'users'" >
+                      <li ng-class="{'active' : showResource === 'users'}"><a href="" ng-click="showResource = 'users'">{{ 'USERS' | translate }}</a></li>
+                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'gateways'}"><a href="" ng-click="showResource = 'gateways'">{{ 'GATEWAYS' | translate }}</a></li>
+                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'nodes'}"><a href="" ng-click="showResource = 'nodes'">{{ 'NODES' | translate }}</a></li>
+                      <li ng-show="item.permission === 'User'" ng-class="{'active' : showResource === 'sensors'}"><a href="" ng-click="showResource = 'sensors'">{{ 'SENSORS' | translate }}</a></li>
+                    </ul>
+                    <div ng-show="showResource === 'users'">
+                      <select ng-options="ls.id as ls.displayName for ls in users" multiple
+                        ng-model="item.users" bs-duallistbox
+                        move-on-select="true"
+                        filter="false"
+                        select-min-height="250"
+                        ></select>
+                    </div>
+                    <div ng-if="item.permission === 'User'" ng-show="showResource === 'gateways'">
+                      <select ng-options="ls.id as ls.displayName for ls in gateways" multiple
+                        ng-model="item.gateways" bs-duallistbox
+                        move-on-select="true"
+                        filter="false"
+                        select-min-height="250"
+                        ></select>
+                    </div>
+                    <div ng-if="item.permission === 'User'" ng-show="showResource === 'nodes'">
+                      <select ng-options="ls.id as ls.displayName for ls in nodes" multiple
+                      ng-model="item.nodes" bs-duallistbox
+                      move-on-select="true"
+                      filter="false"
+                      select-min-height="250"
+                      ></select>
+                    </div>
+                    <div ng-if="item.permission === 'User'" ng-show="showResource === 'sensors'">
+                      <select ng-options="ls.id as ls.displayName for ls in sensors" multiple
+                      ng-model="item.sensors" bs-duallistbox
+                      move-on-select="true"
+                      filter="false"
+                      select-min-height="250"
+                      ></select>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div>
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

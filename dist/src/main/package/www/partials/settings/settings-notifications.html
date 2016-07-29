@@ -1,0 +1,234 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-1x">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="smsSettings.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="smsSettings.$resolved"> <!-- Main Message -->
+
+    <!-- Email settings -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-envelope-o fa-lg"></i> {{ 'EMAIL' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcFormEmailNotification">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'SMTP_HOST' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpHost" required />
+                <span ng-hide="editEnable.email">{{emailSettings.smtpHost}}</span>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'SMTP_PORT' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpPort" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                <div ng-hide="editEnable.email">{{emailSettings.smtpPort}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'FROM_ADDRESS' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.fromAddress" required />
+                <span ng-hide="editEnable.email">{{emailSettings.fromAddress}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ENABLE_SSL' | translate }}</label>
+              <div class="col-sm-5">
+                <input bs-switch ng-change="editEnable.email = true" ng-model="emailSettings.enableSsl" type="checkbox"
+                      switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
+                      ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
+              </div>
+            </div>
+
+            <div class="form-group" ng-if="emailSettings.enableSsl">
+              <label class="col-sm-2 control-label">{{ 'USE' | translate }}</label>
+              <div class="col-sm-5">
+                <label class="mc-margin-right"><input ng-disabled="!editEnable.email" type="radio" ng-model="emailSettings.useStartTLS"data-ng-value="false"> SSL</label>
+                <label><input ng-disabled="!editEnable.email" type="radio" ng-model="emailSettings.useStartTLS" data-ng-value="true"> STARTTLS</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'SMTP_USERNAME' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpUsername"/>
+                <span ng-hide="editEnable.email">{{emailSettings.smtpUsername}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'SMTP_PASSWORD' | translate }}</label>
+              <div class="col-sm-5">
+                <input type="password" ng-show="editEnable.email" class="form-control" ng-model="emailSettings.smtpPassword"/>
+                <span ng-hide="editEnable.email">**********</span>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.email" ng-click="editEnable.email = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.email" ng-click="updateSettingsEmail();editEnable.email = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.email" ng-click="sendTestEmail()"
+              ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">
+              <div ng-if="testing.email" class="spinner spinner-xs"></div>
+                {{testing.email? ('TESTING' | translate):('TEST_CONNECTION' | translate)}}
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="saveEmail()"  ng-show="editEnable.email" ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">
+              <div ng-show="saveProgress.email" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Pushbullet settings -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-mobile fa-lg"></i> {{ 'PUSHBULLET' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcFormPushbulletNotification">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ACCESS_TOKEN' | translate }}</label>
+              <div class="col-sm-7">
+                <input ng-show="editEnable.pushbullet" class="form-control" ng-model="pushbulletSettings.accessToken" required />
+                <span ng-hide="editEnable.pushbullet">**********</span>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'IDEN' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{pushbulletSettings.iden}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ACTIVE' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{pushbulletSettings.active}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{pushbulletSettings.name}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'EMAIL' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{pushbulletSettings.email}}</span>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.pushbullet" ng-click="editEnable.pushbullet = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.pushbullet" ng-click="updateSettingsPushbullet();editEnable.pushbullet = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="savePushbullet()"  ng-show="editEnable.pushbullet" ng-disabled="saveProgress.pushbullet || mcFormPushbulletNotification.$invalid">
+              <div ng-show="saveProgress.sms" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMS settings -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-mobile fa-lg"></i> {{ 'SMS' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcFormSMSNotification">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'VENDOR' | translate }}</label>
+              <div class="col-sm-5">
+                <div ng-show="editEnable.sms">
+                  <select class="form-control" pf-select ng-model="smsSettings.vendor" required>
+                    <option value="" ng-hide="true"></option>
+                    <option value="Plivo">{{ 'PLIVO' | translate }}</option>
+                    <option value="Twilio">{{ 'TWILIO' | translate }}</option>
+                  </select>
+                </div>
+                <span ng-hide="editEnable.sms">{{smsSettings.vendor}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'AUTH_ID_SID' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.authSid" required />
+                <span ng-hide="editEnable.sms">{{smsSettings.authSid}}</span>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'AUTH_TOKEN' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.authToken" required />
+                <span ng-hide="editEnable.sms">**********</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'FROM_PHONE_NUMBER' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.sms" class="form-control" ng-model="smsSettings.fromNumber" required />
+                <span ng-hide="editEnable.sms">{{smsSettings.fromNumber}}</span>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.sms" ng-click="editEnable.sms = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.sms" ng-click="updateSettingsSms();editEnable.sms = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="saveSms()"  ng-show="editEnable.sms" ng-disabled="saveProgress.sms || mcFormSMSNotification.$invalid">
+              <div ng-show="saveProgress.sms" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container -->

@@ -1,0 +1,373 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html>
+<html lang="en" ng-app="myController" class="no-js" id="rootId">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>MyController.org - The Open Source Controller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/favicon.ico">
+
+    <!-- CSS Files -->
+    <!-- ********************************************************** -->
+    <!-- PatternFly Styles -->
+    <!-- Note: No other CSS files are needed regardless of what other JS packages located in patternfly/components that you decide to pull in -->
+    <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly.min.css" />
+    <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly-additions.min.css" />
+
+    <!-- Angular-PatternFly Styles -->
+    <link rel="stylesheet" href="libs/angular-patternfly/angular-patternfly.min.css" />
+
+    <!-- Font awesome icons-->
+    <link rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css">
+
+    <!-- weather icons -->
+    <link rel="stylesheet" type="text/css" href="libs/weather-icons/css/weather-icons.min.css">
+
+    <!-- Font icons - Font Mfizz -->
+    <link rel="stylesheet" type="text/css" href="libs/font-mfizz-1.2/font-mfizz.css">
+
+    <!-- angular-xeditable -->
+    <link rel="stylesheet" type="text/css" href="libs/angular-xeditable/css/xeditable.css">
+
+    <!-- https://github.com/buberdds/angular-bootstrap-colorpicker -->
+    <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-colorpicker/colorpicker.min.css"/>
+
+    <!-- https://github.com/dalelotts/angular-bootstrap-datetimepicker -->
+    <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-datetimepicker/css/datetimepicker.css"/>
+
+    <!-- nvd3 chart -->
+    <link rel="stylesheet" type="text/css" href="libs/nvd3/nv.d3.min.css">
+
+    <!-- bootstrap-duallistbox -->
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap-duallistbox/dist/bootstrap-duallistbox.min.css">
+
+    <!-- angular-dashboard-framework -->
+    <link rel="stylesheet" type="text/css" href="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.css">
+
+    <!-- https://github.com/kubernetes-ui/topology-graph css -->
+    <link rel="stylesheet" type="text/css" href="libs/kubernetes-topology-graph/topology-graph.css">
+
+    <!-- Application specific css -->
+    <link rel="stylesheet" type="text/css" href="app.css">
+
+
+    <!-- JS Files -->
+    <!-- ********************************************************** -->
+
+    <!-- jQuery -->
+    <script src="libs/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap JS --> <!-- If I remove this, main menu drop down is not working as expected! -->
+    <script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- C3, D3 - Charting Libraries -->
+    <script src="libs/d3/d3.min.js"></script>
+    <script src="libs/c3/c3.min.js"></script>
+
+    <!-- PatternFly Custom Componets -  Sidebar, Popovers and Datatables Customizations -->
+    <!-- Note: jquery.dataTables.js must occur in the html source before patternfly*.js.-->
+    <script src="libs/patternfly/dist/js/patternfly.min.js"></script>
+
+    <!-- Bootstrap Select -->
+    <script src="libs/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+
+    <!-- Bootstrap Switch -->
+    <script src="libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+
+    <!-- Angular Application? You May Want to Consider Pulling Angular-PatternFly And Angular-UI Bootstrap instead of bootstrap.js -->
+    <!-- See https://github.com/patternfly/angular-patternfly for more information -->
+
+    <!-- AngularJS -->
+    <script src="libs/angular/angular.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="libs/angular-bootstrap/ui-bootstrap-tpls-0.14.3.min.js"></script>
+
+    <script src="libs/lodash/lodash.min.js"></script>
+
+
+    <!-- Angular-PatternFly  -->
+    <script src="libs/angular-patternfly/angular-patternfly.min.js"></script>
+
+
+    <!-- xeditable JS -->
+    <script src="libs/angular-xeditable/js/xeditable.min.js"></script>
+
+    <!-- pagination -->
+    <script src="libs/angularUtils-pagination/dirPagination.js"></script>
+
+
+    <!-- Third party js-->
+    <script src="libs/angular-ui-router/angular-ui-router.min.js"></script>
+    <script src="libs/angular-resource/angular-resource.min.js"></script>
+    <script src="libs/angular-base64/angular-base64.min.js"></script>
+    <script src="libs/remarkable-bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="libs/angular-cookies/angular-cookies.min.js"></script>
+    <script src="libs/moment/moment.min.js"></script>
+    <script src="libs/angular-moment/angular-moment.min.js"></script>
+    <script src="libs/angular-bootstrap-datetimepicker/js/datetimepicker.js"></script>
+    <script src="libs/angular-bootstrap-colorpicker/bootstrap-colorpicker-module.min.js"></script>
+    <script src="libs/angular-file-saver/angular-file-saver.bundle.min.js"></script>
+    <!-- nvd3 chart lib -->
+    <script src="libs/nvd3/nv.d3.min.js"></script>
+    <script src="libs/angular-nvd3/dist/angular-nvd3.min.js"></script>
+    <!-- https://github.com/kubernetes-ui/topology-graph -->
+    <script src="libs/kubernetes-topology-graph/topology-graph.js"></script>
+    <!-- bootstrap-duallistbox -->
+    <script src="libs/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js"></script>
+    <!-- angular-bootstrap-duallistbox -->
+    <script src="libs/angular-bootstrap-duallistbox/dist/angular-bootstrap-duallistbox.min.js"></script>
+    <!-- Multi Language support-->
+    <script src="libs/angular-translate/angular-translate.min.js"></script>
+    <script src="libs/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="libs/angular-translate-loader-url/atlu.min.js"></script>
+    <script src="libs/angular-translate-loader-static-files/atlsf.min.js"></script>
+
+    <script src="libs/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
+
+    <script src="libs/Sortable/Sortable.min.js"></script>
+    <script src="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.js"></script>
+    <script src="libs/adf-structures-base/dist/adf-structures-base.min.js"></script>
+    <script src="libs/adf-widget-news/dist/adf-widget-news.min.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-asg/adf-myc-a-sensor-graph.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-cb/adf-myc-custom-buttons.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-cw/adf-myc-custom-widget.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-groups/adf-myc-groups.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-hm/adf-myc-heat-map.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-sen-vars/adf-myc-sen-vars.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-sgg/adf-myc-sensors-grouped-graph.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-smg/adf-myc-sensors-mixed-graph.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-sunrisetime/adf-myc-sunrise.js"></script>
+    <script src="controllers/adf-widgets/adf-myc-time/adf-myc-time.js"></script>
+
+    <!-- Google api for maps: https://github.com/allenhwkim/angularjs-google-maps -->
+    <script src="libs/angularjs-google-maps/ng-map.min.js"></script>
+    <!-- Include google maps -->
+    <script src="https://maps.google.com/maps/api/js"></script>
+
+    <!-- Application js-->
+    <script src="app.js"></script>
+    <script src="controllers/additional-headers.js"></script>
+    <script src="controllers/backup.js"></script>
+    <script src="controllers/dashboard.js"></script>
+    <script src="controllers/external-servers.js"></script>
+    <script src="controllers/firmwares.js"></script>
+    <script src="controllers/forward-payload.js"></script>
+    <script src="controllers/gateways.js"></script>
+    <script src="controllers/nodes.js"></script>
+    <script src="controllers/operations.js"></script>
+    <script src="controllers/resources-data.js"></script>
+    <script src="controllers/resources-group.js"></script>
+    <script src="controllers/resources-logs.js"></script>
+    <script src="controllers/roles.js"></script>
+    <script src="controllers/rooms.js"></script>
+    <script src="controllers/rule-engine.js"></script>
+    <script src="controllers/scripts.js"></script>
+    <script src="controllers/send-raw-message.js"></script>
+    <script src="controllers/sensors-action.js"></script>
+    <script src="controllers/sensors.js"></script>
+    <script src="controllers/settings.js"></script>
+    <script src="controllers/status.js"></script>
+    <script src="controllers/templates.js"></script>
+    <script src="controllers/timers.js"></script>
+    <script src="controllers/topology.js"></script>
+    <script src="controllers/uid-tags.js"></script>
+    <script src="controllers/users.js"></script>
+    <script src="controllers/variables-mapper.js"></script>
+    <script src="controllers/variables-repository.js"></script>
+
+    <!-- Add services -->
+    <script src="services/alert_services.js"></script>
+    <script src="services/common_services.js"></script>
+    <script src="services/rest_services.js"></script>
+    <script src="services/topology_service.js"></script>
+    <script src="services/validation_services.js"></script>
+
+    <!-- Add directives -->
+    <script src="services/directives.js"></script>
+
+    <!-- Add additional headers -->
+    <link rel="import" href="/configurations/additional-headers.html">
+    <!-- Add angularJS custom controllers -->
+    <script src="/configurations/custom-controllers.js"></script>
+
+  </head>
+
+  <body ng-controller="McNavBarCtrl">
+    <nav ng-if="isAuthenticated()" class="navbar navbar-default navbar-fixed-top navbar-pf" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-main">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a tabindex="-1" class="navbar-brand" href="http://www.mycontroller.org">
+          <strong>MYCONTROLLER.ORG</strong> <small>{{ 'APP.DESCRIPTION' | translate }}</small>
+        </a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="navbar-collapse-main">
+
+        <!-- Top right side corner menus -->
+        <ul class="nav navbar-nav navbar-utility">
+          <!-- Language selection -->
+          <li class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-language fa-lg"></i> {{mchelper.cfg.language}}<b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li ng-repeat="lang in mchelper.languages" ng-class="{ active: mchelper.cfg.languageId == lang.id}"><a href="" ng-click="changeLanguage(lang)"> {{lang.displayName}}</a></li>
+            </ul>
+          </li>
+          <!-- Support Options -->
+          <li class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-life-ring fa-lg"></i> {{ 'SUPPORT' | translate }} <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="https://github.com/mycontroller-org/mycontroller/releases"><i class="fa fa-file-archive-o fa-lg"></i> {{ 'RELEASES' | translate }}</a></li>
+              <li><a href="http://www.mycontroller.org"><i class="fa fa-book fa-lg"></i> {{ 'DOCUMENTS' | translate }}</a></li>
+              <li><a href="https://github.com/mycontroller-org/mycontroller"><i class="fa fa-github fa-lg"></i> {{ 'SOURCE_CODE' | translate }}</a></li>
+            </ul>
+          </li>
+
+          <!-- user information, logout -->
+          <li class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="pficon pficon-user"></span>
+              {{mchelper.user.fullName}} <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }">
+                <a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user"></i> {{ 'PROFILE' | translate }}</a>
+              </li>
+              <li ng-if="mchelper.userSettings.hideMenu"><a href="" ng-click="showHideMainMenu()"><i class="fa fa-expand fa-lg"></i> {{ 'SHOW_MENU' | translate }}</a></li>
+              <li ng-if="!mchelper.userSettings.hideMenu"><a href="" ng-click="showHideMainMenu()"><i class="fa fa-compress fa-lg"></i> {{ 'HIDE_MENU' | translate }}</a></li>
+              <li>
+                <a ui-sref="login"><i class="fa fa-sign-out fa-lg"></i> {{ 'LOG_OUT' | translate }}</a><!-- Logout Link -->
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Main Menu (header type)-->
+        <ul ng-if="!mchelper.userSettings.hideMenu" class="nav navbar-nav navbar-primary persistent-secondary">
+          <!-- Dashboard -->
+          <li ng-class="{ active: $state.current.name.indexOf('dashboard') == 0 }">
+            <a ui-sref="dashboardMain"><i class="fa fa-tachometer fa-lg"></i> {{ 'DASHBOARDS' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ui-view="dashboardList" ng-class="{ active: $state.current.name.indexOf('dashboardMain') == 0 }"><a ui-sref="dashboardMain" >{{ 'DASHBOARDS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('dashboardRoomsSensorsList') == 0 }">
+                <a ui-sref="dashboardRoomsSensorsList({'id':''})"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS_DETAIL' | translate }}</a>
+              </li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('dashboardTopology') == 0 }">
+                <a ui-sref="dashboardTopology"><i class="pficon pficon-topology fa-lg mc-margin-right"></i>{{ 'TOPOLOGY' | translate }}</a>
+              </li>
+            </ul>
+          </li>
+          <!-- Resources -->
+          <li ng-class="{ active: $state.current.url.indexOf('/resources') == 0 }">
+            <a ui-sref="gatewaysList"><i class="fa  fa-cubes fa-lg"></i> {{ 'RESOURCES' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: $state.current.name.indexOf('gateways') == 0 }"><a ui-sref="gatewaysList"><i class="fa fa-plug fa-lg"></i> {{ 'GATEWAYS' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('nodes') == 0 }"><a ui-sref="nodesList"><i class="fa fa-sitemap fa-lg"></i> {{ 'NODES' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('sensor') == 0 }"><a ui-sref="sensorsList"><i class="fa fa-eye fa-lg"></i> {{ 'SENSORS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rules') == 0 }"><a ui-sref="rulesList"><i class="fa fa-cogs fa-lg"></i> {{ 'RULES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> {{ 'TIMERS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('operations') == 0 }"><a ui-sref="operationsList"><i class="fa fa-tasks fa-lg"></i> {{ 'OPERATIONS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('forwardPayload') == 0 }"><a ui-sref="forwardPayloadList"><i class="fa fa-forward fa-lg"></i> {{ 'FORWARD_PAYLOAD' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesGroup') == 0 }"><a ui-sref="resourcesGroupList"><i class="pficon pficon-replicator fa-lg mc-margin-right"></i>{{ 'GROUPS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rooms') == 0 }"><a ui-sref="roomsList"><i class="fa fa-object-group fa-lg"></i> {{ 'ROOMS' | translate }}</a></li>
+            </ul>
+          </li>
+          <!-- Action Board -->
+          <li ng-class="{ active: $state.current.url.indexOf('/actionboard') == 0 }">
+            <a ui-sref="actionBoardSensorsList"><i class="fa fa-magic fa-lg"></i> {{ 'ACTION_BOARD' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: $state.current.name.indexOf('actionBoardSensors') == 0 }"><a ui-sref="actionBoardSensorsList"><i class="fa fa-eye fa-lg"></i> {{ 'SENSORS_ACTION' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('sendRawMessage') == 0 }"><a ui-sref="sendRawMessage"><i class="pficon pficon-memory fa-lg mc-margin-right"></i>{{ 'SEND_RAW_MESSAGE' | translate }}</a></li>
+            </ul>
+          </li>
+          <!-- Status -->
+          <li ng-class="{ active: $state.current.url.indexOf('/status') == 0 }">
+            <a ui-sref="aboutMyController"><i class="fa fa-file-text-o fa-lg"></i> {{ 'STATUS' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: $state.current.name.indexOf('aboutMyController') == 0 }"><a ui-sref="aboutMyController"><i class="fa fa-info-circle fa-lg"></i> {{ 'ABOUT' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('statusSystem') == 0 }"><a ui-sref="statusSystem"><i class="fa fa-heartbeat fa-lg"></i> {{ 'SYSTEM_STATUS' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('resourcesLogs') == 0 }"><a ui-sref="resourcesLogsList"><i class="fa fa-list fa-lg"></i> {{ 'RESOURCES_LOGS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('mycontrollerLogList') == 0 }"><a ui-sref="mycontrollerLogList"><i class="fa fa-list fa-lg"></i> {{ 'MYCONTROLLER_SERVER_LOG' | translate }}</a></li>
+            </ul>
+          </li>
+          <!-- Utils -->
+          <li ng-class="{ active: $state.current.url.indexOf('/utilities') == 0 }">
+            <a ui-sref="scriptsList"><i class="fa fa-cube fa-lg"></i> {{ 'UTILITIES' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('scripts') == 0 }"><a ui-sref="scriptsList"><i class="fa fa-code fa-lg"></i> {{ 'SCRIPTS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('templates') == 0 }"><a ui-sref="templatesList"><i class="fa fa-file-text fa-lg"></i> {{ 'TEMPLATES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('additionalHeaders') == 0 }"><a ui-sref="additionalHeadersUpdate"><i class="fa fa-file-text fa-lg"></i> {{ 'HTML_ADDITIONAL_HEADERS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('variables') == 0 }"><a ui-sref="variablesRepositoryList"><i class="fa fa-list-alt fa-lg"></i> {{ 'VARIABLES_REPOSITORY' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('uidTags') == 0 }"><a ui-sref="uidTagsList"><i class="fa fa-tags fa-lg"></i> {{ 'UID_TAGS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesData') == 0 }"><a ui-sref="resourcesDataList"><i class="fa fa-cubes fa-lg"></i> {{ 'RESOURCES_DATA' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('externalServer') == 0 }"><a ui-sref="externalServersList"><i class="fa fa-server fa-lg"></i> {{ 'EXTERNAL_SERVERS' | translate }}</a></li>
+            </ul>
+          </li>
+          <!-- Settings -->
+          <li ng-class="{ active: $state.current.url.indexOf('/settings') == 0 }">
+            <a ui-sref="settingsProfileUpdate"><i class="fa fa-cog fa-lg"></i> {{ 'SETTINGS' | translate }}</a>
+            <ul class="nav navbar-nav navbar-persistent">
+              <li ng-class="{ active: $state.current.name.indexOf('settingsProfile') == 0 }"><a ui-sref="settingsProfileUpdate"><i class="pficon pficon-user fa-lg mc-margin-right"></i>{{ 'PROFILE' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsSystem') == 0 }"><a ui-sref="settingsSystem"><i class="fa fa-cogs fa-lg"></i> {{ 'SYSTEM' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsNotifications') == 0 }"><a ui-sref="settingsNotifications"><i class="fa fa-flag-o fa-lg"></i> {{ 'NOTIFICATIONS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMqttBroker') == 0 }"><a ui-sref="settingsMqttBroker"><i class="fa fa-star-o fa-lg"></i> {{ 'MQTT_BROKER' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMetrics') == 0 }"><a ui-sref="settingsMetrics"><i class="fa fa-area-chart fa-lg"></i> {{ 'METRICS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMySensors') == 0 }"><a ui-sref="settingsMySensors"><i class="fa fa-star-o fa-lg"></i> {{ 'MY_SENSORS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsVariablesMapperList') == 0 }"><a ui-sref="settingsVariablesMapperList"><i class="fa fa-clone fa-lg"></i> {{ 'VARIABLES_MAPPER' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUsers') == 0 }"><a ui-sref="settingsUsersList"><i class="fa fa-users fa-lg"></i> {{ 'USERS' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsRoles') == 0 }"><a ui-sref="settingsRolesList"><i class="pficon pficon-registry fa-lg mc-margin-right"></i>{{ 'ROLES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsBackup') == 0 }"><a ui-sref="settingsBackupList"><i class="fa fa fa-database fa-lg"></i> {{ 'BACKUP' | translate }}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </nav>
+
+    <div class="container-fluid" ng-class="{'top-buffer-nm' : mchelper.userSettings.hideMenu, 'top-buffer-m' : !mchelper.userSettings.hideMenu}" id="rootView">
+      <div ui-view></div>
+    </div>
+
+    <!-- fix: mobile navbar doesn't collapse after clicking link-->
+    <!-- https://github.com/twbs/bootstrap/issues/12852 -->
+    <script>
+      $(document).on('click','.navbar-collapse.in',function(e) {
+        if( $(e.target).is('a') && ( $(e.target).attr('class') != 'dropdown' ) ) {
+            $(this).collapse('hide');
+        }
+      });
+    </script>
+
+  </body>
+</html>

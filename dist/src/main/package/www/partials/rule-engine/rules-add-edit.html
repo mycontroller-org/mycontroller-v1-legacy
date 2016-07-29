@@ -1,0 +1,307 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-if="!ruleConditionTypes.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-if="ruleConditionTypes.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div><!-- div-main -->
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-7">
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
+            <div class="col-sm-10 mc-form-fixer-left">
+              <input class="form-control" placeholder="{{ 'RULE_NAME' | translate }}" ng-model="item.name" required/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ENABLED' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="item.enabled" checked>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'DISABLE_WHEN_TRIGGER' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="item.disableWhenTrigger">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'IGNORE_DUPLICATE' | translate }}</label>
+            <div class="col-sm-10">
+             <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="item.ignoreDuplicate" checked>
+            </div>
+          </div>
+
+          <legend><small>{{ 'CONDITION' | translate }}</small></legend>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'CONDITION_TYPE' | translate }}</label>
+            <div class="col-sm-4 mc-form-fixer-left">
+              <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in ruleConditionTypes | orderBy:'displayName'" ng-model="item.conditionType" ng-change="updateOnConditionTypChange()" required>
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+            <!-- Threshold, Threshold range, Compare, String -->
+            <div ng-if="item.conditionType === 'Threshold' || item.conditionType === 'Threshold range' || item.conditionType === 'Compare' || item.conditionType === 'String'">
+              <div class="col-sm-6 mc-form-fixer">
+                <select ng-init="item.resourceType = 'Sensor variable'" class="form-control" pf-select data-live-search="true" ng-model="item.resourceId" required>
+                  <option value="" ng-hide="true"></option>
+                  <option ng-repeat="res in sensorVariablesList | orderBy:'displayName'" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == item.resourceId"></option>
+                </select>
+              </div>
+            </div>
+            <!-- State -->
+            <div ng-if="item.conditionType === 'State'">
+              <div class="col-sm-6 mc-form-fixer">
+                <select class="form-control" pf-select ng-options="rT.displayName as rT.displayName for rT in resourceTypes | orderBy:'displayName'" ng-model="item.resourceType"
+                  ng-change="$parent.stateResourcesList = getResources(item.resourceType, 'Binary');updateStateTypes(item.resourceType);" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+            </div>
+            <!-- Script -->
+            <div ng-if="item.conditionType === 'Script'">
+              <div class="col-sm-6 mc-form-fixer">
+                <select class="form-control" pf-select ng-options="rT as rT for rT in scriptsList" ng-model="item.scriptFile" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div ng-if="item.conditionType === 'Script' && item.scriptFile">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'SCRIPT_BINDINGS' | translate }}</label>
+              <div class="col-sm-10 mc-form-fixer-left">
+                <input class="form-control" placeholder="{{ 'SCRIPT_BINDINGS' | translate }}" ng-model="item.scriptBindings" pf-validation="cs.isJsonString(input)" required />
+                <span class="help-block">{{ 'SYNTAX_ERROR' | translate }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Threshold -->
+          <div ng-if="item.conditionType === 'Threshold'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TRIGGER_WHEN' | translate }}</label>
+              <div class="col-sm-2 mc-form-fixer-left">
+                <select class="form-control" pf-select ng-options="at.displayName as at.displayName for at in ruleOperatorTypes | orderBy:'displayName'" ng-model="item.operator" required>
+                  <option value="" ng-hide="true">{{ 'SELECT' | translate }}</option>
+                </select>
+              </div>
+              <div class="col-sm-2 mc-form-fixer">
+                <select class="form-control" pf-select ng-options="at.displayName as at.displayName for at in ruleThresholdDataTypes" ng-change="item.data=''" ng-model="item.dataType" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+              <div class="col-sm-6 mc-form-fixer" ng-if="item.dataType === 'Value'">
+                <input class="form-control" placeholder="{{ 'THRESHOLD_VALUE' | translate }}" ng-model="item.data" required/>
+              </div>
+              <div class="col-sm-6 mc-form-fixer" ng-if="item.dataType === 'Sensor variable'">
+                <select class="form-control" pf-select data-live-search="true" ng-model="item.data" required>
+                  <option value="" ng-hide="true"></option>
+                  <option ng-repeat="res in sensorVariablesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == item.data"></option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Threshold Range-->
+          <div ng-if="item.conditionType === 'Threshold range'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TRIGGER_WHEN' | translate }}</label>
+              <div class="col-sm-2 mc-form-fixer-left">
+                <label class="mc-padding">
+                  <input type="checkbox" value="inRange" ng-model="item.inRange" /> {{ 'IN_RANGE' | translate }}
+                </label>
+              </div>
+              <div class="col-sm-2 mc-form-fixer">
+                <label class="mc-padding">
+                  <input type="checkbox" value="includeOperatorLow" ng-model="item.includeOperatorLow" /> {{ 'INCLUDE_THRESHOLD_LOW' | translate }}
+                </label>
+              </div>
+              <div class="col-sm-2 mc-form-fixer">
+                <label class="mc-padding">
+                  <input type="checkbox" value="includeOperatorHigh" ng-model="item.includeOperatorHigh" /> {{ 'INCLUDE_THRESHOLD_HIGH' | translate }}
+                </label>
+              </div>
+              <div class="col-sm-2 mc-form-fixer">
+                <input class="form-control" placeholder="{{ 'THRESHOLD_VALUE_LOW' | translate }}" ng-model="item.thresholdLow" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+              <div class="col-sm-2 mc-form-fixer-left">
+                <input class="form-control" placeholder="{{ 'THRESHOLD_VALUE_HIGH' | translate }}" ng-model="item.thresholdHigh" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compare-->
+          <div ng-if="item.conditionType === 'Compare'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TRIGGER_WHEN' | translate }}</label>
+              <div class="col-sm-2 mc-form-fixer-left">
+                <select class="form-control" pf-select ng-options="at.displayName as at.displayName for at in ruleOperatorTypes" ng-model="item.operator" required>
+                  <option value="" ng-hide="true">{{ 'SELECT' | translate }}</option>
+                </select>
+              </div>
+              <div class="col-sm-2 mc-form-fixer">
+                <input class="form-control" placeholder="{{ 'PERCENTAGE' | translate }}" ng-model="item.data2Multiplier" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+              <div class="col-sm-6 mc-form-fixer">
+                <select class="form-control" ng-init="item.targetResourceType='Sensor variable'" pf-select data-live-search="true" ng-model="item.data2ResourceId" required>
+                  <option value="" ng-hide="true"></option>
+                  <option ng-repeat="res in sensorVariablesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == item.data2ResourceId"></option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- State-->
+          <div ng-if="item.conditionType === 'State'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TRIGGER_WHEN' | translate }}</label>
+              <div class="col-sm-6 mc-form-fixer-left">
+                <select class="form-control" pf-select data-live-search="true" ng-model="item.resourceId" required>
+                  <option value="" ng-hide="true"></option>
+                  <option ng-repeat="res in stateResourcesList" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="res.id == item.resourceId"></option>
+                </select>
+              </div>
+              <div class="col-sm-2 mc-form-fixer">
+                <select class="form-control" pf-select ng-options="at.displayName as at.displayName for at in ruleOperatorTypes" ng-model="item.operator" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+              <div class="col-sm-2 mc-form-fixer">
+                <select class="form-control" pf-select ng-options="at.displayName as at.displayName for at in stateTypes" ng-model="item.state" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- String -->
+          <div ng-if="item.conditionType === 'String'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TRIGGER_WHEN' | translate }}</label>
+              <div class="col-sm-2 mc-form-fixer-left">
+                <label class="mc-padding">
+                  <input type="checkbox" value="ignoreCase" ng-model="item.ignoreCase" /> {{ 'IGNORE_CASE' | translate }}
+                </label>
+              </div>
+              <div class="col-sm-2 mc-form-fixer">
+                <select class="form-control" pf-select ng-options="at.displayName as at.displayName for at in ruleOperatorTypes" ng-model="item.operator" required>
+                  <option value="" ng-hide="true">{{ 'SELECT' | translate }}</option>
+                </select>
+              </div>
+              <div class="col-sm-6 mc-form-fixer">
+                <input class="form-control" placeholder="{{ 'PATTERN' | translate }}" ng-model="item.pattern" required />
+              </div>
+            </div>
+          </div>
+
+
+          <div ng-hide="item.resourceType === null || item.resourceType === undefined">
+            <legend><small>{{ 'DAMPENING' | translate }}</small></legend>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'DAMPENING' | translate }}</label>
+              <div class="col-sm-4 mc-form-fixer-left">
+                <select class="form-control" pf-select ng-options="adt.displayName as adt.displayName for adt in dampeningTypes" ng-model="item.dampeningType" required>
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+
+              <div class="col-sm-3 mc-form-fixer"  ng-if="item.dampeningType === 'Consecutive'">
+                <input class="form-control" placeholder="{{ 'OCCURRENCES' | translate }}" ng-model="item.dampening.consecutiveMax" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+
+
+
+              <div ng-if="item.dampeningType === 'Last N evaluations'">
+                 <div class="col-sm-3 mc-form-fixer"  >
+                  <input class="form-control" placeholder="{{ 'OCCURRENCES' | translate }}" ng-model="item.dampening.occurrencesMax" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div class="col-sm-3 mc-form-fixer">
+                  <input class="form-control" placeholder="{{ 'EVALUATIONS' | translate }}" ng-model="item.dampening.evaluationsMax" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+              </div>
+
+              <div ng-if="item.dampeningType === 'Active time'">
+                <div class="col-sm-3 mc-form-fixer">
+                  <input class="form-control" placeholder="{{ 'TIME' | translate }}" ng-model="item.dampening.activeTime" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+
+                <div class="col-sm-3 mc-form-fixer">
+                  <select class="form-control" pf-select ng-model="item.dampening.activeTimeConstant" required>
+                    <option value="" ng-hide="true"></option>
+                    <option value="1000" >{{ 'SECONDS' | translate }}</option>
+                    <option value="60000">{{ 'MINUTES' | translate }}</option>
+                    <option value="3600000">{{ 'HOURS' | translate }}</option>
+                    <option value="86400000">{{ 'DAYS' | translate }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
+             <legend><small>{{ 'OPERATIONS' | translate }}</small></legend>
+
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label"></label>
+              <div class="col-sm-10">
+                <div class="card-pf card-pf-accented">
+                  <div class="card-pf-body">
+                    <div>
+                      <select ng-options="ls.id as ls.displayName for ls in operations" multiple
+                        ng-model="item.operationIds" bs-duallistbox
+                        move-on-select="false"
+                        filter="true"
+                        select-min-height="200"
+                        ></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div><!-- div-main -->
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

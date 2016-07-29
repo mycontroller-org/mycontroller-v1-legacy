@@ -1,0 +1,137 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-1x">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="jvmStatus.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="jvmStatus.$resolved"> <!-- Main Message -->
+
+    <div class="col-lg-12">
+      <div class="card-pf card-pf-accented">
+        <div>
+          <ul ng-init="tabSelection='java'" class="nav nav-tabs   nav-tabs-pf">
+            <li ng-class="{'active' : tabSelection==='java'}"><a ng-click="tabSelection='java'" href=""><i class="icon-java-bold fa-2x"></i> <span class="mc-icon-md-3">{{ 'JAVA_VIRTUAL_MACHINE_SPECIFICATION' | translate }}</span></a></li>
+            <li ng-class="{'active' : tabSelection==='os'}"><a ng-click="tabSelection='os'" href=""><i class="icon-raspberrypi fa-2x"></i> <span class="mc-icon-md-3">{{ 'OPERATING_SYSTEM' | translate }}</span></a></li>
+            <li ng-class="{'active' : tabSelection==='se'}"><a ng-click="tabSelection='se'" href=""><i class="icon-python fa-2x"></i> <span class="mc-icon-md-3">{{ 'SCRIPT_ENGINES' | translate }}</span></a></li>
+          </ul>
+        </div>
+
+        <div ng-if="tabSelection==='java'" class="card-pf-body">
+          <dl class="dl-horizontal">
+            <dt>{{ 'JAVA_HOME' | translate }}</dt> <dd>{{osStatus.javaHome}}</dd>
+            <dt>{{ 'JAVA_VENDOR_URL' | translate }}</dt> <dd>{{osStatus.javaVendorUrl}}</dd>
+            <dt>{{ 'VM_NAME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmName}}</dd>
+            <dt>{{ 'VM_VENDOR' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmVendor}}</dd>
+            <dt>{{ 'VM_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.vmVersion}}</dd>
+            <dt>{{ 'SPECIFICATION_VENDOR' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.specVendor}}</dd>
+            <dt>{{ 'SPECIFICATION_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.specVersion}}</dd>
+            <dt>{{ 'MANAGEMENT_SPECIFICATION_VERSION' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.managementSpecVersion}}</dd>
+            <dt>{{ 'UP_TIME' | translate }}</dt> <dd>{{jvmStatus.jvmInfo.uptime | millSecondsToTimeString}}</dd>
+            <dt>{{ 'HEAP_MEMORY' | translate }}</dt>
+                <dd>
+                  {{ 'USED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.used | byteToMBsizeConvertor}},
+                  {{ 'COMMITTED' | translate }}: {{jvmStatus.memory.heapMemoryUsage.committed | byteToMBsizeConvertor}},
+                  {{ 'INIT' | translate }}: {{jvmStatus.memory.heapMemoryUsage.init | byteToMBsizeConvertor}},
+                  {{ 'MAX' | translate }}: {{jvmStatus.memory.heapMemoryUsage.max | byteToMBsizeConvertor}}
+                </dd>
+            <dt>{{ 'NON_HEAP_MEMORY' | translate }}</dt>
+                <dd>
+                  {{ 'USED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.used | byteToMBsizeConvertor}},
+                  {{ 'COMMITTED' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.committed | byteToMBsizeConvertor}},
+                  {{ 'INIT' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.init | byteToMBsizeConvertor}},
+                  {{ 'MAX' | translate }}: {{jvmStatus.memory.nonHeapMemoryUsage.max | byteToMBsizeConvertor}}
+                </dd>
+            <dt>{{ 'THREADS_COUNT' | translate }}</dt>
+                <dd>
+                  {{ 'CURRENT' | translate }}: {{jvmStatus.thread.threadCount}},
+                  {{ 'PEAK' | translate }}: {{jvmStatus.thread.peakThreadCount}},
+                  {{ 'TOTAL_STARTED' | translate }}: {{jvmStatus.thread.totalStartedThreadCount}},
+                  {{ 'DAEMON' | translate }}: {{jvmStatus.thread.daemonThreadCount}}
+                </dd>
+            <dt>{{ 'CLASS_LOADING_DETAILS' | translate }}</dt>
+                <dd>
+                  {{ 'LOADED' | translate }}: {{jvmStatus.classLoadingDetail.loadedClassCount}},
+                  {{ 'UNLOADED' | translate }}: {{jvmStatus.classLoadingDetail.unloadedClassCount}},
+                  {{ 'TOTAL_LOADED' | translate }}: {{jvmStatus.classLoadingDetail.totalLoadedClassCount}}
+                </dd>
+            <span ng-repeat="garbageCollector in jvmStatus.garbageCollectors">
+              <dt>{{ 'GARBAGE_COLLECTOR' | translate }} - {{garbageCollector.name}}</dt>
+                <dd>
+                  {{ 'COLLECTION_TIME' | translate }}: {{garbageCollector.collectionTime}},
+                  {{ 'COLLECTION_COUNT' | translate }}: {{garbageCollector.collectionCount}},
+                  {{ 'LAST_GARBAGECOLLECTOR_DURATION' | translate }}: {{garbageCollector.lastGcDuration}}
+                </dd>
+            </span>
+          </dl>
+
+          <div class="form-actions text-right">
+            <button ng-if="mchelper.user.permission === 'Super admin'" type="button" class="btn btn-default" class="button" ng-click="runGC()">
+              <i class="fa fa-recycle fa-lg"></i> {{ 'RUN_GARBAGE_COLLECTION' | translate }}
+            </button>
+          </div>
+        </div>
+
+
+        <div ng-if="tabSelection==='os'" class="card-pf-body">
+          <dl class="dl-horizontal">
+            <dt>{{ 'OPERATING_SYSTEM' | translate }}</dt> <dd>{{osStatus.name}}</dd>
+            <dt>{{ 'ARCHITECTURE' | translate }}</dt> <dd>{{osStatus.arch}}</dd>
+            <dt>{{ 'VERSION_KERNEL' | translate }}</dt> <dd>{{osStatus.version}}</dd>
+            <dt>{{ 'AVAILABLE_PROCESS' | translate }}</dt> <dd>{{osStatus.availableProcess}}</dd>
+            <dt>{{ 'SYSTEM_LOAD_AVERAGE' | translate }}</dt> <dd>{{osStatus.systemLoadAverage}}</dd>
+            <dt>{{ 'SYSTEM_CPU_LOAD' | translate }}</dt> <dd>{{osStatus.systemCpuLoad}}</dd>
+            <dt>{{ 'PROCESS_CPU' | translate }}</dt> <dd>{{ 'LOAD' | translate }}: {{osStatus.processCpuLoad}}, {{ 'TIME' | translate }}: {{osStatus.processCpuTime}}</dd>
+            <dt>{{ 'PHYSICAL_MEMORY' | translate }}</dt>
+              <dd>
+                {{ 'FREE' | translate }}: {{osStatus.freePhysicalMemorySize | byteToMBsizeConvertor}},
+                {{ 'TOTAL' | translate }}: {{osStatus.totalPhysicalMemorySize | byteToMBsizeConvertor}}
+              </dd>
+            <dt>{{ 'SWAP_SPACE' | translate }}</dt>
+              <dd>
+                {{ 'FREE' | translate }}: {{osStatus.freeSwapSpaceSize | byteToMBsizeConvertor}},
+                {{ 'TOTAL' | translate }}: {{osStatus.totalSwapSpaceSize | byteToMBsizeConvertor}}
+              </dd>
+            <dt>{{ 'COMMITTED_VIRTUAL_MEMORY_SIZE' | translate }}</dt> <dd>{{osStatus.committedVirtualMemorySize | byteToMBsizeConvertor}}</dd>
+            <dt>{{ 'USER_WORKING_DIRECTORY' | translate }}</dt> <dd>{{osStatus.userWorkingDir}}</dd>
+          </dl>
+        </div>
+
+        <div ng-if="tabSelection==='se'" class="card-pf-body">
+          <div ng-repeat="engine in scriptEngines track by $index">
+            <legend><small>{{$index+1}}) {{engine.engineName}}</small></legend>
+            <dl class="dl-horizontal">
+              <dt>{{ 'NAME' | translate }}</dt> <dd>{{engine.engineName}}</dd>
+              <dt>{{ 'VERSION' | translate }}</dt> <dd>{{engine.engineVersion}}</dd>
+              <dt>{{ 'LANGUAGE' | translate }}</dt> <dd>{{engine.languageName}}</dd>
+              <dt>{{ 'LANGUAGE_VERSION' | translate }}</dt> <dd>{{engine.languageVersion}}</dd>
+              <dt>{{ 'EXTENSIONS' | translate }}</dt> <dd>{{engine.extensions.join(', ')}}</dd>
+              <dt>{{ 'ALIAS' | translate }}</dt> <dd>{{engine.alias.join(', ')}}</dd>
+            </dl>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->

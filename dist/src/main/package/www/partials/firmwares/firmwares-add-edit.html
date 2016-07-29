@@ -1,0 +1,79 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="firmwareVersions.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+
+  <div ng-show="firmwareVersions.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div><!-- div-main -->
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-5">
+
+          <!-- type -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-options="item.id as item.displayName for item in firmwareTypes" ng-model="item.type.id" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <!-- version -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'VERSION' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-options="item.id as item.displayName for item in firmwareVersions" ng-model="item.version.id" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Firmware -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'FILE' | translate }}</label>
+            <div class="col-sm-10">
+              <input type="file" class="form-control" id="firmware.file" on-read-file="displayFileContents(contents)" ng-accept="'.hex'" ng-model="file" >
+            </div>
+          </div>
+
+          <!-- Firmware list -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'CONTENT' | translate }}</label>
+            <div class="col-sm-10">
+              <textarea  class="form-control" rows="21" style="resize:none" ng-model="item.fileString" readonly  required ></textarea>
+            </div>
+          </div>
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div><!-- div-main -->
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

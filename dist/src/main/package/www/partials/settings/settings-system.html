@@ -1,0 +1,276 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-1x">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="controllerSettings.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="controllerSettings.$resolved"> <!-- Main Message -->
+
+    <!-- Location settings -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-map-marker fa-lg"></i> {{ 'LOCATION' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcForm">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label"><i class="wi wi-sunrise mc-icon-2x" uib-tooltip="{{ 'SUNRISE' | translate }}" tooltip-placement="left"></i></label>
+              <div class="col-sm-10">
+                <span class="mc-icon">{{locationSettings.sunriseTime | date:mchelper.cfg.timeFormatWithoutSeconds : mchelper.cfg.timezone}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label"><i class="wi wi-sunset mc-icon-2x" uib-tooltip="{{ 'SUNSET' | translate }}" tooltip-placement="left"></i></label>
+              <div class="col-sm-10">
+                <span class="mc-icon">{{locationSettings.sunsetTime | date:mchelper.cfg.timeFormatWithoutSeconds : mchelper.cfg.timezone}}</span>
+              </div>
+            </div>
+
+            <div class="form-group" ng-show="editEnable.location">
+              <label class="col-sm-2 control-label">{{ 'LOCATION' | translate }}</label>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-default" class="button" ng-click="updateGeoLocation()"><i class="fa fa-map-marker fa-lg"></i> {{ 'UPDATE' | translate }}</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'LATITUDE' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.latitude" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                <div ng-hide="editEnable.location">{{locationSettings.latitude}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'LONGITUDE' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.longitude" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                <div ng-hide="editEnable.location">{{locationSettings.longitude}}</div>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.location" ng-click="editEnable.location = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.location" ng-click="updateSettingsLocation();editEnable.location = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="saveLocation()"  ng-show="editEnable.location" ng-disabled="saveProgress.location || mcForm.$invalid">
+              <div ng-show="saveProgress.location" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controller settings -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> {{ 'MY_CONTROLLER' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcFormController">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'NODES_ALIVE_CHECK_INTERVAL' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{aliveCheckMinutes}} {{ 'MINUTES' | translate }}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="aliveCheckMinutes" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div class="col-sm-3 mc-form-fixer">
+                  <span>{{ 'MINUTES' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'EXECUTE_DISCOVER_INTERVAL' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{executeDiscoverMinutes}} {{ 'MINUTES' | translate }}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="executeDiscoverMinutes" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div class="col-sm-3 mc-form-fixer">
+                  <span>{{ 'MINUTES' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'UNITS_CONFIGURATION' | translate }}</label>
+              <div class="col-sm-5">
+                <div ng-show="editEnable.controller">
+                  <select class="form-control" pf-select ng-model="controllerSettings.unitConfig">
+                    <option value="Metric">{{ 'METRIC' | translate }}</option>
+                    <option value="Imperial">{{ 'IMPERIAL' | translate }}</option>
+                  </select>
+                </div>
+                <span ng-hide="editEnable.controller">{{controllerSettings.unitConfig.toUpperCase() | translate}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'REGISTER_NODES_AUTOMATICALLY' | translate }}</label>
+              <div class="col-sm-5">
+                <input bs-switch ng-change="editEnable.controller = true" ng-model="controllerSettings.autoNodeRegistration" type="checkbox"
+                      switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
+                      ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RESOURCES_LOG_LEVEL' | translate }}</label>
+              <div class="col-sm-5">
+                <div ng-show="editEnable.controller">
+                  <select class="form-control" pf-select  ng-options="ll.displayName as ll.displayName for ll in logLevels" ng-model="controllerSettings.resourcesLogLevel">
+                    <option value="" ng-hide="true"></option>
+                  </select>
+                </div>
+                <span ng-hide="editEnable.controller">{{controllerSettings.resourcesLogLevel}}</span>
+              </div>
+            </div>
+
+            <legend></legend>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'DASHBOARD_LIMIT' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{controllerSettings.dashboardLimit}}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="controllerSettings.dashboardLimit" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TABLE_ROWS_LIMIT' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{controllerSettings.tableRowsLimit}}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="controllerSettings.tableRowsLimit" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'GLOBAL_PAGE_REFRESH_TIME' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{globalPageRefreshTime}} {{ 'SECONDS' | translate }}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="globalPageRefreshTime" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div class="col-sm-3 mc-form-fixer">
+                  <span>{{ 'SECONDS' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'LANGUAGE' | translate }}</label>
+              <div class="col-sm-5">
+                <div ng-show="editEnable.controller">
+                  <select class="form-control" pf-select  ng-options="lg.displayName as lg.displayName for lg in languages" ng-model="controllerSettings.language">
+                    <option value="" ng-hide="true"></option>
+                  </select>
+                </div>
+                <span ng-hide="editEnable.controller">{{controllerSettings.language}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TIME_FORMAT' | translate }}</label>
+              <div class="col-sm-5">
+                <div ng-show="editEnable.controller">
+                  <select class="form-control" pf-select ng-model="controllerSettings.timeFormat">
+                    <option value="12 hours">{{ '12_HOURS' | translate }}</option>
+                    <option value="24 hours">{{ '24_HOURS' | translate }}</option>
+                  </select>
+                </div>
+                <span ng-hide="editEnable.controller">{{controllerSettings.timeFormat.toUpperCase().replace(" ", "_") | translate}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'GRANT_ACCESS_TO_CHILD_RESOURCES_IN_ROLES' | translate }}</label>
+              <div class="col-sm-5">
+                <input bs-switch ng-change="editEnable.controller = true" ng-model="controllerSettings.grantAccessToChildResources" type="checkbox"
+                      switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
+                      ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'WIDGET_IMAGE_FILES_DISK_LOCATION' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{controllerSettings.widgetImageFilesLocation}}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-5">
+                  <input class="form-control" ng-model="controllerSettings.widgetImageFilesLocation" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'LOGIN_MESSAGE' | translate }}</label>
+              <div class="col-sm-5">
+                <textarea ng-show="editEnable.controller" class="form-control" ng-model="controllerSettings.loginMessage" placeholder="{{ 'LOGIN_MESSAGE' | translate }}" rows="4"></textarea>
+                <p ng-hide="editEnable.controller" ng-bind-html="controllerSettings.loginMessage"></span>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.controller" ng-click="editEnable.controller = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.controller" ng-click="updateSettingsController();editEnable.controller = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="saveController()"  ng-show="editEnable.controller" ng-disabled="saveProgress.controller || mcFormController.$invalid">
+              <div ng-show="saveProgress.controller" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container -->

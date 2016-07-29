@@ -1,0 +1,95 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="roles.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="roles.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div>
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-8">
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ENABLED' | translate }}</label>
+            <div class="col-sm-10">
+              <input type="checkbox" ng-model="item.user.enabled">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'USERNAME' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="form-control" placeholder="{{ 'USERNAME' | translate }}" ng-model="item.user.username" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'FULL_NAME' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="form-control" placeholder="{{ 'FULL_NAME' | translate }}" ng-model="item.user.fullName"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'EMAIL' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="form-control" placeholder="{{ 'EMAIL' | translate }}" ng-model="item.user.email"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'PASSWORD' | translate }}</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" placeholder="{{ 'PASSWORD' | translate }}" ng-model="item.user.password"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ROLES' | translate }}</label>
+            <div class="col-sm-10">
+              <div class="card-pf card-pf-accented">
+                <div class="card-pf-body">
+                  <div>
+                    <select ng-options="ls.id as ls.displayName for ls in roles" multiple
+                      ng-model="item.roles" bs-duallistbox
+                      move-on-select="true"
+                      filter="false"
+                      select-min-height="250"
+                      ></select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div>
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

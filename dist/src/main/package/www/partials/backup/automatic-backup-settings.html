@@ -1,0 +1,108 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-1x"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="item.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="item.$resolved"> <!-- Main Message -->
+
+    <!-- Email settings -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-database"></i> {{ 'BACKUP_SETTINGS' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcBackupSettingsForm">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'BACKUP_LOCATION' | translate }}</label>
+              <div class="col-sm-7">
+                <input ng-show="editEnable.backupSettings" class="form-control" placeholder="{{ 'BACKUP_LOCATION' | translate }}" ng-model="item.backupLocation" required />
+                <div ng-hide="editEnable.backupSettings">{{item.backupLocation}}</div>
+              </div>
+            </div>
+
+            <legend><small>{{ 'AUTOMATIC_BACKUP_SETTINGS' | translate }}</small></legend>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'STATUS' | translate }}</label>
+              <div class="col-sm-5">
+                <input bs-switch ng-change="editEnable.backupSettings = true" ng-model="item.enabled" type="checkbox"
+                      switch-animate="true" switch-handle-width="50px" switch-label-width="3px"
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
+                      ng-false-value="false" switch-on-text="{{ 'ON' | translate }}" switch-off-text="{{ 'OFF' | translate }}">
+              </div>
+            </div>
+
+            <div ng-if="item.enabled">
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'BACKUP_FILE_PREFIX' | translate }}</label>
+                <div class="col-sm-7">
+                  <input ng-show="editEnable.backupSettings" class="form-control" placeholder="{{ 'BACKUP_FILE_PREFIX' | translate }}" ng-model="item.prefix" pf-validation="cs.isContainsSpace(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+                  <div ng-hide="editEnable.backupSettings">{{item.prefix}}</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'BACKUP_EVERY' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.backupSettings">
+                  <input ng-show="editEnable.backupSettings" class="form-control" placeholder="{{ 'BACKUP_EVERY' | translate }}" ng-model="$parent.intervalLocal" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.backupSettings" class="col-sm-7">
+                  <div>{{$parent.intervalLocal}} {{$parent.intervalTimeConstantString}}</div>
+                </div>
+                  <div class="col-sm-3" ng-show="editEnable.backupSettings" >
+                    <select class="form-control" pf-select ng-model="$parent.intervalTimeConstant" required>
+                        <option value="" ng-hide="true"></option>
+                        <option value="60000">{{ 'MINUTES' | translate }}</option>
+                        <option value="3600000">{{ 'HOURS' | translate }}</option>
+                        <option value="86400000">{{ 'DAYS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'RETAIN_MAX' | translate }}</label>
+                <div class="col-sm-7">
+                  <input ng-show="editEnable.backupSettings" class="form-control" placeholder="{{ 'RETAIN_MAX' | translate }}" ng-model="item.retainMax"  pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                  <div ng-hide="editEnable.backupSettings">{{item.retainMax}}</div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.backupSettings" ng-click="editEnable.backupSettings = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.backupSettings" ng-click="resetSettings();editEnable.backupSettings = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="save()"  ng-show="editEnable.backupSettings" ng-disabled="saveProgress || mcBackupSettingsForm.$invalid">
+              <div ng-show="saveProgress" class="spinner spinner-xs"></div>
+              {{ 'SAVE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

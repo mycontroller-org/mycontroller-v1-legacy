@@ -1,0 +1,63 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-1x">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="mcAbout.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="mcAbout.$resolved"> <!-- Main Message -->
+
+    <div class="col-lg-12">
+      <div class="card-pf  card-pf-accented">
+        <div class="card-pf-body">
+          <legend><small><small>{{ 'MY_CONTROLLER' | translate }}</small></small></legend>
+
+          <dl class="dl-horizontal">
+            <dt>{{ 'VERSION' | translate }}</dt> <dd>{{mcAbout.applicationVersion}}</dd>
+            <dt>{{ 'DATABASE_VERSION' | translate }}</dt> <dd>{{mcAbout.applicationDbVersion}}</dd>
+            <dt>{{ 'GIT_COMMIT_BRANCH' | translate }}</dt> <dd>{{mcAbout.gitCommit}}:{{mcAbout.gitBranch}}</dd>
+            <dt>{{ 'BUILT_ON' | translate }}</dt> <dd>{{mcAbout.gitBuiltOn}}</dd>
+            <dt>{{ 'BUILD_JDK' | translate }}</dt> <dd>{{mcAbout.gitBuildJdk}}</dd>
+            <dt>{{ 'BUILD_TOOL' | translate }}</dt> <dd>{{mcAbout.gitCreatedBy}}</dd>
+          </dl>
+
+          <legend><small><small>{{ 'JAVA_VIRTUAL_MACHINE_SPECIFICATION' | translate }}</small></small></legend>
+          <dl class="dl-horizontal">
+            <dt>{{ 'VM_VENDOR' | translate }}</dt> <dd>{{mcAbout.javaVmVendor}}</dd>
+            <dt>{{ 'VM_NAME' | translate }}</dt> <dd>{{mcAbout.javaVmName}}</dd>
+            <dt>{{ 'VM_VERSION' | translate }}</dt> <dd>{{mcAbout.javaRuntimeVersion}}</dd>
+            <dt>{{ 'JAVA_HOME' | translate }}</dt> <dd>{{mcAbout.javaHome}}</dd>
+          </dl>
+
+          <legend><small><small>{{ 'OPERATING_SYSTEM' | translate }}</small></small></legend>
+          <dl class="dl-horizontal">
+            <dt>{{ 'OPERATING_SYSTEM' | translate }}</dt> <dd>{{mcAbout.osName}}</dd>
+            <dt>{{ 'ARCHITECTURE' | translate }}</dt> <dd>{{mcAbout.osArch}}</dd>
+            <dt>{{ 'VERSION_KERNEL' | translate }}</dt> <dd>{{mcAbout.osVersion}}</dd>
+            <dt>{{ 'LOCATION' | translate }}</dt> <dd>{{mcAbout.applicationLocation}}</dd>
+          </dl>
+
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->

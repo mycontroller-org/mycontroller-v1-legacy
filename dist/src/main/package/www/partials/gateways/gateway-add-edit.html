@@ -1,0 +1,240 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="gatewaySerialDrivers.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="gatewaySerialDrivers.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div>
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-5">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ENABLED' | translate }}</label>
+            <div class="col-sm-10">
+             <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="gateway.enabled" checked>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="form-control" placeholder="{{ 'GATEWAY_NAME' | translate }}" ng-model="gateway.name" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NETWORK_TYPE' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-change="updateGatewayTypes()"
+                ng-options="gatewayNetworkType.id as gatewayNetworkType.displayName for gatewayNetworkType in gatewayNetworkTypes | orderBy:'displayName'" ng-model="gateway.networkType" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="gateway.networkType">
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-options="gatewayType.id as gatewayType.displayName for gatewayType in gatewayTypes | orderBy:'displayName'" ng-model="gateway.type" ng-change="updateTypeChange()" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Serial Gateway -->
+          <div ng-if="gateway.type === 'Serial'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'DRIVER' | translate }}</label>
+              <div class="col-sm-5">
+                <select class="form-control" pf-select ng-options="gatewaySerialDriver.id as gatewaySerialDriver.displayName for gatewaySerialDriver in gatewaySerialDrivers" ng-model="gateway.driver" required >
+                <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'PORT_NAME' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'SERIAL_PORT_NAME_EXAMPLE' | translate }}" ng-model="gateway.portName" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'BAUD_RATE' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'SERIAL_BAUD_RATE_EXAMPLE' | translate }}" ng-model="gateway.baudRate" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RETRY_FREQUENCY' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'SERIAL_RETRY_FREQUENCY_EXAMPLE' | translate }}" ng-model="gateway.retryFrequency" pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Ethernet Gateway -->
+          <div ng-if="gateway.type === 'Ethernet'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'HOST_NAME' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'ETHERNET_HOST_NAME_EXAMPLE' | translate }}" ng-model="gateway.host" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'PORT' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'ETHERNET_PORT_EXAMPLE' | translate }}" ng-model="gateway.port"  pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ALIVE_TEST_FREQUENCY' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'ETHERNET_ALIVE_TEST_FREQUENCY_EXAMPLE' | translate }}" ng-model="gateway.aliveFrequency"  pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- MQTT Gateway -->
+          <div ng-if="gateway.type === 'MQTT'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'BROKET_HOST' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'MQTT_BROKER_HOST_EXAMPLE' | translate }}" ng-model="gateway.brokerHost" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'CLIENT_ID' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'MQTT_CLIENT_ID_EXAMPLE' | translate }}" ng-model="gateway.clientId" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TOPIC_PUBLISH' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'MQTT_TOPIC_PUBLISH_EXAMPLE' | translate }}" ng-model="gateway.topicsPublish" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TOPIC_SUBSCRIBE' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'MQTT_TOPIC_SUBSCRIBE_EXAMPLE' | translate }}" ng-model="gateway.topicsSubscribe" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'USERNAME' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'USERNAME' | translate }}" ng-model="gateway.username"/>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'PASSWORD' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'PASSWORD' | translate }}" ng-model="gateway.password"/>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Sparkfun [phant.io] Gateway -->
+          <div ng-if="gateway.type === 'Sparkfun [phant.io]'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'URL' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'URL' | translate }}" ng-model="gateway.url" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'TRUST_HOST' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-options="type.id as type.displayName for type in trustHostTypes  | orderBy:'displayName'" ng-model="gateway.trustHostType" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'PUBLIC_KEY' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'PUBLIC_KEY' | translate }}" ng-model="gateway.publicKey" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'PRIVATE_KEY' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'PRIVATE_KEY' | translate }}" ng-model="gateway.privateKey" pf-validation="cs.isContainsSpace(input)" />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'POLL_FREQUENCY_MINUTES' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'POLL_FREQUENCY_MINUTES' | translate }}" ng-model="gateway.pollFrequency"  pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RECORDS_LIMIT' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'RECORDS_LIMIT' | translate }}" ng-model="gateway.recordsLimit"  pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div>
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

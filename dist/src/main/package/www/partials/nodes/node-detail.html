@@ -1,0 +1,133 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="resourceCount.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="resourceCount.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-list.html'"></div>
+
+    <div class="container-cards-pf"><!-- row -->
+      <div class="row row-cards-pf"> <!-- row-details -->
+
+        <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
+          <div class="card-pf card-pf-utilization card-pf-accented"  style="min-height:488px">
+            <div class="card-pf-heading">
+              <h2 class="card-pf-title">{{ 'DETAILS' | translate }} <a class="btn btn-link pull-right" ui-sref="nodesAddEdit({ id: item.id })"><i class="fa fa-edit"></i> {{ 'EDIT' | translate }} </a></h2>
+            </div>
+            <div class="card-pf-body">
+              <dl class="dl-horizontal">
+                <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
+                <dt>{{ 'REGISTRATION_STATUS' | translate }}</dt> <dd>{{item.registrationState}}</dd>
+                <dt>{{ 'EUI' | translate }}</dt> <dd>{{item.eui}}</dd>
+                <dt>{{ 'PARENT_NODE_EUI' | translate }}</dt> <dd>{{item.parentNodeEui}}</dd>
+                <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
+                <dt>{{ 'GATEWAY_NAME' | translate }}</dt> <dd>{{item.gateway.name}}</dd>
+                <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.gateway.type}}</dd>
+                <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.gateway.networkType}}</dd>
+                <dt>{{ 'RSSI' | translate }}</dt> <dd>{{item.rssi}}</dd>
+                <dt>{{ 'LIBRARY_VERSION' | translate }}</dt> <dd>{{item.libVersion}}</dd>
+                <dt>{{ 'VERSION' | translate }}</dt> <dd>{{item.version}}</dd>
+                <dt>{{ 'STATUS' | translate }}</dt>
+                <dd>
+                  <span class="card-pf-aggregate-status-notification">
+                    <span ng-show="item.state.toLowerCase() === 'up'">
+                      {{ 'UP' | translate }} <i class="fa fa-arrow-circle-o-up text-color-green fa-lg"></i>
+                    </span>
+                    <span ng-show="item.state.toLowerCase() === 'down'">
+                      {{ 'DOWN' | translate }} <i class="fa fa-arrow-circle-o-down text-color-red fa-lg"></i>
+                    </span>
+                     <span ng-show="item.state.toLowerCase() === 'unavailable'">
+                      {{ 'UNAVAILABLE' | translate }} <i class="fa fa-question-circle text-color-gray fa-lg"></i>
+                    </span>
+                  </span>
+                </dd>
+                <dt>{{ 'BATTERY' | translate }}</dt>
+                <dd>
+                  <span ng-show="item.batteryLevel"><i class="fa fa-lg fa-battery-{{(item.batteryLevel/22) >= 4 ? 4 : (item.batteryLevel/22) | number:0}}"></i> {{item.batteryLevel}} %</span>
+                  <span ng-hide="item.batteryLevel">-</span>
+                </dd>
+                <dt>{{ 'FIRMWARE' | translate }}</dt> <dd>{{item.firmware.firmwareName}}</dd>
+                <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.lastSeen"></span></dd>
+                <dt>{{ 'TOPOLOGY' | translate }}</dt> <dd><a class="mc-inline-editer-ab" ui-sref="dashboardTopology({ resourceType: 'Node', resourceId: item.id})"><span class="pficon pficon-topology mc-icon-lg"></span></a></dd>
+
+                <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
+                <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt>
+                <dd>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.sensors > 0" ui-sref="sensorsList({ nodeId: item.id})">{{resourceCount.sensors}}</a>
+                  <span ng-if="resourceCount.sensors == 0">{{resourceCount.sensors}}</span>
+                </dd>
+                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
+                <dd>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.resourcesGroups > 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
+                  <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- custom buttons -->
+        <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8">
+          <div class="card-pf card-pf-accented" style="min-height:350px">
+            <div class="card-pf-heading">
+              <div ng-if="item.batteryLevel" class="dropdown card-pf-time-frame-filter">
+                <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"
+                    switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="" switch-label-width="70px"
+                    switch-label="{{ 'MIN_MAX' | translate }}" ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}" >
+                <select pf-select ng-model="chartFromTimestamp" ng-change="updateChart()">
+                  <option value="" ng-hide="true"></option>
+                  <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
+                  <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
+                  <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>
+                  <option value="86400000">{{ 'LAST_DAY' | translate }}</option>
+                  <option value="604800000">{{ 'LAST_WEEK' | translate }}</option>
+                  <option value="2419200000">{{ 'LAST_MONTH' | translate }}</option>
+                  <option value="31536000000">{{ 'LAST_YEAR' | translate }}</option>
+                  <option value="0" ng-hide="true">{{ 'CUSTOM' | translate }}</option>
+                </select>
+              </div>
+              <h2 class="card-pf-title"><i class="fa fa-battery-full"></i> {{ 'BATTERY_USAGE' | translate }}</h2>
+            </div>
+            <div class="card-pf-body">
+              <div class="blank-slate-pf" ng-if="!item.batteryLevel">
+                <div class="blank-slate-pf-icon">
+                  <i class="fa fa-exclamation-triangle"></i>
+                </div>
+                <h1>{{ 'DATA_UNAVAILABLE' | translate }}</h1>
+              </div>
+              <div ng-show="item.batteryLevel">
+                <nvd3 options='chartOptions' data="batteryChartData.chartData" id="fetching"></nvd3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /row -->
+    </div><!-- /container -->
+
+
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->

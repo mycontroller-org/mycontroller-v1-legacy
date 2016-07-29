@@ -1,0 +1,96 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="gateways.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="gateways.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div>
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-5">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'GATEWAY' | translate }}</label>
+            <div class="col-sm-5 mc-form-fixer-left">
+              <select class="form-control" pf-select data-live-search="true" ng-model="message.gatewayId" required >
+                <option value="" ng-hide="true"></option>
+                <option ng-repeat="resource in gateways | orderBy:'displayName'" ng-bind-html="resource.displayName | mcResourceRepresentation"
+                 value="{{resource.id}}"  ng-selected="resource.id == message.gatewayId"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NODE_EUI' | translate }}/ {{ 'SENSOR_ID' | translate }}</label>
+            <div class="col-sm-5 mc-form-fixer-left">
+              <input class="form-control" ng-model="message.nodeEui" placeholder="{{ 'NODE_EUI' | translate }}" required />
+            </div>
+            <div class="col-sm-5 mc-form-fixer">
+              <input class="form-control" ng-model="message.sensorId" placeholder="{{ 'SENSOR_ID' | translate }}" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}/ {{ 'SUB_TYPE' | translate }}</label>
+            <div class="col-sm-5 mc-form-fixer-left">
+              <select class="form-control" pf-select data-live-search="true" ng-options="type.id as type.displayName for type in messageTypes  | orderBy:'displayName'"
+                ng-change="updateSubTypes(message.type)" ng-model="message.type" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+            <div class="col-sm-5 mc-form-fixer">
+              <select class="form-control" pf-select data-live-search="true" ng-options="subType.id as subType.displayName for subType in subTypes  | orderBy:'displayName'"
+                ng-model="message.subType" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ACKNOWLEDGE' | translate }}/ {{ 'PAYLOAD' | translate }}</label>
+            <div class="col-sm-3 mc-form-fixer-left">
+              <select class="form-control" pf-select ng-model="message.acknowledge" required >
+                <option value="" ng-hide="true"></option>
+                <option value="false">{{ 'NO_ACK' | translate }}</option>
+                <option value="true">{{ 'ACK' | translate }}</option>
+              </select>
+            </div>
+            <div class="col-sm-7 mc-form-fixer">
+              <input class="form-control" ng-model="message.payload" placeholder="{{ 'PAYLOAD' | translate }}" />
+            </div>
+          </div>
+
+          <div class="form-actions mc-form-actions-separator text-right">
+            <button type="button" class="btn btn-primary" ng-click="send()" ng-disabled="sendProgress || mcForm.$invalid">
+              <div ng-show="saveProgress" class="spinner spinner-xs hk-modal-spinner"></div>
+              {{sendProgress? ('SENDING' | translate):( 'SEND' | translate)}}
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->

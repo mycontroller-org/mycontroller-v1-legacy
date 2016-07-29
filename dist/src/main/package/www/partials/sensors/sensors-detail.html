@@ -1,0 +1,152 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="resourceCount.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="resourceCount.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-list.html'"></div>
+
+    <div class="container-cards-pf"><!-- row -->
+      <div class="row row-cards-pf"> <!-- row-details -->
+
+        <!-- details -->
+        <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
+          <div class="card-pf card-pf-utilization card-pf-accented">
+            <div class="card-pf-heading">
+              <h2 class="card-pf-title">{{ 'DETAILS' | translate }} <a class="btn btn-link pull-right" ui-sref="sensorsAddEdit({ id: item.id })"><i class="fa fa-edit"></i> {{ 'EDIT' | translate }} </a></h2>
+            </div>
+            <div class="card-pf-body">
+              <dl class="dl-horizontal">
+                <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
+                <dt>{{ 'SENSOR_ID' | translate }}</dt> <dd>{{item.sensorId}}</dd>
+                <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type.locale}}</dd>
+                <dt>{{ 'VARIABLE_TYPES' | translate }}</dt> <dd>{{getSensorVariableTypes(item.variables)}}</dd>
+                <dt>{{ 'NODE_EUI' | translate }}</dt> <dd>{{item.node.eui}}</dd>
+                <dt>{{ 'NODE_NAME' | translate }}</dt> <dd>{{item.node.name}}</dd>
+                <dt>{{ 'NODE_TYPE' | translate }}</dt> <dd>{{item.node.type}}</dd>
+                <dt>{{ 'GATEWAY_NAME' | translate }}</dt> <dd>{{item.node.gateway.name}}</dd>
+                <dt>{{ 'GATEWAY_TYPE' | translate }}</dt> <dd>{{item.node.gateway.type}}</dd>
+                <dt>{{ 'NETWORK' | translate }}</dt> <dd>{{item.node.gateway.networkType}}</dd>
+                <dt>{{ 'ROOM' | translate }}</dt> <dd>{{item.room.name}}</dd>
+                <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.lastSeen"></span></dd>
+                <dt>{{ 'TOPOLOGY' | translate }}</dt> <dd><a class="mc-inline-editer-ab" ui-sref="dashboardTopology({ resourceType: 'Sensor', resourceId: item.id})"><span class="pficon pficon-topology mc-icon-lg"></span></a></dd>
+                <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
+                <dt><span class="pficon pficon-replicator mc-icon-md-3"></span>{{ 'RESOURCES_GROUPS' | translate }}</dt>
+                <dd>
+                  <a class="mc-inline-editer-ab" ng-if="resourceCount.resourcesGroups > 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
+                  <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
+                </dd>
+
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- custom buttons -->
+        <!-- yet to implement
+        <div class="col-xs-7 col-sm-7 col-md-8 col-lg-8">
+          <div class="card-pf card-pf-accented ">
+            <div class="card-pf-heading">
+              <div class="dropdown card-pf-time-frame-filter">
+                <select pf-select ng-model="customButtonVariable" ng-options="variable.id as variable.type for variable in item.variables">
+                  <option value="" ng-hide="true"></option>
+                </select>
+                <select pf-select ng-model="timeRange">
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+              <h2 class="card-pf-title">
+                Custom buttons
+              </h2>
+            </div>
+            <div class="card-pf-body">
+              Yet to implement
+            </div>
+          </div>
+        </div>
+        -->
+
+        <!-- variables ng-repeat -->
+        <div ng-repeat="variable in item.variables">
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented mc-sensor-variable-detail">
+              <h2 class="card-pf-title">{{variable.type.locale}}</h2>
+              <div class="card-pf-body">
+                <!-- Sensor variables -->
+                <div ng-init="variable.showVariable = true">
+                <div ng-show="variable.showVariable" ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
+                  <a ui-sref="sensorVariableEdit({ id: variable.id })">
+                    <i uib-tooltip="{{ 'EDIT' | translate}}" tooltip-placement="left" class="pull-right fa fa-edit"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /row-details -->
+    </div><!-- /row -->
+
+
+    <div class="container-cards-pf" ng-show="chartData.length > 0">
+      <div class="row row-cards-pf">
+        <div class="col-lg-12">
+          <div class="card-pf card-pf-accented ">
+            <div class="card-pf-heading">
+              <div class="dropdown card-pf-time-frame-filter">
+                <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"
+                    switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="" switch-label-width="70px"
+                    switch-label="{{ 'MIN_MAX' | translate }}" ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}" >
+                <select pf-select ng-model="chartFromTimestamp" ng-change="updateChart()">
+                  <option value="" ng-hide="true"></option>
+                  <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
+                  <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
+                  <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>
+                  <option value="86400000">{{ 'LAST_DAY' | translate }}</option>
+                  <option value="604800000">{{ 'LAST_WEEK' | translate }}</option>
+                  <option value="2419200000">{{ 'LAST_MONTH' | translate }}</option>
+                  <option value="31536000000">{{ 'LAST_YEAR' | translate }}</option>
+                  <option value="0" ng-hide="true">{{ 'CUSTOM' | translate }}</option>
+                </select>
+              </div>
+              <h2 class="card-pf-title">
+                <i class="fa fa-area-chart fa-lg"></i> {{ 'VARIABLES_GRAPHICAL_VIEW' | translate }}
+              </h2>
+            </div>
+            <div class="card-pf-body">
+              <div ng-repeat="chData in chartData">
+                <legend><small>{{chData.variableType}}</small></legend>
+                <!-- Refer this one https://github.com/krispo/angular-nvd3/issues/40 -->
+                <nvd3 options='chOptions' data="chData.chartData" ng-init="chOptions = updateChartOptions(chData)"></nvd3>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /row -->
+    </div><!-- /container -->
+
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->

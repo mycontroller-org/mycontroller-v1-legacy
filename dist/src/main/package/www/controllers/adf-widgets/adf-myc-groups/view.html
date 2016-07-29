@@ -1,0 +1,51 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<div ng-if="config.itemIds.length > 0">
+  <!-- Loading icon disaplay -->
+  <div ng-if="mycGroups.showLoading">
+    <div ng-include src="'partials/common-html/loading-sm.html'"></div>
+  </div>
+
+  <div ng-if="!mycGroups.showLoading">
+    <!-- items ng-repeat -->
+    <div ng-repeat="item in mycGroups.items">
+      <div class="col-md-{{12/config.itemsPerRow}}">
+        <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented card-pf-aggregate-status-mini">
+          <h2 class="card-pf-title">
+            <span class="pficon pficon-replicator"></span>
+            <span class="card-pf-aggregate-status-count" tooltip-placement="top" uib-tooltip="{{item.name}}">{{item.name ? item.name : '-' | limitTo:18}}{{item.name.length > 18 ? '...' : ''}}</span>
+            <span tooltip-placement="top" uib-tooltip="{{item.description}}">{{item.description ? item.description : '-' | limitTo:36}}{{item.description.length > 36 ? '...' : ''}}</span>
+          </h2>
+          <div class="card-pf-body">
+            <p class="card-pf-aggregate-status-notifications">
+              <span class="card-pf-aggregate-status-notification">
+                <input bs-switch ng-change="changeMystate(item, state)" ng-init="state = item.state === 'On'? true:false" ng-model="state" type="checkbox"
+                  switch-animate="true" switch-handle-width="35px" switch-label-width="7px"
+                  switch-off-color="default" switch-on-color="primary" switch-size="small"
+                  ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ON' | translate }}" switch-off-text="{{ 'OFF' | translate }}" >
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-if="config.itemIds.length == 0" ng-include src="'partials/common-html/no-items-filter-sm.html'"></div>

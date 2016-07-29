@@ -1,4 +1,4 @@
-image::logo-mycontroller.org_full.png[MyController.org, link="http://www.mycontroller.org"]
+image::extra/images/logo-mycontroller.org_full.png[MyController.org, link="http://www.mycontroller.org"]
 :source-language: java, angularjs
 
 ---
@@ -14,6 +14,7 @@ Master: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branch=mas
 Development: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branch=development["Build Status", link="https://travis-ci.org/mycontroller-org/mycontroller"]
 
 ====== Project website: http://www.mycontroller.org
+====== Forum: http://forum.mycontroller.org
 ====== Want to try now? http://demo.mycontroller.org[Demo server] Authentication: demo/demo
 
 == About
@@ -29,10 +30,8 @@ MyController.org supports multiple languages. If you have interest to add/transl
 MyController.org is a very lightweight server, It required very less resource, believe me ;)
 
   * Disk        : ~30 MB (may require more space, when we store metrics data for long time)
-  * Memory(RAM) : 40 MB
+  * Memory(RAM) : 100 MB
   * Java        : 1.8 or later
-
-  NOTE: Test done up to 5 nodes and 30 sensors with the above configuration.
 
 ===== Supported Platforms (tested)
 MyController.org is java based application server. We can run it in any platform where Java support is available.
@@ -41,62 +40,15 @@ MyController.org is java based application server. We can run it in any platform
 - Windows
 - Raspberry PI (Oracle Java recommend)
 
-== Available Features
+== MyController and MySensors Setup
 
-Features available in https://github.com/mycontroller-org/mycontroller/releases/tag/0.0.3-alpha1[0.0.3-alpha1] version,
+image::extra/images/MyController-MySensors-RF.png[MyController  and MySensors setup.]
 
-- Supported networks
-  * http://mysensors.org[MySensors.org]
-    ** http://www.mysensors.org/build/serial_gateway[Serial Gateway]
-    ** http://www.mysensors.org/build/ethernet_gateway[Ethernet Gateway]
-    ** http://www.mysensors.org/build/mqtt_gateway[MQTT Gateway]
-    ** NRF24L01+ gateway via PiGatewaySerial (https://github.com/mysensors/Raspberry) on Raspberry PI
-- Auto discover and update nodes
-- Timer - Help you to schedule time based operations. You can control till the seconds. Types,
-    * Simple (with `repeat count` and `repeat interval`)
-      * Normal (daily, weekly, monthly)
-      * Cron expression
-      * Before/After Sun Rises and Sun Sets
-- Alarm - based on information received from sensor, Node status or Gateway status
-  * An alarm can support multiple notifications
-- Notifications - is a predefined action to be performed when a alarm triggered.
-  * Send Payload to another sensor
-  * Send SMS. Supports https://www.plivo.com/[Plivo] and https://www.twilio.com[Twilio]
-  * Send Email
-  * https://www.pushbullet.com[Pushbullet] note
-- Graphical reports
-  * you can keep your sensors metrics data as long as you want.
-- Forward payload from one sensor to another sensor
-  * supports across gateways also
-- Resources logs
-- Node actions
-  * Reboot, Erase configuration, Update Firmware for any nodes which is support
-  * can tag particular firmware for a node
-  * Display battery level of node with graphical support
-- Intractive dashboard.
-  * can create any number of dashboards
-  * widgets
-    ** Server time
-    ** Sunrise and sunset time
-    ** Sensors bullet graph
-    ** a sensor graph
-    ** group of sensors graph
-    ** mixed sensors graph
-    ** monitor and control sensor
- - Backup and restore via GUI
- - version to version auto migration support. available from 0.0.3-alpha1
- - Role based authentication
-   * can map resources for particular user
- - Inbuilt MQTT broker
- - Supports multiple gateways
- - and many more
- 
 == Installation
 
 ====== Download(executable bundle),
 
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.3-alpha1/mycontroller-standalone-0.0.3-alpha1-bundle.zip[mycontroller-standalone-0.0.3-alpha1-bundle.zip]
-* https://github.com/mycontroller-org/mycontroller/releases/download/0.0.3-alpha1/mycontroller-standalone-0.0.3-alpha1-bundle.tar.gz[mycontroller-standalone-0.0.3-alpha1-bundle.tar.gz]
+* Visit MyController.org http://www.mycontroller.org/#/downloads[downloads page]
 
 ====== Configuration
 
@@ -174,7 +126,7 @@ Executable scripts are located in `mycontroller/bin/`
     - Stop  : `Ctrl+C`
 
 * Other Platforms
-    
+
 ```
-java -Xms8m -Xmx40m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -jar ../lib/mycontroller-standalone-0.0.3-alpha1-single.jar
+java -Xms8m -Xmx100m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -cp "../lib/*" org.mycontroller.standalone.StartApp
 ```

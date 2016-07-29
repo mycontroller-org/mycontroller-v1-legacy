@@ -1,0 +1,349 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container mc-top-space-1x">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="metricsSettings.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="metricsSettings.$resolved"> <!-- Settings -->
+
+    <!-- Units -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div >
+          <ul ng-init="showGraphSettings=true" class="nav nav-tabs   nav-tabs-pf">
+            <li ng-class="{'active' : showGraphSettings}"><a ng-click="showGraphSettings=true" href=""><i class="fa fa-area-chart fa-lg"></i> {{ 'GRAPHS_SETTINGS' | translate }}</i></a></li>
+            <li ng-class="{'active' : !showGraphSettings}"><a ng-click="showGraphSettings=false" href=""><i class="fa fa-database fa-lg"></i> {{ 'DATA_RETENTION_SETTINGS' | translate }}</i></a></li>
+          </ul>
+        </div>
+
+        <div ng-if="showGraphSettings"> <!-- Metrics Graph settings -->
+          <div class="card-pf-body">
+            <div class="form-actions text-right">
+              <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metrics" ng-click="editEnable.metrics = true">{{ 'EDIT' | translate }}</button>
+              <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metrics" ng-click="updateSettingsMetrics();editEnable.metrics = false">{{ 'CANCEL' | translate }}</button>
+              <button type="button" class="btn btn-primary" ng-click="saveMetrics()"  ng-show="editEnable.metrics" ng-disabled="saveProgress.metrics">
+                <div ng-show="saveProgress.metrics" class="spinner spinner-xs"></div>
+                {{ 'SAVE' | translate }}
+              </button>
+            </div>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'ENABLE_MIN_MAX' | translate }}</label>
+                <div class="col-sm-10">
+                  <input ng-change="editEnable.metrics = true" bs-switch ng-change="updateChart()" ng-model="metricsSettings.enabledMinMax" type="checkbox"
+                      switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="60px" switch-label-width="5px"
+                      ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}" >
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'DEFAULT_TIME_RANGE' | translate }}</label>
+                <div class="col-sm-10">
+                  <select ng-disabled="!editEnable.metrics" pf-select ng-model="metricsSettings.defaultTimeRange">
+                    <option value="" ng-hide="true"></option>
+                    <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
+                    <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
+                    <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>
+                    <option value="86400000">{{ 'LAST_DAY' | translate }}</option>
+                    <option value="604800000">{{ 'LAST_WEEK' | translate }}</option>
+                    <option value="2419200000">{{ 'LAST_MONTH' | translate }}</option>
+                    <option value="31536000000">{{ 'LAST_YEAR' | translate }}</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Battery -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'BATTERY' | translate }}</label>
+                <div class="col-sm-3">
+                  <select ng-disabled="!editEnable.metrics" pf-select ng-model="metricsSettings.battery.type">
+                    <option value="" ng-hide="true"></option>
+                    <option value="lineChart">{{ 'LINE_CHART' | translate }}</option>
+                    <option value="historicalBarChart">{{ 'HISTORICAL_BAR_CHART' | translate }}</option>
+                    <option value="stackedAreaChart">{{ 'STACKED_AREA_CHART' | translate }}</option>
+                  </select>
+                </div>
+                <div class="col-sm-3">
+                  <select ng-disabled="!editEnable.metrics" pf-select ng-model="metricsSettings.battery.interpolate">
+                    <option value="" ng-hide="true"></option>
+                    <option value="linear">{{ 'LINEAR' | translate }}</option>
+                    <option value="basis">{{ 'BASIS' | translate }}</option>
+                    <option value="cardinal">{{ 'CARDINAL' | translate }}</option>
+                    <option value="monotone">{{ 'MONOTONE' | translate }}</option>
+                    <option value="bundle">{{ 'BUNDLE' | translate }}</option>
+                    <option value="step-before">{{ 'STEP_BEFORE' | translate }}</option>
+                    <option value="step-after">{{ 'STEP_AFTER' | translate }}</option>
+                    <option value="basis-open">{{ 'BASIS_OPEN' | translate }}</option>
+                    <option value="basis-closed">{{ 'BASIS_CLOSED' | translate }}</option>
+                    <option value="cardinal-open">{{ 'CARDINAL_OPEN' | translate }}</option>
+                    <option value="cardinal-closed">{{ 'CARDINAL_CLOSED' | translate }}</option>
+                  </select>
+                </div>
+                <div class="col-sm-1">
+                  <button ng-show="editEnable.metrics" style="background-color:{{metricsSettings.battery.color}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top" ng-model="metricsSettings.battery.color">{{metricsSettings.battery.color || "-"}}</button>
+                  <span ng-hide="editEnable.metrics" style="background-color:{{metricsSettings.battery.color}};width:70px;color:white;" class="btn btn-sm">{{metricsSettings.battery.color}}</span>
+                </div>
+                <div class="col-sm-3">
+                  <label class="mc-padding">
+                    <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="radio" value="line" ng-model="metricsSettings.battery.subType" /> {{ 'LINE' | translate }}
+                  </label>
+                  <label class="mc-padding">
+                    <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="radio" value="area" ng-model="metricsSettings.battery.subType" /> {{ 'AREA' | translate }}
+                  </label>
+                  <label class="mc-padding">
+                    <input ng-disabled="!editEnable.metrics" id="bar-{{item.id}}"type="radio" value="bar" ng-model="metricsSettings.battery.subType" /> {{ 'BAR' | translate }}
+                  </label>
+                </div>
+              </div>
+
+              <legend>{{ 'INDIVIDUAL_SETTINGS' | translate }}</legend>
+
+              <div ng-repeat="item in metricsSettings.metrics">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{item.metricName}}</label>
+                  <div class="col-sm-3">
+                    <select ng-disabled="!editEnable.metrics" pf-select ng-model="item.type">
+                      <option value="" ng-hide="true"></option>
+                      <option value="lineChart">{{ 'LINE_CHART' | translate }}</option>
+                      <option value="historicalBarChart">{{ 'HISTORICAL_BAR_CHART' | translate }}</option>
+                      <option value="stackedAreaChart">{{ 'STACKED_AREA_CHART' | translate }}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-3">
+                    <select ng-disabled="!editEnable.metrics" pf-select ng-model="item.interpolate">
+                      <option value="" ng-hide="true"></option>
+                      <option value="linear">{{ 'LINEAR' | translate }}</option>
+                      <option value="basis">{{ 'BASIS' | translate }}</option>
+                      <option value="cardinal">{{ 'CARDINAL' | translate }}</option>
+                      <option value="monotone">{{ 'MONOTONE' | translate }}</option>
+                      <option value="bundle">{{ 'BUNDLE' | translate }}</option>
+                      <option value="step-before">{{ 'STEP_BEFORE' | translate }}</option>
+                      <option value="step-after">{{ 'STEP_AFTER' | translate }}</option>
+                      <option value="basis-open">{{ 'BASIS_OPEN' | translate }}</option>
+                      <option value="basis-closed">{{ 'BASIS_CLOSED' | translate }}</option>
+                      <option value="cardinal-open">{{ 'CARDINAL_OPEN' | translate }}</option>
+                      <option value="cardinal-closed">{{ 'CARDINAL_CLOSED' | translate }}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-1">
+                    <button ng-show="editEnable.metrics" id="color-{{item.id}}" style="background-color:{{item.color}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top" ng-model="item.color">{{item.color || "-"}}</button>
+                    <span ng-hide="editEnable.metrics" style="background-color:{{item.color}};width:70px;color:white;" class="btn btn-sm">{{item.color}}</span>
+                  </div>
+                  <div class="col-sm-3">
+                    <label class="mc-padding">
+                      <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="radio" value="line" ng-model="item.subType" /> {{ 'LINE' | translate }}
+                    </label>
+                    <label class="mc-padding">
+                      <input ng-disabled="!editEnable.metrics" id="area-{{item.id}}" type="radio" value="area" ng-model="item.subType" /> {{ 'AREA' | translate }}
+                    </label>
+                    <label class="mc-padding">
+                      <input ng-disabled="!editEnable.metrics" id="bar-{{item.id}}"type="radio" value="bar" ng-model="item.subType" /> {{ 'BAR' | translate }}
+                    </label>
+                  </div>
+                </div>
+
+
+              </div>
+
+            </form>
+
+            <div class="form-actions text-right">
+              <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metrics" ng-click="editEnable.metrics = true">{{ 'EDIT' | translate }}</button>
+              <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metrics" ng-click="updateSettingsMetrics();editEnable.metrics = false">{{ 'CANCEL' | translate }}</button>
+              <button type="button" class="btn btn-primary" ng-click="saveMetrics()"  ng-show="editEnable.metrics" ng-disabled="saveProgress.metrics">
+                <div ng-show="saveProgress.metrics" class="spinner spinner-xs"></div>
+                {{ 'SAVE' | translate }}
+              </button>
+            </div>
+          </div>
+        </div><!-- Metrics Graph settings -->
+
+
+
+        <div ng-if="!showGraphSettings"> <!-- Metrics data retention settings -->
+          <div class="card-pf-body">
+            <form class="form-horizontal" name="mcFormRetention">
+
+              <!-- retain raw data -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'RAW_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'RAW_DATA' | translate }}" ng-model="$parent.rRawData.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rRawData.timestamp}} {{$parent.rRawData.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rRawData.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+              <!-- retain one minute data -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'ONE_MINUTE_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'ONE_MINUTE_DATA' | translate }}" ng-model="$parent.rOneMinute.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rOneMinute.timestamp}} {{$parent.rOneMinute.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rOneMinute.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+              <!-- retain five minutes data -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'FIVE_MINUTES_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'FIVE_MINUTES_DATA' | translate }}" ng-model="$parent.rFiveMinutes.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rFiveMinutes.timestamp}} {{$parent.rFiveMinutes.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rFiveMinutes.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+              <!-- retain one hour data -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'ONE_HOUR_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'ONE_HOUR_DATA' | translate }}" ng-model="$parent.rOneHour.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rOneHour.timestamp}} {{$parent.rOneHour.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rOneHour.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+              <!-- retain six hours data -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'SIX_HOURS_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'SIX_HOURS_DATA' | translate }}" ng-model="$parent.rSixHours.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rSixHours.timestamp}} {{$parent.rSixHours.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rSixHours.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+              <!-- retain twelve hours data -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'TWELVE_HOURS_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'TWELVE_HOURS_DATA' | translate }}" ng-model="$parent.rTwelveHours.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rTwelveHours.timestamp}} {{$parent.rTwelveHours.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rTwelveHours.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+              <!-- retain twelve hours data -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'ONE_DAY_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'ONE_DAY_DATA' | translate }}" ng-model="$parent.rOneDay.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rOneDay.timestamp}} {{$parent.rOneDay.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rOneDay.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+
+            </form>
+
+            <div class="form-actions text-right">
+              <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metricsDataRetention" ng-click="retentionWarning()">{{ 'EDIT' | translate }}</button>
+              <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metricsDataRetention" ng-click="updateSettingsMetricsRetention();editEnable.metricsDataRetention = false">{{ 'CANCEL' | translate }}</button>
+              <button type="button" class="btn btn-primary" ng-click="saveMetricsRetention()"  ng-show="editEnable.metricsDataRetention" ng-disabled="saveProgress.metricsDataRetention || mcFormRetention.$invalid">
+                <div ng-show="saveProgress.metrics" class="spinner spinner-xs"></div>
+                {{ 'SAVE' | translate }}
+              </button>
+            </div>
+          </div>
+        </div><!-- Metrics Graph settings -->
+
+      </div>
+    </div>
+
+  </div> <!-- Settings -->
+
+</div> <!-- Container -->

@@ -1,0 +1,870 @@
+/*
+ * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * and other contributors as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* app css stylesheet */
+
+body {
+  background-color: #f5f5f5;
+  line-height: 1.4;
+  padding-bottom: 20px;
+}
+
+.top-buffer-nm { margin-top:20px; }
+
+.top-buffer-m { margin-top:100px; }
+
+
+.fa-check-circle-o {
+  color: #3f9c35;
+}
+
+.mc-top-space{
+  margin-top: 20px;
+}
+
+.mc-top-space-header{
+  margin-top: 25px;
+}
+
+.mc-top-space-1x{
+  margin-top: 35px;
+}
+
+.mc-top-space-2x{
+  margin-top: 60px;
+}
+
+.mc-bottom-space{
+  margin-bottom: 40px;
+}
+
+.mc-text-red{
+  color: red;
+}
+/*
+.fa-arrow-down {
+  color: #c00;
+}
+*/
+.mc-single-row{
+  white-space: nowrap;
+}
+
+.mc-cards-offset {
+  margin-top: 30px;
+}
+
+.mc-align-center {
+    text-align: center; /* center checkbox horizontally */
+    vertical-align: middle; /* center checkbox vertically */
+}
+
+.mc-table {
+  background-color: #ffffff;
+}
+
+.mc-table > thead > tr > th {
+  background-color: #313131;
+  color: #d0d0d0;
+  font-weight: bold;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: middle;
+}
+
+.mc-table > tbody > tr > td {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: middle;
+}
+
+.mc-table > tbody > tr:hover > td {
+  cursor: pointer;
+  background-color:#a3c1db;
+}
+
+.mc-table > tbody > tr.mc-selected > td{
+  background-color: #4077a5;
+  color: white;
+}
+
+.mc-table > tbody > tr.mc-selected > td .pficon,
+.mc-table > tbody > tr.mc-selected > td .fa{
+  color: #ffffff;
+}
+
+.mc-form-actions-separator {
+  border-top: 1px solid #e5e5e5;
+  padding-top: 15px;
+  text-align: right;
+}
+
+/* Till now not used anywhere */
+.mc-graph .mc-spinner-container {
+  margin-bottom: 50px;
+  margin-top: 60px;
+}
+
+.mc-urls-list {
+  padding: 0 40px 0 10px;
+}
+
+/* END */
+
+.mc-side-space{
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.mc-spinner-container-alone {
+  margin-top: 220px;
+}
+
+
+.navbar-pf {
+  margin-bottom: 10px;
+}
+@media (min-width: 768px) {
+  .navbar-header {
+    padding: 0px 0;
+  }
+  .navbar-pf .navbar-utility > li > a {
+    padding: 12px 10px;
+  }
+  .navbar-pf .navbar-utility li.dropdown > .dropdown-toggle .pficon-user {
+    top: 12px;
+  }
+}
+@media (max-width: 767px) {
+  .navbar-pf {
+    padding-top: 1px;
+  }
+}
+.dropdown-menu li:not(.active) > a:hover:active {
+  background-color: #0099d3;
+}
+
+.mc-form-fixer-left {
+    padding-left:20px;
+    padding-right:5px;
+}
+
+.mc-form-fixer {
+    padding-left:5px;
+    padding-right:5px;
+}
+
+/* color-1 */
+.mc-color-teal {
+  color: #fff;
+  background-color: #008080;
+  border-color: #007070;
+}
+.mc-color-teal:focus,
+.mc-color-teal.focus {
+  color: #fff;
+  background-color: #006565;
+  border-color: #005050;
+}
+.mc-color-teal:hover {
+  color: #fff;
+  background-color: #006565;
+  border-color: #005050;
+}
+.mc-color-teal::-webkit-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+}
+input.mc-color-teal{
+  font-weight: 600;
+}
+
+
+/* color-2 */
+.mc-color-slate-gray  {
+  color: #fff;
+  background-color: #708090;
+  border-color: #607080;
+}
+.mc-color-slate-gray:focus,
+.mc-color-slate-gray.focus {
+  color: #fff;
+  background-color: #607080;
+  border-color: #506070;
+}
+.mc-color-slate-gray:hover {
+  color: #fff;
+  background-color: #607080;
+  border-color: #506070;
+}
+.mc-color-slate-gray::-webkit-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+}
+input.mc-color-slate-gray{
+  font-weight: 600;
+}
+
+/* color-3 */
+.mc-color-indian-red {
+  color: #fff;
+  background-color: #cd5c5c;
+  border-color: #bc4b4b;
+}
+.mc-color-indian-red:focus,
+.mc-color-indian-red.focus {
+  color: #fff;
+  background-color: #bc4b4b;
+  border-color: #ab3a3a;
+}
+.mc-color-indian-red:hover {
+  color: #fff;
+  background-color: #bc4b4b;
+  border-color: #ab3a3a;
+}
+.mc-color-indian-red::-webkit-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+}
+input.mc-color-indian-red{
+  font-weight: 600;
+}
+
+/* color-4*/
+.mc-color-rosy-brown {
+  color: #fff;
+  background-color: #9a6d6d;
+  border-color: #895c5c;
+}
+.mc-color-rosy-brown:focus,
+.mc-color-rosy-brown.focus {
+  color: #fff;
+  background-color: #895c5c;
+  border-color: #784b4b;
+}
+.mc-color-rosy-brown:hover {
+  color: #fff;
+  background-color: #895c5c;
+  border-color: #784b4b;
+}
+.mc-color-rosy-brown::-webkit-input-placeholder {
+    color: #eee;
+    font-weight: normal;
+}
+input.mc-color-rosy-brown{
+  font-weight: 600;
+}
+
+/* color-5 */
+.mc-color-tan {
+  color: #fff;
+  background-color: #af8159;
+  border-color: #9e7058;
+}
+.mc-color-tan:focus,
+.mc-color-tan.focus {
+  color: #fff;
+  background-color: #9e7058;
+  border-color: #8d6f47;
+}
+.mc-color-tan:hover {
+  color: #fff;
+  background-color: #9e7058;
+  border-color: #8d6f47;
+}
+.mc-color-tan::-webkit-input-placeholder {
+    color: #ddd;
+    font-weight: normal;
+}
+input.mc-color-tan{
+  font-weight: 600;
+}
+
+/* color-6 */
+.mc-color-steel-blue  {
+  color: #fff;
+  background-color: #2b4f6e;
+  border-color: #24425c;
+}
+.mc-color-steel-blue:focus,
+.mc-color-steel-blue.focus {
+  color: #fff;
+  background-color: #24425c;
+  border-color: #1d3549;
+}
+.mc-color-steel-blue:hover {
+  color: #fff;
+  background-color: #24425c;
+  border-color: #1d3549;
+}
+.mc-color-steel-blue::-webkit-input-placeholder {
+    color: #eee;
+    font-weight: normal;
+}
+input.mc-color-steel-blue{
+  font-weight: 600;
+}
+
+
+
+/* on angular-patternfly upgrade from 2.x to 3.x introduced issue on sensors-action page.
+ * To overcome this issue copied style from old version.
+ * following style used only on sensors-action page.
+ * */
+.data-list-pf {
+  background: #fff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 1px;
+}
+.data-list-pf .list-row {
+  margin-right: 0px;
+  position: relative;
+  padding-right: 0px;
+  width: 100%;
+}
+.data-list-pf .list-content {
+  left: 15px;
+  position: relative;
+}
+.data-list-pf .list-content.with-check-box {
+  border-left: solid 2px #d2d2d2;
+  left: 30px;
+  margin-left: 10px;
+}
+.data-list-pf .list-content.with-menu {
+  margin-right: 30px;
+  right: 15px;
+}
+.data-list-pf .list-check-box {
+  bottom: 0px;
+  left: 20px;
+  position: absolute;
+  top: 0px;
+  width: 20px;
+}
+.data-list-pf .data-list-loading {
+  background: rgba(0, 0, 0, 0.05);
+}
+.data-list-pf .list-group-item:first-of-type {
+  margin-top: 0;
+}
+.data-list-pf .list-group-item .list-column {
+  float: left;
+  padding: 5px 0px;
+}
+.data-list-pf .list-group-item .pficon {
+  -webkit-align-items: center;
+  align-items: center;
+  color: #1186C1;
+  font-size: 26px;
+  width: 26px;
+}
+
+.data-list-pf .list-group-item.active,
+.data-list-pf .list-group-item.active:hover,
+.data-list-pf .list-group-item.active:focus {
+  background-color: #def3ff;
+  border-color: #def3ff;
+  color: #000000;
+}
+
+.data-list-pf .list-group-item:hover,
+.data-list-pf .list-group-item:focus {
+  background-color: #ededed;
+  border-color: #ededed;
+}
+
+.data-list-pf .list-group-item.active .pficon,
+.data-list-pf .list-group-item.active:hover .pficon,
+.data-list-pf .list-group-item.active:focus .pficon {
+  color: #ffffff;
+}
+.data-list-pf .row-column {
+  padding-right: 5px;
+}
+
+/* used in sensors action board list items */
+.mc-list-align {
+  display: flex;
+  border-bottom: 2px solid #f5f5f5;
+  border-top: 2px solid #f5f5f5;
+  line-height: 33px;
+}
+
+
+.mc-list-align {
+  display: flex;
+  border-bottom: 2px solid #f5f5f5;
+  border-top: 2px solid #f5f5f5;
+  line-height: 33px;
+}
+
+.mc-list-align:nth-child(odd) {
+  background-color: #ffffff;
+}
+.mc-list-align:nth-child(even) {
+  background-color: #fbfbfb;
+}
+
+
+
+/* Dropdown size in sensors action board(sab) */
+.mc-sab-dropdown {
+  width:117px !important;
+}
+
+
+.mc-top-space-5px{
+  margin-top: 5px;
+}
+
+
+.mc-icon{
+  font-size:15px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.mc-icon{
+  font-size:100%;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.mc-icon-md-1{
+  font-size:110%;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.mc-icon-md-3{
+  font-size:130%;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.mc-icon-lg{
+  font-size:150%;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.mc-icon-2x{
+  font-size:200%;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.mc-inline-editer-ab{
+  color: #000000;
+  cursor: pointer;
+  font-style:initial;
+  border-bottom: initial;
+}
+
+.mc-inline-editer-ab:hover{
+  color: #428bca;
+  font-style:initial;
+}
+
+.mc-style-ab{
+  font-weight: 500;
+  font-size: 130%;
+  color:initial;
+}
+
+.mc-show-disabled{
+  background-color: #ffffff !important;
+  color: #333 !important;
+}
+
+
+
+.mc-margin-right{
+  margin-right: 8px;
+}
+
+.mc-margin-left{
+  margin-right: 8px;
+}
+
+.mc-margin-icon{
+  margin-right: 3px;
+}
+
+
+.mc-v-margin > div {
+  padding:0 20px;
+}
+
+
+.mc-padding {
+  padding-left:5px;
+  padding-right:5px;
+}
+
+.mc-margin {
+  margin-left:3px;
+  margin-right:3px;
+}
+
+
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+.mc-sensor-variable-detail{
+  height:75px;
+}
+
+.mc-sensor-action-tiles{
+  height:333px;
+}
+
+.mc-sa-tiles-variable{
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
+
+
+.mc-pointer{
+  cursor: pointer;
+}
+
+
+
+
+/* ADF css */
+.adf-myct {
+  text-align: center;
+}
+
+.adf-myct-time {
+  font-size: 300%;
+}
+
+.adf-myct-date {
+  font-size: 200%;
+}
+
+.adf-myct-timezone {
+  font-size: 80%;
+}
+
+/* sunrise sun set*/
+.adf-mycsr {
+  text-align: center;
+}
+
+.adf-mycsr-time {
+  font-size: 200%;
+}
+
+.adf-mycsr-time > i{
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom:10px;
+  font-size: 150%;
+  vertical-align: middle;
+}
+
+.adf-mycsr-location {
+  font-size: 150%;
+}
+
+.adf-mycsr-location > i{
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 120%;
+  vertical-align: middle;
+}
+
+.adf-myc-sen-var{
+  height:75px;
+}
+
+.adf-myc-sen-var > .card-pf-title > .fa{
+  font-size: 12px;
+  margin-left:2px;
+  margin-right:2px;
+}
+
+.adf-myc-sbg{
+  height:70px;
+}
+.adf-myc-sbg-margin{
+  margin-top:5px;
+  margin-bottom:7px;
+}
+
+.adf-myc-dsi-image{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-height:100%;
+  max-width:100%;
+}
+
+
+.adf-myc-shm-margin > .heatmap-pf-container > h3{
+  margin:0px;
+}
+
+/* custom buttons */
+#custom-buttons-wrapper .btn {
+  margin: 3px 0px 3px 3px;
+  font-weight: bold;
+  font-size: 21px;
+}
+.adf-myc-cb-margin{
+  margin-top:5px;
+  margin-bottom:5px;
+}
+
+
+
+
+/* on-off button*/
+.bootstrap-switch-on{
+  font-weight: 600;
+}
+.bootstrap-switch-off {
+  font-weight: 500;
+}
+
+
+
+/* sensors list under rooms page */
+.mc-sensors-room {
+  display: flex;
+  justify-content: center;
+}
+
+.mc-sensors-hr {
+  margin-top: 3px;
+  margin-bottom: 0px;
+}
+
+
+kubernetes-topology-graph {
+  border: 2px solid lightgray;
+  background-color: #FCFCFC;
+}
+
+.container_topology .legend {
+  padding-top: 5px;
+  /*font-family: sans-serif;*/
+  font-size: 15px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.container_topology .legend label {
+  font-weight: 400;
+  cursor: pointer;
+  vertical-align: 10px;
+}
+
+.container_topology #selected {
+  float: right;
+  display: block;
+  margin-top: 15px;
+}
+
+kubernetes-topology-icon {
+  padding: 4px 11px 4px 2px !important;
+  opacity: 0.4;
+}
+
+kubernetes-topology-icon.active {
+  opacity: 1;
+}
+
+kubernetes-topology-icon svg {
+  width: 39px !important;
+  height: 39px !important;
+  display: inline-block;
+}
+
+.kube-topology g text.attached-label {
+  display: none;
+}
+
+.kube-topology g text.attached-label.visible {
+  font-size: 12px;
+  fill: black;
+  display: block;
+}
+
+.kube-topology g.selected {
+  stroke-width: 4px;
+}
+
+.kube-topology g circle {
+  stroke-width: 2px;
+}
+
+.kube-topology g circle.success {
+  stroke: #3F9C35;
+}
+
+.kube-topology g circle.error {
+  stroke: #CC0000;
+}
+
+.kube-topology g circle.warning {
+  stroke: #EC7A08;
+}
+
+.kube-topology g circle.unknown {
+  stroke: #bbb;
+}
+
+.container_topology .canvas {
+  position: absolute;
+}
+
+.container_topology .popup {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #fff;
+  width: 180px;
+  border: 1px #ccc solid;
+  border-radius: 6px;
+  box-shadow: #333 2px 2px 4px;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.container_topology .popup h5 {
+  font-weight: bold;
+}
+
+.container_topology .popup p {
+  margin: 0 0 4px;
+}
+
+.container_topology .popup p:hover {
+  color : #0099cc;
+  cursor: pointer;
+}
+
+.container_topology label.checkbox-inline {
+  font-size:14px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Specify styling for uib-tooltip contents */
+.tooltip.customClass450px .tooltip-inner {
+  min-width: 450px;
+  text-align: left;
+}
+
+/* Specify styling for uib-tooltip contents */
+.tooltip.customClass350px .tooltip-inner {
+  min-width: 350px;
+  text-align: left;
+}
+
+.battery-modal-window .modal-dialog {
+  width: 95%;
+}
+
+.tick line {
+  display: none;
+}
+
+.modal-body {
+  position: relative;
+  padding-top: 20px;
+  padding-right: 10px;
+  padding-bottom: 2px;
+  padding-left: 10px;
+}
+
+.modal-body-text-only {
+  position: relative;
+  padding: 5px 20px;
+}
+
+.modal-header {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+.modal-footer {
+  padding: 12px;
+}
+
+.mc-dialog {
+  /*border-style: solid;
+   border-width: 1px;
+   border-color: #D3D3D3;*/
+}
+
+.panel-body-action-board {
+  padding-top: 3px;
+}
+
+.multiSelect > button {
+  font-size: 12px;
+  min-height: 35px !important;
+  border-radius: 0px;
+}
+
+/* Specify styling for angular-bootstrap-colorpicker contents */
+.close-colorpicker {
+  color:gray;
+}
+
+.close-colorpicker:hover {
+  color:black;
+}
+
+.text-color-red {
+  color:red;
+}
+
+.text-color-green {
+  color:green;
+}
+
+.text-color-gray {
+  color:gray;
+}

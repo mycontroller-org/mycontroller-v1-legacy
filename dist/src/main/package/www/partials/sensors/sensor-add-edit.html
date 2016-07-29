@@ -1,0 +1,105 @@
+<!--
+
+    Copyright (C) 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="nodes.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="nodes.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-add-update.html'"></div>
+
+    <div>
+      <form class="form-horizontal" name="mcForm">
+        <div class="col-md-5">
+          <!--
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Gateway</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-change="updateNodes(sensor.node.gateway.id)" ng-model="sensor.node.gateway.id">
+                <option value="" ng-hide="true"></option>
+                <option ng-repeat="gateway in gateways" ng-bind-html="gateway.displayName | mcResourceRepresentation" value="{{gateway.id}}"  ng-selected="gateway.id == sensor.node.gateway.id"></option>
+              </select>
+            </div>
+          </div>
+          -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NODE' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select data-live-search="true" ng-model="sensor.node.id" ng-disabled="sensor.id" required >
+                <option value="" ng-hide="true"></option>
+                <option ng-repeat="node in nodes | orderBy:'displayName'" ng-bind-html="node.displayName | mcResourceRepresentation" value="{{node.id}}"  ng-selected="node.id == sensor.node.id"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select data-live-search="true" ng-options="sensorType.id as sensorType.displayName for sensorType in sensorTypes  | orderBy:'displayName'"
+                ng-change="refreshVariableTypes(sensor.type.en)" ng-model="sensor.type.en">
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'VARIABLE_TYPES' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" multiple pf-select ng-options="sensorVariableType.id as sensorVariableType.displayName for sensorVariableType in sensorVariableTypes" ng-model="sensor.variableTypes">
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ROOM' | translate }}</label>
+            <div class="col-sm-10">
+              <select class="form-control" pf-select data-live-search="true" ng-model="sensor.room.id" >
+                <option value="">{{ 'NOTHING_SELECTED' | translate }}</option>
+                <option ng-repeat="room in rooms | orderBy:'displayName'" ng-bind-html="room.displayName | mcResourceRepresentation" value="{{room.id}}"  ng-selected="room.id == sensor.room.id"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="form-control" ng-model="sensor.name" placeholder="{{ 'SENSOR_NAME' | translate }}"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'SENSOR_ID' | translate }}</label>
+            <div class="col-sm-10">
+              <input class="form-control" ng-model="sensor.sensorId" placeholder="{{ 'SENSOR_ID' | translate }}" required />
+            </div>
+          </div>
+
+          <!-- Include save form buttons -->
+          <div ng-include src="'partials/common-html/save-form.html'"></div>
+
+        </div>
+      </form>
+    </div>
+
+  </div> <!-- Main Message -->
+</div> <!-- container -->
