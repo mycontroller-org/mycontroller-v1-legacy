@@ -56,7 +56,7 @@ public class Node {
     public static final String KEY_LIB_VERSION = "libVersion";
     public static final String KEY_BATTERY_LEVEL = "batteryLevel";
     public static final String KEY_ERASE_CONFIG = "eraseConfig";
-    public static final String KEY_LAST_SEEN = "laseSeen";
+    public static final String KEY_LAST_SEEN = "lastSeen";
     public static final String KEY_RSSI = "rssi";
     public static final String KEY_PROPERTIES = "properties";
     public static final String KEY_PARENT_NODE_EUI = "parentNodeEui";
