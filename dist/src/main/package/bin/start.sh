@@ -34,10 +34,10 @@ JAVA_VERSION="1.7"
 CONF_PROPERTIES_FILE=../conf/mycontroller.properties
 CONF_LOG_FILE=../conf/logback.xml
 
-if type -p java; then
-    _java=java
-elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
+if [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
+elif type -p java; then
+    _java=java
 else
     echo "java is not installed in our machine"
 fi
