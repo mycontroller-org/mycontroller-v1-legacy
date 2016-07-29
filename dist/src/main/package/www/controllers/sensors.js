@@ -269,7 +269,8 @@ myControllerModule.controller('SensorsControllerAddEdit', function ($scope, $sta
 });
 
 //item Detail
-myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory, MetricsFactory, $filter, CommonServices, TypesFactory, $timeout, $window, displayRestError) {
+myControllerModule.controller('SensorsControllerDetail', function ($scope, $stateParams, mchelper, SensorsFactory,
+ MetricsFactory, $filter, CommonServices, TypesFactory, $timeout, $window, displayRestError, $interval) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
   $scope.node = {};
@@ -360,7 +361,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     $scope.chartTimeFormat = chData.timeFormat;
     if(chData.dataType === 'Double'){
       chOptions.chart.yAxis.tickFormat = function(d){return d3.format('.02f')(d) + ' ' + chData.unit};
-    }else if(chData.dataType === 'Binary'){
+    }else if(chData.dataType === 'Binary' || chData.dataType === 'Counter'){
       chOptions.chart.yAxis.tickFormat = function(d){return d3.format('.0f')(d)};
     }
     chOptions.title.text = chData.variableType;
@@ -424,4 +425,91 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     return types.join(', ');
   }
 
+  //Update data for N seconds once
+  var updatePageData = function(){
+    //$scope.item = SensorsFactory.get({"id":$stateParams.id});
+    $scope.updateChart();
+  }
+
+  // global page refresh
+  var promise = $interval(updatePageData, mchelper.cfg.globalPageRefreshTime);
+
+  // cancel interval on scope destroy
+  $scope.$on('$destroy', function(){
+    $interval.cancel(promise);
+  });
+
+});
+
+//Edit sensor variable controller
+myControllerModule.controller('SensorVariableControllerEdit', function ($scope, $stateParams, $state, SensorsFactory, TypesFactory,
+  mchelper, alertService, displayRestError, $filter, CommonServices, $uibModal) {
+  $scope.mchelper = mchelper;
+  $scope.cs = CommonServices;
+  $scope.sensorVariable = {};
+  $scope.metricTypes = {};
+  $scope.unitTypes = {};
+  $scope.orgSvar = {};
+
+  if($stateParams.id){
+    SensorsFactory.getVariable({"id":$stateParams.id},function(response) {
+        $scope.sensorVariable = response;
+        $scope.orgSvar = angular.copy(response);
+      },function(error){
+        displayRestError.display(error);
+      });
+  }
+
+  //GUI page settings
+  $scope.showHeaderUpdate = $stateParams.id;
+  $scope.headerStringAdd = $filter('translate')('ADD_SENSOR_VARIABLE');
+  $scope.headerStringUpdate = $filter('translate')('UPDATE_SENSOR_VARIABLE');
+  $scope.cancelButtonState = "sensorsDetail({id: sensorVariable.sensorId})"; //Cancel button state
+  $scope.saveProgress = false;
+  $scope.unitTypes = TypesFactory.getUnitTypes();
+  $scope.metricTypes = TypesFactory.getMetricTypes();
+
+  $scope.saveFinal = function(){
+    $scope.saveProgress = true;
+    if($stateParams.id){
+      SensorsFactory.updateVariableConfig($scope.sensorVariable,function(response) {
+        alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
+        $state.go("sensorsDetail", {"id": $scope.sensorVariable.sensorId});
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress = false;
+      });
+    }
+  }
+
+  //Show update warning
+  $scope.save = function (size) {
+    if($scope.orgSvar.metricType === $scope.sensorVariable.metricType){
+      $scope.saveFinal();
+    }else{
+      var modalInstance = $uibModal.open({
+      templateUrl: 'partials/common-html/edit-confirmation-modal.html',
+      controller: 'SensorVariableUpdateWarnController',
+      size: size,
+      resolve: {}
+      });
+
+      modalInstance.result.then(function () {
+        $scope.saveFinal();
+      }),
+      function () {
+        //console.log('Modal dismissed at: ' + new Date());
+      }
+    }
+
+  };
+
+});
+
+//sensor variable change Modal
+myControllerModule.controller('SensorVariableUpdateWarnController', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('S_VARIABLE_DIALOG_TITLE');
+  $scope.message = $filter('translate')('S_VARIABLE_DIALOG_CONFIRMATION_MSG');
+  $scope.continute = function() {$uibModalInstance.close(); };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });

@@ -30,6 +30,8 @@ $scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, Common
     $scope.query = {'resourceType': $stateParams.resourceType, 'resourceId': $stateParams.resourceId};
   }
 
+  $scope.query.realtime = true;
+
   var self = this;
   $scope.vs = null;
   var d3 = window.d3;
@@ -45,6 +47,7 @@ $scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, Common
     "SensorVariable": "#vertex-SensorVariable"
   };
 
+  // Refresh topology
   $scope.refresh = function() {
     MetricsFactory.getTopologyData($scope.query, function(data){
         $scope.data = data;
@@ -53,7 +56,6 @@ $scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, Common
       },function(error){
       displayRestError.display(error);
     });
-
   };
 
   $scope.isEmpty = function(item){
@@ -142,7 +144,7 @@ $scope, MetricsFactory, $stateParams, $state, displayRestError, mchelper, Common
           $state.go("sensorsDetail", {'id': d.item.id});
           break;
         case "SensorVariable":
-          //$state.go("sensorsDetail", {'id': d.item.id});
+          $state.go("sensorVariableEdit", {'id': d.item.id});
           break;
 
       }

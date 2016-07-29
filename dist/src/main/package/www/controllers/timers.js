@@ -155,6 +155,14 @@ $scope, TimersFactory, $state, $uibModal, $stateParams, displayRestError, mchelp
     }
   };
 
+  //Clone item
+  $scope.clone = function () {
+    if($scope.itemIds.length == 1){
+      $state.go("timersAddEdit",{'id':$scope.itemIds[0], 'action': 'clone'});
+    }
+  };
+
+
   //Delete item(s)
   $scope.delete = function (size) {
     var modalInstance = $uibModal.open({
@@ -259,6 +267,12 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
           $scope.vToString = $filter('date')($scope.timer.validityTo, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
           $scope.vToDate = new Date($scope.timer.validityTo);
         }
+        //Clone job
+        if($stateParams.action === 'clone'){
+          $stateParams.id = undefined;
+          $scope.timer.id = undefined;
+          $scope.timer.name = $scope.timer.name + '-' + $filter('translate')('CLONE');
+        }
       },function(error){
         displayRestError.display(error);
       });
@@ -333,7 +347,9 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   };
 
   //GUI page settings
-  $scope.showHeaderUpdate = $stateParams.id;
+  if(!$stateParams.action || $stateParams.action !== 'clone'){
+      $scope.showHeaderUpdate = $stateParams.id;
+  }
   $scope.headerStringAdd = $filter('translate')('ADD_TIMER');
   $scope.headerStringUpdate = $filter('translate')('UPDATE_TIMER');
   $scope.cancelButtonState = "timersList"; //Cancel button state

@@ -14,25 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.imperihome;
+package org.mycontroller.standalone.db.dao;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.List;
+
+import org.mycontroller.standalone.db.tables.ExternalServerResourceMap;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.3
+ * @since 0.0.2
  */
+public interface ExternalServerResourceMapDao extends BaseDao<ExternalServerResourceMap, Object> {
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class DeviceParam {
-    private String key;
-    private String value;
-    private String unit;
-    private Boolean graphable;
+    void deleteByResourceId(Integer resourceId);
+
+    void deleteByExternalServerId(Integer extServerId);
+
+    List<ExternalServerResourceMap> getAllByResourceId(Integer id);
+
+    List<ExternalServerResourceMap> getAllByExtServerId(Integer id);
 }

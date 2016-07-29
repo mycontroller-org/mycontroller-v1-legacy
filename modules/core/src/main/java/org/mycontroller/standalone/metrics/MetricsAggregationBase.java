@@ -23,6 +23,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -43,7 +44,7 @@ public class MetricsAggregationBase {
 
     private static boolean isAggregationRunning = false;
 
-    private void aggregateForBucketSensorVariable(AGGREGATION_TYPE aggregationType,
+    private void aggregateForBucketDouble(AGGREGATION_TYPE aggregationType,
             AGGREGATION_TYPE sourceAggregationType,
             Long fromTimestamp, Long toTimestamp) {
         if (aggregationType == null) {
@@ -121,6 +122,65 @@ public class MetricsAggregationBase {
                         .timestamp(toTimestamp)
                         .build();
                 DaoUtils.getMetricsDoubleTypeDeviceDao().create(metric);
+            }
+        }
+    }
+
+    private void aggregateForBucketCounter(AGGREGATION_TYPE aggregationType,
+            AGGREGATION_TYPE sourceAggregationType,
+            Long fromTimestamp, Long toTimestamp) {
+        if (aggregationType == null) {
+            _logger.warn("Should create object with valid aggregation type!");
+            return;
+        }
+        _logger.debug("Running aggregation on this time range[from:{}, to:{}, type:{}]", fromTimestamp,
+                toTimestamp, aggregationType);
+        List<MetricsCounterTypeDevice> variableIds = DaoUtils.getMetricsCounterTypeDeviceDao()
+                .getAggregationRequiredVariableIds(sourceAggregationType, fromTimestamp, toTimestamp);
+
+        if (variableIds == null || variableIds.isEmpty()) {
+            _logger.debug("No values available for aggregation on this time range");
+            //Nothing to do just return from here.
+            return;
+        }
+        _logger.debug("Number of sensor variables:{}", variableIds.size());
+
+        //calculate metrics one by one (variable)
+        for (MetricsCounterTypeDevice sensorVariable : variableIds) {
+            //Collect past data for last X seconds,minutes, etc., based on 'AGGREGATON_TYPE'
+            List<MetricsCounterTypeDevice> metrics = DaoUtils.getMetricsCounterTypeDeviceDao().getAll(
+                    MetricsCounterTypeDevice.builder()
+                            .aggregationType(sourceAggregationType)
+                            .sensorVariable(sensorVariable.getSensorVariable())
+                            .timestampFrom(fromTimestamp)
+                            .timestampTo(toTimestamp).build());
+            _logger.debug("Metrics:{}", metrics);
+            //Calculate Metrics
+            if (metrics.size() > 0) {
+                int samples = 0;
+                //If it's one minute aggregation type,
+                //it's from RAW data, so size of metrics is a total number of samples
+                //In raw metrics data 'average' data called real data
+                if (aggregationType == AGGREGATION_TYPE.ONE_MINUTE) {
+                    samples = metrics.size();
+                }
+                _logger.debug("Number of records:{}", metrics.size());
+                Long sum = 0L;
+                //final result: Value and samples
+                for (MetricsCounterTypeDevice metric : metrics) {
+                    sum = sum + metric.getValue();
+                    if (aggregationType != AGGREGATION_TYPE.ONE_MINUTE && aggregationType != AGGREGATION_TYPE.RAW) {
+                        samples = samples + metric.getSamples();
+                    }
+                }
+                MetricsCounterTypeDevice metric = MetricsCounterTypeDevice.builder()
+                        .aggregationType(aggregationType)
+                        .sensorVariable(sensorVariable.getSensorVariable())
+                        .value(sum)
+                        .samples(samples)
+                        .timestamp(toTimestamp)
+                        .build();
+                DaoUtils.getMetricsCounterTypeDeviceDao().create(metric);
             }
         }
     }
@@ -217,7 +277,12 @@ public class MetricsAggregationBase {
 
             //Call aggregation double data (sensor variables)
             //-----------------------------------------------
-            aggregateForBucketSensorVariable(aggregationType, sourceAggregationType,
+            aggregateForBucketDouble(aggregationType, sourceAggregationType,
+                    fromTimestamp, (fromTimestamp + bucketDuration));
+
+            //Call aggregation counter data (sensor variables)
+            //-----------------------------------------------
+            aggregateForBucketCounter(aggregationType, sourceAggregationType,
                     fromTimestamp, (fromTimestamp + bucketDuration));
 
             //Call aggregation for battery usage
@@ -394,7 +459,9 @@ public class MetricsAggregationBase {
         MetricsDataRetentionSettings dataRetentionSettings = AppProperties.getInstance()
                 .getMetricsDataRetentionSettings();
 
-        //For double data
+        //---------------------------------------------------------------------
+        // For double data
+        //---------------------------------------------------------------------
         MetricsDoubleTypeDevice metricDouble = MetricsDoubleTypeDevice.builder()
                 .aggregationType(AGGREGATION_TYPE.RAW)
                 .timestamp(dataRetentionSettings.getLastAggregationOneMinute())
@@ -426,15 +493,15 @@ public class MetricsAggregationBase {
         metricDouble.setAggregationType(AGGREGATION_TYPE.TWELVE_HOURS);
         metricDouble.setTimestamp(dataRetentionSettings.getLastAggregationOneDay());
         DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble);
-        //--------
 
         //Delete one day day data
         metricDouble.setAggregationType(AGGREGATION_TYPE.ONE_DAY);
         metricDouble.setTimestamp(System.currentTimeMillis() - dataRetentionSettings.getRetentionOneDay());
         DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble);
 
-        //---------------------------------------------------------------
-        //For battery usage
+        //---------------------------------------------------------------------
+        // For battery usage
+        //---------------------------------------------------------------------
         MetricsBatteryUsage metricBattery = MetricsBatteryUsage.builder()
                 .aggregationType(AGGREGATION_TYPE.RAW)
                 .timestamp(dataRetentionSettings.getLastAggregationOneMinute())
@@ -466,13 +533,51 @@ public class MetricsAggregationBase {
         metricBattery.setAggregationType(AGGREGATION_TYPE.TWELVE_HOURS);
         metricBattery.setTimestamp(dataRetentionSettings.getLastAggregationOneDay());
         DaoUtils.getMetricsBatteryUsageDao().deletePrevious(metricBattery);
-        //---------------------------------------------------------------------
 
         //Delete one day day data
         metricBattery.setAggregationType(AGGREGATION_TYPE.ONE_DAY);
         metricBattery.setTimestamp(System.currentTimeMillis() - dataRetentionSettings.getRetentionOneDay());
         DaoUtils.getMetricsBatteryUsageDao().deletePrevious(metricBattery);
 
+        //---------------------------------------------------------------------
+        // For counter data
+        //---------------------------------------------------------------------
+        MetricsCounterTypeDevice metricCounter = MetricsCounterTypeDevice.builder()
+                .aggregationType(AGGREGATION_TYPE.RAW)
+                .timestamp(dataRetentionSettings.getLastAggregationOneMinute())
+                .build();
+
+      //Delete raw data
+        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
+        //Delete One minute data
+        metricCounter.setAggregationType(AGGREGATION_TYPE.ONE_MINUTE);
+        metricCounter.setTimestamp(dataRetentionSettings.getLastAggregationFiveMinutes());
+        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
+
+        //Delete five minutes data
+        metricCounter.setAggregationType(AGGREGATION_TYPE.FIVE_MINUTES);
+        metricCounter.setTimestamp(dataRetentionSettings.getLastAggregationOneHour());
+        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
+
+        //Delete One hour data
+        metricCounter.setAggregationType(AGGREGATION_TYPE.ONE_HOUR);
+        metricCounter.setTimestamp(dataRetentionSettings.getLastAggregationSixHours());
+        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
+
+        //Delete six hours data
+        metricCounter.setAggregationType(AGGREGATION_TYPE.SIX_HOURS);
+        metricCounter.setTimestamp(dataRetentionSettings.getLastAggregationTwelveHours());
+        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
+
+        //Delete twelve hours data
+        metricCounter.setAggregationType(AGGREGATION_TYPE.TWELVE_HOURS);
+        metricCounter.setTimestamp(dataRetentionSettings.getLastAggregationOneDay());
+        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
+
+        //Delete one day day data
+        metricCounter.setAggregationType(AGGREGATION_TYPE.ONE_DAY);
+        metricCounter.setTimestamp(System.currentTimeMillis() - dataRetentionSettings.getRetentionOneDay());
+        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
     }
 
     public static synchronized boolean isAggregationRunning() {

@@ -164,4 +164,15 @@ public class NodeHandler extends AccessEngine {
         }
     }
 
+    @POST
+    @Path("/executeNodeInfoUpdate")
+    public Response executeNodeInfoUpdate(List<Integer> ids) {
+        updateNodeIds(ids);
+        try {
+            nodeApi.executeNodeInfoUpdate(ids);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
 }

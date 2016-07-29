@@ -14,23 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.imperihome;
+package org.mycontroller.standalone.db.dao;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.List;
+
+import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
+import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+public interface MetricsCounterTypeDeviceDao extends BaseDao<MetricsCounterTypeDevice, Object> {
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class SystemInfo {
-    private String id;
-    private Integer apiversion;
+    void deletePrevious(MetricsCounterTypeDevice metric);
+
+    void deleteBySensorVariableRefId(int sensorRefId);
+
+    List<MetricsCounterTypeDevice> getAll(MetricsCounterTypeDevice metric);
+
+    List<MetricsCounterTypeDevice> getAggregationRequiredVariableIds(AGGREGATION_TYPE aggregationType,
+            Long fromTimestamp,
+            Long toTimestamp);
+
 }

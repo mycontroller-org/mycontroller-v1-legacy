@@ -19,6 +19,7 @@ package org.mycontroller.standalone.operation.model;
 import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
@@ -43,6 +44,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -52,6 +54,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @NoArgsConstructor
+@Slf4j
 public class OperationSendPayload extends Operation {
 
     public static final String KEY_RESOURCE_TYPE = "resourceType";
@@ -97,10 +100,18 @@ public class OperationSendPayload extends Operation {
     @Override
     public String getOperationString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(super.getType().getText()).append(" [ ");
-        stringBuilder.append(new ResourceModel(resourceType, resourceId).getResourceLessDetails());
-        stringBuilder.append(", Payload:").append(payload).append(", Delay time:")
-                .append(McUtils.getFriendlyTime(delayTime, true, "No delay")).append(" ]");
+        try {
+            stringBuilder.append(super.getType().getText()).append(" [ ");
+            stringBuilder.append(new ResourceModel(resourceType, resourceId).getResourceLessDetails());
+            stringBuilder.append(", Payload:").append(payload).append(", Delay time:")
+                    .append(McUtils.getFriendlyTime(delayTime, true, "No delay")).append(" ]");
+        } catch (Exception ex) {
+            stringBuilder.append(" *** ")
+                    .append(McObjectManager.getMcLocale().getString(MC_LOCALE.CORRUPTED_DATA))
+                    .append(" *** ]");
+            _logger.error("Exception, ", ex);
+        }
+
         return stringBuilder.toString();
     }
 

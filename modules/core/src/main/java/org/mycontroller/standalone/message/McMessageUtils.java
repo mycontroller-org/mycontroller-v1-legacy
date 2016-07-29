@@ -28,6 +28,7 @@ import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
+import org.mycontroller.standalone.provider.phantio.PhantIOProviderBridge;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -42,17 +43,17 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class McMessageUtils {
 
-    private static HashMap<Integer, Boolean> discoverRunning = new HashMap<Integer, Boolean>();
+    private static HashMap<Integer, Boolean> nodeInfoUpdateRunning = new HashMap<Integer, Boolean>();
 
-    public static synchronized boolean isDiscoverRunning(int gatewayId) {
-        if (discoverRunning.get(gatewayId) == null) {
-            discoverRunning.put(gatewayId, false);
+    public static synchronized boolean isNodeInfoUpdateRunning(int gatewayId) {
+        if (nodeInfoUpdateRunning.get(gatewayId) == null) {
+            nodeInfoUpdateRunning.put(gatewayId, false);
         }
-        return discoverRunning.get(gatewayId);
+        return nodeInfoUpdateRunning.get(gatewayId);
     }
 
-    public static synchronized void updateDiscoverRunning(int gatewayId, boolean status) {
-        discoverRunning.put(gatewayId, status);
+    public static synchronized void updateNodeInfoRunningState(int gatewayId, boolean status) {
+        nodeInfoUpdateRunning.put(gatewayId, status);
     }
 
     // Message types
@@ -118,7 +119,13 @@ public class McMessageUtils {
         I_PRESENTATION("Presentation"),
         I_DISCOVER("Discover"),
         I_DISCOVER_RESPONSE("Discover respone"),
-        I_HEARTBEAT_RESPONSE("Heartbeat Response");
+        I_HEARTBEAT_RESPONSE("Heartbeat Response"),
+        I_LOCKED("Locked"),
+        I_PING("Ping"),
+        I_PONG("Pong"),
+        I_REGISTRATION_REQUEST("Registration request"),
+        I_REGISTRATION_RESPONSE("Registration response"),
+        I_DEBUG("Debug");
         public static MESSAGE_TYPE_INTERNAL get(int id) {
             for (MESSAGE_TYPE_INTERNAL type : values()) {
                 if (type.ordinal() == id) {
@@ -190,7 +197,8 @@ public class McMessageUtils {
         S_MOISTURE("Moisture"),
         S_INFO("Information"),
         S_GAS("Gas"),
-        S_GPS("GPS");
+        S_GPS("GPS"),
+        S_WATER_QUALITY("Water quality");
 
         public static MESSAGE_TYPE_PRESENTATION get(int id) {
             for (MESSAGE_TYPE_PRESENTATION type : values()) {
@@ -275,7 +283,13 @@ public class McMessageUtils {
         V_TEXT("Text"),
         V_CUSTOM("Custom"),
         V_POSITION("Position"),
-        V_IR_RECORD("IR record");
+        V_IR_RECORD("IR record"),
+        V_PH("PH"),
+        V_ORP("ORP"),
+        V_EC("EC"),
+        V_VAR("Volt-ampere reactive"),
+        V_VA("Volt-ampere"),
+        V_POWER_FACTOR("Power factor");
 
         public static MESSAGE_TYPE_SET_REQ get(int id) {
             for (MESSAGE_TYPE_SET_REQ type : values()) {
@@ -348,7 +362,7 @@ public class McMessageUtils {
     }
 
     public enum PAYLOAD_TYPE {
-        PL_DOUBLE, PL_BOOLEAN, PL_INTEGER, PL_FLOAT, PL_BYTE, PL_HEX, PL_STRING;
+        PL_DOUBLE, PL_BOOLEAN, PL_HEX, PL_STRING, PL_LONG;
     }
 
     public static METRIC_TYPE getMetricType(PAYLOAD_TYPE payloadType) {
@@ -357,6 +371,8 @@ public class McMessageUtils {
                 return METRIC_TYPE.BINARY;
             case PL_DOUBLE:
                 return METRIC_TYPE.DOUBLE;
+            case PL_LONG:
+                return METRIC_TYPE.COUNTER;
             default:
                 return METRIC_TYPE.NONE;
         }
@@ -424,7 +440,7 @@ public class McMessageUtils {
             case V_UP:
             case V_DOWN:
             case V_STOP:
-                return PAYLOAD_TYPE.PL_DOUBLE;
+                return PAYLOAD_TYPE.PL_STRING;
             case V_IR_SEND:
             case V_IR_RECEIVE:
                 return PAYLOAD_TYPE.PL_HEX;
@@ -497,6 +513,7 @@ public class McMessageUtils {
 
     //Sensor provider bridge
     private static IProviderBridge mySensorsBridge = new MySensorsProviderBridge();
+    private static IProviderBridge phantIOBridge = new PhantIOProviderBridge();
 
     public static synchronized void sendToGateway(RawMessage rawMessage) {
         //Send message to nodes [going out from MyController]
@@ -518,6 +535,9 @@ public class McMessageUtils {
             case MY_SENSORS:
                 mySensorsBridge.executeRawMessage(rawMessage);
                 break;
+            case PHANT_IO:
+                phantIOBridge.executeRawMessage(rawMessage);
+                break;
             default:
                 _logger.warn("Unknown provider: {}", rawMessage.getNetworkType());
                 break;
@@ -536,6 +556,9 @@ public class McMessageUtils {
             case MY_SENSORS:
                 mySensorsBridge.executeMcMessage(mcMessage);
                 break;
+            case PHANT_IO:
+                phantIOBridge.executeMcMessage(mcMessage);
+                break;
             default:
                 _logger.warn("Unknown provider: {}", mcMessage.getNetworkType());
                 break;
@@ -552,6 +575,8 @@ public class McMessageUtils {
         switch (networkType) {
             case MY_SENSORS:
                 return mySensorsBridge.validateNodeId(node);
+            case PHANT_IO:
+                return phantIOBridge.validateNodeId(node);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
@@ -563,6 +588,8 @@ public class McMessageUtils {
         switch (networkType) {
             case MY_SENSORS:
                 return mySensorsBridge.validateSensorId(sensor);
+            case PHANT_IO:
+                return phantIOBridge.validateSensorId(sensor);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
@@ -578,5 +605,4 @@ public class McMessageUtils {
         }
         return McMessage.GATEWAY_NODE_ID;
     }
-
 }

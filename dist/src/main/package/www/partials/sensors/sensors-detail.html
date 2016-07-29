@@ -96,12 +96,9 @@
                 <!-- Sensor variables -->
                 <div ng-init="variable.showVariable = true">
                 <div ng-show="variable.showVariable" ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
-                  <span ng-if="variable.metricType !== 'Binary'" class="mc-inline-editer-ab" buttons="no" onhide="variable.showVariable = true" onshow="variable.showVariable = false"
-                    onbeforesave="updateVariableUnit(variable)" editable-text="variable.unit">
-                    <span>
-                      <i uib-tooltip="Edit unit" tooltip-placement="left" class="pull-right fa fa-edit"></i>
-                    </span>
-                  </span>
+                  <a ui-sref="sensorVariableEdit({ id: variable.id })">
+                    <i uib-tooltip="{{ 'EDIT' | translate}}" tooltip-placement="left" class="pull-right fa fa-edit"></i>
+                  </a>
                 </div>
               </div>
             </div>

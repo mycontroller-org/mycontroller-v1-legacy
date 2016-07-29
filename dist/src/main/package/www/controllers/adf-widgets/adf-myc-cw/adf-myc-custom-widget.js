@@ -39,12 +39,14 @@ angular.module('adf.widget.myc-custom-widget', [])
         }
       });
   })
-  .controller('mycCustomWidgetController', function($scope, $interval, config, TemplatesFactory, $sce){
+  .controller('mycCustomWidgetController', function($scope, $interval, config, TemplatesFactory, $sce, mchelper, CommonServices){
     var mycCustomWidget = this;
     mycCustomWidget.showLoading = true;
     mycCustomWidget.isSyncing = false;
     mycCustomWidget.htmlData = null;
     mycCustomWidget.trustedHtml = "";
+    $scope.mchelper = mchelper;
+    $scope.cs = CommonServices;
 
     function updateState(){
       mycCustomWidget.dataAvailable = true;

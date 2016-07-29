@@ -26,15 +26,10 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     delete: { method: 'DELETE', params: {sensorId: '@sensorId'} },
     deleteIds: { method: 'POST', params: {sensorId: 'deleteIds'} },
     updateVariable: { method: 'PUT', params: {sensorId: 'updateVariable', id:null}},
-    updateVariableUnit:  { method: 'PUT', params: {sensorId: 'updateVariableUnit', id:null}},
+    updateVariableConfig: { method: 'PUT', params: {sensorId: 'updateVariableConfig', id:null}},
     getVariables: { method: 'GET', isArray: true, params: {sensorId: 'getVariables', id:null}},
+    getVariable: { method: 'GET', isArray: false, params: {sensorId: 'getVariable'}},
     sendRawMessage: { method: 'POST', params: {sensorId:'sendRawMessage'} },
-
-    getByType: { method: 'GET', isArray: true, params: {typeString: '@typeString'} },
-    sendPayload: { method: 'POST'},
-    getSensorByRefId: { method: 'GET', params: {nodeId: 'sensorByRefId'}},
-    getOthers: { method: 'GET', isArray: true, params: {nodeId: 'getOthers'}},
-    updateOthers: { method: 'PUT', params: {nodeId: 'updateOthers'}},
   })
 });
 
@@ -49,6 +44,7 @@ myControllerModule.factory('NodesFactory', function ($resource) {
     deleteIds: { method: 'POST', params: {nodeId: 'deleteIds'}},
     reboot: { method: 'POST', params: {nodeId: 'reboot'}},
     eraseConfiguration: { method: 'POST', params: {nodeId: 'eraseConfiguration'}},
+    executeNodeInfoUpdate: { method: 'POST', params: {nodeId: 'executeNodeInfoUpdate'}},
     uploadFirmware: { method: 'POST', params: {nodeId: 'uploadFirmware'}},
   })
 });
@@ -78,7 +74,12 @@ myControllerModule.factory('FirmwaresFactory', function ($resource) {
 myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
     getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
-    getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}  },
+    getExternalServerTypes:  { method: 'GET', isArray: true, params: {type: 'externalServerTypes'}  },
+    getTrustHostTypes:  { method: 'GET', isArray: true, params: {type: 'trustHostTypes'}  },
+    getNodeRegistrationStatuses:  { method: 'GET', isArray: true, params: {type: 'nodeRegistrationStatuses'}  },
+    getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}},
+    getMetricTypes:  { method: 'GET', isArray: true, params: {type: 'metricTypes'}},
+    getUnitTypes:  { method: 'GET', isArray: true, params: {type: 'unitTypes'}},
     getSensorVariableTypes:  { method: 'GET', isArray: true, params: {type: 'sensorVariableTypes', id : null}  },
     getGatewayTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayTypes'} },
     getGatewayNetworkTypes:  { method: 'GET', isArray: true, params: {type: 'gatewayNetworkTypes'} },
@@ -86,6 +87,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getResourceTypes:  { method: 'GET', isArray: true, params: {type: 'resourceTypes'} },
     getGateways:  { method: 'GET', isArray: true, params: {type: 'gateways'}  },
     getNodes:  { method: 'GET', isArray: true, params: {type: 'nodes'}  },
+    getExternalServers:  { method: 'GET', isArray: true, params: {type: 'externalServers'}  },
     getSensors:  { method: 'GET', isArray: true, params: {type: 'sensors'} },
     getSensorVariables:  { method: 'GET', isArray: true, params: {type: 'sensorVariables'} },
     getRuleDefinitions:  { method: 'GET', isArray: true, params: {type: 'ruleDefinitions'} },
@@ -364,6 +366,7 @@ myControllerModule.factory('GatewaysFactory', function ($resource) {
     disable: { method: 'POST', params: {gatewayId:'disable'} },
     reload: { method: 'POST', params: {gatewayId:'reload'} },
     discover: { method: 'POST', params: {gatewayId:'discover'} },
+    executeNodeInfoUpdate: { method: 'POST', params: {gatewayId:'executeNodeInfoUpdate'} },
   })
 });
 
@@ -394,8 +397,8 @@ myControllerModule.factory('ResourcesGroupMapFactory', function ($resource) {
 
 //Read static files
 myControllerModule.factory('ReadFileFactory', function ($resource) {
-  return $resource('/:fileName', {}, {
-   getConfigFile: { method: 'GET', isArray: false, params: {fileName:'configurations/mycontroller-configs.json'} },
+  return $resource('/:locationName/:fileName', {}, {
+   getConfigFile: { method: 'GET', isArray: false, params: {locationName: 'configurations', fileName:'mycontroller-configs.json'} },
   })
 });
 
@@ -465,5 +468,32 @@ myControllerModule.factory('VariablesRepositoryFactory', function ($resource) {
     create: { method: 'POST', params: {pid: null} },
     update: { method: 'PUT', params: {pid: null} },
     deleteIds: { method: 'POST', params: {pid: 'delete'} },
+  })
+});
+
+
+//Resources Data Services
+myControllerModule.factory('ResourcesDataFactory', function ($resource) {
+  return $resource('/mc/rest/resourcesdata/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null}},
+    create: { method: 'POST', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    enableIds: { method: 'POST', params: {id: 'enable'}},
+    disableIds: { method: 'POST', params: {id: 'disable'}},
+    get: { method: 'GET'},
+    update: { method: 'PUT', params: {id: null}},
+  })
+});
+
+//External Server Services
+myControllerModule.factory('ExternalServersFactory', function ($resource) {
+  return $resource('/mc/rest/externalserver/:id', {id: '@id'}, {
+    getAll: { method: 'GET', isArray: false, params: {id: null}},
+    create: { method: 'POST', params: {id: null}},
+    deleteIds: { method: 'POST', params: {id: 'delete'}},
+    enableIds: { method: 'POST', params: {id: 'enable'}},
+    disableIds: { method: 'POST', params: {id: 'disable'}},
+    get: { method: 'GET'},
+    update: { method: 'PUT', params: {id: null}},
   })
 });

@@ -53,8 +53,12 @@ public class MetricsGraphSettings {
 
     public static MetricsGraphSettings get() {
         ArrayList<MetricsGraph> metrics = new ArrayList<MetricsGraph>();
+        MetricsGraph metric = null;
         for (MESSAGE_TYPE_SET_REQ sVariable : MetricsGraph.variables) {
-            metrics.add(getMetricsGraph(sVariable.getText()));
+            metric = getMetricsGraph(sVariable.getText());
+            if (metric != null) {
+                metrics.add(metric);
+            }
         }
         return MetricsGraphSettings.builder()
                 .metrics(metrics)
@@ -82,12 +86,19 @@ public class MetricsGraphSettings {
     }
 
     public MetricsGraph getMetric(String metricName) {
+        MESSAGE_TYPE_SET_REQ type = MESSAGE_TYPE_SET_REQ.fromString(metricName);
+        if (type == null || !MetricsGraph.variables.contains(type)) {
+            metricName = MESSAGE_TYPE_SET_REQ.V_CUSTOM.getText();
+        }
+        MetricsGraph metricFinal = null;
+
         for (MetricsGraph metric : metrics) {
             if (metric.getMetricName().equals(metricName)) {
-                return metric;
+                metricFinal = metric;
+                break;
             }
         }
-        return null;
+        return metricFinal;
     }
 
     private static String getValue(String subKey) {

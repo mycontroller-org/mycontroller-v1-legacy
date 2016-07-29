@@ -41,6 +41,10 @@ public interface BaseDao<Tdao, Tid> {
 
     void update(Tdao tdao);
 
+    void updateBulk(String setColName, Object setColValue);
+
+    void updateBulk(String setColName, Object setColValue, String whereColName, Object whereColValue);
+
     List<Tdao> getAll();
 
     Tdao get(Tdao tdao);

@@ -50,7 +50,9 @@ public class ExecuteForwardPayload implements Runnable {
     public void run() {
         for (ForwardPayload forwardPayload : forwardPayloads) {
             try {
-                execute(forwardPayload);
+                if (!forwardPayload.getDestination().getReadOnly()) {
+                    execute(forwardPayload);
+                }
             } catch (Exception ex) {
                 _logger.error("Unable to execute ForwardPayload:[{}], Sensor:[{}]", forwardPayload, sensor, ex);
             }

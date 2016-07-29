@@ -116,4 +116,12 @@ public class NodeApi {
         }
     }
 
+    public void executeNodeInfoUpdate(List<Integer> ids) throws McBadRequestException {
+        try {
+            McObjectManager.getMcActionEngine().updateNodeInformations(null, ids);
+        } catch (Exception ex) {
+            throw new McBadRequestException(ex.getMessage());
+        }
+    }
+
 }

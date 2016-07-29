@@ -71,8 +71,7 @@ public class MessageMonitorThread implements Runnable {
                 }
             } else {
                 GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(rawMessage.getGatewayId());
-                _logger.error("GatewayTable not available! dropping message... GatewayTable[{}], RawMessage[{}]",
-                        gatewayTable, rawMessage);
+                _logger.error("Gateway not available! dropping message... {}, {}", gatewayTable, rawMessage);
             }
         }
     }

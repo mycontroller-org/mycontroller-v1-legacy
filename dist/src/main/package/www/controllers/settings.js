@@ -36,6 +36,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
       $scope.controllerSettings = resource;
       $scope.aliveCheckMinutes = $scope.controllerSettings.aliveCheckInterval / 60000;
       $scope.globalPageRefreshTime = $scope.controllerSettings.globalPageRefreshTime / 1000;
+      $scope.executeDiscoverMinutes = $scope.controllerSettings.executeDiscoverInterval / 60000;
     });
   };
 
@@ -78,6 +79,7 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
   $scope.saveController = function(){
     $scope.saveProgress.controller = true;
     $scope.controllerSettings.aliveCheckInterval = $scope.aliveCheckMinutes * 60000;
+    $scope.controllerSettings.executeDiscoverInterval = $scope.executeDiscoverMinutes * 60000;
     $scope.controllerSettings.globalPageRefreshTime = $scope.globalPageRefreshTime * 1000;
     SettingsFactory.saveController($scope.controllerSettings,function(response) {
           StatusFactory.getConfig(function(response) {
@@ -94,41 +96,6 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.controller = false;
-      });
-  };
-
-});
-
-myControllerModule.controller('SettingsUnitsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper) {
-
-  //config, language, user, etc.,
-  $scope.mchelper = mchelper;
-
-  //editable settings
-  $scope.editEnable = {};
-  $scope.saveProgress = {};
-
-  //settings Units
-  $scope.updateSettingsUnits = function(){
-    $scope.unitsSettings = SettingsFactory.getUnits();
-  };
-
-
-  //Pre-load
-  $scope.unitsSettings = {};
-  $scope.updateSettingsUnits();
-
-  //Save units
-  $scope.saveUnits = function(){
-    $scope.saveProgress.units = true;
-    SettingsFactory.saveUnits($scope.unitsSettings,function(response) {
-        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
-        $scope.saveProgress.units = false;
-        $scope.updateSettingsUnits();
-        $scope.editEnable.units = false;
-      },function(error){
-        displayRestError.display(error);
-        $scope.saveProgress.units = false;
       });
   };
 

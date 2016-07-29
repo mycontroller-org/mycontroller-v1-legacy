@@ -27,6 +27,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.jobs.ExecuteDiscoverJob;
 import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.timer.TimerSimple;
@@ -78,6 +79,7 @@ public class SchedulerUtils {
         //Update all other jobs
         //MySensorsSettings heartbeat job
         startNodeAliveCheckJob();
+        startExecuteDiscoverJob();
 
     }
 
@@ -309,6 +311,10 @@ public class SchedulerUtils {
     }
 
     public static void startNodeAliveCheckJob() {
+        if (AppProperties.getInstance().getControllerSettings().getAliveCheckInterval() < McUtils.MINUTE) {
+            //Nothing to do, just return from here
+            return;
+        }
         SundialJobScheduler.addJob(NodeAliveStatusJob.NAME, NodeAliveStatusJob.class.getName());
         SundialJobScheduler.addSimpleTrigger(
                 NodeAliveStatusJob.TRIGGER_NAME,
@@ -327,5 +333,35 @@ public class SchedulerUtils {
     public static void reloadMySensorHearbeatJob() {
         stopNodeAliveCheckJob();
         startNodeAliveCheckJob();
+    }
+
+    public static void startExecuteDiscoverJob() {
+        if (AppProperties.getInstance().getControllerSettings().getExecuteDiscoverInterval() < McUtils.MINUTE) {
+            //Nothing to do, just return from here
+            return;
+        }
+        SundialJobScheduler.addJob(ExecuteDiscoverJob.NAME, ExecuteDiscoverJob.class.getName());
+        SundialJobScheduler.addSimpleTrigger(
+                ExecuteDiscoverJob.TRIGGER_NAME,
+                ExecuteDiscoverJob.NAME,
+                -1,
+                AppProperties.getInstance().getControllerSettings().getExecuteDiscoverInterval(),
+                //Start this job after 20 seconds
+                new Date(System.currentTimeMillis() + (McUtils.ONE_SECOND * 20)),
+                null);
+    }
+
+    public static void stopExecuteDiscoverJob() {
+        SundialJobScheduler.removeJob(ExecuteDiscoverJob.NAME);
+    }
+
+    public static void reloadExecuteDiscoverJob() {
+        stopExecuteDiscoverJob();
+        startExecuteDiscoverJob();
+    }
+
+    public static synchronized void reloadControllerJobs() {
+        reloadMySensorHearbeatJob();
+        reloadExecuteDiscoverJob();
     }
 }

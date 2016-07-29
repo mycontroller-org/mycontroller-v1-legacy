@@ -14,24 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.imperihome;
+package org.mycontroller.standalone.externalserver;
 
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+public interface IExternalServerEngine {
+    void send(SensorVariable sensorVariable);
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Devices {
-    private List<Device> devices;
+    String toString();
+
 }

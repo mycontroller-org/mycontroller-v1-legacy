@@ -170,11 +170,13 @@
     <script src="controllers/additional-headers.js"></script>
     <script src="controllers/backup.js"></script>
     <script src="controllers/dashboard.js"></script>
+    <script src="controllers/external-servers.js"></script>
     <script src="controllers/firmwares.js"></script>
     <script src="controllers/forward-payload.js"></script>
     <script src="controllers/gateways.js"></script>
     <script src="controllers/nodes.js"></script>
     <script src="controllers/operations.js"></script>
+    <script src="controllers/resources-data.js"></script>
     <script src="controllers/resources-group.js"></script>
     <script src="controllers/resources-logs.js"></script>
     <script src="controllers/roles.js"></script>
@@ -206,6 +208,8 @@
 
     <!-- Add additional headers -->
     <link rel="import" href="/configurations/additional-headers.html">
+    <!-- Add angularJS custom controllers -->
+    <script src="/configurations/custom-controllers.js"></script>
 
   </head>
 
@@ -290,7 +294,7 @@
             <ul class="nav navbar-nav navbar-persistent">
               <li ng-class="{ active: $state.current.name.indexOf('gateways') == 0 }"><a ui-sref="gatewaysList"><i class="fa fa-plug fa-lg"></i> {{ 'GATEWAYS' | translate }}</a></li>
               <li ng-class="{ active: $state.current.name.indexOf('nodes') == 0 }"><a ui-sref="nodesList"><i class="fa fa-sitemap fa-lg"></i> {{ 'NODES' | translate }}</a></li>
-              <li ng-class="{ active: $state.current.name.indexOf('sensors') == 0 }"><a ui-sref="sensorsList"><i class="fa fa-eye fa-lg"></i> {{ 'SENSORS' | translate }}</a></li>
+              <li ng-class="{ active: $state.current.name.indexOf('sensor') == 0 }"><a ui-sref="sensorsList"><i class="fa fa-eye fa-lg"></i> {{ 'SENSORS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('rules') == 0 }"><a ui-sref="rulesList"><i class="fa fa-cogs fa-lg"></i> {{ 'RULES' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('timers') == 0 }"><a ui-sref="timersList"><i class="fa fa-clock-o fa-lg"></i> {{ 'TIMERS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('operations') == 0 }"><a ui-sref="operationsList"><i class="fa fa-tasks fa-lg"></i> {{ 'OPERATIONS' | translate }}</a></li>
@@ -327,6 +331,8 @@
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('variables') == 0 }"><a ui-sref="variablesRepositoryList"><i class="fa fa-list-alt fa-lg"></i> {{ 'VARIABLES_REPOSITORY' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('uidTags') == 0 }"><a ui-sref="uidTagsList"><i class="fa fa-tags fa-lg"></i> {{ 'UID_TAGS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('firmwares') == 0 }"><a ui-sref="firmwaresList"><i class="fa fa-file-code-o fa-lg"></i> {{ 'FIRMWARES' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('resourcesData') == 0 }"><a ui-sref="resourcesDataList"><i class="fa fa-cubes fa-lg"></i> {{ 'RESOURCES_DATA' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('externalServer') == 0 }"><a ui-sref="externalServersList"><i class="fa fa-server fa-lg"></i> {{ 'EXTERNAL_SERVERS' | translate }}</a></li>
             </ul>
           </li>
           <!-- Settings -->
@@ -338,7 +344,6 @@
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsNotifications') == 0 }"><a ui-sref="settingsNotifications"><i class="fa fa-flag-o fa-lg"></i> {{ 'NOTIFICATIONS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMqttBroker') == 0 }"><a ui-sref="settingsMqttBroker"><i class="fa fa-star-o fa-lg"></i> {{ 'MQTT_BROKER' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMetrics') == 0 }"><a ui-sref="settingsMetrics"><i class="fa fa-area-chart fa-lg"></i> {{ 'METRICS' | translate }}</a></li>
-              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUnits') == 0 }"><a ui-sref="settingsUnits"><i class="fa fa-star-o fa-lg"></i> {{ 'UNITS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsMySensors') == 0 }"><a ui-sref="settingsMySensors"><i class="fa fa-star-o fa-lg"></i> {{ 'MY_SENSORS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsVariablesMapperList') == 0 }"><a ui-sref="settingsVariablesMapperList"><i class="fa fa-clone fa-lg"></i> {{ 'VARIABLES_MAPPER' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUsers') == 0 }"><a ui-sref="settingsUsersList"><i class="fa fa-users fa-lg"></i> {{ 'USERS' | translate }}</a></li>

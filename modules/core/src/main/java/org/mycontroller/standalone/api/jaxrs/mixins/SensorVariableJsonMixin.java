@@ -14,31 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.imperihome;
+package org.mycontroller.standalone.api.jaxrs.mixins;
 
-import java.util.List;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.UnitTypeDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.UnitTypeSerializer;
+import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
 
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.Room;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+abstract class SensorVariableJsonMixin {
+    @JsonSerialize(using = UnitTypeSerializer.class)
+    public abstract String getUnitType();
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Rooms {
-    private List<Room> rooms;
-
-    public static Rooms getRoomsObject() {
-        return Rooms.builder().rooms(DaoUtils.getRoomDao().getAll()).build();
-    }
+    @JsonDeserialize(using = UnitTypeDeserializer.class)
+    public abstract void setUnitType(UNIT_TYPE type);
 }

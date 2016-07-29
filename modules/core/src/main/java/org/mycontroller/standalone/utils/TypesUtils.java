@@ -31,9 +31,11 @@ import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
 import org.mycontroller.standalone.db.ResourceOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
+import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareType;
 import org.mycontroller.standalone.db.tables.FirmwareVersion;
@@ -48,7 +50,9 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.User;
+import org.mycontroller.standalone.externalserver.ExternalServerUtils.EXTERNAL_SERVER_TYPE;
 import org.mycontroller.standalone.gateway.GatewayUtils;
+import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
@@ -58,6 +62,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
+import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
@@ -67,6 +72,8 @@ import org.mycontroller.standalone.rule.RuleUtils.STRING_OPERATOR;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.WEEK_DAY;
+import org.mycontroller.standalone.units.UnitUtils;
+import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -109,6 +116,33 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
+    public static ArrayList<TypesIdNameMapper> getMetricTypes() {
+        METRIC_TYPE[] types = METRIC_TYPE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (METRIC_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper
+                    .builder()
+                    .id(type.getText())
+                    //.displayName(McObjectManager.getMcLocale().getString(type.name()))
+                    .build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getUnitTypes() {
+        UNIT_TYPE[] types = UNIT_TYPE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (UNIT_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper
+                    .builder()
+                    .id(type.getText())
+                    .displayName(type.getText()
+                            + (type == UNIT_TYPE.U_NONE ? "" : " (" + UnitUtils.getUnit(type).getUnit() + ")"))
+                    .build());
+        }
+        return typesIdNameMappers;
+    }
+
     public static ArrayList<TypesIdNameMapper> getNodeTypes() {
         MESSAGE_TYPE_PRESENTATION[] types = MESSAGE_TYPE_PRESENTATION.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
@@ -117,6 +151,16 @@ public class TypesUtils {
                 typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
                         .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
             }
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getNodeRegistrationStatuses() {
+        NODE_REGISTRATION_STATE[] types = NODE_REGISTRATION_STATE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (NODE_REGISTRATION_STATE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
+                    .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
         }
         return typesIdNameMappers;
     }
@@ -362,6 +406,16 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
+    public static ArrayList<TypesIdNameMapper> getTrustHostTypes() {
+        TRUST_HOST_TYPE[] types = TRUST_HOST_TYPE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (TRUST_HOST_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder()
+                    .id(type.getText()).displayName(McObjectManager.getMcLocale().getString(type.name())).build());
+        }
+        return typesIdNameMappers;
+    }
+
     public static ArrayList<TypesIdNameMapper> getTimerWeekDays(boolean isAllDaysTicked) {
         WEEK_DAY[] types = WEEK_DAY.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
@@ -379,7 +433,18 @@ public class TypesUtils {
         RESOURCE_TYPE resourceTypeFilter = null;
         OPERATION_TYPE operationTypeFilter = null;
         CONDITION_TYPE conditionType = CONDITION_TYPE.fromString(conditionTypeString);
-        if (conditionType != null) {
+        if (resourceType != null && resourceType.equalsIgnoreCase("Resource data")) {
+            for (RESOURCE_TYPE type : types) {
+                if (type == RESOURCE_TYPE.GATEWAY
+                        || type == RESOURCE_TYPE.NODE
+                        || type == RESOURCE_TYPE.SENSOR
+                        || type == RESOURCE_TYPE.SENSOR_VARIABLE) {
+                    typesIdNameMappers.add(TypesIdNameMapper.builder()
+                            .id(type.getText()).displayName(type.getText()).build());
+
+                }
+            }
+        } else if (conditionType != null) {
             for (RESOURCE_TYPE type : types) {
                 switch (conditionType) {
                     case STATE:
@@ -571,6 +636,23 @@ public class TypesUtils {
         for (Node node : nodes) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(node.getId())
                     .displayName(new ResourceModel(RESOURCE_TYPE.NODE, node).getResourceLessDetails()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getExternalServers(User user) {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        List<ExternalServerTable> externalServerTable = null;
+        if (AuthUtils.isSuperAdmin(user)) {
+            externalServerTable = DaoUtils.getExternalServerTableDao().getAll();
+        } else {
+            return typesIdNameMappers;
+        }
+        if (externalServerTable != null) {
+            for (ExternalServerTable serverTable : externalServerTable) {
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(serverTable.getId())
+                        .displayName(serverTable.getName()).build());
+            }
         }
         return typesIdNameMappers;
     }
@@ -972,12 +1054,38 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getGatewayTypes() {
+    public static ArrayList<TypesIdNameMapper> getGatewayTypes(String networkType) {
         GatewayUtils.GATEWAY_TYPE[] types = GatewayUtils.GATEWAY_TYPE.values();
+        NETWORK_TYPE nwType = null;
+        if (networkType != null) {
+            nwType = NETWORK_TYPE.fromString(networkType);
+        }
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (GatewayUtils.GATEWAY_TYPE gatewayType : types) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(gatewayType.getText())
-                    .displayName(McObjectManager.getMcLocale().getString(gatewayType.name())).build());
+            boolean include = false;
+            if (nwType != null) {
+                switch (nwType) {
+                    case MY_SENSORS:
+                        if (gatewayType != GATEWAY_TYPE.PHANT_IO) {
+                            include = true;
+                        }
+                        break;
+                    case PHANT_IO:
+                        if (gatewayType == GATEWAY_TYPE.PHANT_IO) {
+                            include = true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                include = true;
+            }
+            if (include) {
+                typesIdNameMappers.add(TypesIdNameMapper.builder().id(gatewayType.getText())
+                        .displayName(McObjectManager.getMcLocale().getString(gatewayType.name())).build());
+            }
+
         }
         return typesIdNameMappers;
     }
@@ -986,6 +1094,15 @@ public class TypesUtils {
         NETWORK_TYPE[] types = NETWORK_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (NETWORK_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getExternalServerTypes() {
+        EXTERNAL_SERVER_TYPE[] types = EXTERNAL_SERVER_TYPE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (EXTERNAL_SERVER_TYPE type : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;

@@ -67,6 +67,7 @@
   <logger level="INFO" name="org.mycontroller.standalone.metrics.jobs" />
   <logger level="INFO" name="org.mycontroller.standalone.mqttbroker" />
   <logger level="INFO" name="org.mycontroller.standalone.mysensors" />
+  <logger level="INFO" name="org.mycontroller.standalone.restclient" />
   <logger level="INFO" name="org.mycontroller.standalone.rule" />
   <logger level="INFO" name="org.mycontroller.standalone.scheduler" />
   <logger level="INFO" name="org.mycontroller.standalone.scripts" />

@@ -44,6 +44,12 @@
         <div class="btn-toolbar pull-right" role="toolbar">
           <div class="btn-group mc-side-space">
             <label class="mc-align-center mc-top-space-5px checkbox-inline">
+              <input id="box" ng-change="refresh()" ng-false-value="false" ng-model="query.realtime" ng-true-value="true" type="checkbox" class="ng-pristine ng-untouched ng-valid ng-empty">
+              {{ 'REALTIME' | translate }}
+            </label>
+          </div>
+          <div class="btn-group mc-side-space">
+            <label class="mc-align-center mc-top-space-5px checkbox-inline">
               <input id="box" ng-change="show_hide_names(checkboxModel.value)" ng-false-value="false" ng-model="checkboxModel.value" ng-true-value="true" type="checkbox" class="ng-pristine ng-untouched ng-valid ng-empty">
               {{ 'DISPLAY_NAMES' | translate }}
             </label>

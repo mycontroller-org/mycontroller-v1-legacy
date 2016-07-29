@@ -134,7 +134,7 @@ public class McScriptFileUtils {
                 fileTo = scriptFiles.size();
                 fileFrom = 0;
             } else {
-                fileFrom = (int) (query.getStartingRow() * query.getPage());
+                fileFrom = query.getStartingRow().intValue();
                 fileTo = (int) (query.getPage() * query.getPageLimit());
             }
             for (; fileFrom < fileTo; fileFrom++) {

@@ -83,7 +83,7 @@ public class MqttGatewayImpl implements IGateway {
         _logger.debug("Message to send, Topic:[{}], PayLoad:[{}]", rawMessage.getSubData(),
                 rawMessage.getData());
         try {
-            MqttMessage message = new MqttMessage(rawMessage.getData().getBytes());
+            MqttMessage message = new MqttMessage(((String) rawMessage.getData()).getBytes());
             message.setQos(MY_SENSORS_QOS);
             String[] topicsPublish = rawMessage.getSubData().split(GatewayMQTT.TOPICS_SPLITER);
             for (String topic : topicsPublish) {

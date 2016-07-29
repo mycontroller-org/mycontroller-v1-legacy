@@ -158,4 +158,17 @@ public class GatewayHandler extends AccessEngine {
         }
     }
 
+    @POST
+    @Path("/executeNodeInfoUpdate")
+    public Response executeNodeInfoUpdate(List<Integer> ids) {
+        updateGatewayIds(ids);
+        try {
+            gatewayApi.executeNodeInfoUpdate(ids);
+            return RestUtils.getResponse(Status.OK,
+                    ApiMessage.builder().message("'Node info refresh' util started successfully").build());
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
 }

@@ -45,6 +45,7 @@
               <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || eraseConfiguration()" class="text-default"><i class="fa fa-lg fa-eraser"></i> {{ 'ERASE_CONFIGURATION' | translate }}</a></li>
               <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || reboot()" class="text-default"><i class="fa fa-lg fa-undo"></i> {{ 'REBOOT' | translate }}</a></li>
               <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || uploadFirmware()" class="text-default"><i class="fa fa-lg fa-upload"></i> {{ 'UPLOAD_FIRMWARE' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || refreshNodesInfo()" class="text-default"><i class="fa fa-lg fa-refresh"></i> {{ 'REFRESH_NODES_INFO' | translate }}</a></li>
             </ul>
           </div>
         </div>
@@ -76,6 +77,7 @@
           <th>{{ 'STATUS' | translate }}</th>
           <th>{{ 'GATEWAY' | translate }}</th>
           <th>{{ 'NETWORK' | translate }}</th>
+          <th>{{ 'REGISTRATION_STATUS' | translate }}</th>
           <th>{{ 'EUI' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
           <th>{{ 'TYPE' | translate }}</th>
@@ -98,6 +100,7 @@
             </td>
             <td>{{item.gateway.name}} [{{item.gateway.type}}]</td>
             <td>{{item.gateway.networkType}}</td>
+            <td>{{item.registrationState}}</td>
             <td>{{item.eui}}</td>
             <td>{{item.name}}</td>
             <td>{{item.type}}</td>

@@ -52,14 +52,20 @@ import org.mycontroller.standalone.utils.TypesUtils;
 public class TypesHandler extends AccessEngine {
     @GET
     @Path("/gatewayTypes")
-    public Response getGatewayTypes() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayTypes());
+    public Response getGatewayTypes(@QueryParam("networkType") String networkType) {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayTypes(networkType));
     }
 
     @GET
     @Path("/gatewayNetworkTypes")
     public Response getGatewaySubTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGatewayNetworkTypes());
+    }
+
+    @GET
+    @Path("/externalServerTypes")
+    public Response getExternalServerTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getExternalServerTypes());
     }
 
     @GET
@@ -72,6 +78,12 @@ public class TypesHandler extends AccessEngine {
     @Path("/nodeTypes")
     public Response getNodeTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getNodeTypes());
+    }
+
+    @GET
+    @Path("/nodeRegistrationStatuses")
+    public Response getNodeRegistrationStatuses() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getNodeRegistrationStatuses());
     }
 
     @GET
@@ -102,6 +114,18 @@ public class TypesHandler extends AccessEngine {
     @Path("/nodes")
     public Response getNodes(@QueryParam("gatewayId") Integer gatewayId) {
         return RestUtils.getResponse(Status.OK, TypesUtils.getNodes(AuthUtils.getUser(securityContext), gatewayId));
+    }
+
+    @GET
+    @Path("/externalServers")
+    public Response getExternalServers() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getExternalServers(AuthUtils.getUser(securityContext)));
+    }
+
+    @GET
+    @Path("/trustHostTypes")
+    public Response getTrustHostTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getTrustHostTypes());
     }
 
     @GET
@@ -169,6 +193,18 @@ public class TypesHandler extends AccessEngine {
     @Path("/sensorTypes")
     public Response getSensorTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getSensorTypes());
+    }
+
+    @GET
+    @Path("/metricTypes")
+    public Response getMetricTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMetricTypes());
+    }
+
+    @GET
+    @Path("/unitTypes")
+    public Response getUnitTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getUnitTypes());
     }
 
     @GET

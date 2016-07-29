@@ -46,6 +46,7 @@
               <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || disable()" class="text-danger"><i class="fa fa-lg fa-circle-thin"></i> {{ 'DISABLE' | translate }}</a></li>
               <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || reload()" class="text-danger"><i class="fa fa-lg fa-retweet"></i> {{ 'RELOAD' | translate }}</a></li>
               <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || discover()" class="text-default"><i class="fa fa-lg fa-search"></i> {{ 'DISCOVER' | translate }}</a></li>
+              <li ng-class="{'disabled': itemIds.length == 0}"><a href='' ng-click="itemIds.length == 0 || refreshNodesInfo()" class="text-default"><i class="fa fa-lg fa-refresh"></i> {{ 'REFRESH_NODES_INFO' | translate }}</a></li>
             </ul>
           </div>
         </div>

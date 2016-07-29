@@ -20,8 +20,8 @@ myControllerModule.directive('mcDynamic', function ($compile) {
       restrict: 'E',
       replace: true,
       link: function (scope, ele, attrs) {
-        scope.$watch(attrs.dynamic, function(html) {
-          ele.html(html);
+        scope.$watch(attrs.ngBindHtml, function() {
+          ele.html(scope.ngBindHtml);
           $compile(ele.contents())(scope);
         });
       }

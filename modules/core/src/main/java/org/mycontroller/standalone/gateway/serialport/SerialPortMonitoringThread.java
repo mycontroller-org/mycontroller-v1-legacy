@@ -86,7 +86,7 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
         // Reconnect serial port
         connect();
         if (gateway.getState() == STATE.UP) {
-            _logger.info("Serial GatewayTable:[{}], Successfully reconnected!", gateway);
+            _logger.info("Serial Gateway:[{}], Successfully reconnected!", gateway);
         } else {
             _logger.info("Serial GatewayTable[{}], Unable to reconnected! Will do next try after {} second(s)",
                     gateway, gateway.getRetryFrequency());
@@ -131,7 +131,7 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
         if (gateway.getState() == STATE.UP) {
             serialGateway.write(rawMessage);
         } else {
-            throw new GatewayException("GatewayTable not available! GatewayTable:[" + gateway.toString() + "]");
+            throw new GatewayException("Gateway not available! GatewayTable:[" + gateway.toString() + "]");
         }
     }
 

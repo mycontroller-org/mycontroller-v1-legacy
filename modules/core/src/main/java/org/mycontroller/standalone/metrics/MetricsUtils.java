@@ -59,7 +59,8 @@ public class MetricsUtils {
     public enum METRIC_TYPE {
         NONE("None"),
         DOUBLE("Double"),
-        BINARY("Binary");
+        BINARY("Binary"),
+        COUNTER("Counter");
 
         public static METRIC_TYPE get(int id) {
             for (METRIC_TYPE metric_type : values()) {

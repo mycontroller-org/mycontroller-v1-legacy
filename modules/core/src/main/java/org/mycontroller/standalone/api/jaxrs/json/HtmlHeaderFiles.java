@@ -38,4 +38,5 @@ public class HtmlHeaderFiles {
     private Long lastUpdate;
     private List<String> scripts;
     private List<String> links;
+    private String angularjsCustomControllers;
 }

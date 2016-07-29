@@ -21,7 +21,9 @@ package org.mycontroller.standalone.settings;
  * @since 0.0.2
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -83,14 +85,23 @@ public class MetricsGraph {
         }
     }
 
+    public static MetricsGraph get(HashMap<String, Object> gMap) {
+        return MetricsGraph.builder()
+                .type((String) gMap.get(SensorVariable.KEY_GP_TYPE))
+                .interpolate((String) gMap.get(SensorVariable.KEY_GP_INTERPOLATE))
+                .subType((String) gMap.get(SensorVariable.KEY_GP_SUBTYPE))
+                .color((String) gMap.get(SensorVariable.KEY_GP_COLOR))
+                .build();
+    }
+
     @JsonIgnore
     public static ArrayList<MESSAGE_TYPE_SET_REQ> variables = new ArrayList<MESSAGE_TYPE_SET_REQ>();
     static {
         variables.add(MESSAGE_TYPE_SET_REQ.V_ARMED);
         variables.add(MESSAGE_TYPE_SET_REQ.V_CURRENT);
+        variables.add(MESSAGE_TYPE_SET_REQ.V_CUSTOM);
         variables.add(MESSAGE_TYPE_SET_REQ.V_DIRECTION);
         variables.add(MESSAGE_TYPE_SET_REQ.V_DISTANCE);
-        variables.add(MESSAGE_TYPE_SET_REQ.V_DOWN);
         variables.add(MESSAGE_TYPE_SET_REQ.V_FLOW);
         variables.add(MESSAGE_TYPE_SET_REQ.V_GUST);
         variables.add(MESSAGE_TYPE_SET_REQ.V_HUM);
@@ -108,7 +119,6 @@ public class MetricsGraph {
         variables.add(MESSAGE_TYPE_SET_REQ.V_RAINRATE);
         variables.add(MESSAGE_TYPE_SET_REQ.V_TEMP);
         variables.add(MESSAGE_TYPE_SET_REQ.V_TRIPPED);
-        variables.add(MESSAGE_TYPE_SET_REQ.V_UP);
         variables.add(MESSAGE_TYPE_SET_REQ.V_UV);
         variables.add(MESSAGE_TYPE_SET_REQ.V_VOLTAGE);
         variables.add(MESSAGE_TYPE_SET_REQ.V_VOLUME);

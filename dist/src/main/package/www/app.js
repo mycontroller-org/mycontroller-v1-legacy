@@ -155,6 +155,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       data: {
         requireLogin: true
       }
+    }).state('sensorVariableEdit', {
+      url:"/resources/sensorvariable/edit/:id",
+      templateUrl: "partials/sensors/sensor-variable-edit.html",
+      controller: "SensorVariableControllerEdit",
+      data: {
+        requireLogin: true
+      }
     }).state('sensorsDetail', {
       url:"/resources/sensors/detail/:id",
       templateUrl: "partials/sensors/sensors-detail.html",
@@ -170,7 +177,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     }).state('rulesAddEdit', {
-      url:"/resources/rules/addedit/:id",
+      url:"/resources/rules/addedit/:id/:action",
       templateUrl: "partials/rule-engine/rules-add-edit.html",
       controller: "RuleEngineControllerAddEdit",
        data: {
@@ -184,7 +191,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     }).state('operationsAddEdit', {
-      url:"/resources/operations/addedit/:id",
+      url:"/resources/operations/addedit/:id/:action",
       templateUrl: "partials/operations/operations-add-edit.html",
       controller: "OperationsControllerAddEdit",
        data: {
@@ -226,7 +233,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
         requireLogin: true
       }
     }).state('timersAddEdit', {
-      url:"/resources/timers/addedit/:id",
+      url:"/resources/timers/addedit/:id/:action",
       templateUrl: "partials/timers/timer-add-edit.html",
       controller: "TimersControllerAddEdit",
        data: {
@@ -423,6 +430,34 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
        data: {
         requireLogin: true
       }
+    }).state('resourcesDataList', {
+      url:"/utilities/resourcesdata/list",
+      templateUrl: "partials/resources-data/resources-data-list.html",
+      controller: "ResourcesDataController",
+       data: {
+        requireLogin: true
+      }
+    }).state('resourcesDataAddEdit', {
+      url:"/utilities/resourcesdata/addedit/:id",
+      templateUrl: "partials/resources-data/resources-data-add-edit.html",
+      controller: "ResourcesDataControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
+    }).state('externalServersList', {
+      url:"/utilities/externalserver/list",
+      templateUrl: "partials/external-servers/external-servers-list.html",
+      controller: "ExternalServerController",
+       data: {
+        requireLogin: true
+      }
+    }).state('externalServersAddEdit', {
+      url:"/utilities/externalserver/addedit/:id",
+      templateUrl: "partials/external-servers/external-server-add-edit.html",
+      controller: "ExternalServersControllerAddEdit",
+       data: {
+        requireLogin: true
+      }
     })
 
     /* Settings */
@@ -458,13 +493,6 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       url:"/settings/metrics",
       templateUrl: "partials/settings/settings-metrics.html",
       controller: "SettingsMetricsController",
-       data: {
-        requireLogin: true
-      }
-    }).state('settingsUnits', {
-      url:"/settings/units",
-      templateUrl: "partials/settings/settings-units.html",
-      controller: "SettingsUnitsController",
        data: {
         requireLogin: true
       }

@@ -31,7 +31,6 @@ import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
-import org.mycontroller.standalone.settings.UnitsSettings;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AccessLevel;
@@ -77,7 +76,6 @@ public class AppProperties {
     MySensorsSettings mySensorsSettings;
     SmsSettings smsSettings;
     PushbulletSettings pushbulletSettings;
-    UnitsSettings unitsSettings;
     LocationSettings locationSettings;
     MetricsGraphSettings metricsGraphSettings;
     MetricsDataRetentionSettings metricsDataRetentionSettings;
@@ -203,7 +201,8 @@ public class AppProperties {
     }
 
     public enum NETWORK_TYPE {
-        MY_SENSORS("MySensors");
+        MY_SENSORS("MySensors"),
+        PHANT_IO("Sparkfun [phant.io]");
 
         private final String type;
 
@@ -432,7 +431,6 @@ public class AppProperties {
         mySensorsSettings = MySensorsSettings.get();
         emailSettings = EmailSettings.get();
         smsSettings = SmsSettings.get();
-        unitsSettings = UnitsSettings.get();
         metricsGraphSettings = MetricsGraphSettings.get();
         metricsDataRetentionSettings = MetricsDataRetentionSettings.get();
         backupSettings = BackupSettings.get();
@@ -553,10 +551,6 @@ public class AppProperties {
 
     public SmsSettings getSmsSettings() {
         return smsSettings;
-    }
-
-    public UnitsSettings getUnitsSettings() {
-        return unitsSettings;
     }
 
     public LocationSettings getLocationSettings() {

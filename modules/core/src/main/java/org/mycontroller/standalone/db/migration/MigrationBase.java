@@ -195,4 +195,9 @@ public abstract class MigrationBase implements JdbcMigration {
         return user;
     }
 
+    protected void executeRaw(String rawQuery) throws SQLException {
+        int count = DaoUtils.getUserDao().getDao().executeRaw(rawQuery);
+        _logger.debug("count:{}", count);
+    }
+
 }

@@ -17,13 +17,18 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.NodeRegistrationStateDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.NodeTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.StateDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.NodeRegistrationStateSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.NodeTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.StateSerializer;
+import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
+import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -46,8 +51,17 @@ abstract class NodeMixin {
     @JsonDeserialize(using = StateDeserializer.class)
     public abstract void setState(STATE state);
 
+    @JsonDeserialize(using = NodeRegistrationStateDeserializer.class)
+    public abstract void setRegistrationState(NODE_REGISTRATION_STATE state);
+
+    @JsonSerialize(using = NodeRegistrationStateSerializer.class)
+    public abstract String getRegistrationState();
+
     @JsonSetter(value = "gateway")
     @JsonDeserialize(using = GatewayTableDeserializer.class)
     public abstract void setGatewayTable(GatewayTable gatewayTable);
+
+    @JsonIgnoreProperties({ "data" })
+    public abstract Firmware getFirmware();
 
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -43,6 +44,11 @@ public class NodeAliveStatusJob extends Job {
 
     @Override
     public void doRun() throws JobInterruptException {
+        _logger.debug("Executing 'node alive check' job");
+        if (AppProperties.getInstance().getControllerSettings().getAliveCheckInterval() < McUtils.MINUTE) {
+            //Nothing to do, just return from here
+            return;
+        }
         try {
             this.sendHearbeat();
             long referenceTimestamp = 0;
@@ -63,7 +69,16 @@ public class NodeAliveStatusJob extends Job {
     private void sendHearbeat() {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
         for (Node node : nodes) {
-            McObjectManager.getMcActionEngine().sendAliveStatusRequest(node);
+            //If gateway not available, do not send
+            if (McObjectManager.getGateway(node.getGatewayTable().getId()) == null
+                    || McObjectManager.getGateway(node.getGatewayTable().getId()).getGateway().getState() != STATE.UP) {
+                return;
+            }
+            //for now supports only for MySensors
+            if (node.getGatewayTable().getEnabled()
+                    && node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+                McObjectManager.getMcActionEngine().sendAliveStatusRequest(node);
+            }
         }
     }
 
@@ -76,7 +91,11 @@ public class NodeAliveStatusJob extends Job {
         for (Node node : nodes) {
             if (node.getLastSeen() == null
                     || node.getLastSeen() <= (System.currentTimeMillis() - aliveCheckInterval)) {
-                node.setState(STATE.DOWN);
+                if (node.getGatewayTable().getEnabled()) {
+                    node.setState(STATE.DOWN);
+                } else {
+                    node.setState(STATE.UNAVAILABLE);
+                }
                 DaoUtils.getNodeDao().update(node);
                 _logger.debug("Node is in not reachable state, Node:[{}]", node);
             }

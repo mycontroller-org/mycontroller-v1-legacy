@@ -32,7 +32,6 @@ import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.settings.MyControllerSettings;
-import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
@@ -146,13 +145,15 @@ public class DataBaseUtils {
             //After executed migration, reload settings again
             AppProperties.getInstance().loadPropertiesFromDb();
 
-            _logger.info("Number of migrations done:{}", migrationsCount);
+            if (migrationsCount > 0) {
+                _logger.info("Number of migrations done:{}", migrationsCount);
+            } else {
+                _logger.debug("Number of migrations done:{}", migrationsCount);
+            }
+
             _logger.info("Application information: [Version:{}, Database version:{}]",
                     AppProperties.getInstance().getControllerSettings().getVersion(),
                     AppProperties.getInstance().getControllerSettings().getDbVersion());
-
-            //create or update static json file used for GUI before login
-            SettingsUtils.updateStaticJsonInformationFile();
         } else {
             _logger.warn("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", DB_URL);
         }

@@ -191,7 +191,7 @@ $scope, ScriptsFactory, $state, $uibModal, $stateParams, displayRestError, mchel
 
 //Script run now Modal
 myControllerModule.controller('ControllerScriptRunNowModal', function ($scope, $uibModalInstance, $filter, CommonServices, ScriptsFactory, itemId) {
-  $scope.header = $filter('translate')('RUN_NOW', itemId);
+  $scope.header = $filter('translate')('RUN_NOW');
   $scope.cs = CommonServices;
   $scope.request = {};
   $scope.request.script = itemId;

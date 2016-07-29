@@ -31,8 +31,10 @@ import org.mycontroller.standalone.gateway.ethernet.EthernetGatewayImpl;
 import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
+import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
+import org.mycontroller.standalone.gateway.phantio.PhantIOGatewayImpl;
 import org.mycontroller.standalone.gateway.serialport.MYCSerialPort;
 import org.mycontroller.standalone.model.ResourceModel;
 
@@ -53,7 +55,8 @@ public class GatewayUtils {
     public enum GATEWAY_TYPE {
         SERIAL("Serial"),
         ETHERNET("Ethernet"),
-        MQTT("MQTT");
+        MQTT("MQTT"),
+        PHANT_IO("Sparkfun [phant.io]");
         public static GATEWAY_TYPE get(int id) {
             for (GATEWAY_TYPE type : values()) {
                 if (type.ordinal() == id) {
@@ -133,6 +136,8 @@ public class GatewayUtils {
                 return new GatewayEthernet(gatewayTable);
             case MQTT:
                 return new GatewayMQTT(gatewayTable);
+            case PHANT_IO:
+                return new GatewayPhantIO(gatewayTable);
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());
                 return null;
@@ -177,6 +182,9 @@ public class GatewayUtils {
                 break;
             case MQTT:
                 iGateway = new MqttGatewayImpl(gatewayTable);
+                break;
+            case PHANT_IO:
+                iGateway = new PhantIOGatewayImpl(gatewayTable);
                 break;
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());

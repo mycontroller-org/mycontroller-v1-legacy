@@ -27,6 +27,7 @@ import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -85,6 +86,15 @@ public class MetricApi {
                     .build();
         }
         return metricDouble;
+    }
+
+    public List<MetricsCounterTypeDevice> getSensorVariableMetricsCounter(Integer sensorVariableId,
+            Long timestampFrom, Long timestampTo) {
+        return DaoUtils.getMetricsCounterTypeDeviceDao().getAll(MetricsCounterTypeDevice.builder()
+                .timestampFrom(timestampFrom)
+                .timestampTo(timestampTo)
+                .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
+                .build());
     }
 
     public List<MetricsBinaryTypeDevice> getSensorVariableMetricsBinary(Integer sensorVariableId,

@@ -26,7 +26,7 @@ import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
  */
 public interface MetricsBinaryTypeDeviceDao extends BaseDao<MetricsBinaryTypeDevice, Object> {
 
-    void deleteBySensorValueRefId(int sensorRefId);
+    void deleteBySensorVariableRefId(int sensorVarRefId);
 
     void deletePrevious(MetricsBinaryTypeDevice metric);
 
