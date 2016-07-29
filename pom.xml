@@ -29,7 +29,7 @@
 
   <groupId>org.mycontroller.standalone</groupId>
   <artifactId>mycontroller-standalone-parent</artifactId>
-  <version>0.0.3.Alpha2-SNAPSHOT</version>
+  <version>0.0.3.Alpha2</version>
   <url>https://github.com/mycontroller-org</url>
   <inceptionYear>2015</inceptionYear>
   <packaging>pom</packaging>
