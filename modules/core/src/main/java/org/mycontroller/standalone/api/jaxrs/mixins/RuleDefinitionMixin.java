@@ -152,6 +152,13 @@ class RuleDefinitionDeserializer extends JsonDeserializer<RuleDefinition> {
         }
         ruleDefinition.setEnabled(node.get("enabled").asBoolean());
         ruleDefinition.setDisableWhenTrigger(node.get("disableWhenTrigger").asBoolean());
+        if (node.get("reEnable") != null && node.get("reEnable").asBoolean()) {
+            ruleDefinition.setReEnable(true);
+            ruleDefinition.setReEnableDelay(node.get("reEnableDelay").asLong());
+        } else {
+            ruleDefinition.setReEnable(false);
+            ruleDefinition.setReEnableDelay(null);
+        }
         ruleDefinition.setName(node.get("name").asText());
         ruleDefinition.setResourceType(RESOURCE_TYPE.fromString(node.get("resourceType").asText()));
         if (conditionType != CONDITION_TYPE.SCRIPT) {

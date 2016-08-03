@@ -359,19 +359,17 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
 
         //Update dampening value
         if($scope.item.dampeningType === 'Active time'){
-          if($scope.item.dampening.activeTime % 86400000  == 0){
-            $scope.item.dampening.activeTime = $scope.item.dampening.activeTime / 86400000;
-            $scope.item.dampening.activeTimeConstant = "86400000";
-          }else if($scope.item.dampening.activeTime % 3600000  == 0){
-            $scope.item.dampening.activeTime = $scope.item.dampening.activeTime / 3600000;
-            $scope.item.dampening.activeTimeConstant = "3600000";
-          }else if($scope.item.dampening.activeTime % 60000  == 0){
-            $scope.item.dampening.activeTime = $scope.item.dampening.activeTime / 60000;
-            $scope.item.dampening.activeTimeConstant = "60000";
-          }else{
-            $scope.item.dampening.activeTime = $scope.item.dampening.activeTime / 1000;
-            $scope.item.dampening.activeTimeConstant = "1000";
-          }
+          var item = {};
+          $scope.cs.updateReadable($scope.item.dampening.activeTime, item);
+          $scope.item.dampening.activeTimeReadable = item.readableValue;
+          $scope.item.dampening.activeTimeConstant = item.timeConstant;
+        }
+        //Update re enable delay
+        if($scope.item.reEnable){
+          var item = {};
+          $scope.cs.updateReadable($scope.item.reEnableDelay, item);
+          $scope.item.reEnableDelayReadable = item.readableValue;
+          $scope.item.reEnableDelayConstant = item.timeConstant;
         }
         if($stateParams.action === 'clone'){
           $stateParams.id = undefined;
@@ -403,7 +401,11 @@ myControllerModule.controller('RuleEngineControllerAddEdit', function ($scope, $
   $scope.save = function(){
     //Update dampening active time
     if($scope.item.dampeningType === 'Active time'){
-      $scope.item.dampening.activeTime = $scope.item.dampening.activeTime * $scope.item.dampening.activeTimeConstant;
+      $scope.item.dampening.activeTime = $scope.cs.getMilliseconds($scope.item.dampening.activeTimeReadable, $scope.item.dampening.activeTimeConstant);
+    }
+    //Update re enable delay
+    if($scope.item.reEnable){
+      $scope.item.reEnableDelay = $scope.cs.getMilliseconds($scope.item.reEnableDelayReadable, $scope.item.reEnableDelayConstant);
     }
     //Change string to JSON string
     if($scope.item.conditionType === 'Script'){

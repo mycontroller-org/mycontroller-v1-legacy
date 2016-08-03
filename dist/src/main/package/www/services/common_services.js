@@ -495,6 +495,29 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
     return timestampJson.timeConstant * timestampJson.timestamp;
   };
 
+  //Update mill seconds to readable value
+  commonService.updateReadable = function(milliSeconds, item){
+     if(milliSeconds % 86400000  == 0){
+      item.readableValue = milliSeconds / 86400000;
+      item.timeConstant = "86400000";
+    }else if(milliSeconds % 3600000  == 0){
+      item.readableValue = milliSeconds / 3600000;
+      item.timeConstant = "3600000";
+    }else if(milliSeconds % 60000  == 0){
+      item.readableValue = milliSeconds / 60000;
+      item.timeConstant = "60000";
+    }else{
+      item.readableValue = milliSeconds / 1000;
+      item.timeConstant = "1000";
+    }
+  };
+
+  //Get readable value to milliseconds
+  commonService.getMilliseconds = function(readableValue, timeConstant){
+     return readableValue * timeConstant;
+  };
+
+
  return commonService;
 
 });
