@@ -20,11 +20,10 @@ import java.util.HashMap;
 
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.externalserver.ExternalMqttClient;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils;
-import org.mycontroller.standalone.restclient.ClientResponse;
 import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
-import org.mycontroller.standalone.restclient.phantio.PhantIOClient;
-import org.mycontroller.standalone.restclient.phantio.model.PostResponse;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,22 +40,22 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(exclude = { "privateKey" })
+@ToString(exclude = { "password" })
 @NoArgsConstructor
 @Slf4j
-public class ExternalServerPhantIO extends ExternalServer {
+public class ExternalServerMqtt extends ExternalServer {
 
     public static final String KEY_URL = "url";
     public static final String KEY_TRUST_HOST_TYPE = "trustHostType";
-    public static final String KEY_PUBLIC_KEY = "publicKey";
-    public static final String KEY_PRIVATE_KEY = "privateKey";
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_PASSWORD = "password";
 
     private String url;
     private TRUST_HOST_TYPE trustHostType;
-    private String publicKey;
-    private String privateKey;
+    private String username;
+    private String password;
 
-    public ExternalServerPhantIO(ExternalServerTable externalServerTable) {
+    public ExternalServerMqtt(ExternalServerTable externalServerTable) {
         this.update(externalServerTable);
     }
 
@@ -66,8 +65,9 @@ public class ExternalServerPhantIO extends ExternalServer {
         url = (String) externalServerTable.getProperties().get(KEY_URL);
         trustHostType = TRUST_HOST_TYPE.fromString((String) externalServerTable.getProperties().get(
                 KEY_TRUST_HOST_TYPE));
-        publicKey = (String) externalServerTable.getProperties().get(KEY_PUBLIC_KEY);
-        privateKey = (String) externalServerTable.getProperties().get(KEY_PRIVATE_KEY);
+        username = (String) externalServerTable.getProperties().get(KEY_USERNAME);
+        password = (String) externalServerTable.getProperties().get(KEY_PASSWORD);
+
     }
 
     @Override
@@ -77,8 +77,8 @@ public class ExternalServerPhantIO extends ExternalServer {
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(KEY_URL, url);
         properties.put(KEY_TRUST_HOST_TYPE, trustHostType.getText());
-        properties.put(KEY_PUBLIC_KEY, publicKey);
-        properties.put(KEY_PRIVATE_KEY, privateKey);
+        properties.put(KEY_USERNAME, username);
+        properties.put(KEY_PASSWORD, password);
         externalServerTable.setProperties(properties);
         return externalServerTable;
     }
@@ -88,7 +88,7 @@ public class ExternalServerPhantIO extends ExternalServer {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append("URL: ").append(getUrl())
-                .append(", PublicKey: ").append(getPublicKey())
+                .append(", Username: ").append(McUtils.getString(getUsername()))
                 .append(", TrustHost: ").append(getTrustHostType().getText());
         return stringBuilder.toString();
     }
@@ -96,15 +96,14 @@ public class ExternalServerPhantIO extends ExternalServer {
     @Override
     public void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
-            ClientResponse<PostResponse> clientResponse = ((PhantIOClient) ExternalServerUtils.getClient(getId()))
-                    .post(getVariableKey(sensorVariable, getKeyFormat()), sensorVariable.getValue());
-            if (!clientResponse.isSuccess()) {
-                _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,
-                        toString(), getUrl());
-            } else {
-                _logger.debug("Remote server update status: {}, Remote server:{}, {}", clientResponse,
-                        toString(), getUrl());
+            ExternalMqttClient client = (ExternalMqttClient) ExternalServerUtils.getClient(getId());
+            if (client.isConnected() == null) {
+                return;
+            } else if (!client.isConnected()) {
+                _logger.warn("MQTT client not connected! reconnecting...");
+                client.reConnect();
             }
+            client.publish(getVariableKey(sensorVariable, getKeyFormat()), sensorVariable.getValue());
         }
     }
 

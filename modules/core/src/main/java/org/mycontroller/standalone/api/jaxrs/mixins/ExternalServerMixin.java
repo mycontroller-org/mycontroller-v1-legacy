@@ -23,6 +23,7 @@ import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.exernalserver.model.ExternalServer;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerEmoncms;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerInfluxdb;
+import org.mycontroller.standalone.exernalserver.model.ExternalServerMqtt;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerPhantIO;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils.EXTERNAL_SERVER_TYPE;
@@ -105,6 +106,16 @@ class ExternalServerDeserializer extends JsonDeserializer<ExternalServer> {
                 }
                 extServerInfluxdb.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
                 externalServer = extServerInfluxdb;
+                break;
+            case MQTT:
+                ExternalServerMqtt extServerMqttClient = new ExternalServerMqtt();
+                extServerMqttClient.setUrl(node.get("url").asText());
+                if (node.get("username") != null) {
+                    extServerMqttClient.setUsername(node.get("username").asText());
+                    extServerMqttClient.setPassword(node.get("password").asText());
+                }
+                extServerMqttClient.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
+                externalServer = extServerMqttClient;
                 break;
             default:
                 break;

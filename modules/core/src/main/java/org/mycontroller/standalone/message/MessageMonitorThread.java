@@ -67,7 +67,7 @@ public class MessageMonitorThread implements Runnable {
                         Thread.sleep(MYS_MSG_DELAY);
                     }
                 } catch (Exception ex) {
-                    _logger.error("RawMessage[{}] throws exception while processing!, ", rawMessage, ex);
+                    _logger.error("Throws exception while processing!, [{}]", rawMessage, ex);
                 }
             } else {
                 GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(rawMessage.getGatewayId());

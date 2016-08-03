@@ -90,7 +90,7 @@ public class ExternalServerEmoncms extends ExternalServer {
     @Override
     public void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
-            ClientResponse<String> clientResponse = ((EmoncmsClient) ExternalServerUtils.getRestClient(getId()))
+            ClientResponse<String> clientResponse = ((EmoncmsClient) ExternalServerUtils.getClient(getId()))
                     .send(getVariableKey(sensorVariable, getKeyFormat()), sensorVariable.getValue());
             if (!clientResponse.isSuccess()) {
                 _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,

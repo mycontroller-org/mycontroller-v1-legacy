@@ -65,6 +65,7 @@ import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.auth.McContainerRequestFilter;
 import org.mycontroller.standalone.db.DataBaseUtils;
+import org.mycontroller.standalone.externalserver.ExternalServerUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
@@ -279,6 +280,7 @@ public class StartApp {
     public static synchronized void stopServices() {
         //Stop order..
         // - stop web server
+        // - clear external servers
         // - Stop scheduler
         // - Stop GatewayTable Listener
         // - Stop MQTT broker
@@ -286,6 +288,7 @@ public class StartApp {
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
         stopHTTPWebServer();
+        ExternalServerUtils.clearServers();
         SchedulerUtils.stop();
         GatewayUtils.unloadAllGateways();
         MoquetteMqttBroker.stop();
