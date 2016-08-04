@@ -227,6 +227,7 @@ public class StartApp {
         // - Add Shutdown hook
         // - Start DB service
         // - Set to locale actual
+        // - Check password reset file
         // - Start message Monitor Thread
         // - Load starting values
         // - Start MQTT Broker
@@ -252,6 +253,9 @@ public class StartApp {
 
         //List available script engines information
         McScriptEngineUtils.listAvailableEngines();
+
+        //Check password reset file
+        ResetPassword.executeResetPassword();
 
         //Start message Monitor Thread
         //Create new thread to monitor received logs

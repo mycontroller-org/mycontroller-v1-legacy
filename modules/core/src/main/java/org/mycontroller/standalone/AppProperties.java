@@ -350,7 +350,8 @@ public class AppProperties {
     public void loadProperties(Properties properties) {
         //Application Directory
         try {
-            appDirectory = FileUtils.getFile(McUtils.getDirectoryLocation("../")).getCanonicalPath();
+            appDirectory = McUtils.getDirectoryLocation(FileUtils.getFile(McUtils.getDirectoryLocation("../"))
+                    .getCanonicalPath());
         } catch (IOException ex) {
             appDirectory = McUtils.getDirectoryLocation("../");
             _logger.error("Unable to set application directory!", ex);
