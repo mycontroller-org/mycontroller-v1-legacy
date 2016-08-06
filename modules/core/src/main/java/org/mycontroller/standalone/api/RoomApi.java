@@ -24,6 +24,7 @@ import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.RoomUtils;
 import org.mycontroller.standalone.db.tables.Room;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McDuplicateException;
 
 /**
@@ -76,16 +77,20 @@ public class RoomApi {
         RoomUtils.delete(ids);
     }
 
-    public void createOrUpdate(Room room) throws McDuplicateException {
+    public void createOrUpdate(Room room) throws McDuplicateException, McBadRequestException {
         createOrUpdate(room, null);
     }
 
-    public void createOrUpdate(Room room, List<Integer> sensorIds) throws McDuplicateException {
-        Room availabilityCheck = DaoUtils.getRoomDao().getByName(room.getName());
+    public void createOrUpdate(Room room, List<Integer> sensorIds) throws McDuplicateException, McBadRequestException {
+        Room availabilityCheck = DaoUtils.getRoomDao().getByNameAndParentId(room.getName(), room.getParentId());
         if (availabilityCheck != null && room.getId() != availabilityCheck.getId()) {
-            throw new McDuplicateException("A room available with this name!");
+            throw new McDuplicateException("A room available with this parent with this name!");
+        }
+        if (room.getId() != null && room.getParentId() != null) {
+            if (DaoUtils.getRoomDao().getChildrenIds(room.getId()).contains(room.getParentId())) {
+                throw new McBadRequestException("This room children cannot be it is parent!");
+            }
         }
         RoomUtils.createOrUpdate(room, sensorIds);
     }
-
 }

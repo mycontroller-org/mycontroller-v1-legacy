@@ -35,4 +35,10 @@ public interface RoomDao extends BaseDao<Room, Integer> {
     void deleteIds(List<Integer> ids);
 
     Room getByName(String name);
+
+    Room getByNameAndParentId(String name, Integer parentId);
+
+    List<Integer> getParentIds(Integer id);
+
+    List<Integer> getChildrenIds(Integer id);
 }

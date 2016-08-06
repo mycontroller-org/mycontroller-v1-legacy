@@ -41,6 +41,7 @@ import org.mycontroller.standalone.api.jaxrs.json.RoomJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Room;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McDuplicateException;
 
 /**
@@ -113,7 +114,7 @@ public class RoomHandler extends AccessEngine {
     public Response add(RoomJson roomJson) {
         try {
             roomApi.createOrUpdate(roomJson.getRoom(), roomJson.getSensorIds());
-        } catch (McDuplicateException ex) {
+        } catch (McDuplicateException | McBadRequestException ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
         return RestUtils.getResponse(Status.OK);

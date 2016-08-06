@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
@@ -134,6 +135,10 @@ public abstract class MigrationBase implements JdbcMigration {
         }
     }
 
+    protected void dropTable(Class<?> entity) throws SQLException {
+        TableUtils.dropTable(DaoUtils.getUserDao().getDao().getConnectionSource(), entity, true);
+    }
+
     protected void createTable(Class<?> entity) throws SQLException {
         TableUtils.createTableIfNotExists(DaoUtils.getUserDao().getDao().getConnectionSource(), entity);
     }
@@ -200,4 +205,7 @@ public abstract class MigrationBase implements JdbcMigration {
         _logger.debug("count:{}", count);
     }
 
+    protected String getApplicationDbVersion() {
+        return new SystemApi().getAbout().getApplicationDbVersion();
+    }
 }
