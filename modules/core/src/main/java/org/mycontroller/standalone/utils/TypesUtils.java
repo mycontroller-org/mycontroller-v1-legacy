@@ -1075,6 +1075,11 @@ public class TypesUtils {
                             include = true;
                         }
                         break;
+                    case MY_CONTROLLER:
+                        if (gatewayType == GATEWAY_TYPE.MQTT) {
+                            include = true;
+                        }
+                        break;
                     default:
                         break;
                 }

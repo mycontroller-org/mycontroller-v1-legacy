@@ -41,7 +41,7 @@ public class MqttGatewayImpl implements IGateway {
     public static final long DISCONNECT_TIME_OUT = 1000 * 1;
     public static final int CONNECTION_TIME_OUT = 1000 * 5;
     public static final int KEEP_ALIVE = 1000 * 5;
-    public static final int MY_SENSORS_QOS = 0;
+    public static final int MQTT_QOS = 0;
     private GatewayMQTT gateway = null;
 
     private IMqttClient mqttClient;
@@ -80,11 +80,11 @@ public class MqttGatewayImpl implements IGateway {
 
     @Override
     public synchronized void write(RawMessage rawMessage) throws GatewayException {
-        _logger.debug("Message to send, Topic:[{}], PayLoad:[{}]", rawMessage.getSubData(),
+        _logger.debug("Message about to send, Topic:[{}], PayLoad:[{}]", rawMessage.getSubData(),
                 rawMessage.getData());
         try {
             MqttMessage message = new MqttMessage(((String) rawMessage.getData()).getBytes());
-            message.setQos(MY_SENSORS_QOS);
+            message.setQos(MQTT_QOS);
             String[] topicsPublish = rawMessage.getSubData().split(GatewayMQTT.TOPICS_SPLITER);
             for (String topic : topicsPublish) {
                 mqttClient.publish(topic, message);

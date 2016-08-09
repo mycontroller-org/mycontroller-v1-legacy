@@ -14,29 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.json;
+package org.mycontroller.standalone.provider.mc;
 
-import org.mycontroller.standalone.AppProperties;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@ToString
-public class McAbout extends McAboutBase {
-    private String applicationVersion;
-    private String applicationDbVersion;
-    private String applicationLocation;
-
-    public McAbout() {
-        applicationVersion = AppProperties.getInstance().getControllerSettings().getVersion();
-        applicationDbVersion = AppProperties.getInstance().getControllerSettings().getDbVersion();
-        applicationLocation = AppProperties.getInstance().getAppDirectory();
+@Slf4j
+public class McpEngine {
+    public static void updateMessage(McpRawMessage pioRawMessage) {
+        switch (pioRawMessage.getMessageType()) {
+            case C_SET:
+            case C_REQ:
+            case C_PRESENTATION:
+            case C_INTERNAL:
+                break;
+            default:
+                _logger.warn("This type message not supported by this provider.");
+                break;
+        }
     }
 }

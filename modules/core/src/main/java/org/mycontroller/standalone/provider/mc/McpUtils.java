@@ -14,29 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.json;
+package org.mycontroller.standalone.provider.mc;
 
-import org.mycontroller.standalone.AppProperties;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@ToString
-public class McAbout extends McAboutBase {
-    private String applicationVersion;
-    private String applicationDbVersion;
-    private String applicationLocation;
-
-    public McAbout() {
-        applicationVersion = AppProperties.getInstance().getControllerSettings().getVersion();
-        applicationDbVersion = AppProperties.getInstance().getControllerSettings().getDbVersion();
-        applicationLocation = AppProperties.getInstance().getAppDirectory();
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class McpUtils {
+    public static final int MQTT_QOS = 0;
+    public static final String EMPTY_DATA = "";
 }

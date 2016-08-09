@@ -26,6 +26,7 @@ import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.provider.mc.McProviderBridge;
 import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
 import org.mycontroller.standalone.provider.phantio.PhantIOProviderBridge;
@@ -514,6 +515,7 @@ public class McMessageUtils {
     //Sensor provider bridge
     private static IProviderBridge mySensorsBridge = new MySensorsProviderBridge();
     private static IProviderBridge phantIOBridge = new PhantIOProviderBridge();
+    private static IProviderBridge rpiAgentBridge = new McProviderBridge();
 
     public static synchronized void sendToGateway(RawMessage rawMessage) {
         //Send message to nodes [going out from MyController]
@@ -538,6 +540,9 @@ public class McMessageUtils {
             case PHANT_IO:
                 phantIOBridge.executeRawMessage(rawMessage);
                 break;
+            case MY_CONTROLLER:
+                rpiAgentBridge.executeRawMessage(rawMessage);
+                break;
             default:
                 _logger.warn("Unknown provider: {}", rawMessage.getNetworkType());
                 break;
@@ -559,6 +564,9 @@ public class McMessageUtils {
             case PHANT_IO:
                 phantIOBridge.executeMcMessage(mcMessage);
                 break;
+            case MY_CONTROLLER:
+                rpiAgentBridge.executeMcMessage(mcMessage);
+                break;
             default:
                 _logger.warn("Unknown provider: {}", mcMessage.getNetworkType());
                 break;
@@ -577,6 +585,8 @@ public class McMessageUtils {
                 return mySensorsBridge.validateNodeId(node);
             case PHANT_IO:
                 return phantIOBridge.validateNodeId(node);
+            case MY_CONTROLLER:
+                return rpiAgentBridge.validateNodeId(node);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
@@ -590,6 +600,8 @@ public class McMessageUtils {
                 return mySensorsBridge.validateSensorId(sensor);
             case PHANT_IO:
                 return phantIOBridge.validateSensorId(sensor);
+            case MY_CONTROLLER:
+                return rpiAgentBridge.validateSensorId(sensor);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;

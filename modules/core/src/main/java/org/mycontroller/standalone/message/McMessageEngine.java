@@ -95,7 +95,7 @@ public class McMessageEngine implements Runnable {
 
     public void execute() throws McBadRequestException {
         mcMessage.setScreeningDone(true);
-        _logger.debug("McMessage:{}", mcMessage);
+        _logger.debug("{}", mcMessage);
         switch (mcMessage.getType()) {
             case C_PRESENTATION:
                 if (mcMessage.isTxMessage()) {
@@ -179,7 +179,7 @@ public class McMessageEngine implements Runnable {
     }
 
     private void presentationSubMessageTypeSelector(McMessage mcMessage) {
-        if (mcMessage.getSensorId() == McMessage.SENSOR_BROADCAST_ID) {
+        if (mcMessage.getSensorId().equalsIgnoreCase(McMessage.SENSOR_BROADCAST_ID)) {
             Node node = getNode(mcMessage);
             node.setLibVersion(mcMessage.getPayload());
             node.setType(MESSAGE_TYPE_PRESENTATION.fromString(mcMessage.getSubType()));

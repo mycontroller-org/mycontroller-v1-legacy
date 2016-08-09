@@ -61,7 +61,7 @@ public class MqttCallbackListener implements MqttCallback {
     @Override
     public void deliveryComplete(IMqttDeliveryToken deliveryToken) {
         try {
-            _logger.debug("Message Delivery Complete, [Message Id:{}, Topic:{}, PayLoad:{}]",
+            _logger.debug("Message Delivery Complete, [Message Id:{}, Topic:{}, Payload:{}]",
                     deliveryToken.getMessageId(),
                     StringUtils.join(deliveryToken.getTopics(), ","),
                     deliveryToken.getMessage());
@@ -73,7 +73,7 @@ public class MqttCallbackListener implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) {
         try {
-            _logger.debug("Message Received, Topic:[{}], PayLoad:[{}]", topic, message);
+            _logger.debug("Message Received, Topic:[{}], Payload:[{}]", topic, message);
             RawMessageQueue.getInstance().putMessage(RawMessage.builder()
                     .gatewayId(gateway.getId())
                     .data(message.toString())
