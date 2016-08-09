@@ -105,7 +105,7 @@ public class MetricsHandler extends AccessEngine {
     }
 
     @GET
-    @Path("/metricsData")
+    @Path("/stats")
     public Response getMetricsData(
             @QueryParam("sensorId") Integer sensorId,
             @QueryParam("variableId") List<Integer> variableIds,
@@ -206,7 +206,7 @@ public class MetricsHandler extends AccessEngine {
     }
 
     @GET
-    @Path("/metricsBattery")
+    @Path("/statsBattery")
     public Response getMetricsBattery(
             @QueryParam("nodeId") Integer nodeId,
             @QueryParam("timestampFrom") Long timestampFrom,
