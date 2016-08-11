@@ -307,4 +307,12 @@ public class GatewayUtils {
                 break;
         }
     }
+
+    public static String[] getMqttTopics(String topic) {
+        String[] topics = topic.split(GatewayMQTT.TOPICS_SPLITER);
+        for (int topicId = 0; topicId < topics.length; topicId++) {
+            topics[topicId] += "/#";
+        }
+        return topics;
+    }
 }

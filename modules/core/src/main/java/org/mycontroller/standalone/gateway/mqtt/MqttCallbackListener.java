@@ -24,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
@@ -112,6 +113,7 @@ public class MqttCallbackListener implements MqttCallback {
             } else {
                 try {
                     mqttClient.connect(connectOptions);
+                    mqttClient.subscribe(GatewayUtils.getMqttTopics(gateway.getTopicsSubscribe()));
                     _logger.info("MQTT Gateway[{}] Reconnected successfully...", mqttClient.getServerURI());
                     gateway.setStatus(STATE.UP, "Reconnected successfully...");
                     if (mqttClient.isConnected()) {

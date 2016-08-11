@@ -24,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayException;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.message.RawMessage;
@@ -62,11 +63,7 @@ public class MqttGatewayImpl implements IGateway {
             mqttClient.connect(connectOptions);
             mqttCallbackListener = new MqttCallbackListener(mqttClient, this.gateway, connectOptions);
             mqttClient.setCallback(mqttCallbackListener);
-            String[] topicsSubscribe = gateway.getTopicsSubscribe().split(GatewayMQTT.TOPICS_SPLITER);
-            for (int topicId = 0; topicId < topicsSubscribe.length; topicId++) {
-                topicsSubscribe[topicId] += "/#";
-            }
-            mqttClient.subscribe(topicsSubscribe);
+            mqttClient.subscribe(GatewayUtils.getMqttTopics(gateway.getTopicsSubscribe()));
             _logger.info("MQTT Gateway[{}] connected successfully..", mqttClient.getServerURI());
             this.gateway.setStatus(STATE.UP, "Connected Successfully");
         } catch (MqttException ex) {
