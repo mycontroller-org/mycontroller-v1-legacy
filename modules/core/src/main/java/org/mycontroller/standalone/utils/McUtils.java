@@ -52,6 +52,7 @@ public class McUtils {
     public static final long HOUR = MINUTE * 60;
     public static final long DAY = HOUR * 24;
     public static final DecimalFormat decimalFormat = new DecimalFormat("#.###");
+    public static final DecimalFormat ZERO_PRECISION = new DecimalFormat("#");
     public static final String MC_LOCALE_FILE_NAME = "mc_locale/mc_locale_java";
 
     public static final long KB = 1024;
@@ -97,9 +98,16 @@ public class McUtils {
         return null;
     }
 
-    public static String getDoubleAsString(double value) {
-        Double truncatedDouble = new BigDecimal(value).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+    public static String getDoubleAsString(double value, int scale) {
+        Double truncatedDouble = new BigDecimal(value).setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+        if (scale == 0) {
+            return ZERO_PRECISION.format(truncatedDouble);
+        }
         return String.valueOf(truncatedDouble);
+    }
+
+    public static String getDoubleAsString(double value) {
+        return getDoubleAsString(value, 3);
     }
 
     public static String getDoubleAsString(String value) {

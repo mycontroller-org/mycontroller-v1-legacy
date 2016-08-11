@@ -81,7 +81,7 @@ public class ResourceOperationUtils {
         }
         switch (specialOperation.getOperationType()) {
             case TOGGLE:
-                revisedValue = McUtils.getDoubleAsString(Double.valueOf(orginalValue) > 0 ? 0.0 : 1.0);
+                revisedValue = McUtils.getDoubleAsString(Double.valueOf(orginalValue) > 0 ? 0.0 : 1.0, 0);
                 break;
             case INCREMENT:
                 revisedValue = McUtils.getDoubleAsString(Double.valueOf(orginalValue) + 1);
