@@ -58,6 +58,7 @@ public class DataBaseUtils {
     private static final String DB_USERNAME = "mycontroller";
     private static final String DB_PASSWORD = "mycontroller";
     private static final String DB_MIGRATION_LOCATION = "org/mycontroller/standalone/db/migration";
+    private static final int DB_MAX_FREE_CONNECTION = 3;
 
     //private static final String APP_VERSION = "0.0.3-alpha2-SNAPSHOT";
 
@@ -95,6 +96,8 @@ public class DataBaseUtils {
             connectionPooledSource.setMaxConnectionAgeMillis(McUtils.FIVE_MINUTES);
             // change the check-every milliseconds from 30 seconds to 60
             connectionPooledSource.setCheckConnectionsEveryMillis(McUtils.THREE_MINUTES);
+            // Maximum free connections you want to keep
+            connectionPooledSource.setMaxConnectionsFree(DB_MAX_FREE_CONNECTION);
             // for extra protection, enable the testing of connections
             // right before they are handed to the user
             connectionPooledSource.setTestBeforeGet(true);
@@ -160,14 +163,14 @@ public class DataBaseUtils {
     }
 
     public static void stop() {
-        if (connectionPooledSource != null && connectionPooledSource.isOpen()) {
+        if (connectionPooledSource != null && connectionPooledSource.isOpen(null)) {
             try {
                 connectionPooledSource.close();
                 _logger.debug("Database service stopped.");
                 isDbLoaded = false;
                 DaoUtils.setIsDaoInitialized(false);
-            } catch (SQLException sqlEx) {
-                _logger.error("Unable to stop database service, ", sqlEx);
+            } catch (IOException ioEx) {
+                _logger.error("Unable to stop database service, ", ioEx);
             }
         } else {
             _logger.debug("Database service not running.");
