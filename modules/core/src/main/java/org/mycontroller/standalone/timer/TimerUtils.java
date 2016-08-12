@@ -55,6 +55,8 @@ public class TimerUtils {
     public static Date sunriseTime;
     public static Date sunsetTime;
 
+    public static final SimpleDateFormat DATE_FORMAT_HHMMSS = new SimpleDateFormat("HH:mm:ss");
+
     public enum TIMER_TYPE {
         SIMPLE("Simple"),
         NORMAL("Normal"),
@@ -228,9 +230,26 @@ public class TimerUtils {
                             timer.getTriggerTime())))
                     .append("]");
         } else {
-            builder.append("], [Time offset: ")
-                    .append(new SimpleDateFormat("HH:mm:ss").format(new Date(
-                            timer.getTriggerTime())))
+            builder.append("], [Offset: ");
+            switch (timer.getTimerType()) {
+                case AFTER_SUNRISE:
+                case AFTER_SUNSET:
+                    builder.append("+");
+                    break;
+                case BEFORE_SUNRISE:
+                case BEFORE_SUNSET:
+                    builder.append("-");
+                    break;
+                default:
+                    break;
+
+            }
+            builder.append(DATE_FORMAT_HHMMSS.format(new Date(
+                    timer.getTriggerTime())))
+                    .append("], [Fires at: ")
+                    .append(new SimpleDateFormat(
+                            AppProperties.getInstance().getTimeFormat()).format(getSunriseSunsetCalendar(
+                            timer.getTimerType(), timer.getTriggerTime()).getTime()))
                     .append("]");
         }
 
@@ -299,7 +318,7 @@ public class TimerUtils {
 
     public static Long getTime(String time) {
         try {
-            return new SimpleDateFormat("HH:mm:ss").parse(time).getTime();
+            return DATE_FORMAT_HHMMSS.parse(time).getTime();
         } catch (ParseException ex) {
             _logger.error("exception, ", ex);
             return null;
@@ -428,6 +447,53 @@ public class TimerUtils {
                         operation.getOperationType().getText());
                 break;
         }
+    }
+
+    public static Calendar getSunriseSunsetCalendar(TIMER_TYPE timerType, Long triggerTime) {
+        if (triggerTime == null) {
+            return null;
+        }
+        Calendar timeCal = Calendar.getInstance();
+        Calendar sunssCal = Calendar.getInstance();
+        timeCal.setTimeInMillis(triggerTime);
+
+        switch (timerType) {
+            case CRON:
+            case SIMPLE:
+            case NORMAL:
+                break;
+            case BEFORE_SUNRISE:
+                sunssCal.setTime(TimerUtils.getSunriseTime());
+                sunssCal.add(Calendar.HOUR_OF_DAY, -(timeCal.get(Calendar.HOUR_OF_DAY)));
+                sunssCal.add(Calendar.MINUTE, -(timeCal.get(Calendar.MINUTE)));
+                sunssCal.add(Calendar.SECOND, -(timeCal.get(Calendar.SECOND)));
+                timeCal = sunssCal;
+                break;
+            case AFTER_SUNRISE:
+                sunssCal.setTime(TimerUtils.getSunriseTime());
+                sunssCal.add(Calendar.HOUR_OF_DAY, (timeCal.get(Calendar.HOUR_OF_DAY)));
+                sunssCal.add(Calendar.MINUTE, (timeCal.get(Calendar.MINUTE)));
+                sunssCal.add(Calendar.SECOND, (timeCal.get(Calendar.SECOND)));
+                timeCal = sunssCal;
+                break;
+            case BEFORE_SUNSET:
+                sunssCal.setTime(TimerUtils.getSunsetTime());
+                sunssCal.add(Calendar.HOUR_OF_DAY, -(timeCal.get(Calendar.HOUR_OF_DAY)));
+                sunssCal.add(Calendar.MINUTE, -(timeCal.get(Calendar.MINUTE)));
+                sunssCal.add(Calendar.SECOND, -(timeCal.get(Calendar.SECOND)));
+                timeCal = sunssCal;
+                break;
+            case AFTER_SUNSET:
+                sunssCal.setTime(TimerUtils.getSunsetTime());
+                sunssCal.add(Calendar.HOUR_OF_DAY, (timeCal.get(Calendar.HOUR_OF_DAY)));
+                sunssCal.add(Calendar.MINUTE, (timeCal.get(Calendar.MINUTE)));
+                sunssCal.add(Calendar.SECOND, (timeCal.get(Calendar.SECOND)));
+                timeCal = sunssCal;
+                break;
+            default:
+                break;
+        }
+        return timeCal;
     }
 
 }
