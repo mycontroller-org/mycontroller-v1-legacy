@@ -81,14 +81,14 @@ public class GatewayPhantIO extends Gateway {
     @JsonIgnore
     public void updateGateway(GatewayTable gatewayTable) {
         super.updateGateway(gatewayTable);
-        url = (String) gatewayTable.getProperties().get(KEY_URL);
-        trustHostType = TRUST_HOST_TYPE.fromString((String) gatewayTable.getProperties().get(
-                KEY_TRUST_HOST_TYPE));
-        publicKey = (String) gatewayTable.getProperties().get(KEY_PUBLIC_KEY);
-        privateKey = (String) gatewayTable.getProperties().get(KEY_PRIVATE_KEY);
-        pollFrequency = (Integer) gatewayTable.getProperties().get(KEY_POLL_FREQUENCY);
-        recordsLimit = (Long) gatewayTable.getProperties().get(KEY_RECORDS_LIMIT);
-        lastUpdate = (Long) gatewayTable.getProperties().get(KEY_LAST_UPDATE);
+        url = (String) gatewayTable.getProperty(KEY_URL);
+        trustHostType = TRUST_HOST_TYPE.fromString((String) gatewayTable.getProperty(KEY_TRUST_HOST_TYPE,
+                TRUST_HOST_TYPE.DEFAULT.getText()));
+        publicKey = (String) gatewayTable.getProperty(KEY_PUBLIC_KEY);
+        privateKey = (String) gatewayTable.getProperty(KEY_PRIVATE_KEY);
+        pollFrequency = (Integer) gatewayTable.getProperty(KEY_POLL_FREQUENCY, 120);
+        recordsLimit = (Long) gatewayTable.getProperty(KEY_RECORDS_LIMIT, 10L);
+        lastUpdate = (Long) gatewayTable.getProperty(KEY_LAST_UPDATE);
     }
 
     @Override
