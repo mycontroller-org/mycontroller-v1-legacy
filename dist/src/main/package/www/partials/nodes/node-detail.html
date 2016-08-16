@@ -92,10 +92,10 @@
           <div class="card-pf card-pf-accented" style="min-height:350px">
             <div class="card-pf-heading">
               <div ng-if="item.batteryLevel" class="dropdown card-pf-time-frame-filter">
-                <input bs-switch ng-change="updateChart()" ng-model="chartEnableMinMax" type="checkbox"
+                <input bs-switch ng-change="updateChart()" ng-model="$parent.chartEnableMinMax" type="checkbox"
                     switch-animate="true" switch-off-color="default" switch-on-color="primary" switch-size="" switch-label-width="70px"
                     switch-label="{{ 'MIN_MAX' | translate }}" ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}" >
-                <select pf-select ng-model="chartFromTimestamp" ng-change="updateChart()">
+                <select pf-select ng-model="$parent.chartFromTimestamp" ng-change="updateChart()">
                   <option value="" ng-hide="true"></option>
                   <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
                   <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
