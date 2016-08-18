@@ -138,15 +138,24 @@ public class SensorApi {
     public void sendpayload(SensorVariableJson sensorVariableJson) throws McInvalidException, McBadRequestException {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
+            sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
+            sendpayload(sensorVariable);
+        } else {
+            throw new McBadRequestException("null not allowed");
+        }
+    }
+
+    public void sendpayload(SensorVariable sensorVariable) throws McInvalidException, McBadRequestException {
+        if (sensorVariable != null) {
             switch (sensorVariable.getMetricType()) {
                 case BINARY:
-                    if (McUtils.getBoolean(sensorVariableJson.getValue() == null)) {
-                        throw new McInvalidException("Invalid value: " + sensorVariableJson.getValue());
+                    if (McUtils.getBoolean(sensorVariable.getValue() == null)) {
+                        throw new McInvalidException("Invalid value: " + sensorVariable.getValue());
                     }
                     break;
                 case DOUBLE:
-                    if (McUtils.getDouble(sensorVariableJson.getValue()) == null) {
-                        throw new McInvalidException("Invalid value: " + sensorVariableJson.getValue());
+                    if (McUtils.getDouble(sensorVariable.getValue()) == null) {
+                        throw new McInvalidException("Invalid value: " + sensorVariable.getValue());
                     }
                     break;
 
@@ -154,7 +163,7 @@ public class SensorApi {
                     break;
             }
 
-            sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
+            sensorVariable.setValue(String.valueOf(sensorVariable.getValue()));
             McObjectManager.getMcActionEngine().sendPayload(sensorVariable);
         } else {
             throw new McBadRequestException("null not allowed");
