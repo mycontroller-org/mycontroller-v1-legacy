@@ -135,17 +135,17 @@ public class SensorApi {
         return new SensorVariableJson(sensorVariable);
     }
 
-    public void sendpayload(SensorVariableJson sensorVariableJson) throws McInvalidException, McBadRequestException {
+    public void sendPayload(SensorVariableJson sensorVariableJson) throws McInvalidException, McBadRequestException {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
             sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
-            sendpayload(sensorVariable);
+            sendPayload(sensorVariable);
         } else {
             throw new McBadRequestException("null not allowed");
         }
     }
 
-    public void sendpayload(SensorVariable sensorVariable) throws McInvalidException, McBadRequestException {
+    public void sendPayload(SensorVariable sensorVariable) throws McInvalidException, McBadRequestException {
         if (sensorVariable != null) {
             switch (sensorVariable.getMetricType()) {
                 case BINARY:

@@ -244,6 +244,8 @@ public class McMessageEngine implements Runnable {
                         .timestamp(System.currentTimeMillis())
                         .aggregationType(AGGREGATION_TYPE.RAW)
                         .avg(McUtils.getDouble(mcMessage.getPayload()))
+                        .min(McUtils.getDouble(mcMessage.getPayload()))
+                        .max(McUtils.getDouble(mcMessage.getPayload()))
                         .samples(1)
                         .build();
 
@@ -840,6 +842,8 @@ public class McMessageEngine implements Runnable {
                                 .aggregationType(AGGREGATION_TYPE.RAW)
                                 .timestamp(sensorVariable.getTimestamp())
                                 .avg(McUtils.getDouble(sensorVariable.getValue()))
+                                .min(McUtils.getDouble(sensorVariable.getValue()))
+                                .max(McUtils.getDouble(sensorVariable.getValue()))
                                 .samples(1).build());
 
                 break;

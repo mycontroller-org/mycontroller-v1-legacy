@@ -59,6 +59,7 @@
   <logger level="INFO" name="org.mycontroller.standalone.gateway" />
   <logger level="INFO" name="org.mycontroller.standalone.gateway.ethernet" />
   <logger level="INFO" name="org.mycontroller.standalone.gateway.mqtt" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway.phantio" />
   <logger level="INFO" name="org.mycontroller.standalone.gateway.serialport" />
   <logger level="INFO" name="org.mycontroller.standalone.group" />
   <logger level="INFO" name="org.mycontroller.standalone.jobs" />

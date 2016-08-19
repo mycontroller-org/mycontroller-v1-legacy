@@ -175,12 +175,12 @@ public class SensorHandler extends AccessEngine {
 
     @PUT
     @Path("/updateVariable")
-    public Response sendpayload(SensorVariableJson sensorVariableJson) {
+    public Response sendPayload(SensorVariableJson sensorVariableJson) {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
             this.hasAccessSensor(sensorVariable.getSensor().getId());
             try {
-                sensorApi.sendpayload(sensorVariableJson);
+                sensorApi.sendPayload(sensorVariableJson);
                 return RestUtils.getResponse(Status.OK);
             } catch (NumberFormatException | McInvalidException | McBadRequestException ex) {
                 return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
