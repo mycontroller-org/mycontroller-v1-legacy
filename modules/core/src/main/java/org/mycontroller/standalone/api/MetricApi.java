@@ -205,6 +205,10 @@ public class MetricApi {
                 for (MetricsCounterTypeDevice metric : metrics) {
                     sum = sum + metric.getValue();
                 }
+                if ((bucketString.equals("mn") || bucketString.equals("h"))
+                        && metricConfig.getTimestampTo() > System.currentTimeMillis()) {
+                    break;
+                }
                 metricsFinal.add(MetricsCounterTypeDevice.builder()
                         .sensorVariable(metricConfig.getSensorVariable())
                         .value(sum)
@@ -434,7 +438,7 @@ public class MetricApi {
                 return "6h";
             } else if (duration >= McUtils.ONE_HOUR * 12) {
                 return "1h";
-            } else if (duration >= McUtils.ONE_HOUR) {
+            } else if (duration >= McUtils.ONE_HOUR * 6) {
                 return "5mn";
             } else if (duration >= McUtils.ONE_MINUTE) {
                 return "1mn";
