@@ -220,6 +220,15 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         }
     }
 
+    public void updateId(Tdao tdao, Tid tid) {
+        try {
+            Integer count = this.getDao().updateId(tdao, tid);
+            _logger.debug("Updated item:[{}, id:{}], Update count:{}", tdao, tid, count);
+        } catch (SQLException ex) {
+            _logger.error("unable to update item:[{}]", tdao, ex);
+        }
+    }
+
     //Update items with out where condition
     public void updateBulk(String setColName, Object setColValue) {
         this.updateBulk(setColName, setColValue, null, null);
@@ -320,6 +329,15 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
     public List<Tdao> getAll(String key, Object value) {
         try {
             return this.getDao().queryBuilder().where().eq(key, value).query();
+        } catch (SQLException ex) {
+            _logger.error("unable to get all items value:{}", value, ex);
+            return null;
+        }
+    }
+
+    public Tdao get(String key, Object value) {
+        try {
+            return this.getDao().queryBuilder().where().eq(key, value).queryForFirst();
         } catch (SQLException ex) {
             _logger.error("unable to get all items value:{}", value, ex);
             return null;

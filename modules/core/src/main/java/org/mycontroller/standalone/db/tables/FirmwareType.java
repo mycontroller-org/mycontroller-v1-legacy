@@ -47,8 +47,5 @@ public class FirmwareType {
     @DatabaseField(canBeNull = false, unique = true, columnName = KEY_NAME)
     private String name;
 
-    public Integer getId() {
-        return id;
-    }
-
+    private Integer newId;
 }

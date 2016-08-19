@@ -162,6 +162,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
     if($stateParams.id){
       FirmwaresFactory.getFirmwareType({"refId":$stateParams.id},function(response) {
         $scope.firmwareType = response;
+        $scope.firmwareType.newId = $scope.firmwareType.id;
       },function(error){
         displayRestError.display(error);
       });
@@ -171,6 +172,9 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
   //Save data
   $scope.save = function(){
     $scope.saveProgress = true;
+    if($scope.firmwareType.id === undefined){
+      $scope.firmwareType.id = $scope.firmwareType.newId;
+    }
     if($stateParams.id){
       FirmwaresFactory.updateFirmwareType($scope.firmwareType,function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
@@ -340,6 +344,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
     if($stateParams.id){
       FirmwaresFactory.getFirmwareVersion({"refId":$stateParams.id},function(response) {
         $scope.item = response;
+        $scope.item.newId = $scope.item.id;
       },function(error){
         displayRestError.display(error);
       });
@@ -349,6 +354,9 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
   //Save data
   $scope.save = function(){
     $scope.saveProgress = true;
+    if($scope.item.id === undefined){
+      $scope.item.id = $scope.item.newId;
+    }
     if($stateParams.id){
       FirmwaresFactory.updateFirmwareVersion($scope.item,function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));

@@ -33,6 +33,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -83,6 +84,20 @@ public class FirmwareHandler {
     @PUT
     @Path("/types")
     public Response updateFirmwareType(FirmwareType firmwareType) {
+        FirmwareType fType = DaoUtils.getFirmwareTypeDao().get(FirmwareType.KEY_NAME, firmwareType.getName());
+        if (fType != null && !fType.getId().equals(firmwareType.getId())) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Requested name already available!"));
+        }
+        if (!firmwareType.getId().equals(firmwareType.getNewId())) {
+            if (DaoUtils.getFirmwareTypeDao().getById(firmwareType.getNewId()) != null) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Requested type id already available!"));
+            }
+            Integer oldId = firmwareType.getId();
+            DaoUtils.getFirmwareTypeDao().updateId(firmwareType, firmwareType.getNewId());
+            DaoUtils.getFirmwareDao().updateBulk(Firmware.KEY_TYPE_ID, firmwareType.getNewId(),
+                    Firmware.KEY_TYPE_ID, oldId);
+            firmwareType.setId(firmwareType.getNewId());
+        }
         DaoUtils.getFirmwareTypeDao().update(firmwareType);
         return RestUtils.getResponse(Status.OK);
     }
@@ -135,6 +150,21 @@ public class FirmwareHandler {
     @PUT
     @Path("/versions")
     public Response updateFirmwareVersion(FirmwareVersion firmwareVersion) {
+        FirmwareVersion fVersion = DaoUtils.getFirmwareVersionDao().get(FirmwareVersion.KEY_VERSION,
+                firmwareVersion.getVersion());
+        if (fVersion != null && !fVersion.getId().equals(firmwareVersion.getId())) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError("Requested version already available!"));
+        }
+        if (!firmwareVersion.getId().equals(firmwareVersion.getNewId())) {
+            if (DaoUtils.getFirmwareVersionDao().getById(firmwareVersion.getNewId()) != null) {
+                return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(
+                        "Requested version id already available!"));
+            }
+            Integer oldId = firmwareVersion.getId();
+            DaoUtils.getFirmwareVersionDao().updateId(firmwareVersion, firmwareVersion.getNewId());
+            DaoUtils.getFirmwareDao().updateBulk(Firmware.KEY_VERSION_ID, firmwareVersion.getNewId(),
+                    Firmware.KEY_VERSION_ID, oldId);
+        }
         DaoUtils.getFirmwareVersionDao().update(firmwareVersion);
         return RestUtils.getResponse(Status.OK);
     }

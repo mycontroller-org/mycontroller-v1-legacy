@@ -41,6 +41,8 @@ public interface BaseDao<Tdao, Tid> {
 
     void update(Tdao tdao);
 
+    void updateId(Tdao tdao, Tid tid);
+
     void updateBulk(String setColName, Object setColValue);
 
     void updateBulk(String setColName, Object setColValue, String whereColName, Object whereColValue);
@@ -58,6 +60,8 @@ public interface BaseDao<Tdao, Tid> {
     Long countOf();
 
     List<Tdao> getAll(String key, Object value);
+
+    Tdao get(String key, Object value);
 
     long countOf(HashMap<String, List<Object>> columnValues);
 

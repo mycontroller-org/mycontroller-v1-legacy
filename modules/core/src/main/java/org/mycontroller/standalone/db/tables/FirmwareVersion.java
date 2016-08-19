@@ -47,4 +47,5 @@ public class FirmwareVersion {
     @DatabaseField(canBeNull = false, unique = true, columnName = KEY_VERSION)
     private String version;
 
+    private Integer newId;
 }
