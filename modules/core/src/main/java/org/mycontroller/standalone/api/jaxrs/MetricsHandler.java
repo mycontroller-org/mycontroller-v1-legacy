@@ -324,8 +324,9 @@ public class MetricsHandler extends AccessEngine {
                                 .target(TOPOLOGY_PREFIX_NODE + parentNode.getId())
                                 .build());
                     }
-                } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
-                        && node.getEui().equals(String.valueOf(MySensorsUtils.GATEWAY_ID))) {
+                } else if (node.getGatewayTable().getNetworkType() != NETWORK_TYPE.MY_SENSORS
+                        || (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
+                        && node.getEui().equals(String.valueOf(MySensorsUtils.GATEWAY_ID)))) {
                     relations.add(TopologyRelation.builder()
                             .source(source)
                             .target(TOPOLOGY_PREFIX_GATEWAY + node.getGatewayTable().getId())
