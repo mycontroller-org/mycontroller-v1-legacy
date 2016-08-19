@@ -435,9 +435,9 @@ public class MetricApi {
             } else if (duration >= McUtils.DAY * 7) {
                 return "1d";
             } else if (duration >= McUtils.DAY) {
-                return "6h";
+                return "30mn";
             } else if (duration >= McUtils.ONE_HOUR * 12) {
-                return "1h";
+                return "15mn";
             } else if (duration >= McUtils.ONE_HOUR * 6) {
                 return "5mn";
             } else if (duration >= McUtils.ONE_MINUTE) {
