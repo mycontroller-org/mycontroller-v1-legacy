@@ -54,6 +54,7 @@ public class DataBaseUtils {
     // this uses h2 by default but change to match your database
     // private static String databaseUrl = "jdbc:h2:mem:account";
     public static final String DB_URL_PREFIX = "jdbc:h2:file:";
+    public static final String DB_URL_SUFIX = ";MVCC=TRUE";
     private static String DB_URL = null;
     private static final String DB_USERNAME = "mycontroller";
     private static final String DB_PASSWORD = "mycontroller";
@@ -88,7 +89,7 @@ public class DataBaseUtils {
              */
 
             //Update Database url
-            DB_URL = DB_URL_PREFIX + AppProperties.getInstance().getDbH2DbLocation();
+            DB_URL = DB_URL_PREFIX + AppProperties.getInstance().getDbH2DbLocation() + DB_URL_SUFIX;
 
             // pooled connection source
             connectionPooledSource = new JdbcPooledConnectionSource(DB_URL, DB_USERNAME, DB_PASSWORD);
