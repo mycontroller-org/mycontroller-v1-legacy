@@ -502,7 +502,7 @@ public class MetricsHandler extends AccessEngine {
         return MetricsChartDataGroupNVD3.builder()
                 .metricsChartDataNVD3(preDoubleData)
                 .unit("%")
-                .timeFormat(getTimeFormat(timestampFrom))
+                .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
                 .id(nodeId)
                 .resourceName(new ResourceModel(RESOURCE_TYPE.NODE, nodeId).getResourceLessDetails())
                 .chartType(metricBattery.getType())
@@ -679,7 +679,7 @@ public class MetricsHandler extends AccessEngine {
                 .metricsChartDataNVD3(metricDataValues)
                 .unit(unit)
                 .unit2(unit2)
-                .timeFormat(getTimeFormat(timestampFrom))
+                .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
                 .chartType(chartType)
                 .chartInterpolate(chartInterpolate)
                 .build());
@@ -766,7 +766,7 @@ public class MetricsHandler extends AccessEngine {
                             .metricsChartDataNVD3(preDoubleData)
                             .id(sensorVariable.getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
-                            .timeFormat(getTimeFormat(timestampFrom))
+                            .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
                             .variableType(
                                     McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
                             .dataType(sensorVariable.getMetricType().getText())
@@ -796,7 +796,7 @@ public class MetricsHandler extends AccessEngine {
                             .metricsChartDataNVD3(preCounterData)
                             .id(sensorVariable.getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
-                            .timeFormat(getTimeFormat(timestampFrom))
+                            .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.COUNTER))
                             .variableType(
                                     McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
                             .dataType(sensorVariable.getMetricType().getText())
@@ -826,7 +826,7 @@ public class MetricsHandler extends AccessEngine {
                             .metricsChartDataNVD3(preBinaryData)
                             .id(sensorVariable.getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
-                            .timeFormat(getTimeFormat(timestampFrom))
+                            .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.BINARY))
                             .variableType(
                                     McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
                             .dataType(sensorVariable.getMetricType().getText())
@@ -845,19 +845,36 @@ public class MetricsHandler extends AccessEngine {
         return finalData;
     }
 
-    private String getTimeFormat(Long timestampFrom) {
+    private String getTimeFormat(Long timestampFrom, METRIC_TYPE metricType) {
         if (timestampFrom != null) {
             //subtract 5 seconds to get proper timeformat
             Long timeDifferance = System.currentTimeMillis() - timestampFrom - (McUtils.ONE_SECOND * 5);
-            if (timeDifferance > (McUtils.ONE_DAY * 365)) {
-                return AppProperties.getInstance().getDateFormat();
-            } else if (timeDifferance > McUtils.ONE_DAY * 7) {
-                return "MMM dd, " + AppProperties.getInstance().getTimeFormat();
-            } else if (timeDifferance > McUtils.ONE_DAY * 1) {
-                return "dd, " + AppProperties.getInstance().getTimeFormat();
-            } else {
-                return AppProperties.getInstance().getTimeFormat();
+            switch (metricType) {
+                case COUNTER:
+                    if (timeDifferance > (McUtils.ONE_DAY * 30)) {
+                        return "MMM, yyyy";
+                    } else if (timeDifferance > McUtils.ONE_DAY * 7) {
+                        return "MMM, dd";
+                    } else if (timeDifferance > McUtils.ONE_DAY * 1) {
+                        return "dd, EEE";
+                    } else {
+                        return AppProperties.getInstance().getTimeFormat();
+                    }
+                case BINARY:
+                case DOUBLE:
+                    if (timeDifferance > (McUtils.ONE_DAY * 365)) {
+                        return AppProperties.getInstance().getDateFormat();
+                    } else if (timeDifferance > McUtils.ONE_DAY * 7) {
+                        return "MMM dd, " + AppProperties.getInstance().getTimeFormat();
+                    } else if (timeDifferance > McUtils.ONE_DAY * 1) {
+                        return "dd, " + AppProperties.getInstance().getTimeFormat();
+                    } else {
+                        return AppProperties.getInstance().getTimeFormat();
+                    }
+                default:
+                    return AppProperties.getInstance().getTimeFormat();
             }
+
         } else {
             return AppProperties.getInstance().getDateFormat();
         }

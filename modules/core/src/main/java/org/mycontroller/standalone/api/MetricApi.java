@@ -170,12 +170,12 @@ public class MetricApi {
 
         switch (bucketString) {
             case "m":
-                calendarFrom.set(Calendar.DAY_OF_MONTH, 0);
-                calendarTo.set(Calendar.DAY_OF_MONTH, 0);
+                calendarFrom.set(Calendar.DAY_OF_MONTH, 1);
+                calendarTo.set(Calendar.DAY_OF_MONTH, 1);
                 incrementRef = Calendar.MONTH;
             case "d":
-                calendarFrom.set(Calendar.HOUR, 0);
-                calendarTo.set(Calendar.HOUR, 0);
+                calendarFrom.set(Calendar.HOUR_OF_DAY, 0);
+                calendarTo.set(Calendar.HOUR_OF_DAY, 0);
                 if (incrementRef == null) {
                     incrementRef = Calendar.DATE;
                 }
@@ -430,15 +430,15 @@ public class MetricApi {
                 return "1mn";
             }
         } else if (metricType == METRIC_TYPE.COUNTER) {
-            if (duration >= McUtils.DAY * 30) {
+            if (duration >= McUtils.DAY * 29) {
                 return "1m";
-            } else if (duration >= McUtils.DAY * 7) {
+            } else if (duration >= McUtils.DAY * 6) {
                 return "1d";
-            } else if (duration >= McUtils.DAY) {
+            } else if (duration >= McUtils.ONE_HOUR * 23) {
                 return "30mn";
-            } else if (duration >= McUtils.ONE_HOUR * 12) {
+            } else if (duration >= McUtils.ONE_HOUR * 11) {
                 return "15mn";
-            } else if (duration >= McUtils.ONE_HOUR * 6) {
+            } else if (duration >= McUtils.ONE_HOUR * 5) {
                 return "5mn";
             } else if (duration >= McUtils.ONE_MINUTE) {
                 return "1mn";

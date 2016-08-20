@@ -31,7 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageMonitorThread implements Runnable {
     private static boolean terminationIssued = false;
     private static boolean terminated = false;
-    public static final long MYS_MSG_DELAY = 20; // delay time to avoid collisions in network, in milliseconds
+    // delay time to avoid collisions on network,
+    // in milliseconds, Like my sensors network
+    public static final long MC_MSG_DELAY = 20;
 
     public static boolean isTerminationIssued() {
         return terminationIssued;
@@ -64,7 +66,7 @@ public class MessageMonitorThread implements Runnable {
                     McMessageUtils.sendToProviderBridge(rawMessage);
                     //A delay to avoid collisions on MySensor networks on continues messages
                     if (!RawMessageQueue.getInstance().isEmpty()) {
-                        Thread.sleep(MYS_MSG_DELAY);
+                        Thread.sleep(MC_MSG_DELAY);
                     }
                 } catch (Exception ex) {
                     _logger.error("Throws exception while processing!, [{}]", rawMessage, ex);

@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RawMessageQueue {
     private static RawMessageQueue _instance = new RawMessageQueue();
+    public static final int QUEUE_SIZE = 7000;
     private ArrayList<RawMessage> rawMessages;
     private int queueSize;
 
@@ -35,7 +36,7 @@ public class RawMessageQueue {
     }
 
     private RawMessageQueue() {
-        this(1000);
+        this(QUEUE_SIZE);
     }
 
     private RawMessageQueue(int queueSize) {
@@ -49,7 +50,8 @@ public class RawMessageQueue {
             rawMessages.add(rawMessage);
             _logger.debug("Added new message, Queue size:{}, Message:[{}]", rawMessages.size(), rawMessage);
         } else {
-            _logger.warn("Reached Maximun limit: {}, Unable to add new message. Dropped", rawMessages.size());
+            _logger.warn("Reached Maximun limit: {}, Unable to add new message. Dropped. {}",
+                    rawMessages.size(), rawMessage);
         }
     }
 
