@@ -441,6 +441,66 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
 
 });
 
+//Purge sensor variable controller
+myControllerModule.controller('SensorVariableControllerPurge', function ($scope, $stateParams, $state, SensorsFactory, TypesFactory,
+  mchelper, alertService, displayRestError, $filter, CommonServices, $uibModal) {
+  $scope.mchelper = mchelper;
+  $scope.cs = CommonServices;
+  $scope.sensorVariable = {};
+  $scope.item = {};
+  $scope.metricTypes = {};
+  $scope.unitTypes = {};
+  $scope.orgSvar = {};
+
+  if($stateParams.id){
+    SensorsFactory.getVariable({"id":$stateParams.id},function(response) {
+        $scope.sensorVariable = response;
+        $scope.orgSvar = angular.copy(response);
+        $scope.item.id = $scope.sensorVariable.id;
+        $scope.item.depthSearch = false;
+      },function(error){
+        displayRestError.display(error);
+      });
+  }
+
+  //GUI page settings
+  $scope.headerStringAdd = $filter('translate')('PURGE_SENSOR_VARIABLE');
+  $scope.cancelButtonState = "sensorsDetail({id: sensorVariable.sensorId})"; //Cancel button state
+  $scope.saveProgress = false;
+  $scope.saveButtonName = $filter('translate')('PURGE');
+  $scope.savingButtonName = $filter('translate')('PURGING');
+  $scope.saveButtonTooltip = $filter('translate')('PURGE_WARNING');
+
+
+  //Convert as display string
+  $scope.getDateTimeDisplayFormat = function (newDate) {
+    return $filter('date')(newDate, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
+  };
+
+  //Save data - here it's purge
+  $scope.save = function(){
+    //Update time range from/to
+    if($scope.purgeFrom){
+      $scope.item.timestampFrom = $scope.purgeFrom.getTime();
+    }
+    if($scope.purgeTo){
+      $scope.item.timestampTo = $scope.purgeTo.getTime();
+    }
+
+    $scope.saveProgress = true;
+    if($stateParams.id){
+      SensorsFactory.purgeVariable($scope.item,function(response) {
+        alertService.success($filter('translate')('PURGE_DONE_SUCCESSFULLY'));
+        $state.go("sensorsDetail", {"id": $scope.sensorVariable.sensorId});
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress = false;
+      });
+    }
+  }
+
+});
+
 //Edit sensor variable controller
 myControllerModule.controller('SensorVariableControllerEdit', function ($scope, $stateParams, $state, SensorsFactory, TypesFactory,
   mchelper, alertService, displayRestError, $filter, CommonServices, $uibModal) {

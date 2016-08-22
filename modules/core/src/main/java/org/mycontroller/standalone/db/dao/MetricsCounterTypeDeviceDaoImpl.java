@@ -46,10 +46,40 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
     public void deletePrevious(MetricsCounterTypeDevice metric) {
         try {
             DeleteBuilder<MetricsCounterTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().eq(MetricsCounterTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType())
-                    .and().le(MetricsCounterTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+            Where<MetricsCounterTypeDevice, Object> where = deleteBuilder.where();
+            int whereCount = 0;
 
-            int count = this.getDao().delete(deleteBuilder.prepare());
+            if (metric.getAggregationType() != null) {
+                where.eq(MetricsCounterTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType());
+                whereCount++;
+            }
+            if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
+                where.eq(MetricsCounterTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
+                whereCount++;
+            }
+            if (metric.getTimestamp() != null) {
+                where.le(MetricsCounterTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+                whereCount++;
+            }
+            if (metric.getTimestampFrom() != null) {
+                where.ge(MetricsCounterTypeDevice.KEY_TIMESTAMP, metric.getTimestampFrom());
+                whereCount++;
+            }
+            if (metric.getTimestampTo() != null) {
+                where.le(MetricsCounterTypeDevice.KEY_TIMESTAMP, metric.getTimestampTo());
+                whereCount++;
+            }
+            if (metric.getValue() != null) {
+                where.eq(MetricsCounterTypeDevice.KEY_VALUE, metric.getValue());
+                whereCount++;
+            }
+
+            if (whereCount > 0) {
+                where.and(whereCount);
+                deleteBuilder.setWhere(where);
+            }
+
+            int count = deleteBuilder.delete();
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric:[{}]", metric, ex);

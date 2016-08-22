@@ -37,6 +37,7 @@ import org.mycontroller.standalone.api.SensorApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
+import org.mycontroller.standalone.api.jaxrs.json.SensorVariablePurge;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -213,6 +214,18 @@ public class SensorHandler extends AccessEngine {
     public Response sendRawMessage(McMessage mcMessage) {
         try {
             sensorApi.sendRawMessage(mcMessage);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @RolesAllowed({ "Admin" })
+    @PUT
+    @Path("/purgeVariable")
+    public Response purgeVariable(SensorVariablePurge purge) {
+        try {
+            sensorApi.purgeSensorVariable(purge);
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

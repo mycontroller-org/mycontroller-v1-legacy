@@ -48,10 +48,47 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
     public void deletePrevious(MetricsDoubleTypeDevice metric) {
         try {
             DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType())
-                    .and().le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+            Where<MetricsDoubleTypeDevice, Object> where = deleteBuilder.where();
+            int whereCount = 0;
 
-            int count = this.getDao().delete(deleteBuilder.prepare());
+            if (metric.getAggregationType() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType());
+                whereCount++;
+            }
+            if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
+                whereCount++;
+            }
+            if (metric.getTimestamp() != null) {
+                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+                whereCount++;
+            }
+            if (metric.getTimestampFrom() != null) {
+                where.ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestampFrom());
+                whereCount++;
+            }
+            if (metric.getTimestampTo() != null) {
+                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestampTo());
+                whereCount++;
+            }
+            if (metric.getAvg() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_AVG, metric.getAvg());
+                whereCount++;
+            }
+            if (metric.getMin() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_MIN, metric.getMin());
+                whereCount++;
+            }
+            if (metric.getMax() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_MAX, metric.getMax());
+                whereCount++;
+            }
+
+            if (whereCount > 0) {
+                where.and(whereCount);
+                deleteBuilder.setWhere(where);
+            }
+            int count = deleteBuilder.delete();
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric:[{}]", metric, ex);

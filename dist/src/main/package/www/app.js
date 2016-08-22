@@ -155,6 +155,13 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       data: {
         requireLogin: true
       }
+    }).state('sensorVariablePurge', {
+      url:"/resources/sensorvariable/purge/:id",
+      templateUrl: "partials/sensors/sensor-variable-purge.html",
+      controller: "SensorVariableControllerPurge",
+      data: {
+        requireLogin: true
+      }
     }).state('sensorVariableEdit', {
       url:"/resources/sensorvariable/edit/:id",
       templateUrl: "partials/sensors/sensor-variable-edit.html",

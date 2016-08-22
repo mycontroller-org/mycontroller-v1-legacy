@@ -96,9 +96,14 @@
                 <!-- Sensor variables -->
                 <div ng-init="variable.showVariable = true">
                 <div ng-show="variable.showVariable" ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
-                  <a ui-sref="sensorVariableEdit({ id: variable.id })">
-                    <i uib-tooltip="{{ 'EDIT' | translate}}" tooltip-placement="left" class="pull-right fa fa-edit"></i>
+                <span class="pull-right">
+                  <a ui-sref="sensorVariablePurge({ id: variable.id })">
+                    <i uib-tooltip="{{ 'PURGE' | translate}}" tooltip-placement="left" class="fa fa-trash"></i>
                   </a>
+                  <a ui-sref="sensorVariableEdit({ id: variable.id })">
+                    <i uib-tooltip="{{ 'EDIT' | translate}}" tooltip-placement="left" class="fa fa-edit"></i>
+                  </a>
+                  </span>
                 </div>
               </div>
             </div>

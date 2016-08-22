@@ -24,10 +24,14 @@ import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
+import org.mycontroller.standalone.api.jaxrs.json.SensorVariablePurge;
 import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.SensorUtils;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Room;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -246,6 +250,47 @@ public class SensorApi {
             McMessageUtils.sendToProviderBridge(mcMessage);
         } else {
             throw new McBadRequestException("Required field is missing! " + mcMessage);
+        }
+    }
+
+    public void purgeSensorVariable(SensorVariablePurge purge) throws McBadRequestException {
+        _logger.debug("{}", purge);
+        if (purge.getId() == null) {
+            throw new McBadRequestException("Required field is missing! " + purge);
+        }
+        SensorVariable sVar = DaoUtils.getSensorVariableDao().getById(purge.getId());
+        if (sVar == null) {
+            throw new McBadRequestException("Selected sensor variable is not found! " + purge);
+        }
+
+        switch (sVar.getMetricType()) {
+            case BINARY:
+                MetricsBinaryTypeDevice metricBinary = new MetricsBinaryTypeDevice();
+                metricBinary.setSensorVariable(sVar);
+                metricBinary.setTimestampFrom(purge.getTimestampFrom());
+                metricBinary.setTimestampTo(purge.getTimestampTo());
+                metricBinary.setState(McUtils.getBoolean(purge.getValue()));
+                DaoUtils.getMetricsBinaryTypeDeviceDao().deletePrevious(metricBinary);
+                break;
+            case COUNTER:
+                MetricsCounterTypeDevice metricCounter = new MetricsCounterTypeDevice();
+                metricCounter.setSensorVariable(sVar);
+                metricCounter.setTimestampFrom(purge.getTimestampFrom());
+                metricCounter.setTimestampTo(purge.getTimestampTo());
+                metricCounter.setValue(McUtils.getLong(purge.getValue()));
+                DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
+                break;
+            case DOUBLE:
+                MetricsDoubleTypeDevice metricDouble = new MetricsDoubleTypeDevice();
+                metricDouble.setSensorVariable(sVar);
+                metricDouble.setTimestampFrom(purge.getTimestampFrom());
+                metricDouble.setTimestampTo(purge.getTimestampTo());
+                metricDouble.setAvg(McUtils.getDouble(purge.getValue()));
+                DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble);
+                break;
+            default:
+                //Nothing to do
+                break;
         }
     }
 }
