@@ -126,7 +126,8 @@ public class McMessageUtils {
         I_PONG("Pong"),
         I_REGISTRATION_REQUEST("Registration request"),
         I_REGISTRATION_RESPONSE("Registration response"),
-        I_DEBUG("Debug");
+        I_DEBUG("Debug"),
+        I_RSSI("RSSI");
         public static MESSAGE_TYPE_INTERNAL get(int id) {
             for (MESSAGE_TYPE_INTERNAL type : values()) {
                 if (type.ordinal() == id) {

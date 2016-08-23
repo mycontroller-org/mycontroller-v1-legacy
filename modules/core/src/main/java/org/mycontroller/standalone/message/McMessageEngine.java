@@ -406,6 +406,13 @@ public class McMessageEngine implements Runnable {
                 if (mcMessage.isTxMessage()) {
                     return;
                 }
+            case I_RSSI:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                node = getNode(mcMessage);
+                node.setRssi(mcMessage.getPayload());
+                updateNode(node);
             default:
                 _logger.warn(
                         "Internal Message[type:{},payload:{}], "

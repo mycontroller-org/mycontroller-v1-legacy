@@ -23,6 +23,7 @@ import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
+import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageException;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils.MYS_MESSAGE_TYPE;
@@ -59,11 +60,11 @@ public class MySensorsRawMessage {
         isTxMessage = rawMessage.isTxMessage();
         switch (McObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getType()) {
             case MQTT:
-                updateMQTTMessage(rawMessage.getSubData(), (String)rawMessage.getData());
+                updateMQTTMessage(rawMessage.getSubData(), (String) rawMessage.getData());
                 break;
             case ETHERNET:
             case SERIAL:
-                updateSerialMessage((String)rawMessage.getData());
+                updateSerialMessage((String) rawMessage.getData());
                 break;
             default:
                 _logger.warn(
@@ -197,7 +198,8 @@ public class MySensorsRawMessage {
                 return RawMessage.builder()
                         .gatewayId(gatewayId)
                         .data(getPayload())
-                        .subData(getMqttTopic()).isTxMessage(isTxMessage())
+                        .subData(getMqttTopic())
+                        .isTxMessage(isTxMessage())
                         .build();
             case ETHERNET:
             case SERIAL:
@@ -214,31 +216,47 @@ public class MySensorsRawMessage {
     public McMessage getMcMessage() {
         String sensorId = getChildSensorId() == 255 ? McMessage.SENSOR_BROADCAST_ID : getChildSensorIdString();
         String nodeId = getNodeId() == 255 ? McMessage.NODE_BROADCAST_ID : getNodeEui();
-        return McMessage.builder()
+        McMessage mcMessage = McMessage.builder()
                 .acknowledge(ack == 0)
                 .gatewayId(gatewayId)
                 .nodeEui(nodeId)
                 .sensorId(sensorId)
                 .networkType(NETWORK_TYPE.MY_SENSORS)
-                .type(MESSAGE_TYPE.fromString(MYS_MESSAGE_TYPE.get(messageType).getText()))
-                .subType(getMcMessageSubType())
                 .isTxMessage(isTxMessage())
                 .payload(getPayload()).build();
+        updateMcMessageTypeAndSubType(mcMessage);
+        return mcMessage;
     }
 
-    public String getMcMessageSubType() {
+    public void updateMcMessageTypeAndSubType(McMessage mcMessage) {
+        mcMessage.setType(MESSAGE_TYPE.fromString(MYS_MESSAGE_TYPE.get(messageType).getText()));
         switch (MYS_MESSAGE_TYPE.get(messageType)) {
             case C_PRESENTATION:
-                return MYS_MESSAGE_TYPE_PRESENTATION.get(subType).getText();
+                mcMessage.setSubType(MYS_MESSAGE_TYPE_PRESENTATION.get(subType).getText());
+                break;
             case C_INTERNAL:
-                return MYS_MESSAGE_TYPE_INTERNAL.get(subType).getText();
+                mcMessage.setSubType(MYS_MESSAGE_TYPE_INTERNAL.get(subType).getText());
+                break;
             case C_REQ:
+                mcMessage.setSubType(MYS_MESSAGE_TYPE_SET_REQ.get(subType).getText());
+                break;
             case C_SET:
-                return MYS_MESSAGE_TYPE_SET_REQ.get(subType).getText();
+                if (!isTxMessage()
+                        && MYS_MESSAGE_TYPE_SET_REQ.get(subType) == MYS_MESSAGE_TYPE_SET_REQ.V_VAR5
+                        && getPayload() != null
+                        && getPayload().startsWith("rssi:")) {
+                    mcMessage.setType(MESSAGE_TYPE.C_INTERNAL);
+                    mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_RSSI.getText());
+                    mcMessage.setPayload(getPayload().replace("rssi:", "").trim());
+                } else {
+                    mcMessage.setSubType(MYS_MESSAGE_TYPE_SET_REQ.get(subType).getText());
+                }
+                break;
             case C_STREAM:
-                return MYS_MESSAGE_TYPE_STREAM.get(subType).getText();
+                mcMessage.setSubType(MYS_MESSAGE_TYPE_STREAM.get(subType).getText());
+                break;
             default:
-                return null;
+                break;
         }
     }
 
