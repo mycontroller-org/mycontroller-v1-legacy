@@ -248,6 +248,7 @@ public class MySensorsRawMessage {
                     mcMessage.setType(MESSAGE_TYPE.C_INTERNAL);
                     mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_RSSI.getText());
                     mcMessage.setPayload(getPayload().replace("rssi:", "").trim());
+                    mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
                 } else {
                     mcMessage.setSubType(MYS_MESSAGE_TYPE_SET_REQ.get(subType).getText());
                 }
