@@ -72,49 +72,56 @@ public class MetricApi {
         MetricsDoubleTypeDevice metricConfig = MetricsDoubleTypeDevice.builder()
                 .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
                 .build();
-        Long tmpTimestampTo = timestampFrom + bucketDuration;
-        while (tmpTimestampTo < timestampTo) {
+        if (bucketDuration == -1) {
             metricConfig.setTimestampFrom(timestampFrom);
-            timestampFrom = tmpTimestampTo;
-            if (tmpTimestampTo > timestampTo) {
-                break;
-            }
-            metricConfig.setTimestampTo(tmpTimestampTo);
-            tmpTimestampTo += bucketDuration;
-            List<MetricsDoubleTypeDevice> metrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(metricConfig);
-            if (metrics != null && !metrics.isEmpty()) {
-                Double min = Double.MAX_VALUE;  //Possible positive highest double value
-                Double max = Double.NEGATIVE_INFINITY;//Take lowest double number, MIN_VALUE, doesn't work.
-                Double sum = 0D;
-                int samples = 0;
-                for (MetricsDoubleTypeDevice metric : metrics) {
-                    //calculate with max, min, avg and previous samples
-                    if (metric.getMax() == null) {
-                        metric.setMax(metric.getAvg());
-                        metric.setMin(metric.getAvg());
-                    }
-                    if (metric.getMax() > max) {
-                        max = metric.getMax();
-                    }
-
-                    if (metric.getMin() < min) {
-                        min = metric.getMin();
-                    }
-                    sum = sum + (metric.getAvg() * metric.getSamples());
-                    samples = samples + metric.getSamples();
-
+            metricConfig.setTimestampTo(timestampTo);
+            metricsFinal = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(metricConfig);
+        } else {
+            Long tmpTimestampTo = timestampFrom + bucketDuration;
+            while (tmpTimestampTo < timestampTo) {
+                metricConfig.setTimestampFrom(timestampFrom);
+                timestampFrom = tmpTimestampTo;
+                if (tmpTimestampTo > timestampTo) {
+                    break;
                 }
-                Double avg = sum / samples;
-                metricsFinal.add(MetricsDoubleTypeDevice.builder()
-                        .sensorVariable(metricConfig.getSensorVariable())
-                        .min(McUtils.round(min, McUtils.DOUBLE_ROUND))
-                        .max(McUtils.round(max, McUtils.DOUBLE_ROUND))
-                        .avg(McUtils.round(avg, McUtils.DOUBLE_ROUND))
-                        .samples(samples)
-                        .timestamp(metricConfig.getTimestampTo())
-                        .build());
+                metricConfig.setTimestampTo(tmpTimestampTo);
+                tmpTimestampTo += bucketDuration;
+                List<MetricsDoubleTypeDevice> metrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(metricConfig);
+                if (metrics != null && !metrics.isEmpty()) {
+                    Double min = Double.MAX_VALUE;  //Possible positive highest double value
+                    Double max = Double.NEGATIVE_INFINITY;//Take lowest double number, MIN_VALUE, doesn't work.
+                    Double sum = 0D;
+                    int samples = 0;
+                    for (MetricsDoubleTypeDevice metric : metrics) {
+                        //calculate with max, min, avg and previous samples
+                        if (metric.getMax() == null) {
+                            metric.setMax(metric.getAvg());
+                            metric.setMin(metric.getAvg());
+                        }
+                        if (metric.getMax() > max) {
+                            max = metric.getMax();
+                        }
+
+                        if (metric.getMin() < min) {
+                            min = metric.getMin();
+                        }
+                        sum = sum + (metric.getAvg() * metric.getSamples());
+                        samples = samples + metric.getSamples();
+
+                    }
+                    Double avg = sum / samples;
+                    metricsFinal.add(MetricsDoubleTypeDevice.builder()
+                            .sensorVariable(metricConfig.getSensorVariable())
+                            .min(McUtils.round(min, McUtils.DOUBLE_ROUND))
+                            .max(McUtils.round(max, McUtils.DOUBLE_ROUND))
+                            .avg(McUtils.round(avg, McUtils.DOUBLE_ROUND))
+                            .samples(samples)
+                            .timestamp(metricConfig.getTimestampTo())
+                            .build());
+                }
             }
         }
+
         return metricsFinal;
     }
 
@@ -155,66 +162,73 @@ public class MetricApi {
         MetricsCounterTypeDevice metricConfig = MetricsCounterTypeDevice.builder()
                 .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
                 .build();
-        Calendar calendarFrom = Calendar.getInstance();
-        Calendar calendarTo = Calendar.getInstance();
-        calendarFrom.setTime(new Date(timestampFrom));
-        calendarTo.setTime(new Date(timestampTo));
-        String[] bucket = bucketDurationString.trim().split("(?<=\\d)(?=\\D)");
-        if (bucket.length != 2) {
-            _logger.warn("Invalid bucketDuration string: {}, result:{}", bucketDurationString, bucket);
-            return metricsFinal;
-        }
-        Integer increment = McUtils.getInteger(bucket[0]);
-        Integer incrementRef = null;
-        String bucketString = bucket[1].toLowerCase();
+        if (bucketDurationString.equalsIgnoreCase("raw")) {
+            metricConfig.setTimestampFrom(timestampFrom);
+            metricConfig.setTimestampTo(timestampTo);
+            metricsFinal = DaoUtils.getMetricsCounterTypeDeviceDao().getAll(metricConfig);
+        } else {
+            Calendar calendarFrom = Calendar.getInstance();
+            Calendar calendarTo = Calendar.getInstance();
+            calendarFrom.setTime(new Date(timestampFrom));
+            calendarTo.setTime(new Date(timestampTo));
+            String[] bucket = bucketDurationString.trim().split("(?<=\\d)(?=\\D)");
+            if (bucket.length != 2) {
+                _logger.warn("Invalid bucketDuration string: {}, result:{}", bucketDurationString, bucket);
+                return metricsFinal;
+            }
+            Integer increment = McUtils.getInteger(bucket[0]);
+            Integer incrementRef = null;
+            String bucketString = bucket[1].toLowerCase();
 
-        switch (bucketString) {
-            case "m":
-                calendarFrom.set(Calendar.DAY_OF_MONTH, 1);
-                calendarTo.set(Calendar.DAY_OF_MONTH, 1);
-                incrementRef = Calendar.MONTH;
-            case "d":
-                calendarFrom.set(Calendar.HOUR_OF_DAY, 0);
-                calendarTo.set(Calendar.HOUR_OF_DAY, 0);
-                if (incrementRef == null) {
-                    incrementRef = Calendar.DATE;
+            switch (bucketString) {
+                case "m":
+                    calendarFrom.set(Calendar.DAY_OF_MONTH, 1);
+                    calendarTo.set(Calendar.DAY_OF_MONTH, 1);
+                    incrementRef = Calendar.MONTH;
+                case "d":
+                    calendarFrom.set(Calendar.HOUR_OF_DAY, 0);
+                    calendarTo.set(Calendar.HOUR_OF_DAY, 0);
+                    if (incrementRef == null) {
+                        incrementRef = Calendar.DATE;
+                    }
+                case "h":
+                    calendarFrom.set(Calendar.MINUTE, 0);
+                    calendarTo.set(Calendar.MINUTE, 0);
+                    if (incrementRef == null) {
+                        incrementRef = Calendar.HOUR;
+                    }
+                case "mn":
+                    calendarFrom.set(Calendar.MILLISECOND, 0);
+                    calendarTo.set(Calendar.MILLISECOND, 0);
+                    calendarFrom.set(Calendar.SECOND, 0);
+                    calendarTo.set(Calendar.SECOND, 0);
+                    if (incrementRef == null) {
+                        incrementRef = Calendar.MINUTE;
+                    }
+            }
+            while (calendarFrom.before(calendarTo) || calendarFrom.equals(calendarTo)) {
+                metricConfig.setTimestampFrom(calendarFrom.getTimeInMillis());
+                calendarFrom.add(incrementRef, increment);
+                metricConfig.setTimestampTo(calendarFrom.getTimeInMillis());
+                List<MetricsCounterTypeDevice> metrics = DaoUtils.getMetricsCounterTypeDeviceDao()
+                        .getAll(metricConfig);
+                if (metrics != null && !metrics.isEmpty()) {
+                    Long sum = 0L;
+                    int samples = 0;
+                    for (MetricsCounterTypeDevice metric : metrics) {
+                        sum = sum + metric.getValue();
+                    }
+                    if ((bucketString.equals("mn") || bucketString.equals("h"))
+                            && metricConfig.getTimestampTo() > System.currentTimeMillis()) {
+                        break;
+                    }
+                    metricsFinal.add(MetricsCounterTypeDevice.builder()
+                            .sensorVariable(metricConfig.getSensorVariable())
+                            .value(sum)
+                            .samples(samples)
+                            .timestamp(metricConfig.getTimestampTo() - 1L)//Remove one millisecond from actual timestamp
+                            .build());
                 }
-            case "h":
-                calendarFrom.set(Calendar.MINUTE, 0);
-                calendarTo.set(Calendar.MINUTE, 0);
-                if (incrementRef == null) {
-                    incrementRef = Calendar.HOUR;
-                }
-            case "mn":
-                calendarFrom.set(Calendar.MILLISECOND, 0);
-                calendarTo.set(Calendar.MILLISECOND, 0);
-                calendarFrom.set(Calendar.SECOND, 0);
-                calendarTo.set(Calendar.SECOND, 0);
-                if (incrementRef == null) {
-                    incrementRef = Calendar.MINUTE;
-                }
-        }
-        while (calendarFrom.before(calendarTo) || calendarFrom.equals(calendarTo)) {
-            metricConfig.setTimestampFrom(calendarFrom.getTimeInMillis());
-            calendarFrom.add(incrementRef, increment);
-            metricConfig.setTimestampTo(calendarFrom.getTimeInMillis());
-            List<MetricsCounterTypeDevice> metrics = DaoUtils.getMetricsCounterTypeDeviceDao().getAll(metricConfig);
-            if (metrics != null && !metrics.isEmpty()) {
-                Long sum = 0L;
-                int samples = 0;
-                for (MetricsCounterTypeDevice metric : metrics) {
-                    sum = sum + metric.getValue();
-                }
-                if ((bucketString.equals("mn") || bucketString.equals("h"))
-                        && metricConfig.getTimestampTo() > System.currentTimeMillis()) {
-                    break;
-                }
-                metricsFinal.add(MetricsCounterTypeDevice.builder()
-                        .sensorVariable(metricConfig.getSensorVariable())
-                        .value(sum)
-                        .samples(samples)
-                        .timestamp(metricConfig.getTimestampTo() - 1L)//Remove one millisecond from actual timestamp
-                        .build());
             }
         }
         return metricsFinal;
@@ -243,47 +257,53 @@ public class MetricApi {
         MetricsBatteryUsage metricConfig = MetricsBatteryUsage.builder()
                 .node(Node.builder().id(nodeId).build())
                 .build();
-        Long tmpTimestampTo = timestampFrom + bucketDuration;
-        while (tmpTimestampTo < timestampTo) {
+        if (bucketDuration == -1) {
             metricConfig.setTimestampFrom(timestampFrom);
-            timestampFrom = tmpTimestampTo;
-            if (tmpTimestampTo > timestampTo) {
-                break;
-            }
-            metricConfig.setTimestampTo(tmpTimestampTo);
-            tmpTimestampTo += bucketDuration;
-            List<MetricsBatteryUsage> metrics = DaoUtils.getMetricsBatteryUsageDao().getAll(metricConfig);
-            if (metrics != null && !metrics.isEmpty()) {
-                Double min = Double.MAX_VALUE;  //Possible positive highest double value
-                Double max = Double.NEGATIVE_INFINITY;//Take lowest double number, MIN_VALUE, doesn't work.
-                Double sum = 0D;
-                int samples = 0;
-                for (MetricsBatteryUsage metric : metrics) {
-                    //calculate with max, min, avg and previous samples
-                    if (metric.getMax() == null) {
-                        metric.setMax(metric.getAvg());
-                        metric.setMin(metric.getAvg());
-                    }
-                    if (metric.getMax() > max) {
-                        max = metric.getMax();
-                    }
-
-                    if (metric.getMin() < min) {
-                        min = metric.getMin();
-                    }
-                    sum = sum + (metric.getAvg() * metric.getSamples());
-                    samples = samples + metric.getSamples();
-
+            metricConfig.setTimestampTo(timestampTo);
+            metricsFinal = DaoUtils.getMetricsBatteryUsageDao().getAll(metricConfig);
+        } else {
+            Long tmpTimestampTo = timestampFrom + bucketDuration;
+            while (tmpTimestampTo < timestampTo) {
+                metricConfig.setTimestampFrom(timestampFrom);
+                timestampFrom = tmpTimestampTo;
+                if (tmpTimestampTo > timestampTo) {
+                    break;
                 }
-                Double avg = sum / samples;
-                metricsFinal.add(MetricsBatteryUsage.builder()
-                        .node(metricConfig.getNode())
-                        .min(McUtils.round(min, McUtils.DOUBLE_ROUND))
-                        .max(McUtils.round(max, McUtils.DOUBLE_ROUND))
-                        .avg(McUtils.round(avg, McUtils.DOUBLE_ROUND))
-                        .samples(samples)
-                        .timestamp(metricConfig.getTimestampTo())
-                        .build());
+                metricConfig.setTimestampTo(tmpTimestampTo);
+                tmpTimestampTo += bucketDuration;
+                List<MetricsBatteryUsage> metrics = DaoUtils.getMetricsBatteryUsageDao().getAll(metricConfig);
+                if (metrics != null && !metrics.isEmpty()) {
+                    Double min = Double.MAX_VALUE;  //Possible positive highest double value
+                    Double max = Double.NEGATIVE_INFINITY;//Take lowest double number, MIN_VALUE, doesn't work.
+                    Double sum = 0D;
+                    int samples = 0;
+                    for (MetricsBatteryUsage metric : metrics) {
+                        //calculate with max, min, avg and previous samples
+                        if (metric.getMax() == null) {
+                            metric.setMax(metric.getAvg());
+                            metric.setMin(metric.getAvg());
+                        }
+                        if (metric.getMax() > max) {
+                            max = metric.getMax();
+                        }
+
+                        if (metric.getMin() < min) {
+                            min = metric.getMin();
+                        }
+                        sum = sum + (metric.getAvg() * metric.getSamples());
+                        samples = samples + metric.getSamples();
+
+                    }
+                    Double avg = sum / samples;
+                    metricsFinal.add(MetricsBatteryUsage.builder()
+                            .node(metricConfig.getNode())
+                            .min(McUtils.round(min, McUtils.DOUBLE_ROUND))
+                            .max(McUtils.round(max, McUtils.DOUBLE_ROUND))
+                            .avg(McUtils.round(avg, McUtils.DOUBLE_ROUND))
+                            .samples(samples)
+                            .timestamp(metricConfig.getTimestampTo())
+                            .build());
+                }
             }
         }
         return metricsFinal;
@@ -391,6 +411,8 @@ public class MetricApi {
             return McUtils.getLong(bucketDuration.replace("d", "")) * McUtils.ONE_DAY;
         } else if (bucketDuration.endsWith("m")) {
             return McUtils.getLong(bucketDuration.replace("m", "")) * McUtils.ONE_DAY * 30;
+        } else if (bucketDuration.equalsIgnoreCase("raw")) {
+            return -1L;
         }
         return McUtils.ONE_MINUTE;
     }
@@ -426,8 +448,10 @@ public class MetricApi {
                 return "1h";
             } else if (duration > metricSettings.getRetentionOneMinute()) {
                 return "5mn";
-            } else if (duration > metricSettings.getRetentionRawData()) {
+            } else if (duration >= McUtils.ONE_MINUTE * 6) {
                 return "1mn";
+            } else {
+                return "raw";
             }
         } else if (metricType == METRIC_TYPE.COUNTER) {
             if (duration >= McUtils.DAY * 29) {
@@ -440,8 +464,10 @@ public class MetricApi {
                 return "15mn";
             } else if (duration >= McUtils.ONE_HOUR * 5) {
                 return "5mn";
-            } else if (duration >= McUtils.ONE_MINUTE) {
+            } else if (duration >= McUtils.ONE_MINUTE * 6) {
                 return "1mn";
+            } else {
+                return "raw";
             }
         }
         return "1mn";

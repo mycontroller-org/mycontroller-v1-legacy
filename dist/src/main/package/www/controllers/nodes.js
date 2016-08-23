@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter) {
+$scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter, $interval) {
 
   //GUI page settings
   $scope.headerStringList = $filter('translate')('NODES_DETAIL');
@@ -40,14 +40,21 @@ $scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonS
     $scope.query.gatewayId = $stateParams.gatewayId;
   }
 
-  //get all Nodes
+  $scope.isRunning = false;
+  //get all Items
   $scope.getAllItems = function(){
+    if($scope.isRunning){
+      return;
+    }
+    $scope.isRunning = true;
     NodesFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
+      $scope.isRunning = false;
     },function(error){
       displayRestError.display(error);
+      $scope.isRunning = false;
     });
   }
 
@@ -258,6 +265,14 @@ $scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonS
       //console.log('Modal dismissed at: ' + new Date());
     }
   };
+
+ // global page refresh
+  var promise = $interval($scope.getAllItems, mchelper.cfg.globalPageRefreshTime);
+
+  // cancel interval on scope destroy
+  $scope.$on('$destroy', function(){
+    $interval.cancel(promise);
+  });
 
 });
 

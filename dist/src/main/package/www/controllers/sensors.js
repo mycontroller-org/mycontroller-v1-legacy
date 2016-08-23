@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsController', function(alertService,
-$scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams, $filter) {
+$scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams, $filter, $interval) {
 
   //GUI page settings
   $scope.headerStringList = $filter('translate')('SENSORS_DETAIL');
@@ -41,14 +41,21 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
     $scope.query.nodeId = $stateParams.nodeId;
   }
 
+  $scope.isRunning = false;
   //get all Sensors
   $scope.getAllItems = function(){
+    if($scope.isRunning){
+      return;
+    }
+    $scope.isRunning = true;
     SensorsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
+      $scope.isRunning = false;
     },function(error){
       displayRestError.display(error);
+      $scope.isRunning = false;
     });
   }
 
@@ -201,6 +208,14 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
     });
     return types.join(', ');
   }
+
+ // global page refresh
+  var promise = $interval($scope.getAllItems, mchelper.cfg.globalPageRefreshTime);
+
+  // cancel interval on scope destroy
+  $scope.$on('$destroy', function(){
+    $interval.cancel(promise);
+  });
 
 });
 
@@ -427,7 +442,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
 
   //Update data for N seconds once
   var updatePageData = function(){
-    //$scope.item = SensorsFactory.get({"id":$stateParams.id});
+    $scope.item = SensorsFactory.get({"id":$stateParams.id}); //This line introduces flickering on refresh
     $scope.updateChart();
   }
 
