@@ -54,7 +54,7 @@ public class DataBaseUtils {
     // this uses h2 by default but change to match your database
     // private static String databaseUrl = "jdbc:h2:mem:account";
     public static final String DB_URL_PREFIX = "jdbc:h2:file:";
-    public static final String DB_URL_SUFIX = ";MVCC=TRUE";
+    public static final String DB_URL_SUFIX = "";
     private static String DB_URL = null;
     private static final String DB_USERNAME = "mycontroller";
     private static final String DB_PASSWORD = "mycontroller";
@@ -164,13 +164,13 @@ public class DataBaseUtils {
     }
 
     public static void stop() {
-        if (connectionPooledSource != null && connectionPooledSource.isOpen(null)) {
+        if (connectionPooledSource != null && connectionPooledSource.isOpen()) {
             try {
                 connectionPooledSource.close();
                 _logger.debug("Database service stopped.");
                 isDbLoaded = false;
                 DaoUtils.setIsDaoInitialized(false);
-            } catch (IOException ioEx) {
+            } catch (SQLException ioEx) {
                 _logger.error("Unable to stop database service, ", ioEx);
             }
         } else {
