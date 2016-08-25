@@ -413,12 +413,12 @@ public class McMessageEngine implements Runnable {
                 node = getNode(mcMessage);
                 node.setRssi(mcMessage.getPayload());
                 updateNode(node);
+                return;
             default:
                 _logger.warn(
-                        "Internal Message[type:{},payload:{}], "
+                        "Internal Message[type:{}, {}], "
                                 + "This type may not be supported (or) not implemented yet",
-                        MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()),
-                        mcMessage.getPayload());
+                        MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()), mcMessage);
                 break;
         }
     }
