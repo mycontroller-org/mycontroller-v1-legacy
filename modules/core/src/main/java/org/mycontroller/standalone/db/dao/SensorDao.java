@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -74,5 +75,7 @@ public interface SensorDao extends BaseDao<Sensor, Integer> {
     long countOf(Integer nodeId);
 
     List<Integer> getSensorIdsByNodeIds(List<Integer> ids);
+
+    List<Sensor> getAll(Query query, String filter, AllowedResources allowedResources);
 
 }

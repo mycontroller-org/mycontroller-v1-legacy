@@ -40,6 +40,7 @@ public class RawMessage {
     private String subData;
     private boolean isTxMessage = false;
     private NETWORK_TYPE networkType;
+    private Long timestamp;
 
     public NETWORK_TYPE getNetworkType() {
         if (networkType == null) {

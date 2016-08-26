@@ -17,10 +17,12 @@
 package org.mycontroller.standalone.auth;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.SecurityContext;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
 
@@ -68,6 +70,23 @@ public class AuthUtils {
                 }
             }
             return null;
+        }
+    }
+
+    public static void updateQueryFilter(Map<String, Object> filters, RESOURCE_TYPE rType,
+            AllowedResources allowedResources) {
+        if (allowedResources != null) {
+            filters.put(AllowedResources.KEY_ALLOWED_RESOURCES, allowedResources);
+            filters.put(AllowedResources.KEY_ALLOWED_RESOURCE_TYPE, rType);
+        }
+    }
+
+    public static void updateQueryFilter(SecurityContext securityContext, Map<String, Object> filters,
+            RESOURCE_TYPE rType) {
+        if (!AuthUtils.isSuperAdmin(securityContext)) {
+            updateQueryFilter(filters, rType, AuthUtils.getUser(securityContext)
+                    .getAllowedResources());
+            filters.put(AllowedResources.KEY_ALLOWED_RESOURCE_TYPE, rType);
         }
     }
 

@@ -20,8 +20,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DbException;
 import org.mycontroller.standalone.db.tables.Node;
@@ -294,7 +297,8 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return super.getQueryResponse(query, Sensor.KEY_ID);
+            query.setIdColumn(Sensor.KEY_ID);
+            return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
@@ -348,5 +352,36 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             _logger.error("unable to get, roomId:{}, sensorName:{}", roomId, sensorName, ex);
         }
         return null;
+    }
+
+    public List<Sensor> getAll(Query query, String filter, AllowedResources allowedResources) {
+        AuthUtils.updateQueryFilter(query.getFilters(), RESOURCE_TYPE.SENSOR, allowedResources);
+        if (query.getFilters().get(Sensor.KEY_NODE_ID) == null) {
+            query.setAndQuery(false);
+            if (filter != null) {
+                query.getFilters().put(Sensor.KEY_SENSOR_ID, filter);
+                List<Node> nodes = DaoUtils.getNodeDao().getAll(query, filter, null);
+                if (nodes.size() > 0) {
+                    ArrayList<Integer> nodeIds = new ArrayList<Integer>();
+                    for (Node node : nodes) {
+                        nodeIds.add(node.getId());
+                    }
+                    query.getFilters().put(Sensor.KEY_NODE_ID, nodes);
+                }
+                query.getFilters().put(Sensor.KEY_SENSOR_ID, filter);
+                query.getFilters().put(Sensor.KEY_NAME, filter);
+                MESSAGE_TYPE_PRESENTATION type = MESSAGE_TYPE_PRESENTATION.fromString(filter);
+                if (type != null) {
+                    query.getFilters().put(Sensor.KEY_TYPE, type);
+                }
+            }
+        }
+        //Remove keys
+        query.getFilters().remove(Node.KEY_GATEWAY_ID);
+
+        query.setIdColumn(Sensor.KEY_ID);
+        query.setOrderBy(Sensor.KEY_SENSOR_ID);
+        query.setOrder(Query.ORDER_ASC);
+        return super.getAllData(query);
     }
 }

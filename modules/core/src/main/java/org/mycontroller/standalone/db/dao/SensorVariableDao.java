@@ -18,6 +18,8 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
+import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 
@@ -40,4 +42,6 @@ public interface SensorVariableDao extends BaseDao<SensorVariable, Integer> {
     SensorVariable get(Integer sensorRefId, MESSAGE_TYPE_SET_REQ variableType);
 
     List<Integer> getSensorVariableIds(Integer sId);
+
+    List<SensorVariable> getAll(Query query, String filter, AllowedResources allowedResources);
 }

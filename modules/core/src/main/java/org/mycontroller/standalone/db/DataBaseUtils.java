@@ -164,13 +164,13 @@ public class DataBaseUtils {
     }
 
     public static void stop() {
-        if (connectionPooledSource != null && connectionPooledSource.isOpen()) {
+        if (connectionPooledSource != null && connectionPooledSource.isOpen(null)) {
             try {
                 connectionPooledSource.close();
                 _logger.debug("Database service stopped.");
                 isDbLoaded = false;
                 DaoUtils.setIsDaoInitialized(false);
-            } catch (SQLException ioEx) {
+            } catch (IOException ioEx) {
                 _logger.error("Unable to stop database service, ", ioEx);
             }
         } else {

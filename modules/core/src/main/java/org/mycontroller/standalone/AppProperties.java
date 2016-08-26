@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
@@ -438,6 +439,8 @@ public class AppProperties {
         backupSettings = BackupSettings.get();
         pushbulletSettings = PushbulletSettings.get();
         mqttBrokerSettings = MqttBrokerSettings.get();
+        MessageMonitorThread.updateTxMessageProcessingDelay(
+                controllerSettings.getTxMessageProcessingDelay());
     }
 
     private boolean is12HoursSelected() {

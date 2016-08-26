@@ -33,11 +33,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.api.NodeApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
@@ -81,10 +83,8 @@ public class NodeHandler extends AccessEngine {
         filters.put(Query.PAGE_LIMIT, pageLimit);
         filters.put(Query.PAGE, page);
 
-        //Add id filter if he is non-admin
-        if (!isSuperAdmin()) {
-            filters.put(Node.KEY_ID, getUser().getAllowedResources().getNodeIds());
-        }
+        //Update query filter if he is non-admin
+        AuthUtils.updateQueryFilter(securityContext, filters, RESOURCE_TYPE.NODE);
 
         return RestUtils.getResponse(Status.OK, nodeApi.getAll(filters));
     }

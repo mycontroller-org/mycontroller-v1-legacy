@@ -27,6 +27,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
@@ -525,7 +526,12 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getResources(User user, String resourceType) {
+    public static ArrayList<TypesIdNameMapper> getResources(User user, String resourceType, String filter, long page,
+            long pageLimit) {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         if (resourceType == null) {
             return null;
         }
@@ -536,9 +542,9 @@ public class TypesUtils {
             case GATEWAY:
                 List<GatewayTable> gateways = null;
                 if (AuthUtils.isSuperAdmin(user)) {
-                    gateways = DaoUtils.getGatewayDao().getAll();
+                    gateways = DaoUtils.getGatewayDao().getAll(query, filter, null);
                 } else {
-                    gateways = DaoUtils.getGatewayDao().getAll(user.getAllowedResources().getGatewayIds());
+                    gateways = DaoUtils.getGatewayDao().getAll(query, filter, user.getAllowedResources());
                 }
                 for (GatewayTable type : gateways) {
                     typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getId()).displayName(type.getName())
@@ -548,9 +554,9 @@ public class TypesUtils {
             case NODE:
                 List<Node> nodes = null;
                 if (AuthUtils.isSuperAdmin(user)) {
-                    nodes = DaoUtils.getNodeDao().getAll();
+                    nodes = DaoUtils.getNodeDao().getAll(query, filter, null);
                 } else {
-                    nodes = DaoUtils.getNodeDao().getAll(user.getAllowedResources().getNodeIds());
+                    nodes = DaoUtils.getNodeDao().getAll(query, filter, user.getAllowedResources());
                 }
                 for (Node type : nodes) {
                     builder.setLength(0);
@@ -563,9 +569,9 @@ public class TypesUtils {
             case SENSOR:
                 List<Sensor> sensors = null;
                 if (AuthUtils.isSuperAdmin(user)) {
-                    sensors = DaoUtils.getSensorDao().getAll();
+                    sensors = DaoUtils.getSensorDao().getAll(query, filter, null);
                 } else {
-                    sensors = DaoUtils.getSensorDao().getAll(user.getAllowedResources().getSensorIds());
+                    sensors = DaoUtils.getSensorDao().getAll(query, filter, user.getAllowedResources());
                 }
                 for (Sensor type : sensors) {
                     builder.setLength(0);
@@ -579,10 +585,10 @@ public class TypesUtils {
             case SENSOR_VARIABLE:
                 List<SensorVariable> sensorVariables = null;
                 if (AuthUtils.isSuperAdmin(user)) {
-                    sensorVariables = DaoUtils.getSensorVariableDao().getAll();
+                    sensorVariables = DaoUtils.getSensorVariableDao().getAll(query, filter, null);
                 } else {
-                    sensorVariables = DaoUtils.getSensorVariableDao().getAll(
-                            user.getAllowedResources().getSensorVariableIds());
+                    sensorVariables = DaoUtils.getSensorVariableDao()
+                            .getAll(query, filter, user.getAllowedResources());
                 }
                 for (SensorVariable type : sensorVariables) {
                     builder.setLength(0);
@@ -604,12 +610,16 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getGateways(User user) {
+    public static ArrayList<TypesIdNameMapper> getGateways(User user, String filter, long page, long pageLimit) {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         List<GatewayTable> gateways = null;
         if (AuthUtils.isSuperAdmin(user)) {
-            gateways = DaoUtils.getGatewayDao().getAll();
+            gateways = DaoUtils.getGatewayDao().getAll(query, filter, null);
         } else {
-            gateways = DaoUtils.getGatewayDao().getAll(user.getAllowedResources().getGatewayIds());
+            gateways = DaoUtils.getGatewayDao().getAll(query, filter, user.getAllowedResources());
         }
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (GatewayTable gatewayTable : gateways) {
@@ -620,16 +630,22 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getNodes(User user, Integer gatewayId) {
+    public static ArrayList<TypesIdNameMapper> getNodes(User user, Integer gatewayId, String filter, long page,
+            long pageLimit) {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         List<Node> nodes = null;
         if (AuthUtils.isSuperAdmin(user)) {
             if (gatewayId != null) {
-                nodes = DaoUtils.getNodeDao().getAllByGatewayId(gatewayId);
+                query.getFilters().put(Node.KEY_GATEWAY_ID, gatewayId);
+                nodes = DaoUtils.getNodeDao().getAll(query, filter, null);
             } else {
-                nodes = DaoUtils.getNodeDao().getAll();
+                nodes = DaoUtils.getNodeDao().getAll(query, filter, null);
             }
         } else {
-            nodes = DaoUtils.getNodeDao().getAll(user.getAllowedResources().getNodeIds());
+            nodes = DaoUtils.getNodeDao().getAll(query, filter, user.getAllowedResources());
         }
 
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
@@ -735,7 +751,11 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getSensors(User user, Integer nodeId, Integer roomId,
-            Boolean enableNoRoomFilter) {
+            Boolean enableNoRoomFilter, String filter, long page, long pageLimit) {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         List<Node> nodes = new ArrayList<Node>();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         if (enableNoRoomFilter == null) {
@@ -745,12 +765,13 @@ public class TypesUtils {
         if (AuthUtils.isSuperAdmin(user)) {
             if (nodeId != null) {
                 nodes.add(Node.builder().id(nodeId).build());
-                sensors = DaoUtils.getSensorDao().getAllByNodeId(nodeId);
+                query.getFilters().put(Sensor.KEY_NODE_ID, nodeId);
+                sensors = DaoUtils.getSensorDao().getAll(query, filter, null);
             } else {
-                sensors = DaoUtils.getSensorDao().getAll();
+                sensors = DaoUtils.getSensorDao().getAll(query, filter, null);
             }
         } else {
-            sensors = DaoUtils.getSensorDao().getAll(user.getAllowedResources().getSensorIds());
+            sensors = DaoUtils.getSensorDao().getAll(query, filter, user.getAllowedResources());
         }
 
         boolean include = false;
@@ -798,8 +819,12 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getSensorVariables(User user, Integer sensorId,
-            Integer sensorVariableId, List<String> variableTypes, List<String> metricTypes)
-            throws IllegalAccessException {
+            Integer sensorVariableId, List<String> variableTypes, List<String> metricTypes, String filter, long page,
+            long pageLimit) throws IllegalAccessException {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<SensorVariable> sensorVariables = null;
         if (!AuthUtils.isSuperAdmin(user)) {
@@ -818,12 +843,13 @@ public class TypesUtils {
         }
 
         if (sensorVariableId != null) {
-            sensorVariables = DaoUtils.getSensorVariableDao().getAll(
-                    user.getAllowedResources().getSensorVariableIds());
+            query.getFilters().put(SensorVariable.KEY_ID, sensorVariableId);
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll(query, filter, null);
         } else if (sensorId != null) {
-            sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+            query.getFilters().put(SensorVariable.KEY_SENSOR_DB_ID, sensorId);
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll(query, filter, null);
         } else if (sensorVariables == null) {
-            sensorVariables = DaoUtils.getSensorVariableDao().getAll();
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll(query, filter, null);
         }
 
         if (sensorVariables != null) {

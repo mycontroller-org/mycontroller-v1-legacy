@@ -16,6 +16,9 @@
  */
 package org.mycontroller.standalone.message;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -34,9 +37,46 @@ public class MessageMonitorThread implements Runnable {
     // delay time to avoid collisions on network,
     // in milliseconds, Like my sensors network
     public static final long MC_MSG_DELAY = 20;
+    private static long MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED = MC_MSG_DELAY;
+    private static long CURRENT_PROCESSING_RATE = -1;
+    private static long AVERAGE_PROCESSING_RATE = -1;
+    private static long RATE_SAMPLES = 0;
+    private static long referanceTime = System.currentTimeMillis();
+    private static long messageDoneCount = 0;
+    private static long LAST_MESSAGE_PROCESSING_TIME = -1;
+    private static long AVG_MESSAGE_PROCESSING_TIME = 0;
+    private static long TIME_SAMPLES = 0;
 
     public static boolean isTerminationIssued() {
         return terminationIssued;
+    }
+
+    public static long getCurrentProcessingRate() {
+        return CURRENT_PROCESSING_RATE;
+    }
+
+    public static long getAvgProcessingRate() {
+        return AVERAGE_PROCESSING_RATE;
+    }
+
+    public static long getLastMessageProcessingTime() {
+        return LAST_MESSAGE_PROCESSING_TIME;
+    }
+
+    public static long getAvgtMessageProcessingTime() {
+        return AVG_MESSAGE_PROCESSING_TIME;
+    }
+
+    public static int getMessagesInQueue() {
+        return RawMessageQueue.getInstance().getQueueSize();
+    }
+
+    public static void updateTxMessageProcessingDelay(long delay) {
+        if (delay < 0) {
+            MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED = MC_MSG_DELAY;
+            return;
+        }
+        MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED = delay;
     }
 
     public static synchronized void setTerminationIssued(boolean terminationIssued) {
@@ -51,7 +91,7 @@ public class MessageMonitorThread implements Runnable {
                     break;
                 }
             } catch (InterruptedException ex) {
-                _logger.debug("Exception in xsleep thread,", ex);
+                _logger.debug("Exception in sleep thread,", ex);
             }
         }
         _logger.debug("MessageMonitorThread terminated");
@@ -60,17 +100,25 @@ public class MessageMonitorThread implements Runnable {
     private void processRawMessage() {
         while (!RawMessageQueue.getInstance().isEmpty() && !isTerminationIssued()) {
             RawMessage rawMessage = RawMessageQueue.getInstance().getMessage();
-            _logger.debug("Processing message:[{}]", rawMessage);
+            _logger.debug("Processing:[{}]", rawMessage);
             if (McObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
+                long startTime = System.currentTimeMillis();
                 try {
                     McMessageUtils.sendToProviderBridge(rawMessage);
-                    //A delay to avoid collisions on MySensor networks on continues messages
-                    if (!RawMessageQueue.getInstance().isEmpty()) {
-                        Thread.sleep(MC_MSG_DELAY);
+                    messageDoneCount++;
+                    calculateProcessingRate();
+                    //A delay to avoid collisions on MySensor networks on continues messages. Only for Tx message
+                    if (!RawMessageQueue.getInstance().isEmpty() && rawMessage.isTxMessage()) {
+                        Thread.sleep(MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED);
+                    } else {
+                        //This sleep to reduce CPU load, in nanoseconds
+                        Thread.sleep(0, 333333);
                     }
                 } catch (Exception ex) {
                     _logger.error("Throws exception while processing!, [{}]", rawMessage, ex);
                 }
+                updateProcessingTime(System.currentTimeMillis() - startTime);
+                _logger.debug("Process done in {} ms for:[{}]", getLastMessageProcessingTime(), rawMessage);
             } else {
                 GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(rawMessage.getGatewayId());
                 _logger.error("Gateway not available! dropping message... {}, {}", gatewayTable, rawMessage);
@@ -78,14 +126,66 @@ public class MessageMonitorThread implements Runnable {
         }
     }
 
+    private void updateProcessingTime(long lastMessageTime) {
+        LAST_MESSAGE_PROCESSING_TIME = lastMessageTime;
+        AVG_MESSAGE_PROCESSING_TIME = ((AVG_MESSAGE_PROCESSING_TIME * TIME_SAMPLES) + LAST_MESSAGE_PROCESSING_TIME)
+                / (TIME_SAMPLES + 1);
+        TIME_SAMPLES++;
+        //if sample goes beyond 10000, reset it to avoid big calculations.
+        if (TIME_SAMPLES > 10000 || AVG_MESSAGE_PROCESSING_TIME == 0) {
+            TIME_SAMPLES = 1;
+            AVG_MESSAGE_PROCESSING_TIME = LAST_MESSAGE_PROCESSING_TIME;
+        }
+    }
+
+    private void calculateProcessingRate() {
+        if ((System.currentTimeMillis() - referanceTime) >= McUtils.MINUTE) {
+            referanceTime = System.currentTimeMillis();
+            CURRENT_PROCESSING_RATE = messageDoneCount;
+            AVERAGE_PROCESSING_RATE = (long) (((AVERAGE_PROCESSING_RATE * RATE_SAMPLES)
+                    + CURRENT_PROCESSING_RATE) / (RATE_SAMPLES + 1));
+            RATE_SAMPLES++;
+            //if sample goes beyond 10000, reset it to avoid big calculations.
+            if (RATE_SAMPLES > 10000 || AVERAGE_PROCESSING_RATE == 0) {
+                RATE_SAMPLES = 1;
+                AVERAGE_PROCESSING_RATE = CURRENT_PROCESSING_RATE;
+            }
+            messageDoneCount = 0;
+        }
+    }
+
+    public static void printStatistics() {
+        _logger.info(
+                "Message engine statistics, Rate[Last minute:{}, {}/s, Avg:{}, Samples:{}], "
+                        + "Time:[Last:{} ms, Avg:{} ms, Samples:{}], In queue:{}",
+                getCurrentProcessingRate(), getCurrentProcessingRate() / 60, getAvgProcessingRate(), RATE_SAMPLES,
+                getLastMessageProcessingTime(), getAvgtMessageProcessingTime(), TIME_SAMPLES, getMessagesInQueue());
+    }
+
+    public static Map<String, Object> getStatistics() {
+        HashMap<String, Object> statistics = new HashMap<String, Object>();
+        statistics.put("processingRateLastMinute", getCurrentProcessingRate());
+        statistics.put("processingRateAvgPerMinute", getAvgProcessingRate());
+        statistics.put("processingRateSamples", RATE_SAMPLES);
+        statistics.put("processingTimeLastMessage", getLastMessageProcessingTime());
+        statistics.put("processingTimeAverage", getAvgtMessageProcessingTime());
+        statistics.put("processingTimeSamples", TIME_SAMPLES);
+        statistics.put("messagesInQueue", getMessagesInQueue());
+        statistics.put("txMessageProcessingDelay", MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED);
+        statistics.put("timestamp", System.currentTimeMillis());
+        return statistics;
+    }
+
     @Override
     public void run() {
         try {
             _logger.debug("MessageMonitorThread new thread started.");
+            referanceTime = System.currentTimeMillis();
             while (!isTerminationIssued()) {
                 try {
                     this.processRawMessage();
                     Thread.sleep(10);
+                    calculateProcessingRate();
                 } catch (InterruptedException ex) {
                     _logger.debug("Exception in sleep thread,", ex);
                 }

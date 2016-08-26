@@ -212,7 +212,8 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, ResourcesLogs.KEY_ID);
+            query.setIdColumn(ResourcesLogs.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

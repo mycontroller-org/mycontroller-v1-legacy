@@ -65,7 +65,8 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, UidTag.KEY_ID);
+            query.setIdColumn(UidTag.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

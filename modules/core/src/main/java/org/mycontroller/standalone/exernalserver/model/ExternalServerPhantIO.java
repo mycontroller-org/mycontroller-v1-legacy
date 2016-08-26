@@ -94,7 +94,7 @@ public class ExternalServerPhantIO extends ExternalServer {
     }
 
     @Override
-    public void send(SensorVariable sensorVariable) {
+    public synchronized void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
             ClientResponse<PostResponse> clientResponse = ((PhantIOClient) ExternalServerUtils.getClient(getId()))
                     .post(getVariableKey(sensorVariable, getKeyFormat()), sensorVariable.getValue());

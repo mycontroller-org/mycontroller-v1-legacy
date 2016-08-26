@@ -576,7 +576,9 @@ public class McMessageUtils {
     }
 
     public static synchronized void sendToMcMessageEngine(McMessage mcMessage) {
-        new Thread(new McMessageEngine(mcMessage)).start();
+        //Do not run new thred. for testing
+        //new Thread(new McMessageEngine(mcMessage)).start();
+        new McMessageEngine(mcMessage).run();
     }
 
     public static synchronized boolean validateNodeIdByProvider(Node node) {

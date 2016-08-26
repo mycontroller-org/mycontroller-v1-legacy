@@ -54,6 +54,7 @@ public class MySensorsRawMessage {
     private int subType;
     private String payload;
     private boolean isTxMessage = false;
+    private Long timestamp;
 
     public MySensorsRawMessage(RawMessage rawMessage) throws RawMessageException {
         gatewayId = rawMessage.getGatewayId();
@@ -71,6 +72,7 @@ public class MySensorsRawMessage {
                         "This type not implemented yet, Type:[{}]",
                         McObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getType());
         }
+        timestamp = rawMessage.getTimestamp();
         MySensorsEngine.updateMessage(this);
     }
 
@@ -93,6 +95,7 @@ public class MySensorsRawMessage {
         subType = getMysensorsSubType(mcMessage.getType(), mcMessage.getSubType());
         payload = mcMessage.getPayload();
         isTxMessage = mcMessage.isTxMessage();
+        timestamp = mcMessage.getTimestamp();
         MySensorsEngine.updateMessage(this);
     }
 
@@ -200,12 +203,14 @@ public class MySensorsRawMessage {
                         .data(getPayload())
                         .subData(getMqttTopic())
                         .isTxMessage(isTxMessage())
+                        .timestamp(timestamp)
                         .build();
             case ETHERNET:
             case SERIAL:
                 return RawMessage.builder()
                         .gatewayId(gatewayId)
                         .data(getGWString())
+                        .timestamp(timestamp)
                         .build();
             default:
                 _logger.warn("This type not implemented yet, Type:[{}]", gatewayTable.getType().name());
@@ -223,7 +228,9 @@ public class MySensorsRawMessage {
                 .sensorId(sensorId)
                 .networkType(NETWORK_TYPE.MY_SENSORS)
                 .isTxMessage(isTxMessage())
-                .payload(getPayload()).build();
+                .payload(getPayload())
+                .timestamp(timestamp)
+                .build();
         updateMcMessageTypeAndSubType(mcMessage);
         return mcMessage;
     }

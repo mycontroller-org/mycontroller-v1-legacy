@@ -367,5 +367,4 @@ public class RuleUtils {
                 break;
         }
     }
-
 }

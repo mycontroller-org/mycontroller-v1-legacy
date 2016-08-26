@@ -74,12 +74,16 @@ public class MqttCallbackListener implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) {
         try {
+            if (message.isDuplicate()) {
+                _logger.warn("Duplicate message received!! {}", message);
+            }
             _logger.debug("Message Received, Topic:[{}], Payload:[{}]", topic, message);
             RawMessageQueue.getInstance().putMessage(RawMessage.builder()
                     .gatewayId(gateway.getId())
                     .data(message.toString())
                     .subData(topic)
                     .networkType(gateway.getNetworkType())
+                    .timestamp(System.currentTimeMillis())
                     .build());
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);

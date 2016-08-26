@@ -44,4 +44,10 @@ public class McRuleListener implements RuleListener {
         _logger.debug("Rule executed successfully:{}", rule);
     }
 
+    @Override
+    public boolean beforeEvaluate(Rule rule) {
+        //TODO: If you want to perform some pre-check do here.
+        return true;
+    }
+
 }

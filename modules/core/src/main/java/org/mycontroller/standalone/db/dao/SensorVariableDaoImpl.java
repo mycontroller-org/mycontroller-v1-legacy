@@ -20,7 +20,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DbException;
+import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.metrics.MetricsUtils;
@@ -263,4 +269,31 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
         }
     }
 
+    public List<SensorVariable> getAll(Query query, String filter, AllowedResources allowedResources) {
+        AuthUtils.updateQueryFilter(query.getFilters(), RESOURCE_TYPE.SENSOR_VARIABLE, allowedResources);
+        if (query.getFilters().get(SensorVariable.KEY_SENSOR_DB_ID) == null) {
+            query.setAndQuery(false);
+            if (filter != null) {
+                List<Sensor> sensors = DaoUtils.getSensorDao().getAll(query, filter, null);
+                if (sensors.size() > 0) {
+                    ArrayList<Integer> sensorIds = new ArrayList<Integer>();
+                    for (Sensor sensor : sensors) {
+                        sensorIds.add(sensor.getId());
+                    }
+                    query.getFilters().put(SensorVariable.KEY_SENSOR_DB_ID, sensors);
+                }
+                MESSAGE_TYPE_SET_REQ type = MESSAGE_TYPE_SET_REQ.fromString(filter);
+                if (type != null) {
+                    query.getFilters().put(SensorVariable.KEY_VARIABLE_TYPE, type);
+                }
+            }
+        }
+        //Remove keys
+        query.getFilters().remove(Sensor.KEY_NODE_ID);
+
+        query.setIdColumn(SensorVariable.KEY_ID);
+        query.setOrderBy(SensorVariable.KEY_TIMESTAMP);
+        query.setOrder(Query.ORDER_DESC);
+        return super.getAllData(query);
+    }
 }

@@ -127,7 +127,7 @@ public class McRuleEngine extends Job implements Runnable {
             //Execute collected rules
             execute(ruleDefinitionsDb, MC_RULES_ENGINE_NAME);
         } catch (Exception ex) {
-            _logger.error("Exception, ", ex);
+            _logger.error("Exception on scheduled job, ", ex);
         }
 
     }
@@ -176,7 +176,7 @@ public class McRuleEngine extends Job implements Runnable {
             //Execute all the rules
             execute(ruleDefinitionsDb, MC_RULES_ENGINE_NAME + "_" + resourceId);
         } catch (Exception ex) {
-            _logger.error("Exception, ", ex);
+            _logger.error("Exception on ondemand thread job, ", ex);
         }
 
     }

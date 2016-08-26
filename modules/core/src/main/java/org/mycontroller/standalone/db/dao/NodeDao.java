@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.Node;
@@ -39,4 +40,7 @@ public interface NodeDao extends BaseDao<Node, Integer> {
     long countOf(Integer gatewayId);
 
     List<Integer> getNodeIdsByGatewayIds(List<Integer> ids);
+
+    List<Node> getAll(Query query, String filter, AllowedResources allowedResources);
+
 }

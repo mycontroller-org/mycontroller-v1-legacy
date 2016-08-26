@@ -88,7 +88,7 @@ public class ExternalServerEmoncms extends ExternalServer {
     }
 
     @Override
-    public void send(SensorVariable sensorVariable) {
+    public synchronized void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
             ClientResponse<String> clientResponse = ((EmoncmsClient) ExternalServerUtils.getClient(getId()))
                     .send(getVariableKey(sensorVariable, getKeyFormat()), sensorVariable.getValue());

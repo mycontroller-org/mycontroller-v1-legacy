@@ -83,7 +83,7 @@ public class SensorApi {
 
     public void update(Sensor sensor) throws McException {
         Sensor availabilityCheck = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
-        if (availabilityCheck != null && sensor.getId() != availabilityCheck.getId()) {
+        if (availabilityCheck != null && !sensor.getId().equals(availabilityCheck.getId())) {
             throw new McDuplicateException("A sensor available with this sensor id!");
         }
         try {

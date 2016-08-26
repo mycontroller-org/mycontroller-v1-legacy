@@ -49,7 +49,8 @@ public class RoomDaoImpl extends BaseAbstractDaoImpl<Room, Integer> implements R
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, Room.KEY_ID);
+            query.setIdColumn(Room.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

@@ -55,6 +55,7 @@ public class SerialDataListenerPi4j implements SerialDataEventListener {
                             .gatewayId(gateway.getId())
                             .data(toProcess)
                             .networkType(gateway.getNetworkType())
+                            .timestamp(System.currentTimeMillis())
                             .build());
                     message.setLength(0);
                 } else if (b != SerialPortCommon.MESSAGE_SPLITTER) {

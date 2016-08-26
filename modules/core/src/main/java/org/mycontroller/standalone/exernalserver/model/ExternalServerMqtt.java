@@ -94,7 +94,7 @@ public class ExternalServerMqtt extends ExternalServer {
     }
 
     @Override
-    public void send(SensorVariable sensorVariable) {
+    public synchronized void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
             ExternalMqttClient client = (ExternalMqttClient) ExternalServerUtils.getClient(getId());
             if (client.isConnected() == null) {

@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.settings;
 
+import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -52,6 +53,7 @@ public class MyControllerSettings {
     public static final String SKEY_TABLE_ROWS_LIMIT = "tableRowsLimit";
     public static final String SKEY_AUTO_NODE_REGISTRATION = "autoNodeRegistration";
     public static final String SKEY_EXECUTE_DISCOVER_INTERVAL = "executeDiscoverInterval";
+    public static final String SKEY_TX_MESSAGE_PROCESSING_DELAY = "txMessageProcessingDelay";
 
     private String language;
     private String timeFormat;
@@ -68,9 +70,11 @@ public class MyControllerSettings {
     private String widgetImageFilesLocation;
     private Integer tableRowsLimit;
     private Boolean autoNodeRegistration;
+    private Long txMessageProcessingDelay;
 
     public static MyControllerSettings get() {
-        return MyControllerSettings.builder()
+        return MyControllerSettings
+                .builder()
                 .language(getValue(SKEY_LANGUAGE))
                 .timeFormat(getValue(SKEY_TIME_FORMAT))
                 .version(getValue(SKEY_VERSION))
@@ -86,6 +90,9 @@ public class MyControllerSettings {
                 .widgetImageFilesLocation(getValue(SKEY_WIDGET_IMAGE_FILES_LOCATION))
                 .tableRowsLimit(McUtils.getInteger(getValue(SKEY_TABLE_ROWS_LIMIT)))
                 .autoNodeRegistration(McUtils.getBoolean(getValue(SKEY_AUTO_NODE_REGISTRATION)))
+                .txMessageProcessingDelay(
+                        McUtils.getLong(getValue(SKEY_TX_MESSAGE_PROCESSING_DELAY,
+                                String.valueOf(MessageMonitorThread.MC_MSG_DELAY))))
                 .build();
     }
 
@@ -129,10 +136,25 @@ public class MyControllerSettings {
         if (autoNodeRegistration != null) {
             updateValue(SKEY_AUTO_NODE_REGISTRATION, autoNodeRegistration);
         }
+        if (txMessageProcessingDelay != null) {
+            if (txMessageProcessingDelay >= 0) {
+                updateValue(SKEY_TX_MESSAGE_PROCESSING_DELAY, txMessageProcessingDelay);
+            } else {
+                updateValue(SKEY_TX_MESSAGE_PROCESSING_DELAY, MessageMonitorThread.MC_MSG_DELAY);
+            }
+        }
     }
 
     private static String getValue(String subKey) {
         return SettingsUtils.getValue(KEY_MY_CONTROLLER, subKey);
+    }
+
+    private static String getValue(String subKey, String defaultValue) {
+        String value = getValue(subKey);
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
     }
 
     private void updateValue(String subKey, Object value) {

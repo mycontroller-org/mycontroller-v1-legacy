@@ -102,7 +102,8 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, Firmware.KEY_ID);
+            query.setIdColumn(Firmware.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

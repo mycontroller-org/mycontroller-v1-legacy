@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.api.GatewayApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
@@ -104,10 +105,8 @@ public class GatewayHandler extends AccessEngine {
         filters.put(Query.PAGE_LIMIT, pageLimit);
         filters.put(Query.PAGE, page);
 
-        //Add id filter if he is non-admin
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            filters.put(GatewayTable.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getGatewayIds());
-        }
+        //Update query filter if he is non-admin
+        AuthUtils.updateQueryFilter(securityContext, filters, RESOURCE_TYPE.GATEWAY);
 
         return RestUtils.getResponse(Status.OK, gatewayApi.getAllRaw(filters));
     }

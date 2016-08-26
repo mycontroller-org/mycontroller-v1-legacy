@@ -60,7 +60,7 @@ public class NodeApi {
 
     public void update(Node node) throws McDuplicateException, McBadRequestException {
         Node availabilityCheck = DaoUtils.getNodeDao().get(node.getGatewayTable().getId(), node.getEui());
-        if (availabilityCheck != null && availabilityCheck.getId() != node.getId()) {
+        if (availabilityCheck != null && !availabilityCheck.getId().equals(node.getId())) {
             throw new McDuplicateException("A node available with this EUI.");
         }
 

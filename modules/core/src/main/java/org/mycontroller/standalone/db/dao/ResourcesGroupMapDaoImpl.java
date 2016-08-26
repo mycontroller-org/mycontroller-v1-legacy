@@ -207,7 +207,9 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, ResourcesGroupMap.KEY_ID, ResourcesGroupMap.KEY_GROUP_ID);
+            query.setIdColumn(ResourcesGroupMap.KEY_ID);
+            query.setTotalCountAltColumn(ResourcesGroupMap.KEY_GROUP_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

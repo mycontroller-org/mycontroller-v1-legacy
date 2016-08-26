@@ -33,6 +33,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.SensorApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
@@ -111,10 +112,8 @@ public class SensorHandler extends AccessEngine {
         //Add nodeIds
         filters.put(Sensor.KEY_NODE_ID, nodeIds);
 
-        //Add id filter if he is non-admin
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            filters.put(Sensor.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds());
-        }
+        //Update query filter if he is non-admin
+        AuthUtils.updateQueryFilter(securityContext, filters, RESOURCE_TYPE.SENSOR);
 
         return RestUtils.getResponse(Status.OK, sensorApi.getAll(filters));
     }

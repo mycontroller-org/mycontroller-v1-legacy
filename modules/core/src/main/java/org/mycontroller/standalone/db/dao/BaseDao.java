@@ -19,6 +19,8 @@ package org.mycontroller.standalone.db.dao;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableInfo;
 
@@ -60,6 +62,8 @@ public interface BaseDao<Tdao, Tid> {
     Long countOf();
 
     List<Tdao> getAll(String key, Object value);
+
+    List<Tdao> getAllData(Query query);
 
     Tdao get(String key, Object value);
 

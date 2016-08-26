@@ -903,7 +903,12 @@ public class McMessageEngine implements Runnable {
         }
 
         //Execute Rules for this sensor variable
-        new Thread(new McRuleEngine(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId())).start();
+        //DO NOT START NEW THREAD
+        try {
+            new McRuleEngine(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId()).run();
+        } catch (Exception ex) {
+            _logger.error("Exception,", ex);
+        }
 
         //Execute Send Payload to external server
         new Thread(new ExternalServerEngine(sensorVariable)).start();
