@@ -429,6 +429,13 @@ public class MetricsHandler extends AccessEngine {
 
             String unit = sensorVariable.getUnitType() != UNIT_TYPE.U_NONE ? " ("
                     + UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit() + ")" : "";
+            String sensorName = sensorVariable.getSensor().getSensorId();
+            if (sensorVariable.getSensor().getName() != null && sensorVariable.getSensor().getName().length() > 0) {
+                sensorName = sensorName + ":" + sensorVariable.getSensor().getName();
+            } else if (sensorVariable.getSensor().getType() != null) {
+                sensorName = sensorName + ":"
+                        + McObjectManager.getMcLocale().getString(sensorVariable.getSensor().getType().name());
+            }
 
             //If current value not available, do not allow any value
             if (metric.getCurrent() == null || metric.getMinimum() == null) {
@@ -437,8 +444,7 @@ public class MetricsHandler extends AccessEngine {
                         .id(sensorVariable.getId())
                         .resourceName(new ResourceModel(
                                 RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
-                        .displayName(sensorVariable.getSensor().getName() + " >> "
-                                + sensorVariable.getVariableType().getText() + unit)
+                        .displayName(sensorName + " >> " + sensorVariable.getVariableType().getText() + unit)
                         .build());
             } else {
                 bulletCharts.add(MetricsBulletChartNVD3
@@ -451,8 +457,7 @@ public class MetricsHandler extends AccessEngine {
                         .markers(new Object[] { metric.getPrevious() })
                         .resourceName(new ResourceModel(
                                 RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
-                        .displayName(sensorVariable.getSensor().getName() + " >> "
-                                + sensorVariable.getVariableType().getText() + unit)
+                        .displayName(sensorName + " >> " + sensorVariable.getVariableType().getText() + unit)
                         .build());
             }
 

@@ -71,6 +71,8 @@ public class AppProperties {
     private String webBindAddress;
 
     private String mqttBrokerPersistentStore;
+    private String mcPersistentStoresLocation;
+    private Boolean clearMessagesQueueOnStart;
 
     MyControllerSettings controllerSettings;
     EmailSettings emailSettings;
@@ -399,12 +401,17 @@ public class AppProperties {
         }
         webBindAddress = getValue(properties, "mcc.web.bind.address", "0.0.0.0");
 
+        //MyController PersistentStore
+        mcPersistentStoresLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.persistent.stores.location",
+                "../conf/persistent_stores/"));
+        createDirectoryLocation(mcPersistentStoresLocation);
         //MQTT Broker mqttBrokerPersistentStore
-        mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store",
-                "../conf/moquette/moquette_store.mapdb");
+        mqttBrokerPersistentStore = mcPersistentStoresLocation + "/moquette/moquette_store.mapdb";
+        clearMessagesQueueOnStart = McUtils.getBoolean(getValue(properties, "mcc.clear.message.queue.on.start",
+                "true"));
     }
 
-    private void createDirectoryLocation(String directoryLocation) {
+    public void createDirectoryLocation(String directoryLocation) {
         if (!FileUtils.getFile(directoryLocation).exists()) {
             if (FileUtils.getFile(directoryLocation).mkdirs()) {
                 _logger.info("Created directory location: {}", directoryLocation);
@@ -628,5 +635,13 @@ public class AppProperties {
 
     public MqttBrokerSettings getMqttBrokerSettings() {
         return mqttBrokerSettings;
+    }
+
+    public Boolean getClearMessagesQueueOnStart() {
+        return clearMessagesQueueOnStart;
+    }
+
+    public String getMcPersistentStoresLocation() {
+        return mcPersistentStoresLocation;
     }
 }

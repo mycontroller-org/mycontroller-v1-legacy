@@ -225,6 +225,7 @@ public class StartApp {
         //Start order..
         // - set to default locale
         // - Add Shutdown hook
+        // - Initialize MapDB store
         // - Start DB service
         // - Set to locale actual
         // - Check password reset file
@@ -240,6 +241,9 @@ public class StartApp {
 
         //Add Shutdown hook
         new AppShutdownHook().attachShutDownHook();
+
+        //Initialize MapDB store
+        MapDbFactory.init();
 
         //Start DB service
         DataBaseUtils.loadDatabase();
@@ -291,13 +295,15 @@ public class StartApp {
         // - Stop message Monitor Thread
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
+        // - Stop mapDB store
         stopHTTPWebServer();
         ExternalServerUtils.clearServers();
         SchedulerUtils.stop();
         GatewayUtils.unloadAllGateways();
         MoquetteMqttBroker.stop();
-        MessageMonitorThread.setTerminationIssued(true);
+        MessageMonitorThread.shutdown();
         DataBaseUtils.stop();
+        MapDbFactory.close();
         _logger.debug("All services stopped.");
         //Remove references
         McObjectManager.clearAllReferences();

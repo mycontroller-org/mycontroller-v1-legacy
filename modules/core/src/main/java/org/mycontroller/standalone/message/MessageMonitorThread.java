@@ -18,10 +18,12 @@ package org.mycontroller.standalone.message;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +34,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MessageMonitorThread implements Runnable {
-    private static boolean terminationIssued = false;
-    private static boolean terminated = false;
+    private static final AtomicBoolean TERMINATE = new AtomicBoolean(false);
+    public static final AtomicBoolean TERMINATED = new AtomicBoolean(false);
     // delay time to avoid collisions on network,
     // in milliseconds, Like my sensors network
     public static final long MC_MSG_DELAY = 20;
@@ -46,10 +48,6 @@ public class MessageMonitorThread implements Runnable {
     private static long LAST_MESSAGE_PROCESSING_TIME = -1;
     private static long AVG_MESSAGE_PROCESSING_TIME = 0;
     private static long TIME_SAMPLES = 0;
-
-    public static boolean isTerminationIssued() {
-        return terminationIssued;
-    }
 
     public static long getCurrentProcessingRate() {
         return CURRENT_PROCESSING_RATE;
@@ -79,11 +77,14 @@ public class MessageMonitorThread implements Runnable {
         MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED = delay;
     }
 
-    public static synchronized void setTerminationIssued(boolean terminationIssued) {
-        MessageMonitorThread.terminationIssued = terminationIssued;
+    public static void shutdown() {
+        if (TERMINATED.get()) {
+            return;
+        }
+        TERMINATE.set(true);
         long start = System.currentTimeMillis();
         long waitTime = McUtils.ONE_MINUTE;
-        while (!terminated) {
+        while (!TERMINATED.get()) {
             try {
                 Thread.sleep(10);
                 if ((System.currentTimeMillis() - start) >= waitTime) {
@@ -98,7 +99,11 @@ public class MessageMonitorThread implements Runnable {
     }
 
     private void processRawMessage() {
-        while (!RawMessageQueue.getInstance().isEmpty() && !isTerminationIssued()) {
+        while (!RawMessageQueue.getInstance().isEmpty() && !TERMINATE.get()) {
+            if (!GatewayUtils.GATEWAYS_READY.get()) {
+                //Gateways not ready
+                return;
+            }
             RawMessage rawMessage = RawMessageQueue.getInstance().getMessage();
             _logger.debug("Processing:[{}]", rawMessage);
             if (McObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
@@ -181,7 +186,7 @@ public class MessageMonitorThread implements Runnable {
         try {
             _logger.debug("MessageMonitorThread new thread started.");
             referanceTime = System.currentTimeMillis();
-            while (!isTerminationIssued()) {
+            while (!TERMINATE.get()) {
                 try {
                     this.processRawMessage();
                     Thread.sleep(10);
@@ -194,18 +199,14 @@ public class MessageMonitorThread implements Runnable {
                 _logger.warn("MessageMonitorThread terminating with {} message(s) in queue!",
                         RawMessageQueue.getInstance().getQueueSize());
             }
-            if (isTerminationIssued()) {
+            if (TERMINATE.get()) {
                 _logger.debug("MessageMonitorThread termination issues. Terminating.");
-                terminated = true;
+                TERMINATED.set(true);
             }
         } catch (Exception ex) {
-            terminated = true;
+            TERMINATED.set(true);
             _logger.error("MessageMonitorThread terminated!, ", ex);
         }
-    }
-
-    public static boolean isTerminated() {
-        return terminated;
     }
 
 }

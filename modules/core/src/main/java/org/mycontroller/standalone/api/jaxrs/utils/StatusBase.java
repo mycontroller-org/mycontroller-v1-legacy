@@ -32,15 +32,17 @@ import com.sun.management.OperatingSystemMXBean;
  */
 public class StatusBase {
 
-    static OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getPlatformMXBean(
+    public static OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getPlatformMXBean(
             OperatingSystemMXBean.class);
-    static ClassLoadingMXBean classLoadingMXBean = ManagementFactory.getPlatformMXBean(ClassLoadingMXBean.class);
-    static List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
-    static MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-    static RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-    static ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+    public static ClassLoadingMXBean classLoadingMXBean = ManagementFactory
+            .getPlatformMXBean(ClassLoadingMXBean.class);
+    public static List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory
+            .getGarbageCollectorMXBeans();
+    public static MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+    public static RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+    public static ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
-    static Runtime runtime = Runtime.getRuntime();
-    static final long MB_SIZE = 1024 * 1024;
+    public static Runtime runtime = Runtime.getRuntime();
+    public static final long MB_SIZE = 1024 * 1024;
 
 }
