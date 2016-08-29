@@ -31,6 +31,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MetricsBulletChartNVD3 {
     private Integer id;
+    private Integer internalId;
     private String title;
     private String subtitle;
     private Object ranges;

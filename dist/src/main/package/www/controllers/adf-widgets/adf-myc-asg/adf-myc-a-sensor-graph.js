@@ -113,6 +113,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
           }
           mycSingleSensorGraph.chartOptions.title.text = resource[0].variableType;
           mycSingleSensorGraph.resourceName = resource[0].resourceName;
+          mycSingleSensorGraph.internalId = resource[0].internalId;
         }else{
           if(config.variableId !== null){
             mycSingleSensorGraph.showError = true;

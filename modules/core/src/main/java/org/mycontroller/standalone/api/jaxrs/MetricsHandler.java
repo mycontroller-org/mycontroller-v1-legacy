@@ -290,8 +290,7 @@ public class MetricsHandler extends AccessEngine {
     }
 
     private void updateNodeTopology(HashMap<String, TopologyItem> items,
-            List<TopologyRelation> relations,
-            Integer gatewayId, Integer nodeId, boolean realtime) {
+            List<TopologyRelation> relations, Integer gatewayId, Integer nodeId, boolean realtime) {
         List<Node> nodes = null;
         if (gatewayId != null) {
             nodes = DaoUtils.getNodeDao().getAllByGatewayId(gatewayId);
@@ -342,8 +341,7 @@ public class MetricsHandler extends AccessEngine {
         }
     }
 
-    private void updateSensorTopology(HashMap<String, TopologyItem> items,
-            List<TopologyRelation> relations,
+    private void updateSensorTopology(HashMap<String, TopologyItem> items, List<TopologyRelation> relations,
             Integer nodeId, Integer sensorId) {
         List<Sensor> sensors = null;
         if (nodeId != null) {
@@ -388,8 +386,7 @@ public class MetricsHandler extends AccessEngine {
         }
     }
 
-    private void updateSensorVariableTopology(HashMap<String, TopologyItem> items,
-            List<TopologyRelation> relations,
+    private void updateSensorVariableTopology(HashMap<String, TopologyItem> items, List<TopologyRelation> relations,
             int sensorId) {
         List<SensorVariable> sVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
         for (SensorVariable sVariable : sVariables) {
@@ -442,6 +439,7 @@ public class MetricsHandler extends AccessEngine {
                 bulletCharts.add(MetricsBulletChartNVD3
                         .builder()
                         .id(sensorVariable.getId())
+                        .internalId(sensorVariable.getSensor().getId())
                         .resourceName(new ResourceModel(
                                 RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails() + unit)
                         .displayName(sensorName + " >> " + sensorVariable.getVariableType().getText() + unit)
@@ -450,6 +448,7 @@ public class MetricsHandler extends AccessEngine {
                 bulletCharts.add(MetricsBulletChartNVD3
                         .builder()
                         .id(sensorVariable.getId())
+                        .internalId(sensorVariable.getSensor().getId())
                         //.title(sensorVariable.getVariableType().getText())
                         //.subtitle(sensorVariable.getUnit())
                         .ranges(new Object[] { metric.getMinimum(), metric.getAverage(), metric.getMaximum() })
@@ -509,6 +508,7 @@ public class MetricsHandler extends AccessEngine {
 
         return MetricsChartDataGroupNVD3.builder()
                 .metricsChartDataNVD3(preDoubleData)
+                .internalId(nodeId)
                 .unit("%")
                 .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
                 .id(nodeId)
@@ -773,6 +773,7 @@ public class MetricsHandler extends AccessEngine {
                             .builder()
                             .metricsChartDataNVD3(preDoubleData)
                             .id(sensorVariable.getId())
+                            .internalId(sensorVariable.getSensor().getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
                             .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
                             .variableType(
@@ -803,6 +804,7 @@ public class MetricsHandler extends AccessEngine {
                             .builder()
                             .metricsChartDataNVD3(preCounterData)
                             .id(sensorVariable.getId())
+                            .internalId(sensorVariable.getSensor().getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
                             .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.COUNTER))
                             .variableType(
@@ -833,6 +835,7 @@ public class MetricsHandler extends AccessEngine {
                             .builder()
                             .metricsChartDataNVD3(preBinaryData)
                             .id(sensorVariable.getId())
+                            .internalId(sensorVariable.getSensor().getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
                             .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.BINARY))
                             .variableType(
