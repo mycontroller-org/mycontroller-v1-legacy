@@ -451,6 +451,7 @@
     "RESOURCES_LOGS": "Ressourcen-Protokolle",
     "RESOURCES_LOGS_DETAIL": "Ressourcen-Protokoll-Details",
     "RESOURCES_LOG_LEVEL": "Ressourcen-Protokoll-Ebene",
+    "RESOURCES_LOG_RETENTION_DURATION": "Resources logs retention duration",
     "RESOURCE_GROUPS_DETAIL": "Ressourcengruppen-Details",
     "RESOURCE_GROUPS_MAPS_DETAIL": "Ressourcengruppen-Kartendetails",
     "RESOURCE_GROUPS_TURNED_OFF": "Ressourcengruppen ausgeschaltet",

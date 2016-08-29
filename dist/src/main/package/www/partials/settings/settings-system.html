@@ -165,6 +165,22 @@
             </div>
 
             <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RESOURCES_LOG_RETENTION_DURATION' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{resourcesLogsRetentionDurationMinutes}} {{ 'MINUTES' | translate }}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="resourcesLogsRetentionDurationMinutes" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div class="col-sm-3 mc-form-fixer">
+                  <span>{{ 'MINUTES' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'REGISTER_NODES_AUTOMATICALLY' | translate }}</label>
               <div class="col-sm-5">
                 <input bs-switch ng-change="editEnable.controller = true" ng-model="controllerSettings.autoNodeRegistration" type="checkbox"

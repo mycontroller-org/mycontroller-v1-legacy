@@ -451,6 +451,7 @@
     "RESOURCES_LOGS": "Jurnalele resurselor",
     "RESOURCES_LOGS_DETAIL": "Detalii  jurnale de resurse",
     "RESOURCES_LOG_LEVEL": "Nivel jurnale de resurse",
+    "RESOURCES_LOG_RETENTION_DURATION": "Resources logs retention duration",
     "RESOURCE_GROUPS_DETAIL": "Detalii grupuri de resurse",
     "RESOURCE_GROUPS_MAPS_DETAIL": "Detalii asociere grupuri resurse",
     "RESOURCE_GROUPS_TURNED_OFF": "Grupuri de resurse OPRITE",

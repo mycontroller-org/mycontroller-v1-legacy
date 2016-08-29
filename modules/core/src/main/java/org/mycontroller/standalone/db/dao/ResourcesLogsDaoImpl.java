@@ -78,7 +78,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
             where.isNotNull(ResourcesLogs.KEY_ID);
             //timestamp before
             if (resourcesLogs.getTimestamp() != null) {
-                where.and().le(ResourcesLogs.KEY_TIMESTAMP, resourcesLogs.getTimestamp());
+                where.and().lt(ResourcesLogs.KEY_TIMESTAMP, resourcesLogs.getTimestamp());
             }
             //message contains
             if (resourcesLogs.getMessage() != null) {

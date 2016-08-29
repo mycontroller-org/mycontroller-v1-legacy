@@ -451,6 +451,7 @@
     "RESOURCES_LOGS": "Logs des ressources",
     "RESOURCES_LOGS_DETAIL": "Détail des logs des ressources",
     "RESOURCES_LOG_LEVEL": "Niveau des logs des ressources",
+    "RESOURCES_LOG_RETENTION_DURATION": "Resources logs retention duration",
     "RESOURCE_GROUPS_DETAIL": "Détails des groupes de ressources",
     "RESOURCE_GROUPS_MAPS_DETAIL": "Détails du groupe de ressources",
     "RESOURCE_GROUPS_TURNED_OFF": "Groupes de roussources éteints",

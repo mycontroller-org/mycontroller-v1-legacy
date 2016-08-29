@@ -17,6 +17,8 @@
 package org.mycontroller.standalone.api;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +29,7 @@ import javax.script.ScriptException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
+import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
@@ -44,6 +47,8 @@ import org.mycontroller.standalone.scripts.McScriptEngine;
 import org.mycontroller.standalone.scripts.McScriptException;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.utils.McUtils;
+
+import com.j256.ormlite.dao.GenericRawResults;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,49 +84,29 @@ public class MetricApi {
         } else {
             Long tmpTimestampTo = timestampFrom + bucketDuration;
             while (tmpTimestampTo < timestampTo) {
-                metricConfig.setTimestampFrom(timestampFrom);
                 timestampFrom = tmpTimestampTo;
                 if (tmpTimestampTo > timestampTo) {
                     break;
                 }
-                metricConfig.setTimestampTo(tmpTimestampTo);
                 tmpTimestampTo += bucketDuration;
-                List<MetricsDoubleTypeDevice> metrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(metricConfig);
-                if (metrics != null && !metrics.isEmpty()) {
-                    Double min = Double.MAX_VALUE;  //Possible positive highest double value
-                    Double max = Double.NEGATIVE_INFINITY;//Take lowest double number, MIN_VALUE, doesn't work.
-                    Double sum = 0D;
-                    int samples = 0;
-                    for (MetricsDoubleTypeDevice metric : metrics) {
-                        //calculate with max, min, avg and previous samples
-                        if (metric.getMax() == null) {
-                            metric.setMax(metric.getAvg());
-                            metric.setMin(metric.getAvg());
-                        }
-                        if (metric.getMax() > max) {
-                            max = metric.getMax();
-                        }
-
-                        if (metric.getMin() < min) {
-                            min = metric.getMin();
-                        }
-                        sum = sum + (metric.getAvg() * metric.getSamples());
-                        samples = samples + metric.getSamples();
-
-                    }
-                    Double avg = sum / samples;
-                    metricsFinal.add(MetricsDoubleTypeDevice.builder()
-                            .sensorVariable(metricConfig.getSensorVariable())
-                            .min(McUtils.round(min, McUtils.DOUBLE_ROUND))
-                            .max(McUtils.round(max, McUtils.DOUBLE_ROUND))
-                            .avg(McUtils.round(avg, McUtils.DOUBLE_ROUND))
-                            .samples(samples)
-                            .timestamp(metricConfig.getTimestampTo())
-                            .build());
+                String sqlSelectQuery = MessageFormat.format(DB_QUERY.SELECT_METRICS_DOUBLE_BY_SENSOR_VARIABLE,
+                        sensorVariableId, String.valueOf(timestampFrom), String.valueOf(tmpTimestampTo));
+                _logger.debug("Sql query:[{}]", sqlSelectQuery);
+                MetricsDoubleTypeDevice metric = null;
+                try {
+                    GenericRawResults<MetricsDoubleTypeDevice> rawResult = DaoUtils
+                            .getMetricsDoubleTypeDeviceDao().getDao().queryRaw(sqlSelectQuery,
+                                    DaoUtils.getMetricsDoubleTypeDeviceDao().getDao().getRawRowMapper());
+                    metric = rawResult.getFirstResult();
+                    _logger.debug("Metric:[{}]", metric);
+                } catch (SQLException ex) {
+                    _logger.error("Exception,", ex);
+                }
+                if (metric != null) {
+                    metricsFinal.add(metric);
                 }
             }
         }
-
         return metricsFinal;
     }
 
@@ -207,27 +192,29 @@ public class MetricApi {
                     }
             }
             while (calendarFrom.before(calendarTo) || calendarFrom.equals(calendarTo)) {
-                metricConfig.setTimestampFrom(calendarFrom.getTimeInMillis());
+                long timestampTmpFrom = calendarFrom.getTimeInMillis();
                 calendarFrom.add(incrementRef, increment);
-                metricConfig.setTimestampTo(calendarFrom.getTimeInMillis());
-                List<MetricsCounterTypeDevice> metrics = DaoUtils.getMetricsCounterTypeDeviceDao()
-                        .getAll(metricConfig);
-                if (metrics != null && !metrics.isEmpty()) {
-                    Long sum = 0L;
-                    int samples = 0;
-                    for (MetricsCounterTypeDevice metric : metrics) {
-                        sum = sum + metric.getValue();
-                    }
-                    if ((bucketString.equals("mn") || bucketString.equals("h"))
-                            && metricConfig.getTimestampTo() > System.currentTimeMillis()) {
-                        break;
-                    }
-                    metricsFinal.add(MetricsCounterTypeDevice.builder()
-                            .sensorVariable(metricConfig.getSensorVariable())
-                            .value(sum)
-                            .samples(samples)
-                            .timestamp(metricConfig.getTimestampTo() - 1L)//Remove one millisecond from actual timestamp
-                            .build());
+                long timestampToTmp = calendarFrom.getTimeInMillis();
+
+                String sqlSelectQuery = MessageFormat.format(DB_QUERY.SELECT_METRICS_COUNTER_BY_SENSOR_VARIABLE,
+                        sensorVariableId, String.valueOf(timestampTmpFrom), String.valueOf(timestampToTmp));
+                _logger.debug("Sql query:[{}]", sqlSelectQuery);
+                MetricsCounterTypeDevice metric = null;
+                try {
+                    GenericRawResults<MetricsCounterTypeDevice> rawResult = DaoUtils
+                            .getMetricsCounterTypeDeviceDao().getDao().queryRaw(sqlSelectQuery,
+                                    DaoUtils.getMetricsCounterTypeDeviceDao().getDao().getRawRowMapper());
+                    metric = rawResult.getFirstResult();
+                    _logger.debug("Metric:[{}]", metric);
+                } catch (SQLException ex) {
+                    _logger.error("Exception,", ex);
+                }
+                if (metric != null) {
+                    metricsFinal.add(metric);
+                }
+                if ((bucketString.equals("mn") || bucketString.equals("h"))
+                        && timestampToTmp > System.currentTimeMillis()) {
+                    break;
                 }
             }
         }
@@ -264,45 +251,33 @@ public class MetricApi {
         } else {
             Long tmpTimestampTo = timestampFrom + bucketDuration;
             while (tmpTimestampTo < timestampTo) {
-                metricConfig.setTimestampFrom(timestampFrom);
+
                 timestampFrom = tmpTimestampTo;
                 if (tmpTimestampTo > timestampTo) {
                     break;
                 }
-                metricConfig.setTimestampTo(tmpTimestampTo);
                 tmpTimestampTo += bucketDuration;
-                List<MetricsBatteryUsage> metrics = DaoUtils.getMetricsBatteryUsageDao().getAll(metricConfig);
-                if (metrics != null && !metrics.isEmpty()) {
-                    Double min = Double.MAX_VALUE;  //Possible positive highest double value
-                    Double max = Double.NEGATIVE_INFINITY;//Take lowest double number, MIN_VALUE, doesn't work.
-                    Double sum = 0D;
-                    int samples = 0;
-                    for (MetricsBatteryUsage metric : metrics) {
-                        //calculate with max, min, avg and previous samples
-                        if (metric.getMax() == null) {
-                            metric.setMax(metric.getAvg());
-                            metric.setMin(metric.getAvg());
-                        }
-                        if (metric.getMax() > max) {
-                            max = metric.getMax();
-                        }
+                String sqlSelectQuery = MessageFormat.format(DB_QUERY.SELECT_METRICS_BATTERY_BY_NODE,
+                        nodeId, String.valueOf(timestampFrom), String.valueOf(tmpTimestampTo));
+                _logger.debug("Sql query:[{}]", sqlSelectQuery);
+                MetricsBatteryUsage metric = null;
+                try {
+                    GenericRawResults<MetricsBatteryUsage> rawResult = DaoUtils
+                            .getMetricsBatteryUsageDao().getDao().queryRaw(sqlSelectQuery,
+                                    DaoUtils.getMetricsBatteryUsageDao().getDao().getRawRowMapper());
+                    metric = rawResult.getFirstResult();
+                    _logger.debug("Metric:[{}]", metric);
+                } catch (SQLException ex) {
+                    _logger.error("Exception,", ex);
+                }
+                if (metric != null) {
+                    metricsFinal.add(metric);
+                }
 
-                        if (metric.getMin() < min) {
-                            min = metric.getMin();
-                        }
-                        sum = sum + (metric.getAvg() * metric.getSamples());
-                        samples = samples + metric.getSamples();
-
-                    }
-                    Double avg = sum / samples;
-                    metricsFinal.add(MetricsBatteryUsage.builder()
-                            .node(metricConfig.getNode())
-                            .min(McUtils.round(min, McUtils.DOUBLE_ROUND))
-                            .max(McUtils.round(max, McUtils.DOUBLE_ROUND))
-                            .avg(McUtils.round(avg, McUtils.DOUBLE_ROUND))
-                            .samples(samples)
-                            .timestamp(metricConfig.getTimestampTo())
-                            .build());
+                metricConfig.setTimestampFrom(timestampFrom);
+                timestampFrom = tmpTimestampTo;
+                if (tmpTimestampTo > timestampTo) {
+                    break;
                 }
             }
         }
@@ -471,6 +446,35 @@ public class MetricApi {
             }
         }
         return "1mn";
+    }
+
+    public List<MetricsDoubleTypeDevice> getMetricsDoubleData(SensorVariable sensorVariable,
+            Long fromTimestamp, Long toTimestamp) {
+        return DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(
+                MetricsDoubleTypeDevice.builder()
+                        .sensorVariable(sensorVariable)
+                        .timestampFrom(fromTimestamp)
+                        .timestampTo(toTimestamp).build());
+    }
+
+    public List<MetricsBatteryUsage> getMetricsBatteryUsage(Node node,
+            Long fromTimestamp, Long toTimestamp) {
+        return DaoUtils.getMetricsBatteryUsageDao().getAll(
+                MetricsBatteryUsage.builder()
+                        .node(node)
+                        .timestampFrom(fromTimestamp)
+                        .timestampTo(toTimestamp).build());
+    }
+
+    //Get metric data for boolean type
+    public List<MetricsBinaryTypeDevice> getMetricsBinaryData(
+            SensorVariable sensorVariable, Long fromTimestamp) {
+        MetricsBinaryTypeDevice binaryTypeDevice = MetricsBinaryTypeDevice.builder()
+                .sensorVariable(sensorVariable).build();
+        if (fromTimestamp != null) {
+            binaryTypeDevice.setTimestampFrom(fromTimestamp);
+        }
+        return DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(binaryTypeDevice);
     }
 
 }
