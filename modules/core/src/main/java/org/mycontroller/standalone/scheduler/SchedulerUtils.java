@@ -130,6 +130,16 @@ public class SchedulerUtils {
         _logger.debug("Job removed:[Name:{},CronName:{}]", jobName, getCronTriggerName(jobName));
     }
 
+    public static void removeJobIfStartsWith(String jobName) {
+        List<String> jobNames = SundialJobScheduler.getAllJobNames();
+        for (String jName : jobNames) {
+            if (jName.startsWith(jobName)) {
+                _logger.debug("There is a match: jName:[{}] will b removed.", jName);
+                removeJob(jName);
+            }
+        }
+    }
+
     public static String getTimerJobName(Timer timer) {
         if (timer.getId() != null) {
             return TIMER_JOB_REF + timer.getId() + "_" + timer.getName();
@@ -255,6 +265,10 @@ public class SchedulerUtils {
 
     public static synchronized void unloadTimerJob(Timer timer) {
         removeJob(getTimerJobName(timer));
+    }
+
+    public static synchronized void unloadTimerJobIfContains(Timer timer) {
+        removeJobIfStartsWith(getTimerJobName(timer));
     }
 
     public static synchronized void unloadTimerJobs(List<Timer> timers) {

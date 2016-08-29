@@ -84,7 +84,7 @@ public class OperationApi {
     }
 
     public void deleteIds(List<Integer> ids) {
-        OperationUtils.unloadNotificationTimerJobs(ids);
+        OperationUtils.unloadOperationTimerJobs(ids);
         DaoUtils.getOperationDao().deleteByIds(ids);
     }
 
@@ -96,8 +96,8 @@ public class OperationApi {
     }
 
     public void disableIds(List<Integer> ids) {
-        OperationUtils.unloadNotificationTimerJobs(ids);
         for (OperationTable operationTable : DaoUtils.getOperationDao().getAll(ids)) {
+            OperationUtils.unloadOperationTimerJobs(operationTable);
             operationTable.setEnabled(false);
             DaoUtils.getOperationDao().update(operationTable);
         }

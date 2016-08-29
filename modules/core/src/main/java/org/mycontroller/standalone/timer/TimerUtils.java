@@ -33,6 +33,7 @@ import org.mycontroller.standalone.db.tables.OperationTimerMap;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.jobs.ManageSunRiseSetJobs;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.utils.McUtils;
@@ -376,6 +377,7 @@ public class TimerUtils {
             _logger.debug("Timer already in disabled state, nothing to do, [{}]", timer);
             return;
         }
+
         //unload timer on scheduler
         SchedulerUtils.unloadTimerJob(timer);
 
@@ -389,6 +391,9 @@ public class TimerUtils {
     }
 
     public static synchronized void deleteTimer(Timer timer) {
+        //unload operations timers job
+        OperationUtils.unloadOperationTimerJobs(timer);
+
         SchedulerUtils.unloadTimerJob(timer);
         //Delete from resources log
         ResourcesLogsUtils.deleteResourcesLog(RESOURCE_TYPE.TIMER, timer.getId());
@@ -409,6 +414,8 @@ public class TimerUtils {
     public static synchronized void disableTimers(List<Integer> ids) {
         for (Integer id : ids) {
             Timer timer = DaoUtils.getTimerDao().getById(id);
+            //unload operations timers job
+            OperationUtils.unloadOperationTimerJobs(timer);
             disableTimer(timer);
         }
     }
