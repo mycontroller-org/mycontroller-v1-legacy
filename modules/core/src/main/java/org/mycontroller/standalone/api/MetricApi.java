@@ -231,7 +231,7 @@ public class MetricApi {
     }
 
     public List<MetricsBatteryUsage> getMetricsBattery(Integer nodeId, Long timestampFrom, Long timestampTo,
-            Boolean withMinMax, String bucketDurationString) {
+            String bucketDurationString) {
         timestampFrom = getTimestampFrom(timestampFrom);
         timestampTo = getTimestampTo(timestampTo);
         List<MetricsBatteryUsage> metricsFinal = new ArrayList<MetricsBatteryUsage>();
@@ -439,7 +439,7 @@ public class MetricApi {
                 return "15mn";
             } else if (duration >= McUtils.ONE_HOUR * 5) {
                 return "5mn";
-            } else if (duration >= McUtils.ONE_MINUTE * 6) {
+            } else if (duration >= McUtils.ONE_MINUTE * 7) {
                 return "1mn";
             } else {
                 return "raw";

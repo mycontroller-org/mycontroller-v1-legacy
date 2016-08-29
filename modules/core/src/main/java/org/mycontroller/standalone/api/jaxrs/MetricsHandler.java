@@ -467,10 +467,13 @@ public class MetricsHandler extends AccessEngine {
 
     private MetricsChartDataGroupNVD3 getMetricsBatteryJsonNVD3(Integer nodeId, Long timestampFrom,
             Long timestampTo, Boolean withMinMax, String bucketDuration) {
+        if (bucketDuration == null) {
+            bucketDuration = MetricApi.getBucketDuration(timestampFrom, timestampTo, METRIC_TYPE.DOUBLE);
+        }
         ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
         //Get metrics
         List<MetricsBatteryUsage> batteryMetrics = metricApi.getMetricsBattery(nodeId, timestampFrom, timestampTo,
-                withMinMax, bucketDuration);
+                bucketDuration);
         ArrayList<Object> avgMetricValues = new ArrayList<Object>();
         ArrayList<Object> minMetricValues = new ArrayList<Object>();
         ArrayList<Object> maxMetricValues = new ArrayList<Object>();
