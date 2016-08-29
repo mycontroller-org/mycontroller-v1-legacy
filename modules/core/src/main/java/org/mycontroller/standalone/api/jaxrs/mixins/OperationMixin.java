@@ -122,6 +122,12 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                 if (node.get("idens") != null) {
                     operationSendPushbulletNote.setIdens(node.get("idens").asText());
                 }
+                if (node.get("emails") != null) {
+                    operationSendPushbulletNote.setEmails(node.get("emails").asText());
+                }
+                if (node.get("channelTags") != null) {
+                    operationSendPushbulletNote.setChannelTags(node.get("channelTags").asText());
+                }
                 if (node.get("body") != null) {
                     operationSendPushbulletNote.setBody(node.get("body").asText());
                 }

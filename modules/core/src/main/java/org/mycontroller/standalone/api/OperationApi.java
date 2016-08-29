@@ -111,8 +111,8 @@ public class OperationApi {
         EmailUtils.sendSimpleEmail(emails, subject, message);
     }
 
-    public void sendPushbulletNote(String idens, String title, String body) {
-        PushbulletUtils.sendNote(idens, title, body);
+    public void sendPushbulletNote(String idens, String emails, String channelTags, String title, String body) {
+        PushbulletUtils.sendNote(idens, emails, channelTags, title, body);
     }
 
 }

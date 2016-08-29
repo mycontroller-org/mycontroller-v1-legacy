@@ -103,7 +103,7 @@
             </button>
             <button type="button" class="btn btn-primary" ng-click="saveEmail()"  ng-show="editEnable.email" ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">
               <div ng-show="saveProgress.email" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              {{saveProgress.email? ('SAVING' | translate):('SAVE' | translate)}}
             </button>
           </div>
         </div>
@@ -161,8 +161,8 @@
             <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.pushbullet" ng-click="editEnable.pushbullet = true">{{ 'EDIT' | translate }}</button>
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.pushbullet" ng-click="updateSettingsPushbullet();editEnable.pushbullet = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="savePushbullet()"  ng-show="editEnable.pushbullet" ng-disabled="saveProgress.pushbullet || mcFormPushbulletNotification.$invalid">
-              <div ng-show="saveProgress.sms" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              <div ng-show="saveProgress.pushbullet" class="spinner spinner-xs"></div>
+              {{saveProgress.pushbullet? ('SAVING' | translate):('SAVE' | translate)}}
             </button>
           </div>
         </div>
@@ -222,7 +222,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.sms" ng-click="updateSettingsSms();editEnable.sms = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveSms()"  ng-show="editEnable.sms" ng-disabled="saveProgress.sms || mcFormSMSNotification.$invalid">
               <div ng-show="saveProgress.sms" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              {{saveProgress.sms? ('SAVING' | translate):('SAVE' | translate)}}
             </button>
           </div>
         </div>

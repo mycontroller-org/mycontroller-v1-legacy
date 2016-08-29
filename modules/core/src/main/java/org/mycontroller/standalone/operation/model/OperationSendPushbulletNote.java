@@ -42,11 +42,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OperationSendPushbulletNote extends Operation {
 
-    public static final String KEY_IDENS = "idens";
     public static final String KEY_TITLE = "title";
     public static final String KEY_BODY = "body";
+    public static final String KEY_IDENS = "idens";
+    public static final String KEY_CHANNEL_TAGS = "channel_tags";
+    public static final String KEY_EMAILS = "emails";
 
     private String idens;
+    private String channelTags;
+    private String emails;
     private String title;
     private String body;
 
@@ -62,6 +66,8 @@ public class OperationSendPushbulletNote extends Operation {
     public void updateOperation(OperationTable operationTable) {
         super.updateOperation(operationTable);
         idens = (String) operationTable.getProperties().get(KEY_IDENS);
+        channelTags = (String) operationTable.getProperties().get(KEY_CHANNEL_TAGS);
+        emails = (String) operationTable.getProperties().get(KEY_EMAILS);
         title = (String) operationTable.getProperties().get(KEY_TITLE);
         body = (String) operationTable.getProperties().get(KEY_BODY);
 
@@ -73,6 +79,8 @@ public class OperationSendPushbulletNote extends Operation {
         OperationTable operationTable = super.getOperationTable();
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(KEY_IDENS, idens);
+        properties.put(KEY_CHANNEL_TAGS, channelTags);
+        properties.put(KEY_EMAILS, emails);
         properties.put(KEY_TITLE, title);
         properties.put(KEY_BODY, body);
         operationTable.setProperties(properties);
@@ -97,12 +105,12 @@ public class OperationSendPushbulletNote extends Operation {
             Notification notification = new Notification(ruleDefinition);
             if (body != null && body.trim().length() > 0) {
                 PushbulletUtils.sendNote(
-                        idens,
+                        idens, emails, channelTags,
                         Notification.updateTemplate(notification, title),
                         Notification.updateTemplate(notification, body));
             } else {
                 PushbulletUtils.sendNote(
-                        idens,
+                        idens, emails, channelTags,
                         Notification.updateTemplate(notification, title),
                         notification.toString());
             }
