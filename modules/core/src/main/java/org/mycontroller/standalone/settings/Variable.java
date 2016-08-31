@@ -21,7 +21,7 @@ import org.mycontroller.standalone.db.tables.Settings;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -32,7 +32,7 @@ import lombok.ToString;
 
 @Builder
 @ToString(includeFieldNames = true)
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Variable {
