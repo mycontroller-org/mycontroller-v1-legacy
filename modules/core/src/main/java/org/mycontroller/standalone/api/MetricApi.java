@@ -28,6 +28,8 @@ import javax.script.ScriptException;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.json.DataPointCounter;
+import org.mycontroller.standalone.api.jaxrs.json.DataPointDouble;
 import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -63,11 +65,12 @@ public class MetricApi {
         return new ResourceCountModel(resourceType, resourceId);
     }
 
-    public List<MetricsDoubleTypeDevice> getSensorVariableMetricsDouble(Integer sensorVariableId,
-            Long timestampFrom, Long timestampTo, String bucketDurationString) {
+    public List<?> getSensorVariableMetricsDouble(Integer sensorVariableId,
+            Long timestampFrom, Long timestampTo, String bucketDurationString, boolean getGeneric) {
         timestampFrom = getTimestampFrom(timestampFrom);
         timestampTo = getTimestampTo(timestampTo);
         List<MetricsDoubleTypeDevice> metricsFinal = new ArrayList<MetricsDoubleTypeDevice>();
+        List<DataPointDouble> metricsGenericFinal = new ArrayList<DataPointDouble>();
         long bucketDuration = getBucketDuration(bucketDurationString);
         _logger.debug("timestamp:[from:{}, to:{}], bucketDurationString:{}, bucketDuration:{}, totalDuration:{}",
                 timestampFrom, timestampTo, bucketDurationString, bucketDuration, (timestampTo - timestampFrom));
@@ -80,7 +83,14 @@ public class MetricApi {
         if (bucketDuration == -1) {
             metricConfig.setTimestampFrom(timestampFrom);
             metricConfig.setTimestampTo(timestampTo);
-            metricsFinal = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(metricConfig);
+            List<MetricsDoubleTypeDevice> metrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(metricConfig);
+            if (getGeneric) {
+                for (MetricsDoubleTypeDevice metric : metrics) {
+                    metricsGenericFinal.add(DataPointDouble.get(metric, null, null));
+                }
+            } else {
+                metricsFinal = metrics;
+            }
         } else {
             Long tmpTimestampTo = timestampFrom + bucketDuration;
             while (tmpTimestampTo < timestampTo) {
@@ -102,10 +112,16 @@ public class MetricApi {
                 } catch (SQLException ex) {
                     _logger.error("Exception,", ex);
                 }
-                if (metric != null) {
+                if (metric != null && !getGeneric) {
                     metricsFinal.add(metric);
                 }
+                if (getGeneric) {
+                    metricsGenericFinal.add(DataPointDouble.get(metric, timestampFrom, tmpTimestampTo));
+                }
             }
+        }
+        if (getGeneric) {
+            return metricsGenericFinal;
         }
         return metricsFinal;
     }
@@ -137,11 +153,12 @@ public class MetricApi {
         return metricDouble;
     }
 
-    public List<MetricsCounterTypeDevice> getSensorVariableMetricsCounter(Integer sensorVariableId,
-            Long timestampFrom, Long timestampTo, String bucketDurationString) {
+    public List<?> getSensorVariableMetricsCounter(Integer sensorVariableId,
+            Long timestampFrom, Long timestampTo, String bucketDurationString, boolean getGeneric) {
         timestampFrom = getTimestampFrom(timestampFrom);
         timestampTo = getTimestampTo(timestampTo);
         List<MetricsCounterTypeDevice> metricsFinal = new ArrayList<MetricsCounterTypeDevice>();
+        List<DataPointCounter> metricsGenericFinal = new ArrayList<DataPointCounter>();
         _logger.debug("timestamp:[from:{}, to:{}], bucketDurationString:{}",
                 timestampFrom, timestampTo, bucketDurationString);
         MetricsCounterTypeDevice metricConfig = MetricsCounterTypeDevice.builder()
@@ -150,7 +167,14 @@ public class MetricApi {
         if (bucketDurationString.equalsIgnoreCase("raw")) {
             metricConfig.setTimestampFrom(timestampFrom);
             metricConfig.setTimestampTo(timestampTo);
-            metricsFinal = DaoUtils.getMetricsCounterTypeDeviceDao().getAll(metricConfig);
+            List<MetricsCounterTypeDevice> metrics = DaoUtils.getMetricsCounterTypeDeviceDao().getAll(metricConfig);
+            if (getGeneric) {
+                for (MetricsCounterTypeDevice metric : metrics) {
+                    metricsGenericFinal.add(DataPointCounter.get(metric, null, null));
+                }
+            } else {
+                metricsFinal = metrics;
+            }
         } else {
             Calendar calendarFrom = Calendar.getInstance();
             Calendar calendarTo = Calendar.getInstance();
@@ -209,14 +233,20 @@ public class MetricApi {
                 } catch (SQLException ex) {
                     _logger.error("Exception,", ex);
                 }
-                if (metric != null) {
+                if (metric != null && !getGeneric) {
                     metricsFinal.add(metric);
+                }
+                if (getGeneric) {
+                    metricsGenericFinal.add(DataPointCounter.get(metric, timestampFrom, timestampToTmp));
                 }
                 if ((bucketString.equals("mn") || bucketString.equals("h"))
                         && timestampToTmp > System.currentTimeMillis()) {
                     break;
                 }
             }
+        }
+        if (getGeneric) {
+            return metricsGenericFinal;
         }
         return metricsFinal;
     }
@@ -230,11 +260,12 @@ public class MetricApi {
                 .build());
     }
 
-    public List<MetricsBatteryUsage> getMetricsBattery(Integer nodeId, Long timestampFrom, Long timestampTo,
-            String bucketDurationString) {
+    public List<?> getMetricsBattery(Integer nodeId, Long timestampFrom, Long timestampTo,
+            String bucketDurationString, boolean getGeneric) {
         timestampFrom = getTimestampFrom(timestampFrom);
         timestampTo = getTimestampTo(timestampTo);
         List<MetricsBatteryUsage> metricsFinal = new ArrayList<MetricsBatteryUsage>();
+        List<DataPointDouble> metricsGenericFinal = new ArrayList<DataPointDouble>();
         long bucketDuration = getBucketDuration(bucketDurationString);
         _logger.debug("timestamp:[from:{}, to:{}], bucketDurationString:{}, bucketDuration:{}, totalDuration:{}",
                 timestampFrom, timestampTo, bucketDurationString, bucketDuration, (timestampTo - timestampFrom));
@@ -247,7 +278,14 @@ public class MetricApi {
         if (bucketDuration == -1) {
             metricConfig.setTimestampFrom(timestampFrom);
             metricConfig.setTimestampTo(timestampTo);
-            metricsFinal = DaoUtils.getMetricsBatteryUsageDao().getAll(metricConfig);
+            List<MetricsBatteryUsage> metrics = DaoUtils.getMetricsBatteryUsageDao().getAll(metricConfig);
+            if (getGeneric) {
+                for (MetricsBatteryUsage metric : metrics) {
+                    metricsGenericFinal.add(DataPointDouble.get(metric, null, null));
+                }
+            } else {
+                metricsFinal = metrics;
+            }
         } else {
             Long tmpTimestampTo = timestampFrom + bucketDuration;
             while (tmpTimestampTo < timestampTo) {
@@ -270,8 +308,11 @@ public class MetricApi {
                 } catch (SQLException ex) {
                     _logger.error("Exception,", ex);
                 }
-                if (metric != null) {
+                if (metric != null && !getGeneric) {
                     metricsFinal.add(metric);
+                }
+                if (getGeneric) {
+                    metricsGenericFinal.add(DataPointDouble.get(metric, timestampFrom, tmpTimestampTo));
                 }
 
                 metricConfig.setTimestampFrom(timestampFrom);
@@ -280,6 +321,9 @@ public class MetricApi {
                     break;
                 }
             }
+        }
+        if (getGeneric) {
+            return metricsGenericFinal;
         }
         return metricsFinal;
     }

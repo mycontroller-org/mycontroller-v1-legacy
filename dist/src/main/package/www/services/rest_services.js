@@ -147,7 +147,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
 myControllerModule.factory('MetricsFactory', function ($resource) {
   return $resource('/mc/rest/metrics/:type', {}, {
     getResourceCount: { method: 'GET', isArray: false, params: {type: 'resourceCount'}},
-    getMetricsData: { method: 'GET', isArray: true, params: {type: 'stats'}},
+    getMetricsData: { method: 'GET', isArray: true, params: {type: 'nvd3data'}},
     getBatteryMetrics: { method: 'GET', isArray: false, params: {type: 'statsBattery'}},
     getBulletChart: { method: 'GET', isArray: true, params: {type: 'bulletChart'}},
     getTopologyData: { method: 'GET', isArray: false, params: {type: 'topology'}},

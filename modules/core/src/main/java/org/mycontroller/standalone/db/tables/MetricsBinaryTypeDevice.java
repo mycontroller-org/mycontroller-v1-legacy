@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db.tables;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -42,6 +43,7 @@ public class MetricsBinaryTypeDevice {
     public static final String KEY_TIMESTAMP = "timestamp";
     public static final String KEY_STATE = "state";
 
+    @JsonIgnore
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID)
     private SensorVariable sensorVariable;
 
