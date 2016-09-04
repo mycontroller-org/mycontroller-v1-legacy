@@ -371,6 +371,11 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
         {id:"Information", value:"fa fa-info", ucode:"\uf129", fname:"FontAwesome"},
         {id:"Gas", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
         {id:"GPS", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Water quality", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"CPU", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Memory", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Disk", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"PWM", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
       ];
 
   commonService.getSensorIcon = function(key){

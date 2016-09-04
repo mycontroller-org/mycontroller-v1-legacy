@@ -32,12 +32,16 @@ import lombok.extern.slf4j.Slf4j;
 public class RawMessageQueue {
     public static final String RAW_MESSAGES_QUEUE_NAME = "mc_raw_messages_queue";
     public static final String RAW_MESSAGES_QUEUE_COUNTER_NAME = "mc_raw_messages_queue_counter";
-    private static RawMessageQueue _instance = new RawMessageQueue();
     BlockingQueue<RawMessage> rawMessagesQueue;
     private final Integer counter;
 
+    //Do not load until some calls getInstance
+    private static class RawMessageQueueHelper {
+        private static final RawMessageQueue INSTANCE = new RawMessageQueue();
+    }
+
     public static RawMessageQueue getInstance() {
-        return _instance;
+        return RawMessageQueueHelper.INSTANCE;
     }
 
     private RawMessageQueue() {

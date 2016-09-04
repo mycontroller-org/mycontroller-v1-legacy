@@ -200,7 +200,11 @@ public class McMessageUtils {
         S_INFO("Information"),
         S_GAS("Gas"),
         S_GPS("GPS"),
-        S_WATER_QUALITY("Water quality");
+        S_WATER_QUALITY("Water quality"),
+        S_CPU("CPU"),
+        S_MEMORY("Memory"),
+        S_DISK("Disk"),
+        S_PWM("PWM");
 
         public static MESSAGE_TYPE_PRESENTATION get(int id) {
             for (MESSAGE_TYPE_PRESENTATION type : values()) {
@@ -291,7 +295,12 @@ public class McMessageUtils {
         V_EC("EC"),
         V_VAR("Volt-ampere reactive"),
         V_VA("Volt-ampere"),
-        V_POWER_FACTOR("Power factor");
+        V_POWER_FACTOR("Power factor"),
+        V_USED("Used"),
+        V_FREE("Free"),
+        V_TOTAL("Total"),
+        V_COUNT("Count"),
+        V_RATE("Rate");
 
         public static MESSAGE_TYPE_SET_REQ get(int id) {
             for (MESSAGE_TYPE_SET_REQ type : values()) {
@@ -470,6 +479,13 @@ public class McMessageUtils {
             case V_HVAC_SETPOINT_HEAT:
                 return PAYLOAD_TYPE.PL_STRING;
             case V_HVAC_FLOW_MODE:
+                return PAYLOAD_TYPE.PL_STRING;
+            case V_FREE:
+            case V_USED:
+                return PAYLOAD_TYPE.PL_DOUBLE;
+            case V_COUNT:
+                return PAYLOAD_TYPE.PL_STRING;
+            case V_RATE:
                 return PAYLOAD_TYPE.PL_STRING;
             default:
                 //Make default to string
