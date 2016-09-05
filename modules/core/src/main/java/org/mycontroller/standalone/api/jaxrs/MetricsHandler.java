@@ -41,6 +41,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.MetricApi;
+import org.mycontroller.standalone.api.UidTagApi;
 import org.mycontroller.standalone.api.jaxrs.json.ApiError;
 import org.mycontroller.standalone.api.jaxrs.json.LocaleString;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsBulletChartNVD3;
@@ -61,6 +62,7 @@ import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.db.tables.UidTag;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.metrics.MetricDouble;
 import org.mycontroller.standalone.metrics.MetricsCsvEngine;
@@ -140,12 +142,28 @@ public class MetricsHandler extends AccessEngine {
             @QueryParam("resourceType") String resourceType,
             @QueryParam("start") Long start,
             @QueryParam("end") Long end,
-            @QueryParam("bucketDuration") String bucketDuration) {
+            @QueryParam("bucketDuration") String bucketDuration,
+            @QueryParam("uid") String uid) {
 
-        if (resourceId == null || resourceType == null || bucketDuration == null) {
+        if (uid != null) {
+            if (bucketDuration == null) {
+                return RestUtils.getResponse(Status.BAD_REQUEST,
+                        new ApiError(MessageFormat.format("Required fields is missing! bucketDuration:[{0}]",
+                                bucketDuration)));
+            }
+            UidTag uidObj = new UidTagApi().getByUid(uid);
+            if (uidObj == null || uidObj.getSensorVariable() == null) {
+                return RestUtils.getResponse(Status.BAD_REQUEST,
+                        new ApiError(MessageFormat.format("Requested uid[{0}] not available!", uid)));
+            }
+            resourceId = uidObj.getSensorVariable().getId();
+            resourceType = RESOURCE_TYPE.SENSOR_VARIABLE.getText();
+        }
+
+        if (uid == null && (resourceId == null || resourceType == null)) {
             return RestUtils.getResponse(Status.BAD_REQUEST,
                     new ApiError(MessageFormat.format("Required fields are missing! resourceId:[{0}], "
-                            + "resourceType:[{1}], bucketDuration:[{2}]", resourceId, resourceType, bucketDuration)));
+                            + "resourceType:[{1}]", resourceId, resourceType)));
         }
         try {
             ResourceModel resourceModel = new ResourceModel(RESOURCE_TYPE.fromString(resourceType), resourceId);
