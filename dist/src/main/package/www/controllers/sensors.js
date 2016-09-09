@@ -496,10 +496,10 @@ myControllerModule.controller('SensorVariableControllerPurge', function ($scope,
   $scope.save = function(){
     //Update time range from/to
     if($scope.purgeFrom){
-      $scope.item.timestampFrom = $scope.purgeFrom.getTime();
+      $scope.item.timestampFrom = moment($scope.purgeFrom).format('YYYY-MM-DDTHH:mm:ss');
     }
     if($scope.purgeTo){
-      $scope.item.timestampTo = $scope.purgeTo.getTime();
+      $scope.item.timestampTo = moment($scope.purgeTo).format('YYYY-MM-DDTHH:mm:ss');
     }
 
     $scope.saveProgress = true;

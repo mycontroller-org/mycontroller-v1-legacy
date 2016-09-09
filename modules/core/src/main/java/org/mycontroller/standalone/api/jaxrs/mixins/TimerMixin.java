@@ -17,16 +17,16 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.DateTimeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.FrequencyTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ResourceTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.TimerTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.TriggerTimeDeserializer;
-import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ValidityDateTimeDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.DateTimeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.FrequencyTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ResourceTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.TimerTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.TriggerTimeSerializer;
-import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ValidityDateTimeSerializer;
 import org.mycontroller.standalone.timer.TimerUtils.FREQUENCY_TYPE;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
 
@@ -70,16 +70,16 @@ abstract class TimerMixin {
     @JsonSerialize(using = TriggerTimeSerializer.class)
     public abstract String getTriggerTime();
 
-    @JsonDeserialize(using = ValidityDateTimeDeserializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
     public abstract void setValidityFrom(Long validity);
 
-    @JsonSerialize(using = ValidityDateTimeSerializer.class)
+    @JsonSerialize(using = DateTimeSerializer.class)
     public abstract String getValidityFrom();
 
-    @JsonDeserialize(using = ValidityDateTimeDeserializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
     public abstract void setValidityTo(Long validity);
 
-    @JsonSerialize(using = ValidityDateTimeSerializer.class)
+    @JsonSerialize(using = DateTimeSerializer.class)
     public abstract String getValidityTo();
 
     @JsonIgnore

@@ -32,18 +32,18 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.3
  */
 @Slf4j
-public class ValidityDateTimeDeserializer extends JsonDeserializer<Long> {
+public class DateTimeDeserializer extends JsonDeserializer<Long> {
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
     public Long deserialize(JsonParser parser, DeserializationContext context)
             throws IOException, JsonProcessingException {
-        final String validity = parser.getText();
-        if (validity != null) {
+        final String stringTime = parser.getText();
+        if (stringTime != null) {
             try {
-                return DATE_TIME_FORMAT.parse(validity).getTime();
+                return DATE_TIME_FORMAT.parse(stringTime).getTime();
             } catch (ParseException ex) {
-                _logger.error("Validity date time parse error, input:[{}]", validity);
+                _logger.error("String date time parse error, input:[{}]", stringTime);
                 return null;
             }
         } else {

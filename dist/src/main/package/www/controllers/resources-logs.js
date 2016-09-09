@@ -256,7 +256,7 @@ myControllerModule.controller('ResourcesLogsPurgeController', function ($scope, 
   $scope.save = function(){
     //Update validity from/to
     if($scope.purgeBefore){
-      $scope.resourcesLogs.timestamp = $scope.purgeBefore.getTime();
+      $scope.resourcesLogs.timestamp = moment($scope.purgeBefore).format('YYYY-MM-DDTHH:mm:ss');
     }
 
     $scope.saveProgress = true;

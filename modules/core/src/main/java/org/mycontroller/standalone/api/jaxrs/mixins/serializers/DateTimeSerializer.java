@@ -19,7 +19,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
 import java.io.IOException;
 import java.util.Date;
 
-import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ValidityDateTimeDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.DateTimeDeserializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,13 +30,13 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-public class ValidityDateTimeSerializer extends JsonSerializer<Long> {
+public class DateTimeSerializer extends JsonSerializer<Long> {
 
     @Override
     public void serialize(Long timestamp, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonProcessingException {
         if (timestamp != null) {
-            jgen.writeString(ValidityDateTimeDeserializer.DATE_TIME_FORMAT.format(new Date(timestamp)));
+            jgen.writeString(DateTimeDeserializer.DATE_TIME_FORMAT.format(new Date(timestamp)));
         } else {
             jgen.writeNull();
         }

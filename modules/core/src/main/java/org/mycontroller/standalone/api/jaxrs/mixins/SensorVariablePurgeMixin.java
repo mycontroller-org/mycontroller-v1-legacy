@@ -14,27 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.json;
+package org.mycontroller.standalone.api.jaxrs.mixins;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.DateTimeDeserializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+abstract class SensorVariablePurgeMixin {
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    public abstract void setTimestampFrom(Long timestamp);
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class SensorVariablePurge {
-    private Integer id;
-    private String value;
-    private Long timestampFrom;
-    private Long timestampTo;
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    public abstract void setTimestampTo(Long timestamp);
 }
