@@ -16,7 +16,9 @@
  */
 package org.mycontroller.standalone.scripts.api;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -80,5 +82,19 @@ public class UtilsApi {
             return "Never";
         }
         return McUtils.getFriendlyTime(System.currentTimeMillis() - timestamp, true);
+    }
+
+    public String formatTime(String pattern) {
+        return formatTime(pattern, null);
+    }
+
+    public String formatTime(String pattern, Long timestamp) {
+        Date date = null;
+        if (timestamp != null) {
+            date = new Date(timestamp);
+        } else {
+            date = new Date();
+        }
+        return new SimpleDateFormat(pattern).format(date);
     }
 }
