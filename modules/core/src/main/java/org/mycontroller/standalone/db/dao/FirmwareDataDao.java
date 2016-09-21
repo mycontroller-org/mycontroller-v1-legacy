@@ -14,21 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.json;
+package org.mycontroller.standalone.db.dao;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import org.mycontroller.standalone.db.tables.FirmwareData;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+public interface FirmwareDataDao extends BaseDao<FirmwareData, Integer> {
 
-@Data
-@Builder
-@AllArgsConstructor
-public class TopologyRelation {
-    private String source;
-    private String target;
+    void deleteByFirmwareId(Integer firmwareId);
+
+    FirmwareData getByFirmwareId(Integer firmwareId);
+
+    FirmwareData getByTypeVersion(Integer typeId, Integer versionId);
 }

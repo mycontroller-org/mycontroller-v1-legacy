@@ -170,9 +170,13 @@ public abstract class MigrationBase implements JdbcMigration {
         return result;
     }
 
-    protected HashMap<String, String> getRow(List<HashMap<String, String>> rows, String key, String value) {
+    protected HashMap<String, String> getRow(String tableName, String column, String value) {
+        return getRow(getRows(tableName), column, value);
+    }
+
+    protected HashMap<String, String> getRow(List<HashMap<String, String>> rows, String column, String value) {
         for (HashMap<String, String> row : rows) {
-            if (row.get(key).equals(value)) {
+            if (row.get(column).equals(value)) {
                 return row;
             }
         }

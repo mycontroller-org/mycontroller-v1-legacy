@@ -43,6 +43,8 @@ import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
@@ -52,6 +54,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTAT
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
+@Slf4j
 public class NodeHandler extends AccessEngine {
     private NodeApi nodeApi = new NodeApi();
 
@@ -148,6 +151,7 @@ public class NodeHandler extends AccessEngine {
             nodeApi.uploadFirmware(ids);
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
+            _logger.error("Error,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }

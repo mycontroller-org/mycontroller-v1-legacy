@@ -40,7 +40,9 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareType;
 import org.mycontroller.standalone.db.tables.FirmwareVersion;
-import org.mycontroller.standalone.provider.mysensors.firmware.FirmwareUtils;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
+import org.mycontroller.standalone.firmware.FirmwareUtils;
+import org.mycontroller.standalone.firmware.FirmwareUtils.FILE_TYPE;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -212,28 +214,31 @@ public class FirmwareHandler {
 
     @GET
     @Path("/firmwares/{id}")
-    public Response getFirmware(@QueryParam("withData") Boolean withData, @PathParam("id") int id) {
+    public Response getFirmware(@PathParam("id") int id) {
         Firmware firmware = DaoUtils.getFirmwareDao().getById(id);
-        if (withData == null || !withData) {
-            firmware.setData(null);
-        }
         return RestUtils.getResponse(Status.OK, firmware);
     }
 
     @PUT
     @Path("/firmwares")
     public Response updateFirmware(Firmware firmware) {
-        FirmwareUtils.updateFirmwareFromHexString(firmware);
-        firmware.setTimestamp(System.currentTimeMillis());
-        DaoUtils.getFirmwareDao().update(firmware);
-        return RestUtils.getResponse(Status.OK);
+        try {
+            FirmwareUtils.createUpdateFirmware(firmware, FILE_TYPE.fromString(firmware.getFileType()));
+            return RestUtils.getResponse(Status.OK);
+        } catch (McBadRequestException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
     }
 
     @POST
     @Path("/firmwares")
     public Response createFirmware(Firmware firmware) {
-        FirmwareUtils.createFirmware(firmware);
-        return RestUtils.getResponse(Status.CREATED);
+        try {
+            FirmwareUtils.createUpdateFirmware(firmware, FILE_TYPE.fromString(firmware.getFileType()));
+            return RestUtils.getResponse(Status.CREATED);
+        } catch (McBadRequestException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
     }
 
     @POST
@@ -243,6 +248,12 @@ public class FirmwareHandler {
             FirmwareUtils.deleteFirmware(id);
         }
         return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/firmwaresData/{firmwareId}")
+    public Response getFirmwareData(@PathParam("firmwareId") int firmwareId) {
+        return RestUtils.getResponse(Status.OK, DaoUtils.getFirmwareDataDao().getByFirmwareId(firmwareId));
     }
 
 }

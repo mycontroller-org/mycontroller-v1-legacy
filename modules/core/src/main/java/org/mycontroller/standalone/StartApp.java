@@ -225,8 +225,8 @@ public class StartApp {
         //Start order..
         // - set to default locale
         // - Add Shutdown hook
-        // - Initialize MapDB store
         // - Start DB service
+        // - Initialize MapDB store
         // - Set to locale actual
         // - Check password reset file
         // - Start message Monitor Thread
@@ -242,11 +242,11 @@ public class StartApp {
         //Add Shutdown hook
         new AppShutdownHook().attachShutDownHook();
 
-        //Initialize MapDB store
-        MapDbFactory.init();
-
         //Start DB service
         DataBaseUtils.loadDatabase();
+
+        //Initialize MapDB store
+        MapDbFactory.init();
 
         //Create or update static json file used for GUI before login
         SettingsUtils.updateStaticJsonInformationFile();

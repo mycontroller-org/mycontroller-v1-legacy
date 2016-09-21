@@ -127,7 +127,9 @@ public class McMessageUtils {
         I_REGISTRATION_REQUEST("Registration request"),
         I_REGISTRATION_RESPONSE("Registration response"),
         I_DEBUG("Debug"),
-        I_RSSI("RSSI");
+        I_RSSI("RSSI"),
+        I_PROPERTIES("Properties"),
+        I_FACTORY_RESET("Factory reset");
         public static MESSAGE_TYPE_INTERNAL get(int id) {
             for (MESSAGE_TYPE_INTERNAL type : values()) {
                 if (type.ordinal() == id) {

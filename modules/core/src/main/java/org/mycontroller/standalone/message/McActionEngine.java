@@ -19,10 +19,12 @@ package org.mycontroller.standalone.message;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
+import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.ResourceOperationUtils;
+import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -32,6 +34,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.provider.mc.structs.McFirmwareConfig;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareConfigResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -251,13 +254,6 @@ public class McActionEngine implements IMcActionEngine {
 
     @Override
     public void uploadFirmware(Node node) {
-        FirmwareConfigResponse firmwareConfigResponse = new FirmwareConfigResponse();
-        firmwareConfigResponse.setByteBufferPosition(0);
-        firmwareConfigResponse.setType(node.getFirmware().getType().getId());
-        firmwareConfigResponse.setVersion(node.getFirmware().getVersion().getId());
-        firmwareConfigResponse.setBlocks(node.getFirmware().getBlocks());
-        firmwareConfigResponse.setCrc(node.getFirmware().getCrc());
-
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(node.getGatewayTable().getId())
                 .nodeEui(node.getEui())
@@ -265,9 +261,25 @@ public class McActionEngine implements IMcActionEngine {
                 .type(MESSAGE_TYPE.C_STREAM)
                 .acknowledge(false)
                 .subType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.getText())
-                .payload(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase())
                 .isTxMessage(true)
                 .build();
+        if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+            FirmwareConfigResponse fwCfgResponse = new FirmwareConfigResponse();
+            fwCfgResponse.setByteBufferPosition(0);
+            fwCfgResponse.setType(node.getFirmware().getType().getId());
+            fwCfgResponse.setVersion(node.getFirmware().getVersion().getId());
+            fwCfgResponse.setBlocks((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCKS));
+            fwCfgResponse.setCrc((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_CRC));
+            mcMessage.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
+        } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER) {
+            McFirmwareConfig fwCfgResponse = new McFirmwareConfig();
+            fwCfgResponse.setByteBufferPosition(0);
+            fwCfgResponse.setType(node.getFirmware().getType().getId());
+            fwCfgResponse.setVersion(node.getFirmware().getVersion().getId());
+            fwCfgResponse.setBlocks((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCKS));
+            fwCfgResponse.setMd5Sum((String) node.getFirmware().getProperties().get(Firmware.KEY_PROP_MD5_HEX));
+            mcMessage.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
+        }
         McMessageUtils.sendToProviderBridge(mcMessage);
     }
 
@@ -302,9 +314,23 @@ public class McActionEngine implements IMcActionEngine {
 
     @Override
     public void eraseConfiguration(Node node) {
-        node.setEraseConfig(true);
-        DaoUtils.getNodeDao().update(node);
-        rebootNode(node);
+        if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER) {
+            McMessage mcMessage = McMessage.builder()
+                    .gatewayId(node.getGatewayTable().getId())
+                    .nodeEui(node.getEui())
+                    .sensorId(McMessage.SENSOR_BROADCAST_ID)
+                    .type(MESSAGE_TYPE.C_INTERNAL)
+                    .subType(MESSAGE_TYPE_INTERNAL.I_FACTORY_RESET.getText())
+                    .acknowledge(false)
+                    .payload(McMessage.PAYLOAD_EMPTY)
+                    .isTxMessage(true)
+                    .build();
+            McMessageUtils.sendToProviderBridge(mcMessage);
+        } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+            node.setEraseConfig(true);
+            DaoUtils.getNodeDao().update(node);
+            rebootNode(node);
+        }
     }
 
     @Override

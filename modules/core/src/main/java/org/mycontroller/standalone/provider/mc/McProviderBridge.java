@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class McProviderBridge implements IProviderBridge {
+    private static final int MAX_NODE_EUI_LENGTH = 12;
 
     @Override
     public void executeMcMessage(McMessage mcMessage) {
@@ -72,6 +73,8 @@ public class McProviderBridge implements IProviderBridge {
     public boolean validateNodeId(Node node) {
         if (node.getEui().contains(" ")) {
             throw new RuntimeException("Node EUI should not contain any space");
+        } else if (node.getEui().length() > MAX_NODE_EUI_LENGTH) {
+            throw new RuntimeException("Node EUI string length should not go more than 12 char");
         }
         return true;
     }

@@ -159,6 +159,9 @@ public class ResourcesLogsUtils {
 
     public static void recordSensorsResourcesLog(RESOURCE_TYPE resourceType, Integer resourceId, LOG_LEVEL logLevel,
             MESSAGE_TYPE messageType, boolean isTxMessage, String message) {
+        if (message != null && message.length() > 250) {
+            message = message.substring(0, 250) + "...";
+        }
         ResourcesLogs resourcesLogs = ResourcesLogs.builder()
                 .timestamp(System.currentTimeMillis())
                 .resourceType(resourceType)

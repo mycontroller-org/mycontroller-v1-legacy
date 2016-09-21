@@ -30,6 +30,7 @@ public class McpEngine {
             case C_REQ:
             case C_PRESENTATION:
             case C_INTERNAL:
+            case C_STREAM:
                 break;
             default:
                 _logger.warn("This type message not supported by this provider.");

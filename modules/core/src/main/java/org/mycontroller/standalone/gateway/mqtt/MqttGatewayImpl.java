@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.gateway.mqtt;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -51,8 +52,8 @@ public class MqttGatewayImpl implements IGateway {
     public MqttGatewayImpl(GatewayTable gatewayTable) {
         try {
             this.gateway = new GatewayMQTT(gatewayTable);
-
-            mqttClient = new MqttClient(this.gateway.getBrokerHost(), this.gateway.getClientId());
+            mqttClient = new MqttClient(this.gateway.getBrokerHost(), this.gateway.getClientId()
+                    + "_" + RandomStringUtils.randomAlphanumeric(5));
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setConnectionTimeout(CONNECTION_TIME_OUT);
             connectOptions.setKeepAliveInterval(KEEP_ALIVE);

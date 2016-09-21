@@ -17,9 +17,11 @@
 package org.mycontroller.standalone.db.tables;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -31,25 +33,29 @@ import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 0.0.3
  */
-@DatabaseTable(tableName = DB_TABLES.FIRMWARE_VERSION)
+@DatabaseTable(tableName = DB_TABLES.FIRMWARE_DATA)
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString(includeFieldNames = true)
-public class FirmwareVersion implements Serializable {
+@ToString(exclude = { "data" })
+public class FirmwareData implements Serializable {
     /**  */
-    private static final long serialVersionUID = -8741911886088122681L;
+    private static final long serialVersionUID = -3932679458678495012L;
     public static final String KEY_ID = "id";
-    public static final String KEY_VERSION = "version";
+    public static final String KEY_FIRMWARE_ID = "firmwareId";
+    public static final String KEY_DATA = "data";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(canBeNull = false, unique = true, columnName = KEY_VERSION)
-    private String version;
+    @DatabaseField(canBeNull = true, columnName = KEY_FIRMWARE_ID, foreign = true, unique = true,
+            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
+    private Firmware firmware;
 
-    private Integer newId;
+    @DatabaseField(canBeNull = false, columnName = KEY_DATA, dataType = DataType.SERIALIZABLE)
+    private ArrayList<Byte> data;
+
 }

@@ -24,6 +24,7 @@ public class DB_TABLES {
     public static final String EXTERNAL_SERVER = "externalServer";
     public static final String EXTERNAL_SERVER_RESOURCE_MAP = "externalServerResourceMap";
     public static final String FIRMWARE = "firmware";
+    public static final String FIRMWARE_DATA = "firmware_data";
     public static final String FIRMWARE_TYPE = "firmware_type";
     public static final String FIRMWARE_VERSION = "firmware_version";
     public static final String FORWARD_PAYLOAD = "forward_payload";

@@ -24,6 +24,8 @@ import org.mycontroller.standalone.db.dao.ExternalServerResourceMapDao;
 import org.mycontroller.standalone.db.dao.ExternalServerResourceMapDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareDao;
 import org.mycontroller.standalone.db.dao.FirmwareDaoImpl;
+import org.mycontroller.standalone.db.dao.FirmwareDataDao;
+import org.mycontroller.standalone.db.dao.FirmwareDataDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareTypeDao;
 import org.mycontroller.standalone.db.dao.FirmwareTypeDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareVersionDao;
@@ -108,6 +110,7 @@ public class DaoUtils {
     private static ExternalServerDao externalServerDao = null;
     private static ExternalServerResourceMapDao externalServerResourceMapDao = null;
     private static FirmwareDao firmwareDao = null;
+    private static FirmwareDataDao firmwareDataDao = null;
     private static FirmwareTypeDao firmwareTypeDao = null;
     private static FirmwareVersionDao firmwareVersionDao = null;
     private static ForwardPayloadDao forwardPayloadDao = null;
@@ -151,6 +154,7 @@ public class DaoUtils {
             externalServerDao = new ExternalServerDaoImpl(DataBaseUtils.getConnectionSource());
             externalServerResourceMapDao = new ExternalServerResourceMapDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareDao = new FirmwareDaoImpl(DataBaseUtils.getConnectionSource());
+            firmwareDataDao = new FirmwareDataDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareTypeDao = new FirmwareTypeDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareVersionDao = new FirmwareVersionDaoImpl(DataBaseUtils.getConnectionSource());
             forwardPayloadDao = new ForwardPayloadDaoImpl(DataBaseUtils.getConnectionSource());
@@ -343,6 +347,10 @@ public class DaoUtils {
 
     public static ResourceDao getResourceDao() {
         return resourceDao;
+    }
+
+    public static FirmwareDataDao getFirmwareDataDao() {
+        return firmwareDataDao;
     }
 
 }

@@ -32,6 +32,7 @@ import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
 import org.mycontroller.standalone.db.ResourcesLogsUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.Firmware;
+import org.mycontroller.standalone.db.tables.FirmwareData;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
@@ -44,6 +45,7 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.NodeIdException;
 import org.mycontroller.standalone.externalserver.ExternalServerEngine;
+import org.mycontroller.standalone.firmware.FirmwareUtils;
 import org.mycontroller.standalone.fwpayload.ExecuteForwardPayload;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
@@ -53,8 +55,10 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.message.McMessageUtils.PAYLOAD_TYPE;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.provider.mc.structs.McFirmwareConfig;
+import org.mycontroller.standalone.provider.mc.structs.McFirmwareRequest;
+import org.mycontroller.standalone.provider.mc.structs.McFirmwareResponse;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
-import org.mycontroller.standalone.provider.mysensors.firmware.FirmwareUtils;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareConfigRequest;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareConfigResponse;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareRequest;
@@ -72,8 +76,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class McMessageEngine implements Runnable {
     private static final int FIRMWARE_PRINT_LOG = 100;
-
-    private Firmware firmware;
     private McMessage mcMessage;
 
     public McMessageEngine(McMessage mcMessage) {
@@ -414,12 +416,37 @@ public class McMessageEngine implements Runnable {
                 node.setRssi(mcMessage.getPayload());
                 updateNode(node);
                 return;
+            case I_PROPERTIES:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                updateProperties(mcMessage);
+                return;
+            case I_FACTORY_RESET:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
             default:
                 _logger.warn(
                         "Internal Message[type:{}, {}], "
                                 + "This type may not be supported (or) not implemented yet",
                         MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()), mcMessage);
                 break;
+        }
+    }
+
+    private void updateProperties(McMessage mcMessage) {
+        Node node = getNode(mcMessage);
+        if (mcMessage.getPayload() != null && mcMessage.getPayload().length() > 0) {
+            String[] _properties = mcMessage.getPayload().split(";");
+            for (String property : _properties) {
+                String[] _prop = property.split("=", 2);
+                if (_prop.length == 2) {
+                    node.getProperties().put(_prop[0].trim(), _prop[1]);
+                }
+            }
+            _logger.debug("Updated properties for the {}", node);
+            updateNode(node);
         }
     }
 
@@ -433,7 +460,11 @@ public class McMessageEngine implements Runnable {
                             mcMessage,
                             MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()).getText(), null);
                 }
-                this.processFirmwareConfigRequest(mcMessage);
+                if (mcMessage.getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+                    this.processFirmwareConfigRequestMySensor(mcMessage);
+                } else if (mcMessage.getNetworkType() == NETWORK_TYPE.MY_CONTROLLER) {
+                    this.processFirmwareConfigRequestMyController(mcMessage);
+                }
                 break;
             case ST_FIRMWARE_REQUEST:
                 //ResourcesLogs message data
@@ -442,7 +473,11 @@ public class McMessageEngine implements Runnable {
                             mcMessage,
                             MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()).getText(), null);
                 }
-                this.procressFirmwareRequest(mcMessage);
+                if (mcMessage.getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+                    this.procressFirmwareRequestMySensors(mcMessage);
+                } else if (mcMessage.getNetworkType() == NETWORK_TYPE.MY_CONTROLLER) {
+                    this.procressFirmwareRequestMyController(mcMessage);
+                }
                 break;
             case ST_FIRMWARE_CONFIG_RESPONSE:
                 //ResourcesLogs message data
@@ -477,37 +512,17 @@ public class McMessageEngine implements Runnable {
         }
     }
 
-    private void procressFirmwareRequest(McMessage mcMessage) {
+    private void procressFirmwareRequestMySensors(McMessage mcMessage) {
         FirmwareRequest firmwareRequest = new FirmwareRequest();
         try {
             firmwareRequest.setByteBuffer(
                     ByteBuffer.wrap(Hex.decodeHex(mcMessage.getPayload().toCharArray())).order(
                             ByteOrder.LITTLE_ENDIAN), 0);
             _logger.debug("Firmware Request:[Type:{},Version:{},Block:{}]", firmwareRequest.getType(),
-                    firmwareRequest.getVersion(),
-                    firmwareRequest.getBlock());
-            boolean requestFirmwareReload = false;
-            if (firmware == null) {
-                requestFirmwareReload = true;
-            } else if (firmware != null) {
-                if (firmwareRequest.getBlock() == (firmware.getBlocks() - 1)) {
-                    requestFirmwareReload = true;
-                } else if (firmwareRequest.getType() == firmware.getType().getId()
-                        && firmwareRequest.getVersion() == firmware.getVersion().getId()) {
-                    //Nothing to do just continue
-                } else {
-                    requestFirmwareReload = true;
-                }
-            } else {
-                requestFirmwareReload = true;
-            }
-
-            if (requestFirmwareReload) {
-                firmware = DaoUtils.getFirmwareDao().get(firmwareRequest.getType(), firmwareRequest.getVersion());
-                _logger.debug("Firmware reloaded...");
-            }
-
-            if (firmware == null) {
+                    firmwareRequest.getVersion(), firmwareRequest.getBlock());
+            FirmwareData firmwareData = FirmwareUtils.getFirmwareDataFromOfflineMap(firmwareRequest.getType(),
+                    firmwareRequest.getVersion());
+            if (firmwareData == null) {
                 _logger.debug("selected firmware type/version not available");
                 return;
             }
@@ -518,18 +533,15 @@ public class McMessageEngine implements Runnable {
             firmwareResponse.setVersion(firmwareRequest.getVersion());
             firmwareResponse.setType(firmwareRequest.getType());
             StringBuilder builder = new StringBuilder();
-            int fromIndex = firmwareRequest.getBlock() * FirmwareUtils.FIRMWARE_BLOCK_SIZE;
-            for (int index = fromIndex; index < fromIndex + FirmwareUtils.FIRMWARE_BLOCK_SIZE; index++) {
-                builder.append(String.format("%02X", firmware.getData().get(index)));
-            }
-            if (firmwareRequest.getBlock() == 0) {
-                firmware = null;
-                _logger.debug("Firmware unloaded...");
+            Integer blockSize = (Integer) firmwareData.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCK_SIZE);
+            Integer blocks = (Integer) firmwareData.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCKS);
+            int fromIndex = firmwareRequest.getBlock() * blockSize;
+            for (int index = fromIndex; index < fromIndex + blockSize; index++) {
+                builder.append(String.format("%02X", firmwareData.getData().get(index)));
             }
 
             // Print firmware status in sensor logs
-            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0
-                    || firmwareRequest.getBlock() == (firmware.getBlocks() - 1)) {
+            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
                 //ResourcesLogs message data
                 if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
                     this.setSensorOtherData(LOG_LEVEL.INFO,
@@ -547,8 +559,7 @@ public class McMessageEngine implements Runnable {
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
             // Print firmware status in sensor logs
-            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0
-                    || firmwareRequest.getBlock() == (firmware.getBlocks() - 1)) {
+            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
                 //ResourcesLogs message data
                 if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
                     this.setSensorOtherData(LOG_LEVEL.INFO,
@@ -556,7 +567,6 @@ public class McMessageEngine implements Runnable {
                             MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText(),
                             "Block No:" + firmwareRequest.getBlock());
                 }
-
             }
 
         } catch (DecoderException ex) {
@@ -564,7 +574,75 @@ public class McMessageEngine implements Runnable {
         }
     }
 
-    private void processFirmwareConfigRequest(McMessage mcMessage) {
+    private void procressFirmwareRequestMyController(McMessage mcMessage) {
+        McFirmwareRequest firmwareRequest = new McFirmwareRequest();
+        try {
+            firmwareRequest.setByteBuffer(
+                    ByteBuffer.wrap(Hex.decodeHex(mcMessage.getPayload().toCharArray())).order(
+                            ByteOrder.LITTLE_ENDIAN), 0);
+            _logger.debug("Firmware Request:[Type:{},Version:{},Block:{}]", firmwareRequest.getType(),
+                    firmwareRequest.getVersion(), firmwareRequest.getBlock());
+            FirmwareData firmwareData = FirmwareUtils.getFirmwareDataFromOfflineMap(firmwareRequest.getType(),
+                    firmwareRequest.getVersion());
+            if (firmwareData == null) {
+                _logger.debug("selected firmware type/version not available");
+                return;
+            }
+
+            McFirmwareResponse firmwareResponse = new McFirmwareResponse();
+            firmwareResponse.setByteBufferPosition(0);
+            firmwareResponse.setBlock(firmwareRequest.getBlock());
+            firmwareResponse.setVersion(firmwareRequest.getVersion());
+            firmwareResponse.setType(firmwareRequest.getType());
+
+            StringBuilder builder = new StringBuilder();
+            Integer blockSize = (Integer) firmwareData.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCK_SIZE);
+            Integer blocks = (Integer) firmwareData.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCKS);
+            int fromIndex = firmwareRequest.getBlock() * blockSize;
+            if (firmwareRequest.getBlock() >= blocks || firmwareRequest.getBlock() < 0) {
+                _logger.warn("Requested firmware out of range. Accepted range[0~{}] FirmwareRequest({}), {}",
+                        blocks - 1, firmwareRequest, mcMessage);
+                return;
+            }
+            int toIndex = Math.min(fromIndex + blockSize, firmwareData.getData().size());
+            firmwareResponse.setSize(toIndex - fromIndex);
+            firmwareResponse.setData(firmwareData.getData().subList(fromIndex, toIndex));
+
+            // Print firmware status in sensor logs
+            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
+                //ResourcesLogs message data
+                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                    this.setSensorOtherData(LOG_LEVEL.INFO,
+                            mcMessage,
+                            MESSAGE_TYPE_STREAM.ST_FIRMWARE_REQUEST.getText(),
+                            "Block No: " + firmwareRequest.getBlock());
+                }
+            }
+
+            mcMessage.setTxMessage(true);
+            mcMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText());
+            mcMessage.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array())
+                    + builder.toString());
+            McMessageUtils.sendToProviderBridge(mcMessage);
+            _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
+                    firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
+            // Print firmware status in sensor logs
+            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
+                //ResourcesLogs message data
+                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                    this.setSensorOtherData(LOG_LEVEL.INFO,
+                            mcMessage,
+                            MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText(),
+                            "Block No:" + firmwareRequest.getBlock());
+                }
+            }
+
+        } catch (DecoderException ex) {
+            _logger.error("Exception, ", ex);
+        }
+    }
+
+    private void processFirmwareConfigRequestMySensor(McMessage mcMessage) {
         FirmwareConfigRequest firmwareConfigRequest = new FirmwareConfigRequest();
         try {
             firmwareConfigRequest.setByteBuffer(
@@ -630,8 +708,75 @@ public class McMessageEngine implements Runnable {
             if (firmware != null) {
                 firmwareConfigResponse.setType(firmware.getType().getId());
                 firmwareConfigResponse.setVersion(firmware.getVersion().getId());
-                firmwareConfigResponse.setBlocks(firmware.getBlocks());
-                firmwareConfigResponse.setCrc(firmware.getCrc());
+                firmwareConfigResponse.setBlocks((Integer) firmware.getProperties().get(Firmware.KEY_PROP_BLOCKS));
+                firmwareConfigResponse.setCrc((Integer) firmware.getProperties().get(Firmware.KEY_PROP_CRC));
+            }
+
+            mcMessage.setTxMessage(true);
+            mcMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.getText());
+            mcMessage
+                    .setPayload(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase());
+            McMessageUtils.sendToProviderBridge(mcMessage);
+            _logger.debug("FirmwareConfigRequest:[{}]", firmwareConfigRequest);
+            _logger.debug("FirmwareConfigResponse:[{}]", firmwareConfigResponse);
+        } catch (DecoderException ex) {
+            _logger.error("Exception, ", ex);
+        }
+    }
+
+    private void processFirmwareConfigRequestMyController(McMessage mcMessage) {
+        McFirmwareConfig firmwareConfigRequest = new McFirmwareConfig();
+        try {
+            firmwareConfigRequest.setByteBuffer(
+                    ByteBuffer.wrap(Hex.decodeHex(mcMessage.getPayload().toCharArray())).order(
+                            ByteOrder.LITTLE_ENDIAN), 0);
+            Firmware firmware = null;
+
+            //Check firmware is configured for this particular node
+            Node node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());
+            if (node != null && node.getFirmware() != null) {
+                firmware = DaoUtils.getFirmwareDao().getById(node.getFirmware().getId());
+                _logger.debug("Firmware selected based on node configuration...");
+            } else if (firmwareConfigRequest.getType() == 65535 && firmwareConfigRequest.getVersion() == 65535) {
+                if (AppProperties.getInstance().getMySensorsSettings().getDefaultFirmware() != null) {
+                    firmware = DaoUtils.getFirmwareDao().getById(
+                            AppProperties.getInstance().getMySensorsSettings().getDefaultFirmware());
+                } else {
+                    _logger.warn("There is no default firmware set!");
+                }
+            } else {
+                firmware = DaoUtils.getFirmwareDao().get(firmwareConfigRequest.getType(),
+                        firmwareConfigRequest.getVersion());
+            }
+
+            McFirmwareConfig firmwareConfigResponse = new McFirmwareConfig();
+            firmwareConfigResponse.setByteBufferPosition(0);
+
+            if (firmware == null) {//Non bootloader command
+                if (AppProperties.getInstance().getMySensorsSettings().getEnbaledDefaultOnNoFirmware()) {
+                    _logger.debug("If requested firmware is not available, "
+                            + "redirect to default firmware is set, Checking the default firmware");
+                    if (AppProperties.getInstance().getMySensorsSettings().getDefaultFirmware() != null) {
+                        firmware = DaoUtils.getFirmwareDao().getById(
+                                AppProperties.getInstance().getMySensorsSettings().getDefaultFirmware());
+                        _logger.debug("Default firmware:[{}]", firmware.getFirmwareName());
+                    } else {
+                        _logger.warn("There is no default firmware set!");
+                    }
+                }
+                //Selected, default: No firmware available for this request
+                if (firmware == null) {
+                    _logger.warn("Selected Firmware is not available, FirmwareConfigRequest:[{}]",
+                            firmwareConfigRequest);
+                    return;
+                }
+            }
+
+            if (firmware != null) {
+                firmwareConfigResponse.setType(firmware.getType().getId());
+                firmwareConfigResponse.setVersion(firmware.getVersion().getId());
+                firmwareConfigResponse.setBlocks((Integer) firmware.getProperties().get(Firmware.KEY_PROP_BLOCKS));
+                firmwareConfigResponse.setMd5Sum((String) firmware.getProperties().get(Firmware.KEY_PROP_MD5_HEX));
             }
 
             mcMessage.setTxMessage(true);

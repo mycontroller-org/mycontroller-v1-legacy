@@ -82,6 +82,9 @@
                   <a class="mc-inline-editer-ab" ng-if="resourceCount.resourcesGroups > 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
                   <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
                 </dd>
+
+                <legend><small>{{ 'PROPERTIES' | translate }}</small></legend>
+                <span ng-repeat="(key, value) in item.properties"><dt>{{ key}}</dt> <dd>{{value}}</dd></span>
               </dl>
             </div>
           </div>

@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone;
 
+import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapDbFactory {
+    private static final String MC_PERSISTENT_DIR = "mc/";
     private static DB database = null;
     private static final ScheduledExecutorService COMMIT_SCHEDULER = Executors.newScheduledThreadPool(1);
     public static final long COMMIT_FREQUENCY = 30;
@@ -44,7 +46,7 @@ public class MapDbFactory {
             _logger.info("MapDB already running...");
             return;
         }
-        String storesLocation = AppProperties.getInstance().getMcPersistentStoresLocation() + "mc/";
+        String storesLocation = AppProperties.getInstance().getMcPersistentStoresLocation() + MC_PERSISTENT_DIR;
         AppProperties.getInstance().createDirectoryLocation(storesLocation);
         database = DBMaker.newFileDB(FileUtils.getFile(storesLocation + "mc.mapdb")).make();
         COMMIT_SCHEDULER.scheduleWithFixedDelay(new Runnable() {
@@ -72,5 +74,22 @@ public class MapDbFactory {
         _logger.debug("closed disk storage");
         COMMIT_SCHEDULER.shutdown();
         _logger.debug("Persistence commit scheduler is shutdown");
+    }
+
+    public static void clearMcPersistent() {
+        String _location = AppProperties.getInstance().getMcPersistentStoresLocation() + MC_PERSISTENT_DIR;
+        try {
+            File _locationAsFile = FileUtils.getFile(_location);
+            if (_locationAsFile.exists()) {
+                FileUtils.deleteDirectory(_locationAsFile);
+                _logger.info("Cleared McPersistent location[{}]", _location);
+            } else {
+                _logger.debug("McPersistent location[{}] not available", _location);
+            }
+
+        } catch (Exception ex) {
+            _logger.error("Failed to clear McPersistent location[{}]", _location, ex);
+        }
+
     }
 }

@@ -535,7 +535,7 @@ $scope.filterConfig = {
 
 
 //add edit item
-myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $state, $filter, TypesFactory) {
+myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, displayRestError, alertService, FirmwaresFactory, mchelper, $stateParams, $state, $filter, TypesFactory) {
   $scope.item = {};
 
   //GUI page settings
@@ -559,8 +559,17 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
   $scope.firmwareVersions = TypesFactory.getFirmwareVersions();
 
   //Read File and put it in textarea
-  $scope.displayFileContents = function(contents) {
-        $scope.item.fileString = contents;
+  $scope.displayFileContents = function(contents, fileExtension) {
+    if(fileExtension === 'bin'){
+       $scope.item.fileBytes = Array.from(new Uint8Array(contents));
+       $scope.item.fileType = 'Bin';
+    }else if(fileExtension === 'hex'){
+      $scope.item.fileType = 'Hex';
+      $scope.item.fileString = contents;
+    }else{
+      $scope.item.fileType = 'Hex';
+      $scope.item.fileString = contents;
+    }
   };
 
   //Save data
@@ -579,8 +588,8 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
         alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("firmwaresList");
       },function(error){
-        displayRestError.display(error);
         $scope.saveProgress = false;
+        displayRestError.display(error);
       });
     }
   }
@@ -591,10 +600,9 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
         scope: false,
         link: function(scope, element, attrs) {
             element.bind('change', function(e) {
-
                 var onFileReadFn = $parse(attrs.onReadFile);
                 var reader = new FileReader();
-
+                var fileExtension = element[0].files[0].name.split('.').pop().toLowerCase();
                 reader.onload = function() {
                     var fileContents = reader.result;
                     // invoke parsed function on scope
@@ -605,11 +613,18 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
                     // in the scope we pass in to the function
                     scope.$apply(function() {
                         onFileReadFn(scope, {
-                            'contents' : fileContents
+                            'contents' : fileContents,
+                            'fileExtension': fileExtension
                         });
                     });
                 };
-                reader.readAsText(element[0].files[0]);
+                if(fileExtension === 'bin'){
+                  reader.readAsArrayBuffer(element[0].files[0]);
+                }else if(fileExtension === 'hex'){
+                  reader.readAsText(element[0].files[0]);
+                }else{
+                  reader.readAsText(element[0].files[0]);
+                }
             });
         }
     };
