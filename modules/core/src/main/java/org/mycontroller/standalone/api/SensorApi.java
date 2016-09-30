@@ -285,8 +285,8 @@ public class SensorApi {
                 metricDouble.setSensorVariable(sVar);
                 metricDouble.setTimestampFrom(purge.getTimestampFrom());
                 metricDouble.setTimestampTo(purge.getTimestampTo());
-                metricDouble.setAvg(McUtils.getDouble(purge.getValue()));
-                DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble);
+                //metricDouble.setAvg(McUtils.getDouble(purge.getValue()));
+                DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble, purge.getValue());
                 break;
             default:
                 //Nothing to do

@@ -28,6 +28,8 @@ import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 public interface MetricsDoubleTypeDeviceDao extends BaseDao<MetricsDoubleTypeDevice, Object> {
 
     void deletePrevious(MetricsDoubleTypeDevice metric);
+    
+    void deletePrevious(MetricsDoubleTypeDevice metric, String delimiter);
 
     void deleteBySensorVariableRefId(int sensorRefId);
 

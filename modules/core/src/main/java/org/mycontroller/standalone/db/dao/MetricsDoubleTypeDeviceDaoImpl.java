@@ -46,6 +46,11 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
 
     @Override
     public void deletePrevious(MetricsDoubleTypeDevice metric) {
+        deletePrevious(metric, null);
+    }
+
+    @Override
+    public void deletePrevious(MetricsDoubleTypeDevice metric, String delimiter) {
         try {
             DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
             Where<MetricsDoubleTypeDevice, Object> where = deleteBuilder.where();
@@ -73,6 +78,17 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             }
             if (metric.getAvg() != null) {
                 where.eq(MetricsDoubleTypeDevice.KEY_AVG, metric.getAvg());
+                whereCount++;
+            } else if (delimiter != null) {
+                if (delimiter.startsWith(">")) {
+                    where.gt(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
+                } else if (delimiter.startsWith("<")) {
+                    where.lt(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
+                } else if (delimiter.startsWith("=")) {
+                    where.eq(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
+                } else {
+                    where.eq(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter));
+                }
                 whereCount++;
             }
             if (metric.getMin() != null) {
