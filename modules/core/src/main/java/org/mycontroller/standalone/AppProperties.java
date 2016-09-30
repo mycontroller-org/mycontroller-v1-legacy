@@ -97,7 +97,8 @@ public class AppProperties {
         PT_BR("Português (BR)"),
         RO_RO("Română (RO)"),
         RU_RU("Русский (RU)"),
-        TA_IN("தமிழ் (IN)");
+        TA_IN("தமிழ் (IN)"),
+        ZH_CN("中文 (CN)");
 
         private final String name;
 
