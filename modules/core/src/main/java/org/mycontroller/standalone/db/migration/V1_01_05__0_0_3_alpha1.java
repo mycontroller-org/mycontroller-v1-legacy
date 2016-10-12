@@ -42,7 +42,7 @@ public class V1_01_05__0_0_3_alpha1 extends MigrationBase {
 
         //Migration #1
         //Add roomId in sensors table
-        addColumn("sensor", "roomId", "INTEGER");
+        sqlClient().addColumn("sensor", "roomId", "INTEGER");
 
         _logger.info("Migration completed successfully.");
     }

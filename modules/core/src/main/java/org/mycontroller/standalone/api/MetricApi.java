@@ -99,7 +99,8 @@ public class MetricApi {
                     break;
                 }
                 tmpTimestampTo += bucketDuration;
-                String sqlSelectQuery = MessageFormat.format(DB_QUERY.SELECT_METRICS_DOUBLE_BY_SENSOR_VARIABLE,
+                String sqlSelectQuery = MessageFormat.format(
+                        DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_DOUBLE_BY_SENSOR_VARIABLE),
                         sensorVariableId, String.valueOf(timestampFrom), String.valueOf(tmpTimestampTo));
                 _logger.debug("Sql query:[{}]", sqlSelectQuery);
                 MetricsDoubleTypeDevice metric = null;
@@ -220,7 +221,8 @@ public class MetricApi {
                 calendarFrom.add(incrementRef, increment);
                 long timestampToTmp = calendarFrom.getTimeInMillis();
 
-                String sqlSelectQuery = MessageFormat.format(DB_QUERY.SELECT_METRICS_COUNTER_BY_SENSOR_VARIABLE,
+                String sqlSelectQuery = MessageFormat.format(
+                        DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_COUNTER_BY_SENSOR_VARIABLE),
                         sensorVariableId, String.valueOf(timestampTmpFrom), String.valueOf(timestampToTmp));
                 _logger.debug("Sql query:[{}]", sqlSelectQuery);
                 MetricsCounterTypeDevice metric = null;
@@ -295,7 +297,8 @@ public class MetricApi {
                     break;
                 }
                 tmpTimestampTo += bucketDuration;
-                String sqlSelectQuery = MessageFormat.format(DB_QUERY.SELECT_METRICS_BATTERY_BY_NODE,
+                String sqlSelectQuery = MessageFormat.format(
+                        DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_BATTERY_BY_NODE),
                         nodeId, String.valueOf(timestampFrom), String.valueOf(tmpTimestampTo));
                 _logger.debug("Sql query:[{}]", sqlSelectQuery);
                 MetricsBatteryUsage metric = null;

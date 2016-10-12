@@ -100,7 +100,7 @@ public class StartApp {
 
     public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException {
         start = System.currentTimeMillis();
-        loadInitialProperties();
+        loadInitialProperties(System.getProperty("mc.conf.file"));
         _logger.debug("App Properties: {}", AppProperties.getInstance().toString());
         _logger.debug("Operating System detail:[os:{},arch:{},version:{}]",
                 AppProperties.getOsName(), AppProperties.getOsArch(), AppProperties.getOsVersion());
@@ -309,8 +309,7 @@ public class StartApp {
         McObjectManager.clearAllReferences();
     }
 
-    public static boolean loadInitialProperties() {
-        String propertiesFile = System.getProperty("mc.conf.file");
+    public static boolean loadInitialProperties(String propertiesFile) {
         try {
             Properties properties = new Properties();
             if (propertiesFile == null) {

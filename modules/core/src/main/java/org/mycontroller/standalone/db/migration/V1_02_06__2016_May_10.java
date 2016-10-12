@@ -44,7 +44,7 @@ public class V1_02_06__2016_May_10 extends MigrationBase {
          * steps
          * 1. Alter column to string
          * */
-        alterColumn("uid_tag", "uid", "VARCHAR(255)");
+        sqlClient().alterColumn("uid_tag", "uid", "VARCHAR(255)");
 
         _logger.info("Migration completed successfully.");
     }

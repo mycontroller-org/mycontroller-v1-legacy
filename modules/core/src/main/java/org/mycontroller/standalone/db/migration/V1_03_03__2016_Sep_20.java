@@ -56,16 +56,16 @@ public class V1_03_03__2016_Sep_20 extends MigrationBase {
          * 4. drop blocks, data and crc columns
          * */
         //Execute only if changes not available in database
-        if (hasColumn("FIRMWARE", "BLOCKS")) {
+        if (sqlClient().hasColumn("firmware", "blocks")) {
             //1. Add columns
-            addColumn("FIRMWARE", "PROPERTIES", "BLOB");
+            sqlClient().addColumn("firmware", "properties", "BLOB");
             reloadDao();
             //2. Update properties
             List<Firmware> firmwares = DaoUtils.getFirmwareDao().getAll();
-            List<HashMap<String, String>> rows = getRows("FIRMWARE");
+            List<HashMap<String, String>> rows = sqlClient().getRows("FIRMWARE");
             if (firmwares != null && !firmwares.isEmpty()) {
                 for (Firmware firmware : firmwares) {
-                    HashMap<String, String> row = getRow(rows, "ID", String.valueOf(firmware.getId()));
+                    HashMap<String, String> row = sqlClient().getRow(rows, "ID", String.valueOf(firmware.getId()));
                     if (row != null) {
                         firmware.getProperties().put(Firmware.KEY_PROP_CRC, Integer.valueOf(row.get("CRC")));
                         firmware.getProperties().put(Firmware.KEY_PROP_BLOCKS, Integer.valueOf(row.get("BLOCKS")));
@@ -77,11 +77,11 @@ public class V1_03_03__2016_Sep_20 extends MigrationBase {
                 }
             }
             //3. Copy firmware data to FirmwareData table
-            executeRaw("INSERT INTO FIRMWARE_DATA (FIRMWAREID, DATA) SELECT ID, DATA FROM FIRMWARE");
+            sqlClient().executeRaw("INSERT INTO firmware_data (firmwareId, data) SELECT id, data FROM firmware");
             //4. Drop columns
-            dropColumn("FIRMWARE", "BLOCKS");
-            dropColumn("FIRMWARE", "CRC");
-            dropColumn("FIRMWARE", "DATA");
+            sqlClient().dropColumn("firmware", "blocks");
+            sqlClient().dropColumn("firmware", "crc");
+            sqlClient().dropColumn("firmware", "data");
 
             //Reload Dao
             reloadDao();

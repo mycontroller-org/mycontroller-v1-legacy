@@ -61,7 +61,12 @@ public class AppProperties {
     private String resourcesLocation;
     private String appDirectory;
 
-    private String dbH2DbLocation;
+    private DB_TYPE dbType;
+    private Boolean dbBackupInclude;
+    private String dbUrl;
+    private String dbUsername;
+    private String dbPassword;
+
     private String webFileLocation;
     private boolean isWebHttpsEnabled = false;
     private int webHttpPort;
@@ -84,6 +89,14 @@ public class AppProperties {
     MetricsDataRetentionSettings metricsDataRetentionSettings;
     BackupSettings backupSettings;
     MqttBrokerSettings mqttBrokerSettings;
+
+    public enum DB_TYPE {
+        H2DB_EMBEDDED,
+        H2DB,
+        MYSQL,
+        MARIADB,
+        POSTGRESQL;
+    }
 
     public enum MC_LANGUAGE {
         CA_ES("català (ES)"),
@@ -382,7 +395,20 @@ public class AppProperties {
         createDirectoryLocation(getScriptsOperationsLocation());
 
         //database location
-        dbH2DbLocation = getValue(properties, "mcc.db.h2db.location", "../conf/mycontroller");
+        String dbType = getValue(properties, "mcc.db.type", "H2DB_EMBEDDED");
+        this.dbType = DB_TYPE.valueOf(dbType.toUpperCase());
+        this.dbBackupInclude = McUtils.getBoolean(getValue(properties, "mcc.db.backup.include", "False"));
+        dbUrl = getValue(properties, "mcc.db.url", "jdbc:h2:file:../conf/mycontroller;MVCC=TRUE");
+        if (this.dbType == DB_TYPE.MYSQL) {
+            String mySqlLogger = "logger=org.mycontroller.standalone.loggers.LoggerMySql";
+            if (dbUrl.indexOf('?') != -1) {
+                dbUrl = dbUrl + "?" + mySqlLogger;
+            } else {
+                dbUrl = dbUrl + "&" + mySqlLogger;
+            }
+        }
+        dbUsername = getValue(properties, "mcc.db.username", "mycontroller");
+        dbPassword = getValue(properties, "mcc.db.password", "mycontroller");
 
         //mycontroller web location
         webFileLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.web.file.location", "../www"));
@@ -403,7 +429,8 @@ public class AppProperties {
         webBindAddress = getValue(properties, "mcc.web.bind.address", "0.0.0.0");
 
         //MyController PersistentStore
-        mcPersistentStoresLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.persistent.stores.location",
+        mcPersistentStoresLocation = McUtils.getDirectoryLocation(getValue(properties,
+                "mcc.persistent.stores.location",
                 "../conf/persistent_stores/"));
         createDirectoryLocation(mcPersistentStoresLocation);
         //MQTT Broker mqttBrokerPersistentStore
@@ -514,8 +541,24 @@ public class AppProperties {
         return tmpLocation;
     }
 
-    public String getDbH2DbLocation() {
-        return dbH2DbLocation;
+    public DB_TYPE getDbType() {
+        return dbType;
+    }
+
+    public Boolean includeDbBackup() {
+        return dbBackupInclude;
+    }
+
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public String getDbUsername() {
+        return dbUsername;
+    }
+
+    public String getDbPassword() {
+        return dbPassword;
     }
 
     public String getWebFileLocation() {

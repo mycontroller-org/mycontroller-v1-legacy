@@ -52,8 +52,8 @@ public class V1_03_02__2016_Aug_06 extends MigrationBase {
          * 4. Update data to new table
          * */
         List<Room> rooms = DaoUtils.getRoomDao().getAll();
-        dropTable(Room.class);
-        createTable(Room.class);
+        sqlClient().dropTable(Room.class);
+        sqlClient().createTable(Room.class);
         if (rooms != null && !rooms.isEmpty()) {
             for (Room room : rooms) {
                 DaoUtils.getRoomDao().create(room);

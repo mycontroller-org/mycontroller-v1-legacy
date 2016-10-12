@@ -33,10 +33,12 @@ public class McAbout extends McAboutBase {
     private String applicationVersion;
     private String applicationDbVersion;
     private String applicationLocation;
+    private String databaseType;
 
     public McAbout() {
         applicationVersion = AppProperties.getInstance().getControllerSettings().getVersion();
         applicationDbVersion = AppProperties.getInstance().getControllerSettings().getDbVersion();
         applicationLocation = AppProperties.getInstance().getAppDirectory();
+        databaseType = AppProperties.getInstance().getDbType().name();
     }
 }

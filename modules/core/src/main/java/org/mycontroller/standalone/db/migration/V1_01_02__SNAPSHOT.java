@@ -57,7 +57,7 @@ public class V1_01_02__SNAPSHOT extends MigrationBase {
         //uniquecombo to unique 'name'
         String[] oldTableColumns = { "notificationType", "variable1", "variable2", "variable3", "variable4",
                 "variable5", "variable6", "variable7" };
-        if (hasColumn(TABLE_ALARM_DEFINITION, oldTableColumns[0])) {
+        if (sqlClient().hasColumn(TABLE_ALARM_DEFINITION, oldTableColumns[0])) {
             //Insert notification values from alarmDefinition table to OperationTable table.
             sqlQuery.setLength(0);
             sqlQuery.append("INSERT INTO ").append(TABLE_NOTIFICATION).append(" (")
@@ -76,7 +76,7 @@ public class V1_01_02__SNAPSHOT extends MigrationBase {
                     .append(true).append(" AS ").append("publicAccess").append(", ")
                     .append("name").append(", ")
                     .append(oldTableColumns[0]).append(" AS ").append("type").append(", ")
-                    .append(getAdminUser().getId()).append(" AS ").append("userId").append(", ")
+                    .append(sqlClient().getAdminUser().getId()).append(" AS ").append("userId").append(", ")
                     //Change userId
                     .append(oldTableColumns[1]).append(", ")
                     .append(oldTableColumns[2]).append(", ")
@@ -89,13 +89,13 @@ public class V1_01_02__SNAPSHOT extends MigrationBase {
             _logger.debug("Insert count:{}", insertCount);
 
             //Map notification and alarmDefinition table
-            List<HashMap<String, String>> alarmRows = getRows(TABLE_ALARM_DEFINITION);
-            List<HashMap<String, String>> notificationRows = getRows(TABLE_NOTIFICATION);
+            List<HashMap<String, String>> alarmRows = sqlClient().getRows(TABLE_ALARM_DEFINITION);
+            List<HashMap<String, String>> notificationRows = sqlClient().getRows(TABLE_NOTIFICATION);
             for (HashMap<String, String> alarm : alarmRows) {
                 sqlQuery.setLength(0);
                 sqlQuery.append("INSERT INTO ").append(TABLE__ALARM_NOTIFICATION_MAP)
                         .append(" (notificationId,alarmDefinitionId) VALUES(")
-                        .append(getRow(notificationRows, "name", alarm.get("name")))
+                        .append(sqlClient().getRow(notificationRows, "name", alarm.get("name")))
                         .append(alarm.get("id"))
                         .append(")");
                 _logger.debug("INSERT sql query:[{}]", sqlQuery.toString());
@@ -105,7 +105,7 @@ public class V1_01_02__SNAPSHOT extends MigrationBase {
 
             //Drop columns from RuleDefinitionTable table
             for (String columnName : oldTableColumns) {
-                dropColumn(TABLE_ALARM_DEFINITION, columnName);
+                sqlClient().dropColumn(TABLE_ALARM_DEFINITION, columnName);
             }
         }
 
@@ -114,8 +114,8 @@ public class V1_01_02__SNAPSHOT extends MigrationBase {
 
         //Migration #3
         String oldColumnName = "lastFired";
-        if (hasColumn("timer", oldColumnName)) {
-            renameColumn("timer", oldColumnName, "lastFire");
+        if (sqlClient().hasColumn("timer", oldColumnName)) {
+            sqlClient().renameColumn("timer", oldColumnName, "lastFire");
         }
 
         //Migration #4

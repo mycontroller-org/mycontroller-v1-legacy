@@ -27,6 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.AppProperties.DB_TYPE;
 import org.mycontroller.standalone.api.jaxrs.json.McAbout;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
@@ -51,14 +52,7 @@ public class DataBaseUtils {
     private static boolean isDbLoaded = false;
     // private static ConnectionSource connectionSource = null;
     private static JdbcPooledConnectionSource connectionPooledSource = null;
-    // this uses h2 by default but change to match your database
-    // private static String databaseUrl = "jdbc:h2:mem:account";
-    public static final String DB_URL_PREFIX = "jdbc:h2:file:";
-    public static final String DB_URL_SUFIX = "";
-    private static String DB_URL = null;
-    private static final String DB_USERNAME = "mycontroller";
-    private static final String DB_PASSWORD = "mycontroller";
-    private static final String DB_MIGRATION_LOCATION = "org/mycontroller/standalone/db/migration";
+    private static final String DB_MIGRATION_SCRIPT_LOCATION = "org/mycontroller/standalone/db/migration";
     private static final int DB_MAX_FREE_CONNECTION = 3;
 
     //private static final String APP_VERSION = "0.0.3-alpha2-SNAPSHOT";
@@ -88,11 +82,9 @@ public class DataBaseUtils {
              * new JdbcConnectionSource(databaseUrl);
              */
 
-            //Update Database url
-            DB_URL = DB_URL_PREFIX + AppProperties.getInstance().getDbH2DbLocation() + DB_URL_SUFIX;
-
             // pooled connection source
-            connectionPooledSource = new JdbcPooledConnectionSource(DB_URL, DB_USERNAME, DB_PASSWORD);
+            connectionPooledSource = new JdbcPooledConnectionSource(AppProperties.getInstance().getDbUrl(),
+                    AppProperties.getInstance().getDbUsername(), AppProperties.getInstance().getDbPassword());
             // only keep the connections open for 5 minutes
             connectionPooledSource.setMaxConnectionAgeMillis(McUtils.FIVE_MINUTES);
             // change the check-every milliseconds from 30 seconds to 60
@@ -103,14 +95,17 @@ public class DataBaseUtils {
             // right before they are handed to the user
             connectionPooledSource.setTestBeforeGet(true);
             isDbLoaded = true;
-            _logger.debug("Database ConnectionSource loaded. Database Url:[{}]", DB_URL);
+            _logger.debug("Database ConnectionSource loaded. Database Url:[{}]", AppProperties.getInstance()
+                    .getDbUrl());
 
             //Steps to migrate database
             // Create the Flyway instance
             Flyway flyway = new Flyway();
             // Point it to the database
-            flyway.setDataSource(DB_URL, DB_USERNAME, DB_PASSWORD);
-            flyway.setLocations(DB_MIGRATION_LOCATION);
+            flyway.setDataSource(AppProperties.getInstance().getDbUrl(),
+                    AppProperties.getInstance().getDbUsername(), AppProperties.getInstance().getDbPassword());
+            flyway.setLocations(DB_MIGRATION_SCRIPT_LOCATION);
+            flyway.setBaselineOnMigrate(true);
             // Start the migration
             int migrationsCount = 0;
             try {
@@ -159,7 +154,8 @@ public class DataBaseUtils {
                     AppProperties.getInstance().getControllerSettings().getVersion(),
                     AppProperties.getInstance().getControllerSettings().getDbVersion());
         } else {
-            _logger.warn("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", DB_URL);
+            _logger.warn("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", AppProperties
+                    .getInstance().getDbUrl());
         }
     }
 
@@ -170,7 +166,7 @@ public class DataBaseUtils {
                 _logger.debug("Database service stopped.");
                 isDbLoaded = false;
                 DaoUtils.setIsDaoInitialized(false);
-            } catch (IOException ioEx) {
+            } catch (Exception ioEx) {
                 _logger.error("Unable to stop database service, ", ioEx);
             }
         } else {
@@ -198,7 +194,8 @@ public class DataBaseUtils {
             FileUtils.forceMkdir(backupFile.getParentFile());
             //Delete file is exists
             FileUtils.deleteQuietly(backupFile);
-            conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            conn = DriverManager.getConnection(AppProperties.getInstance().getDbUrl(),
+                    AppProperties.getInstance().getDbUsername(), AppProperties.getInstance().getDbPassword());
             PreparedStatement statement = conn.prepareStatement("SCRIPT TO ? COMPRESSION ZIP");
             statement.setString(1, backupFile.getAbsolutePath());
             statement.execute();
@@ -224,16 +221,23 @@ public class DataBaseUtils {
     public static synchronized boolean restoreDatabase(String databaseRestoreScript) {
         Connection conn = null;
         try {
+            String restoreFileFullPath = FileUtils.getFile(databaseRestoreScript).getCanonicalPath();
             _logger.debug("database backup triggered...");
-            conn = DriverManager.getConnection(DB_URL_PREFIX + AppProperties.getInstance().getDbH2DbLocation(),
-                    DB_USERNAME, DB_PASSWORD);
-            PreparedStatement statement = conn.prepareStatement("RUNSCRIPT FROM ? COMPRESSION ZIP");
-            statement.setString(1, databaseRestoreScript);
-            statement.execute();
-            _logger.info("Database restore completed. Database location:{}, Restored file name:{}",
-                    AppProperties.getInstance().getDbH2DbLocation(), databaseRestoreScript);
+            conn = DriverManager.getConnection(AppProperties.getInstance().getDbUrl(),
+                    AppProperties.getInstance().getDbUsername(), AppProperties.getInstance().getDbPassword());
+            if (AppProperties.getInstance().getDbType() == DB_TYPE.H2DB) {
+                //Drop everything
+                PreparedStatement dropAllObjects = conn.prepareStatement("DROP ALL OBJECTS");
+                dropAllObjects.execute();
+            }
+            //Restore database
+            PreparedStatement restoreScript = conn.prepareStatement("RUNSCRIPT FROM ? COMPRESSION ZIP");
+            restoreScript.setString(1, restoreFileFullPath);
+            restoreScript.execute();
+            _logger.info("Database restore completed. Database url:{}, Restored file name:{}",
+                    AppProperties.getInstance().getDbUrl(), restoreFileFullPath);
             return true;
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             _logger.error("Exception, backup failed!", ex);
         } finally {
             if (conn != null) {

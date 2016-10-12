@@ -63,6 +63,7 @@
   <logger level="INFO" name="org.mycontroller.standalone.gateway.serialport" />
   <logger level="INFO" name="org.mycontroller.standalone.group" />
   <logger level="INFO" name="org.mycontroller.standalone.jobs" />
+  <logger level="INFO" name="org.mycontroller.standalone.loggers.LoggerMySql" />
   <logger level="INFO" name="org.mycontroller.standalone.message" />
   <logger level="INFO" name="org.mycontroller.standalone.metrics" />
   <logger level="INFO" name="org.mycontroller.standalone.metrics.jobs" />

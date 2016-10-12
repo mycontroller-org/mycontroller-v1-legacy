@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db;
 
 import java.text.MessageFormat;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
@@ -30,14 +31,15 @@ import org.mycontroller.standalone.db.tables.Sensor;
  */
 public class DB_QUERY {
     public static final String ORDER_BY_NODE_EUI = MessageFormat
-            .format("SELECT {0} FROM {1} WHERE id={2} ", Node.KEY_EUI, DB_TABLES.NODE, Sensor.KEY_NODE_ID);
+            .format("SELECT ${0}$ FROM ${1}$ WHERE id=${2}$ ", Node.KEY_EUI, DB_TABLES.NODE, Sensor.KEY_NODE_ID);
     public static final String ORDER_BY_NODE_NAME = MessageFormat
-            .format("SELECT {0} FROM {1} WHERE id={2} ", Node.KEY_NAME, DB_TABLES.NODE, Sensor.KEY_NODE_ID);
+            .format("SELECT ${0}$ FROM ${1}$ WHERE id=${2}$ ", Node.KEY_NAME, DB_TABLES.NODE, Sensor.KEY_NODE_ID);
 
     public static final String INSERT_METRICS_DOUBLE_AGGREGATION_BY_TYPE = MessageFormat
-            .format("INSERT INTO {5} ({0}, {1}, {2}, {3}, {4}, {7}, {6}) SELECT {0}, MIN({1}) AS {1}, MAX({2}) AS {2}, "
-                    + "SUM({3}*{4})/SUM({4}) AS {3}, SUM({4}) AS {4}, '{2}' AS {7}, '{3}' AS {6} FROM {5} "
-                    + "WHERE {6}='{0}' AND {7} > '{1}' AND {7} <= '{2}' GROUP BY {0} ",
+            .format("INSERT INTO ${5}$ (${0}$, ${1}$, ${2}$, ${3}$, ${4}$, ${7}$, ${6}$) SELECT ${0}$, MIN(${1}$) "
+                    + "AS ${1}$, MAX(${2}$) AS ${2}$, SUM(${3}$*${4}$)/SUM(${4}$) AS ${3}$, SUM(${4}$) "
+                    + "AS ${4}$, '{2}' AS ${7}$, '{3}' AS ${6}$ FROM ${5}$ "
+                    + "WHERE ${6}$='{0}' AND ${7}$ > '{1}' AND ${7}$ <= '{2}' GROUP BY ${0}$ ",
                     MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID,
                     MetricsDoubleTypeDevice.KEY_MIN,
                     MetricsDoubleTypeDevice.KEY_MAX,
@@ -48,9 +50,10 @@ public class DB_QUERY {
                     MetricsDoubleTypeDevice.KEY_TIMESTAMP);
 
     public static final String INSERT_METRICS_BATTERY_AGGREGATION_BY_TYPE = MessageFormat
-            .format("INSERT INTO {5} ({0}, {1}, {2}, {3}, {4}, {7}, {6}) SELECT {0}, MIN({1}) AS {1}, MAX({2}) AS {2}, "
-                    + "SUM({3}*{4})/SUM({4}) AS {3}, SUM({4}) AS {4}, '{2}' AS {7}, '{3}' AS {6} FROM {5} "
-                    + "WHERE {6}='{0}' AND {7} > '{1}' AND {7} <= '{2}' GROUP BY {0} ",
+            .format("INSERT INTO ${5}$ (${0}$, ${1}$, ${2}$, ${3}$, ${4}$, ${7}$, ${6}$) SELECT ${0}$, MIN(${1}$) "
+                    + "AS ${1}$, MAX(${2}$) AS ${2}$, SUM(${3}$*${4}$)/SUM(${4}$) AS ${3}$, SUM(${4}$) "
+                    + "AS ${4}$, '{2}' AS ${7}$, '{3}' AS ${6}$ FROM ${5}$ "
+                    + "WHERE ${6}$='{0}' AND ${7}$ > '{1}' AND ${7}$ <= '{2}' GROUP BY ${0}$ ",
                     MetricsBatteryUsage.KEY_NODE_ID,
                     MetricsBatteryUsage.KEY_MIN,
                     MetricsBatteryUsage.KEY_MAX,
@@ -61,9 +64,9 @@ public class DB_QUERY {
                     MetricsBatteryUsage.KEY_TIMESTAMP);
 
     public static final String INSERT_METRICS_COUNTER_AGGREGATION_BY_TYPE = MessageFormat
-            .format("INSERT INTO {3} ({0}, {1}, {2}, {5}, {4}) SELECT {0}, SUM({1}) AS {1}, SUM({2}) AS {2}, "
-                    + "'{2}' AS {5}, '''''{3}''''' AS {4} FROM {3} WHERE {4}='''''{0}''''' "
-                    + "AND {5} > '{1}' AND {5} <= '{2}' GROUP BY {0} ",
+            .format("INSERT INTO ${3}$ (${0}$, ${1}$, ${2}$, ${5}$, ${4}$) SELECT ${0}$, SUM(${1}$) "
+                    + "AS ${1}$, SUM(${2}$) AS ${2}$, '{2}' AS ${5}$, '''''{3}''''' AS ${4}$ FROM ${3}$ "
+                    + "WHERE ${4}$='''''{0}''''' AND ${5}$ > '{1}' AND ${5}$ <= '{2}' GROUP BY ${0}$ ",
                     MetricsCounterTypeDevice.KEY_SENSOR_VARIABLE_ID,
                     MetricsCounterTypeDevice.KEY_VALUE,
                     MetricsCounterTypeDevice.KEY_SAMPLES,
@@ -72,26 +75,27 @@ public class DB_QUERY {
                     MetricsCounterTypeDevice.KEY_TIMESTAMP);
 
     public static final String DELETE_METRICS_DOUBLE_BY_TYPE = MessageFormat
-            .format("DELETE FROM {0} WHERE {1}='{0}' AND {2} <= '{1}' ",
+            .format("DELETE FROM ${0}$ WHERE ${1}$='{0}' AND ${2}$ <= '{1}' ",
                     DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE,
                     MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE,
                     MetricsCounterTypeDevice.KEY_TIMESTAMP);
 
     public static final String DELETE_METRICS_BATTERY_BY_TYPE = MessageFormat
-            .format("DELETE FROM {0} WHERE {1}='{0}' AND {2} <= '{1}' ",
+            .format("DELETE FROM ${0}$ WHERE ${1}$='{0}' AND ${2}$ <= '{1}' ",
                     DB_TABLES.METRICS_BATTERY_USAGE,
                     MetricsBatteryUsage.KEY_AGGREGATION_TYPE,
                     MetricsBatteryUsage.KEY_TIMESTAMP);
 
     public static final String DELETE_METRICS_COUNTER_BY_TYPE = MessageFormat
-            .format("DELETE FROM {0} WHERE {1}='''''{0}''''' AND {2} <= '{1}' ",
+            .format("DELETE FROM ${0}$ WHERE ${1}$='''''{0}''''' AND ${2}$ <= '{1}' ",
                     DB_TABLES.METRICS_COUNTER_TYPE_DEVICE,
                     MetricsCounterTypeDevice.KEY_AGGREGATION_TYPE,
                     MetricsCounterTypeDevice.KEY_TIMESTAMP);
 
     public static final String SELECT_METRICS_DOUBLE_BY_SENSOR_VARIABLE = MessageFormat
-            .format("SELECT {0}, MIN({1}) AS {1}, MAX({2}) AS {2}, SUM({3}*{4})/SUM({4}) AS {3}, SUM({4}) AS {4},"
-                    + " '{2}' AS {6} FROM {5} WHERE {0}='{0}' AND {6} > '{1}' AND {6} <= '{2}' GROUP BY {0}",
+            .format("SELECT ${0}$, MIN(${1}$) AS ${1}$, MAX(${2}$) AS ${2}$, SUM(${3}$*${4}$)/SUM(${4}$) "
+                    + "AS ${3}$, SUM(${4}$) AS ${4}$, '{2}' AS ${6}$ FROM ${5}$ WHERE ${0}$='{0}' "
+                    + "AND ${6}$ > '{1}' AND ${6}$ <= '{2}' GROUP BY ${0}$",
                     MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID,
                     MetricsDoubleTypeDevice.KEY_MIN,
                     MetricsDoubleTypeDevice.KEY_MAX,
@@ -101,8 +105,9 @@ public class DB_QUERY {
                     MetricsDoubleTypeDevice.KEY_TIMESTAMP);
 
     public static final String SELECT_METRICS_BATTERY_BY_NODE = MessageFormat
-            .format("SELECT {0}, MIN({1}) AS {1}, MAX({2}) AS {2}, SUM({3}*{4})/SUM({4}) AS {3}, SUM({4}) AS {4},"
-                    + " '{2}' AS {6} FROM {5} WHERE {0}='{0}' AND {6} > '{1}' AND {6} <= '{2}'  GROUP BY {0}",
+            .format("SELECT ${0}$, MIN(${1}$) AS ${1}$, MAX(${2}$) AS ${2}$, SUM(${3}$*${4}$)/SUM(${4}$) "
+                    + "AS ${3}$, SUM(${4}$) AS ${4}$, '{2}' AS ${6}$ FROM ${5}$ WHERE ${0}$='{0}' "
+                    + "AND ${6}$ > '{1}' AND ${6}$ <= '{2}'  GROUP BY ${0}$",
                     MetricsBatteryUsage.KEY_NODE_ID,
                     MetricsBatteryUsage.KEY_MIN,
                     MetricsBatteryUsage.KEY_MAX,
@@ -112,15 +117,21 @@ public class DB_QUERY {
                     MetricsBatteryUsage.KEY_TIMESTAMP);
 
     public static final String SELECT_METRICS_COUNTER_BY_SENSOR_VARIABLE = MessageFormat
-            .format("SELECT {0}, SUM({1}) AS {1}, SUM({2}) AS {2}, '{2}' AS {4} FROM {3} WHERE {0}='{0}'"
-                    + " AND {4} > '{1}' AND {4} <= '{2}'  GROUP BY {0}",
+            .format("SELECT ${0}$, SUM(${1}$) AS ${1}$, SUM(${2}$) AS ${2}$, '{2}' AS ${4}$ FROM ${3}$ "
+                    + "WHERE ${0}$='{0}' AND ${4}$ > '{1}' AND ${4}$ <= '{2}'  GROUP BY ${0}$",
                     MetricsCounterTypeDevice.KEY_SENSOR_VARIABLE_ID,
                     MetricsCounterTypeDevice.KEY_VALUE,
                     MetricsCounterTypeDevice.KEY_SAMPLES,
                     DB_TABLES.METRICS_COUNTER_TYPE_DEVICE,
                     MetricsCounterTypeDevice.KEY_TIMESTAMP);
 
-    public static void main(String[] args) {
-        System.out.println(SELECT_METRICS_COUNTER_BY_SENSOR_VARIABLE);
+    public static String getQuery(String query) {
+        switch (AppProperties.getInstance().getDbType()) {
+            case POSTGRESQL:
+                return query.replaceAll("\\$", "\"");
+            default:
+                break;
+        }
+        return query.replaceAll("\\$", "");
     }
 }

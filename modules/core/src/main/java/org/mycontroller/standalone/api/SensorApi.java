@@ -56,9 +56,9 @@ public class SensorApi {
     public QueryResponse getAll(HashMap<String, Object> filters) {
         Query query = Query.get(filters);
         if (query.getOrderBy().equalsIgnoreCase(Sensor.KEY_NODE_EUI)) {
-            query.setOrderByRawQuery(DB_QUERY.ORDER_BY_NODE_EUI);
+            query.setOrderByRawQuery(DB_QUERY.getQuery(DB_QUERY.ORDER_BY_NODE_EUI));
         } else if (query.getOrderBy().equalsIgnoreCase(Sensor.KEY_NODE_NAME)) {
-            query.setOrderByRawQuery(DB_QUERY.ORDER_BY_NODE_NAME);
+            query.setOrderByRawQuery(DB_QUERY.getQuery(DB_QUERY.ORDER_BY_NODE_NAME));
         }
         return DaoUtils.getSensorDao().getAll(query);
     }

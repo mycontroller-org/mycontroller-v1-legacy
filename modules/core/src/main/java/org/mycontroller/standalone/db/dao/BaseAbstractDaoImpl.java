@@ -60,11 +60,24 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         //Enable Auto commit
         //dao.setAutoCommit(connectionSource.getReadWriteConnection(), true);
         //Create Table if not exists
-        TableUtils.createTableIfNotExists(connectionSource, entity);
+        //https://github.com/j256/ormlite-core/issues/20
+        if (!hasTable(((BaseDaoImpl<?, ?>) dao).getTableInfo().getTableName())) {
+            TableUtils.createTableIfNotExists(connectionSource, entity);
+        }
         _logger.debug("Create Table If Not Exists, executed for {}", entity.getName());
 
         //Create TableInfo object
         tableInfo = new TableInfo<Tdao, Tid>(connectionSource, (BaseDaoImpl<Tdao, Tid>) dao, entity);
+    }
+
+    protected boolean hasTable(String tablename) {
+        try {
+            // test if the table already exists
+            ((BaseDaoImpl<?, ?>) dao).countOf();
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
     }
 
     public Dao<Tdao, Tid> getDao() {
@@ -206,12 +219,18 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             queryBuilder.setWhere(whereMain);
         }
 
+        //Update offset and limit
+        if (query.getPageLimit() > 0) {
+            queryBuilder.limit(query.getPageLimit());
+        }
+        if (query.getStartingRow() > 0) {
+            queryBuilder.offset(query.getStartingRow());
+        }
+
         if (query.isOrderByRaw()) {
-            queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
-                    .orderByRaw(query.getOrderBy() + query.getOrder());
+            queryBuilder.orderByRaw(query.getOrderBy() + query.getOrder());
         } else {
-            queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
-                    .orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
+            queryBuilder.orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
         }
 
         //Remove allowed resources from query, to avoid send list to user
@@ -344,7 +363,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         }
     }
 
-    public void delete(String key, List<Object> values) {
+    public void delete(String key, List<?> values) {
         try {
             DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
             deleteBuilder.where().in(key, values);

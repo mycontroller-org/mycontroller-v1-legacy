@@ -39,7 +39,7 @@ public interface BaseDao<Tdao, Tid> {
 
     void delete(String key, Object value);
 
-    void delete(String key, List<Object> values);
+    void delete(String key, List<?> values);
 
     void update(Tdao tdao);
 

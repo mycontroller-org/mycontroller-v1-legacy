@@ -33,7 +33,6 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTAT
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 import lombok.extern.slf4j.Slf4j;
@@ -103,34 +102,29 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
 
     @Override
     public void update(Sensor sensor) {
+        Sensor tmpSensor = get(sensor);
         try {
             this.nodeIdSensorIdnullCheck(sensor);
-            UpdateBuilder<Sensor, Integer> updateBuilder = this.getDao().updateBuilder();
-
             if (sensor.getType() != null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_TYPE, sensor.getType());
+                tmpSensor.setType(sensor.getType());
             }
             if (sensor.getName() != null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_NAME, sensor.getName());
+                tmpSensor.setName(sensor.getName());
             }
             if (sensor.getLastSeen() != null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_LAST_SEEN, sensor.getLastSeen());
+                tmpSensor.setLastSeen(sensor.getLastSeen());
             }
             if (sensor.getSensorId() != null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_SENSOR_ID, sensor.getSensorId());
+                tmpSensor.setSensorId(sensor.getSensorId());
             }
 
             if (sensor.getRoom() != null && sensor.getRoom().getId() == null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_ROOM_ID, null);
+                tmpSensor.setRoom(null);
             } else {
-                updateBuilder.updateColumnValue(Sensor.KEY_ROOM_ID, sensor.getRoom());
+                tmpSensor.setRoom(sensor.getRoom());
             }
-
-            updateBuilder.where().eq(Sensor.KEY_ID, sensor.getId());
-            int updateCount = updateBuilder.update();
-            _logger.debug("Updated senosor:[{}], update count:{}", sensor, updateCount);
-        } catch (SQLException ex) {
-            _logger.error("unable to get", ex);
+            super.update(tmpSensor);
+            _logger.debug("Updated senosor:[{}]", sensor);
         } catch (DbException dbEx) {
             _logger.error("unable to update, sensor:{}", sensor, dbEx);
         }

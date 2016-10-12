@@ -100,27 +100,35 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
          * 3. migrate date from old table to new table
          * 4. drop old table
          * */
-        if (hasColumn(DB_TABLES.GATEWAY, "VARIABLE1")) {
+        if (sqlClient().hasColumn(DB_TABLES.GATEWAY, "variable1")) {
             String oldTableName = "gateway_old";
-            renameTable(DB_TABLES.GATEWAY, oldTableName);
+            sqlClient().renameTable(DB_TABLES.GATEWAY, oldTableName);
             //create table
-            createTable(GatewayTable.class);
-            List<HashMap<String, String>> rows = getRows(oldTableName);
+            sqlClient().createTable(GatewayTable.class);
+            List<HashMap<String, String>> rows = sqlClient().getRows(oldTableName);
             _logger.debug("Old table: {}", rows);
             for (HashMap<String, String> row : rows) {
-                DaoUtils.getGatewayDao().create(GatewayTable.builder()
-                        .id(McUtils.getInteger(row.get(getColumnName(GatewayTable.KEY_ID))))
-                        .name(row.get(getColumnName(GatewayTable.KEY_NAME)))
-                        .networkType(NETWORK_TYPE.valueOf(row.get(getColumnName(GatewayTable.KEY_NETWORK_TYPE))))
-                        .type(GATEWAY_TYPE.valueOf(row.get(getColumnName(GatewayTable.KEY_TYPE))))
-                        .state(STATE.valueOf(row.get(getColumnName(GatewayTable.KEY_STATE))))
-                        .statusMessage(row.get(getColumnName(GatewayTable.KEY_STATUS_MESSAGE)))
-                        .statusSince(McUtils.getLong(row.get(getColumnName(GatewayTable.KEY_STATUS_SINCE))))
-                        .enabled(McUtils.getBoolean(row.get(getColumnName(GatewayTable.KEY_ENABLED))))
-                        .properties(getGatewayProperties(row))
-                        .build());
+                DaoUtils.getGatewayDao().create(
+                        GatewayTable
+                                .builder()
+                                .id(McUtils.getInteger(row.get(sqlClient().getColumnName(GatewayTable.KEY_ID))))
+                                .name(row.get(sqlClient().getColumnName(GatewayTable.KEY_NAME)))
+                                .networkType(
+                                        NETWORK_TYPE.valueOf(row.get(sqlClient().getColumnName(
+                                                GatewayTable.KEY_NETWORK_TYPE))))
+                                .type(GATEWAY_TYPE.valueOf(row.get(sqlClient().getColumnName(GatewayTable.KEY_TYPE))))
+                                .state(STATE.valueOf(row.get(sqlClient().getColumnName(GatewayTable.KEY_STATE))))
+                                .statusMessage(row.get(sqlClient().getColumnName(GatewayTable.KEY_STATUS_MESSAGE)))
+                                .statusSince(
+                                        McUtils.getLong(row.get(sqlClient().getColumnName(
+                                                GatewayTable.KEY_STATUS_SINCE))))
+                                .enabled(
+                                        McUtils.getBoolean(row
+                                                .get(sqlClient().getColumnName(GatewayTable.KEY_ENABLED))))
+                                .properties(getGatewayProperties(row))
+                                .build());
             }
-            dropTable(oldTableName);
+            sqlClient().dropTable(oldTableName);
         }
 
         /** Migration #2
@@ -129,30 +137,37 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
          * 1. migrate date from old table to new table
          * 2. drop old table
          */
-        String notificationTable = "NOTIFICATION";
-        if (hasTable(notificationTable)) {
-            List<HashMap<String, String>> rows = getRows(notificationTable);
+        String notificationTable = "notification";
+        if (sqlClient().hasTable(notificationTable)) {
+            List<HashMap<String, String>> rows = sqlClient().getRows(notificationTable);
             _logger.debug("{} table data: {}", notificationTable, rows);
             for (HashMap<String, String> row : rows) {
-                if (row.get(getColumnName(OperationTable.KEY_TYPE)).equalsIgnoreCase("PUSHBULLET_NOTE")) {
-                    row.put(getColumnName(OperationTable.KEY_TYPE), OPERATION_TYPE.SEND_PUSHBULLET_NOTE.name());
+                if (row.get(sqlClient().getColumnName(OperationTable.KEY_TYPE)).equalsIgnoreCase("PUSHBULLET_NOTE")) {
+                    row.put(sqlClient().getColumnName(OperationTable.KEY_TYPE),
+                            OPERATION_TYPE.SEND_PUSHBULLET_NOTE.name());
                 }
                 DaoUtils.getOperationDao().create(
                         OperationTable
                                 .builder()
-                                .id(McUtils.getInteger(row.get(getColumnName(OperationTable.KEY_ID))))
-                                .name(row.get(getColumnName(OperationTable.KEY_NAME)))
-                                .type(OPERATION_TYPE.valueOf(row.get(getColumnName(OperationTable.KEY_TYPE))))
-                                .user(User.builder()
-                                        .id(McUtils.getInteger(row.get(getColumnName(OperationTable.KEY_USER_ID))))
+                                .id(McUtils.getInteger(row.get(sqlClient().getColumnName(OperationTable.KEY_ID))))
+                                .name(row.get(sqlClient().getColumnName(OperationTable.KEY_NAME)))
+                                .type(OPERATION_TYPE.valueOf(row.get(sqlClient()
+                                        .getColumnName(OperationTable.KEY_TYPE))))
+                                .user(User
+                                        .builder()
+                                        .id(McUtils.getInteger(row.get(sqlClient().getColumnName(
+                                                OperationTable.KEY_USER_ID))))
                                         .build())
-                                .enabled(McUtils.getBoolean(row.get(getColumnName(OperationTable.KEY_ENABLED))))
+                                .enabled(
+                                        McUtils.getBoolean(row.get(sqlClient().getColumnName(
+                                                OperationTable.KEY_ENABLED))))
                                 .lastExecution(
-                                        McUtils.getLong(row.get(getColumnName(OperationTable.KEY_LAST_EXECUTION))))
+                                        McUtils.getLong(row.get(sqlClient().getColumnName(
+                                                OperationTable.KEY_LAST_EXECUTION))))
                                 .properties(getOperationProperties(row))
                                 .build());
             }
-            dropTable(notificationTable);
+            sqlClient().dropTable(notificationTable);
         }
 
         /** Migration #3
@@ -161,42 +176,51 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
          * 1. migrate date from old table to new table
          * 2. drop old table
          */
-        String alarmTable = "ALARM_DEFINITION";
-        if (hasTable(alarmTable)) {
-            List<HashMap<String, String>> rows = getRows(alarmTable);
+        String alarmTable = "alarm_definition";
+        if (sqlClient().hasTable(alarmTable)) {
+            List<HashMap<String, String>> rows = sqlClient().getRows(alarmTable);
             _logger.debug("{} table data: {}", alarmTable, rows);
             for (HashMap<String, String> row : rows) {
                 DaoUtils.getRuleDefinitionDao()
                         .create(RuleDefinitionTable
                                 .builder()
-                                .id(McUtils.getInteger(row.get(getColumnName(RuleDefinitionTable.KEY_ID))))
-                                .enabled(McUtils.getBoolean(row.get(getColumnName(RuleDefinitionTable.KEY_ENABLED))))
+                                .id(McUtils.getInteger(row.get(sqlClient().getColumnName(RuleDefinitionTable.KEY_ID))))
+                                .enabled(
+                                        McUtils.getBoolean(row.get(sqlClient().getColumnName(
+                                                RuleDefinitionTable.KEY_ENABLED))))
                                 .disableWhenTrigger(
                                         McUtils.getBoolean(row
-                                                .get(getColumnName(RuleDefinitionTable.KEY_DISABLE_WHEN_TRIGGER))))
-                                .name(row.get(getColumnName(RuleDefinitionTable.KEY_NAME)))
+                                                .get(sqlClient().getColumnName(
+                                                        RuleDefinitionTable.KEY_DISABLE_WHEN_TRIGGER))))
+                                .name(row.get(sqlClient().getColumnName(RuleDefinitionTable.KEY_NAME)))
                                 .resourceType(
                                         RESOURCE_TYPE.valueOf(row
-                                                .get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE))))
+                                                .get(sqlClient().getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE))))
                                 .resourceId(
-                                        McUtils.getInteger(row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_ID))))
-                                .timestamp(McUtils.getLong(row.get(getColumnName(RuleDefinitionTable.KEY_TIMESTAMP))))
+                                        McUtils.getInteger(row.get(sqlClient().getColumnName(
+                                                RuleDefinitionTable.KEY_RESOURCE_ID))))
+                                .timestamp(
+                                        McUtils.getLong(row.get(sqlClient().getColumnName(
+                                                RuleDefinitionTable.KEY_TIMESTAMP))))
                                 .lastTrigger(
-                                        McUtils.getLong(row.get(getColumnName(RuleDefinitionTable.KEY_LAST_TRIGGER))))
+                                        McUtils.getLong(row.get(sqlClient().getColumnName(
+                                                RuleDefinitionTable.KEY_LAST_TRIGGER))))
                                 .ignoreDuplicate(
                                         McUtils.getBoolean(row
-                                                .get(getColumnName(RuleDefinitionTable.KEY_IGNORE_DUPLICATE))))
+                                                .get(sqlClient().getColumnName(
+                                                        RuleDefinitionTable.KEY_IGNORE_DUPLICATE))))
                                 .triggered(
-                                        McUtils.getBoolean(row.get(getColumnName(RuleDefinitionTable.KEY_TRIGGERED))))
+                                        McUtils.getBoolean(row.get(sqlClient().getColumnName(
+                                                RuleDefinitionTable.KEY_TRIGGERED))))
                                 .dampeningType(
-                                        DAMPENING_TYPE.valueOf(row
-                                                .get(getColumnName(RuleDefinitionTable.KEY_DAMPENING_TYPE))))
+                                        DAMPENING_TYPE.valueOf(row.get(sqlClient()
+                                                .getColumnName(RuleDefinitionTable.KEY_DAMPENING_TYPE))))
                                 .conditionType(getConditionType(row))
                                 .dampeningProperties(getDampeningProperties(row))
                                 .conditionProperties(getConditionProperties(row))
                                 .build());
             }
-            dropTable(alarmTable);
+            sqlClient().dropTable(alarmTable);
         }
 
         /** Migration #4
@@ -205,9 +229,9 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
          * 1. migrate date from old table to new table
          * 2. drop old table
          */
-        String alarmNotificationMapTable = "ALARM_NOTIFICATION_MAP";
-        if (hasTable(alarmNotificationMapTable)) {
-            List<HashMap<String, String>> rows = getRows(alarmNotificationMapTable);
+        String alarmNotificationMapTable = "alarm_notification_map";
+        if (sqlClient().hasTable(alarmNotificationMapTable)) {
+            List<HashMap<String, String>> rows = sqlClient().getRows(alarmNotificationMapTable);
             _logger.debug("{} table data: {}", alarmNotificationMapTable, rows);
             for (HashMap<String, String> row : rows) {
                 DaoUtils.getOperationRuleDefinitionMapDao().create(
@@ -219,7 +243,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
                                         .id(McUtils.getInteger(row.get("ALARMDEFINITIONID"))).build())
                                 .build());
             }
-            dropTable(alarmNotificationMapTable);
+            sqlClient().dropTable(alarmNotificationMapTable);
         }
 
         /** Migration #5
@@ -230,17 +254,17 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
          * 3. migrate date from old table to new table
          * 4. drop old table
          * */
-        if (hasColumn(DB_TABLES.TIMER, "RESOURCETYPE")) {
+        if (sqlClient().hasColumn(DB_TABLES.TIMER, "resourceType")) {
             String oldTableName = "timer_old";
-            renameTable(DB_TABLES.TIMER, oldTableName);
+            sqlClient().renameTable(DB_TABLES.TIMER, oldTableName);
             //create table
-            createTable(Timer.class);
-            List<HashMap<String, String>> rows = getRows(oldTableName);
+            sqlClient().createTable(Timer.class);
+            List<HashMap<String, String>> rows = sqlClient().getRows(oldTableName);
             _logger.debug("Timer old table: {}", rows);
             for (HashMap<String, String> row : rows) {
                 //Create operation
-                String operationName = row.get(getColumnName(GatewayTable.KEY_NAME)) + " - DB Migration";
-                String timerName = row.get(getColumnName(GatewayTable.KEY_NAME));
+                String operationName = row.get(sqlClient().getColumnName(GatewayTable.KEY_NAME)) + " - DB Migration";
+                String timerName = row.get(sqlClient().getColumnName(GatewayTable.KEY_NAME));
                 HashMap<String, Object> properties = new HashMap<String, Object>();
                 properties.put(OperationSendPayload.KEY_RESOURCE_TYPE,
                         RESOURCE_TYPE.get(McUtils.getInteger(row.get("RESOURCETYPE"))).getText());
@@ -253,27 +277,35 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
                                 .name(operationName)
                                 .enabled(true)
                                 .type(OPERATION_TYPE.SEND_PAYLOAD)
-                                .user(getAdminUser())
+                                .user(sqlClient().getAdminUser())
                                 .properties(properties)
                                 .build());
 
                 //Create timer entry
-                DaoUtils.getTimerDao().create(
-                        Timer.builder()
-                                .id(McUtils.getInteger(row.get(getColumnName(Timer.KEY_ID))))
-                                .enabled(McUtils.getBoolean(row.get(getColumnName(Timer.KEY_ENABLED))))
-                                .name(timerName)
-                                .timerType(TIMER_TYPE.valueOf(row.get(getColumnName(Timer.KEY_TIMER_TYPE))))
-                                .frequencyType(
-                                        row.get(getColumnName(Timer.KEY_FREQUENCY)) == null ? null : FREQUENCY_TYPE
-                                                .valueOf(row.get(getColumnName(Timer.KEY_FREQUENCY))))
-                                .frequencyData(row.get(getColumnName(Timer.KEY_FREQUENCY_DATA)))
-                                .triggerTime(McUtils.getLong(row.get(getColumnName(Timer.KEY_TRIGGER_TIME))))
-                                .validityFrom(McUtils.getLong(row.get(getColumnName(Timer.KEY_VALIDITY_FROM))))
-                                .validityTo(McUtils.getLong(row.get(getColumnName(Timer.KEY_VALIDITY_TO))))
-                                .lastFire(McUtils.getLong(row.get(getColumnName(Timer.KEY_LAST_FIRE))))
-                                .internalVariable1(row.get(getColumnName(Timer.KEY_INTERNAL_VARIABLE1)))
-                                .build());
+                DaoUtils.getTimerDao()
+                        .create(
+                                Timer.builder()
+                                        .id(McUtils.getInteger(row.get(sqlClient().getColumnName(Timer.KEY_ID))))
+                                        .enabled(McUtils.getBoolean(row.get(sqlClient()
+                                                .getColumnName(Timer.KEY_ENABLED))))
+                                        .name(timerName)
+                                        .timerType(TIMER_TYPE.valueOf(row.get(sqlClient().getColumnName(
+                                                Timer.KEY_TIMER_TYPE))))
+                                        .frequencyType(row.get(sqlClient().getColumnName(Timer.KEY_FREQUENCY)) == null
+                                                ? null : FREQUENCY_TYPE.valueOf(row.get(sqlClient()
+                                                        .getColumnName(Timer.KEY_FREQUENCY))))
+                                        .frequencyData(row.get(sqlClient().getColumnName(Timer.KEY_FREQUENCY_DATA)))
+                                        .triggerTime(McUtils.getLong(row.get(sqlClient().getColumnName(
+                                                Timer.KEY_TRIGGER_TIME))))
+                                        .validityFrom(McUtils.getLong(row.get(sqlClient().getColumnName(
+                                                Timer.KEY_VALIDITY_FROM))))
+                                        .validityTo(McUtils.getLong(row.get(sqlClient().getColumnName(
+                                                Timer.KEY_VALIDITY_TO))))
+                                        .lastFire(McUtils.getLong(row
+                                                .get(sqlClient().getColumnName(Timer.KEY_LAST_FIRE))))
+                                        .internalVariable1(
+                                                row.get(sqlClient().getColumnName(Timer.KEY_INTERNAL_VARIABLE1)))
+                                        .build());
                 //map timer with operations table
                 OperationTable operationTable = DaoUtils.getOperationDao().getByName(operationName);
                 Timer timer = DaoUtils.getTimerDao().getByName(timerName);
@@ -284,7 +316,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
                                 .build());
 
             }
-            dropTable(oldTableName);
+            sqlClient().dropTable(oldTableName);
         }
 
         /** Migration #6
@@ -310,7 +342,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
 
     private HashMap<String, Object> getGatewayProperties(HashMap<String, String> row) {
         HashMap<String, Object> properties = new HashMap<String, Object>();
-        switch (GATEWAY_TYPE.valueOf(row.get(getColumnName(GatewayTable.KEY_TYPE)))) {
+        switch (GATEWAY_TYPE.valueOf(row.get(sqlClient().getColumnName(GatewayTable.KEY_TYPE)))) {
             case ETHERNET:
                 properties.put(GatewayEthernet.KEY_HOST, row.get("VARIABLE1"));
                 properties.put(GatewayEthernet.KEY_PORT, McUtils.getInteger(row.get("VARIABLE2")));
@@ -339,7 +371,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
 
     private HashMap<String, Object> getOperationProperties(HashMap<String, String> row) {
         HashMap<String, Object> properties = new HashMap<String, Object>();
-        switch (OPERATION_TYPE.valueOf(row.get(getColumnName(OperationTable.KEY_TYPE)))) {
+        switch (OPERATION_TYPE.valueOf(row.get(sqlClient().getColumnName(OperationTable.KEY_TYPE)))) {
             case SEND_EMAIL:
                 properties.put(OperationSendEmail.KEY_EMAIL_SUBJECT, row.get("VARIABLE1"));
                 properties.put(OperationSendEmail.KEY_TO_EMAIL_ADDRESSES, row.get("VARIABLE2"));
@@ -393,7 +425,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
         _logger.debug("Row data: {}", row);
         switch (getConditionType(row)) {
             case STATE:
-                if (row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(
+                if (row.get(sqlClient().getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(
                         RESOURCE_TYPE.SENSOR_VARIABLE.name())) {
                     properties.put(RuleDefinitionState.KEY_STATE,
                             McUtils.getBoolean(row.get("THRESHOLDVALUE")) ? STATE.ON.getText() : STATE.OFF.getText());
@@ -418,10 +450,10 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
     }
 
     private CONDITION_TYPE getConditionType(HashMap<String, String> row) {
-        if (row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(
+        if (row.get(sqlClient().getColumnName(RuleDefinitionTable.KEY_RESOURCE_TYPE)).equalsIgnoreCase(
                 RESOURCE_TYPE.SENSOR_VARIABLE.name())) {
             SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().getById(
-                    Integer.valueOf(row.get(getColumnName(RuleDefinitionTable.KEY_RESOURCE_ID))));
+                    Integer.valueOf(row.get(sqlClient().getColumnName(RuleDefinitionTable.KEY_RESOURCE_ID))));
             if (sensorVariable.getMetricType() == METRIC_TYPE.BINARY) {
                 return CONDITION_TYPE.STATE;
             } else if (sensorVariable.getMetricType() == METRIC_TYPE.DOUBLE) {
@@ -438,7 +470,7 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
 
     private HashMap<String, Object> getDampeningProperties(HashMap<String, String> row) {
         HashMap<String, Object> properties = new HashMap<String, Object>();
-        switch (DAMPENING_TYPE.valueOf(row.get(getColumnName(RuleDefinitionTable.KEY_DAMPENING_TYPE)))) {
+        switch (DAMPENING_TYPE.valueOf(row.get(sqlClient().getColumnName(RuleDefinitionTable.KEY_DAMPENING_TYPE)))) {
             case ACTIVE_TIME:
                 properties.put(DampeningActiveTime.KEY_ACTIVE_TIME, McUtils.getLong(row.get("DAMPENINGVAR1")));
                 properties.put(DampeningActiveTime.KEY_ACTIVE_FROM, McUtils.getLong(row.get("DAMPENINGINTERNAL1")));

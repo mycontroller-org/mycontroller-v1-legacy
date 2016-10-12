@@ -50,9 +50,9 @@ public class V1_03_01__2016_Aug_03 extends MigrationBase {
          * 2. add new column
          * */
         //Execute only if column not available in database
-        if (!hasColumn("rule_definition", "reEnable")) {
-            addColumn("rule_definition", "reEnable", "TINYINT DEFAULT FALSE");
-            addColumn("rule_definition", "reEnableDelay", "BIGINT");
+        if (!sqlClient().hasColumn("rule_definition", "reEnable")) {
+            sqlClient().addColumn("rule_definition", "reEnable", "TINYINT DEFAULT FALSE");
+            sqlClient().addColumn("rule_definition", "reEnableDelay", "BIGINT");
             reloadDao();
         }
 

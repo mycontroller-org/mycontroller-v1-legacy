@@ -46,8 +46,8 @@ public class V1_02_10__2016_Jul_29 extends MigrationBase {
          * 2. rename it, if exists
          * */
         //Execute only if changes not available in database
-        if (hasColumn("NODE", "LASESEEN")) {
-            renameColumn("NODE", "LASESEEN", "LASTSEEN");
+        if (sqlClient().hasColumn("node", "laseSeen")) {
+            sqlClient().renameColumn("node", "laseSeen", "lastSeen");
             reloadDao();
         }
         _logger.info("Migration completed successfully.");

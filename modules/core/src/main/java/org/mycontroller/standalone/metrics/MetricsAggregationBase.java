@@ -79,19 +79,22 @@ public class MetricsAggregationBase {
             //-----------------------------------------------
             aggregateAndInsertForBucketDuration(String.valueOf(sourceType.ordinal()),
                     String.valueOf(resultType.ordinal()), timestampFrom, (timestampFrom + bucketDuration),
-                    DB_QUERY.INSERT_METRICS_DOUBLE_AGGREGATION_BY_TYPE, DB_QUERY.DELETE_METRICS_DOUBLE_BY_TYPE);
+                    DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_DOUBLE_AGGREGATION_BY_TYPE),
+                    DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_DOUBLE_BY_TYPE));
 
             //Call aggregation for battery usage
             //----------------------------------
             aggregateAndInsertForBucketDuration(String.valueOf(sourceType.ordinal()),
                     String.valueOf(resultType.ordinal()), timestampFrom, (timestampFrom + bucketDuration),
-                    DB_QUERY.INSERT_METRICS_BATTERY_AGGREGATION_BY_TYPE, DB_QUERY.DELETE_METRICS_BATTERY_BY_TYPE);
+                    DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_BATTERY_AGGREGATION_BY_TYPE),
+                    DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_BATTERY_BY_TYPE));
 
             //Call aggregation counter data (sensor variables)
             //-----------------------------------------------
             aggregateAndInsertForBucketDuration(sourceType.name(), resultType.name(), timestampFrom,
-                    (timestampFrom + bucketDuration), DB_QUERY.INSERT_METRICS_COUNTER_AGGREGATION_BY_TYPE,
-                    DB_QUERY.DELETE_METRICS_COUNTER_BY_TYPE);
+                    (timestampFrom + bucketDuration),
+                    DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_COUNTER_AGGREGATION_BY_TYPE),
+                    DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_COUNTER_BY_TYPE));
 
             //Update last aggregation status
             //-----------------------------------

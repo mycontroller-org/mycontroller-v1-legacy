@@ -50,9 +50,11 @@ public class V1_01_01__SNAPSHOT extends MigrationBase {
          **/
 
         //Migration #1
-        int alterCount = DaoUtils.getSensorVariableDao().getDao()
-                .executeRaw("ALTER TABLE sensor_variable ADD COLUMN IF NOT EXISTS previousValue VARCHAR(255);");
-        _logger.debug("Alter count:{}", alterCount);
+        if (!sqlClient().hasColumn("sensor_variable", "previousValue")){
+            int alterCount = DaoUtils.getSensorVariableDao().getDao()
+                    .executeRaw("ALTER TABLE SENSOR_VARIABLE ADD COLUMN PREVIOUSVALUE VARCHAR(255);");
+            _logger.debug("Alter count:{}", alterCount);
+        }
 
         //Migration #2
         String defaultSubType = "line";

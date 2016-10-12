@@ -94,11 +94,6 @@ public class DeleteResourceUtils {
     }
 
     public static void deleteSensor(Sensor sensor) {
-        //Delete all variable Types
-        for (SensorVariable sensorVariable : DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId())) {
-            deleteSensorVariable(sensorVariable);
-        }
-
         //Delete timers
         //deleteTimers(RESOURCE_TYPE.SENSOR, sensor.getId());
 
@@ -116,6 +111,11 @@ public class DeleteResourceUtils {
 
         //Delete UID tags
         DaoUtils.getUidTagDao().deleteBySensorId(sensor.getId());
+
+        //Delete all variable Types
+        for (SensorVariable sensorVariable : DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId())) {
+            deleteSensorVariable(sensorVariable);
+        }
 
         //Delete Sensor
         DaoUtils.getSensorDao().delete(sensor);
