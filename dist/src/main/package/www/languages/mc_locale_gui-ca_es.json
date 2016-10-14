@@ -103,6 +103,8 @@
     "DASHBOARDS": "Escriptoris digitals",
     "DASHBOARD_LIMIT": "Màxims d'escriptoris digitals permitits",
     "DATABASE": "Database",
+    "DATABASE_SCHEMA_REVISION": "Database schema revision",
+    "DATABASE_TYPE": "Database type",
     "DATABASE_VERSION": "Versio Base de Dades",
     "DATA_RETENTION_SETTINGS": "Configuració de retenció de dades",
     "DATA_TYPE": "Tipus de dades",

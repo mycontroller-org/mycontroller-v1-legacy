@@ -17,10 +17,13 @@
 package org.mycontroller.standalone.api.jaxrs.json;
 
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.DataBaseUtils;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -29,16 +32,31 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
+@Slf4j
 public class McAbout extends McAboutBase {
     private String applicationVersion;
     private String applicationDbVersion;
     private String applicationLocation;
     private String databaseType;
+    private String databaseVersion;
 
     public McAbout() {
         applicationVersion = AppProperties.getInstance().getControllerSettings().getVersion();
         applicationDbVersion = AppProperties.getInstance().getControllerSettings().getDbVersion();
         applicationLocation = AppProperties.getInstance().getAppDirectory();
-        databaseType = AppProperties.getInstance().getDbType().name();
+        databaseType = AppProperties.getInstance().getDbType().getText();
+        try {
+            String[] queryResult = DaoUtils.getUserDao().getDao().queryRaw(DataBaseUtils.getDatabaseVersionQuery())
+                    .getFirstResult();
+            if (queryResult != null && queryResult.length > 0
+                    && queryResult[0] != null && queryResult[0].length() > 0) {
+                databaseVersion = queryResult[0].trim();
+            } else {
+                databaseVersion = "Version not found";
+            }
+        } catch (Exception ex) {
+            databaseVersion = "Error: " + ex.getMessage();
+            _logger.error("Exception, ", ex);
+        }
     }
 }

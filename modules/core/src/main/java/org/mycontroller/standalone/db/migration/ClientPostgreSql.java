@@ -34,7 +34,8 @@ public class ClientPostgreSql extends ClientBase implements IMigrationClient {
     public void renameColumn(String tableName, String oldColumnName, String newColumnName) throws SQLException {
         if (hasColumn(tableName, oldColumnName)) {
             int dropCount = DaoUtils.getUserDao().getDao().executeRaw(
-                    "ALTER TABLE " + tableName + " RENAME COLUMN " + oldColumnName + " TO " + newColumnName);
+                    "ALTER TABLE " + getTableName(tableName) + " RENAME COLUMN "
+                            + getColumnName(oldColumnName) + " TO " + getColumnName(newColumnName));
             _logger.debug("Renamed OldColumn:{}, NewColumn:{}, Table:{}, Drop count:{}", oldColumnName, newColumnName,
                     tableName, dropCount);
         } else {
@@ -44,7 +45,7 @@ public class ClientPostgreSql extends ClientBase implements IMigrationClient {
 
     public void alterColumn(String tableName, String columnName, String columnDefinition) throws SQLException {
         int alterCount = DaoUtils.getUserDao().getDao().executeRaw("ALTER TABLE "
-                + tableName + " ALTER COLUMN " + columnName + " TYPE " + columnDefinition);
+                + tableName + " ALTER COLUMN " + getColumnName(columnName) + " TYPE " + columnDefinition);
         _logger.debug("Altered column:{}, columnDefinition:{}, table:{}, add count:{}",
                 columnName, columnDefinition, tableName, alterCount);
     }
@@ -52,7 +53,7 @@ public class ClientPostgreSql extends ClientBase implements IMigrationClient {
     public void renameTable(String tableName, String newTableName) throws SQLException {
         if (hasTable(tableName)) {
             int changeCount = DaoUtils.getUserDao().getDao().executeRaw(
-                    "ALTER TABLE " + tableName + " RENAME TO " + newTableName);
+                    "ALTER TABLE " + getTableName(tableName) + " RENAME TO " + getTableName(newTableName));
             _logger.debug("Renamed table:{}, NewTable:{}, Change count:{}", tableName, newTableName, changeCount);
         } else {
             _logger.warn("Selected table[{}] not found!", tableName);
@@ -61,11 +62,12 @@ public class ClientPostgreSql extends ClientBase implements IMigrationClient {
 
     public void dropTable(String tableName) throws SQLException {
         if (hasTable(tableName)) {
-            int dropCount = DaoUtils.getUserDao().getDao().executeRaw("DROP TABLE " + tableName + " CASCADE");
+            int dropCount = DaoUtils.getUserDao().getDao()
+                    .executeRaw("DROP TABLE " + getTableName(tableName) + " CASCADE");
             _logger.debug("Dropped table:{}, drop count:{}", tableName, dropCount);
             List<HashMap<String, String>> rows = getRowsByQuery(
-                    "SELECT c.relname as seq FROM pg_class c WHERE c.relkind = 'S' and c.relname like '" + tableName
-                            + "_%_seq'");
+                    "SELECT c.relname as seq FROM pg_class c WHERE c.relkind = 'S' and c.relname like '"
+                            + getTableName(tableName) + "_%_seq'");
             //Drop sequences
             for (HashMap<String, String> row : rows) {
                 if (row.get("seq").matches(tableName + "_[a-z]*?_seq")) {

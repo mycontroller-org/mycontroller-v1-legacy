@@ -103,6 +103,8 @@
     "DASHBOARDS": "Tableros",
     "DASHBOARD_LIMIT": "Cant. máx. de tableros permitidos",
     "DATABASE": "Database",
+    "DATABASE_SCHEMA_REVISION": "Database schema revision",
+    "DATABASE_TYPE": "Database type",
     "DATABASE_VERSION": "Versión de base de datos",
     "DATA_RETENTION_SETTINGS": "Configuración de retención de datos",
     "DATA_TYPE": "Tipo de dato",

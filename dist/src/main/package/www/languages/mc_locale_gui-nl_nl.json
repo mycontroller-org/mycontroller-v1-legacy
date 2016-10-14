@@ -103,6 +103,8 @@
     "DASHBOARDS": "Dashboards",
     "DASHBOARD_LIMIT": "Maximaal aantal dashboards toegestaan",
     "DATABASE": "Database",
+    "DATABASE_SCHEMA_REVISION": "Database schema revision",
+    "DATABASE_TYPE": "Database type",
     "DATABASE_VERSION": "Database versie",
     "DATA_RETENTION_SETTINGS": "Gegevens bewaar instellingen",
     "DATA_TYPE": "Data type",

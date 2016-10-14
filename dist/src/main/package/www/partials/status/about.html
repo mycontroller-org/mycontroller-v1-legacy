@@ -31,7 +31,9 @@
 
           <dl class="dl-horizontal">
             <dt>{{ 'VERSION' | translate }}</dt> <dd>{{mcAbout.applicationVersion}}</dd>
-            <dt>{{ 'DATABASE_VERSION' | translate }}</dt> <dd>{{mcAbout.applicationDbVersion}}</dd>
+            <dt>{{ 'DATABASE_SCHEMA_REVISION' | translate }}</dt> <dd>{{mcAbout.applicationDbVersion}}</dd>
+            <dt>{{ 'DATABASE_TYPE' | translate }}</dt> <dd>{{mcAbout.databaseType}}</dd>
+            <dt>{{ 'DATABASE_VERSION' | translate }}</dt> <dd>{{mcAbout.databaseVersion}}</dd>
             <dt>{{ 'GIT_COMMIT_BRANCH' | translate }}</dt> <dd>{{mcAbout.gitCommit}}:{{mcAbout.gitBranch}}</dd>
             <dt>{{ 'BUILT_ON' | translate }}</dt> <dd>{{mcAbout.gitBuiltOn}}</dd>
             <dt>{{ 'BUILD_JDK' | translate }}</dt> <dd>{{mcAbout.gitBuildJdk}}</dd>

@@ -103,6 +103,8 @@
     "DASHBOARDS": "Tablouri de bord",
     "DASHBOARD_LIMIT": "Tablouri de bord maxim permise",
     "DATABASE": "Database",
+    "DATABASE_SCHEMA_REVISION": "Database schema revision",
+    "DATABASE_TYPE": "Database type",
     "DATABASE_VERSION": "Versiunea bazei de date",
     "DATA_RETENTION_SETTINGS": "Setările de retenție date",
     "DATA_TYPE": "Tipul de date",

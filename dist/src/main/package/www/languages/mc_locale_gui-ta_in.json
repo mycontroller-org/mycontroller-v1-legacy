@@ -103,6 +103,8 @@
     "DASHBOARDS": "Dashboards",
     "DASHBOARD_LIMIT": "Maximum dashboards allowed",
     "DATABASE": "Database",
+    "DATABASE_SCHEMA_REVISION": "Database schema revision",
+    "DATABASE_TYPE": "Database type",
     "DATABASE_VERSION": "டேட்டாபேஸ் பதிப்பு",
     "DATA_RETENTION_SETTINGS": "Data retention settings",
     "DATA_TYPE": "Data type",

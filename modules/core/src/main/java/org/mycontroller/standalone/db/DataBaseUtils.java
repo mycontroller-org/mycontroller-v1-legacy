@@ -218,6 +218,17 @@ public class DataBaseUtils {
         return false;
     }
 
+    public static String getDatabaseVersionQuery() {
+        switch (AppProperties.getInstance().getDbType()) {
+            case H2DB:
+            case H2DB_EMBEDDED:
+                return "SELECT VALUE as version FROM INFORMATION_SCHEMA.SETTINGS WHERE NAME='info.VERSION'";
+            default:
+                return "SELECT version()";
+
+        }
+    }
+
     public static synchronized boolean restoreDatabase(String databaseRestoreScript) {
         Connection conn = null;
         try {

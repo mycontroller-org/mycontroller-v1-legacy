@@ -103,6 +103,8 @@
     "DASHBOARDS": "Панель управления",
     "DASHBOARD_LIMIT": "Максимальное кол-во панелей",
     "DATABASE": "База данных",
+    "DATABASE_SCHEMA_REVISION": "Database schema revision",
+    "DATABASE_TYPE": "Database type",
     "DATABASE_VERSION": "Версия базы данных",
     "DATA_RETENTION_SETTINGS": "Параметры хранения данных",
     "DATA_TYPE": "Тип даты",

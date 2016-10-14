@@ -91,15 +91,46 @@ public class AppProperties {
     MqttBrokerSettings mqttBrokerSettings;
 
     public enum DB_TYPE {
-        H2DB_EMBEDDED,
-        H2DB,
-        MYSQL,
-        MARIADB,
-        POSTGRESQL;
+        H2DB_EMBEDDED("H2 database embedded"),
+        H2DB("H2 database"),
+        MYSQL("MySQL"),
+        MARIADB("MariaDB"),
+        POSTGRESQL("PostgreSQL");
+
+        private final String name;
+
+        private DB_TYPE(String name) {
+            this.name = name;
+        }
+
+        public String getText() {
+            return this.name;
+        }
+
+        public static DB_TYPE get(int id) {
+            for (DB_TYPE type : values()) {
+                if (type.ordinal() == id) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
+
+        public static DB_TYPE fromString(String text) {
+            if (text != null) {
+                for (DB_TYPE type : DB_TYPE.values()) {
+                    if (text.equalsIgnoreCase(type.getText())) {
+                        return type;
+                    }
+                }
+            }
+            return null;
+        }
     }
 
     public enum MC_LANGUAGE {
         CA_ES("català (ES)"),
+        CS_CZ("čeština (CZ)"),
         DE_DE("Deutsch (DE)"),
         EN_US("English (US)"),
         ES_AR("Español (AR)"),

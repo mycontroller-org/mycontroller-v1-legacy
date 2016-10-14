@@ -103,6 +103,8 @@
     "DASHBOARDS": "Paneles",
     "DASHBOARD_LIMIT": "Paneles de control máximo permitidos",
     "DATABASE": "Base de datos",
+    "DATABASE_SCHEMA_REVISION": "Database schema revision",
+    "DATABASE_TYPE": "Database type",
     "DATABASE_VERSION": "Versión de la base de datos",
     "DATA_RETENTION_SETTINGS": "Configuración de retención de datos",
     "DATA_TYPE": "Tipo de datos",

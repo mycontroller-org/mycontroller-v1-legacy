@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
@@ -39,52 +40,41 @@ public class ClientBase {
 
     public void addColumn(String tableName, String columnName, String columnDefinition) throws SQLException {
         if (!hasColumn(tableName, columnName)) {
-            int addCount = DaoUtils.getUserDao().getDao().executeRaw(
-                    "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnDefinition);
+            int addCount = DaoUtils
+                    .getUserDao().getDao().executeRaw(
+                            "ALTER TABLE " + getTableName(tableName) + " ADD COLUMN " + getColumnName(columnName)
+                                    + " " + columnDefinition);
             _logger.debug("Added column:{}, columnDefinition:{}, table:{}, add count:{}",
                     columnName, columnDefinition, tableName, addCount);
         }
     }
 
     public boolean hasColumn(String tableName, String columnName) throws SQLException {
-        String[] queryResult = DaoUtils.getUserDao().getDao().queryRaw(
-                "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_NAME = '"
-                        + tableName + "' AND COLUMN_NAME = '" + columnName + "'").getFirstResult();
-        if (queryResult != null && queryResult.length > 0 && queryResult[0] != null && queryResult[0].length() > 0) {
-            return queryResult[0].equalsIgnoreCase(columnName);
+        if (!hasTable(tableName)) {
+            return false;
         }
-        return false;
+        try {
+            // test if the column already exists
+            DaoUtils.getUserDao().getDao()
+                    .queryRaw("SELECT count(" + getColumnName(columnName) + ") FROM " + getTableName(tableName));
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
     }
 
     public void dropColumn(String tableName, String columnName) throws SQLException {
         if (hasColumn(tableName, columnName)) {
             int dropCount = DaoUtils.getUserDao().getDao().executeRaw(
-                    "ALTER TABLE " + tableName + " DROP COLUMN " + columnName);
+                    "ALTER TABLE " + getTableName(tableName) + " DROP COLUMN " + getColumnName(columnName));
             _logger.debug("Droupped column:{}, Table:{}, Drop count:{}", columnName, tableName, dropCount);
         }
     }
 
-    /*    public boolean hasTable(String tableName) {
-            try {
-                String[] queryResult = DaoUtils.getUserDao().getDao().queryRaw(
-                        "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = '" + tableName + "'")
-                        .getFirstResult();
-                if (queryResult != null
-                        && queryResult.length > 0
-                        && queryResult[0] != null
-                        && queryResult[0].length() > 0) {
-                    return queryResult[0].equalsIgnoreCase(tableName);
-                }
-            } catch (SQLException sEx) {
-                _logger.error("Exception,", sEx);
-            }
-            return false;
-        }*/
-
-    public boolean hasTable(String tablename) {
+    public boolean hasTable(String tableName) {
         try {
             // test if the table already exists
-            DaoUtils.getUserDao().getDao().queryRaw("SELECT count(*) FROM " + tablename);
+            DaoUtils.getUserDao().getDao().queryRaw("SELECT count(*) FROM " + getTableName(tableName));
             return true;
         } catch (SQLException ex) {
             return false;
@@ -93,7 +83,7 @@ public class ClientBase {
 
     public void dropTable(String tableName) throws SQLException {
         if (hasTable(tableName)) {
-            int dropCount = DaoUtils.getUserDao().getDao().executeRaw("DROP TABLE " + tableName);
+            int dropCount = DaoUtils.getUserDao().getDao().executeRaw("DROP TABLE " + getTableName(tableName));
             _logger.debug("Dropped table:{}, drop count:{}", tableName, dropCount);
         } else {
             _logger.warn("Selected table[{}] not found!", tableName);
@@ -109,7 +99,7 @@ public class ClientBase {
     }
 
     public List<HashMap<String, String>> getRows(String tableName) {
-        return getRowsByQuery("SELECT * FROM " + tableName);
+        return getRowsByQuery("SELECT * FROM " + getTableName(tableName));
     }
 
     @SuppressWarnings("unchecked")
@@ -149,7 +139,25 @@ public class ClientBase {
     }
 
     public String getColumnName(String columnName) {
-        return columnName;
+        switch (AppProperties.getInstance().getDbType()) {
+            case H2DB:
+            case H2DB_EMBEDDED:
+                return columnName.toUpperCase();
+            case POSTGRESQL:
+                return "\"" + columnName + "\"";
+            default:
+                return columnName;
+        }
+    }
+
+    public String getTableName(String tableName) {
+        switch (AppProperties.getInstance().getDbType()) {
+            case H2DB:
+            case H2DB_EMBEDDED:
+                return tableName.toUpperCase();
+            default:
+                return tableName;
+        }
     }
 
     public User getAdminUser() {

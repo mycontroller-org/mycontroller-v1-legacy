@@ -57,6 +57,8 @@ public interface IMigrationClient {
 
     String getColumnName(String columnName);
 
+    String getTableName(String tableName);
+
     User getAdminUser();
 
     void executeRaw(String rawQuery) throws SQLException;

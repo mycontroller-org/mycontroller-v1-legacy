@@ -32,7 +32,8 @@ public class ClientH2DB extends ClientBase implements IMigrationClient {
     public void renameColumn(String tableName, String oldColumnName, String newColumnName) throws SQLException {
         if (hasColumn(tableName, oldColumnName)) {
             int dropCount = DaoUtils.getUserDao().getDao().executeRaw(
-                    "ALTER TABLE " + tableName + " ALTER COLUMN " + oldColumnName + " RENAME TO " + newColumnName);
+                    "ALTER TABLE " + getTableName(tableName) + " ALTER COLUMN " + getColumnName(oldColumnName)
+                            + " RENAME TO " + getColumnName(newColumnName));
             _logger.debug("Renamed OldColumn:{}, NewColumn:{}, Table:{}, Drop count:{}", oldColumnName, newColumnName,
                     tableName, dropCount);
         } else {
@@ -42,7 +43,7 @@ public class ClientH2DB extends ClientBase implements IMigrationClient {
 
     public void alterColumn(String tableName, String columnName, String columnDefinition) throws SQLException {
         int alterCount = DaoUtils.getUserDao().getDao().executeRaw("ALTER TABLE "
-                + tableName + " ALTER COLUMN " + columnName + " " + columnDefinition);
+                + getTableName(tableName) + " ALTER COLUMN " + getColumnName(columnName) + " " + columnDefinition);
         _logger.debug("Altered column:{}, columnDefinition:{}, table:{}, add count:{}",
                 columnName, columnDefinition, tableName, alterCount);
     }
@@ -50,7 +51,7 @@ public class ClientH2DB extends ClientBase implements IMigrationClient {
     public void renameTable(String tableName, String newTableName) throws SQLException {
         if (hasTable(tableName)) {
             int changeCount = DaoUtils.getUserDao().getDao().executeRaw(
-                    "ALTER TABLE " + tableName + " RENAME TO " + newTableName);
+                    "ALTER TABLE " + getTableName(tableName) + " RENAME TO " + getTableName(newTableName));
             _logger.debug("Renamed table:{}, NewTable:{}, Change count:{}", tableName, newTableName, changeCount);
         } else {
             _logger.warn("Selected table[{}] not found!", tableName);

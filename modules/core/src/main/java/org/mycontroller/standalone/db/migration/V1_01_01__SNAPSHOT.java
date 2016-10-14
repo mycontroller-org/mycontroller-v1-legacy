@@ -18,7 +18,6 @@ package org.mycontroller.standalone.db.migration;
 
 import java.sql.Connection;
 
-import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
 
@@ -50,11 +49,7 @@ public class V1_01_01__SNAPSHOT extends MigrationBase {
          **/
 
         //Migration #1
-        if (!sqlClient().hasColumn("sensor_variable", "previousValue")){
-            int alterCount = DaoUtils.getSensorVariableDao().getDao()
-                    .executeRaw("ALTER TABLE SENSOR_VARIABLE ADD COLUMN PREVIOUSVALUE VARCHAR(255);");
-            _logger.debug("Alter count:{}", alterCount);
-        }
+        sqlClient().addColumn("sensor_variable", "previousValue", "VARCHAR(255)");
 
         //Migration #2
         String defaultSubType = "line";

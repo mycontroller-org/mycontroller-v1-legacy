@@ -54,7 +54,9 @@ public class V1_02_08__2016_Jul_01 extends MigrationBase {
          * steps
          * 1. remove all the units
          * */
-        sqlClient().executeRaw("DELETE FROM settings WHERE \"subKey\"='variableUnit'");
+        sqlClient().executeRaw(
+                "DELETE FROM " + sqlClient().getTableName("settings") + " WHERE "
+                        + sqlClient().getColumnName("subKey") + "='variableUnit'");
 
         /** Migration #2
          * Added/update new columns in 'Sensor variable' table
@@ -68,7 +70,7 @@ public class V1_02_08__2016_Jul_01 extends MigrationBase {
             sqlClient().dropColumn("sensor_variable", "unit");
             sqlClient().addColumn("sensor_variable", "unitType", "VARCHAR(100)");
             sqlClient().addColumn("sensor_variable", "readOnly", "TINYINT DEFAULT FALSE NOT NULL");
-            //addColumn("sensor_variable", "\"offset\"", "DOUBLE PRECISION DEFAULT 0.0 NOT NULL");
+            sqlClient().addColumn("sensor_variable", "offset", "DOUBLE PRECISION DEFAULT 0.0 NOT NULL");
             sqlClient().addColumn("sensor_variable", "offset", "DOUBLE PRECISION DEFAULT 0.0 NOT NULL");
             sqlClient().addColumn("sensor_variable", "priority", "INTEGER DEFAULT 100 NOT NULL");
             sqlClient().addColumn("sensor_variable", "graphProperties", "BLOB");
