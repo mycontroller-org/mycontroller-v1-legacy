@@ -26,6 +26,7 @@ import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.gateway.GatewayUtils;
+import org.mycontroller.standalone.message.SmartSleepMessageQueue;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -94,6 +95,10 @@ public class DeleteResourceUtils {
     }
 
     public static void deleteSensor(Sensor sensor) {
+        //Remove smart sleep messages
+        SmartSleepMessageQueue.getInstance().removeMessages(sensor.getNode().getGatewayTable().getId(),
+                sensor.getNode().getEui(), sensor.getSensorId());
+
         //Delete timers
         //deleteTimers(RESOURCE_TYPE.SENSOR, sensor.getId());
 
@@ -123,6 +128,9 @@ public class DeleteResourceUtils {
     }
 
     public static void deleteNode(Node node) {
+        //Remove smart sleep messages
+        SmartSleepMessageQueue.getInstance().removeQueue(node.getGatewayTable().getId(), node.getEui());
+
         //Delete sensors
         for (Sensor sensor : DaoUtils.getSensorDao().getAllByNodeId(node.getId())) {
             deleteSensor(sensor);

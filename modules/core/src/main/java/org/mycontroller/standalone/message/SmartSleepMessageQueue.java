@@ -61,11 +61,21 @@ public class SmartSleepMessageQueue {
         return messagesQueue.get(queueName);
     }
 
-    public void removeQueue(Integer gatewayId, String nodeEui) {
+    public synchronized void removeQueue(Integer gatewayId, String nodeEui) {
         String queueName = getQueueName(gatewayId, nodeEui);
         if (messagesQueue.containsKey(queueName)) {
             messagesQueue.remove(queueName);
             _logger.debug("Queue removed:[{}]", queueName);
+        }
+    }
+
+    public synchronized void removeMessages(Integer gatewayId, String nodeEui, String sensorId) {
+        String queueName = getQueueName(gatewayId, nodeEui);
+        ArrayList<McMessage> queue = getQueue(queueName);
+        for (int index = 0; index < queue.size(); index++) {
+            if (queue.get(index).getSensorId().equals(sensorId)) {
+                queue.remove(index);
+            }
         }
     }
 
@@ -74,14 +84,14 @@ public class SmartSleepMessageQueue {
         _logger.debug("Cleared all queues..");
     }
 
-    public void putMessage(McMessage mcMessage) {
+    public synchronized void putMessage(McMessage mcMessage) {
         String queueName = getQueueName(mcMessage.getGatewayId(), mcMessage.getNodeEui());
         ArrayList<McMessage> queue = getQueue(queueName);
         queue.add(mcMessage);
         _logger.debug("Added new {}, on queue [{}], size:{}", mcMessage, queueName, queue.size());
     }
 
-    public McMessage getMessage(Integer gatewayId, String nodeEui) {
+    public synchronized McMessage getMessage(Integer gatewayId, String nodeEui) {
         String queueName = getQueueName(gatewayId, nodeEui);
         McMessage mcMessage = null;
         ArrayList<McMessage> queue = getQueue(queueName);
