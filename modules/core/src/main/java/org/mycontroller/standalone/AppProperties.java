@@ -78,6 +78,7 @@ public class AppProperties {
     private String mqttBrokerPersistentStore;
     private String mcPersistentStoresLocation;
     private Boolean clearMessagesQueueOnStart;
+    private Boolean clearSmartSleepMsgQueueOnStart;
 
     MyControllerSettings controllerSettings;
     EmailSettings emailSettings;
@@ -466,8 +467,10 @@ public class AppProperties {
         createDirectoryLocation(mcPersistentStoresLocation);
         //MQTT Broker mqttBrokerPersistentStore
         mqttBrokerPersistentStore = mcPersistentStoresLocation + "/moquette/moquette_store.mapdb";
-        clearMessagesQueueOnStart = McUtils.getBoolean(getValue(properties, "mcc.clear.message.queue.on.start",
-                "true"));
+        clearMessagesQueueOnStart = McUtils.getBoolean(getValue(properties,
+                "mcc.clear.message.queue.on.start", "true"));
+        clearSmartSleepMsgQueueOnStart = McUtils.getBoolean(getValue(properties,
+                "mcc.clear.smart.sleep.msg.queue.on.start", "true"));
     }
 
     public void createDirectoryLocation(String directoryLocation) {
@@ -714,6 +717,10 @@ public class AppProperties {
 
     public Boolean getClearMessagesQueueOnStart() {
         return clearMessagesQueueOnStart;
+    }
+
+    public Boolean getClearSmartSleppMsgQueueOnStart() {
+        return clearSmartSleepMsgQueueOnStart;
     }
 
     public String getMcPersistentStoresLocation() {

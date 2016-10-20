@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.message;
 
+import java.io.Serializable;
+
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 
@@ -36,7 +38,10 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class McMessage {
+public class McMessage implements Serializable {
+    /**  */
+    private static final long serialVersionUID = -677512912537380066L;
+
     public static final String SENSOR_BROADCAST_ID = "SENSOR_BC";
     public static final String NODE_BROADCAST_ID = "NODE_BC";
     public static final String PAYLOAD_EMPTY = "";

@@ -22,6 +22,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.gateway.GatewayUtils;
@@ -576,6 +577,18 @@ public class McMessageUtils {
         if (mcMessage.isTxMessage() && !mcMessage.isScreeningDone()) {
             sendToMcMessageEngine(mcMessage);
         }
+        //Do not block stream message on smartSleep
+        if (mcMessage.isTxMessage() && mcMessage.getType() != MESSAGE_TYPE.C_STREAM) {
+            Node node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());
+            if (node != null && node.getSmartSleepEnabled()) {
+                SmartSleepMessageQueue.getInstance().putMessage(mcMessage);
+                return;
+            }
+        }
+        sendToProviderBridgeFinal(mcMessage);
+    }
+
+    public static synchronized void sendToProviderBridgeFinal(McMessage mcMessage) {
         switch (mcMessage.getNetworkType()) {
             case MY_SENSORS:
                 mySensorsBridge.executeMcMessage(mcMessage);
@@ -594,7 +607,7 @@ public class McMessageUtils {
     }
 
     public static synchronized void sendToMcMessageEngine(McMessage mcMessage) {
-        //Do not run new thred. for testing
+        //Do not run new thread. for testing
         //new Thread(new McMessageEngine(mcMessage)).start();
         new McMessageEngine(mcMessage).run();
     }

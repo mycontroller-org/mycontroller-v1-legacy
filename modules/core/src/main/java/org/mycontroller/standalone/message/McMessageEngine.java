@@ -363,6 +363,10 @@ public class McMessageEngine implements Runnable {
                 node = getNode(mcMessage);
                 node.setState(STATE.UP);
                 updateNode(node);
+                if (node.getSmartSleepEnabled()) {
+                    new Thread(new SmartSleepMessageTxThread(
+                            mcMessage.getGatewayId(), mcMessage.getNodeEui())).start();
+                }
                 break;
             case I_DISCOVER:
                 if (mcMessage.isTxMessage()) {
