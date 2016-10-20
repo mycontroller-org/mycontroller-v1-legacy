@@ -521,6 +521,7 @@
     "SERIAL_PORT_NAME_EXAMPLE": "На пример: /dev/ttyUSB0",
     "SERIAL_RETRY_FREQUENCY_EXAMPLE": "На пример: 120",
     "SETTINGS": "Нагодувања",
+    "SHOW_ICON": "Show icon",
     "SHOW_LEGENDS": "Прикажи легенда",
     "SHOW_MENU": "Прикажи мени",
     "SIX_HOURS_DATA": "Шес часовен податок",

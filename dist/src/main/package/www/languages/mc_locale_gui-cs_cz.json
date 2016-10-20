@@ -521,6 +521,7 @@
     "SERIAL_PORT_NAME_EXAMPLE": "Příklad: /dev/ttyUSB0",
     "SERIAL_RETRY_FREQUENCY_EXAMPLE": "Příklad: 120",
     "SETTINGS": "Nastavení",
+    "SHOW_ICON": "Show icon",
     "SHOW_LEGENDS": "Zobrazit legendu",
     "SHOW_MENU": "Zobrazit menu",
     "SIX_HOURS_DATA": "6ti hodinová data",

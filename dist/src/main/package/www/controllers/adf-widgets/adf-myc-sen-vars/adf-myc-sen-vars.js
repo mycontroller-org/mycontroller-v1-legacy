@@ -31,6 +31,7 @@ angular.module('adf.widget.myc-sen-vars', [])
         controllerAs: 'mycSenVars',
         config: {
           variableIds:[],
+          showIcon: true,
           itemsPerRow:"2",
           refreshTime:30,
         },
@@ -48,7 +49,7 @@ angular.module('adf.widget.myc-sen-vars', [])
     mycSenVars.isSyncing = true;
     mycSenVars.variables = {};
     $scope.tooltipEnabled = false;
-    $scope.hideVariableName=true;
+    $scope.hideVariableName= !config.showIcon;
     $scope.cs = CommonServices;
 
     //HVAC heater options - HVAC flow state

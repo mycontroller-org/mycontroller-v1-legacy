@@ -521,6 +521,7 @@
     "SERIAL_PORT_NAME_EXAMPLE": "Exemplu: / dev/ttyUSB0",
     "SERIAL_RETRY_FREQUENCY_EXAMPLE": "Exemplu: 120",
     "SETTINGS": "Setări",
+    "SHOW_ICON": "Show icon",
     "SHOW_LEGENDS": "Arată legende",
     "SHOW_MENU": "Arată meniul",
     "SIX_HOURS_DATA": "Date de șase ore",

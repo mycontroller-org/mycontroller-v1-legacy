@@ -521,6 +521,7 @@
     "SERIAL_PORT_NAME_EXAMPLE": "Пример: /dev/ttyUSB0",
     "SERIAL_RETRY_FREQUENCY_EXAMPLE": "Пример: 120",
     "SETTINGS": "Настройки",
+    "SHOW_ICON": "Show icon",
     "SHOW_LEGENDS": "Показать историю",
     "SHOW_MENU": "Показать меню",
     "SIX_HOURS_DATA": "Данные за шесть часов",

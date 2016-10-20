@@ -30,7 +30,7 @@
 <!-- Temperature -->
 <div ng-if="variable.type.en === 'Temperature'">
   <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
-    <i class="wi wi-thermometer mc-icon-2x"></i>
+    <span ng-hide="hideVariableName"><i class="wi wi-thermometer mc-icon-2x"></i></span>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
 </div>

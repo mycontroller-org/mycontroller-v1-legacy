@@ -521,6 +521,7 @@
     "SERIAL_PORT_NAME_EXAMPLE": "示例: / dev/ttyUSB0",
     "SERIAL_RETRY_FREQUENCY_EXAMPLE": "示例︰ 120",
     "SETTINGS": "设置",
+    "SHOW_ICON": "Show icon",
     "SHOW_LEGENDS": "显示图例",
     "SHOW_MENU": "显示菜单",
     "SIX_HOURS_DATA": "6小时数据",

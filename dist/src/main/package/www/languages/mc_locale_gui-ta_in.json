@@ -521,6 +521,7 @@
     "SERIAL_PORT_NAME_EXAMPLE": "உதாரணமாக: /dev/ttyUSB0",
     "SERIAL_RETRY_FREQUENCY_EXAMPLE": "உதாரணமாக: 120",
     "SETTINGS": "அமைப்புகள்",
+    "SHOW_ICON": "Show icon",
     "SHOW_LEGENDS": "Show legends",
     "SHOW_MENU": "Show menu",
     "SIX_HOURS_DATA": "Six hours data",
