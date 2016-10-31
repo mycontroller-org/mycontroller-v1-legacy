@@ -39,6 +39,7 @@ import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsGPSTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -837,7 +838,7 @@ public class McMessageEngine implements Runnable {
     }
 
     private SensorVariable updateSensorVariable(McMessage mcMessage, Sensor sensor,
-            PAYLOAD_TYPE payloadType) {
+            PAYLOAD_TYPE payloadType) throws McBadRequestException {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensor.getId(),
                 MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()));
         METRIC_TYPE metricType = McMessageUtils.getMetricType(payloadType);
@@ -852,6 +853,9 @@ public class McMessageEngine implements Runnable {
                     break;
                 case DOUBLE:
                     data = String.valueOf(McUtils.getDoubleAsString(mcMessage.getPayload()));
+                    break;
+                case GPS:
+                    data = MetricsGPSTypeDevice.get(mcMessage.getPayload(), mcMessage.getTimestamp()).getPosition();
                     break;
                 default:
                     data = mcMessage.getPayload();
@@ -889,6 +893,10 @@ public class McMessageEngine implements Runnable {
                     break;
                 case BINARY:
                     sensorVariable.setValue(mcMessage.getPayload().equalsIgnoreCase("0") ? "0" : "1");
+                    break;
+                case GPS:
+                    sensorVariable.setValue(MetricsGPSTypeDevice.get(mcMessage.getPayload(), mcMessage.getTimestamp())
+                            .getPosition());
                     break;
                 default:
                     sensorVariable.setValue(mcMessage.getPayload());
@@ -951,7 +959,7 @@ public class McMessageEngine implements Runnable {
         DaoUtils.getNodeDao().update(node);
     }
 
-    private void recordSetTypeData(McMessage mcMessage) {
+    private void recordSetTypeData(McMessage mcMessage) throws McBadRequestException {
         PAYLOAD_TYPE payloadType = McMessageUtils.getPayLoadType(MESSAGE_TYPE_SET_REQ.fromString(mcMessage
                 .getSubType()));
         Sensor sensor = this.getSensor(mcMessage);
@@ -1018,6 +1026,12 @@ public class McMessageEngine implements Runnable {
                                 .timestamp(sensorVariable.getTimestamp())
                                 .value(McUtils.getLong(mcMessage.getPayload()))
                                 .samples(1).build());
+                break;
+            case GPS:
+                MetricsGPSTypeDevice gpsData = MetricsGPSTypeDevice.get(mcMessage.getPayload(),
+                        mcMessage.getTimestamp());
+                gpsData.setSensorVariable(sensorVariable);
+                DaoUtils.getMetricsGPSTypeDeviceDao().create(gpsData);
                 break;
             default:
                 _logger.debug(

@@ -42,6 +42,8 @@ import org.mycontroller.standalone.db.dao.MetricsCounterTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsCounterTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDaoImpl;
+import org.mycontroller.standalone.db.dao.MetricsGPSTypeDeviceDao;
+import org.mycontroller.standalone.db.dao.MetricsGPSTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.NodeDao;
 import org.mycontroller.standalone.db.dao.NodeDaoImpl;
 import org.mycontroller.standalone.db.dao.OperationDao;
@@ -119,6 +121,7 @@ public class DaoUtils {
     private static MetricsBinaryTypeDeviceDao metricsBinaryTypeDeviceDao = null;
     private static MetricsCounterTypeDeviceDao metricsCounterTypeDeviceDao = null;
     private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
+    private static MetricsGPSTypeDeviceDao metricsGPSTypeDeviceDao = null;
     private static NodeDao nodeDao = null;
     private static OperationDao operationDao = null;
     private static OperationRuleDefinitionMapDao operationRuleDefinitionMapDao = null;
@@ -163,6 +166,7 @@ public class DaoUtils {
             metricsBinaryTypeDeviceDao = new MetricsBinaryTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             metricsCounterTypeDeviceDao = new MetricsCounterTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsGPSTypeDeviceDao = new MetricsGPSTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             nodeDao = new NodeDaoImpl(DataBaseUtils.getConnectionSource());
             operationDao = new OperationDaoImpl(DataBaseUtils.getConnectionSource());
             operationRuleDefinitionMapDao = new OperationRuleDefinitionMapDaoImpl(DataBaseUtils.getConnectionSource());
@@ -211,6 +215,10 @@ public class DaoUtils {
 
     public static MetricsDoubleTypeDeviceDao getMetricsDoubleTypeDeviceDao() {
         return metricsDoubleTypeDeviceDao;
+    }
+
+    public static MetricsGPSTypeDeviceDao getMetricsGPSTypeDeviceDao() {
+        return metricsGPSTypeDeviceDao;
     }
 
     public static SystemJobDao getSystemJobDao() {

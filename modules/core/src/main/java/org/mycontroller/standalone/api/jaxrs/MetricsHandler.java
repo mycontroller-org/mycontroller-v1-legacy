@@ -185,6 +185,9 @@ public class MetricsHandler extends AccessEngine {
                         case DOUBLE:
                             return RestUtils.getResponse(Status.OK, metricApi.getSensorVariableMetricsDouble(
                                     resourceId, start, end, bucketDuration, true));
+                        case GPS:
+                            return RestUtils.getResponse(Status.OK, metricApi.getSensorVariableMetricsGPS(
+                                    resourceId, start, end, bucketDuration, true));
                         default:
                             break;
                     }

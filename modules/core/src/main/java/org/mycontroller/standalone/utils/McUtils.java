@@ -92,8 +92,12 @@ public class McUtils {
     }
 
     public static Double getDouble(String value) {
+        return getDouble(value, DOUBLE_ROUND);
+    }
+
+    public static Double getDouble(String value, int scale) {
         if (value != null) {
-            return round(Double.valueOf(value), DOUBLE_ROUND);
+            return round(Double.valueOf(value), scale);
         }
         return null;
     }

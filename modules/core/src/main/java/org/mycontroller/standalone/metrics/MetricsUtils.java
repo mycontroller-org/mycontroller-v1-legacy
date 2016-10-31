@@ -60,7 +60,8 @@ public class MetricsUtils {
         NONE("None"),
         DOUBLE("Double"),
         BINARY("Binary"),
-        COUNTER("Counter");
+        COUNTER("Counter"),
+        GPS("GPS");
 
         public static METRIC_TYPE get(int id) {
             for (METRIC_TYPE metric_type : values()) {

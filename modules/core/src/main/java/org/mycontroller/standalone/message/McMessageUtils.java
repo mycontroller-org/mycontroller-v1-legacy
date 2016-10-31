@@ -376,7 +376,7 @@ public class McMessageUtils {
     }
 
     public enum PAYLOAD_TYPE {
-        PL_DOUBLE, PL_BOOLEAN, PL_HEX, PL_STRING, PL_LONG;
+        PL_DOUBLE, PL_BOOLEAN, PL_HEX, PL_STRING, PL_LONG, PL_GPS;
     }
 
     public static METRIC_TYPE getMetricType(PAYLOAD_TYPE payloadType) {
@@ -387,6 +387,8 @@ public class McMessageUtils {
                 return METRIC_TYPE.DOUBLE;
             case PL_LONG:
                 return METRIC_TYPE.COUNTER;
+            case PL_GPS:
+                return METRIC_TYPE.GPS;
             default:
                 return METRIC_TYPE.NONE;
         }
@@ -490,6 +492,8 @@ public class McMessageUtils {
                 return PAYLOAD_TYPE.PL_STRING;
             case V_RATE:
                 return PAYLOAD_TYPE.PL_STRING;
+            case V_POSITION:
+                return PAYLOAD_TYPE.PL_GPS;
             default:
                 //Make default to string
                 return PAYLOAD_TYPE.PL_STRING;

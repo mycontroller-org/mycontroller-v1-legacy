@@ -30,6 +30,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.json.DataPointCounter;
 import org.mycontroller.standalone.api.jaxrs.json.DataPointDouble;
+import org.mycontroller.standalone.api.jaxrs.json.DataPointGPS;
 import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -37,6 +38,7 @@ import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsGPSTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
@@ -63,6 +65,40 @@ public class MetricApi {
     //Get count of resources
     public ResourceCountModel getResourceCount(RESOURCE_TYPE resourceType, Integer resourceId) {
         return new ResourceCountModel(resourceType, resourceId);
+    }
+
+    public List<?> getSensorVariableMetricsGPS(Integer sensorVariableId,
+            Long timestampFrom, Long timestampTo, String bucketDurationString, boolean getGeneric) {
+        timestampFrom = getTimestampFrom(timestampFrom);
+        timestampTo = getTimestampTo(timestampTo);
+        List<MetricsGPSTypeDevice> metricsFinal = new ArrayList<MetricsGPSTypeDevice>();
+        List<DataPointGPS> metricsGenericFinal = new ArrayList<DataPointGPS>();
+        long bucketDuration = getBucketDuration(bucketDurationString);
+        _logger.debug("timestamp:[from:{}, to:{}], bucketDurationString:{}, bucketDuration:{}, totalDuration:{}",
+                timestampFrom, timestampTo, bucketDurationString, bucketDuration, (timestampTo - timestampFrom));
+        if ((timestampTo - timestampFrom) < bucketDuration) {
+            return metricsFinal;
+        }
+        MetricsGPSTypeDevice metricConfig = MetricsGPSTypeDevice.builder()
+                .sensorVariable(SensorVariable.builder().id(sensorVariableId).build()).build();
+        if (bucketDuration == -1) {
+            metricConfig.setTimestampFrom(timestampFrom);
+            metricConfig.setTimestampTo(timestampTo);
+            List<MetricsGPSTypeDevice> metrics = DaoUtils.getMetricsGPSTypeDeviceDao().getAll(metricConfig);
+            if (getGeneric) {
+                for (MetricsGPSTypeDevice metric : metrics) {
+                    metricsGenericFinal.add(DataPointGPS.get(metric, null, null));
+                }
+            } else {
+                metricsFinal = metrics;
+            }
+        } else {
+            //TODO: add support for runtime aggregation
+        }
+        if (getGeneric) {
+            return metricsGenericFinal;
+        }
+        return metricsFinal;
     }
 
     public List<?> getSensorVariableMetricsDouble(Integer sensorVariableId,

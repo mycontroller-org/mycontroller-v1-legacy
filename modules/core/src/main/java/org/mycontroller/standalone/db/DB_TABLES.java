@@ -33,6 +33,7 @@ public class DB_TABLES {
     public static final String METRICS_BINARY_TYPE_DEVICE = "metrics_binary_type_device";
     public static final String METRICS_COUNTER_TYPE_DEVICE = "metrics_counter_type_device";
     public static final String METRICS_DOUBLE_TYPE_DEVICE = "metrics_double_type_device";
+    public static final String METRICS_GPS_TYPE_DEVICE = "metrics_gps_type_device";
     public static final String NODE = "node";
     public static final String OPERATION = "operation";
     public static final String OPERATION_RULE_MAP = "rule_operation_map";
