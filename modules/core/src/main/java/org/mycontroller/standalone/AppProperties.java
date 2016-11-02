@@ -450,13 +450,11 @@ public class AppProperties {
 
         //update web details
         webHttpPort = Integer.valueOf(getValue(properties, "mcc.web.http.port", "8443"));
-        if (getValue(properties, "mcc.web.enable.https", "true") != null) {
-            if (Boolean.valueOf(getValue(properties, "mcc.web.enable.https", "true"))) {
-                isWebHttpsEnabled = true;
-                webSslKeystoreFile = getValue(properties, "mcc.web.ssl.keystore.file", "../conf/keystore.jks");
-                webSslKeystorePassword = getValue(properties, "mcc.web.ssl.keystore.password", "mycontroller");
-                webSslKeystoreType = getValue(properties, "mcc.web.ssl.keystore.type", "JKS");
-            }
+        isWebHttpsEnabled = Boolean.valueOf(getValue(properties, "mcc.web.enable.https", "true"));
+        if (isWebHttpsEnabled) {
+            webSslKeystoreFile = getValue(properties, "mcc.web.ssl.keystore.file", "../conf/keystore.jks");
+            webSslKeystorePassword = getValue(properties, "mcc.web.ssl.keystore.password", "mycontroller");
+            webSslKeystoreType = getValue(properties, "mcc.web.ssl.keystore.type", "JKS");
         }
         webBindAddress = getValue(properties, "mcc.web.bind.address", "0.0.0.0");
 

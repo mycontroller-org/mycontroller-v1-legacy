@@ -142,15 +142,6 @@ public class Restore implements Runnable {
                         resourcesDir, FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()), true);
             }
             if (executeDbBackup) {
-                if (AppProperties.getInstance().getDbType() == DB_TYPE.H2DB_EMBEDDED) {
-                    //remove old database
-                    if (FileUtils.deleteQuietly(FileUtils.getFile(getDbLocation(oldDatabaseUrl) + ".h2.db"))) {
-                        _logger.debug("Old database removed successfully");
-                    } else {
-                        _logger.warn("Unable to remove old database");
-                        return;
-                    }
-                }
                 //restore database
                 if (!DataBaseUtils.restoreDatabase(extractedLocation + File.separator + BRCommons.DATABASE_FILENAME)) {
                     _logger.error("Database restore failed:{}", extractedLocation + File.separator

@@ -236,7 +236,8 @@ public class DataBaseUtils {
             _logger.debug("database backup triggered...");
             conn = DriverManager.getConnection(AppProperties.getInstance().getDbUrl(),
                     AppProperties.getInstance().getDbUsername(), AppProperties.getInstance().getDbPassword());
-            if (AppProperties.getInstance().getDbType() == DB_TYPE.H2DB) {
+            if (AppProperties.getInstance().getDbType() == DB_TYPE.H2DB
+                    || AppProperties.getInstance().getDbType() == DB_TYPE.H2DB_EMBEDDED) {
                 //Drop everything
                 PreparedStatement dropAllObjects = conn.prepareStatement("DROP ALL OBJECTS");
                 dropAllObjects.execute();
@@ -249,7 +250,7 @@ public class DataBaseUtils {
                     AppProperties.getInstance().getDbUrl(), restoreFileFullPath);
             return true;
         } catch (SQLException | IOException ex) {
-            _logger.error("Exception, backup failed!", ex);
+            _logger.error("Exception, restore failed!", ex);
         } finally {
             if (conn != null) {
                 try {
