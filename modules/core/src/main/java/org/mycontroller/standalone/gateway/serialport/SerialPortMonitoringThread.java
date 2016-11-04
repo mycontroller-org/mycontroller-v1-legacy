@@ -53,7 +53,9 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
         gateway.setRunningDriver(gateway.getDriver());
         if (gateway.getRunningDriver() == SERIAL_PORT_DRIVER.AUTO) {
             if (AppProperties.getOsArch().startsWith(GatewayUtils.OS_ARCH_ARM)) {
-                gateway.setRunningDriver(SERIAL_PORT_DRIVER.PI4J);
+                //Refer https://github.com/mycontroller-org/mycontroller/issues/299
+                //gateway.setRunningDriver(SERIAL_PORT_DRIVER.PI4J);
+                gateway.setRunningDriver(SERIAL_PORT_DRIVER.JSERIALCOMM);
             } else {
                 gateway.setRunningDriver(SERIAL_PORT_DRIVER.JSERIALCOMM);
             }
