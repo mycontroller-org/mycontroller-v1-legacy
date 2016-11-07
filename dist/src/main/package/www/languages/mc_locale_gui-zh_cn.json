@@ -561,6 +561,7 @@
     "TEMPLATE": "模板",
     "TEMPLATES": "模板",
     "TEMPLATES_DETAIL": "详细信息模板",
+    "TEMPLATE_BINDINGS": "Template bindings",
     "TESTING": "正在测试...",
     "TEST_CONNECTION": "测试连接",
     "THREADS_COUNT": "线程计数",

@@ -561,6 +561,7 @@
     "TEMPLATE": "Template",
     "TEMPLATES": "Templates",
     "TEMPLATES_DETAIL": "Detalle de templates",
+    "TEMPLATE_BINDINGS": "Template bindings",
     "TESTING": "Comprobando...",
     "TEST_CONNECTION": "Probar conección",
     "THREADS_COUNT": "Cantidad de hilos",

@@ -96,6 +96,11 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                 operationSendEmail.setEmailSubject(node.get("emailSubject").asText());
                 operationSendEmail.setToEmailAddresses(node.get("toEmailAddresses").asText());
                 operationSendEmail.setTemplate(node.get("template").asText());
+                if (node.get("templateBindings") != null) {
+                    operationSendEmail.setTemplateBindings(RestUtils.getObjectMapper().convertValue(
+                            node.get("templateBindings"), new TypeReference<HashMap<String, Object>>() {
+                            }));
+                }
                 operation = operationSendEmail;
                 break;
             case SEND_PAYLOAD:

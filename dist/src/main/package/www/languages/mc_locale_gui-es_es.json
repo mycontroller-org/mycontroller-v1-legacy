@@ -561,6 +561,7 @@
     "TEMPLATE": "Plantilla",
     "TEMPLATES": "Plantillas",
     "TEMPLATES_DETAIL": "Detalle de las plantillas",
+    "TEMPLATE_BINDINGS": "Template bindings",
     "TESTING": "Pruebas...",
     "TEST_CONNECTION": "Probar conexión",
     "THREADS_COUNT": "Cuenta hilos",

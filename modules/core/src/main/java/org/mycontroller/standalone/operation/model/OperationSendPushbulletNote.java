@@ -103,15 +103,17 @@ public class OperationSendPushbulletNote extends Operation {
         }
         try {
             Notification notification = new Notification(ruleDefinition);
+            HashMap<String, Object> bindings = new HashMap<String, Object>();
+            bindings.put("notification", notification);
             if (body != null && body.trim().length() > 0) {
                 PushbulletUtils.sendNote(
                         idens, emails, channelTags,
-                        Notification.updateTemplate(notification, title),
-                        Notification.updateTemplate(notification, body));
+                        updateTemplate(title, bindings),
+                        updateTemplate(body, bindings));
             } else {
                 PushbulletUtils.sendNote(
                         idens, emails, channelTags,
-                        Notification.updateTemplate(notification, title),
+                        updateTemplate(title, bindings),
                         notification.toString());
             }
         } catch (Exception ex) {
@@ -125,7 +127,15 @@ public class OperationSendPushbulletNote extends Operation {
 
     @Override
     public void execute(Timer timer) {
-        _logger.error("Timer will not support for this operation");
+        if (!getEnabled()) {
+            //This operation disabled, nothing to do.
+            return;
+        }
+        if (body != null && body.trim().length() > 0) {
+            PushbulletUtils.sendNote(idens, emails, channelTags, title, body);
+        } else {
+            PushbulletUtils.sendNote(idens, emails, channelTags, title, "Error: no body msg specified!");
+        }
     }
 
 }

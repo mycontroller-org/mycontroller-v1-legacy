@@ -561,6 +561,7 @@
   "TEMPLATE": "Template",
   "TEMPLATES": "Templates",
   "TEMPLATES_DETAIL": "Templates detail",
+  "TEMPLATE_BINDINGS": "Template bindings",
   "TESTING": "Testing...",
   "TEST_CONNECTION": "Test connection",
   "THREADS_COUNT": "Threads count",

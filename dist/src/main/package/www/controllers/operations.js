@@ -269,6 +269,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
           }
         }else if($scope.item.type === 'Execute script'){
           $scope.item.scriptBindings = angular.toJson(response.scriptBindings);
+        }else if($scope.item.type === 'Send email'){
+          $scope.item.templateBindings = angular.toJson(response.templateBindings);
         }
 
         //Update delay time
@@ -287,6 +289,7 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
       });
   }else{
     $scope.item.scriptBindings='{ }';
+    $scope.item.templateBindings='{ }';
   }
 
   //--------------pre load -----------
@@ -315,6 +318,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
     //Change string to JSON string
     if($scope.item.type === 'Execute script'){
       $scope.item.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.scriptBindings+')')));
+    }else if($scope.item.type === 'Send email'){
+      $scope.item.templateBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.templateBindings+')')));
     }
     $scope.saveProgress = true;
     if($stateParams.id){

@@ -561,6 +561,7 @@
     "TEMPLATE": "Modèle",
     "TEMPLATES": "Modèles",
     "TEMPLATES_DETAIL": "Détail modèles",
+    "TEMPLATE_BINDINGS": "Template bindings",
     "TESTING": "Test en cours...",
     "TEST_CONNECTION": "Tester la connection",
     "THREADS_COUNT": "Nombre de threads",

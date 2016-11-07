@@ -16,23 +16,13 @@
  */
 package org.mycontroller.standalone.operation;
 
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-
-import javax.script.ScriptException;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
-import org.mycontroller.standalone.scripts.McScript;
-import org.mycontroller.standalone.scripts.McScriptEngine;
-import org.mycontroller.standalone.scripts.McScriptEngineUtils;
-import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
-import org.mycontroller.standalone.scripts.McScriptException;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -40,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Getter
-@Slf4j
 public class Notification {
     private String ruleName;
     private String ruleCondition;
@@ -73,24 +62,6 @@ public class Notification {
     @Override
     public String toString() {
         return toString("\n");
-    }
-
-    public static String updateTemplate(Notification notification, String source) {
-        HashMap<String, Object> bindings = new HashMap<String, Object>();
-        bindings.put("notification", notification);
-        McScript mcTemplateScript = McScript.builder()
-                .type(SCRIPT_TYPE.OPERATION)
-                .engineName(McScriptEngineUtils.MC_TEMPLATE_ENGINE)
-                .data(source)
-                .bindings(bindings)
-                .build();
-        McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
-        try {
-            return (String) templateEngine.executeScript();
-        } catch (FileNotFoundException | McScriptException | ScriptException ex) {
-            _logger.error("Exception: {}", mcTemplateScript, ex);
-            return "<pre>Exception: " + ex.getMessage() + "</pre>";
-        }
     }
 
 }
