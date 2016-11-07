@@ -200,7 +200,9 @@ public class McMessageEngine implements Runnable {
                 DaoUtils.getSensorDao().create(sensor);
             } else {
                 sensor.setType(MESSAGE_TYPE_PRESENTATION.fromString(mcMessage.getSubType()));
-                sensor.setName(mcMessage.getPayload());
+                if (mcMessage.getPayload() != null && mcMessage.getPayload().trim().length() > 0) {
+                    sensor.setName(mcMessage.getPayload());
+                }
                 DaoUtils.getSensorDao().update(sensor);
             }
         }
@@ -328,7 +330,12 @@ public class McMessageEngine implements Runnable {
                         MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()),
                         mcMessage.getPayload());
                 node = getNode(mcMessage);
-                node.setName(mcMessage.getPayload());
+                //Update node name only when it is null or name length is greater than 0
+                if (node.getName() == null) {
+                    node.setName(mcMessage.getPayload());
+                } else if (mcMessage.getPayload() != null && mcMessage.getPayload().trim().length() > 0) {
+                    node.setName(mcMessage.getPayload());
+                }
                 updateNode(node);
                 break;
             case I_SKETCH_VERSION:
