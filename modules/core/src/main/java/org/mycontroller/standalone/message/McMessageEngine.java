@@ -103,7 +103,7 @@ public class McMessageEngine implements Runnable {
             case C_PRESENTATION:
                 if (mcMessage.isTxMessage()) {
                     //ResourcesLogs message data
-                    if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+                    if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.NOTICE)) {
                         this.setSensorOtherData(LOG_LEVEL.NOTICE,
                                 mcMessage,
                                 mcMessage.getSubType(),
@@ -210,7 +210,7 @@ public class McMessageEngine implements Runnable {
                 MESSAGE_TYPE_PRESENTATION.fromString(mcMessage.getSubType()),
                 mcMessage.getPayload());
         //ResourcesLogs message data
-        if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+        if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.NOTICE)) {
             this.setSensorOtherData(LOG_LEVEL.NOTICE,
                     mcMessage,
                     MESSAGE_TYPE_PRESENTATION.fromString(mcMessage.getSubType()).getText(),
@@ -226,7 +226,7 @@ public class McMessageEngine implements Runnable {
             node = getNode(mcMessage);
         }
         //ResourcesLogs message data
-        if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+        if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.NOTICE)) {
             this.setSensorOtherData(LOG_LEVEL.NOTICE,
                     mcMessage,
                     MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()).getText(),
@@ -291,7 +291,7 @@ public class McMessageEngine implements Runnable {
                 } catch (NodeIdException ex) {
                     _logger.error("Unable to generate new node Id,", ex);
                     //ResourcesLogs message data
-                    if (ResourcesLogsUtils.isLevel(LOG_LEVEL.ERROR)) {
+                    if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.ERROR)) {
                         this.setSensorOtherData(LOG_LEVEL.ERROR,
                                 mcMessage,
                                 MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()).getText(),
@@ -389,7 +389,7 @@ public class McMessageEngine implements Runnable {
                 updateNode(node);
                 break;
             case I_DEBUG:
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.NOTICE)) {
                     this.setSensorOtherData(
                             LOG_LEVEL.NOTICE,
                             mcMessage,
@@ -467,7 +467,7 @@ public class McMessageEngine implements Runnable {
         switch (MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType())) {
             case ST_FIRMWARE_CONFIG_REQUEST:
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.NOTICE)) {
                     this.setSensorOtherData(LOG_LEVEL.NOTICE,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()).getText(), null);
@@ -480,7 +480,7 @@ public class McMessageEngine implements Runnable {
                 break;
             case ST_FIRMWARE_REQUEST:
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.TRACE)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.TRACE)) {
                     this.setSensorOtherData(LOG_LEVEL.TRACE,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()).getText(), null);
@@ -493,7 +493,7 @@ public class McMessageEngine implements Runnable {
                 break;
             case ST_FIRMWARE_CONFIG_RESPONSE:
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.NOTICE)) {
                     this.setSensorOtherData(LOG_LEVEL.NOTICE,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()).getText(), null);
@@ -504,7 +504,7 @@ public class McMessageEngine implements Runnable {
             case ST_IMAGE:
             case ST_SOUND:
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.TRACE)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.TRACE)) {
                     this.setSensorOtherData(LOG_LEVEL.TRACE,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()).getText(), null);
@@ -512,7 +512,7 @@ public class McMessageEngine implements Runnable {
                 break;
             default:
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.WARNING)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.WARNING)) {
                     this.setSensorOtherData(LOG_LEVEL.WARNING,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.fromString(mcMessage.getSubType()).getText(), null);
@@ -555,7 +555,7 @@ public class McMessageEngine implements Runnable {
             // Print firmware status in sensor logs
             if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
                     this.setSensorOtherData(LOG_LEVEL.INFO,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.ST_FIRMWARE_REQUEST.getText(),
@@ -573,7 +573,7 @@ public class McMessageEngine implements Runnable {
             // Print firmware status in sensor logs
             if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
                     this.setSensorOtherData(LOG_LEVEL.INFO,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText(),
@@ -623,7 +623,7 @@ public class McMessageEngine implements Runnable {
             // Print firmware status in sensor logs
             if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
                     this.setSensorOtherData(LOG_LEVEL.INFO,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.ST_FIRMWARE_REQUEST.getText(),
@@ -641,7 +641,7 @@ public class McMessageEngine implements Runnable {
             // Print firmware status in sensor logs
             if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
                     this.setSensorOtherData(LOG_LEVEL.INFO,
                             mcMessage,
                             MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText(),
@@ -810,7 +810,7 @@ public class McMessageEngine implements Runnable {
         if (mcMessage.isTxMessage()) {
             if (sensorVariable != null) {
                 //ResourcesLogs message data
-                if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+                if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
                     this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage, null);
                 }
             } else {
@@ -820,7 +820,7 @@ public class McMessageEngine implements Runnable {
         }
         if (sensorVariable != null && sensorVariable.getValue() != null) {
             //ResourcesLogs message data
-            if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+            if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
                 this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage, null);
             }
             mcMessage.setTxMessage(true);
@@ -836,7 +836,7 @@ public class McMessageEngine implements Runnable {
                         McMessageUtils.getPayLoadType(MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType())));
             }
             //ResourcesLogs message data
-            if (ResourcesLogsUtils.isLevel(LOG_LEVEL.WARNING)) {
+            if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.WARNING)) {
                 this.setSensorVariableData(LOG_LEVEL.WARNING, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage,
                         "Failed: Data not available in " + AppProperties.APPLICATION_NAME);
             }
@@ -995,7 +995,7 @@ public class McMessageEngine implements Runnable {
               sensor.setUnit(rawMessage.getPayLoad());*/
             DaoUtils.getSensorDao().update(sensor);
             //ResourcesLogs message data
-            if (ResourcesLogsUtils.isLevel(LOG_LEVEL.NOTICE)) {
+            if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.NOTICE)) {
                 this.setSensorOtherData(LOG_LEVEL.NOTICE, mcMessage,
                         MESSAGE_TYPE_SET_REQ.V_UNIT_PREFIX.getText(), null);
             }
@@ -1049,7 +1049,7 @@ public class McMessageEngine implements Runnable {
         }
 
         //ResourcesLogs message data
-        if (ResourcesLogsUtils.isLevel(LOG_LEVEL.INFO)) {
+        if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
             this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_SET, sensorVariable, mcMessage, null);
         }
 
