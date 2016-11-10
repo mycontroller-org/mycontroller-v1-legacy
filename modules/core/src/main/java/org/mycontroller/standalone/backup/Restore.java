@@ -71,7 +71,6 @@ public class Restore implements Runnable {
         String extractedLocation = AppProperties.getInstance().getTmpLocation()
                 + backupFile.getName().replaceAll(".zip", "");
         try {
-            String oldDatabaseUrl = AppProperties.getInstance().getDbUrl();
             //Extract zip file
             _logger.debug("Zip file:{}", backupFile.getCanonicalPath());
 
@@ -210,7 +209,7 @@ public class Restore implements Runnable {
         }
     }
 
-    private static String getDbLocation(String dbUrl) {
+    public static String getDbLocation(String dbUrl) {
         String finalPath = "../conf/mycontroller";
         if (dbUrl.startsWith("jdbc:h2:file:")) {
             String databaseUrl = dbUrl;
