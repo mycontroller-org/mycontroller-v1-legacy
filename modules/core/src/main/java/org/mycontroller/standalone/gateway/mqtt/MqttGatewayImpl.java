@@ -43,7 +43,6 @@ public class MqttGatewayImpl implements IGateway {
     public static final long DISCONNECT_TIME_OUT = 1000 * 1;
     public static final int CONNECTION_TIME_OUT = 1000 * 5;
     public static final int KEEP_ALIVE = 1000 * 5;
-    public static final int MQTT_QOS = 0;
     private GatewayMQTT gateway = null;
 
     private IMqttClient mqttClient;
@@ -82,7 +81,7 @@ public class MqttGatewayImpl implements IGateway {
                 rawMessage.getData());
         try {
             MqttMessage message = new MqttMessage(((String) rawMessage.getData()).getBytes());
-            message.setQos(MQTT_QOS);
+            message.setQos(gateway.getQos());
             String[] topicsPublish = rawMessage.getSubData().split(GatewayMQTT.TOPICS_SPLITER);
             for (String topic : topicsPublish) {
                 mqttClient.publish(topic, message);

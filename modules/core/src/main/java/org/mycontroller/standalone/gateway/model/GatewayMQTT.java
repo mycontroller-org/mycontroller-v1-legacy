@@ -34,6 +34,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class GatewayMQTT extends Gateway {
+    public static final int DEFAULT_MQTT_QOS = 0;
+
     public static final String TOPICS_SPLITER = ",";
 
     public static final String KEY_BROKER_HOST = "bh";
@@ -42,6 +44,7 @@ public class GatewayMQTT extends Gateway {
     public static final String KEY_TOPICS_SUBSCRIBE = "ts";
     public static final String KEY_USERNAME = "u";
     public static final String KEY_PASSWORD = "p";
+    public static final String KEY_QOS = "qos";
 
     private String brokerHost;
     private String clientId;
@@ -49,6 +52,7 @@ public class GatewayMQTT extends Gateway {
     private String topicsSubscribe;
     private String username;
     private String password;
+    private Integer qos;
 
     public GatewayMQTT() {
 
@@ -69,6 +73,7 @@ public class GatewayMQTT extends Gateway {
         properties.put(KEY_TOPICS_SUBSCRIBE, topicsSubscribe);
         properties.put(KEY_USERNAME, username);
         properties.put(KEY_PASSWORD, password);
+        properties.put(KEY_QOS, qos);
         gatewayTable.setProperties(properties);
         return gatewayTable;
     }
@@ -83,6 +88,17 @@ public class GatewayMQTT extends Gateway {
         topicsSubscribe = (String) gatewayTable.getProperties().get(KEY_TOPICS_SUBSCRIBE);
         username = (String) gatewayTable.getProperties().get(KEY_USERNAME);
         password = (String) gatewayTable.getProperties().get(KEY_PASSWORD);
+        qos = (Integer) gatewayTable.getProperties().get(KEY_QOS);
+        if (qos == null) {
+            qos = DEFAULT_MQTT_QOS;
+        }
+    }
+
+    public Integer getQos() {
+        if (qos == null) {
+            return DEFAULT_MQTT_QOS;
+        }
+        return qos;
     }
 
     @Override

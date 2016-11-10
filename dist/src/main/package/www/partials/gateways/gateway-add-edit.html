@@ -132,6 +132,16 @@
           <!-- MQTT Gateway -->
           <div ng-if="gateway.type === 'MQTT'">
             <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'QOS' | translate }}</label>
+              <div class="col-sm-5">
+                <select class="form-control" pf-select ng-model="gateway.qos" convert-to-number>
+                    <option value="0">{{ 'QOS_0' | translate }}</option>
+                    <option value="1">{{ 'QOS_1' | translate }}</option>
+                    <option value="2">{{ 'QOS_2' | translate }}</option>
+                  </select>
+              </div>
+            </div>
+            <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'BROKET_HOST' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" placeholder="{{ 'MQTT_BROKER_HOST_EXAMPLE' | translate }}" ng-model="gateway.brokerHost" pf-validation="cs.isContainsSpace(input)" required />

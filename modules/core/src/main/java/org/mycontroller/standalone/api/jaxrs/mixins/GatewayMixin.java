@@ -105,6 +105,7 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 gatewayMQTT.setTopicsSubscribe(node.get("topicsSubscribe").asText());
                 gatewayMQTT.setUsername(node.get("username").asText());
                 gatewayMQTT.setPassword(node.get("password").asText());
+                gatewayMQTT.setQos(node.get("qos").asInt());
                 gateway = gatewayMQTT;
                 break;
             case PHANT_IO:

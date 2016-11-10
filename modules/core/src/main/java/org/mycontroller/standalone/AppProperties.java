@@ -136,6 +136,7 @@ public class AppProperties {
         EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
+        HU_HU("Magyar (HU)"),
         MK_MK("Македонски (MK)"),
         FR_FR("Français (FR)"),
         NL_NL("Nederlands (NL)"),
