@@ -48,6 +48,7 @@ public class Firmware implements Serializable {
     public static final String KEY_ID = "id";
     public static final String KEY_TYPE_ID = "typeId";
     public static final String KEY_VERSION_ID = "versionId";
+    public static final String KEY_TIMESTAMP = "timestamp";
     public static final String KEY_FIRMWARE_DATA_ID = "firmwareDataId";
     public static final String KEY_PROPERTIES = "properties";
     public static final String KEY_PROP_CRC = "crc";
@@ -67,7 +68,7 @@ public class Firmware implements Serializable {
             foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private FirmwareVersion version;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
     @DatabaseField(canBeNull = true, columnName = KEY_PROPERTIES, dataType = DataType.SERIALIZABLE)

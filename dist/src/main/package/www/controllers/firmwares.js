@@ -128,7 +128,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
 
     modalInstance.result.then(function () {
       FirmwaresFactory.deleteFirmwareTypes($scope.itemIds, function(response) {
-        alertService.success($filter('translate')('ITEM_DELETED_SUCCESSFULLY'));
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -312,7 +312,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
 
     modalInstance.result.then(function () {
       FirmwaresFactory.deleteFirmwareVersions($scope.itemIds, function(response) {
-        alertService.success($filter('translate')('ITEM_DELETED_SUCCESSFULLY'));
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
