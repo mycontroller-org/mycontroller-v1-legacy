@@ -430,6 +430,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Opschonen succesvol afgerond",
     "PURGE_RESOURCES_LOGS": "Bron logboek opschonen",
     "PURGE_SENSOR_VARIABLE": "Sensor variable opschonen",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
     "PURGE_WARNING": "LET OP: Als u geen parameter selecteerd, zal alles verwijderd worden",
     "PURGING": "Bezig met opschonen",
     "PUSHBULLET": "Pushbullet",

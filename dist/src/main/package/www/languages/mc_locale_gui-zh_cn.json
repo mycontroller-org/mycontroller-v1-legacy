@@ -430,6 +430,7 @@
     "PURGE_DONE_SUCCESSFULLY": "清除已成功完成。",
     "PURGE_RESOURCES_LOGS": "清除资源日志",
     "PURGE_SENSOR_VARIABLE": "清除传感器变量",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
     "PURGE_WARNING": "警告︰ 如果您不选择任何参数，本次过程将删除全部 ！",
     "PURGING": "清除",
     "PUSHBULLET": "Pushbullet",

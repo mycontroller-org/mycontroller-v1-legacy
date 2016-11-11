@@ -430,6 +430,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Golire jurnale terminată cu succes.",
     "PURGE_RESOURCES_LOGS": "Golire jurnale de resurse",
     "PURGE_SENSOR_VARIABLE": "Purge sensor variable",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
     "PURGE_WARNING": "Avertisment: Dacă nu selectaţi orice parametru, acest proces va sterge totul!",
     "PURGING": "Golire jurnale în curs",
     "PUSHBULLET": "Pushbullet",

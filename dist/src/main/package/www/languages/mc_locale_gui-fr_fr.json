@@ -430,6 +430,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Purge terminée avec succès.",
     "PURGE_RESOURCES_LOGS": "Purger logs des ressources",
     "PURGE_SENSOR_VARIABLE": "Purger variable capteur",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
     "PURGE_WARNING": "AVERTISSEMENT : Si vous ne sélectionnez aucun paramètre, cette procédure va tout supprimer !",
     "PURGING": "Nettoyage",
     "PUSHBULLET": "Pushbullet",

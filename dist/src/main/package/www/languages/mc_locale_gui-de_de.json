@@ -430,6 +430,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Säuberung wurde erfolgreich abgeschlossen.",
     "PURGE_RESOURCES_LOGS": "Ressourcen-Protokolle löschen",
     "PURGE_SENSOR_VARIABLE": "Sensorvariable zurücksetzen",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
     "PURGE_WARNING": "WARNUNG: Wenn Sie keinen Parameter auswählen, wird dieser Prozess alles löschen!",
     "PURGING": "Säubern",
     "PUSHBULLET": "Pushbullet",

@@ -430,6 +430,7 @@
     "PURGE_DONE_SUCCESSFULLY": "El Vaciado se ha completado con éxito.",
     "PURGE_RESOURCES_LOGS": "Vaciado de los registros de Logs",
     "PURGE_SENSOR_VARIABLE": "Purge sensor variable",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
     "PURGE_WARNING": "ADVERTENCIA: Si no selecciona ningún parámetro, este proceso eliminará todo!",
     "PURGING": "Vaciando",
     "PUSHBULLET": "Pushbullet",

@@ -430,6 +430,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Vuida completada correctament",
     "PURGE_RESOURCES_LOGS": "Vuidar els registres de Logs",
     "PURGE_SENSOR_VARIABLE": "Purge sensor variable",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
     "PURGE_WARNING": "Advertiment: Si no seleccioneu cap paràmetre, aquest procés se suprimirà tot!",
     "PURGING": "Purga",
     "PUSHBULLET": "Pushbullet",

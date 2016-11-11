@@ -430,6 +430,7 @@
   "PURGE_DONE_SUCCESSFULLY": "Purge completed successfully.",
   "PURGE_RESOURCES_LOGS": "Purge resources logs",
   "PURGE_SENSOR_VARIABLE": "Purge sensor variable",
+  "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
   "PURGE_WARNING": "WARNING: If you don't select any parameter, this process will delete everything!",
   "PURGING": "Purging",
   "PUSHBULLET": "Pushbullet",

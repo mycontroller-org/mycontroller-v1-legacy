@@ -430,6 +430,7 @@
     "PURGE_DONE_SUCCESSFULLY": "Čištění dokončeno.",
     "PURGE_RESOURCES_LOGS": "Vyčisti logy zdrojů",
     "PURGE_SENSOR_VARIABLE": "Vyčisti proměnné senzorů",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: >72.9, =100 or <10",
     "PURGE_WARNING": "VAROVÁNÍ: Pokud nevyberete žádný parametr, tak proces smaže vše!",
     "PURGING": "Čištění",
     "PUSHBULLET": "Pushbullet",
