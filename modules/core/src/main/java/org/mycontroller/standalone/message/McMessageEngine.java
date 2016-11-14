@@ -150,6 +150,11 @@ public class McMessageEngine implements Runnable {
                 node.setState(STATE.UP);
                 updateNode(node);
             }
+        } else {
+            if (mcMessage.getNetworkType() == NETWORK_TYPE.RF_LINK) {
+                Node node = getNode(mcMessage);
+                mcMessage.setProperties(node.getProperties());
+            }
         }
     }
 

@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.message;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
@@ -59,6 +60,7 @@ public class McMessage implements Serializable {
     private NETWORK_TYPE networkType;
     private boolean isScreeningDone = false;
     private Long timestamp;
+    private HashMap<String, Object> properties = null;
 
     public boolean validate() {
         if (gatewayId == null
@@ -76,5 +78,12 @@ public class McMessage implements Serializable {
             timestamp = System.currentTimeMillis();
         }
         return timestamp;
+    }
+
+    public HashMap<String, Object> getProperties() {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        }
+        return properties;
     }
 }

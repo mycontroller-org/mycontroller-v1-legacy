@@ -280,12 +280,20 @@ $scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonS
 // Nodes other controllers
 
 //Add/Edit Node
-myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, mchelper, alertService, displayRestError, $filter, $state) {
+myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, mchelper, alertService, displayRestError, $filter, $state, CommonServices) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
+  $scope.cs = CommonServices;
   $scope.node = {};
   if($stateParams.id){
-    $scope.node = NodesFactory.get({"nodeId":$stateParams.id});
+    NodesFactory.get({"nodeId":$stateParams.id},function(response) {
+      $scope.node = response;
+      $scope.node.properties = angular.toJson(response.properties);
+    },function(error){
+        displayRestError.display(error);
+    });
+  }else{
+    $scope.node.properties='{ }';
   }
   $scope.node.gateway = {};
   $scope.gateways = TypesFactory.getGateways();
@@ -303,7 +311,8 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
 
 
   $scope.save = function(){
-      $scope.saveProgress = true;
+    $scope.saveProgress = true;
+    $scope.node.properties = angular.fromJson(JSON.stringify(eval('('+$scope.node.properties+')')));
     if($stateParams.id){
       NodesFactory.update($scope.node,function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));

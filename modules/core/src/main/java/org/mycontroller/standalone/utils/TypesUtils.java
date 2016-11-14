@@ -1106,6 +1106,10 @@ public class TypesUtils {
                             include = true;
                         }
                         break;
+                    case RF_LINK:
+                        if (gatewayType == GATEWAY_TYPE.SERIAL) {
+                            include = true;
+                        }
                     default:
                         break;
                 }
