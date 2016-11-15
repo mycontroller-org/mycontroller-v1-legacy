@@ -16,9 +16,8 @@
  */
 package org.mycontroller.standalone.provider.rflink;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.db.tables.Node;
@@ -64,7 +63,11 @@ public class RFLinkProviderBridge implements IProviderBridge {
             HashMap<String, String> properties = new HashMap<String, String>();
 
             //20;2D;UPM/Esic;ID=0001;TEMP=00cf;HUM=16;BAT=OK;
-            List<String> dataList = Arrays.asList(rawData.split(";"));
+            //RX;SN;PROTOCOL;
+            ArrayList<String> dataList = new ArrayList<String>();
+            for (String _rawData : rawData.split(";")) {
+                dataList.add(_rawData);
+            }
             if (dataList.size() < 2) {
                 throw new RawMessageException("data size should be greaterthan 3, Current data: " + rawData);
             }
@@ -75,25 +78,29 @@ public class RFLinkProviderBridge implements IProviderBridge {
 
             //Format: 20;2D;UPM/Esic;ID=0001;TEMP=00cf;HUM=16;BAT=OK;
             //Refer: http://www.nemcon.nl/blog2/protref
-            dataList.remove(0);//Remove 20
-            dataList.remove(0);//Remove xy
+            dataList.remove(0);
+            dataList.remove(0);
             //Update protocol
             String protocol = dataList.remove(0);
+
+            if (protocol == null) {
+                throw new RawMessageException("Protocol can not be NULL. Message:[" + rawMessage.getData() + "]");
+            }
 
             properties.clear();
             for (String data : dataList) {
                 if (data.contains("=")) {
-                    String[] prop = data.split("=", 1);
-                    properties.put(prop[0].toUpperCase(), prop[1]);
-                } else {
-                    //TODO: unknown property
+                    String[] prop = data.split("=", 2);
+                    properties.put(prop[0].toLowerCase(), prop[1]);
+                } else if (data.trim().length() > 0) {
+                    _logger.warn("Unknown property:[{}] from {}", data, rawMessage);
                 }
             }
 
             //Update nodeEui
             String nodeEui = properties.remove(RFLinkRawMessage.KEY_ID.toLowerCase());
             if (nodeEui == null) {
-                throw new RawMessageException("Can not do anything without node id! " + rawMessage);
+                throw new RawMessageException("NodeEui can not be NULL. Message:[" + rawMessage.getData() + "]");
             }
             String switchName = properties.remove("switch");
             //Send protocol message
@@ -103,7 +110,7 @@ public class RFLinkProviderBridge implements IProviderBridge {
             String bat = properties.remove("bat");
             if (bat != null) {
                 rfLinkRawMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_BATTERY_LEVEL.getText());
-                rfLinkRawMessage.setProtocol(bat.equalsIgnoreCase("OK") ? "100" : "0");
+                rfLinkRawMessage.setPayload(bat.equalsIgnoreCase("OK") ? "100" : "0");
                 //Send battery message
                 McMessageUtils.sendToMcMessageEngine(rfLinkRawMessage.getMcMessage());
             }

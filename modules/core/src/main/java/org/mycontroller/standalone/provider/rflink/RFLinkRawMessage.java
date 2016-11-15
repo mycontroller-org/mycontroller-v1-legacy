@@ -17,8 +17,6 @@
 package org.mycontroller.standalone.provider.rflink;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
-import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
@@ -61,8 +59,8 @@ public class RFLinkRawMessage {
 
     private RFLinkRawMessage(RawMessage rawMessage, String nodeEui, String protocol, String key, String value)
             throws RawMessageException {
-        IGateway gateway = McObjectManager.getGateway(rawMessage.getGatewayId());
-        gatewayId = gateway.getGateway().getId();
+        gatewayId = rawMessage.getGatewayId();
+        this.nodeEui = nodeEui;
         isTxMessage = rawMessage.isTxMessage();
         gatewayId = rawMessage.getGatewayId();
         timestamp = rawMessage.getTimestamp();
@@ -124,12 +122,15 @@ public class RFLinkRawMessage {
     }
 
     public void setPayload(Object payload) {
-        payload = String.valueOf(payload);
+        this.payload = String.valueOf(payload);
     }
 
-    public RawMessage getRawMessage() {
+    public RawMessage getRawMessage() throws RawMessageException {
         if (protocol == null) {
-            //TODO: cannot send this message
+            throw new RawMessageException("Protocol cannot be null");
+        }
+        if (!isTxMessage) {
+            throw new RawMessageException("Conversion not implemented for received message as TX RawMessage!");
         }
         StringBuilder builder = new StringBuilder();
         builder

@@ -86,7 +86,7 @@ public class PhantIORawMessage {
     }
 
     public void setPayload(Object payload) {
-        payload = String.valueOf(payload);
+        this.payload = String.valueOf(payload);
     }
 
     public RawMessage getRawMessage() {
