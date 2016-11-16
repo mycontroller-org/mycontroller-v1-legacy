@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Přístupový token",
     "ACK": "Potvrzení",
     "ACKNOWLEDGE": "Potvrzení",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Akce",
     "ACTION_BOARD": "Panel akcí",
     "ACTIVE": "Aktivní",

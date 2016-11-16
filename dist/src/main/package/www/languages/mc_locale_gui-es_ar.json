@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Token de acceso",
     "ACK": "Ack",
     "ACKNOWLEDGE": "Acknowledge",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Acciones",
     "ACTION_BOARD": "Tablero de acción",
     "ACTIVE": "Activo",

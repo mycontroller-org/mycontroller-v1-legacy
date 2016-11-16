@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Toegangs token",
     "ACK": "Ack",
     "ACKNOWLEDGE": "Bevestiging",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Acties",
     "ACTION_BOARD": "Controle paneel",
     "ACTIVE": "Actief",

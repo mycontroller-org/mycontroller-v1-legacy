@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Hozzáférési Token",
     "ACK": "Ack",
     "ACKNOWLEDGE": "Acknowledge",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Actions",
     "ACTION_BOARD": "Action board",
     "ACTIVE": "Aktív",

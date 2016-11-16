@@ -73,7 +73,7 @@ public class NodeApi {
             if (oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER
                     && !oldNode.getEui().equals(node.getEui())) {
                 McMessage mcMessage = McMessage.builder()
-                        .acknowledge(false)
+                        .ack(McMessage.NO_ACK)
                         .isScreeningDone(true)
                         .gatewayId(oldNode.getGatewayTable().getId())
                         .isTxMessage(true)

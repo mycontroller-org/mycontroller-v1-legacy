@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Testimoni d'accés",
     "ACK": "ACK",
     "ACKNOWLEDGE": "Reconèixer",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Accions",
     "ACTION_BOARD": "Tauler d'accions",
     "ACTIVE": "Actiu",

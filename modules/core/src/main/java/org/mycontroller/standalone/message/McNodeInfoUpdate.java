@@ -63,7 +63,7 @@ public class McNodeInfoUpdate implements Runnable {
                             .sensorId(McMessage.SENSOR_BROADCAST_ID)
                             .type(MESSAGE_TYPE.C_INTERNAL)
                             .subType(MESSAGE_TYPE_INTERNAL.I_PRESENTATION.getText())
-                            .acknowledge(false)
+                            .ack(McMessage.NO_ACK)
                             .payload(McMessage.PAYLOAD_EMPTY)
                             .isTxMessage(true)
                             .build();

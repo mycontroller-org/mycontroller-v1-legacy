@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Ключ доступа",
     "ACK": "Ack",
     "ACKNOWLEDGE": "Подтверждение",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Действия",
     "ACTION_BOARD": "Панель действий",
     "ACTIVE": "Включен",

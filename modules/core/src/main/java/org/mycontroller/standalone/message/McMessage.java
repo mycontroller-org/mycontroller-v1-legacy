@@ -47,6 +47,9 @@ public class McMessage implements Serializable {
     public static final String NODE_BROADCAST_ID = "NODE_BC";
     public static final String PAYLOAD_EMPTY = "";
     public static final String GATEWAY_NODE_ID = "NODE_GY";
+    public static final int NO_ACK = 0;
+    public static final int ACK_REQUEST = 1;
+    public static final int ACK_RESPONSE = 2;
 
     @NonNull
     private Integer gatewayId;
@@ -54,7 +57,7 @@ public class McMessage implements Serializable {
     private String sensorId;
     private MESSAGE_TYPE type;
     private String subType;
-    private boolean acknowledge;
+    private int ack = NO_ACK;
     private String payload;
     private boolean isTxMessage;
     private NETWORK_TYPE networkType;
@@ -85,5 +88,13 @@ public class McMessage implements Serializable {
             properties = new HashMap<String, Object>();
         }
         return properties;
+    }
+
+    public boolean isAckResponse() {
+        return ack == ACK_RESPONSE;
+    }
+
+    public boolean isAckRequest() {
+        return ack == ACK_REQUEST;
     }
 }

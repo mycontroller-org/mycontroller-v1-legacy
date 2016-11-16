@@ -61,7 +61,7 @@ public class ExecuteUidTag implements Runnable {
                         .gatewayId(uidTag.getSensorVariable().getSensor().getNode().getGatewayTable().getId())
                         .nodeEui(uidTag.getSensorVariable().getSensor().getNode().getEui())
                         .sensorId(uidTag.getSensorVariable().getSensor().getSensorId())
-                        .acknowledge(false)
+                        .ack(McMessage.NO_ACK)
                         .networkType(
                                 uidTag.getSensorVariable().getSensor().getNode().getGatewayTable().getNetworkType())
                         .type(MESSAGE_TYPE.C_SET)
@@ -80,7 +80,7 @@ public class ExecuteUidTag implements Runnable {
                     .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
                     .nodeEui(sensorVariable.getSensor().getNode().getEui())
                     .sensorId(sensorVariable.getSensor().getSensorId())
-                    .acknowledge(false)
+                    .ack(McMessage.NO_ACK)
                     .networkType(uidTag.getSensorVariable().getSensor().getNode().getGatewayTable().getNetworkType())
                     .type(MESSAGE_TYPE.C_SET)
                     .subType(sensorVariable.getVariableType().getText())

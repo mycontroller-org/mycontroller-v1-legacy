@@ -285,7 +285,7 @@ public class McMessageEngine implements Runnable {
                 try {
                     if (mcMessage.getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
                         int nodeId = MySensorsUtils.getNextNodeId(mcMessage.getGatewayId());
-                        mcMessage.setAcknowledge(false);
+                        mcMessage.setAck(McMessage.NO_ACK);
                         mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_ID_RESPONSE.getText());
                         mcMessage.setPayload(String.valueOf(nodeId));
                         mcMessage.setScreeningDone(false);
@@ -407,7 +407,7 @@ public class McMessageEngine implements Runnable {
                     return;
                 }
                 if (AppProperties.getInstance().getControllerSettings().getAutoNodeRegistration()) {
-                    mcMessage.setAcknowledge(false);
+                    mcMessage.setAck(McMessage.NO_ACK);
                     mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_REGISTRATION_RESPONSE.getText());
                     mcMessage.setScreeningDone(false);
                     mcMessage.setTxMessage(true);
@@ -830,7 +830,7 @@ public class McMessageEngine implements Runnable {
             }
             mcMessage.setTxMessage(true);
             mcMessage.setType(MESSAGE_TYPE.C_SET);
-            mcMessage.setAcknowledge(false);
+            mcMessage.setAck(McMessage.NO_ACK);
             mcMessage.setPayload(sensorVariable.getValue());
             McMessageUtils.sendToProviderBridge(mcMessage);
             _logger.debug("Request processed! Message Sent: {}", mcMessage);

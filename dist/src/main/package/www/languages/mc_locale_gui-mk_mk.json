@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Access token",
     "ACK": "Ack",
     "ACKNOWLEDGE": "Acknowledge",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Акција",
     "ACTION_BOARD": "Акциона табла",
     "ACTIVE": "Активен",

@@ -98,14 +98,14 @@ public class PhantIORawMessage {
 
     public McMessage getMcMessage() {
         return McMessage.builder()
-                .acknowledge(false)
-                .gatewayId(gatewayId)
-                .nodeEui(nodeEui)
-                .sensorId(sensorId)
+                .ack(McMessage.NO_ACK)
+                .gatewayId(getGatewayId())
+                .nodeEui(getNodeEui())
+                .sensorId(getSensorId())
                 .networkType(NETWORK_TYPE.PHANT_IO)
-                .type(messageType)
-                .subType(subType)
-                .timestamp(timestamp)
+                .type(getMessageType())
+                .subType(getSubType())
+                .timestamp(getTimestamp())
                 .isTxMessage(isTxMessage())
                 .payload(getPayload()).build();
     }

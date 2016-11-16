@@ -135,26 +135,26 @@ public class RFLinkRawMessage {
         StringBuilder builder = new StringBuilder();
         builder
                 .append("10;")
-                .append(protocol).append(";")
-                .append(nodeEui).append(";")
-                .append(sensorId).append(";")
-                .append(payload.equals("1") ? "ON" : "OFF").append(";");
+                .append(getProtocol()).append(";")
+                .append(getNodeEui()).append(";")
+                .append(getSensorId()).append(";")
+                .append(getPayload().equals("1") ? "ON" : "OFF").append(";");
         return RawMessage.builder()
-                .gatewayId(gatewayId)
+                .gatewayId(getGatewayId())
                 .data(builder.toString())
                 .build();
     }
 
     public McMessage getMcMessage() {
         return McMessage.builder()
-                .acknowledge(false)
-                .gatewayId(gatewayId)
-                .nodeEui(nodeEui)
-                .sensorId(sensorId)
+                .ack(McMessage.NO_ACK)
+                .gatewayId(getGatewayId())
+                .nodeEui(getNodeEui())
+                .sensorId(getSensorId())
                 .networkType(NETWORK_TYPE.PHANT_IO)
-                .type(messageType)
-                .subType(subType)
-                .timestamp(timestamp)
+                .type(getMessageType())
+                .subType(getSubType())
+                .timestamp(getTimestamp())
                 .isTxMessage(isTxMessage())
                 .payload(getPayload()).build();
     }

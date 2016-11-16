@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Clé d'authentification",
     "ACK": "Ack",
     "ACKNOWLEDGE": "Acquittement",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Actions",
     "ACTION_BOARD": "Panneau de contrôle",
     "ACTIVE": "Actif",

@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "访问令牌",
     "ACK": "Ack",
     "ACKNOWLEDGE": "收到确认",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "动作",
     "ACTION_BOARD": "操作板块",
     "ACTIVE": "活动",

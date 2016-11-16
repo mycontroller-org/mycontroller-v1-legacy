@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "Tichet de acces",
     "ACK": "Ack",
     "ACKNOWLEDGE": "Confirmare",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "Acțiuni",
     "ACTION_BOARD": "Panou acțiuni",
     "ACTIVE": "Activ",

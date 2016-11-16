@@ -6,6 +6,8 @@
     "ACCESS_TOKEN": "அணுகல் டோக்கன்",
     "ACK": "ஒப்புகை",
     "ACKNOWLEDGE": "ஒப்பு",
+    "ACK_REQUEST": "Ack request",
+    "ACK_RESPONSE": "Ack response",
     "ACTIONS": "செயல்கள்",
     "ACTION_BOARD": "நடவடிக்கை பலகை",
     "ACTIVE": "செயலில்",

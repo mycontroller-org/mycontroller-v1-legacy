@@ -27,6 +27,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageException;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.Data;
 import lombok.ToString;
@@ -49,6 +50,7 @@ public class McpRawMessage {
     private String payload;
     private Long timestamp;
     private boolean isTxMessage = false;
+    private int ack = McMessage.NO_ACK;
     private String topicsPublish = null;
 
     public McpRawMessage(String topicsPublish) {
@@ -70,6 +72,7 @@ public class McpRawMessage {
         subType = getMessageSubType(mcMessage.getType(), mcMessage.getSubType());
         payload = mcMessage.getPayload();
         isTxMessage = mcMessage.isTxMessage();
+        ack = mcMessage.getAck();
         McpEngine.updateMessage(this);
     }
 
@@ -78,13 +81,14 @@ public class McpRawMessage {
             payload = message;
         }
         // Topic structure:
-        // MY_MQTT_TOPIC_PREFIX/NODE-EUI/SENSOR_ID/MESSAGE_TYPE/MESSAGE_SUB_TYPE
+        // MY_MQTT_TOPIC_PREFIX/NODE-EUI/SENSOR_ID/MESSAGE_TYPE/MESSAGE_SUB_TYPE/ACK
         String[] msgArry = topic.split("/");
-        if (msgArry.length == 5) {
+        if (msgArry.length == 6) {
             nodeEui = msgArry[1];
             sensorId = msgArry[2];
             messageType = MESSAGE_TYPE.valueOf(msgArry[3]);
             subType = msgArry[4];
+            ack = McUtils.getInteger(msgArry[5]);
             _logger.debug("Message: {}", toString());
         } else {
             _logger.debug("Unknown message format, Topic:[{}], Payload:[{}]", topic, message);
@@ -94,7 +98,7 @@ public class McpRawMessage {
 
     public String getMqttTopic() {
         // Topic structure:
-        // MY_MQTT_TOPIC_PREFIX/NODE-EUI/SENSOR_ID/MESSAGE_TYPE/MESSAGE_SUB_TYPE
+        // MY_MQTT_TOPIC_PREFIX/NODE-EUI/SENSOR_ID/MESSAGE_TYPE/MESSAGE_SUB_TYPE/ACK
         String[] topicsPublishList = null;
         if (topicsPublish != null) {
             topicsPublishList = topicsPublish.split(GatewayMQTT.TOPICS_SPLITER);
@@ -112,13 +116,14 @@ public class McpRawMessage {
             builder.append("/").append(getSensorId());
             builder.append("/").append(getMessageType());
             builder.append("/").append(getSubType());
+            builder.append("/").append(getAck());
         }
         return builder.toString();
     }
 
     public RawMessage getRawMessage() {
         return RawMessage.builder()
-                .gatewayId(gatewayId)
+                .gatewayId(getGatewayId())
                 .networkType(NETWORK_TYPE.MY_CONTROLLER)
                 .data(getPayload())
                 .subData(getMqttTopic())
@@ -128,12 +133,12 @@ public class McpRawMessage {
 
     public McMessage getMcMessage() {
         return McMessage.builder()
-                .acknowledge(false)
-                .gatewayId(gatewayId)
-                .nodeEui(nodeEui)
-                .sensorId(sensorId)
+                .ack(getAck())
+                .gatewayId(getGatewayId())
+                .nodeEui(getNodeEui())
+                .sensorId(getSensorId())
                 .networkType(NETWORK_TYPE.MY_CONTROLLER)
-                .type(messageType)
+                .type(getMessageType())
                 .subType(getMcMessageSubType())
                 .isTxMessage(isTxMessage())
                 .payload(getPayload()).build();

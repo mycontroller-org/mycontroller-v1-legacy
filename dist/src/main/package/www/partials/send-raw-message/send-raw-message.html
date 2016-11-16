@@ -70,10 +70,11 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'ACKNOWLEDGE' | translate }}/ {{ 'PAYLOAD' | translate }}</label>
             <div class="col-sm-3 mc-form-fixer-left">
-              <select class="form-control" pf-select ng-model="message.acknowledge" required >
+              <select class="form-control" pf-select ng-model="message.ack" required >
                 <option value="" ng-hide="true"></option>
-                <option value="false">{{ 'NO_ACK' | translate }}</option>
-                <option value="true">{{ 'ACK' | translate }}</option>
+                <option value="0">{{ 'NO_ACK' | translate }}</option>
+                <option value="1">{{ 'ACK_REQUEST' | translate }}</option>
+                <option value="2">{{ 'ACK_RESPONSE' | translate }}</option>
               </select>
             </div>
             <div class="col-sm-7 mc-form-fixer">

@@ -91,7 +91,7 @@ public class MySensorsRawMessage {
             childSensorId = McUtils.getInteger(mcMessage.getSensorId());
         }
         messageType = MYS_MESSAGE_TYPE.fromString(mcMessage.getType().getText()).ordinal();
-        ack = mcMessage.isAcknowledge() ? 1 : 0;
+        ack = mcMessage.getAck();
         subType = getMysensorsSubType(mcMessage.getType(), mcMessage.getSubType());
         payload = mcMessage.getPayload();
         isTxMessage = mcMessage.isTxMessage();
@@ -222,14 +222,14 @@ public class MySensorsRawMessage {
         String sensorId = getChildSensorId() == 255 ? McMessage.SENSOR_BROADCAST_ID : getChildSensorIdString();
         String nodeId = getNodeId() == 255 ? McMessage.NODE_BROADCAST_ID : getNodeEui();
         McMessage mcMessage = McMessage.builder()
-                .acknowledge(ack == 0)
-                .gatewayId(gatewayId)
+                .ack(getAck() == 1 ? 2 : 0)//MySensors gateway never request ack
+                .gatewayId(getGatewayId())
                 .nodeEui(nodeId)
                 .sensorId(sensorId)
                 .networkType(NETWORK_TYPE.MY_SENSORS)
                 .isTxMessage(isTxMessage())
                 .payload(getPayload())
-                .timestamp(timestamp)
+                .timestamp(getTimestamp())
                 .build();
         updateMcMessageTypeAndSubType(mcMessage);
         return mcMessage;
