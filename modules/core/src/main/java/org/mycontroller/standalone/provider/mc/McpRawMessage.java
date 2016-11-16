@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @ToString
 @Slf4j
-public class McpRawMessage {
+public class McpRawMessage implements Cloneable {
 
     private Integer gatewayId;
     private String nodeEui;
@@ -180,5 +180,19 @@ public class McpRawMessage {
             default:
                 return null;
         }
+    }
+
+    public McpRawMessage clone() {
+        McpRawMessage _msg = new McpRawMessage(this.getTopicsPublish());
+        _msg.setAck(getAck());
+        _msg.setGatewayId(getGatewayId());
+        _msg.setMessageType(getMessageType());
+        _msg.setNodeEui(getNodeEui());
+        _msg.setPayload(getPayload());
+        _msg.setTimestamp(getTimestamp());
+        _msg.setSensorId(getSensorId());
+        _msg.setSubType(getSubType());
+        _msg.setTxMessage(isTxMessage());
+        return _msg;
     }
 }
