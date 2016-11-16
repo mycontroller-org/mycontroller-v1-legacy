@@ -18,6 +18,7 @@ package org.mycontroller.standalone.provider.mc;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
@@ -103,8 +104,13 @@ public class McpRawMessage {
         if (topicsPublish != null) {
             topicsPublishList = topicsPublish.split(GatewayMQTT.TOPICS_SPLITER);
         } else {
-            topicsPublishList = ((GatewayMQTT) McObjectManager.getGateway(gatewayId).getGateway())
-                    .getTopicsPublish().split(GatewayMQTT.TOPICS_SPLITER);
+            GatewayMQTT gateway = null;
+            if (McObjectManager.getGateway(gatewayId) != null) {
+                gateway = (GatewayMQTT) McObjectManager.getGateway(gatewayId).getGateway();
+            } else {
+                gateway = (GatewayMQTT) GatewayUtils.getGateway(gatewayId);
+            }
+            topicsPublishList = gateway.getTopicsPublish().split(GatewayMQTT.TOPICS_SPLITER);
         }
         StringBuilder builder = new StringBuilder();
         for (String topic : topicsPublishList) {
