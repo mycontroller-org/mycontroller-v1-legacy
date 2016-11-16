@@ -72,8 +72,9 @@ public class RFLinkProviderBridge implements IProviderBridge {
                 throw new RawMessageException("data size should be greaterthan 3, Current data: " + rawData);
             }
 
-            if (!dataList.get(0).equals("20")) {
-                //Throw exception
+            if (!dataList.get(0).equals("20") && !rawMessage.isTxMessage()) {
+                throw new RawMessageException("RFLink Rx message should start with '20', RawMessage:["
+                        + rawMessage.getData() + "]");
             }
 
             //Format: 20;2D;UPM/Esic;ID=0001;TEMP=00cf;HUM=16;BAT=OK;

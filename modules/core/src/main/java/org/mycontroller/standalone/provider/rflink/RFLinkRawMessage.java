@@ -37,7 +37,7 @@ public class RFLinkRawMessage {
 
     private int gatewayId;
     private String nodeEui;
-    private String sensorId;
+    private String sensorId = McMessage.SENSOR_BROADCAST_ID;
     private MESSAGE_TYPE messageType;
     private String subType;
     private String payload;
@@ -151,7 +151,7 @@ public class RFLinkRawMessage {
                 .gatewayId(getGatewayId())
                 .nodeEui(getNodeEui())
                 .sensorId(getSensorId())
-                .networkType(NETWORK_TYPE.PHANT_IO)
+                .networkType(NETWORK_TYPE.RF_LINK)
                 .type(getMessageType())
                 .subType(getSubType())
                 .timestamp(getTimestamp())
