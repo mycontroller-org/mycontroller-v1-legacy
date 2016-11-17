@@ -138,7 +138,8 @@ public class RFLinkRawMessage {
                 .append(getProtocol()).append(";")
                 .append(getNodeEui()).append(";")
                 .append(getSensorId()).append(";")
-                .append(getPayload().equals("1") ? "ON" : "OFF").append(";");
+                .append(getPayload().equals("1") ? "ON" : "OFF")
+                .append(";\r\n");
         return RawMessage.builder()
                 .gatewayId(getGatewayId())
                 .data(builder.toString())

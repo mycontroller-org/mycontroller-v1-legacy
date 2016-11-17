@@ -28,6 +28,7 @@ import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.DB_TYPE;
+import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.jaxrs.json.McAbout;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
@@ -126,7 +127,7 @@ public class DataBaseUtils {
             //set recent migration version to application table.
             //load/reload settings
             AppProperties.getInstance().loadPropertiesFromDb();
-            McAbout mcAbout = new McAbout();
+            McAbout mcAbout = new SystemApi().getAbout();
             if (migrationsCount > 0) {
                 MyControllerSettings
                         .builder()
@@ -150,9 +151,10 @@ public class DataBaseUtils {
                 _logger.debug("Number of migrations done:{}", migrationsCount);
             }
 
-            _logger.info("Application information: [Version:{}, Database version:{}]",
-                    AppProperties.getInstance().getControllerSettings().getVersion(),
-                    AppProperties.getInstance().getControllerSettings().getDbVersion());
+            mcAbout = new SystemApi().getAbout();
+            _logger.info("Application information: [Version:{}, Database version:{}, Built on:{}, Git commit:{}:{}]",
+                    mcAbout.getApplicationVersion(), mcAbout.getApplicationDbVersion(),
+                    mcAbout.getGitBuiltOn(), mcAbout.getGitCommit(), mcAbout.getGitBranch());
         } else {
             _logger.warn("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", AppProperties
                     .getInstance().getDbUrl());

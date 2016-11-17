@@ -60,6 +60,7 @@ public class RFLinkProviderBridge implements IProviderBridge {
             _logger.debug("Received raw message: [{}]", rawMessage);
 
             String rawData = (String) rawMessage.getData();
+            rawData = rawData.replaceAll("(\\r|\\n)", ""); //Replace \n and \r
             HashMap<String, String> properties = new HashMap<String, String>();
 
             //20;2D;UPM/Esic;ID=0001;TEMP=00cf;HUM=16;BAT=OK;
