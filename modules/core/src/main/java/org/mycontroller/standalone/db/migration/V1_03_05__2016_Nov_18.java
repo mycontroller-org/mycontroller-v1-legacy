@@ -65,7 +65,7 @@ public class V1_03_05__2016_Nov_18 extends MigrationBase {
             //Update old data
             for (HashMap<String, String> row : rows) {
                 UidTag uidTag = UidTag.builder()
-                        .id(Integer.valueOf(getValue(row, "id")))
+                        .uid(getValue(row, "uid"))
                         .resourceType(RESOURCE_TYPE.SENSOR_VARIABLE)
                         .resourceId(Integer.valueOf(getValue(row, "sensorVariable")))
                         .build();
