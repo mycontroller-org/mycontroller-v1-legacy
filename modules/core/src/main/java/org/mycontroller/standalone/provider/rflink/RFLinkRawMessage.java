@@ -145,6 +145,9 @@ public class RFLinkRawMessage {
                 .append(getNodeEui()).append(";")
                 .append(getSensorId()).append(";");
         RFLINK_MESSAGE_TYPE mType = RFLINK_MESSAGE_TYPE.fromString(getSubType());
+        if (mType == null) {
+            throw new RawMessageException("Not supported type: " + this);
+        }
         switch (mType) {
             case CMD:
                 builder.append(getPayload().equals("1") ? "ON" : "OFF");

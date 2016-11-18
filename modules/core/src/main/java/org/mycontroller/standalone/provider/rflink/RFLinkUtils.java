@@ -34,7 +34,7 @@ public class RFLinkUtils {
     // Type of sensor data (for set/req/ack messages)
     public enum RFLINK_MESSAGE_TYPE {
         TEMP(MESSAGE_TYPE_SET_REQ.V_TEMP.getText()),
-        SET_LEVEL(MESSAGE_TYPE_SET_REQ.V_LEVEL.getText()),
+        SET_LEVEL(MESSAGE_TYPE_SET_REQ.V_PERCENTAGE.getText()),
         HUM(MESSAGE_TYPE_SET_REQ.V_HUM.getText()),
         BFORECAST(MESSAGE_TYPE_SET_REQ.V_FORECAST.getText()),
         CMD(MESSAGE_TYPE_SET_REQ.V_STATUS.getText()),
