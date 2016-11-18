@@ -70,7 +70,7 @@ public class RFLinkProviderBridge implements IProviderBridge {
                 dataList.add(_rawData);
             }
             if (dataList.size() < 2) {
-                throw new RawMessageException("data size should be greaterthan 3, Current data: " + rawData);
+                throw new RawMessageException("data size should be greater than 2, Current data: " + rawData);
             }
 
             if (!dataList.get(0).equals("20") && !rawMessage.isTxMessage()) {
@@ -80,13 +80,13 @@ public class RFLinkProviderBridge implements IProviderBridge {
 
             //Format: 20;2D;UPM/Esic;ID=0001;TEMP=00cf;HUM=16;BAT=OK;
             //Refer: http://www.nemcon.nl/blog2/protref
-            dataList.remove(0);
-            dataList.remove(0);
+            dataList.remove(0);//Remove 20
+            dataList.remove(0);//Remove RFLink serial number
             //Update protocol
             String protocol = dataList.remove(0);
-
-            if (protocol == null) {
-                throw new RawMessageException("Protocol can not be NULL. Message:[" + rawMessage.getData() + "]");
+            if (protocol.equalsIgnoreCase("ok")) {
+                //This is ack message from RFLink. Just ignore
+                return;
             }
 
             properties.clear();

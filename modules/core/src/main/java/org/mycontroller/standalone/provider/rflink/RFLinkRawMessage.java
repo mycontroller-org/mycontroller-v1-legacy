@@ -47,6 +47,7 @@ public class RFLinkRawMessage {
 
     public static final String KEY_PROTOCOL = "protocol";
     public static final String KEY_ID = "id";
+    public static final double DIMMER_REF = 0.15;
 
     public RFLinkRawMessage(RawMessage rawMessage, String nodeEui, String key, String value)
             throws RawMessageException {
@@ -82,11 +83,13 @@ public class RFLinkRawMessage {
                 case AWINSP:
                 case RAINRATE:
                 case RAIN:
-                case TEMP:
                 case WINSP:
+                    payload = RFLinkUtils.getPayload(value, 10.0, false);
+                    break;
+                case TEMP:
                 case WINCHL:
                 case WINTMP:
-                    payload = RFLinkUtils.getPayload(value, 10.0);
+                    payload = RFLinkUtils.getPayload(value, 10.0, true);
                     break;
                 case BARO:
                 case UV:
@@ -94,7 +97,10 @@ public class RFLinkRawMessage {
                 case WINGS:
                 case WATT:
                 case KWATT:
-                    payload = RFLinkUtils.getPayload(value);
+                    payload = RFLinkUtils.getPayload(value, false);
+                    break;
+                case SET_LEVEL:
+                    payload = String.valueOf(Math.round(Integer.valueOf(payload) / DIMMER_REF));
                     break;
                 default:
                     payload = value;
@@ -137,9 +143,20 @@ public class RFLinkRawMessage {
                 .append("10;")
                 .append(getProtocol()).append(";")
                 .append(getNodeEui()).append(";")
-                .append(getSensorId()).append(";")
-                .append(getPayload().equals("1") ? "ON" : "OFF")
-                .append(";\r\n");
+                .append(getSensorId()).append(";");
+        RFLINK_MESSAGE_TYPE mType = RFLINK_MESSAGE_TYPE.fromString(getSubType());
+        switch (mType) {
+            case CMD:
+                builder.append(getPayload().equals("1") ? "ON" : "OFF");
+                break;
+            case SET_LEVEL:
+                builder.append(Math.round(Integer.valueOf(getPayload()) * DIMMER_REF));
+                break;
+            default:
+                throw new RawMessageException("Not supported type: " + mType.name());
+        }
+
+        builder.append(";\r\n");
         return RawMessage.builder()
                 .gatewayId(getGatewayId())
                 .data(builder.toString())

@@ -29,6 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RFLinkUtils {
     public static final String EMPTY_DATA = "";
+    public static final int NEGATIVE_SIGN = 32768;
 
     // Type of sensor data (for set/req/ack messages)
     public enum RFLINK_MESSAGE_TYPE {
@@ -81,6 +82,17 @@ public class RFLinkUtils {
 
         private RFLINK_MESSAGE_TYPE(String text) {
             this.text = text;
+        }
+
+        public static RFLINK_MESSAGE_TYPE fromString(String text) {
+            if (text != null) {
+                for (RFLINK_MESSAGE_TYPE type : RFLINK_MESSAGE_TYPE.values()) {
+                    if (text.equalsIgnoreCase(type.getText())) {
+                        return type;
+                    }
+                }
+            }
+            return null;
         }
     }
 
@@ -151,11 +163,16 @@ public class RFLinkUtils {
             return MESSAGE_TYPE_PRESENTATION.S_CUSTOM;
         }*/
 
-    public static String getPayload(String hexValue, double divideBy) {
-        return McUtils.getDoubleAsString(Integer.parseInt(hexValue.trim(), 16) / divideBy);
+    public static String getPayload(String hexValue, double divideBy, boolean checkNegativeSign) {
+        //32768
+        int value = Integer.parseInt(hexValue.trim(), 16);
+        if (checkNegativeSign && value >= NEGATIVE_SIGN) {
+            value = -1 * (value - NEGATIVE_SIGN);
+        }
+        return McUtils.getDoubleAsString(value / divideBy);
     }
 
-    public static String getPayload(String hexValue) {
-        return getPayload(hexValue, 0.0);
+    public static String getPayload(String hexValue, boolean checkNegativeSign) {
+        return getPayload(hexValue, 0.0, checkNegativeSign);
     }
 }
