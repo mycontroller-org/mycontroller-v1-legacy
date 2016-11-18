@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.db.migration;
 
+import java.util.HashMap;
+
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.SystemApi;
@@ -68,5 +70,17 @@ public abstract class MigrationBase implements JdbcMigration {
 
     public IMigrationClient sqlClient() {
         return sqlClient;
+    }
+
+    public String getValue(HashMap<String, String> map, String key) {
+        if (map.get(key) != null) {
+            return map.get(key);
+        }
+        for (String _key : map.keySet()) {
+            if (key.equalsIgnoreCase(_key)) {
+                return map.get(_key);
+            }
+        }
+        return null;
     }
 }

@@ -479,17 +479,24 @@ public class TypesUtils {
                     switch (resourceTypeFilter) {
                         case RULE_DEFINITION:
                         case TIMER:
-                            if (type != RESOURCE_TYPE.SENSOR
-                                    && type != RESOURCE_TYPE.RULE_DEFINITION
-                                    && type != RESOURCE_TYPE.TIMER) {
+                            if (type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.RULE_DEFINITION
+                                    && type != RESOURCE_TYPE.TIMER && type != RESOURCE_TYPE.UID_TAG) {
                                 typesIdNameMappers.add(TypesIdNameMapper.builder()
                                         .id(type.getText()).displayName(type.getText()).build());
                             }
                             break;
                         case RESOURCES_GROUP:
                             if (type != RESOURCE_TYPE.RULE_DEFINITION && type != RESOURCE_TYPE.TIMER
-                                    && type != RESOURCE_TYPE.SENSOR
+                                    && type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.UID_TAG
                                     && type != RESOURCE_TYPE.RESOURCES_GROUP) {
+                                typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                        .id(type.getText()).displayName(type.getText()).build());
+                            }
+                            break;
+                        case UID_TAG:
+                            if (type != RESOURCE_TYPE.RULE_DEFINITION && type != RESOURCE_TYPE.TIMER
+                                    && type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.RESOURCES_GROUP
+                                    && type != RESOURCE_TYPE.UID_TAG && type != RESOURCE_TYPE.SCRIPT) {
                                 typesIdNameMappers.add(TypesIdNameMapper.builder()
                                         .id(type.getText()).displayName(type.getText()).build());
                             }
@@ -508,7 +515,8 @@ public class TypesUtils {
                             }
                             break;
                         case SEND_PAYLOAD:
-                            if (type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.SCRIPT) {
+                            if (type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.SCRIPT
+                                    && type != RESOURCE_TYPE.UID_TAG) {
                                 typesIdNameMappers.add(TypesIdNameMapper.builder()
                                         .id(type.getText()).displayName(type.getText()).build());
                             }

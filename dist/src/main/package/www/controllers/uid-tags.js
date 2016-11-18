@@ -125,7 +125,7 @@ $scope, $filter, UidTagsFactory, $state, $uibModal, displayRestError, mchelper, 
 
     modalInstance.result.then(function () {
       UidTagsFactory.deleteIds($scope.itemIds, function(response) {
-        alertService.success('ITEMS_DELETED_SUCCESSFULLY');
+        alertService.success('ITEM_DELETED_SUCCESSFULLY');
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -141,22 +141,21 @@ $scope, $filter, UidTagsFactory, $state, $uibModal, displayRestError, mchelper, 
 });
 
 //add edit item
-myControllerModule.controller('UidTagsControllerAddEdit', function ($scope, CommonServices, alertService, UidTagsFactory, mchelper, $stateParams, $state, $filter, displayRestError) {
+myControllerModule.controller('UidTagsControllerAddEdit', function ($scope, CommonServices, alertService, UidTagsFactory, mchelper, $stateParams, $state, $filter, displayRestError, TypesFactory) {
   $scope.item = {};
-  $scope.item.sensorVariable={};
   $scope.cs = CommonServices;
 
     if($stateParams.id){
       UidTagsFactory.get({"id":$stateParams.id},function(response) {
         $scope.item = response;
+        $scope.resourcesList = $scope.cs.getResources($scope.item.resourceType);
       },function(error){
         displayRestError.display(error);
       });
   }
 
-
   //pre load
-  $scope.resources = CommonServices.getResources("Sensor variable");
+  $scope.resourceTypes = TypesFactory.getResourceTypes({"resourceType": "UID tag"});
 
   //GUI page settings
   $scope.showHeaderUpdate = $stateParams.id;

@@ -75,4 +75,6 @@ public interface BaseDao<Tdao, Tid> {
 
     TableInfo<Tdao, Tid> getTableInfo();
 
+    void delete(HashMap<String, Object> map);
+
 }

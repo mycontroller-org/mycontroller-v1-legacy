@@ -152,12 +152,12 @@ public class MetricsHandler extends AccessEngine {
                                 bucketDuration)));
             }
             UidTag uidObj = new UidTagApi().getByUid(uid);
-            if (uidObj == null || uidObj.getSensorVariable() == null) {
+            if (uidObj == null || uidObj.getResource() == null) {
                 return RestUtils.getResponse(Status.BAD_REQUEST,
                         new ApiError(MessageFormat.format("Requested uid[{0}] not available!", uid)));
             }
-            resourceId = uidObj.getSensorVariable().getId();
-            resourceType = RESOURCE_TYPE.SENSOR_VARIABLE.getText();
+            resourceId = uidObj.getResourceId();
+            resourceType = uidObj.getResourceType().getText();
         }
 
         if (uid == null && (resourceId == null || resourceType == null)) {

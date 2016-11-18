@@ -106,6 +106,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(SensorVariable.class, SensorVariableMixin.class);
         mapper.addMixIn(SensorVariableJson.class, SensorVariableJsonMixin.class);
         mapper.addMixIn(Timer.class, TimerMixin.class);
+        mapper.addMixIn(UidTag.class, UidTagMixin.class);
         mapper.addMixIn(User.class, UserMixin.class);
 
         if (_logger.isDebugEnabled()) {

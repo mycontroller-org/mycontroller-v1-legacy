@@ -374,6 +374,24 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         }
     }
 
+    public void delete(HashMap<String, Object> map) {
+        try {
+            DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
+            for (String key : map.keySet()) {
+                if (map.get(key) instanceof List) {
+                    deleteBuilder.where().in(key, map.get(key));
+                } else {
+                    deleteBuilder.where().eq(key, map.get(key));
+                }
+            }
+
+            int deleteCount = deleteBuilder.delete();
+            _logger.debug("Deleted count:{}, for map:{}", deleteCount, map);
+        } catch (SQLException ex) {
+            _logger.error("unable to delete item, map:{}", map, ex);
+        }
+    }
+
     public List<Tdao> getAll(String key, List<Tid> ids) {
         try {
             if (ids != null && !ids.isEmpty()) {

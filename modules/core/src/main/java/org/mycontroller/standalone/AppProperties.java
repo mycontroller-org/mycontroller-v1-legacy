@@ -295,7 +295,8 @@ public class AppProperties {
         RESOURCES_GROUP("Resources group"),
         RULE_DEFINITION("Rule definition"),
         TIMER("Timer"),
-        SCRIPT("Script");
+        SCRIPT("Script"),
+        UID_TAG("UID tag");
         public static RESOURCE_TYPE get(int id) {
             for (RESOURCE_TYPE trigger_type : values()) {
                 if (trigger_type.ordinal() == id) {

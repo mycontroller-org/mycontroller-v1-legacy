@@ -87,7 +87,7 @@ public class DeleteResourceUtils {
         deleteResource(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId());
 
         //Delete UID tags
-        //TODO: complete this, when UUID is enabled
+        DaoUtils.getUidTagDao().delete(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId());
 
         //Delete SensorVariable entry
         DaoUtils.getSensorVariableDao().delete(sensorVariable);
@@ -115,7 +115,7 @@ public class DeleteResourceUtils {
         deleteResource(RESOURCE_TYPE.SENSOR, sensor.getId());
 
         //Delete UID tags
-        DaoUtils.getUidTagDao().deleteBySensorId(sensor.getId());
+        DaoUtils.getUidTagDao().delete(RESOURCE_TYPE.SENSOR, sensor.getId());
 
         //Delete all variable Types
         for (SensorVariable sensorVariable : DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId())) {
@@ -142,6 +142,9 @@ public class DeleteResourceUtils {
         //Delete AlarmDefinitions
         //deleteAlarmDefinitions(RESOURCE_TYPE.NODE, node.getId());
 
+        //Delete UID tags
+        DaoUtils.getUidTagDao().delete(RESOURCE_TYPE.NODE, node.getId());
+
         //Delete from resource table
         deleteResource(RESOURCE_TYPE.NODE, node.getId());
 
@@ -166,6 +169,9 @@ public class DeleteResourceUtils {
 
         //Delete AlarmDefinitions
         // deleteAlarmDefinitions(RESOURCE_TYPE.GATEWAY, id);
+
+        //Delete UID tags
+        DaoUtils.getUidTagDao().delete(RESOURCE_TYPE.GATEWAY, id);
 
         //Delete from resource table
         deleteResource(RESOURCE_TYPE.GATEWAY, id);
