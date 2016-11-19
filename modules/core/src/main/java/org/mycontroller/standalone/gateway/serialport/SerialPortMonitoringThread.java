@@ -132,6 +132,8 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
     public synchronized void write(RawMessage rawMessage) throws GatewayException {
         if (gateway.getState() == STATE.UP) {
             serialGateway.write(rawMessage);
+            _logger.debug("{} sent to Gateway[Name:{}, NetworkType:{}]", rawMessage, serialGateway.getGateway()
+                    .getName(), serialGateway.getGateway().getNetworkType());
         } else {
             throw new GatewayException("Gateway not available! GatewayTable:[" + gateway.toString() + "]");
         }

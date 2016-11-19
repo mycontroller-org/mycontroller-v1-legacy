@@ -21,7 +21,9 @@
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>../logs/mycontroller.log</file>
     <encoder>
-      <pattern>%date %level [%thread] [%logger:%line] %msg%n</pattern>
+      <!-- <pattern>%date %level [%thread] [%logger:%line] %msg%n</pattern> -->
+      <!-- Replace CR(\r) with string \r and LF(\n) with string \n-->
+      <pattern>%date %level [%thread] [%logger:%line] %replace(%replace(%msg){'\r', '\\r'}){'\n', '\\n'}%n</pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
       <FileNamePattern>../logs/mycontroller_%i.log.zip</FileNamePattern>
@@ -68,7 +70,11 @@
   <logger level="INFO" name="org.mycontroller.standalone.metrics" />
   <logger level="INFO" name="org.mycontroller.standalone.metrics.jobs" />
   <logger level="INFO" name="org.mycontroller.standalone.mqttbroker" />
-  <logger level="INFO" name="org.mycontroller.standalone.mysensors" />
+  <logger level="INFO" name="org.mycontroller.standalone.provider" />
+  <logger level="INFO" name="org.mycontroller.standalone.provider.mc" />
+  <logger level="INFO" name="org.mycontroller.standalone.provider.mysensors" />
+  <logger level="INFO" name="org.mycontroller.standalone.provider.phantio" />
+  <logger level="INFO" name="org.mycontroller.standalone.provider.rflink" />
   <logger level="INFO" name="org.mycontroller.standalone.restclient" />
   <logger level="INFO" name="org.mycontroller.standalone.rule" />
   <logger level="INFO" name="org.mycontroller.standalone.scheduler" />

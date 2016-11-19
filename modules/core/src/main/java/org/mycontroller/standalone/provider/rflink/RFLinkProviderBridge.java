@@ -57,10 +57,13 @@ public class RFLinkProviderBridge implements IProviderBridge {
             _logger.error("This is not '{}' message! RawMessage:{}", NETWORK_TYPE.RF_LINK.getText(), rawMessage);
         }
         try {
-            _logger.debug("Received raw message: [{}]", rawMessage);
-
+            _logger.debug("Received a {}", rawMessage);
             String rawData = (String) rawMessage.getData();
             rawData = rawData.replaceAll("(\\r|\\n)", ""); //Replace \n and \r
+            if (!rawData.endsWith(";")) {
+                throw new RawMessageException("Cannot take this message. This is invalid or incomplete: ["
+                        + rawData + "]");
+            }
             HashMap<String, String> properties = new HashMap<String, String>();
 
             //20;2D;UPM/Esic;ID=0001;TEMP=00cf;HUM=16;BAT=OK;
