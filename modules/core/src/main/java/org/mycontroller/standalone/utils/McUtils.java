@@ -116,7 +116,7 @@ public class McUtils {
 
     public static String getDoubleAsString(String value) {
         try {
-            if (value != null) {
+            if (value != null && !value.equalsIgnoreCase("null")) {
                 return getDoubleAsString(Double.valueOf(value));
             } else {
                 return "-";
