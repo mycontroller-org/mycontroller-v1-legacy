@@ -106,28 +106,28 @@ public class MessageMonitorThread implements Runnable {
             }
             RawMessage rawMessage = RawMessageQueue.getInstance().getMessage();
             _logger.debug("Processing:[{}]", rawMessage);
-            if (McObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
-                long startTime = System.currentTimeMillis();
-                try {
-                    McMessageUtils.sendToProviderBridge(rawMessage);
-                    messageDoneCount++;
-                    calculateProcessingRate();
-                    //A delay to avoid collisions on MySensor networks on continues messages. Only for Tx message
-                    if (!RawMessageQueue.getInstance().isEmpty() && rawMessage.isTxMessage()) {
-                        Thread.sleep(MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED);
-                    } else {
-                        //This sleep to reduce CPU load, in nanoseconds
-                        Thread.sleep(0, 333333);
-                    }
-                } catch (Exception ex) {
-                    _logger.error("Throws exception while processing!, [{}]", rawMessage, ex);
-                }
-                updateProcessingTime(System.currentTimeMillis() - startTime);
-                _logger.debug("Process done in {} ms for:[{}]", getLastMessageProcessingTime(), rawMessage);
-            } else {
+            if (McObjectManager.getGateway(rawMessage.getGatewayId()) == null && rawMessage.isTxMessage()) {
                 GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(rawMessage.getGatewayId());
                 _logger.error("Gateway not available! dropping message... {}, {}", gatewayTable, rawMessage);
+                return;
             }
+            long startTime = System.currentTimeMillis();
+            try {
+                McMessageUtils.sendToProviderBridge(rawMessage);
+                messageDoneCount++;
+                calculateProcessingRate();
+                //A delay to avoid collisions on MySensor networks on continues messages. Only for Tx message
+                if (!RawMessageQueue.getInstance().isEmpty() && rawMessage.isTxMessage()) {
+                    Thread.sleep(MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED);
+                } else {
+                    //This sleep to reduce CPU load, in nanoseconds
+                    Thread.sleep(0, 333333);
+                }
+            } catch (Exception ex) {
+                _logger.error("Throws exception while processing!, [{}]", rawMessage, ex);
+            }
+            updateProcessingTime(System.currentTimeMillis() - startTime);
+            _logger.debug("Process done in {} ms for:[{}]", getLastMessageProcessingTime(), rawMessage);
         }
     }
 
