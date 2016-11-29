@@ -63,7 +63,10 @@ public class RFLinkUtils {
         DIST(MESSAGE_TYPE_SET_REQ.V_DISTANCE.getText()),
         METER(MESSAGE_TYPE_SET_REQ.V_VAR1.getText()),
         VOLT(MESSAGE_TYPE_SET_REQ.V_VOLTAGE.getText()),
-        RGBW(MESSAGE_TYPE_SET_REQ.V_RGBW.getText());
+        RGBW(MESSAGE_TYPE_SET_REQ.V_RGBW.getText()),
+        UP(MESSAGE_TYPE_SET_REQ.V_UP.getText()),
+        DOWN(MESSAGE_TYPE_SET_REQ.V_DOWN.getText()),
+        STOP(MESSAGE_TYPE_SET_REQ.V_STOP.getText());
 
         public static RFLINK_MESSAGE_TYPE get(int id) {
             for (RFLINK_MESSAGE_TYPE type : values()) {

@@ -80,6 +80,15 @@ public class RFLinkRawMessage {
                 case CMD:
                     payload = value.equalsIgnoreCase("on") ? "1" : "0";
                     break;
+                case UP:
+                    payload = value.equalsIgnoreCase("up") ? "1" : "0";
+                    break;
+                case DOWN:
+                    payload = value.equalsIgnoreCase("down") ? "1" : "0";
+                    break;
+                case STOP:
+                    payload = value.equalsIgnoreCase("stop") ? "1" : "0";
+                    break;
                 case AWINSP:
                 case RAINRATE:
                 case RAIN:
@@ -151,6 +160,15 @@ public class RFLinkRawMessage {
         switch (mType) {
             case CMD:
                 builder.append(getPayload().equals("1") ? "ON" : "OFF");
+                break;
+            case UP:
+                builder.append("UP");
+                break;
+            case DOWN:
+                builder.append("DOWN");
+                break;
+            case STOP:
+                builder.append("STOP");
                 break;
             case SET_LEVEL:
                 builder.append(Math.round(Integer.valueOf(getPayload()) * DIMMER_REF));
