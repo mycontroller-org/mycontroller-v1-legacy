@@ -46,6 +46,7 @@ public class UnitUtils {
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_PH, "PH", "PH", "PH", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_POWER_FACTOR, "PF", "PF", "PF", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_PRESSURE, "hPa", "hPa", "hPa", 1.0, 1.0, 1.0, 1.0));
+        addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_PRESSURE_BARO, "inHg", "inHg", "inHg", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_RAIN, "mm", "mm", "cm", 1.0, 10.0, 1.0, 10.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_RAINRATE, "mm/hr", "mm/hr", "cm/hr", 1.0, 10.0, 1.0, 10.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_TEMPERATURE, "°C", "°C", "°C", 1.0, 1.0, 1.0, 1.0));
@@ -74,6 +75,7 @@ public class UnitUtils {
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_PH, "PH", "PH", "PH", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_POWER_FACTOR, "PF", "PF", "PF", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_PRESSURE, "psi", "psi", "psi", 1.0, 1.0, 1.0, 1.0));
+        addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_PRESSURE_BARO, "inHg", "inHg", "inHg", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_RAIN, "mm", "mm", "cm", 1.0, 10.0, 1.0, 10.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_RAINRATE, "mm/hr", "mm/hr", "cm/hr", 1.0, 10.0, 1.0, 10.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_TEMPERATURE, "°F", "°F", "°F", 1.0, 1.0, 1.0, 1.0));
@@ -96,6 +98,7 @@ public class UnitUtils {
         U_HUMIDITY("Humidity"),
         U_PERCENTAGE("Percentage"),
         U_PRESSURE("Pressure"),
+        U_PRESSURE_BARO("Pressure baro"),
         U_RAIN("Rain"),
         U_RAINRATE("Rainrate"),
         U_WIND("Wind"),
