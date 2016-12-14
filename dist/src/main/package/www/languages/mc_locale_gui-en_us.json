@@ -561,7 +561,7 @@
     "SYSTEM_CPU_LOAD": "System cpu load",
     "SYSTEM_LOAD_AVERAGE": "System load average",
     "SYSTEM_STATUS": "System status",
-    "S_VARIABLE_DIALOG_CONFIRMATION_MSG": "You are about to update configurations of a 'Sensor variable'.<br>When updating configurations, if there is a change in 'Metric type', all existing data will be removed from this 'Sensor variable'!",
+    "S_VARIABLE_DIALOG_CONFIRMATION_MSG": "You are about to update configurations of a 'Sensor variable'. <br>When updating configurations, if there is a change in 'Metric type', all existing data will be removed from this 'Sensor variable'!",
     "S_VARIABLE_DIALOG_TITLE": "Update 'Sensor variable' configurations",
     "TABLE_ROWS_LIMIT": "Table rows limit",
     "TAGS": "Tags",

@@ -46,6 +46,7 @@ public class McConditionString extends McRuleBase {
         //Update current value
         try {
             setActualValue(super.getResourceValue(rdString.getResourceType(), rdString.getResourceId()));
+            setActualUnit(super.getResourceUnit(rdString.getResourceType(), rdString.getResourceId()));
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;

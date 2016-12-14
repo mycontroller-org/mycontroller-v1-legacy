@@ -34,6 +34,7 @@ public class Notification {
     private String ruleName;
     private String ruleCondition;
     private String actualValue;
+    private String actualUnit;
     private String triggeredAt;
 
     private String operationName;
@@ -42,6 +43,7 @@ public class Notification {
         ruleName = ruleDefinition.getName();
         ruleCondition = ruleDefinition.getConditionString();
         actualValue = ruleDefinition.getActualValue();
+        actualUnit = ruleDefinition.getActualUnit();
         triggeredAt = new SimpleDateFormat(AppProperties.getInstance().getDateFormatWithTimezone())
                 .format(new Date(ruleDefinition.getLastTrigger()));
     }
@@ -51,6 +53,9 @@ public class Notification {
         builder.append("Rule definition: ").append(ruleName);
         builder.append(spaceVariable).append("Condition: ").append(ruleCondition);
         builder.append(spaceVariable).append("Present value: ").append(actualValue);
+        if (actualUnit.length() > 0) {
+            builder.append(" ").append(actualUnit);
+        }
         if (operationName != null) {
             builder.append(spaceVariable).append("OperationTable: ").append(operationName);
         }

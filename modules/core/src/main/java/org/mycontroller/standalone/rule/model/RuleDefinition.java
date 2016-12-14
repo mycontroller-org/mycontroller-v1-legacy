@@ -66,6 +66,9 @@ public abstract class RuleDefinition {
     @JsonIgnore
     private String actualValue;
 
+    @JsonIgnore
+    private String actualUnit;
+
     public abstract String getConditionString();
 
     public List<Integer> getOperationIds() {

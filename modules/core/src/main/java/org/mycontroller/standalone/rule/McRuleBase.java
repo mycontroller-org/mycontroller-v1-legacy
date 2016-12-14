@@ -43,6 +43,14 @@ public abstract class McRuleBase extends BasicRule {
         ruleDefinition.setActualValue(actualValue);
     }
 
+    protected String getActualUnit() {
+        return ruleDefinition.getActualUnit();
+    }
+
+    protected void setActualUnit(String actualUnit) {
+        ruleDefinition.setActualUnit(actualUnit);
+    }
+
     public RuleDefinition getRuleDefinitionBase() {
         return ruleDefinition;
     }
@@ -80,6 +88,14 @@ public abstract class McRuleBase extends BasicRule {
                         + resourceType);
         }
         return value;
+    }
+
+    protected String getResourceUnit(RESOURCE_TYPE resourceType, Integer resourceId) throws IllegalAccessException {
+        if (resourceType == RESOURCE_TYPE.SENSOR_VARIABLE) {
+            return DaoUtils.getSensorVariableDao().get(resourceId).getUnitType().getText();
+        } else {
+            return "";
+        }
     }
 
     protected boolean executeDampening(boolean triggerOperations) {
