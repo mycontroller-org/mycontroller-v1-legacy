@@ -156,9 +156,16 @@ public class FirmwareUtils {
                 end++;
             }
             int blocks = (end - start) / FIRMWARE_BLOCK_SIZE_HEX;
-            int crc = 0xFFFF;
+            int crc = ~0;
             for (int i = 0; i < blocks * FIRMWARE_BLOCK_SIZE_HEX; ++i) {
-                crc = crcUpdate(crc, (fwdata.get(i) & 0xFF));
+                crc ^= fwdata.get(i);
+                for (int j = 0; j < 8; ++j) {
+                    if ((crc & 1) > 0) {
+                        crc = ((crc >> 1) ^ 0xA001);
+                    } else {
+                        crc = (crc >> 1);
+                    }
+                }
             }
             firmware.getProperties().put(Firmware.KEY_PROP_CRC, crc);
             firmware.getProperties().put(Firmware.KEY_PROP_BLOCKS, blocks);
@@ -167,18 +174,6 @@ public class FirmwareUtils {
         } catch (IOException ex) {
             _logger.error("Exception, ", ex);
         }
-    }
-
-    private static int crcUpdate(int old, int value) {
-        int c = old ^ value;
-        for (int i = 0; i < 8; ++i) {
-            if ((c & 1) > 0) {
-                c = ((c >> 1) ^ 0xA001);
-            } else {
-                c = (c >> 1);
-            }
-        }
-        return c;
     }
 
     private static void deleteFirmwares(List<Firmware> firmwares) {

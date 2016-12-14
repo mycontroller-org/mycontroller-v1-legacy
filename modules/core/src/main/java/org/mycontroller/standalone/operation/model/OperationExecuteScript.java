@@ -117,10 +117,11 @@ public class OperationExecuteScript extends Operation {
             //This operation disabled, nothing to do.
             return;
         }
+        McScript mcScript = null;
         try {
             File script = FileUtils.getFile(
                     AppProperties.getInstance().getScriptsLocation() + scriptFile);
-            McScript mcScript = McScript.builder()
+            mcScript = McScript.builder()
                     .name(script.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(script.getCanonicalPath()))
                     .bindings(getScriptBindings())
@@ -129,7 +130,7 @@ public class OperationExecuteScript extends Operation {
             Object result = mcScriptEngine.executeScript();
             _logger.debug("script executed. Result:{}, {}", result, mcScript);
         } catch (Exception ex) {
-            _logger.error("Exception,", ex);
+            _logger.error("Exception on {}", mcScript, ex);
         }
         //Update last execution
         setLastExecution(System.currentTimeMillis());
