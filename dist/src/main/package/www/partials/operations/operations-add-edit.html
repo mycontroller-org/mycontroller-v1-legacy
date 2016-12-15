@@ -66,7 +66,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'SCRIPT_BINDINGS' | translate }}</label>
               <div class="col-sm-10 mc-form-fixer-left">
-                <input class="form-control" placeholder="{{ 'SCRIPT_BINDINGS' | translate }}" ng-model="item.scriptBindings" pf-validation="cs.isJsonString(input)" required />
+                <input class="form-control" placeholder="{{ 'SCRIPT_BINDINGS' | translate }}" ng-model="item.altScriptBindings" pf-validation="cs.isJsonString(input)" required />
                 <span class="help-block">{{ 'SYNTAX_ERROR' | translate }}</span>
               </div>
             </div>
@@ -100,7 +100,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'TEMPLATE_BINDINGS' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'TEMPLATE_BINDINGS' | translate }}" ng-model="item.templateBindings" pf-validation="cs.isJsonString(input)" required />
+                <input class="form-control" placeholder="{{ 'TEMPLATE_BINDINGS' | translate }}" ng-model="item.altTemplateBindings" pf-validation="cs.isJsonString(input)" required />
                 <span class="help-block">{{ 'SYNTAX_ERROR' | translate }}</span>
               </div>
             </div>

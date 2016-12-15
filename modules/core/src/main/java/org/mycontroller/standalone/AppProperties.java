@@ -54,7 +54,7 @@ public class AppProperties {
     private static final String SCRIPTS_DIRECTORY = "scripts" + File.separator;
     public static final String CONDITIONS_SCRIPTS_DIRECTORY = "conditions" + File.separator;
     public static final String OPERATIONS_SCRIPTS_DIRECTORY = "operations" + File.separator;
-    private static final String WEB_CONFIGURATIONS_DIR = "configurations";
+    private static final String WEB_CONFIGURATIONS_DIR = "_configurations";
     private static final String HTML_HEADERS_FILE = "html-headers.json";
 
     private String tmpLocation;

@@ -285,15 +285,14 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
   $scope.mchelper = mchelper;
   $scope.cs = CommonServices;
   $scope.node = {};
+  $scope.node.altproperties='{}';
   if($stateParams.id){
     NodesFactory.get({"nodeId":$stateParams.id},function(response) {
       $scope.node = response;
-      $scope.node.properties = angular.toJson(response.properties);
+      $scope.node.altproperties = angular.toJson(response.properties);
     },function(error){
         displayRestError.display(error);
     });
-  }else{
-    $scope.node.properties='{ }';
   }
   $scope.node.gateway = {};
   $scope.gateways = TypesFactory.getGateways();
@@ -312,7 +311,8 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
 
   $scope.save = function(){
     $scope.saveProgress = true;
-    $scope.node.properties = angular.fromJson(JSON.stringify(eval('('+$scope.node.properties+')')));
+    $scope.node.properties = angular.fromJson(JSON.stringify(eval('('+$scope.node.altproperties+')')));
+    console.log(angular.toJson($scope.node.altproperties));
     if($stateParams.id){
       NodesFactory.update($scope.node,function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
