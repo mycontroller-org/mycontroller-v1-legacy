@@ -158,7 +158,7 @@ public class FirmwareUtils {
             int blocks = (end - start) / FIRMWARE_BLOCK_SIZE_HEX;
             int crc = 0xFFFF;
             for (int index = 0; index < fwdata.size(); ++index) {
-                crc = (crc ^ fwdata.get(index).byteValue()) & 0xFFFF;
+                crc ^= fwdata.get(index) & 0xFF;
                 for (int bit = 0; bit < 8; ++bit) {
                     if ((crc & 0x01) == 0x01) {
                         crc = ((crc >> 1) ^ 0xA001);
