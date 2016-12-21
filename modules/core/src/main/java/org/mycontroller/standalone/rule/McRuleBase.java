@@ -24,6 +24,7 @@ import org.mycontroller.standalone.rule.model.DampeningActiveTime;
 import org.mycontroller.standalone.rule.model.DampeningConsecutive;
 import org.mycontroller.standalone.rule.model.DampeningLastNEvaluations;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.units.UnitUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -92,7 +93,7 @@ public abstract class McRuleBase extends BasicRule {
 
     protected String getResourceUnit(RESOURCE_TYPE resourceType, Integer resourceId) throws IllegalAccessException {
         if (resourceType == RESOURCE_TYPE.SENSOR_VARIABLE) {
-            return DaoUtils.getSensorVariableDao().get(resourceId).getUnitType().getText();
+            return UnitUtils.getUnit(DaoUtils.getSensorVariableDao().get(resourceId).getUnitType()).getUnit();
         } else {
             return "";
         }
