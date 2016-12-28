@@ -238,6 +238,26 @@
             </div>
 
           </div>
+          <!-- Philips Hue Gateway -->
+          <div ng-if="gateway.type === 'Philips Hue'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'URL' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'URL' | translate }}" ng-model="gateway.url" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'KEY_AUTORIZED_USER' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'KEY_AUTORIZED_USER' | translate }}" ng-model="gateway.authorizedUser" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+          </div>
 
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>

@@ -28,6 +28,7 @@ import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
+import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.utils.McUtils;
@@ -120,6 +121,13 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 gatewayPhantIO.setRecordsLimit(node.get("recordsLimit").asLong());
                 gatewayPhantIO.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));
                 gateway = gatewayPhantIO;
+                break;
+            case PHILIPS_HUE:
+                GatewayPhilipsHue gatewayPhilipsHue = new GatewayPhilipsHue();
+                gatewayPhilipsHue.setAuthorizedUser(node.get(GatewayPhilipsHue.KEY_AUTORIZED_USER).asText());
+                gatewayPhilipsHue.setUrl(node.get(GatewayPhilipsHue.KEY_URL).asText());
+                gateway = gatewayPhilipsHue;
+                break;
             default:
                 break;
         }

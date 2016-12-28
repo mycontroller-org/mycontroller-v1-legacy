@@ -31,6 +31,7 @@ import org.mycontroller.standalone.provider.mc.McProviderBridge;
 import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
 import org.mycontroller.standalone.provider.phantio.PhantIOProviderBridge;
+import org.mycontroller.standalone.provider.philipshue.PhilipsHueProviderBridge;
 import org.mycontroller.standalone.provider.rflink.RFLinkProviderBridge;
 
 import lombok.AccessLevel;
@@ -542,6 +543,7 @@ public class McMessageUtils {
     private static IProviderBridge phantIOBridge = new PhantIOProviderBridge();
     private static IProviderBridge rpiAgentBridge = new McProviderBridge();
     private static IProviderBridge rfLinkBridge = new RFLinkProviderBridge();
+    private static IProviderBridge philipsHueProviderBridge = new PhilipsHueProviderBridge();
 
     public static synchronized void sendToGateway(RawMessage rawMessage) {
         //Send message to nodes [going out from MyController]
@@ -571,6 +573,9 @@ public class McMessageUtils {
                 break;
             case RF_LINK:
                 rfLinkBridge.executeRawMessage(rawMessage);
+                break;
+            case PHILIPS_HUE:
+                philipsHueProviderBridge.executeRawMessage(rawMessage);
                 break;
             default:
                 _logger.warn("Unknown provider: {}", rawMessage.getNetworkType());
@@ -611,6 +616,9 @@ public class McMessageUtils {
             case RF_LINK:
                 rfLinkBridge.executeMcMessage(mcMessage);
                 break;
+            case PHILIPS_HUE:
+                philipsHueProviderBridge.executeMcMessage(mcMessage);
+                break;
             default:
                 _logger.warn("Unknown provider: {}", mcMessage.getNetworkType());
                 break;
@@ -635,6 +643,8 @@ public class McMessageUtils {
                 return rpiAgentBridge.validateNodeId(node);
             case RF_LINK:
                 return rfLinkBridge.validateNodeId(node);
+            case PHILIPS_HUE:
+                return philipsHueProviderBridge.validateNodeId(node);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
@@ -652,6 +662,8 @@ public class McMessageUtils {
                 return rpiAgentBridge.validateSensorId(sensor);
             case RF_LINK:
                 return rfLinkBridge.validateSensorId(sensor);
+            case PHILIPS_HUE:
+                return philipsHueProviderBridge.validateSensorId(sensor);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
