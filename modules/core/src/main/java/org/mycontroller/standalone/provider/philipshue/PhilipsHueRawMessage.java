@@ -47,6 +47,8 @@ public class PhilipsHueRawMessage {
     private String payload;
     private Long timestamp;
     private boolean isTxMessage = false;
+    private String name;
+    private String colormode;
 
     public PhilipsHueRawMessage(RawMessage rawMessage) throws RawMessageException {
         IGateway gateway = McObjectManager.getGateway(rawMessage.getGatewayId());
@@ -64,13 +66,10 @@ public class PhilipsHueRawMessage {
         gatewayId = rawMessage.getGatewayId();
         url = gatewayPhilipsHue.getUrl();
         sensorId = (String) data.get(0);
-        MESSAGE_TYPE_SET_REQ dataSubType = MESSAGE_TYPE_SET_REQ.fromString((String) data.get(0));
-        if (dataSubType == null) {
-            dataSubType = MESSAGE_TYPE_SET_REQ.V_VAR1;
-        }
-        subType = dataSubType.getText();
+        subType = MESSAGE_TYPE_SET_REQ.V_STATUS.getText();
         payload = (String) data.get(1);
-        timestamp = (Long) data.get(2);
+        name = (String) data.get(2);
+        //        timestamp = (Long) data.get(2);
         PhilipsHueEngine.updateMessage(this);
     }
 
@@ -93,7 +92,7 @@ public class PhilipsHueRawMessage {
     public RawMessage getRawMessage() {
         return RawMessage.builder()
                 .gatewayId(gatewayId)
-                .data(Arrays.asList(sensorId, payload))
+                .data(Arrays.asList(sensorId, payload,messageType,subType))
                 .build();
     }
 

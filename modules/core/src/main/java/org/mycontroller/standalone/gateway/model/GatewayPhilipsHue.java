@@ -35,9 +35,11 @@ import lombok.ToString;
 public class GatewayPhilipsHue extends Gateway {
     public static final String KEY_URL = "url";
     public static final String KEY_AUTORIZED_USER = "authorizedUser";
+    public static final String KEY_POLL_FREQUENCY = "pollFrequency";
 
     private String url;
     private String authorizedUser;
+    private Integer pollFrequency;
 
     public GatewayPhilipsHue() {
     }
@@ -53,6 +55,7 @@ public class GatewayPhilipsHue extends Gateway {
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(KEY_URL, url);
         properties.put(KEY_AUTORIZED_USER, authorizedUser);
+        properties.put(KEY_POLL_FREQUENCY, pollFrequency);
         gatewayTable.setProperties(properties);
         return gatewayTable;
     }
@@ -63,13 +66,14 @@ public class GatewayPhilipsHue extends Gateway {
         super.updateGateway(gatewayTable);
         url = (String) gatewayTable.getProperties().get(KEY_URL);
         authorizedUser = (String) gatewayTable.getProperties().get(KEY_AUTORIZED_USER);
+        pollFrequency = (Integer) gatewayTable.getProperties().get(KEY_POLL_FREQUENCY);
     }
 
     @Override
     public String getConnectionDetails() {
         StringBuilder builder = new StringBuilder();
         builder.append("Bridge address:").append(getUrl());
+        builder.append(", PollFrequency:").append(getPollFrequency());
         return builder.toString();
     }
-
 }

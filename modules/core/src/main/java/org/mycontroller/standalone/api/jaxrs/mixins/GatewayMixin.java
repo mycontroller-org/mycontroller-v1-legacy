@@ -125,6 +125,7 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
             case PHILIPS_HUE:
                 GatewayPhilipsHue gatewayPhilipsHue = new GatewayPhilipsHue();
                 gatewayPhilipsHue.setAuthorizedUser(node.get(GatewayPhilipsHue.KEY_AUTORIZED_USER).asText());
+                gatewayPhilipsHue.setPollFrequency(node.get(GatewayPhilipsHue.KEY_POLL_FREQUENCY).asInt());
                 gatewayPhilipsHue.setUrl(node.get(GatewayPhilipsHue.KEY_URL).asText());
                 gateway = gatewayPhilipsHue;
                 break;

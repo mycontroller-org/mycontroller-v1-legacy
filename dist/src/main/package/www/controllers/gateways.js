@@ -292,8 +292,9 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.gateway.recordsLimit='10';
       $scope.gateway.trustHostType='';
     }else if($scope.gateway.type === 'Philips Hue'){
-          $scope.gateway.url='';
+          $scope.gateway.url='http://<bridge ip address>';
           $scope.gateway.authorizedUser='';
+          $scope.gateway.pollFrequency='5';
      }
   };
 
