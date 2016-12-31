@@ -148,6 +148,12 @@ public class SensorUtils {
             case V_LIGHT_LEVEL:
                 data = McUtils.getDoubleAsString(sensorVariable.getValue());
                 break;
+            case V_HUE:
+            case V_SATURATION:
+            case V_BRIGHTNESS:
+            case V_MIRED_COLOR:
+                data = sensorVariable.getValue();
+                break;
             case V_VAR1:
             case V_VAR2:
             case V_VAR3:

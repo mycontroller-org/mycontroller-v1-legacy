@@ -53,7 +53,7 @@ public class PhilipsHueGatewayImpl implements IGateway {
 
     @Override
     public synchronized void close() {
-        philipsHueGatewayPoller.close();
+        philipsHueGatewayPoller.setTerminate(true);
     }
 
     @Override

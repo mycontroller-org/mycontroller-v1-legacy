@@ -61,7 +61,7 @@ public class GatewayUtils {
         ETHERNET("Ethernet"),
         MQTT("MQTT"),
         PHANT_IO("Sparkfun [phant.io]"),
-		PHILIPS_HUE("Philips Hue");
+		PHILIPS_HUE("Hue bridge");
         public static GATEWAY_TYPE get(int id) {
             for (GATEWAY_TYPE type : values()) {
                 if (type.ordinal() == id) {

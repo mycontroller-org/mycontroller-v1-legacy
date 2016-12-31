@@ -22,14 +22,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.mycontroller.restclient.core.ClientResponse;
 import org.mycontroller.restclient.philips.hue.PhilipsHueClient;
 import org.mycontroller.restclient.philips.hue.PhilipsHueClientBuilder;
 import org.mycontroller.restclient.philips.hue.model.LightState;
 import org.mycontroller.restclient.philips.hue.model.State;
 import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
+import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
+import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
+import org.mycontroller.standalone.model.philips.Color;
+import org.mycontroller.standalone.model.philips.PHUtilities;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +47,7 @@ public class PhilipsHueGatewayPoller implements Runnable {
     private boolean terminate = false;
     private boolean terminated = false;
     private PhilipsHueClient philipsHueClient;
+    private boolean onRequestUpdate = false;
 
     public PhilipsHueGatewayPoller() {
     }
@@ -71,20 +77,20 @@ public class PhilipsHueGatewayPoller implements Runnable {
                     updateRecords(clientResponse);
                 }
                 long pollFrequency = gateway.getPollFrequency() * McUtils.MINUTE;
-                while (pollFrequency > 0 && !isTerminate()) {
+                while (pollFrequency > 0 && !isTerminate() && !onRequestUpdate) {
                     Thread.sleep(100);
                     pollFrequency -= 100;
                 }
+                onRequestUpdate = false;
             } catch (InterruptedException | ParseException ex) {
                 _logger.error("Exception, ", ex);
             }
         }
-        _logger.debug("PhantIOGatewayListener Terminated...");
+        _logger.debug("PhilipsHueGatewayPoller Terminated...");
         this.terminated = true;
     }
 
     private void updateRecords(Map<String, LightState> records) throws ParseException {
-
         for (Entry<String, LightState> entry : records.entrySet()) {
             String key = entry.getKey();
             LightState value = entry.getValue();
@@ -95,6 +101,14 @@ public class PhilipsHueGatewayPoller implements Runnable {
                     .build());
         }
 
+    }
+
+    public boolean isOnRequestUpdate() {
+        return onRequestUpdate;
+    }
+
+    public synchronized void setOnRequestUpdate(boolean onRequestUpdate) {
+        this.onRequestUpdate = onRequestUpdate;
     }
 
     public boolean isTerminate() {
@@ -112,33 +126,69 @@ public class PhilipsHueGatewayPoller implements Runnable {
     public void write(RawMessage rawMessage) {
         if (gateway.getAuthorizedUser() != null && gateway.getAuthorizedUser().length() > 0) {
             _logger.info("Send data: {}, {}", this.gateway, rawMessage);
-            //TODO Probably get hue state then update color according to the colorMode.
-            //Handle other setting of state
-            List<Object> data = (List<Object>) rawMessage.getData();
-            MESSAGE_TYPE_SET_REQ msgType = MESSAGE_TYPE_SET_REQ.fromString(data.get(3).toString());
-            State state = null;
-            switch (msgType) {
-                case V_STATUS:
-                    state = State.builder()
-                            .on("1".equalsIgnoreCase(data.get(1).toString())).build();
-                    break;
-                case V_RGB:
-                    String rgb=data.get(1).toString();
-                    //Apply RGB to HUE conversion here.
-                    break;
-                case V_RGBW:
-                    break;
-                case V_PERCENTAGE:
-                    break;
+            @SuppressWarnings("unchecked")
+            List<String> data = (List<String>) rawMessage.getData();
+            MESSAGE_TYPE type = MESSAGE_TYPE.fromString(data.get(2));
+            if (data.size() == 4) {//sensorId, payload,messageType,subType
+                if (type == MESSAGE_TYPE.C_SET) {
+                    MESSAGE_TYPE_SET_REQ msgType = MESSAGE_TYPE_SET_REQ.fromString(data.get(3));
+                    State state = getHueUpdateState(msgType, data);
+                    if (state != null)
+                        philipsHueClient.lights().updateState(data.get(0), state);
+                } else if (type == MESSAGE_TYPE.C_INTERNAL) {
+                    switch (MESSAGE_TYPE_INTERNAL.fromString(data.get(3))) {
+                        case I_PRESENTATION:
+                            if (!isOnRequestUpdate()) {
+                                setOnRequestUpdate(true);
+                            }
 
-                default:
-                    break;
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            } else {
+                _logger.error("data array size should be exactly 4, data:{}", data);
             }
-            if (state != null)
-                philipsHueClient.lights().updateState(data.get(0).toString(), state);
         } else {
             _logger.warn("Private key not set for this {}", gateway);
         }
+
+    }
+
+    private State getHueUpdateState(MESSAGE_TYPE_SET_REQ msgType, List<String> data) {
+        State state = null;
+        switch (msgType) {
+            case V_HUE:
+                state = State.builder().hue(Integer.valueOf(data.get(1))).build();
+                break;
+            case V_BRIGHTNESS:
+                state = State.builder().bri(Integer.valueOf(data.get(1))).build();
+                break;
+            case V_SATURATION:
+                state = State.builder().sat(Integer.valueOf(data.get(1))).build();
+                break;
+            case V_MIRED_COLOR:
+                state = State.builder().ct(Integer.valueOf(data.get(1))).build();
+                break;
+            case V_STATUS:
+                state = State.builder().on("1".equalsIgnoreCase(data.get(1))).build();
+                break;
+            case V_RGB:
+                String sensorId = data.get(0);
+                ClientResponse<LightState> lightState = philipsHueClient.lights().state(sensorId);
+                if (lightState != null) {
+                    float[] xy = PHUtilities.calculateXY(
+                            Color.parseColor(data.get(1)), lightState.getEntity().getModelid());
+                    state = State.builder().xy(new Float[] { xy[0], xy[1] }).build();
+                }
+                break;
+
+            default:
+                break;
+        }
+        return state;
     }
 
     public GatewayPhilipsHue getGateway() {

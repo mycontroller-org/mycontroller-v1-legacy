@@ -92,7 +92,7 @@ public class PhilipsHueRawMessage {
     public RawMessage getRawMessage() {
         return RawMessage.builder()
                 .gatewayId(gatewayId)
-                .data(Arrays.asList(sensorId, payload,messageType,subType))
+                .data(Arrays.asList(sensorId, payload,messageType.getText(),subType))
                 .build();
     }
 

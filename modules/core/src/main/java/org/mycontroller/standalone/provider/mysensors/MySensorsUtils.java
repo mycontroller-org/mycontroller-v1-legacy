@@ -195,8 +195,10 @@ public class MySensorsUtils {
         S_IR("IR"),       // Ir device, V_IR_SEND, V_IR_RECEIVE
         S_WATER("Water"),    // Water meter, V_FLOW, V_VOLUME
         S_AIR_QUALITY("Air quality"), // Air quality sensor, V_LEVEL
+        S_HUE_LIGHT("Hue light"), // RGB light, V_RGB, V_STATUS (or V_LIGHT)
         S_CUSTOM("Custom"),   // Custom sensor
         S_DUST("Dust"),     // Dust sensor, V_LEVEL
+        S_BRIGHTNESS("Brightness"),     // Brightness sensor, V_LEVEL
         S_SCENE_CONTROLLER("Scene controller"), // Scene controller device, V_SCENE_ON, V_SCENE_OFF.
         S_RGB_LIGHT("RGB light"),    // RGB light. Send color component data using V_RGB. Also supports V_WATT
         S_RGBW_LIGHT("RGBW light"),   // RGB light with an additional White component. Send data using V_RGBW.
@@ -293,7 +295,8 @@ public class MySensorsUtils {
         V_FLOW("Flow"),         // S_WATER. Flow of water (in meter)
         V_VOLUME("Volume"),       // S_WATER. Water volume
         V_LOCK_STATUS("Lock status"),  // S_LOCK. Set or get lock status. 1=Locked, 0=Unlocked
-        V_LEVEL("Level"),        // S_DUST, S_AIR_QUALITY, S_SOUND (dB), S_VIBRATION (hz), S_LIGHT_LEVEL (lux)
+        V_LEVEL("Level"), // S_DUST, S_BRIGHTNESS, S_AIR_QUALITY, S_SOUND (dB),
+        //S_VIBRATION (hz), S_LIGHT_LEVEL (lux)
         V_VOLTAGE("Voltage"),      // S_MULTIMETER
         V_CURRENT("Current"),      // S_MULTIMETER
         V_RGB("RGB"),          // S_RGB_LIGHT, S_COLOR_SENSOR.

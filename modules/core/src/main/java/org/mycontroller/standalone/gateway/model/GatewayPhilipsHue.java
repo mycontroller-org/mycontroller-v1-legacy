@@ -72,8 +72,7 @@ public class GatewayPhilipsHue extends Gateway {
     @Override
     public String getConnectionDetails() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Bridge address:").append(getUrl());
-        builder.append(", PollFrequency:").append(getPollFrequency());
+        builder.append(getUrl());
         return builder.toString();
     }
 }

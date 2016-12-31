@@ -77,7 +77,7 @@ public class GatewayDaoImpl extends BaseAbstractDaoImpl<GatewayTable, Integer> i
             return gateways;
         } catch (SQLException ex) {
             _logger.error("unable to get all gateways:[type:{}, NetworkType:{}, Enabled:{}]",
-                    gatewayType.getText(), networkType, enabled, ex);
+                    gatewayType != null ? gatewayType.getText() : "no gateway", networkType, enabled, ex);
             return null;
         }
     }

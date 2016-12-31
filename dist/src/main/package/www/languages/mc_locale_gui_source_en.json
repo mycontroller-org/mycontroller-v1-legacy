@@ -415,6 +415,7 @@
   "PHYSICAL_MEMORY": "Physical Memory (RAM)",
   "PLIVO": "Plivo",
   "POLL_FREQUENCY_MINUTES": "Poll frequency (minutes)",
+  "AUTORIZED_USER":"Autorized user",
   "PORT": "Port",
   "PORT_NAME": "Port name",
   "PRIORITY": "Priority",
