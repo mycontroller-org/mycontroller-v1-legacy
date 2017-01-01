@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -94,13 +94,32 @@ public class PhilipsHueGatewayPoller implements Runnable {
         for (Entry<String, LightState> entry : records.entrySet()) {
             String key = entry.getKey();
             LightState value = entry.getValue();
-            RawMessageQueue.getInstance().putMessage(RawMessage.builder()
-                    .gatewayId(gateway.getId())
-                    .data(Arrays.asList(key, value.getState().getOn() ? "1" : "0", value.getName()))
-                    .networkType(gateway.getNetworkType())
-                    .build());
+            //Set status
+            String subType = MESSAGE_TYPE_SET_REQ.V_STATUS.getText();
+            putMessage(Arrays.asList(key, value.getState().getOn() ? "1" : "0", value.getName(), subType));
+
+            //Set brightness (0 to 255)
+            subType = MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS.getText();
+            putMessage(Arrays.asList(key, value.getState().getBri().toString(), value.getName(), subType));
+
+            //Set color from xy
+            Float[] xy = value.getState().getXy();
+            if (xy != null && xy.length == 2) {
+                subType = MESSAGE_TYPE_SET_REQ.V_RGB.getText();
+                String hexColor = PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid());
+                putMessage(Arrays.asList(key, hexColor, value.getName(), subType));
+            }
+
         }
 
+    }
+
+    private void putMessage(List<String> data) {
+        RawMessageQueue.getInstance().putMessage(RawMessage.builder()
+                .gatewayId(gateway.getId())
+                .data(data)
+                .networkType(gateway.getNetworkType())
+                .build());
     }
 
     public boolean isOnRequestUpdate() {
@@ -131,8 +150,8 @@ public class PhilipsHueGatewayPoller implements Runnable {
             MESSAGE_TYPE type = MESSAGE_TYPE.fromString(data.get(2));
             if (data.size() == 4) {//sensorId, payload,messageType,subType
                 if (type == MESSAGE_TYPE.C_SET) {
-                    MESSAGE_TYPE_SET_REQ msgType = MESSAGE_TYPE_SET_REQ.fromString(data.get(3));
-                    State state = getHueUpdateState(msgType, data);
+                    MESSAGE_TYPE_SET_REQ subType = MESSAGE_TYPE_SET_REQ.fromString(data.get(3));
+                    State state = getHueUpdateState(subType, data);
                     if (state != null)
                         philipsHueClient.lights().updateState(data.get(0), state);
                 } else if (type == MESSAGE_TYPE.C_INTERNAL) {
@@ -157,20 +176,11 @@ public class PhilipsHueGatewayPoller implements Runnable {
 
     }
 
-    private State getHueUpdateState(MESSAGE_TYPE_SET_REQ msgType, List<String> data) {
+    private State getHueUpdateState(MESSAGE_TYPE_SET_REQ subType, List<String> data) {
         State state = null;
-        switch (msgType) {
-            case V_HUE:
-                state = State.builder().hue(Integer.valueOf(data.get(1))).build();
-                break;
+        switch (subType) {
             case V_BRIGHTNESS:
                 state = State.builder().bri(Integer.valueOf(data.get(1))).build();
-                break;
-            case V_SATURATION:
-                state = State.builder().sat(Integer.valueOf(data.get(1))).build();
-                break;
-            case V_MIRED_COLOR:
-                state = State.builder().ct(Integer.valueOf(data.get(1))).build();
                 break;
             case V_STATUS:
                 state = State.builder().on("1".equalsIgnoreCase(data.get(1))).build();

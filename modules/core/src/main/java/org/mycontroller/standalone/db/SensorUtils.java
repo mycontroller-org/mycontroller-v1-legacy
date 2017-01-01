@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -103,6 +103,7 @@ public class SensorUtils {
             case V_STATUS:
                 data = McUtils.getStatusAsString(sensorVariable.getValue());
                 break;
+            case V_BRIGHTNESS:
             case V_PERCENTAGE:
             case V_PRESSURE:
                 data = McUtils.getDoubleAsString(sensorVariable.getValue());
@@ -147,12 +148,6 @@ public class SensorUtils {
                 break;
             case V_LIGHT_LEVEL:
                 data = McUtils.getDoubleAsString(sensorVariable.getValue());
-                break;
-            case V_HUE:
-            case V_SATURATION:
-            case V_BRIGHTNESS:
-            case V_MIRED_COLOR:
-                data = sensorVariable.getValue();
                 break;
             case V_VAR1:
             case V_VAR2:

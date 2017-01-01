@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
-import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageException;
 
@@ -52,13 +51,13 @@ public class PhilipsHueRawMessage {
 
     public PhilipsHueRawMessage(RawMessage rawMessage) throws RawMessageException {
         IGateway gateway = McObjectManager.getGateway(rawMessage.getGatewayId());
-        GatewayPhilipsHue   gatewayPhilipsHue = (GatewayPhilipsHue) gateway
+        GatewayPhilipsHue gatewayPhilipsHue = (GatewayPhilipsHue) gateway
                 .getGateway();
         @SuppressWarnings("unchecked")
         List<Object> data = (List<Object>) rawMessage.getData();
-        //Data order: key, value, timestamp
-        if (data.size() != 3) {
-            throw new RawMessageException("data size should be exactly 3, Current data: " + data);
+        //Data order: key, value,type,subType
+        if (data.size() != 4) {
+            throw new RawMessageException("data size should be exactly 4, Current data: " + data);
         }
         isTxMessage = rawMessage.isTxMessage();
         messageType = MESSAGE_TYPE.C_SET;
@@ -66,10 +65,9 @@ public class PhilipsHueRawMessage {
         gatewayId = rawMessage.getGatewayId();
         url = gatewayPhilipsHue.getUrl();
         sensorId = (String) data.get(0);
-        subType = MESSAGE_TYPE_SET_REQ.V_STATUS.getText();
+        subType = (String) data.get(3);
         payload = (String) data.get(1);
         name = (String) data.get(2);
-        //        timestamp = (Long) data.get(2);
         PhilipsHueEngine.updateMessage(this);
     }
 
@@ -92,7 +90,7 @@ public class PhilipsHueRawMessage {
     public RawMessage getRawMessage() {
         return RawMessage.builder()
                 .gatewayId(gatewayId)
-                .data(Arrays.asList(sensorId, payload,messageType.getText(),subType))
+                .data(Arrays.asList(sensorId, payload, messageType.getText(), subType))
                 .build();
     }
 

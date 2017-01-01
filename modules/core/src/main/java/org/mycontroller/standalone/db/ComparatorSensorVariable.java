@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,10 +56,7 @@ public class ComparatorSensorVariable implements Comparator<SensorVariable> {
                         MESSAGE_TYPE_SET_REQ.V_HUM,
                         MESSAGE_TYPE_SET_REQ.V_PERCENTAGE,
                         MESSAGE_TYPE_SET_REQ.V_LEVEL,
-                        MESSAGE_TYPE_SET_REQ.V_HUE,
                         MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS,
-                        MESSAGE_TYPE_SET_REQ.V_SATURATION,
-                        MESSAGE_TYPE_SET_REQ.V_MIRED_COLOR,
                         MESSAGE_TYPE_SET_REQ.V_IR_SEND,
                         MESSAGE_TYPE_SET_REQ.V_IR_RECEIVE,
                         MESSAGE_TYPE_SET_REQ.V_RGB,

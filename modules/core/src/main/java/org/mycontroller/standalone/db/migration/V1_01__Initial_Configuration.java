@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -308,19 +308,7 @@ public class V1_01__Initial_Configuration extends MigrationBase {
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_DUST, MESSAGE_TYPE_SET_REQ.V_LEVEL);
 
         // Brightness light, V_LEVEL
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_BRIGHTNESS,
-                MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS);
-
-        // Saturation level, V_LEVEL
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_SATURATION,
-                MESSAGE_TYPE_SET_REQ.V_SATURATION);
-
-        // Mired color, V_LEVEL
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_MIRED_COLOR,
-                MESSAGE_TYPE_SET_REQ.V_MIRED_COLOR);
-
-        // Hue level, V_LEVEL
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE, MESSAGE_TYPE_SET_REQ.V_LEVEL);
+        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_BRIGHTNESS, MESSAGE_TYPE_SET_REQ.V_LEVEL);
 
         // Scene controller device, V_SCENE_ON, V_SCENE_OFF.
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_SCENE_CONTROLLER,
@@ -365,21 +353,13 @@ public class V1_01__Initial_Configuration extends MigrationBase {
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_MULTIMETER,
                 MESSAGE_TYPE_SET_REQ.V_IMPEDANCE);
 
-        // Hue device, V_STATUS, V_RGB, V_BRIGHTNESS, V_SATURATION
+        // Hue device, V_STATUS, V_RGB, V_BRIGHTNESS
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
                 MESSAGE_TYPE_SET_REQ.V_STATUS);
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
                 MESSAGE_TYPE_SET_REQ.V_RGB);
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
-                MESSAGE_TYPE_SET_REQ.V_WATT);
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
-                MESSAGE_TYPE_SET_REQ.V_HUE);
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
                 MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS);
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
-                MESSAGE_TYPE_SET_REQ.V_SATURATION);
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
-                MESSAGE_TYPE_SET_REQ.V_MIRED_COLOR);
 
         // Sprinkler, V_STATUS (turn on/off), V_TRIPPED (if fire detecting
         // device)

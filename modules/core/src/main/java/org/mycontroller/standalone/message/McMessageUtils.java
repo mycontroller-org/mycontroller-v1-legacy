@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -193,9 +193,6 @@ public class McMessageUtils {
         S_CUSTOM("Custom"),
         S_DUST("Dust"),
         S_BRIGHTNESS("Brightness"),
-        S_SATURATION("Saturation"),
-        S_MIRED_COLOR("Mired color"),
-        S_HUE("Hue"),
         S_SCENE_CONTROLLER("Scene controller"),
         S_RGB_LIGHT("RGB light"),
         S_RGBW_LIGHT("RGBW light"),
@@ -260,9 +257,6 @@ public class McMessageUtils {
         V_WIND("Wind"),
         V_GUST("Gust"),
         V_BRIGHTNESS("Brightness"),
-        V_HUE("Hue"),
-        V_SATURATION("Saturation"),
-        V_MIRED_COLOR("Mired color"),
         V_DIRECTION("Direction"),
         V_UV("UV"),
         V_WEIGHT("Weight"),

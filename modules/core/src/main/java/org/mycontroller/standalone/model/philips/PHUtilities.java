@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,6 +57,109 @@ public class PHUtilities {
         colorPointsDefault.add(new PointF(1.0F, 0.0F));
         colorPointsDefault.add(new PointF(0.0F, 1.0F));
         colorPointsDefault.add(new PointF(0.0F, 0.0F));
+    }
+
+    public static String getHexFromXY(float[] points, String model) {
+        int color = colorFromXY(points, model);
+        return String.format("#%06X", (0xFFFFFF & color));
+    }
+
+    public static int colorFromXY(float[] points, String model) {
+        if ((points == null) || (model == null)) {
+            throw new IllegalArgumentException("Input parameter can't be null");
+        }
+
+        PointF xy = new PointF(points[0], points[1]);
+        List colorPoints = colorPointsForModel(model);
+        boolean inReachOfLamps = checkPointInLampsReach(xy, colorPoints);
+        if (!inReachOfLamps) {
+            PointF pAB = getClosestPointToPoints((PointF) colorPoints.get(0), (PointF) colorPoints.get(1), xy);
+
+            PointF pAC = getClosestPointToPoints((PointF) colorPoints.get(2), (PointF) colorPoints.get(0), xy);
+
+            PointF pBC = getClosestPointToPoints((PointF) colorPoints.get(1), (PointF) colorPoints.get(2), xy);
+
+            float dAB = getDistanceBetweenTwoPoints(xy, pAB);
+            float dAC = getDistanceBetweenTwoPoints(xy, pAC);
+            float dBC = getDistanceBetweenTwoPoints(xy, pBC);
+            float lowest = dAB;
+            PointF closestPoint = pAB;
+            if (dAC < lowest) {
+                lowest = dAC;
+                closestPoint = pAC;
+            }
+            if (dBC < lowest) {
+                lowest = dBC;
+                closestPoint = pBC;
+            }
+
+            xy.x = closestPoint.x;
+            xy.y = closestPoint.y;
+        }
+        float x = xy.x;
+        float y = xy.y;
+        float z = 1.0F - x - y;
+        float y2 = 1.0F;
+        float x2 = y2 / y * x;
+        float z2 = y2 / y * z;
+
+        float r = x2 * 1.656492F - y2 * 0.354851F - z2 * 0.255038F;
+        float g = -x2 * 0.707196F + y2 * 1.655397F + z2 * 0.036152F;
+        float b = x2 * 0.051713F - y2 * 0.121364F + z2 * 1.01153F;
+
+        if ((r > b) && (r > g) && (r > 1.0F)) {
+            g /= r;
+            b /= r;
+            r = 1.0F;
+        } else if ((g > b) && (g > r) && (g > 1.0F)) {
+            r /= g;
+            b /= g;
+            g = 1.0F;
+        } else if ((b > r) && (b > g) && (b > 1.0F)) {
+            r /= b;
+            g /= b;
+            b = 1.0F;
+        }
+
+        r = r <= 0.0031308F ? 12.92F * r : 1.055F * (float) Math.pow(r, 0.416666656732559D) - 0.055F;
+
+        g = g <= 0.0031308F ? 12.92F * g : 1.055F * (float) Math.pow(g, 0.416666656732559D) - 0.055F;
+
+        b = b <= 0.0031308F ? 12.92F * b : 1.055F * (float) Math.pow(b, 0.416666656732559D) - 0.055F;
+
+        if ((r > b) && (r > g)) {
+            if (r > 1.0F) {
+                g /= r;
+                b /= r;
+                r = 1.0F;
+            }
+        } else if ((g > b) && (g > r)) {
+            if (g > 1.0F) {
+                r /= g;
+                b /= g;
+                g = 1.0F;
+            }
+        } else if ((b > r) && (b > g) && (b > 1.0F)) {
+            r /= b;
+            g /= b;
+            b = 1.0F;
+        }
+
+        if (r < 0.0F) {
+            r = 0.0F;
+        }
+        if (g < 0.0F) {
+            g = 0.0F;
+        }
+        if (b < 0.0F) {
+            b = 0.0F;
+        }
+
+        int r1 = (int) (r * 255.0F);
+        int g1 = (int) (g * 255.0F);
+        int b1 = (int) (b * 255.0F);
+
+        return Color.rgb(r1, g1, b1);
     }
 
     public static float[] calculateXY(final int color, final String model) {

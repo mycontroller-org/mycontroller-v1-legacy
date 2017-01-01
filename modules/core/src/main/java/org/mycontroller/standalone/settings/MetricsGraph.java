@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -109,9 +109,6 @@ public class MetricsGraph {
         variables.add(MESSAGE_TYPE_SET_REQ.V_KWH);
         variables.add(MESSAGE_TYPE_SET_REQ.V_LEVEL);
         variables.add(MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS);
-        variables.add(MESSAGE_TYPE_SET_REQ.V_SATURATION);
-        variables.add(MESSAGE_TYPE_SET_REQ.V_HUE);
-        variables.add(MESSAGE_TYPE_SET_REQ.V_MIRED_COLOR);
         variables.add(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL);
         variables.add(MESSAGE_TYPE_SET_REQ.V_LOCK_STATUS);
         variables.add(MESSAGE_TYPE_SET_REQ.V_PERCENTAGE);
