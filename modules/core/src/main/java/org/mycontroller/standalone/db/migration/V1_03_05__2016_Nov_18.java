@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -69,6 +69,7 @@ public class V1_03_05__2016_Nov_18 extends MigrationBase {
                         .resourceType(RESOURCE_TYPE.SENSOR_VARIABLE)
                         .resourceId(Integer.valueOf(getValue(row, "sensorVariable")))
                         .build();
+                //_logger.info("UID: {}", uidTag);
                 DaoUtils.getUidTagDao().create(uidTag);
             }
 
