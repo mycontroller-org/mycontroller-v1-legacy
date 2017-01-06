@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -171,7 +171,12 @@ public class RFLinkRawMessage {
                 builder.append("STOP");
                 break;
             case SET_LEVEL:
-                builder.append(Math.round(Integer.valueOf(getPayload()) * DIMMER_REF));
+                Integer payloadInt = Integer.valueOf(getPayload());
+                if (payloadInt == 0) {
+                    builder.append("OFF");
+                } else {
+                    builder.append(Math.round(payloadInt * DIMMER_REF));
+                }
                 break;
             default:
                 throw new RawMessageException("Not supported type: " + mType.name());
