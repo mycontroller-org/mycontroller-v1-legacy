@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import java.util.List;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DbException;
@@ -298,4 +299,15 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
         query.setOrder(Query.ORDER_DESC);
         return super.getAllData(query);
     }
+
+    @Override
+    public QueryResponse getAll(Query query) {
+        try {
+            return super.getQueryResponse(query);
+        } catch (SQLException ex) {
+            _logger.error("Error while processing for {}", query, ex);
+            return null;
+        }
+    }
+
 }

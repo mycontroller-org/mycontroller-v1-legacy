@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -131,6 +131,21 @@ public class SensorApi {
             }
         }
         return sensorVariableJson;
+    }
+
+    public QueryResponse getVariables(HashMap<String, Object> filters) {
+        Query query = Query.get(filters);
+        QueryResponse queryResponse = DaoUtils.getSensorVariableDao().getAll(query);
+        if (queryResponse != null) {
+            @SuppressWarnings("unchecked")
+            List<SensorVariable> variables = (List<SensorVariable>) queryResponse.getData();
+            List<SensorVariableJson> variablesJson = new ArrayList<SensorVariableJson>();
+            for (SensorVariable variable : variables) {
+                variablesJson.add(new SensorVariableJson(variable));
+            }
+            queryResponse.setData(variablesJson);
+        }
+        return queryResponse;
     }
 
     public SensorVariableJson getVariable(Integer id) {
