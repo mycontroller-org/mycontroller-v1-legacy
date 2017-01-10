@@ -56,7 +56,6 @@ public class ComparatorSensorVariable implements Comparator<SensorVariable> {
                         MESSAGE_TYPE_SET_REQ.V_HUM,
                         MESSAGE_TYPE_SET_REQ.V_PERCENTAGE,
                         MESSAGE_TYPE_SET_REQ.V_LEVEL,
-                        MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS,
                         MESSAGE_TYPE_SET_REQ.V_IR_SEND,
                         MESSAGE_TYPE_SET_REQ.V_IR_RECEIVE,
                         MESSAGE_TYPE_SET_REQ.V_RGB,

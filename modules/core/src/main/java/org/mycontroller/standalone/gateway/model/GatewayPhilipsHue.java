@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ import lombok.ToString;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true, exclude = { "privateKey" })
+@ToString(callSuper = true)
 public class GatewayPhilipsHue extends Gateway {
     public static final String KEY_URL = "url";
     public static final String KEY_AUTORIZED_USER = "authorizedUser";

@@ -307,9 +307,6 @@ public class V1_01__Initial_Configuration extends MigrationBase {
         // Dust sensor, V_LEVEL
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_DUST, MESSAGE_TYPE_SET_REQ.V_LEVEL);
 
-        // Brightness light, V_LEVEL
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_BRIGHTNESS, MESSAGE_TYPE_SET_REQ.V_LEVEL);
-
         // Scene controller device, V_SCENE_ON, V_SCENE_OFF.
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_SCENE_CONTROLLER,
                 MESSAGE_TYPE_SET_REQ.V_SCENE_ON);
@@ -352,14 +349,6 @@ public class V1_01__Initial_Configuration extends MigrationBase {
                 MESSAGE_TYPE_SET_REQ.V_CURRENT);
         DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_MULTIMETER,
                 MESSAGE_TYPE_SET_REQ.V_IMPEDANCE);
-
-        // Hue device, V_STATUS, V_RGB, V_BRIGHTNESS
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
-                MESSAGE_TYPE_SET_REQ.V_STATUS);
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
-                MESSAGE_TYPE_SET_REQ.V_RGB);
-        DataBaseUtils.createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION.S_HUE_LIGHT,
-                MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS);
 
         // Sprinkler, V_STATUS (turn on/off), V_TRIPPED (if fire detecting
         // device)

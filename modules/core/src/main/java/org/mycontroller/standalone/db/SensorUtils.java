@@ -103,7 +103,6 @@ public class SensorUtils {
             case V_STATUS:
                 data = McUtils.getStatusAsString(sensorVariable.getValue());
                 break;
-            case V_BRIGHTNESS:
             case V_PERCENTAGE:
             case V_PRESSURE:
                 data = McUtils.getDoubleAsString(sensorVariable.getValue());

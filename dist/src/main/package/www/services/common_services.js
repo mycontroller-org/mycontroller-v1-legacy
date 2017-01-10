@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -358,7 +358,6 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
         {id:"Air quality", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
         {id:"Custom", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
         {id:"Dust", value:"wi wi-dust", ucode:"\uf063", fname:"weathericons"},
-        {id:"Brightness", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
         {id:"Hue", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
         {id:"Saturation", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
         {id:"Scene controller", value:"fa fa-picture-o", ucode:"\uf03e", fname:"FontAwesome"},

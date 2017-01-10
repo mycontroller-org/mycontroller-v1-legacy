@@ -108,7 +108,6 @@ public class MetricsGraph {
         variables.add(MESSAGE_TYPE_SET_REQ.V_IMPEDANCE);
         variables.add(MESSAGE_TYPE_SET_REQ.V_KWH);
         variables.add(MESSAGE_TYPE_SET_REQ.V_LEVEL);
-        variables.add(MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS);
         variables.add(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL);
         variables.add(MESSAGE_TYPE_SET_REQ.V_LOCK_STATUS);
         variables.add(MESSAGE_TYPE_SET_REQ.V_PERCENTAGE);

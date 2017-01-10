@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -936,6 +936,7 @@ public class McMessageEngine implements Runnable {
                     mcMessage.getSensorId(), mcMessage.getNodeEui());
             sensor = Sensor.builder().sensorId(mcMessage.getSensorId()).build();
             sensor.setNode(this.getNode(mcMessage));
+            sensor.setName(mcMessage.getName());
             DaoUtils.getSensorDao().create(sensor);
             sensor = DaoUtils.getSensorDao().get(
                     mcMessage.getGatewayId(),

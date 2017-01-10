@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,5 +20,16 @@ package org.mycontroller.standalone.provider.philipshue;
  * @author Fraid(https://github.com/Fraid)
  */
 public class PhilipsHueUtils {
+    public static Integer toPercent(int brightness) {
+        return (brightness * 100) / 255;
+    }
 
+    public static Double toBrightness(double percentageValue) {
+        //Verify user entry (0-100%)
+        if (percentageValue > 100)
+            percentageValue = 100;
+        else if (percentageValue < 0)
+            percentageValue = 0;
+        return ((percentageValue * 255) / 100);
+    }
 }

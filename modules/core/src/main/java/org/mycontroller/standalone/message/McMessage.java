@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +54,7 @@ public class McMessage implements Serializable {
     @NonNull
     private Integer gatewayId;
     private String nodeEui;
+    private String name;
     private String sensorId;
     private MESSAGE_TYPE type;
     private String subType;

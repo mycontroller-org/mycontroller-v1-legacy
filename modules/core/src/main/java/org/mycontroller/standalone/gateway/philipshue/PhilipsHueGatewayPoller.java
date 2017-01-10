@@ -35,6 +35,7 @@ import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
 import org.mycontroller.standalone.model.philips.Color;
 import org.mycontroller.standalone.model.philips.PHUtilities;
+import org.mycontroller.standalone.provider.philipshue.PhilipsHueUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -71,10 +72,21 @@ public class PhilipsHueGatewayPoller implements Runnable {
         }
         while (!isTerminate()) {
             try {
-                Map<String, LightState> clientResponse = philipsHueClient.lights().listAll().getEntity();
-                _logger.debug("Client response: {}", clientResponse);
-                if (clientResponse != null) {
-                    updateRecords(clientResponse);
+                _logger.debug("Getting hue lights...on user request : {} ", onRequestUpdate);
+                final ClientResponse<Map<String, LightState>> listAll = philipsHueClient.lights().listAll();
+                if (listAll.isSuccess()) {
+                    Map<String, LightState> clientResponse = listAll.getEntity();
+                    _logger.debug("Client response: {} {} ", clientResponse, onRequestUpdate);
+                    if (clientResponse != null && !clientResponse.isEmpty()) {
+                        updateRecords(clientResponse);
+                    } else {
+                        _logger.warn("Error no light found {} ", philipsHueClient);
+                    }
+                } else {
+                    _logger.debug("Error while getting hue lights: {} - {} ", listAll.getStatusCode(),
+                            listAll.getErrorMsg());
+                    //In case something wrong with the bridge we waiting before attempting a new call.
+                    waitOnError();
                 }
                 long pollFrequency = gateway.getPollFrequency() * McUtils.MINUTE;
                 while (pollFrequency > 0 && !isTerminate() && !onRequestUpdate) {
@@ -82,12 +94,25 @@ public class PhilipsHueGatewayPoller implements Runnable {
                     pollFrequency -= 100;
                 }
                 onRequestUpdate = false;
-            } catch (InterruptedException | ParseException ex) {
+            } catch (Exception ex) {
+                //On January 6, 2017, PhilipsHueClient will crash when network is unreachable. And unable to reconnect.
                 _logger.error("Exception, ", ex);
+                waitOnError();
             }
+
         }
         _logger.debug("PhilipsHueGatewayPoller Terminated...");
         this.terminated = true;
+    }
+
+    private void waitOnError() {
+        try {
+            _logger.debug("On error retrying...");
+            //Wait before trying contact the bridge.
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            _logger.error("Exception,", e);
+        }
     }
 
     private void updateRecords(Map<String, LightState> records) throws ParseException {
@@ -98,9 +123,10 @@ public class PhilipsHueGatewayPoller implements Runnable {
             String subType = MESSAGE_TYPE_SET_REQ.V_STATUS.getText();
             putMessage(Arrays.asList(key, value.getState().getOn() ? "1" : "0", value.getName(), subType));
 
-            //Set brightness (0 to 255)
-            subType = MESSAGE_TYPE_SET_REQ.V_BRIGHTNESS.getText();
-            putMessage(Arrays.asList(key, value.getState().getBri().toString(), value.getName(), subType));
+            //Set light level (0 to 100%)
+            subType = MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL.getText();
+            Integer percentVal = PhilipsHueUtils.toPercent(value.getState().getBri());
+            putMessage(Arrays.asList(key, percentVal.toString(), value.getName(), subType));
 
             //Set color from xy
             Float[] xy = value.getState().getXy();
@@ -109,9 +135,7 @@ public class PhilipsHueGatewayPoller implements Runnable {
                 String hexColor = PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid());
                 putMessage(Arrays.asList(key, hexColor, value.getName(), subType));
             }
-
         }
-
     }
 
     private void putMessage(List<String> data) {
@@ -143,27 +167,37 @@ public class PhilipsHueGatewayPoller implements Runnable {
     }
 
     public void write(RawMessage rawMessage) {
+
         if (gateway.getAuthorizedUser() != null && gateway.getAuthorizedUser().length() > 0) {
-            _logger.info("Send data: {}, {}", this.gateway, rawMessage);
+            _logger.debug("Send data: {}, {}", this.gateway, rawMessage);
             @SuppressWarnings("unchecked")
             List<String> data = (List<String>) rawMessage.getData();
             MESSAGE_TYPE type = MESSAGE_TYPE.fromString(data.get(2));
             if (data.size() == 4) {//sensorId, payload,messageType,subType
                 if (type == MESSAGE_TYPE.C_SET) {
                     MESSAGE_TYPE_SET_REQ subType = MESSAGE_TYPE_SET_REQ.fromString(data.get(3));
-                    State state = getHueUpdateState(subType, data);
-                    if (state != null)
-                        philipsHueClient.lights().updateState(data.get(0), state);
+                    try {
+                        State state = getHueUpdateState(subType, data);
+                        if (state != null) {
+                            ClientResponse<String> updateState = philipsHueClient.lights().updateState(data.get(0),
+                                    state);
+                            if (updateState != null && !updateState.isSuccess()) {
+                                _logger.debug("Error while updating hue lights: {} - {} - {} ",
+                                        updateState.getStatusCode(),
+                                        updateState.getErrorMsg(), rawMessage);
+                            }
+                        } else
+                            _logger.warn(" Unable to update {} ", rawMessage);
+                    } catch (Exception ex) {
+                        _logger.error("Exception, ", ex);
+                    }
                 } else if (type == MESSAGE_TYPE.C_INTERNAL) {
                     switch (MESSAGE_TYPE_INTERNAL.fromString(data.get(3))) {
                         case I_PRESENTATION:
-                            if (!isOnRequestUpdate()) {
-                                setOnRequestUpdate(true);
-                            }
-
+                            setOnRequestUpdate(true);
                             break;
-
                         default:
+                            _logger.error(" Unknow internal messager for PhilipsHueGateway {} ", data);
                             break;
                     }
                 }
@@ -179,26 +213,47 @@ public class PhilipsHueGatewayPoller implements Runnable {
     private State getHueUpdateState(MESSAGE_TYPE_SET_REQ subType, List<String> data) {
         State state = null;
         switch (subType) {
-            case V_BRIGHTNESS:
-                state = State.builder().bri(Integer.valueOf(data.get(1))).build();
+            case V_LIGHT_LEVEL:
+                double userValue = Double.valueOf(data.get(1)).doubleValue();
+                state = State.builder().bri(PhilipsHueUtils.toBrightness(userValue).intValue()).build();
                 break;
             case V_STATUS:
                 state = State.builder().on("1".equalsIgnoreCase(data.get(1))).build();
                 break;
             case V_RGB:
                 String sensorId = data.get(0);
-                ClientResponse<LightState> lightState = philipsHueClient.lights().state(sensorId);
-                if (lightState != null) {
-                    float[] xy = PHUtilities.calculateXY(
-                            Color.parseColor(data.get(1)), lightState.getEntity().getModelid());
-                    state = State.builder().xy(new Float[] { xy[0], xy[1] }).build();
+                try {
+                    ClientResponse<LightState> lightState = philipsHueClient.lights().state(sensorId);
+                    if (lightState != null && lightState.isSuccess()) {
+                        float[] xy = PHUtilities.calculateXY(
+                                Color.parseColor(data.get(1)), lightState.getEntity().getModelid());
+                        state = State.builder().xy(new Float[] { xy[0], xy[1] }).build();
+                    } else if (lightState != null) {
+                        _logger.debug("Error while getting hue lights state: {} - {} - {} ",
+                                lightState.getStatusCode(),
+                                lightState.getErrorMsg(), data);
+                    }
+                } catch (Exception e) {
+                    _logger.error("Error while getting hue lights state ", e);
                 }
+                waitForHueBridge();
                 break;
 
             default:
                 break;
         }
         return state;
+    }
+
+    private void waitForHueBridge() {
+        //To prevent flood to the bridge. Before any call we wait at least 100ms.
+        //http://stackoverflow.com/questions/22101640/philips-hue-command-limitation
+        //source https://developers.meethue.com/documentation/hue-system-performance
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            _logger.error("Exception, ", ex);
+        }
     }
 
     public GatewayPhilipsHue getGateway() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,7 +42,7 @@ public class PhilipsHueGatewayImpl implements IGateway {
         try {
             philipsHueGatewayPoller = new PhilipsHueGatewayPoller(gateway);
             new Thread(philipsHueGatewayPoller).start();
-            _logger.info("Connected successfully with philipsHueGatewayPoller[{}, PublicKey:{}]",
+            _logger.info("Connected successfully with philipsHueGatewayPoller[{}, AuthorizedUser:{}]",
                     gateway.getUrl(), gateway.getAuthorizedUser());
             gateway.setStatus(STATE.UP, "Connected Successfully");
         } catch (Exception ex) {

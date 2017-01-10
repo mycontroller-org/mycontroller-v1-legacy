@@ -102,7 +102,7 @@ public class PhilipsHueRawMessage {
                 .sensorId(getSensorId())
                 .networkType(NETWORK_TYPE.PHILIPS_HUE)
                 .type(getMessageType())
-                .subType(getSubType())
+                .subType(getSubType()).name(name)
                 .timestamp(getTimestamp())
                 .isTxMessage(isTxMessage())
                 .payload(getPayload()).build();
