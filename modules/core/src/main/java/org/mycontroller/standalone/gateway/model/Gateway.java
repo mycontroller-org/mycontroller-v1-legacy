@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.gateway.model;
+
+import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
@@ -35,6 +37,8 @@ import lombok.ToString;
 @Data
 @ToString
 public abstract class Gateway {
+    public static final String KEY_TX_DELAY = "txDelay";
+
     private Integer id;
     private Boolean enabled;
     private String name;
@@ -44,12 +48,13 @@ public abstract class Gateway {
     private STATE state = STATE.UNAVAILABLE;
     private String statusMessage;
     private Long statusSince;
+    private Long txDelay = 0L;
 
     public abstract String getConnectionDetails();
 
     @JsonIgnore
     public GatewayTable getGatewayTable() {
-        return GatewayTable.builder()
+        GatewayTable gatewayTable = GatewayTable.builder()
                 .id(getId())
                 .enabled(getEnabled())
                 .name(getName())
@@ -58,7 +63,10 @@ public abstract class Gateway {
                 .timestamp(getTimestamp())
                 .state(getState())
                 .statusMessage(getStatusMessage())
-                .statusSince(getStatusSince()).build();
+                .statusSince(getStatusSince())
+                .properties(new HashMap<String, Object>()).build();
+        gatewayTable.getProperties().put(KEY_TX_DELAY, txDelay);
+        return gatewayTable;
     }
 
     @JsonIgnore
@@ -72,6 +80,7 @@ public abstract class Gateway {
         state = gatewayTable.getState();
         statusMessage = gatewayTable.getStatusMessage();
         statusSince = gatewayTable.getStatusSince();
+        txDelay = (Long) gatewayTable.getProperty(KEY_TX_DELAY, 0L);
     }
 
     public void setStatus(STATE state, String statusMessage) {

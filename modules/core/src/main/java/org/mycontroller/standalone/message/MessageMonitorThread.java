@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,6 @@ public class MessageMonitorThread implements Runnable {
     // delay time to avoid collisions on network,
     // in milliseconds, Like my sensors network
     public static final long MC_MSG_DELAY = 20;
-    private static long MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED = MC_MSG_DELAY;
     private static long CURRENT_PROCESSING_RATE = -1;
     private static long AVERAGE_PROCESSING_RATE = -1;
     private static long RATE_SAMPLES = 0;
@@ -67,14 +66,6 @@ public class MessageMonitorThread implements Runnable {
 
     public static int getMessagesInQueue() {
         return RawMessageQueue.getInstance().getQueueSize();
-    }
-
-    public static void updateTxMessageProcessingDelay(long delay) {
-        if (delay < 0) {
-            MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED = MC_MSG_DELAY;
-            return;
-        }
-        MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED = delay;
     }
 
     public static void shutdown() {
@@ -116,9 +107,10 @@ public class MessageMonitorThread implements Runnable {
                 McMessageUtils.sendToProviderBridge(rawMessage);
                 messageDoneCount++;
                 calculateProcessingRate();
-                //A delay to avoid collisions on MySensor networks on continues messages. Only for Tx message
+                //A delay to avoid collisions on any networks with continues messages. Only for Tx message
                 if (!RawMessageQueue.getInstance().isEmpty() && rawMessage.isTxMessage()) {
-                    Thread.sleep(MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED);
+                    Thread.sleep(McObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getTxDelay(),
+                            333333);
                 } else {
                     //This sleep to reduce CPU load, in nanoseconds
                     Thread.sleep(0, 333333);
@@ -176,7 +168,6 @@ public class MessageMonitorThread implements Runnable {
         statistics.put("processingTimeAverage", getAvgtMessageProcessingTime());
         statistics.put("processingTimeSamples", TIME_SAMPLES);
         statistics.put("messagesInQueue", getMessagesInQueue());
-        statistics.put("txMessageProcessingDelay", MC_TX_MSG_PROCESSING_DELAY_USER_DEFINED);
         statistics.put("timestamp", System.currentTimeMillis());
         return statistics;
     }

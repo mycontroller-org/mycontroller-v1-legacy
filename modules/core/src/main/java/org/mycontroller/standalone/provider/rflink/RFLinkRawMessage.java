@@ -186,6 +186,7 @@ public class RFLinkRawMessage {
         return RawMessage.builder()
                 .gatewayId(getGatewayId())
                 .data(builder.toString())
+                .isTxMessage(isTxMessage)
                 .build();
     }
 

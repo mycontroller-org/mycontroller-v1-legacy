@@ -124,22 +124,6 @@
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'TX_MESSAGE_PROCESSING_DELAY' | translate }}</label>
-              <div class="col-sm-5" ng-hide="editEnable.controller">
-                <span>{{controllerSettings.txMessageProcessingDelay}} {{ 'MILLISECONDS' | translate }}</span>
-              </div>
-              <div  ng-show="editEnable.controller">
-                <div class="col-sm-2">
-                  <input class="form-control" ng-model="controllerSettings.txMessageProcessingDelay" pf-validation="cs.isNumber(input)" required />
-                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
-                </div>
-                <div class="col-sm-3 mc-form-fixer">
-                  <span>{{ 'MILLISECONDS' | translate }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'UNITS_CONFIGURATION' | translate }}</label>
               <div class="col-sm-5">
                 <div ng-show="editEnable.controller">

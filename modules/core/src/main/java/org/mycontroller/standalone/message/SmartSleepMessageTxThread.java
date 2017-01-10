@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@ package org.mycontroller.standalone.message;
 
 import java.util.ArrayList;
 
-import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.McObjectManager;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,7 +62,8 @@ public class SmartSleepMessageTxThread implements Runnable {
                 if (mcMessage != null) {
                     McMessageUtils.sendToProviderBridgeFinal(mcMessage);
                     _logger.debug("Smart sleep message sent {}", mcMessage);
-                    Thread.sleep(AppProperties.getInstance().getControllerSettings().getTxMessageProcessingDelay());
+                    Thread.sleep(McObjectManager.getGateway(mcMessage.getGatewayId()).getGateway().getTxDelay(),
+                            333333);
                 } else {
                     break;
                 }
