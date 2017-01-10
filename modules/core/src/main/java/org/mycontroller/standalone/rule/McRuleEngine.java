@@ -111,7 +111,7 @@ public class McRuleEngine extends Job implements Runnable {
             List<RuleDefinitionTable> ruleDefinitionsDb = new ArrayList<RuleDefinitionTable>();
             //Create set to avoid duplicates
             Set<RuleDefinitionTable> ruleDefinitionsSet = new HashSet<RuleDefinitionTable>();
-            
+
             //Get Gateway rules
             List<RuleDefinitionTable> gatewayRules = DaoUtils.getRuleDefinitionDao().getAll(
                     RuleDefinitionTable.KEY_RESOURCE_TYPE, RESOURCE_TYPE.GATEWAY);
