@@ -46,28 +46,31 @@ public class PhilipsHueRawMessage {
     private String payload;
     private Long timestamp;
     private boolean isTxMessage = false;
-    private String name;
     private String colormode;
 
-    public PhilipsHueRawMessage(RawMessage rawMessage) throws RawMessageException {
-        IGateway gateway = McObjectManager.getGateway(rawMessage.getGatewayId());
+    public PhilipsHueRawMessage(RawMessage rawMessage)
+            throws RawMessageException {
+        IGateway gateway = McObjectManager
+                .getGateway(rawMessage.getGatewayId());
         GatewayPhilipsHue gatewayPhilipsHue = (GatewayPhilipsHue) gateway
                 .getGateway();
         @SuppressWarnings("unchecked")
         List<Object> data = (List<Object>) rawMessage.getData();
-        //Data order: key, value,type,subType
+        // Data order: messageType, subType, sensorId, payload
         if (data.size() != 4) {
-            throw new RawMessageException("data size should be exactly 4, Current data: " + data);
+            throw new RawMessageException(
+                    "data size should be exactly 4, Current data: " + data);
         }
         isTxMessage = rawMessage.isTxMessage();
-        messageType = MESSAGE_TYPE.C_SET;
 
         gatewayId = rawMessage.getGatewayId();
         url = gatewayPhilipsHue.getUrl();
-        sensorId = (String) data.get(0);
-        subType = (String) data.get(3);
-        payload = (String) data.get(1);
-        name = (String) data.get(2);
+
+        messageType = MESSAGE_TYPE.valueOf((String) data.get(0));
+        subType = (String) data.get(1);
+        sensorId = (String) data.get(2);
+        payload = (String) data.get(3);
+
         PhilipsHueEngine.updateMessage(this);
     }
 
@@ -88,9 +91,11 @@ public class PhilipsHueRawMessage {
     }
 
     public RawMessage getRawMessage() {
-        return RawMessage.builder()
+        return RawMessage
+                .builder()
                 .gatewayId(gatewayId)
-                .data(Arrays.asList(sensorId, payload, messageType.getText(), subType))
+                // Data order: messageType, subType, sensorId, payload
+                .data(Arrays.asList(messageType.getText(), subType, sensorId, payload))
                 .build();
     }
 
@@ -102,9 +107,10 @@ public class PhilipsHueRawMessage {
                 .sensorId(getSensorId())
                 .networkType(NETWORK_TYPE.PHILIPS_HUE)
                 .type(getMessageType())
-                .subType(getSubType()).name(name)
+                .subType(getSubType())
                 .timestamp(getTimestamp())
                 .isTxMessage(isTxMessage())
-                .payload(getPayload()).build();
+                .payload(getPayload())
+                .build();
     }
 }

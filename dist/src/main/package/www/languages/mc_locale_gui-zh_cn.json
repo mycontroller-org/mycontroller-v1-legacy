@@ -47,6 +47,7 @@
     "AUTH_ID_SID": "身份验证 id/sid",
     "AUTH_TOKEN": "身份验证令牌",
     "AUTOMATIC_BACKUP_SETTINGS": "自动备份设置",
+    "AUTORIZED_USER": "Autorized user",
     "AUTO_GENERATE": "自动生成",
     "AVAILABLE_PROCESS": "可用的进程",
     "BACKUP": "备份",

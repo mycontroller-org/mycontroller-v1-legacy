@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,7 +61,7 @@ public class GatewayUtils {
         ETHERNET("Ethernet"),
         MQTT("MQTT"),
         PHANT_IO("Sparkfun [phant.io]"),
-		PHILIPS_HUE("Hue bridge");
+        PHILIPS_HUE("Hue bridge");
         public static GATEWAY_TYPE get(int id) {
             for (GATEWAY_TYPE type : values()) {
                 if (type.ordinal() == id) {

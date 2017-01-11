@@ -30,6 +30,7 @@ import org.mycontroller.restclient.philips.hue.model.State;
 import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
+import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
@@ -73,20 +74,21 @@ public class PhilipsHueGatewayPoller implements Runnable {
         while (!isTerminate()) {
             try {
                 _logger.debug("Getting hue lights...on user request : {} ", onRequestUpdate);
-                final ClientResponse<Map<String, LightState>> listAll = philipsHueClient.lights().listAll();
-                if (listAll.isSuccess()) {
-                    Map<String, LightState> clientResponse = listAll.getEntity();
+                final ClientResponse<Map<String, LightState>> clientResponse = philipsHueClient.lights().listAll();
+                if (clientResponse.isSuccess()) {
+                    Map<String, LightState> lights = clientResponse.getEntity();
                     _logger.debug("Client response: {} {} ", clientResponse, onRequestUpdate);
-                    if (clientResponse != null && !clientResponse.isEmpty()) {
-                        updateRecords(clientResponse);
+                    if (clientResponse != null && !lights.isEmpty()) {
+                        updateRecords(lights);
                     } else {
                         _logger.warn("Error no light found {} ", philipsHueClient);
                     }
                 } else {
-                    _logger.debug("Error while getting hue lights: {} - {} ", listAll.getStatusCode(),
-                            listAll.getErrorMsg());
+                    _logger.debug("Error while getting hue lights: {}", clientResponse);
                     //In case something wrong with the bridge we waiting before attempting a new call.
-                    waitOnError();
+                    _logger.debug("On error retrying...");
+                    //Wait before trying contact the bridge.
+                    waitFor(2000);
                 }
                 long pollFrequency = gateway.getPollFrequency() * McUtils.MINUTE;
                 while (pollFrequency > 0 && !isTerminate() && !onRequestUpdate) {
@@ -97,7 +99,9 @@ public class PhilipsHueGatewayPoller implements Runnable {
             } catch (Exception ex) {
                 //On January 6, 2017, PhilipsHueClient will crash when network is unreachable. And unable to reconnect.
                 _logger.error("Exception, ", ex);
-                waitOnError();
+                _logger.debug("On error retrying...");
+                //Wait before trying contact the bridge.
+                waitFor(2000);
             }
 
         }
@@ -105,39 +109,38 @@ public class PhilipsHueGatewayPoller implements Runnable {
         this.terminated = true;
     }
 
-    private void waitOnError() {
-        try {
-            _logger.debug("On error retrying...");
-            //Wait before trying contact the bridge.
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            _logger.error("Exception,", e);
-        }
-    }
-
     private void updateRecords(Map<String, LightState> records) throws ParseException {
         for (Entry<String, LightState> entry : records.entrySet()) {
             String key = entry.getKey();
             LightState value = entry.getValue();
-            //Set status
-            String subType = MESSAGE_TYPE_SET_REQ.V_STATUS.getText();
-            putMessage(Arrays.asList(key, value.getState().getOn() ? "1" : "0", value.getName(), subType));
 
-            //Set light level (0 to 100%)
-            subType = MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL.getText();
-            Integer percentVal = PhilipsHueUtils.toPercent(value.getState().getBri());
-            putMessage(Arrays.asList(key, percentVal.toString(), value.getName(), subType));
+            //Update sensor name and type
+            updateSensorNameAndType(MESSAGE_TYPE_PRESENTATION.S_RGB_LIGHT, key, value.getName());
 
+            //Update status payload
+            updateSetPayload(MESSAGE_TYPE_SET_REQ.V_STATUS, key, value.getState().getOn() ? "1" : "0");
+            //Update light level (0 to 100%), payload
+            updateSetPayload(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL, key,
+                    PhilipsHueUtils.toPercent(value.getState().getBri()).toString());
+            //Update RGB color, payload
             //Set color from xy
             Float[] xy = value.getState().getXy();
             if (xy != null && xy.length == 2) {
-                subType = MESSAGE_TYPE_SET_REQ.V_RGB.getText();
-                String hexColor = PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid());
-                putMessage(Arrays.asList(key, hexColor, value.getName(), subType));
+                updateSetPayload(MESSAGE_TYPE_SET_REQ.V_RGB, key,
+                        PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid()));
             }
         }
     }
 
+    private void updateSetPayload(MESSAGE_TYPE_SET_REQ subType, String sensorId, String sensorName) {
+        putMessage(Arrays.asList(MESSAGE_TYPE.C_SET.getText(), subType.getText(), sensorId, sensorName));
+    }
+
+    private void updateSensorNameAndType(MESSAGE_TYPE_PRESENTATION subType, String sensorId, String sensorName) {
+        putMessage(Arrays.asList(MESSAGE_TYPE.C_PRESENTATION.getText(), subType.getText(), sensorId, sensorName));
+    }
+
+    // Data order: messageType, subType, sensorId, payload
     private void putMessage(List<String> data) {
         RawMessageQueue.getInstance().putMessage(RawMessage.builder()
                 .gatewayId(gateway.getId())
@@ -167,24 +170,24 @@ public class PhilipsHueGatewayPoller implements Runnable {
     }
 
     public void write(RawMessage rawMessage) {
-
         if (gateway.getAuthorizedUser() != null && gateway.getAuthorizedUser().length() > 0) {
             _logger.debug("Send data: {}, {}", this.gateway, rawMessage);
             @SuppressWarnings("unchecked")
             List<String> data = (List<String>) rawMessage.getData();
-            MESSAGE_TYPE type = MESSAGE_TYPE.fromString(data.get(2));
-            if (data.size() == 4) {//sensorId, payload,messageType,subType
+            if (data.size() == 4) {//messageType, subType, sensorId, payload
+                MESSAGE_TYPE type = MESSAGE_TYPE.fromString(data.get(0));
+                String subTypeString = data.get(1);
+                String sensorId = data.get(2);
+                String payload = data.get(3);
                 if (type == MESSAGE_TYPE.C_SET) {
-                    MESSAGE_TYPE_SET_REQ subType = MESSAGE_TYPE_SET_REQ.fromString(data.get(3));
+                    MESSAGE_TYPE_SET_REQ subType = MESSAGE_TYPE_SET_REQ.fromString(subTypeString);
                     try {
-                        State state = getHueUpdateState(subType, data);
+                        State state = getHueUpdateState(subType, sensorId, payload);
                         if (state != null) {
-                            ClientResponse<String> updateState = philipsHueClient.lights().updateState(data.get(0),
-                                    state);
+                            ClientResponse<String> updateState = philipsHueClient.lights().updateState(
+                                    sensorId, state);
                             if (updateState != null && !updateState.isSuccess()) {
-                                _logger.debug("Error while updating hue lights: {} - {} - {} ",
-                                        updateState.getStatusCode(),
-                                        updateState.getErrorMsg(), rawMessage);
+                                _logger.debug("Error while updating hue lights: {}, {} ", updateState, rawMessage);
                             }
                         } else
                             _logger.warn(" Unable to update {} ", rawMessage);
@@ -192,12 +195,13 @@ public class PhilipsHueGatewayPoller implements Runnable {
                         _logger.error("Exception, ", ex);
                     }
                 } else if (type == MESSAGE_TYPE.C_INTERNAL) {
-                    switch (MESSAGE_TYPE_INTERNAL.fromString(data.get(3))) {
+                    MESSAGE_TYPE_INTERNAL subType = MESSAGE_TYPE_INTERNAL.fromString(subTypeString);
+                    switch (subType) {
                         case I_PRESENTATION:
                             setOnRequestUpdate(true);
                             break;
                         default:
-                            _logger.error(" Unknow internal messager for PhilipsHueGateway {} ", data);
+                            _logger.error(" Not supported internal message: {} ", subType);
                             break;
                     }
                 }
@@ -210,33 +214,35 @@ public class PhilipsHueGatewayPoller implements Runnable {
 
     }
 
-    private State getHueUpdateState(MESSAGE_TYPE_SET_REQ subType, List<String> data) {
+    private State getHueUpdateState(MESSAGE_TYPE_SET_REQ subType, String sensorId, String payload) {
         State state = null;
         switch (subType) {
             case V_LIGHT_LEVEL:
-                double userValue = Double.valueOf(data.get(1)).doubleValue();
+                double userValue = Double.valueOf(payload).doubleValue();
                 state = State.builder().bri(PhilipsHueUtils.toBrightness(userValue).intValue()).build();
                 break;
             case V_STATUS:
-                state = State.builder().on("1".equalsIgnoreCase(data.get(1))).build();
+                state = State.builder().on("1".equalsIgnoreCase(payload)).build();
                 break;
             case V_RGB:
-                String sensorId = data.get(0);
                 try {
                     ClientResponse<LightState> lightState = philipsHueClient.lights().state(sensorId);
                     if (lightState != null && lightState.isSuccess()) {
                         float[] xy = PHUtilities.calculateXY(
-                                Color.parseColor(data.get(1)), lightState.getEntity().getModelid());
+                                Color.parseColor(payload), lightState.getEntity().getModelid());
                         state = State.builder().xy(new Float[] { xy[0], xy[1] }).build();
                     } else if (lightState != null) {
-                        _logger.debug("Error while getting hue lights state: {} - {} - {} ",
-                                lightState.getStatusCode(),
-                                lightState.getErrorMsg(), data);
+                        _logger.debug(
+                                "Error while getting hue lights state, subType:{}, sensorId:{}, payload:{}, {}",
+                                subType, sensorId, payload, lightState);
                     }
-                } catch (Exception e) {
-                    _logger.error("Error while getting hue lights state ", e);
+                } catch (Exception ex) {
+                    _logger.error("Error while getting hue lights state ", ex);
                 }
-                waitForHueBridge();
+                //To prevent flood to the bridge. Before any call we wait at least 100ms.
+                //http://stackoverflow.com/questions/22101640/philips-hue-command-limitation
+                //source https://developers.meethue.com/documentation/hue-system-performance
+                waitFor(100);
                 break;
 
             default:
@@ -245,12 +251,9 @@ public class PhilipsHueGatewayPoller implements Runnable {
         return state;
     }
 
-    private void waitForHueBridge() {
-        //To prevent flood to the bridge. Before any call we wait at least 100ms.
-        //http://stackoverflow.com/questions/22101640/philips-hue-command-limitation
-        //source https://developers.meethue.com/documentation/hue-system-performance
+    private void waitFor(long delayTime) {
         try {
-            Thread.sleep(100);
+            Thread.sleep(delayTime);
         } catch (InterruptedException ex) {
             _logger.error("Exception, ", ex);
         }
