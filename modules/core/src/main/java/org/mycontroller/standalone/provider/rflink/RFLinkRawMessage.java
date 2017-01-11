@@ -113,7 +113,7 @@ public class RFLinkRawMessage {
                     payload = RFLinkUtils.getPayload(value, false);
                     break;
                 case SET_LEVEL:
-                    payload = String.valueOf(Math.round(Integer.valueOf(payload) / DIMMER_REF));
+                    payload = String.valueOf(Math.round(Integer.valueOf(value) / DIMMER_REF));
                     break;
                 default:
                     payload = value;
@@ -190,7 +190,9 @@ public class RFLinkRawMessage {
         return RawMessage.builder()
                 .gatewayId(getGatewayId())
                 .data(builder.toString())
-                .isTxMessage(isTxMessage)
+                .isTxMessage(isTxMessage())
+                .timestamp(getTimestamp())
+                .networkType(NETWORK_TYPE.RF_LINK)
                 .build();
     }
 

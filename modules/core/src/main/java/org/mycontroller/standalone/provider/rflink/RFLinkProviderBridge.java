@@ -58,6 +58,11 @@ public class RFLinkProviderBridge implements IProviderBridge {
         }
         try {
             _logger.debug("Received a {}", rawMessage);
+            if (rawMessage.isTxMessage()) {
+                //Already crossed McMessageEngine, we can send directly to gateway
+                McMessageUtils.sendToGateway(rawMessage);
+                return;
+            }
             String rawData = (String) rawMessage.getData();
             rawData = rawData.replaceAll("(\\r|\\n)", ""); //Replace \n and \r
             if (!rawData.endsWith(";")) {

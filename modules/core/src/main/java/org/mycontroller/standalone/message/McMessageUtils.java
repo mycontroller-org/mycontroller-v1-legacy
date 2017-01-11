@@ -599,7 +599,7 @@ public class McMessageUtils {
         try {
             RawMessageQueue.getInstance().putMessage(getRawMessage(mcMessage));
         } catch (McBadRequestException | RawMessageException ex) {
-            _logger.error("Unable to process this {}", mcMessage);
+            _logger.error("Unable to process this {}", mcMessage, ex);
         }
     }
 
@@ -612,6 +612,8 @@ public class McMessageUtils {
             case MY_CONTROLLER:
                 return rpiAgentBridge.getRawMessage(mcMessage);
             case RF_LINK:
+                //RFLink Tx message parsing does not supported, hence process before create rawMessage
+                sendToMcMessageEngine(mcMessage);
                 return rfLinkBridge.getRawMessage(mcMessage);
             default:
                 _logger.warn("Unknown provider: {} for ", mcMessage.getNetworkType(), mcMessage);
