@@ -71,6 +71,10 @@ public class RFLinkRawMessage {
             payload = KEY_PROTOCOL + "=" + protocol;
         } else if (key != null && value != null) {
             messageType = MESSAGE_TYPE.C_SET;
+            if (key.equalsIgnoreCase("cmd") && value.toLowerCase().startsWith("set_level=")) {
+                key = "set_level";
+                value = value.toLowerCase().replaceFirst("set_level=", "");
+            }
             RFLINK_MESSAGE_TYPE mType = RFLINK_MESSAGE_TYPE.valueOf(key.toUpperCase());
             subType = mType.getText();
             sensorId = key;
