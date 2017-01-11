@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.provider.mc.McProviderBridge;
@@ -579,22 +580,43 @@ public class McMessageUtils {
 
     }
 
-    public static synchronized void sendToProviderBridge(McMessage mcMessage) {
+    public static synchronized void sendToMessageQueue(McMessage mcMessage) {
         if (mcMessage.getNetworkType() == null) {
             mcMessage.setNetworkType(GatewayUtils.getNetworkType(mcMessage.getGatewayId()));
-        }
-        if (mcMessage.isTxMessage() && !mcMessage.isScreeningDone()) {
-            sendToMcMessageEngine(mcMessage);
         }
         //Do not block stream message on smartSleep
         if (mcMessage.isTxMessage() && mcMessage.getType() != MESSAGE_TYPE.C_STREAM) {
             Node node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());
             if (node != null && node.getSmartSleepEnabled()) {
+                if (mcMessage.isTxMessage() && !mcMessage.isScreeningDone()) {
+                    sendToMcMessageEngine(mcMessage);
+                }
                 SmartSleepMessageQueue.getInstance().putMessage(mcMessage);
                 return;
             }
         }
-        sendToProviderBridgeFinal(mcMessage);
+        //Get Raw Message and add it on Message queue
+        try {
+            RawMessageQueue.getInstance().putMessage(getRawMessage(mcMessage));
+        } catch (McBadRequestException | RawMessageException ex) {
+            _logger.error("Unable to process this {}", mcMessage);
+        }
+    }
+
+    private static RawMessage getRawMessage(McMessage mcMessage) throws RawMessageException, McBadRequestException {
+        switch (mcMessage.getNetworkType()) {
+            case MY_SENSORS:
+                return mySensorsBridge.getRawMessage(mcMessage);
+            case PHANT_IO:
+                return phantIOBridge.getRawMessage(mcMessage);
+            case MY_CONTROLLER:
+                return rpiAgentBridge.getRawMessage(mcMessage);
+            case RF_LINK:
+                return rfLinkBridge.getRawMessage(mcMessage);
+            default:
+                _logger.warn("Unknown provider: {} for ", mcMessage.getNetworkType(), mcMessage);
+                throw new McBadRequestException("Unknown provider: " + mcMessage.getNetworkType());
+        }
     }
 
     public static synchronized void sendToProviderBridgeFinal(McMessage mcMessage) {

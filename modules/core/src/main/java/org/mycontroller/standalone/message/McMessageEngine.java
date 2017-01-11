@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -97,8 +97,12 @@ public class McMessageEngine implements Runnable {
     }
 
     public void execute() throws McBadRequestException {
-        mcMessage.setScreeningDone(true);
         _logger.debug("{}", mcMessage);
+        if (mcMessage.isScreeningDone()) {
+            _logger.debug("Already screening done! Nothing to do for {}", mcMessage);
+            return;
+        }
+        mcMessage.setScreeningDone(true);
         switch (mcMessage.getType()) {
             case C_PRESENTATION:
                 if (mcMessage.isTxMessage()) {
@@ -273,7 +277,7 @@ public class McMessageEngine implements Runnable {
                 mcMessage.setPayload(String.valueOf(localTime / 1000));
                 mcMessage.setTxMessage(true);
                 _logger.debug("Time Message:[{}]", mcMessage);
-                McMessageUtils.sendToProviderBridge(mcMessage);
+                McMessageUtils.sendToMessageQueue(mcMessage);
                 _logger.debug("Time request resolved.");
                 break;
             case I_VERSION:
@@ -290,7 +294,7 @@ public class McMessageEngine implements Runnable {
                         mcMessage.setPayload(String.valueOf(nodeId));
                         mcMessage.setScreeningDone(false);
                         mcMessage.setTxMessage(true);
-                        McMessageUtils.sendToProviderBridge(mcMessage);
+                        McMessageUtils.sendToMessageQueue(mcMessage);
                         _logger.debug("New Id[{}] sent to node", nodeId);
                     }
                 } catch (NodeIdException ex) {
@@ -315,7 +319,7 @@ public class McMessageEngine implements Runnable {
                 }
                 mcMessage.setPayload(McMessageUtils.getMetricType());
                 mcMessage.setTxMessage(true);
-                McMessageUtils.sendToProviderBridge(mcMessage);
+                McMessageUtils.sendToMessageQueue(mcMessage);
                 _logger.debug("Configuration sent as follow[M/I]?:{}", mcMessage.getPayload());
                 break;
             case I_LOG_MESSAGE:
@@ -411,7 +415,7 @@ public class McMessageEngine implements Runnable {
                     mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_REGISTRATION_RESPONSE.getText());
                     mcMessage.setScreeningDone(false);
                     mcMessage.setTxMessage(true);
-                    McMessageUtils.sendToProviderBridge(mcMessage);
+                    McMessageUtils.sendToMessageQueue(mcMessage);
                     _logger.debug("Registration response sent to gateway:{}, node:{}", mcMessage.getGatewayId(),
                             mcMessage.getNodeEui());
                 }
@@ -572,7 +576,7 @@ public class McMessageEngine implements Runnable {
             mcMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText());
             mcMessage.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array())
                     + builder.toString());
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
             // Print firmware status in sensor logs
@@ -640,7 +644,7 @@ public class McMessageEngine implements Runnable {
             mcMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText());
             mcMessage.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array())
                     + builder.toString());
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
             // Print firmware status in sensor logs
@@ -733,7 +737,7 @@ public class McMessageEngine implements Runnable {
             mcMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.getText());
             mcMessage
                     .setPayload(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase());
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
             _logger.debug("FirmwareConfigRequest:[{}]", firmwareConfigRequest);
             _logger.debug("FirmwareConfigResponse:[{}]", firmwareConfigResponse);
         } catch (DecoderException ex) {
@@ -800,7 +804,7 @@ public class McMessageEngine implements Runnable {
             mcMessage.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.getText());
             mcMessage
                     .setPayload(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase());
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
             _logger.debug("FirmwareConfigRequest:[{}]", firmwareConfigRequest);
             _logger.debug("FirmwareConfigResponse:[{}]", firmwareConfigResponse);
         } catch (DecoderException ex) {
@@ -832,7 +836,7 @@ public class McMessageEngine implements Runnable {
             mcMessage.setType(MESSAGE_TYPE.C_SET);
             mcMessage.setAck(McMessage.NO_ACK);
             mcMessage.setPayload(sensorVariable.getValue());
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
             _logger.debug("Request processed! Message Sent: {}", mcMessage);
         } else {
             //If sensorVariable not available create new one.

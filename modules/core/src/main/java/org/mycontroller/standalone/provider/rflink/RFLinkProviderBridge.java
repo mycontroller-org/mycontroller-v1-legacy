@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -147,5 +147,10 @@ public class RFLinkProviderBridge implements IProviderBridge {
             throw new RuntimeException("Node EUI should not contain any space");
         }
         return true;
+    }
+
+    @Override
+    public RawMessage getRawMessage(McMessage mcMessage) throws RawMessageException {
+        return new RFLinkRawMessage(mcMessage).getRawMessage();
     }
 }

@@ -262,7 +262,7 @@ public class SensorApi {
         mcMessage.setTxMessage(true);
         mcMessage.setScreeningDone(false);
         if (mcMessage.validate()) {
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
         } else {
             throw new McBadRequestException("Required field is missing! " + mcMessage);
         }

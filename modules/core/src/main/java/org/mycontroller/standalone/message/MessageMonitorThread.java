@@ -108,7 +108,7 @@ public class MessageMonitorThread implements Runnable {
                 messageDoneCount++;
                 calculateProcessingRate();
                 //A delay to avoid collisions on any networks with continues messages. Only for Tx message
-                if (!RawMessageQueue.getInstance().isEmpty() && rawMessage.isTxMessage()) {
+                if (rawMessage.isTxMessage()) {
                     Thread.sleep(McObjectManager.getGateway(rawMessage.getGatewayId()).getGateway().getTxDelay(),
                             333333);
                 } else {
