@@ -1049,6 +1049,9 @@ public class McMessageEngine implements Runnable {
                 gpsData.setSensorVariable(sensorVariable);
                 DaoUtils.getMetricsGPSTypeDeviceDao().create(gpsData);
                 break;
+            case NONE:
+                //For None type nothing to do.
+                break;
             default:
                 _logger.debug(
                         "This type not be implemented yet, PayloadType:{}, MessageType:{}, McMessage:{}",

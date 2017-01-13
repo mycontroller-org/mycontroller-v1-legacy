@@ -53,6 +53,11 @@ public class RFLinkProviderBridge implements IProviderBridge {
 
     @Override
     public void executeRawMessage(RawMessage rawMessage) {
+        if (rawMessage.isTxMessage()) {
+            //For now there is no option to convert back to McMessage for Tx messages. send directly to gateway
+            //Execute McMessage will be completed earlier
+            McMessageUtils.sendToGateway(rawMessage);
+        }
         if (rawMessage.getNetworkType() != NETWORK_TYPE.RF_LINK) {
             _logger.error("This is not '{}' message! RawMessage:{}", NETWORK_TYPE.RF_LINK.getText(), rawMessage);
         }
