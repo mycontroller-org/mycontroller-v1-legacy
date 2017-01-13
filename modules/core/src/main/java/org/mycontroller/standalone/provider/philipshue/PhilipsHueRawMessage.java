@@ -66,7 +66,7 @@ public class PhilipsHueRawMessage {
         gatewayId = rawMessage.getGatewayId();
         url = gatewayPhilipsHue.getUrl();
 
-        messageType = MESSAGE_TYPE.valueOf((String) data.get(0));
+        messageType = MESSAGE_TYPE.fromString((String) data.get(0));
         subType = (String) data.get(1);
         sensorId = (String) data.get(2);
         payload = (String) data.get(3);
