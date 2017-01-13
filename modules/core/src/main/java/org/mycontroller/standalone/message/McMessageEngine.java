@@ -936,7 +936,6 @@ public class McMessageEngine implements Runnable {
                     mcMessage.getSensorId(), mcMessage.getNodeEui());
             sensor = Sensor.builder().sensorId(mcMessage.getSensorId()).build();
             sensor.setNode(this.getNode(mcMessage));
-            sensor.setName(mcMessage.getName());
             DaoUtils.getSensorDao().create(sensor);
             sensor = DaoUtils.getSensorDao().get(
                     mcMessage.getGatewayId(),

@@ -47,6 +47,7 @@
     "AUTH_ID_SID": "ID/SID der Authentifikation",
     "AUTH_TOKEN": "Authentifikations-Token",
     "AUTOMATIC_BACKUP_SETTINGS": "Einstelllungen automatisches Backup",
+    "AUTORIZED_USER": "Autorized user",
     "AUTO_GENERATE": "Automatisch Generieren",
     "AVAILABLE_PROCESS": "Verfügbarer Prozess",
     "BACKUP": "Backup",

@@ -47,6 +47,7 @@
     "AUTH_ID_SID": "id/sid авторизации",
     "AUTH_TOKEN": "Токен авторизации",
     "AUTOMATIC_BACKUP_SETTINGS": "Настройки автоматического резервного копирования",
+    "AUTORIZED_USER": "Autorized user",
     "AUTO_GENERATE": "Автогенерация",
     "AVAILABLE_PROCESS": "Доступные процессы",
     "BACKUP": "Резервное копирование",

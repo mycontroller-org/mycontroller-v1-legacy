@@ -54,7 +54,6 @@ public class McMessage implements Serializable {
     @NonNull
     private Integer gatewayId;
     private String nodeEui;
-    private String name;
     private String sensorId;
     private MESSAGE_TYPE type;
     private String subType;
