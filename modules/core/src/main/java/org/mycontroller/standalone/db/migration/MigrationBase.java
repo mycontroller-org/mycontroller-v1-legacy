@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +21,13 @@ import java.util.HashMap;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.SystemApi;
-import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.DataBaseUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+
 public abstract class MigrationBase implements JdbcMigration {
 
     private IMigrationClient sqlClient = null;
@@ -50,18 +51,11 @@ public abstract class MigrationBase implements JdbcMigration {
     }
 
     protected void loadDao() {
-        //Load Dao's if not loaded already
-        if (!DaoUtils.isDaoInitialized()) {
-            DaoUtils.loadAllDao();
-        }
-
-        //Load properties from database
-        AppProperties.getInstance().loadPropertiesFromDb();
+        DataBaseUtils.loadDao();
     }
 
     protected void reloadDao() {
-        DaoUtils.setIsDaoInitialized(false);
-        loadDao();
+        DataBaseUtils.reloadDao();
     }
 
     protected String getApplicationDbVersion() {

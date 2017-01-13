@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,7 +50,7 @@ public class DataBaseUtils {
     private DataBaseUtils() {
     }
 
-    private static boolean isDbLoaded = false;
+    private static boolean dbMigrationStatus = false;
     // private static ConnectionSource connectionSource = null;
     private static JdbcPooledConnectionSource connectionPooledSource = null;
     private static final String DB_MIGRATION_SCRIPT_LOCATION = "org/mycontroller/standalone/db/migration";
@@ -60,23 +60,13 @@ public class DataBaseUtils {
 
     // private static String databaseUrl = "jdbc:sqlite:/tmp/mysensors.db";
 
-    public static ConnectionSource getConnectionSource() throws DbException {
-        if (connectionPooledSource != null) {
-            _logger.debug(
-                    "DatabaseConnectionPool Connections,Count[open:{},close:{}],"
-                            + "CurrentConnections[free:{},managed:{}]," + "MaxConnectionsEverUsed:{},TestLoopCount:{}",
-                    connectionPooledSource.getOpenCount(), connectionPooledSource.getCloseCount(),
-                    connectionPooledSource.getCurrentConnectionsFree(),
-                    connectionPooledSource.getCurrentConnectionsManaged(),
-                    connectionPooledSource.getMaxConnectionsEverUsed(), connectionPooledSource.getTestLoopCount());
-            return connectionPooledSource;
-        } else {
-            throw new DbException("Database connection should be inilized before to call me..");
-        }
+    public static ConnectionSource getConnectionSource() throws SQLException {
+        return getConnectionSource(false);
     }
 
-    public static synchronized void loadDatabase() throws SQLException, ClassNotFoundException {
-        if (!isDbLoaded) {
+    public static ConnectionSource getConnectionSource(boolean reload) throws SQLException {
+        if (reload || connectionPooledSource == null) {
+            stop();
             // Class.forName("org.sqlite.JDBC");
             /*
              * // create a connection source to our database connectionSource =
@@ -95,11 +85,24 @@ public class DataBaseUtils {
             // for extra protection, enable the testing of connections
             // right before they are handed to the user
             connectionPooledSource.setTestBeforeGet(true);
-            isDbLoaded = true;
             _logger.debug("Database ConnectionSource loaded. Database Url:[{}]", AppProperties.getInstance()
                     .getDbUrl());
 
-            //Steps to migrate database
+        }
+        _logger.debug(
+                "DatabaseConnectionPool Connections,Count[open:{},close:{}],"
+                        + "CurrentConnections[free:{},managed:{}]," + "MaxConnectionsEverUsed:{},TestLoopCount:{}",
+                connectionPooledSource.getOpenCount(), connectionPooledSource.getCloseCount(),
+                connectionPooledSource.getCurrentConnectionsFree(),
+                connectionPooledSource.getCurrentConnectionsManaged(),
+                connectionPooledSource.getMaxConnectionsEverUsed(), connectionPooledSource.getTestLoopCount());
+        return connectionPooledSource;
+
+    }
+
+    public static synchronized void runDatabaseMigration() throws SQLException, ClassNotFoundException {
+        if (!dbMigrationStatus) {
+            // Steps to migrate database
             // Create the Flyway instance
             Flyway flyway = new Flyway();
             // Point it to the database
@@ -118,7 +121,15 @@ public class DataBaseUtils {
                     migrationsCount = flyway.migrate();
                 }
             }
-
+            //Close opened connection
+            try {
+                if (!flyway.getDataSource().getConnection().isClosed()) {
+                    flyway.getDataSource().getConnection().close();
+                    _logger.debug("Closed flyway database connection.");
+                }
+            } catch (Exception ex) {
+                _logger.error("Unable to close flyway connection", ex);
+            }
             //Load Dao's if not loaded already
             if (!DaoUtils.isDaoInitialized()) {
                 DaoUtils.loadAllDao();
@@ -155,10 +166,34 @@ public class DataBaseUtils {
             _logger.info("Application information: [Version:{}, Database version:{}, Built on:{}, Git commit:{}:{}]",
                     mcAbout.getApplicationVersion(), mcAbout.getApplicationDbVersion(),
                     mcAbout.getGitBuiltOn(), mcAbout.getGitCommit(), mcAbout.getGitBranch());
+            dbMigrationStatus = true;
+            reloadDao();
         } else {
             _logger.warn("Database ConnectionSource already created. Nothing to do. Database Url:[{}]", AppProperties
                     .getInstance().getDbUrl());
         }
+
+    }
+
+    public static synchronized void loadDao() {
+        //Load Dao's if not loaded already
+        if (!DaoUtils.isDaoInitialized()) {
+            DaoUtils.loadAllDao();
+        }
+
+        //Load properties from database
+        AppProperties.getInstance().loadPropertiesFromDb();
+    }
+
+    public static synchronized void reloadDao() {
+        DaoUtils.setIsDaoInitialized(false);
+        try {
+            //reload connection source
+            getConnectionSource(true);
+        } catch (SQLException ex) {
+            _logger.error("Unable to reload database connection source.", ex);
+        }
+        loadDao();
     }
 
     public static void stop() {
@@ -166,13 +201,12 @@ public class DataBaseUtils {
             try {
                 connectionPooledSource.close();
                 _logger.debug("Database service stopped.");
-                isDbLoaded = false;
                 DaoUtils.setIsDaoInitialized(false);
             } catch (Exception ioEx) {
                 _logger.error("Unable to stop database service, ", ioEx);
             }
         } else {
-            _logger.debug("Database service not running.");
+            _logger.debug("Database service is not running.");
         }
     }
 

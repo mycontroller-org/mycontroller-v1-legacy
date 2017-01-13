@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,6 +71,10 @@ public class RFLinkRawMessage {
             payload = KEY_PROTOCOL + "=" + protocol;
         } else if (key != null && value != null) {
             messageType = MESSAGE_TYPE.C_SET;
+            if (key.equalsIgnoreCase("cmd") && value.toLowerCase().startsWith("set_level=")) {
+                key = "set_level";
+                value = value.toLowerCase().replaceFirst("set_level=", "");
+            }
             RFLINK_MESSAGE_TYPE mType = RFLINK_MESSAGE_TYPE.valueOf(key.toUpperCase());
             subType = mType.getText();
             sensorId = key;
@@ -109,7 +113,7 @@ public class RFLinkRawMessage {
                     payload = RFLinkUtils.getPayload(value, false);
                     break;
                 case SET_LEVEL:
-                    payload = String.valueOf(Math.round(Integer.valueOf(payload) / DIMMER_REF));
+                    payload = String.valueOf(Math.round(Integer.valueOf(value) / DIMMER_REF));
                     break;
                 default:
                     payload = value;
@@ -171,7 +175,12 @@ public class RFLinkRawMessage {
                 builder.append("STOP");
                 break;
             case SET_LEVEL:
-                builder.append(Math.round(Integer.valueOf(getPayload()) * DIMMER_REF));
+                Integer payloadInt = Integer.valueOf(getPayload());
+                if (payloadInt == 0) {
+                    builder.append("OFF");
+                } else {
+                    builder.append(Math.round(payloadInt * DIMMER_REF));
+                }
                 break;
             default:
                 throw new RawMessageException("Not supported type: " + mType.name());
@@ -181,6 +190,9 @@ public class RFLinkRawMessage {
         return RawMessage.builder()
                 .gatewayId(getGatewayId())
                 .data(builder.toString())
+                .isTxMessage(isTxMessage())
+                .timestamp(getTimestamp())
+                .networkType(NETWORK_TYPE.RF_LINK)
                 .build();
     }
 

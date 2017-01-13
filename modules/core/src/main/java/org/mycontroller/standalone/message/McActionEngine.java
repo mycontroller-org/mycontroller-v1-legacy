@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -106,7 +106,7 @@ public class McActionEngine implements IMcActionEngine {
         }
 
         if (mcMessage != null) {
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
         }
 
     }
@@ -161,7 +161,7 @@ public class McActionEngine implements IMcActionEngine {
                 .payload(payload)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     //Execute Sensor Variable related operations
@@ -176,7 +176,7 @@ public class McActionEngine implements IMcActionEngine {
                 .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class McActionEngine implements IMcActionEngine {
                 .isTxMessage(true)
                 .build();
 
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -209,7 +209,7 @@ public class McActionEngine implements IMcActionEngine {
                 .build();
         try {
             if (McObjectManager.getGateway(gatewayEthernet.getId()) != null) {
-                McMessageUtils.sendToProviderBridge(mcMessage);
+                McMessageUtils.sendToMessageQueue(mcMessage);
                 return true;
             } else {
                 _logger.warn("GatewayTable not available! GatewayTable[{}]", gatewayEthernet);
@@ -234,7 +234,7 @@ public class McActionEngine implements IMcActionEngine {
                 .payload(payload)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class McActionEngine implements IMcActionEngine {
                 .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -280,7 +280,7 @@ public class McActionEngine implements IMcActionEngine {
             fwCfgResponse.setMd5Sum((String) node.getFirmware().getProperties().get(Firmware.KEY_PROP_MD5_HEX));
             mcMessage.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
         }
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -299,7 +299,7 @@ public class McActionEngine implements IMcActionEngine {
                 .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -325,7 +325,7 @@ public class McActionEngine implements IMcActionEngine {
                     .payload(McMessage.PAYLOAD_EMPTY)
                     .isTxMessage(true)
                     .build();
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
         } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
             node.setEraseConfig(true);
             DaoUtils.getNodeDao().update(node);
@@ -359,7 +359,7 @@ public class McActionEngine implements IMcActionEngine {
                 .payload(sensorVariable.getValue())
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,9 @@
 package org.mycontroller.standalone.rule;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.easyrules.api.RulesEngine;
 import org.easyrules.core.RulesEngineBuilder;
@@ -27,6 +29,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
+import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DATA_TYPE;
 import org.mycontroller.standalone.rule.model.RuleDefinitionCompare;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
@@ -106,6 +109,9 @@ public class McRuleEngine extends Job implements Runnable {
         try {
             //Load rules
             List<RuleDefinitionTable> ruleDefinitionsDb = new ArrayList<RuleDefinitionTable>();
+            //Create set to avoid duplicates
+            Set<RuleDefinitionTable> ruleDefinitionsSet = new HashSet<RuleDefinitionTable>();
+
             //Get Gateway rules
             List<RuleDefinitionTable> gatewayRules = DaoUtils.getRuleDefinitionDao().getAll(
                     RuleDefinitionTable.KEY_RESOURCE_TYPE, RESOURCE_TYPE.GATEWAY);
@@ -115,15 +121,25 @@ public class McRuleEngine extends Job implements Runnable {
             //Get Script rules
             List<RuleDefinitionTable> scriptRules = DaoUtils.getRuleDefinitionDao().getAll(
                     RuleDefinitionTable.KEY_RESOURCE_TYPE, RESOURCE_TYPE.SCRIPT);
+            //Get all active Dampening type rules
+            List<RuleDefinitionTable> dampeningRules = DaoUtils.getRuleDefinitionDao().getAll(
+                    DAMPENING_TYPE.ACTIVE_TIME);
             if (gatewayRules != null) {
-                ruleDefinitionsDb.addAll(gatewayRules);
+                ruleDefinitionsSet.addAll(gatewayRules);
             }
             if (nodeRules != null) {
-                ruleDefinitionsDb.addAll(nodeRules);
+                ruleDefinitionsSet.addAll(nodeRules);
             }
             if (scriptRules != null) {
-                ruleDefinitionsDb.addAll(scriptRules);
+                ruleDefinitionsSet.addAll(scriptRules);
             }
+            if (dampeningRules != null) {
+                ruleDefinitionsSet.addAll(dampeningRules);
+            }
+
+            //Add all Set objects to arrayList
+            ruleDefinitionsDb.clear();
+            ruleDefinitionsDb.addAll(ruleDefinitionsSet);
             //Execute collected rules
             execute(ruleDefinitionsDb, MC_RULES_ENGINE_NAME);
         } catch (Exception ex) {

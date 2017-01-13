@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,6 +58,11 @@ public class RFLinkProviderBridge implements IProviderBridge {
         }
         try {
             _logger.debug("Received a {}", rawMessage);
+            if (rawMessage.isTxMessage()) {
+                //Already crossed McMessageEngine, we can send directly to gateway
+                McMessageUtils.sendToGateway(rawMessage);
+                return;
+            }
             String rawData = (String) rawMessage.getData();
             rawData = rawData.replaceAll("(\\r|\\n)", ""); //Replace \n and \r
             if (!rawData.endsWith(";")) {
@@ -147,5 +152,10 @@ public class RFLinkProviderBridge implements IProviderBridge {
             throw new RuntimeException("Node EUI should not contain any space");
         }
         return true;
+    }
+
+    @Override
+    public RawMessage getRawMessage(McMessage mcMessage) throws RawMessageException {
+        return new RFLinkRawMessage(mcMessage).getRawMessage();
     }
 }

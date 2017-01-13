@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
@@ -510,8 +509,6 @@ public class AppProperties {
         backupSettings = BackupSettings.get();
         pushbulletSettings = PushbulletSettings.get();
         mqttBrokerSettings = MqttBrokerSettings.get();
-        MessageMonitorThread.updateTxMessageProcessingDelay(
-                controllerSettings.getTxMessageProcessingDelay());
     }
 
     private boolean is12HoursSelected() {

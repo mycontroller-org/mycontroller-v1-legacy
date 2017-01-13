@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.gateway.model;
-
-import java.util.HashMap;
 
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayUtils.SERIAL_PORT_DRIVER;
@@ -60,15 +58,13 @@ public class GatewaySerial extends Gateway {
     @JsonIgnore
     public GatewayTable getGatewayTable() {
         GatewayTable gatewayTable = super.getGatewayTable();
-        HashMap<String, Object> properties = new HashMap<String, Object>();
-        properties.put(KEY_DRIVER, driver.getText());
-        properties.put(KEY_PORT_NAME, portName);
-        properties.put(KEY_BAUD_RATE, baudRate);
-        properties.put(KEY_RETRY_FREQUENCY, retryFrequency);
+        gatewayTable.getProperties().put(KEY_DRIVER, driver.getText());
+        gatewayTable.getProperties().put(KEY_PORT_NAME, portName);
+        gatewayTable.getProperties().put(KEY_BAUD_RATE, baudRate);
+        gatewayTable.getProperties().put(KEY_RETRY_FREQUENCY, retryFrequency);
         if (runningDriver != null) {
-            properties.put(KEY_RUNNING_DRIVER, runningDriver.getText());
+            gatewayTable.getProperties().put(KEY_RUNNING_DRIVER, runningDriver.getText());
         }
-        gatewayTable.setProperties(properties);
         return gatewayTable;
     }
 

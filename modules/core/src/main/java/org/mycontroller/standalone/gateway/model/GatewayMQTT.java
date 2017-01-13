@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.gateway.model;
-
-import java.util.HashMap;
 
 import org.mycontroller.standalone.db.tables.GatewayTable;
 
@@ -66,15 +64,13 @@ public class GatewayMQTT extends Gateway {
     @JsonIgnore
     public GatewayTable getGatewayTable() {
         GatewayTable gatewayTable = super.getGatewayTable();
-        HashMap<String, Object> properties = new HashMap<String, Object>();
-        properties.put(KEY_BROKER_HOST, brokerHost);
-        properties.put(KEY_CLIENT_ID, clientId);
-        properties.put(KEY_TOPICS_PUBLISH, topicsPublish);
-        properties.put(KEY_TOPICS_SUBSCRIBE, topicsSubscribe);
-        properties.put(KEY_USERNAME, username);
-        properties.put(KEY_PASSWORD, password);
-        properties.put(KEY_QOS, qos);
-        gatewayTable.setProperties(properties);
+        gatewayTable.getProperties().put(KEY_BROKER_HOST, brokerHost);
+        gatewayTable.getProperties().put(KEY_CLIENT_ID, clientId);
+        gatewayTable.getProperties().put(KEY_TOPICS_PUBLISH, topicsPublish);
+        gatewayTable.getProperties().put(KEY_TOPICS_SUBSCRIBE, topicsSubscribe);
+        gatewayTable.getProperties().put(KEY_USERNAME, username);
+        gatewayTable.getProperties().put(KEY_PASSWORD, password);
+        gatewayTable.getProperties().put(KEY_QOS, qos);
         return gatewayTable;
     }
 

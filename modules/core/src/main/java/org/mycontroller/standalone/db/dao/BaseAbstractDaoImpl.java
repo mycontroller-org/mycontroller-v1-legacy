@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -472,8 +472,8 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             if (response.getData() != null) {
                 return (List<Tdao>) response.getData();
             }
-        } catch (SQLException e) {
-            _logger.error("Error while processing for {}", query);
+        } catch (SQLException ex) {
+            _logger.error("Error while processing for {}", query, ex);
         }
 
         return new ArrayList<Tdao>();

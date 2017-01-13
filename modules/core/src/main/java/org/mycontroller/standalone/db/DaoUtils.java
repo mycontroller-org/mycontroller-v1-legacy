@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -196,8 +196,6 @@ public class DaoUtils {
             isDaoInitialized = true;
         } catch (SQLException sqlEx) {
             _logger.error("Unable to load Dao,", sqlEx);
-        } catch (DbException dbEx) {
-            _logger.error("Unable to load Dao,", dbEx);
         }
     }
 
