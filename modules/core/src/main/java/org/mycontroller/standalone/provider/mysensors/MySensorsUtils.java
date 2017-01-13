@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -293,8 +293,7 @@ public class MySensorsUtils {
         V_FLOW("Flow"),         // S_WATER. Flow of water (in meter)
         V_VOLUME("Volume"),       // S_WATER. Water volume
         V_LOCK_STATUS("Lock status"),  // S_LOCK. Set or get lock status. 1=Locked, 0=Unlocked
-        V_LEVEL("Level"), // S_DUST, S_AIR_QUALITY, S_SOUND (dB),
-        //S_VIBRATION (hz), S_LIGHT_LEVEL (lux)
+        V_LEVEL("Level"),        // S_DUST, S_AIR_QUALITY, S_SOUND (dB), S_VIBRATION (hz), S_LIGHT_LEVEL (lux)
         V_VOLTAGE("Voltage"),      // S_MULTIMETER
         V_CURRENT("Current"),      // S_MULTIMETER
         V_RGB("RGB"),          // S_RGB_LIGHT, S_COLOR_SENSOR.
