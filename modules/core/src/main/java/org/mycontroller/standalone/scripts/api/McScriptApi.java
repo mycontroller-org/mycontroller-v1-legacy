@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package org.mycontroller.standalone.scripts.api;
 
 import org.mycontroller.standalone.api.BackupApi;
 import org.mycontroller.standalone.api.GatewayApi;
+import org.mycontroller.standalone.api.HttpApi;
 import org.mycontroller.standalone.api.MetricApi;
 import org.mycontroller.standalone.api.NodeApi;
 import org.mycontroller.standalone.api.OperationApi;
@@ -46,6 +47,7 @@ public class McScriptApi {
     private LoggerApi logger = new LoggerApi();
     private UtilsApi utilsApi = new UtilsApi();
     private SystemApi systemApi = new SystemApi();
+    private HttpApi httpApi = new HttpApi();
 
     public SystemApi system() {
         return systemApi;
@@ -97,5 +99,9 @@ public class McScriptApi {
 
     public UtilsApi utils() {
         return utilsApi;
+    }
+
+    public HttpApi http() {
+        return httpApi;
     }
 }
