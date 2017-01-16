@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -667,15 +667,16 @@ public class MetricsHandler extends AccessEngine {
             }
 
             String seriesName = null;
+            String preText = sensorVariable.getSensor().getNode().getEui() + "_"
+                    + sensorVariable.getSensor().getSensorId() + "_";
             if (isMultiChart) {
-                seriesName = sensorVariable.getSensor().getName() + "-" + sensorVariable.getVariableType().getText();
+                seriesName = preText + sensorVariable.getVariableType().getText();
             } else {
                 seriesName = sensorVariable.getSensor().getName();
                 if (seriesName == null) {
-                    seriesName = sensorVariable.getSensor().getNode().getEui() + "-"
-                            + sensorVariable.getSensor().getSensorId() + "-"
-                            + sensorVariable.getVariableType().getText();
+                    seriesName = preText + sensorVariable.getVariableType().getText();
                 }
+                seriesName = preText + seriesName;
             }
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
