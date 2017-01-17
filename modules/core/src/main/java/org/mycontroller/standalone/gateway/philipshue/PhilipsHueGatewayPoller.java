@@ -18,6 +18,7 @@ package org.mycontroller.standalone.gateway.philipshue;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,6 +51,7 @@ public class PhilipsHueGatewayPoller implements Runnable {
     private boolean terminated = false;
     private PhilipsHueClient philipsHueClient;
     private boolean onRequestUpdate = false;
+    private Map<String, LightState> lightsCache = new HashMap<>();
 
     public PhilipsHueGatewayPoller() {
     }
@@ -65,15 +67,12 @@ public class PhilipsHueGatewayPoller implements Runnable {
 
     @Override
     public void run() {
-        //Initial delay, allow to add this object in McObject manager
-        try {
-            Thread.sleep(McUtils.SECOND * 10);
-        } catch (InterruptedException ex) {
-            _logger.error("Exception, ", ex);
-        }
+        // Initial delay, allow to add this object in McObject manager
+        waitFor(McUtils.SECOND * 10);
         while (!isTerminate()) {
             try {
                 _logger.debug("Getting hue lights...on user request : {} ", onRequestUpdate);
+                //                if (onStart) {
                 final ClientResponse<Map<String, LightState>> clientResponse = philipsHueClient.lights().listAll();
                 if (clientResponse.isSuccess()) {
                     Map<String, LightState> lights = clientResponse.getEntity();
@@ -111,24 +110,39 @@ public class PhilipsHueGatewayPoller implements Runnable {
 
     private void updateRecords(Map<String, LightState> records) throws ParseException {
         for (Entry<String, LightState> entry : records.entrySet()) {
-            String key = entry.getKey();
-            LightState value = entry.getValue();
-
-            //Update sensor name and type
-            updateSensorNameAndType(MESSAGE_TYPE_PRESENTATION.S_RGB_LIGHT, key, value.getName());
-
-            //Update status payload
-            updateSetPayload(MESSAGE_TYPE_SET_REQ.V_STATUS, key, value.getState().getOn() ? "1" : "0");
-            //Update light level (0 to 100%), payload
-            updateSetPayload(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL, key,
-                    PhilipsHueUtils.toPercent(value.getState().getBri()).toString());
-            //Update RGB color, payload
-            //Set color from xy
-            Float[] xy = value.getState().getXy();
-            if (xy != null && xy.length == 2) {
-                updateSetPayload(MESSAGE_TYPE_SET_REQ.V_RGB, key,
-                        PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid()));
+            String id = entry.getKey();
+            //Get local light state
+            LightState localLightState = lightsCache.get(id);
+            //Get bridge light state
+            LightState currentLightState = entry.getValue();
+            if (localLightState != null && localLightState.equals(currentLightState)) {
+                _logger.debug("No change for light {} ", id);
+                continue;
+            } else {
+                _logger.debug("Update light {} ", id);
+                //update MyController
+                updateRecord(id, currentLightState);
+                //update cache
+                lightsCache.put(id, currentLightState);
             }
+        }
+    }
+
+    private void updateRecord(String key, LightState value) {
+        //Update sensor name and type
+        updateSensorNameAndType(MESSAGE_TYPE_PRESENTATION.S_RGB_LIGHT, key, value.getName());
+
+        //Update status payload
+        updateSetPayload(MESSAGE_TYPE_SET_REQ.V_STATUS, key, value.getState().getOn() ? "1" : "0");
+        //Update light level (0 to 100%), payload
+        updateSetPayload(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL, key,
+                PhilipsHueUtils.toPercent(value.getState().getBri()).toString());
+        //Update RGB color, payload
+        //Set color from xy
+        Float[] xy = value.getState().getXy();
+        if (xy != null && xy.length == 2) {
+            updateSetPayload(MESSAGE_TYPE_SET_REQ.V_RGB, key,
+                    PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid()));
         }
     }
 
