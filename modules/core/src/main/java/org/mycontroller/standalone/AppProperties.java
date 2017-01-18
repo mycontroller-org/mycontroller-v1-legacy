@@ -79,6 +79,8 @@ public class AppProperties {
     private Boolean clearMessagesQueueOnStart;
     private Boolean clearSmartSleepMsgQueueOnStart;
 
+    private Boolean mDNSserviceEnabled = false;
+
     MyControllerSettings controllerSettings;
     EmailSettings emailSettings;
     MySensorsSettings mySensorsSettings;
@@ -471,6 +473,9 @@ public class AppProperties {
                 "mcc.clear.message.queue.on.start", "true"));
         clearSmartSleepMsgQueueOnStart = McUtils.getBoolean(getValue(properties,
                 "mcc.clear.smart.sleep.msg.queue.on.start", "true"));
+        //mDNS service, enabled or disabled
+        mDNSserviceEnabled = McUtils.getBoolean(getValue(properties,
+                "mcc.mdns.service.enable", "false"));
     }
 
     public void createDirectoryLocation(String directoryLocation) {
@@ -723,5 +728,9 @@ public class AppProperties {
 
     public String getMcPersistentStoresLocation() {
         return mcPersistentStoresLocation;
+    }
+
+    public boolean isMDNSserviceEnabled() {
+        return mDNSserviceEnabled;
     }
 }
