@@ -20,9 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
-import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.gateway.IGateway;
-import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.RawMessage;
@@ -39,7 +36,7 @@ import lombok.ToString;
 public class PhilipsHueRawMessage {
 
     private int gatewayId;
-    private String url;
+    private String nodeEui = PhilipsHueUtils.NODE_EUI;
     private String sensorId;
     private MESSAGE_TYPE messageType;
     private String subType;
@@ -48,12 +45,7 @@ public class PhilipsHueRawMessage {
     private boolean isTxMessage = false;
     private String colormode;
 
-    public PhilipsHueRawMessage(RawMessage rawMessage)
-            throws RawMessageException {
-        IGateway gateway = McObjectManager
-                .getGateway(rawMessage.getGatewayId());
-        GatewayPhilipsHue gatewayPhilipsHue = (GatewayPhilipsHue) gateway
-                .getGateway();
+    public PhilipsHueRawMessage(RawMessage rawMessage) throws RawMessageException {
         @SuppressWarnings("unchecked")
         List<Object> data = (List<Object>) rawMessage.getData();
         // Data order: messageType, subType, sensorId, payload
@@ -64,7 +56,6 @@ public class PhilipsHueRawMessage {
         isTxMessage = rawMessage.isTxMessage();
 
         gatewayId = rawMessage.getGatewayId();
-        url = gatewayPhilipsHue.getUrl();
 
         messageType = MESSAGE_TYPE.fromString((String) data.get(0));
         subType = (String) data.get(1);
@@ -76,7 +67,7 @@ public class PhilipsHueRawMessage {
 
     public PhilipsHueRawMessage(McMessage mcMessage) throws RawMessageException {
         gatewayId = mcMessage.getGatewayId();
-        url = mcMessage.getNodeEui();
+        nodeEui = mcMessage.getNodeEui();
         sensorId = mcMessage.getSensorId();
         messageType = mcMessage.getType();
         subType = mcMessage.getSubType();
@@ -94,6 +85,8 @@ public class PhilipsHueRawMessage {
         return RawMessage
                 .builder()
                 .gatewayId(gatewayId)
+                .isTxMessage(isTxMessage())
+                .timestamp(getTimestamp())
                 // Data order: messageType, subType, sensorId, payload
                 .data(Arrays.asList(messageType.getText(), subType, sensorId, payload))
                 .build();
@@ -103,7 +96,7 @@ public class PhilipsHueRawMessage {
         return McMessage.builder()
                 .ack(McMessage.NO_ACK)
                 .gatewayId(getGatewayId())
-                .nodeEui(getUrl())
+                .nodeEui(getNodeEui())
                 .sensorId(getSensorId())
                 .networkType(NETWORK_TYPE.PHILIPS_HUE)
                 .type(getMessageType())

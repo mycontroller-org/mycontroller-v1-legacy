@@ -20,6 +20,8 @@ package org.mycontroller.standalone.provider.philipshue;
  * @author Fraid(https://github.com/Fraid)
  */
 public class PhilipsHueUtils {
+    public static final String NODE_EUI = "philips-hue-node";
+
     public static Integer toPercent(int brightness) {
         return (brightness * 100) / 255;
     }

@@ -18,7 +18,6 @@ package org.mycontroller.standalone.gateway.philipshue;
 
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,6 +27,9 @@ import org.mycontroller.restclient.philips.hue.PhilipsHueClient;
 import org.mycontroller.restclient.philips.hue.PhilipsHueClientBuilder;
 import org.mycontroller.restclient.philips.hue.model.LightState;
 import org.mycontroller.restclient.philips.hue.model.State;
+import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
@@ -51,7 +53,6 @@ public class PhilipsHueGatewayPoller implements Runnable {
     private boolean terminated = false;
     private PhilipsHueClient philipsHueClient;
     private boolean onRequestUpdate = false;
-    private Map<String, LightState> lightsCache = new HashMap<>();
 
     public PhilipsHueGatewayPoller() {
     }
@@ -110,39 +111,72 @@ public class PhilipsHueGatewayPoller implements Runnable {
 
     private void updateRecords(Map<String, LightState> records) throws ParseException {
         for (Entry<String, LightState> entry : records.entrySet()) {
-            String id = entry.getKey();
-            //Get local light state
-            LightState localLightState = lightsCache.get(id);
-            //Get bridge light state
-            LightState currentLightState = entry.getValue();
-            if (localLightState != null && localLightState.equals(currentLightState)) {
-                _logger.debug("No change for light {} ", id);
-                continue;
+            String key = entry.getKey();
+            LightState value = entry.getValue();
+
+            //Check does this sensor exists already.
+            //If exists, check value. If there is a change update it.
+            Sensor sensor = DaoUtils.getSensorDao().get(gateway.getId(), PhilipsHueUtils.NODE_EUI, key);
+            boolean updateStatus = true;
+            boolean updateLightLevel = true;
+            boolean updateRGB = true;
+            if (sensor != null) {
+                for (SensorVariable variable : sensor.getVariables()) {
+                    switch (variable.getVariableType()) {
+                        case V_STATUS:
+                            if (variable.getValue().equals(value.getState().getOn() ? "1" : "0")) {
+                                updateStatus = false;
+                            }
+                            break;
+                        case V_LIGHT_LEVEL:
+                            if (variable.getValue().equals(
+                                    PhilipsHueUtils.toPercent(value.getState().getBri()).toString())) {
+                                updateLightLevel = false;
+                            }
+                            break;
+                        case V_RGB:
+                            if (value.getState().getXy() != null && value.getState().getXy().length == 2) {
+                                Float[] xy = value.getState().getXy();
+                                if (variable.getValue().equals(
+                                        PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid()))) {
+                                    updateRGB = false;
+                                }
+                            } else {
+                                updateRGB = false;
+                            }
+                            break;
+                        default:
+                            _logger.warn("SenaorVariable type '{}' is not implemented!", variable.getVariableType()
+                                    .getText());
+                            break;
+
+                    }
+                }
             } else {
-                _logger.debug("Update light {} ", id);
-                //update MyController
-                updateRecord(id, currentLightState);
-                //update cache
-                lightsCache.put(id, currentLightState);
+                //Update sensor name and type
+                updateSensorNameAndType(MESSAGE_TYPE_PRESENTATION.S_RGB_LIGHT, key, value.getName());
             }
-        }
-    }
 
-    private void updateRecord(String key, LightState value) {
-        //Update sensor name and type
-        updateSensorNameAndType(MESSAGE_TYPE_PRESENTATION.S_RGB_LIGHT, key, value.getName());
+            //Update status payload
+            if (updateStatus) {
+                updateSetPayload(MESSAGE_TYPE_SET_REQ.V_STATUS, key, value.getState().getOn() ? "1" : "0");
+            }
 
-        //Update status payload
-        updateSetPayload(MESSAGE_TYPE_SET_REQ.V_STATUS, key, value.getState().getOn() ? "1" : "0");
-        //Update light level (0 to 100%), payload
-        updateSetPayload(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL, key,
-                PhilipsHueUtils.toPercent(value.getState().getBri()).toString());
-        //Update RGB color, payload
-        //Set color from xy
-        Float[] xy = value.getState().getXy();
-        if (xy != null && xy.length == 2) {
-            updateSetPayload(MESSAGE_TYPE_SET_REQ.V_RGB, key,
-                    PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid()));
+            //Update light level (0 to 100%), payload
+            if (updateLightLevel) {
+                updateSetPayload(MESSAGE_TYPE_SET_REQ.V_LIGHT_LEVEL, key,
+                        PhilipsHueUtils.toPercent(value.getState().getBri()).toString());
+            }
+
+            //Update RGB color, payload
+            if (updateRGB) {
+                //Set color from xy
+                Float[] xy = value.getState().getXy();
+                if (xy != null && xy.length == 2) {
+                    updateSetPayload(MESSAGE_TYPE_SET_REQ.V_RGB, key,
+                            PHUtilities.getHexFromXY(new float[] { xy[0], xy[1] }, value.getModelid()));
+                }
+            }
         }
     }
 

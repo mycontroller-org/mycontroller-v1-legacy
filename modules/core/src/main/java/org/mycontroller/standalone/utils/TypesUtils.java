@@ -1100,7 +1100,9 @@ public class TypesUtils {
             if (nwType != null) {
                 switch (nwType) {
                     case MY_SENSORS:
-                        if (gatewayType != GATEWAY_TYPE.PHANT_IO) {
+                        if (gatewayType == GATEWAY_TYPE.SERIAL
+                                || gatewayType == GATEWAY_TYPE.ETHERNET
+                                || gatewayType == GATEWAY_TYPE.MQTT) {
                             include = true;
                         }
                         break;
@@ -1118,6 +1120,7 @@ public class TypesUtils {
                         if (gatewayType == GATEWAY_TYPE.SERIAL) {
                             include = true;
                         }
+                        break;
                     case PHILIPS_HUE:
                         if (gatewayType == GATEWAY_TYPE.PHILIPS_HUE) {
                             include = true;

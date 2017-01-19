@@ -56,7 +56,11 @@ public class PhilipsHueProviderBridge implements IProviderBridge {
         }
         try {
             _logger.debug("Received raw message: [{}]", rawMessage);
-            McMessageUtils.sendToMcMessageEngine(new PhilipsHueRawMessage(rawMessage).getMcMessage());
+            McMessage mcMessage = new PhilipsHueRawMessage(rawMessage).getMcMessage();
+            McMessageUtils.sendToMcMessageEngine(mcMessage);
+            if (rawMessage.isTxMessage()) {
+                executeMcMessage(mcMessage);
+            }
         } catch (RawMessageException ex) {
             _logger.error("Unable to process this rawMessage:{}", rawMessage, ex);
         }
@@ -80,8 +84,7 @@ public class PhilipsHueProviderBridge implements IProviderBridge {
 
     @Override
     public RawMessage getRawMessage(McMessage mcMessage) throws RawMessageException {
-        // TODO Auto-generated method stub
-        return null;
+        return new PhilipsHueRawMessage(mcMessage).getRawMessage();
     }
 
 }

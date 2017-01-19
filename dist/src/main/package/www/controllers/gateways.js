@@ -251,6 +251,7 @@ $scope, $filter, GatewaysFactory, $state, $uibModal, displayRestError, mchelper,
 myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, TypesFactory, GatewaysFactory, $stateParams, mchelper, $state, alertService, $filter, CommonServices, displayRestError) {
   $scope.gateway = {};
   $scope.gateway.enabled = true;
+  $scope.gateway.txDelay = 0;
   $scope.gatewayTypes = {};
   $scope.trustHostTypes = TypesFactory.getTrustHostTypes();
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
@@ -291,10 +292,10 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.gateway.pollFrequency='1';
       $scope.gateway.recordsLimit='10';
       $scope.gateway.trustHostType='';
-    }else if($scope.gateway.type === 'Philips Hue'){
-          $scope.gateway.url='';
-          $scope.gateway.authorizedUser='';
-          $scope.gateway.pollFrequency='5';
+    }else if($scope.gateway.type === 'Hue bridge'){
+      $scope.gateway.url='';
+      $scope.gateway.authorizedUser='';
+      $scope.gateway.pollFrequency='5';
      }
   };
 

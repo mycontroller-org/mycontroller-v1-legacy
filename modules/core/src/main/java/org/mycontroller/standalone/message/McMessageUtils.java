@@ -624,6 +624,8 @@ public class McMessageUtils {
                 //RFLink Tx message parsing does not supported, hence process before create rawMessage
                 sendToMcMessageEngine(mcMessage);
                 return rfLinkBridge.getRawMessage(mcMessage);
+            case PHILIPS_HUE:
+                return philipsHueProviderBridge.getRawMessage(mcMessage);
             default:
                 _logger.warn("Unknown provider: {} for ", mcMessage.getNetworkType(), mcMessage);
                 throw new McBadRequestException("Unknown provider: " + mcMessage.getNetworkType());
