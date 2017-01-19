@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,7 +111,12 @@ public class McUtils {
     }
 
     public static String getDoubleAsString(double value) {
-        return getDoubleAsString(value, 3);
+        String _value = getDoubleAsString(value, 3);
+        if (_value.endsWith(".0")) {
+            _value = _value.substring(0, _value.length() - 2);
+        }
+
+        return _value;
     }
 
     public static String getDoubleAsString(String value) {

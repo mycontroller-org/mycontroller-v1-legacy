@@ -55,7 +55,11 @@ public class McProviderBridge implements IProviderBridge {
         }
         try {
             _logger.debug("Received raw message: [{}]", rawMessage);
-            McMessageUtils.sendToMcMessageEngine(new McpRawMessage(rawMessage).getMcMessage());
+            McMessage mcMessage = new McpRawMessage(rawMessage).getMcMessage();
+            McMessageUtils.sendToMcMessageEngine(mcMessage);
+            if(rawMessage.isTxMessage()){
+                executeMcMessage(mcMessage);
+            }
         } catch (RawMessageException ex) {
             _logger.error("Unable to process this rawMessage:{}", rawMessage, ex);
         }

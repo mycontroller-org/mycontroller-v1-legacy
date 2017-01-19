@@ -67,6 +67,7 @@ import org.mycontroller.standalone.auth.McContainerRequestFilter;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils;
+import org.mycontroller.standalone.mdns.McmDNSFactory;
 import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
@@ -210,6 +211,10 @@ public class StartApp {
         _logger.info("TJWS server started successfully, HTTPS Enabled?:{}, HTTP(S) Port: [{}]",
                 AppProperties.getInstance().isWebHttpsEnabled(),
                 AppProperties.getInstance().getWebHttpPort());
+
+        if (AppProperties.getInstance().isMDNSserviceEnabled()) {
+            McmDNSFactory.updateHttpService(true);
+        }
     }
 
     private static void stopHTTPWebServer() {
@@ -295,7 +300,6 @@ public class StartApp {
         // - Stop message Monitor Thread
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
-        // - Stop mapDB store
         stopHTTPWebServer();
         ExternalServerUtils.clearServers();
         SchedulerUtils.stop();

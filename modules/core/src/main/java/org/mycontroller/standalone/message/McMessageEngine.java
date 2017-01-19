@@ -873,6 +873,9 @@ public class McMessageEngine implements Runnable {
                 case GPS:
                     data = MetricsGPSTypeDevice.get(mcMessage.getPayload(), mcMessage.getTimestamp()).getPosition();
                     break;
+                case NONE:
+                    //For NONE metric type nothing to do.
+                    break;
                 default:
                     data = mcMessage.getPayload();
                     break;
@@ -1048,6 +1051,9 @@ public class McMessageEngine implements Runnable {
                         mcMessage.getTimestamp());
                 gpsData.setSensorVariable(sensorVariable);
                 DaoUtils.getMetricsGPSTypeDeviceDao().create(gpsData);
+                break;
+            case NONE:
+                //For None type nothing to do.
                 break;
             default:
                 _logger.debug(

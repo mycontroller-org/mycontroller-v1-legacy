@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +52,11 @@ public class MapDbFactory {
         COMMIT_SCHEDULER.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
-                database.commit();
+                if (database != null && !database.isClosed()) {
+                    database.commit();
+                } else {
+                    _logger.debug("commit job called, when database is not available!");
+                }
             }
         }, COMMIT_FREQUENCY, COMMIT_FREQUENCY, TimeUnit.SECONDS);
     }
@@ -72,7 +76,7 @@ public class MapDbFactory {
         database.commit();
         database.close();
         _logger.debug("closed disk storage");
-        COMMIT_SCHEDULER.shutdown();
+        //COMMIT_SCHEDULER.shutdown(); //When we call this, entire application gets shutdown.
         _logger.debug("Persistence commit scheduler is shutdown");
     }
 

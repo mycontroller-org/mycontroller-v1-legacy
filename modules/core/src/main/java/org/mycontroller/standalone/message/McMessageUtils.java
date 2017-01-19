@@ -497,6 +497,10 @@ public class McMessageUtils {
                 return PAYLOAD_TYPE.PL_STRING;
             case V_POSITION:
                 return PAYLOAD_TYPE.PL_GPS;
+            case V_ORP:
+                return PAYLOAD_TYPE.PL_DOUBLE;
+            case V_PH:
+                return PAYLOAD_TYPE.PL_DOUBLE;
             default:
                 //Make default to string
                 return PAYLOAD_TYPE.PL_STRING;

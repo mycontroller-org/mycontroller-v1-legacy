@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -201,7 +201,7 @@ public class Restore implements Runnable {
     @Override
     public void run() {
         try {
-            //wait few seconds to response for caller
+            //wait few seconds to response for caller REST API
             Thread.sleep(McUtils.ONE_SECOND * 3);
             restore(backupFile);
         } catch (Exception ex) {
