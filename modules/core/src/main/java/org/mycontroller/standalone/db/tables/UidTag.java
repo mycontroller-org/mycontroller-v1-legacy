@@ -16,8 +16,13 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.model.ResourceModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -40,7 +45,8 @@ import lombok.ToString;
 public class UidTag {
     public static final String KEY_ID = "id";
     public static final String KEY_UID = "uid";
-    public static final String KEY_SENSOR_VARIABLE = "sensorVariable";
+    public static final String KEY_RESOURCE_TYPE = "resourceType";
+    public static final String KEY_RESOURCE_ID = "resourceId";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -48,8 +54,35 @@ public class UidTag {
     @DatabaseField(canBeNull = false, unique = true, columnName = KEY_UID)
     private String uid;
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE,
-            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 5)
-    private SensorVariable sensorVariable;
+    @DatabaseField(canBeNull = false, columnName = KEY_RESOURCE_TYPE, dataType = DataType.ENUM_STRING)
+    private RESOURCE_TYPE resourceType;
 
+    @DatabaseField(canBeNull = false, columnName = KEY_RESOURCE_ID)
+    private Integer resourceId;
+
+    @JsonIgnore
+    Object resource;
+
+    @JsonIgnore
+    @Deprecated
+    public SensorVariable getSensorVariable() {
+        if (getResourceType() == RESOURCE_TYPE.SENSOR_VARIABLE) {
+            return (SensorVariable) getResource();
+        }
+        return null;
+    }
+
+    @JsonIgnore
+    public Object getResource() {
+        if (resource == null) {
+            ResourceModel model = new ResourceModel(getResourceType(), getResourceId());
+            resource = model != null ? model.getResource() : null;
+        }
+        return resource;
+    }
+
+    @JsonProperty("resourceName")
+    private String getResourceString() {
+        return new ResourceModel(getResourceType(), getResourceId()).getResourceLessDetails();
+    }
 }

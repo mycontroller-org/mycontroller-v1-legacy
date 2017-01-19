@@ -49,6 +49,7 @@ public class McConditionThreshold extends McRuleBase {
         //Update current value
         try {
             setActualValue(super.getResourceValue(rdThreshold.getResourceType(), rdThreshold.getResourceId()));
+            setActualUnit(super.getResourceUnit(rdThreshold.getResourceType(), rdThreshold.getResourceId()));
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;

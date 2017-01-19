@@ -24,6 +24,7 @@ import org.mycontroller.standalone.rule.model.DampeningActiveTime;
 import org.mycontroller.standalone.rule.model.DampeningConsecutive;
 import org.mycontroller.standalone.rule.model.DampeningLastNEvaluations;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.units.UnitUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,6 +42,14 @@ public abstract class McRuleBase extends BasicRule {
 
     protected void setActualValue(String actualValue) {
         ruleDefinition.setActualValue(actualValue);
+    }
+
+    protected String getActualUnit() {
+        return ruleDefinition.getActualUnit();
+    }
+
+    protected void setActualUnit(String actualUnit) {
+        ruleDefinition.setActualUnit(actualUnit);
     }
 
     public RuleDefinition getRuleDefinitionBase() {
@@ -80,6 +89,14 @@ public abstract class McRuleBase extends BasicRule {
                         + resourceType);
         }
         return value;
+    }
+
+    protected String getResourceUnit(RESOURCE_TYPE resourceType, Integer resourceId) throws IllegalAccessException {
+        if (resourceType == RESOURCE_TYPE.SENSOR_VARIABLE) {
+            return UnitUtils.getUnit(DaoUtils.getSensorVariableDao().get(resourceId).getUnitType()).getUnit();
+        } else {
+            return "";
+        }
     }
 
     protected boolean executeDampening(boolean triggerOperations) {

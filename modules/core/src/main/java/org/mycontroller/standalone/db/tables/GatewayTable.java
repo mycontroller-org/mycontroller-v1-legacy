@@ -23,6 +23,7 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -84,5 +85,18 @@ public class GatewayTable {
 
     @DatabaseField(canBeNull = true, columnName = KEY_PROPERTIES, dataType = DataType.SERIALIZABLE)
     private HashMap<String, Object> properties;
+
+    @JsonIgnore
+    public Object getProperty(String key, Object defaultValue) {
+        if (properties != null && properties.get(key) != null) {
+            return properties.get(key);
+        }
+        return defaultValue;
+    }
+
+    @JsonIgnore
+    public Object getProperty(String key) {
+        return getProperty(key, null);
+    }
 
 }

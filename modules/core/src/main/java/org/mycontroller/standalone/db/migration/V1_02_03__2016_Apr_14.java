@@ -78,7 +78,9 @@ public class V1_02_03__2016_Apr_14 extends MigrationBase {
         /** Migration #2
          * Remove 'publicAccess' column from 'operation' table
          * */
-        dropColumn("operation", "publicAccess");
+        if (sqlClient().hasColumn("operation", "publicAccess")) {
+            sqlClient().dropColumn("operation", "publicAccess");
+        }
 
         _logger.info("Migration completed successfully.");
     }

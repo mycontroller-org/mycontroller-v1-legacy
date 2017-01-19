@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,7 +61,7 @@ public class ExecuteUidTag implements Runnable {
                         .gatewayId(uidTag.getSensorVariable().getSensor().getNode().getGatewayTable().getId())
                         .nodeEui(uidTag.getSensorVariable().getSensor().getNode().getEui())
                         .sensorId(uidTag.getSensorVariable().getSensor().getSensorId())
-                        .acknowledge(false)
+                        .ack(McMessage.NO_ACK)
                         .networkType(
                                 uidTag.getSensorVariable().getSensor().getNode().getGatewayTable().getNetworkType())
                         .type(MESSAGE_TYPE.C_SET)
@@ -69,7 +69,7 @@ public class ExecuteUidTag implements Runnable {
                         .isTxMessage(true)
                         .payload(uidTag.getSensorVariable().getValue())
                         .build();
-                McMessageUtils.sendToProviderBridge(mcMessage);
+                McMessageUtils.sendToMessageQueue(mcMessage);
                 break;
             default:
                 break;
@@ -80,14 +80,14 @@ public class ExecuteUidTag implements Runnable {
                     .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
                     .nodeEui(sensorVariable.getSensor().getNode().getEui())
                     .sensorId(sensorVariable.getSensor().getSensorId())
-                    .acknowledge(false)
+                    .ack(McMessage.NO_ACK)
                     .networkType(uidTag.getSensorVariable().getSensor().getNode().getGatewayTable().getNetworkType())
                     .type(MESSAGE_TYPE.C_SET)
                     .subType(sensorVariable.getVariableType().getText())
                     .isTxMessage(true)
                     .payload(uidTagMapper.getStructString())
                     .build();
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
         }
     }
 

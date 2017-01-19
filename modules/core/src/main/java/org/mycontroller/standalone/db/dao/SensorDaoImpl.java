@@ -20,8 +20,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DbException;
 import org.mycontroller.standalone.db.tables.Node;
@@ -30,7 +33,6 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTAT
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 import lombok.extern.slf4j.Slf4j;
@@ -100,34 +102,29 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
 
     @Override
     public void update(Sensor sensor) {
+        Sensor tmpSensor = get(sensor);
         try {
             this.nodeIdSensorIdnullCheck(sensor);
-            UpdateBuilder<Sensor, Integer> updateBuilder = this.getDao().updateBuilder();
-
             if (sensor.getType() != null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_TYPE, sensor.getType());
+                tmpSensor.setType(sensor.getType());
             }
             if (sensor.getName() != null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_NAME, sensor.getName());
+                tmpSensor.setName(sensor.getName());
             }
             if (sensor.getLastSeen() != null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_LAST_SEEN, sensor.getLastSeen());
+                tmpSensor.setLastSeen(sensor.getLastSeen());
             }
             if (sensor.getSensorId() != null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_SENSOR_ID, sensor.getSensorId());
+                tmpSensor.setSensorId(sensor.getSensorId());
             }
 
             if (sensor.getRoom() != null && sensor.getRoom().getId() == null) {
-                updateBuilder.updateColumnValue(Sensor.KEY_ROOM_ID, null);
+                tmpSensor.setRoom(null);
             } else {
-                updateBuilder.updateColumnValue(Sensor.KEY_ROOM_ID, sensor.getRoom());
+                tmpSensor.setRoom(sensor.getRoom());
             }
-
-            updateBuilder.where().eq(Sensor.KEY_ID, sensor.getId());
-            int updateCount = updateBuilder.update();
-            _logger.debug("Updated senosor:[{}], update count:{}", sensor, updateCount);
-        } catch (SQLException ex) {
-            _logger.error("unable to get", ex);
+            super.update(tmpSensor);
+            _logger.debug("Updated senosor:[{}]", sensor);
         } catch (DbException dbEx) {
             _logger.error("unable to update, sensor:{}", sensor, dbEx);
         }
@@ -294,7 +291,8 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return super.getQueryResponse(query, Sensor.KEY_ID);
+            query.setIdColumn(Sensor.KEY_ID);
+            return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
@@ -348,5 +346,36 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             _logger.error("unable to get, roomId:{}, sensorName:{}", roomId, sensorName, ex);
         }
         return null;
+    }
+
+    public List<Sensor> getAll(Query query, String filter, AllowedResources allowedResources) {
+        AuthUtils.updateQueryFilter(query.getFilters(), RESOURCE_TYPE.SENSOR, allowedResources);
+        if (query.getFilters().get(Sensor.KEY_NODE_ID) == null) {
+            query.setAndQuery(false);
+            if (filter != null) {
+                query.getFilters().put(Sensor.KEY_SENSOR_ID, filter);
+                List<Node> nodes = DaoUtils.getNodeDao().getAll(query, filter, null);
+                if (nodes.size() > 0) {
+                    ArrayList<Integer> nodeIds = new ArrayList<Integer>();
+                    for (Node node : nodes) {
+                        nodeIds.add(node.getId());
+                    }
+                    query.getFilters().put(Sensor.KEY_NODE_ID, nodes);
+                }
+                query.getFilters().put(Sensor.KEY_SENSOR_ID, filter);
+                query.getFilters().put(Sensor.KEY_NAME, filter);
+                MESSAGE_TYPE_PRESENTATION type = MESSAGE_TYPE_PRESENTATION.fromString(filter);
+                if (type != null) {
+                    query.getFilters().put(Sensor.KEY_TYPE, type);
+                }
+            }
+        }
+        //Remove keys
+        query.getFilters().remove(Node.KEY_GATEWAY_ID);
+
+        query.setIdColumn(Sensor.KEY_ID);
+        query.setOrderBy(Sensor.KEY_SENSOR_ID);
+        query.setOrder(Query.ORDER_ASC);
+        return super.getAllData(query);
     }
 }

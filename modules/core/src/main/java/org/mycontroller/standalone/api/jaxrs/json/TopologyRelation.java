@@ -17,7 +17,6 @@
 package org.mycontroller.standalone.api.jaxrs.json;
 
 import lombok.AllArgsConstructor;
-
 import lombok.Builder;
 import lombok.Data;
 

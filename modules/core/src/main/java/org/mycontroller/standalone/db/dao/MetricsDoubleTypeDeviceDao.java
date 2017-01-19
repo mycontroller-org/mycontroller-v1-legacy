@@ -29,6 +29,8 @@ public interface MetricsDoubleTypeDeviceDao extends BaseDao<MetricsDoubleTypeDev
 
     void deletePrevious(MetricsDoubleTypeDevice metric);
 
+    void deletePrevious(MetricsDoubleTypeDevice metric, String delimiter);
+
     void deleteBySensorVariableRefId(int sensorRefId);
 
     List<MetricsDoubleTypeDevice> getAll(MetricsDoubleTypeDevice metric);

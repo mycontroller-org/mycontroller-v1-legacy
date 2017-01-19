@@ -19,6 +19,8 @@ package org.mycontroller.standalone.db.dao;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableInfo;
 
@@ -37,9 +39,11 @@ public interface BaseDao<Tdao, Tid> {
 
     void delete(String key, Object value);
 
-    void delete(String key, List<Object> values);
+    void delete(String key, List<?> values);
 
     void update(Tdao tdao);
+
+    void updateId(Tdao tdao, Tid tid);
 
     void updateBulk(String setColName, Object setColValue);
 
@@ -59,6 +63,10 @@ public interface BaseDao<Tdao, Tid> {
 
     List<Tdao> getAll(String key, Object value);
 
+    List<Tdao> getAllData(Query query);
+
+    Tdao get(String key, Object value);
+
     long countOf(HashMap<String, List<Object>> columnValues);
 
     long countOf(String key, Object data);
@@ -66,5 +74,7 @@ public interface BaseDao<Tdao, Tid> {
     Dao<Tdao, Tid> getDao();
 
     TableInfo<Tdao, Tid> getTableInfo();
+
+    void delete(HashMap<String, Object> map);
 
 }

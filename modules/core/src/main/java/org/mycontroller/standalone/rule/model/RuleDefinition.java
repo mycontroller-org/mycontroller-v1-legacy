@@ -46,6 +46,8 @@ public abstract class RuleDefinition {
     private Integer id;
     private boolean enabled;
     private boolean disableWhenTrigger;
+    private boolean reEnable;
+    private Long reEnableDelay;
     private String name;
     private RESOURCE_TYPE resourceType;
     private Integer resourceId;
@@ -63,6 +65,9 @@ public abstract class RuleDefinition {
 
     @JsonIgnore
     private String actualValue;
+
+    @JsonIgnore
+    private String actualUnit;
 
     public abstract String getConditionString();
 
@@ -115,6 +120,8 @@ public abstract class RuleDefinition {
                 .ignoreDuplicate(ignoreDuplicate)
                 .triggered(triggered)
                 .dampeningType(dampeningType)
+                .reEnable(reEnable)
+                .reEnableDelay(reEnableDelay)
                 .build();
         if (dampening != null) {
             dampening.updateRuleDefinitionTable(ruleDefinitionTable);
@@ -138,6 +145,8 @@ public abstract class RuleDefinition {
         ignoreDuplicate = ruleDefinitionTable.getIgnoreDuplicate();
         triggered = ruleDefinitionTable.getTriggered();
         dampeningType = ruleDefinitionTable.getDampeningType();
+        reEnable = ruleDefinitionTable.getReEnable();
+        reEnableDelay = ruleDefinitionTable.getReEnableDelay();
         switch (dampeningType) {
             case CONSECUTIVE:
                 dampening = new DampeningConsecutive();

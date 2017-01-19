@@ -532,7 +532,7 @@ input.mc-color-steel-blue{
 }
 
 .mc-sensor-variable-detail{
-  height:75px;
+  height:80px;
 }
 
 .mc-sensor-action-tiles{
@@ -808,7 +808,8 @@ kubernetes-topology-icon svg {
 }
 
 .tick line {
-  display: none;
+  /* When you do not want to display grid line on your charts enable, 'display:none;' */
+  /* display: none; */
 }
 
 .modal-body {

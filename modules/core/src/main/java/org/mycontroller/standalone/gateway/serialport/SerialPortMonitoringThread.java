@@ -53,7 +53,9 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
         gateway.setRunningDriver(gateway.getDriver());
         if (gateway.getRunningDriver() == SERIAL_PORT_DRIVER.AUTO) {
             if (AppProperties.getOsArch().startsWith(GatewayUtils.OS_ARCH_ARM)) {
-                gateway.setRunningDriver(SERIAL_PORT_DRIVER.PI4J);
+                //Refer https://github.com/mycontroller-org/mycontroller/issues/299
+                //gateway.setRunningDriver(SERIAL_PORT_DRIVER.PI4J);
+                gateway.setRunningDriver(SERIAL_PORT_DRIVER.JSERIALCOMM);
             } else {
                 gateway.setRunningDriver(SERIAL_PORT_DRIVER.JSERIALCOMM);
             }
@@ -130,6 +132,8 @@ public class SerialPortMonitoringThread implements Runnable, IGateway {
     public synchronized void write(RawMessage rawMessage) throws GatewayException {
         if (gateway.getState() == STATE.UP) {
             serialGateway.write(rawMessage);
+            _logger.debug("{} sent to Gateway[Name:{}, NetworkType:{}]", rawMessage, serialGateway.getGateway()
+                    .getName(), serialGateway.getGateway().getNetworkType());
         } else {
             throw new GatewayException("Gateway not available! GatewayTable:[" + gateway.toString() + "]");
         }

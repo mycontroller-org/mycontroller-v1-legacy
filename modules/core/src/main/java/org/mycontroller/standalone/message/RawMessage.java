@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.message;
 
+import java.io.Serializable;
+
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 
@@ -34,12 +36,15 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class RawMessage {
+public class RawMessage implements Serializable {
+    /**  */
+    private static final long serialVersionUID = 1L;
     private Integer gatewayId;
     private Object data;
     private String subData;
     private boolean isTxMessage = false;
     private NETWORK_TYPE networkType;
+    private Long timestamp;
 
     public NETWORK_TYPE getNetworkType() {
         if (networkType == null) {

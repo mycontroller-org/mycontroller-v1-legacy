@@ -142,7 +142,8 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, I
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, ForwardPayload.KEY_ID);
+            query.setIdColumn(ForwardPayload.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

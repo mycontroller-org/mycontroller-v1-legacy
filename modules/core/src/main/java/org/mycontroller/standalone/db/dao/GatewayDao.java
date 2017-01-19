@@ -19,6 +19,7 @@ package org.mycontroller.standalone.db.dao;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -37,5 +38,7 @@ public interface GatewayDao extends BaseDao<GatewayTable, Integer> {
     List<GatewayTable> getAllEnabled();
 
     QueryResponse getAll(Query query);
+
+    List<GatewayTable> getAll(Query query, String filter, AllowedResources allowedResources);
 
 }

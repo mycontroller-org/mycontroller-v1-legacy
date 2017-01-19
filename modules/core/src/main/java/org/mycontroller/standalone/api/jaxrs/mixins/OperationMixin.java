@@ -96,6 +96,11 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                 operationSendEmail.setEmailSubject(node.get("emailSubject").asText());
                 operationSendEmail.setToEmailAddresses(node.get("toEmailAddresses").asText());
                 operationSendEmail.setTemplate(node.get("template").asText());
+                if (node.get("templateBindings") != null) {
+                    operationSendEmail.setTemplateBindings(RestUtils.getObjectMapper().convertValue(
+                            node.get("templateBindings"), new TypeReference<HashMap<String, Object>>() {
+                            }));
+                }
                 operation = operationSendEmail;
                 break;
             case SEND_PAYLOAD:
@@ -121,6 +126,12 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                 operationSendPushbulletNote.setTitle(node.get("title").asText());
                 if (node.get("idens") != null) {
                     operationSendPushbulletNote.setIdens(node.get("idens").asText());
+                }
+                if (node.get("emails") != null) {
+                    operationSendPushbulletNote.setEmails(node.get("emails").asText());
+                }
+                if (node.get("channelTags") != null) {
+                    operationSendPushbulletNote.setChannelTags(node.get("channelTags").asText());
                 }
                 if (node.get("body") != null) {
                     operationSendPushbulletNote.setBody(node.get("body").asText());

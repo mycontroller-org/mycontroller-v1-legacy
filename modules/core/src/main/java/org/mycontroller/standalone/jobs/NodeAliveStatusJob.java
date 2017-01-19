@@ -74,9 +74,10 @@ public class NodeAliveStatusJob extends Job {
                     || McObjectManager.getGateway(node.getGatewayTable().getId()).getGateway().getState() != STATE.UP) {
                 return;
             }
-            //for now supports only for MySensors
+            //for now supports only for MySensors and MyController
             if (node.getGatewayTable().getEnabled()
-                    && node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+                    && (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
+                    || node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER)) {
                 McObjectManager.getMcActionEngine().sendAliveStatusRequest(node);
             }
         }

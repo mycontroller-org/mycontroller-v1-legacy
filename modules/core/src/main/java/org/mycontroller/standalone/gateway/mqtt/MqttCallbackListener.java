@@ -24,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.mycontroller.standalone.AppProperties.STATE;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageQueue;
@@ -61,7 +62,7 @@ public class MqttCallbackListener implements MqttCallback {
     @Override
     public void deliveryComplete(IMqttDeliveryToken deliveryToken) {
         try {
-            _logger.debug("Message Delivery Complete, [Message Id:{}, Topic:{}, PayLoad:{}]",
+            _logger.debug("Message Delivery Complete, [Message Id:{}, Topic:{}, Payload:{}]",
                     deliveryToken.getMessageId(),
                     StringUtils.join(deliveryToken.getTopics(), ","),
                     deliveryToken.getMessage());
@@ -73,12 +74,16 @@ public class MqttCallbackListener implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) {
         try {
-            _logger.debug("Message Received, Topic:[{}], PayLoad:[{}]", topic, message);
+            if (message.isDuplicate()) {
+                _logger.warn("Duplicate message received!! {}", message);
+            }
+            _logger.debug("Message Received, Topic:[{}], Payload:[{}]", topic, message);
             RawMessageQueue.getInstance().putMessage(RawMessage.builder()
                     .gatewayId(gateway.getId())
                     .data(message.toString())
                     .subData(topic)
                     .networkType(gateway.getNetworkType())
+                    .timestamp(System.currentTimeMillis())
                     .build());
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
@@ -112,6 +117,7 @@ public class MqttCallbackListener implements MqttCallback {
             } else {
                 try {
                     mqttClient.connect(connectOptions);
+                    mqttClient.subscribe(GatewayUtils.getMqttTopics(gateway.getTopicsSubscribe()));
                     _logger.info("MQTT Gateway[{}] Reconnected successfully...", mqttClient.getServerURI());
                     gateway.setStatus(STATE.UP, "Reconnected successfully...");
                     if (mqttClient.isConnected()) {

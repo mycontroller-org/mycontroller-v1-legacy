@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,7 +55,11 @@ public class MySensorsProviderBridge implements IProviderBridge {
         }
         try {
             _logger.debug("Received raw message: [{}]", rawMessage);
-            McMessageUtils.sendToMcMessageEngine(new MySensorsRawMessage(rawMessage).getMcMessage());
+            McMessage mcMessage = new MySensorsRawMessage(rawMessage).getMcMessage();
+            McMessageUtils.sendToMcMessageEngine(mcMessage);
+            if (rawMessage.isTxMessage()) {
+                executeMcMessage(mcMessage);
+            }
         } catch (RawMessageException ex) {
             _logger.error("Unable to process this rawMessage:{}", rawMessage, ex);
         }
@@ -79,5 +83,10 @@ public class MySensorsProviderBridge implements IProviderBridge {
             _logger.warn("Node:[{}], Node Id should be in the range of 0~254", node);
             throw new RuntimeException("Node Id should be in the range of 0~254");
         }
+    }
+
+    @Override
+    public RawMessage getRawMessage(McMessage mcMessage) throws RawMessageException {
+        return new MySensorsRawMessage(mcMessage).getRawMessage();
     }
 }

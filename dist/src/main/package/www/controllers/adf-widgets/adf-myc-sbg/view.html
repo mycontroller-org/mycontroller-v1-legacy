@@ -25,7 +25,8 @@
   <div ng-repeat="sensorVariable in mycSensorsBulletGraph.sensorVariables track by $index">
     <hr ng-if="$index != 0" class="adf-myc-sbg-margin">
     <div class="adf-myc-sbg">
-      <span tooltip-placement="top" uib-tooltip-html="sensorVariable.resourceName | mcResourceRepresentation" ng-bind-html="'[S]:'+sensorVariable.displayName | mcResourceRepresentation"></span>
+      <span class="mc-pointer" tooltip-placement="top" ui-sref="sensorsDetail({id:sensorVariable.internalId})"
+        uib-tooltip-html="sensorVariable.resourceName | mcResourceRepresentation" ng-bind-html="'[S]:'+sensorVariable.displayName | mcResourceRepresentation"></span>
       <nvd3 id="sbg-{{config.variableIds.join('-')}}" ng-init="chartOptions=mycSensorsBulletGraph.getChartOptions()" options="chartOptions" data="sensorVariable"></nvd3>
     </div>
   </div>

@@ -64,7 +64,8 @@ public class UserDaoImpl extends BaseAbstractDaoImpl<User, Integer> implements U
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return super.getQueryResponse(query, User.KEY_ID);
+            query.setIdColumn(User.KEY_ID);
+            return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

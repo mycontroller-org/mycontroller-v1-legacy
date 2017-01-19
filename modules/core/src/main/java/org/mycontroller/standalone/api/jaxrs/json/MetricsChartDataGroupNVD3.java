@@ -37,6 +37,7 @@ public class MetricsChartDataGroupNVD3 {
     @JsonProperty("chartData")
     private ArrayList<MetricsChartDataNVD3> metricsChartDataNVD3;
     private Integer id;
+    private Integer internalId;
     private String variableType;
     private String unit;
     private String unit2;

@@ -17,10 +17,12 @@
 package org.mycontroller.standalone.api.jaxrs.json;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.ToString;
 
 /**
@@ -47,10 +49,14 @@ public class Query {
     private long page;
     private String orderBy;
     private boolean orderByRaw = false;
+    private boolean isAndQuery = true;
+    @JsonIgnore
+    private String idColumn = KEY_ID;
+    @JsonIgnore
+    private String totalCountAltColumn = null;
 
-    @NonNull
-    private String order;//asc or desc
-    private HashMap<String, Object> filters;
+    private String order;
+    private Map<String, Object> filters;
 
     public Long getStartingRow() {
         return (getPage() - 1) * getPageLimit();
@@ -61,13 +67,43 @@ public class Query {
         orderByRaw = true;
     }
 
-    public static Query get(HashMap<String, Object> filters) {
+    public String getOrder() {
+        if (order == null) {
+            order = ORDER_ASC;
+        }
+        return order;
+    }
+
+    public String getOrderBy() {
+        if (orderBy == null) {
+            orderBy = KEY_ID;
+        }
+        return orderBy;
+    }
+
+    public String getIdColumn() {
+        if (idColumn == null) {
+            idColumn = KEY_ID;
+        }
+        return idColumn;
+    }
+
+    public Map<String, Object> getFilters() {
+        if (filters == null) {
+            filters = new HashMap<String, Object>();
+        }
+        return filters;
+    }
+
+    public static Query get(Map<String, Object> filters) {
         Query query = Query.builder()
                 .order(filters.get(ORDER) != null ? (String) filters.get(ORDER) : ORDER_ASC)
                 .orderBy(filters.get(ORDER_BY) != null ? (String) filters.get(ORDER_BY) : KEY_ID)
                 .filters(filters)
                 .pageLimit(filters.get(PAGE_LIMIT) != null ? (Long) filters.get(PAGE_LIMIT) : MAX_ITEMS_PER_PAGE)
                 .page(filters.get(PAGE) != null ? (long) filters.get(PAGE) : 1L)
+                .isAndQuery(true)
+                .idColumn(KEY_ID)
                 .build();
         //Check order if not asc change to desc
         if (!query.order.equalsIgnoreCase(ORDER_ASC)) {

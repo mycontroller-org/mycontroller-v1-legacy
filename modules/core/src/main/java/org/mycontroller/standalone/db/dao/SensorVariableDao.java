@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 
@@ -40,4 +43,8 @@ public interface SensorVariableDao extends BaseDao<SensorVariable, Integer> {
     SensorVariable get(Integer sensorRefId, MESSAGE_TYPE_SET_REQ variableType);
 
     List<Integer> getSensorVariableIds(Integer sId);
+
+    List<SensorVariable> getAll(Query query, String filter, AllowedResources allowedResources);
+
+    QueryResponse getAll(Query query);
 }

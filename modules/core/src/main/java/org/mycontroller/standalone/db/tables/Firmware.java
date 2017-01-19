@@ -16,7 +16,8 @@
  */
 package org.mycontroller.standalone.db.tables;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.HashMap;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
@@ -39,12 +40,22 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = { "data" })
-public class Firmware {
+@ToString
+public class Firmware implements Serializable {
 
+    /**  */
+    private static final long serialVersionUID = 8953054072663748162L;
     public static final String KEY_ID = "id";
     public static final String KEY_TYPE_ID = "typeId";
     public static final String KEY_VERSION_ID = "versionId";
+    public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_FIRMWARE_DATA_ID = "firmwareDataId";
+    public static final String KEY_PROPERTIES = "properties";
+    public static final String KEY_PROP_CRC = "crc";
+    public static final String KEY_PROP_MD5_HEX = "md5hex";
+    public static final String KEY_PROP_BLOCKS = "blocks";
+    public static final String KEY_PROP_TYPE = "type";
+    public static final String KEY_PROP_BLOCK_SIZE = "blockSize";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -57,25 +68,30 @@ public class Firmware {
             foreign = true, foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private FirmwareVersion version;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
-    @DatabaseField(canBeNull = false)
-    private Integer blocks;
+    @DatabaseField(canBeNull = true, columnName = KEY_PROPERTIES, dataType = DataType.SERIALIZABLE)
+    private HashMap<String, Object> properties;
 
-    @DatabaseField(canBeNull = false)
-    private Integer crc;
-
-    @DatabaseField(canBeNull = false, dataType = DataType.SERIALIZABLE)
-    private ArrayList<Byte> data;
-
+    //These values are not stored on database, only to get from user
     private String fileString;
+    private byte[] fileBytes;
+    private String fileType;
+    private Integer blockSize;
 
     public String getFirmwareName() {
         if (type != null && version != null) {
             return type.getName() + ":" + version.getVersion();
         }
         return "-";
+    }
+
+    public HashMap<String, Object> getProperties() {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        }
+        return properties;
     }
 
 }

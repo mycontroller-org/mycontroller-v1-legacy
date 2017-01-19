@@ -16,11 +16,14 @@
  */
 package org.mycontroller.standalone.scripts.api;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -32,6 +35,7 @@ import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.RuleUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.utils.McUtils;
 
 /**
@@ -80,5 +84,23 @@ public class UtilsApi {
             return "Never";
         }
         return McUtils.getFriendlyTime(System.currentTimeMillis() - timestamp, true);
+    }
+
+    public String formatTime(String pattern) {
+        return formatTime(pattern, null);
+    }
+
+    public String formatTime(String pattern, Long timestamp) {
+        Date date = null;
+        if (timestamp != null) {
+            date = new Date(timestamp);
+        } else {
+            date = new Date();
+        }
+        return new SimpleDateFormat(pattern).format(date);
+    }
+
+    public LocationSettings getServerLocationSettings() {
+        return AppProperties.getInstance().getLocationSettings();
     }
 }

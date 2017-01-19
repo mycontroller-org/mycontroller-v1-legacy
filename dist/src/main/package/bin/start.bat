@@ -17,7 +17,7 @@
 
 @ECHO OFF
 SET HEAP_MIN=-Xms8m
-SET HEAP_MAX=-Xmx100m
+SET HEAP_MAX=-Xmx150m
 
 SET CONF_PROPERTIES_FILE=../conf/mycontroller.properties
 SET CONF_LOG_FILE=../conf/logback.xml

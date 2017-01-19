@@ -67,6 +67,7 @@ public class SerialDataListenerjSerialComm implements SerialPortDataListener {
                             .gatewayId(gateway.getId())
                             .data(toProcess)
                             .networkType(gateway.getNetworkType())
+                            .timestamp(System.currentTimeMillis())
                             .build());
                     message.setLength(0);
                 } else if (b != SerialPortCommon.MESSAGE_SPLITTER) {

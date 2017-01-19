@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,10 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.db.tables.GatewayTable;
+import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.Dao;
@@ -56,11 +60,24 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         //Enable Auto commit
         //dao.setAutoCommit(connectionSource.getReadWriteConnection(), true);
         //Create Table if not exists
-        TableUtils.createTableIfNotExists(connectionSource, entity);
+        //https://github.com/j256/ormlite-core/issues/20
+        if (!hasTable(((BaseDaoImpl<?, ?>) dao).getTableInfo().getTableName())) {
+            TableUtils.createTableIfNotExists(connectionSource, entity);
+        }
         _logger.debug("Create Table If Not Exists, executed for {}", entity.getName());
 
         //Create TableInfo object
         tableInfo = new TableInfo<Tdao, Tid>(connectionSource, (BaseDaoImpl<Tdao, Tid>) dao, entity);
+    }
+
+    protected boolean hasTable(String tablename) {
+        try {
+            // test if the table already exists
+            ((BaseDaoImpl<?, ?>) dao).countOf();
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
     }
 
     public Dao<Tdao, Tid> getDao() {
@@ -71,55 +88,99 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         return tableInfo;
     }
 
-    private void addResourcesFilter(AllowedResources allowedResources, Where<Tdao, Tid> where) throws SQLException {
-        where.eq(AllowedResources.KEY_RESOURCE_TYPE, RESOURCE_TYPE.GATEWAY).and()
-                .in(AllowedResources.KEY_RESOURCE_ID, allowedResources.getGatewayIds()).or()
-                .eq(AllowedResources.KEY_RESOURCE_TYPE, RESOURCE_TYPE.NODE).and()
-                .in(AllowedResources.KEY_RESOURCE_ID, allowedResources.getNodeIds()).
-                or().eq(AllowedResources.KEY_RESOURCE_TYPE, RESOURCE_TYPE.SENSOR).and()
-                .in(AllowedResources.KEY_RESOURCE_ID, allowedResources.getSensorIds()).or()
-                .eq(AllowedResources.KEY_RESOURCE_TYPE, RESOURCE_TYPE.SENSOR_VARIABLE).and()
-                .in(AllowedResources.KEY_RESOURCE_ID, allowedResources.getSensorVariableIds());
+    private int addResourcesFilter(AllowedResources allowedResources, RESOURCE_TYPE type, Where<Tdao, Tid> where)
+            throws SQLException {
+        int count = 0;
+        switch (type) {
+            case GATEWAY:
+                where.in(GatewayTable.KEY_ID, allowedResources.getGatewayIds());
+                count++;
+                break;
+            case NODE:
+                where.in(Node.KEY_GATEWAY_ID, allowedResources.getGatewayIds()).or()
+                        .in(Node.KEY_ID, allowedResources.getNodeIds());
+                count++;
+                break;
+            case SENSOR:
+                where.in(Sensor.KEY_NODE_ID, allowedResources.getNodeIds()).or()
+                        .in(Sensor.KEY_ID, allowedResources.getSensorIds());
+                count++;
+                break;
+            case SENSOR_VARIABLE:
+                where.in(SensorVariable.KEY_SENSOR_DB_ID, allowedResources.getSensorIds()).or()
+                        .in(SensorVariable.KEY_ID, allowedResources.getSensorVariableIds());
+                count++;
+                break;
+            default:
+                break;
+
+        }
+        return count;
     }
 
-    public QueryResponse getQueryResponse(Query query, String idColumn, String isAlterdTotalCountKey)
+    @SuppressWarnings("unchecked")
+    public QueryResponse getQueryResponse(Query query)
             throws SQLException {
         _logger.debug("Input query: {}", query);
         QueryBuilder<Tdao, Tid> queryBuilder = this.getDao().queryBuilder();
-        Where<Tdao, Tid> where = this.getDao().queryBuilder().where();
+        Where<Tdao, Tid> whereMain = this.getDao().queryBuilder().where();
+
+        AllowedResources allowedResources = null;
+        RESOURCE_TYPE allowedResourceType = null;
 
         //where.isNotNull(idColumn);
-        int andCount = 0;
+        int whereCount = 0;
         for (String key : query.getFilters().keySet()) {
             if (query.getFilters().get(key) != null) {
+                if (key.equals(AllowedResources.KEY_ALLOWED_RESOURCE_TYPE)) {
+                    continue;
+                }
                 if (query.getFilters().get(key) instanceof List<?>) {
                     for (Object value : (List<?>) query.getFilters().get(key)) {
                         if (value instanceof String) {//If it's string add one by one
-                            where.like(key, "%" + value + "%");
-                            andCount++;
+                            whereMain.like(key, "%" + value + "%");
+                            whereCount++;
                         } else {//If it's integer, float, long, etc., add it under IN type
-                            where.in(key, (List<?>) query.getFilters().get(key));
-                            andCount++;
+                            whereMain.in(key, (List<?>) query.getFilters().get(key));
+                            whereCount++;
                             break;
                         }
                     }
                 } else if (query.getFilters().get(key) instanceof AllowedResources) {
-                    AllowedResources allowedResources = (AllowedResources) query.getFilters().get(key);
+                    if (query.getFilters().get(AllowedResources.KEY_ALLOWED_RESOURCE_TYPE) == null) {
+                        _logger.error("'{}' is a mandetary field, when '{}' is defined!",
+                                AllowedResources.KEY_ALLOWED_RESOURCE_TYPE, AllowedResources.KEY_ALLOWED_RESOURCES);
+                        continue;
+                    }
                     //Add resource filter for gateways, nodes, sensors
-                    addResourcesFilter(allowedResources, where);
-                    andCount++;
+                    allowedResources = (AllowedResources) query.getFilters().get(key);
+                    allowedResourceType = (RESOURCE_TYPE) query.getFilters().get(
+                            AllowedResources.KEY_ALLOWED_RESOURCE_TYPE);
                 } else {
-                    where.eq(key, query.getFilters().get(key));
-                    andCount++;
+                    whereMain.eq(key, query.getFilters().get(key));
+                    whereCount++;
                 }
             }
         }
 
         //Set filtered count result
         QueryBuilder<Tdao, Tid> queryBuilderFilteredCount = this.getDao().queryBuilder();
-        if (andCount != 0) {
-            where.and(andCount);
-            queryBuilderFilteredCount.setWhere(where);
+        if (whereCount != 0) {
+            if (query.isAndQuery()) {
+                whereMain.and(whereCount);
+            } else {
+                whereMain.or(whereCount);
+            }
+        } else if (allowedResourceType != null) {
+            int count = addResourcesFilter(allowedResources, allowedResourceType, whereMain);
+            if (count > 0) {
+                whereMain.and(count);
+            }
+        } else {
+            whereMain = null;
+        }
+        if (whereMain != null) {
+            queryBuilderFilteredCount.setWhere(whereMain);
         }
         query.setFilteredCount(queryBuilderFilteredCount.countOf());
 
@@ -127,23 +188,21 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         //-----------------
         QueryBuilder<Tdao, Tid> totalItemsBuilder = this.getDao().queryBuilder();
         int totalItemsAndCount = 0;
-        if (isAlterdTotalCountKey != null && query.getFilters().get(isAlterdTotalCountKey) != null) {
-            totalItemsBuilder.where().eq(isAlterdTotalCountKey, query.getFilters().get(isAlterdTotalCountKey));
+        if (query.getTotalCountAltColumn() != null && query.getFilters().get(query.getTotalCountAltColumn()) != null) {
+            totalItemsBuilder.where().eq(query.getTotalCountAltColumn(),
+                    query.getFilters().get(query.getTotalCountAltColumn()));
             totalItemsAndCount++;
         } else {
-            @SuppressWarnings("unchecked")
-            List<Object> idColumnList = (List<Object>) query.getFilters().get(idColumn);
+            List<Object> idColumnList = (List<Object>) query.getFilters().get(query.getIdColumn());
             if (idColumnList != null && !idColumnList.isEmpty()) {
-                totalItemsBuilder.where().in(idColumn, (List<?>) query.getFilters().get(idColumn));
+                totalItemsBuilder.where().in(query.getIdColumn(),
+                        (List<?>) query.getFilters().get(query.getIdColumn()));
                 totalItemsAndCount++;
             }
         }
 
-        if (query.getFilters().get(AllowedResources.KEY_ALLOWED_RESOURCES) != null) {
-            AllowedResources allowedResources = (AllowedResources) query.getFilters().get(
-                    AllowedResources.KEY_ALLOWED_RESOURCES);
-            addResourcesFilter(allowedResources, totalItemsBuilder.where());
-            totalItemsAndCount++;
+        if (allowedResourceType != null) {
+            totalItemsAndCount += addResourcesFilter(allowedResources, allowedResourceType, totalItemsBuilder.where());
         }
 
         if (totalItemsAndCount > 1) {
@@ -156,26 +215,27 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         }
         //-----------------
 
-        if (andCount != 0) {
-            queryBuilder.setWhere(where);
+        if (whereMain != null) {
+            queryBuilder.setWhere(whereMain);
+        }
+
+        //Update offset and limit
+        if (query.getPageLimit() > 0) {
+            queryBuilder.limit(query.getPageLimit());
+        }
+        if (query.getStartingRow() > 0) {
+            queryBuilder.offset(query.getStartingRow());
         }
 
         if (query.isOrderByRaw()) {
-            queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
-                    .orderByRaw(query.getOrderBy() + query.getOrder());
+            queryBuilder.orderByRaw(query.getOrderBy() + query.getOrder());
         } else {
-            queryBuilder.offset(query.getStartingRow()).limit(query.getPageLimit())
-                    .orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
+            queryBuilder.orderBy(query.getOrderBy(), query.getOrder().equalsIgnoreCase(Query.ORDER_ASC));
         }
 
         //Remove allowed resources from query, to avoid send list to user
         query.getFilters().put(AllowedResources.KEY_ALLOWED_RESOURCES, null);
         return QueryResponse.builder().data(queryBuilder.query()).query(query).build();
-    }
-
-    public QueryResponse getQueryResponse(Query query, String idColumn)
-            throws SQLException {
-        return this.getQueryResponse(query, idColumn, null);
     }
 
     //Create new item
@@ -215,6 +275,15 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         try {
             Integer count = this.getDao().update(tdao);
             _logger.debug("Updated item:[{}], Update count:{}", tdao, count);
+        } catch (SQLException ex) {
+            _logger.error("unable to update item:[{}]", tdao, ex);
+        }
+    }
+
+    public void updateId(Tdao tdao, Tid tid) {
+        try {
+            Integer count = this.getDao().updateId(tdao, tid);
+            _logger.debug("Updated item:[{}, id:{}], Update count:{}", tdao, tid, count);
         } catch (SQLException ex) {
             _logger.error("unable to update item:[{}]", tdao, ex);
         }
@@ -294,7 +363,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         }
     }
 
-    public void delete(String key, List<Object> values) {
+    public void delete(String key, List<?> values) {
         try {
             DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
             deleteBuilder.where().in(key, values);
@@ -302,6 +371,24 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Deleted count:{}, for key:{}, values:{}", deleteCount, key, values);
         } catch (SQLException ex) {
             _logger.error("unable to delete item, key:{}, values:{}", key, values, ex);
+        }
+    }
+
+    public void delete(HashMap<String, Object> map) {
+        try {
+            DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
+            for (String key : map.keySet()) {
+                if (map.get(key) instanceof List) {
+                    deleteBuilder.where().in(key, map.get(key));
+                } else {
+                    deleteBuilder.where().eq(key, map.get(key));
+                }
+            }
+
+            int deleteCount = deleteBuilder.delete();
+            _logger.debug("Deleted count:{}, for map:{}", deleteCount, map);
+        } catch (SQLException ex) {
+            _logger.error("unable to delete item, map:{}", map, ex);
         }
     }
 
@@ -321,7 +408,16 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         try {
             return this.getDao().queryBuilder().where().eq(key, value).query();
         } catch (SQLException ex) {
-            _logger.error("unable to get all items value:{}", value, ex);
+            _logger.error("unable to get all items key:{}, value:{}", key, value, ex);
+            return null;
+        }
+    }
+
+    public Tdao get(String key, Object value) {
+        try {
+            return this.getDao().queryBuilder().where().eq(key, value).queryForFirst();
+        } catch (SQLException ex) {
+            _logger.error("unable to get all items key:{}, value:{}", key, value, ex);
             return null;
         }
     }
@@ -367,6 +463,20 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.error("unable to get count for query, input[{}]", columnValues, ex);
         }
         return 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Tdao> getAllData(Query query) {
+        try {
+            QueryResponse response = getQueryResponse(query);
+            if (response.getData() != null) {
+                return (List<Tdao>) response.getData();
+            }
+        } catch (SQLException ex) {
+            _logger.error("Error while processing for {}", query, ex);
+        }
+
+        return new ArrayList<Tdao>();
     }
 
 }

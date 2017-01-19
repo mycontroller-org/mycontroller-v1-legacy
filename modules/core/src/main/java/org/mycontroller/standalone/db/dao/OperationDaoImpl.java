@@ -61,7 +61,8 @@ public class OperationDaoImpl extends BaseAbstractDaoImpl<OperationTable, Intege
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return super.getQueryResponse(query, OperationTable.KEY_ID);
+            query.setIdColumn(OperationTable.KEY_ID);
+            return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

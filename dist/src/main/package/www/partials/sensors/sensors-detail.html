@@ -95,11 +95,20 @@
               <div class="card-pf-body">
                 <!-- Sensor variables -->
                 <div ng-init="variable.showVariable = true">
-                <div ng-show="variable.showVariable" ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
-                  <a ui-sref="sensorVariableEdit({ id: variable.id })">
-                    <i uib-tooltip="{{ 'EDIT' | translate}}" tooltip-placement="left" class="pull-right fa fa-edit"></i>
-                  </a>
-                </div>
+                  <div ng-show="variable.showVariable" ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
+                    <span class="pull-right">
+                      <span style="margin-right:9px;" >
+                        <a ui-sref="sensorVariablePurge({ id: variable.id })">
+                          <i uib-tooltip="{{ 'PURGE' | translate}}" tooltip-placement="left" class="fa fa-trash"></i>
+                        </a>
+                      </span>
+                      <span>
+                        <a ui-sref="sensorVariableEdit({ id: variable.id })">
+                          <i uib-tooltip="{{ 'EDIT' | translate}}" tooltip-placement="left" class="fa fa-edit"></i>
+                        </a>
+                      </span>
+                    </span>
+                  </div>
               </div>
             </div>
           </div>
@@ -120,6 +129,7 @@
                     switch-label="{{ 'MIN_MAX' | translate }}" ng-true-value="true" ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}" >
                 <select pf-select ng-model="chartFromTimestamp" ng-change="updateChart()">
                   <option value="" ng-hide="true"></option>
+                  <option value="300000">{{ 'LAST_5_MINUTES' | translate }}</option>
                   <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
                   <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
                   <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>

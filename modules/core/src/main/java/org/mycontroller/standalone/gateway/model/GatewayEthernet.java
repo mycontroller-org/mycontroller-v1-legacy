@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.gateway.model;
-
-import java.util.HashMap;
 
 import org.mycontroller.standalone.db.tables.GatewayTable;
 
@@ -54,11 +52,9 @@ public class GatewayEthernet extends Gateway {
     @JsonIgnore
     public GatewayTable getGatewayTable() {
         GatewayTable gatewayTable = super.getGatewayTable();
-        HashMap<String, Object> properties = new HashMap<String, Object>();
-        properties.put(KEY_HOST, host);
-        properties.put(KEY_PORT, port);
-        properties.put(KEY_ALIVE_FREQUENCY, aliveFrequency);
-        gatewayTable.setProperties(properties);
+        gatewayTable.getProperties().put(KEY_HOST, host);
+        gatewayTable.getProperties().put(KEY_PORT, port);
+        gatewayTable.getProperties().put(KEY_ALIVE_FREQUENCY, aliveFrequency);
         return gatewayTable;
     }
 

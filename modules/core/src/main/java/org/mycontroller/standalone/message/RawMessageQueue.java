@@ -16,7 +16,11 @@
  */
 package org.mycontroller.standalone.message;
 
-import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+
+import org.mapdb.Atomic.Integer;
+import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.MapDbFactory;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,50 +30,58 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RawMessageQueue {
-    private static RawMessageQueue _instance = new RawMessageQueue();
-    private ArrayList<RawMessage> rawMessages;
-    private int queueSize;
+    public static final String RAW_MESSAGES_QUEUE_NAME = "mc_raw_messages_queue";
+    public static final String RAW_MESSAGES_QUEUE_COUNTER_NAME = "mc_raw_messages_queue_counter";
+    BlockingQueue<RawMessage> rawMessagesQueue;
+    private final Integer counter;
+
+    //Do not load until some calls getInstance
+    private static class RawMessageQueueHelper {
+        private static final RawMessageQueue INSTANCE = new RawMessageQueue();
+    }
 
     public static RawMessageQueue getInstance() {
-        return _instance;
+        return RawMessageQueueHelper.INSTANCE;
     }
 
     private RawMessageQueue() {
-        this(1000);
-    }
+        counter = MapDbFactory.getDbStore().getAtomicInteger(RAW_MESSAGES_QUEUE_COUNTER_NAME);
+        rawMessagesQueue = MapDbFactory.getDbStore().getQueue(RAW_MESSAGES_QUEUE_NAME);
+        if (AppProperties.getInstance().getClearMessagesQueueOnStart()) {
+            int offlineMessagesCount = counter.get();
+            rawMessagesQueue.clear();
+            counter.set(0);
+            _logger.info("Cleared offline messages[{}] from the queue.", offlineMessagesCount);
+        } else {
+            _logger.info("Continuing with offline messages[{}] in queue", counter.get());
+            //Allow some time for gateways to get ready
+        }
 
-    private RawMessageQueue(int queueSize) {
-        rawMessages = new ArrayList<RawMessage>();
-        this.queueSize = queueSize;
-        _logger.debug("Defined Queue Size:{}", queueSize);
     }
 
     public synchronized void putMessage(RawMessage rawMessage) {
-        if (rawMessages.size() < queueSize) {
-            rawMessages.add(rawMessage);
-            _logger.debug("Added new message, Queue size:{}, Message:[{}]", rawMessages.size(), rawMessage);
-        } else {
-            _logger.warn("Reached Maximun limit: {}, Unable to add new message. Dropped", rawMessages.size());
-        }
+        rawMessagesQueue.add(rawMessage);
+        counter.incrementAndGet();
+        _logger.debug("Added new {}, queue size:{}", rawMessage, counter.get());
     }
 
     public synchronized RawMessage getMessage() {
-        if (rawMessages.size() > 0) {
-            RawMessage rawMessage = this.rawMessages.get(0);
-            rawMessages.remove(0);
-            _logger.debug("Removed a message, Queue size:{}, Message:[{}]", rawMessages.size(), rawMessage);
+        if (!rawMessagesQueue.isEmpty()) {
+            RawMessage rawMessage = this.rawMessagesQueue.remove();
+            counter.decrementAndGet();
+            _logger.debug("Removed a {}, queue size:{}", rawMessage, counter.get());
             return rawMessage;
         } else {
-            _logger.warn("There are no messages in the queue, returning null");
+            _logger.warn("There is no message in the queue, returning null");
             return null;
         }
     }
 
-    public synchronized int getQueueSize() {
-        return this.rawMessages.size();
+    public int getQueueSize() {
+        return counter.get();
     }
 
     public synchronized boolean isEmpty() {
-        return this.rawMessages.isEmpty();
+        return rawMessagesQueue.isEmpty();
     }
 }

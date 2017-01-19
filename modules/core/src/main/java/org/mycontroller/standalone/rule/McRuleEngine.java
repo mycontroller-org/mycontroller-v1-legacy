@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,10 @@
 package org.mycontroller.standalone.rule;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.easyrules.api.RulesEngine;
 import org.easyrules.core.RulesEngineBuilder;
@@ -27,6 +30,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
+import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DATA_TYPE;
 import org.mycontroller.standalone.rule.model.RuleDefinitionCompare;
 import org.mycontroller.standalone.rule.model.RuleDefinitionThreshold;
@@ -43,6 +47,8 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 public class McRuleEngine extends Job implements Runnable {
     public static final String MC_RULES_ENGINE_NAME = "mc_rules_engine";
+    private static AtomicBoolean isRunning = new AtomicBoolean(false);
+    private static final long MAX_WAIT_TIME = 1000 * 4;//3 seconds
 
     private RESOURCE_TYPE resourceType;
     private Integer resourceId;
@@ -103,9 +109,26 @@ public class McRuleEngine extends Job implements Runnable {
 
     @Override
     public void doRun() throws JobInterruptException {
+        long startTime = System.currentTimeMillis();
+        while (isRunning.get()) {
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                _logger.error("Exception,", ex);
+            }
+            if (System.currentTimeMillis() - startTime > MAX_WAIT_TIME) {
+                _logger.warn("Scheduled Rule exuection skipped. Engine not available for more than {} ms",
+                        MAX_WAIT_TIME);
+                return;
+            }
+        }
+        isRunning.set(true);
         try {
             //Load rules
             List<RuleDefinitionTable> ruleDefinitionsDb = new ArrayList<RuleDefinitionTable>();
+            //Create set to avoid duplicates
+            Set<RuleDefinitionTable> ruleDefinitionsSet = new HashSet<RuleDefinitionTable>();
+
             //Get Gateway rules
             List<RuleDefinitionTable> gatewayRules = DaoUtils.getRuleDefinitionDao().getAll(
                     RuleDefinitionTable.KEY_RESOURCE_TYPE, RESOURCE_TYPE.GATEWAY);
@@ -115,19 +138,31 @@ public class McRuleEngine extends Job implements Runnable {
             //Get Script rules
             List<RuleDefinitionTable> scriptRules = DaoUtils.getRuleDefinitionDao().getAll(
                     RuleDefinitionTable.KEY_RESOURCE_TYPE, RESOURCE_TYPE.SCRIPT);
+            //Get all active Dampening type rules
+            List<RuleDefinitionTable> dampeningRules = DaoUtils.getRuleDefinitionDao().getAll(
+                    DAMPENING_TYPE.ACTIVE_TIME);
             if (gatewayRules != null) {
-                ruleDefinitionsDb.addAll(gatewayRules);
+                ruleDefinitionsSet.addAll(gatewayRules);
             }
             if (nodeRules != null) {
-                ruleDefinitionsDb.addAll(nodeRules);
+                ruleDefinitionsSet.addAll(nodeRules);
             }
             if (scriptRules != null) {
-                ruleDefinitionsDb.addAll(scriptRules);
+                ruleDefinitionsSet.addAll(scriptRules);
             }
+            if (dampeningRules != null) {
+                ruleDefinitionsSet.addAll(dampeningRules);
+            }
+
+            //Add all Set objects to arrayList
+            ruleDefinitionsDb.clear();
+            ruleDefinitionsDb.addAll(ruleDefinitionsSet);
             //Execute collected rules
             execute(ruleDefinitionsDb, MC_RULES_ENGINE_NAME);
         } catch (Exception ex) {
-            _logger.error("Exception, ", ex);
+            _logger.error("Exception on scheduled job, ", ex);
+        } finally {
+            isRunning.set(false);
         }
 
     }
@@ -138,6 +173,20 @@ public class McRuleEngine extends Job implements Runnable {
             _logger.warn("ResourceType[{}] and resourceId[{}] should not be NULL", resourceType, resourceId);
             return;
         }
+        long startTime = System.currentTimeMillis();
+        while (isRunning.get()) {
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                _logger.error("Exception,", ex);
+            }
+            if (System.currentTimeMillis() - startTime > MAX_WAIT_TIME) {
+                _logger.warn("Scheduled Rule exuection skipped. Engine not available for more than {} ms",
+                        MAX_WAIT_TIME);
+                return;
+            }
+        }
+        isRunning.set(true);
         try {
             //Load rules
             List<RuleDefinitionTable> ruleDefinitionsDb = new ArrayList<RuleDefinitionTable>();
@@ -176,8 +225,9 @@ public class McRuleEngine extends Job implements Runnable {
             //Execute all the rules
             execute(ruleDefinitionsDb, MC_RULES_ENGINE_NAME + "_" + resourceId);
         } catch (Exception ex) {
-            _logger.error("Exception, ", ex);
+            _logger.error("Exception on ondemand thread job, ", ex);
+        } finally {
+            isRunning.set(false);
         }
-
     }
 }

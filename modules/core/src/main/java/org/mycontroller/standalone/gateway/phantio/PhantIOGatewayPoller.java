@@ -94,6 +94,7 @@ public class PhantIOGatewayPoller implements Runnable {
                                 .gatewayId(gateway.getId())
                                 //data order: key, value, timestamp
                                 .data(Arrays.asList(key, record.get(key), timestamp))
+                                .timestamp(timestamp)
                                 .networkType(gateway.getNetworkType())
                                 .build());
                         gateway.setLastUpdate(timestamp);

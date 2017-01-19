@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.mycontroller.standalone.api.MetricApi;
 import org.mycontroller.standalone.api.jaxrs.json.MetricsCsvDownload;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
@@ -40,6 +41,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MetricsCsvEngine {
 
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss a");
+
+    private MetricApi metricApi = new MetricApi();
 
     public MetricsCsvDownload getMetricsCSV(int sensorValueId, int aggregationTypeId) {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorValueId);
@@ -96,8 +99,7 @@ public class MetricsCsvEngine {
             default:
                 break;
         }
-        List<MetricsBinaryTypeDevice> metrics = MetricsAggregationBase.getMetricsBinaryData(
-                sensorVariable, fromTime);
+        List<MetricsBinaryTypeDevice> metrics = metricApi.getMetricsBinaryData(sensorVariable, fromTime);
 
         StringBuilder builder = new StringBuilder();
         //Headers
@@ -116,8 +118,7 @@ public class MetricsCsvEngine {
     }
 
     private String getDoubleData(SensorVariable sensorVariable, AGGREGATION_TYPE aggrType) {
-        List<MetricsDoubleTypeDevice> metrics = MetricsAggregationBase
-                .getMetricsDoubleData(sensorVariable, null, null);
+        List<MetricsDoubleTypeDevice> metrics = metricApi.getMetricsDoubleData(sensorVariable, null, null);
         StringBuilder builder = new StringBuilder();
 
         if (aggrType == AGGREGATION_TYPE.RAW) {

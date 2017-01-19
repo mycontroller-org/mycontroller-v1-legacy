@@ -48,6 +48,7 @@ public class McConditionCompare extends McRuleBase {
         //Update current value
         try {
             setActualValue(super.getResourceValue(rdCompare.getResourceType(), rdCompare.getResourceId()));
+            setActualUnit(super.getResourceUnit(rdCompare.getResourceType(), rdCompare.getResourceId()));
             date2ValueString = super
                     .getResourceValue(rdCompare.getData2ResourceType(), rdCompare.getData2ResourceId());
         } catch (IllegalAccessException ex) {

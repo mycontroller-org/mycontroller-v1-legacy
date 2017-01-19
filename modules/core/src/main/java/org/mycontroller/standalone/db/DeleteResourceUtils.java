@@ -26,6 +26,7 @@ import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.gateway.GatewayUtils;
+import org.mycontroller.standalone.message.SmartSleepMessageQueue;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -86,7 +87,7 @@ public class DeleteResourceUtils {
         deleteResource(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId());
 
         //Delete UID tags
-        //TODO: complete this, when UUID is enabled
+        DaoUtils.getUidTagDao().delete(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable.getId());
 
         //Delete SensorVariable entry
         DaoUtils.getSensorVariableDao().delete(sensorVariable);
@@ -94,10 +95,9 @@ public class DeleteResourceUtils {
     }
 
     public static void deleteSensor(Sensor sensor) {
-        //Delete all variable Types
-        for (SensorVariable sensorVariable : DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId())) {
-            deleteSensorVariable(sensorVariable);
-        }
+        //Remove smart sleep messages
+        SmartSleepMessageQueue.getInstance().removeMessages(sensor.getNode().getGatewayTable().getId(),
+                sensor.getNode().getEui(), sensor.getSensorId());
 
         //Delete timers
         //deleteTimers(RESOURCE_TYPE.SENSOR, sensor.getId());
@@ -115,7 +115,12 @@ public class DeleteResourceUtils {
         deleteResource(RESOURCE_TYPE.SENSOR, sensor.getId());
 
         //Delete UID tags
-        DaoUtils.getUidTagDao().deleteBySensorId(sensor.getId());
+        DaoUtils.getUidTagDao().delete(RESOURCE_TYPE.SENSOR, sensor.getId());
+
+        //Delete all variable Types
+        for (SensorVariable sensorVariable : DaoUtils.getSensorVariableDao().getAllBySensorId(sensor.getId())) {
+            deleteSensorVariable(sensorVariable);
+        }
 
         //Delete Sensor
         DaoUtils.getSensorDao().delete(sensor);
@@ -123,6 +128,9 @@ public class DeleteResourceUtils {
     }
 
     public static void deleteNode(Node node) {
+        //Remove smart sleep messages
+        SmartSleepMessageQueue.getInstance().removeQueue(node.getGatewayTable().getId(), node.getEui());
+
         //Delete sensors
         for (Sensor sensor : DaoUtils.getSensorDao().getAllByNodeId(node.getId())) {
             deleteSensor(sensor);
@@ -133,6 +141,9 @@ public class DeleteResourceUtils {
 
         //Delete AlarmDefinitions
         //deleteAlarmDefinitions(RESOURCE_TYPE.NODE, node.getId());
+
+        //Delete UID tags
+        DaoUtils.getUidTagDao().delete(RESOURCE_TYPE.NODE, node.getId());
 
         //Delete from resource table
         deleteResource(RESOURCE_TYPE.NODE, node.getId());
@@ -158,6 +169,9 @@ public class DeleteResourceUtils {
 
         //Delete AlarmDefinitions
         // deleteAlarmDefinitions(RESOURCE_TYPE.GATEWAY, id);
+
+        //Delete UID tags
+        DaoUtils.getUidTagDao().delete(RESOURCE_TYPE.GATEWAY, id);
 
         //Delete from resource table
         deleteResource(RESOURCE_TYPE.GATEWAY, id);

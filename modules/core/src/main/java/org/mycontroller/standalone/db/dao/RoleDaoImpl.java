@@ -71,7 +71,8 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return super.getQueryResponse(query, Role.KEY_ID);
+            query.setIdColumn(Role.KEY_ID);
+            return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

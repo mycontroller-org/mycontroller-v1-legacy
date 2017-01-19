@@ -209,6 +209,12 @@ myControllerModule.controller('ExternalServersControllerAddEdit', function ($sco
   }
   $scope.trustHostTypes = TypesFactory.getTrustHostTypes();
   $scope.types = TypesFactory.getExternalServerTypes();
+  //Reset common things in all server types
+  $scope.item.keyFormat='$nodeEui_$sensorId_$variableType';
+  $scope.item.trustHostType='';
+  $scope.item.url='';
+  $scope.item.username='';
+  $scope.item.password='';
 
   //Update type change
   $scope.updateTypeChange = function (){
@@ -220,14 +226,10 @@ myControllerModule.controller('ExternalServersControllerAddEdit', function ($sco
       $scope.item.url='https://emoncms.org';
       $scope.item.writeApiKey='';
     }else if($scope.item.type === 'Influxdb'){
-      $scope.item.url='';
       $scope.item.database='';
-      $scope.item.username='';
-      $scope.item.password='';
+    }else if($scope.item.type === 'MQTT'){
+      $scope.item.keyFormat='$nodeEui/$sensorId/$variableType';
     }
-    //Reset common things in all server types
-    $scope.item.keyFormat='$nodeEui_$sensorId_$variableType';
-    $scope.item.trustHostType='';
   };
 
   //GUI page settings

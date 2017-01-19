@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.mycontroller.standalone.mqttbroker;
 import java.io.IOException;
 
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.mdns.McmDNSFactory;
 
 import io.moquette.server.Server;
 import lombok.AccessLevel;
@@ -49,6 +50,9 @@ public class MoquetteMqttBroker {
             mqttServer.startServer(new BrokerConfiguration());
             isRunning = true;
             _logger.info("MQTT Broker started successfully. {}", AppProperties.getInstance().getMqttBrokerSettings());
+            if (AppProperties.getInstance().isMDNSserviceEnabled()) {
+                McmDNSFactory.updateMqttService();
+            }
         } catch (IOException ex) {
             _logger.error("Unable to start MQTT Broker, Exception, ", ex);
         }
@@ -64,6 +68,9 @@ public class MoquetteMqttBroker {
             mqttServer = null;
             isRunning = false;
             _logger.info("MQTT Broker has been stopped successfully");
+            if (AppProperties.getInstance().isMDNSserviceEnabled()) {
+                McmDNSFactory.updateMqttService();
+            }
         }
     }
 

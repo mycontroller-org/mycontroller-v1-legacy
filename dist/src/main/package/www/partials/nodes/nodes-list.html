@@ -90,7 +90,7 @@
           <th></th>
         </thead>
         <tbody>
-          <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.totalItems" current-page="currentPage"
+          <tr dir-paginate="item in filteredList | itemsPerPage: query.pageLimit" total-items="queryResponse.query.filteredCount" current-page="currentPage"
             ng-class="{'mc-selected': itemIds.indexOf(item.id) != -1}" ng-click="selectItem(item)">
             <td class="mc-align-center"><input type="checkbox" ng-checked="itemIds.indexOf(item.id) != -1"></td>
             <td class="text-center">

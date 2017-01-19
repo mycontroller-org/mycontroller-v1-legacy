@@ -39,6 +39,7 @@ import lombok.ToString;
  */
 public class AllowedResources {
     public static final String KEY_ALLOWED_RESOURCES = "allowedResources";
+    public static final String KEY_ALLOWED_RESOURCE_TYPE = "allowedResourceType";
     public static final String KEY_RESOURCE_TYPE = "resourceType";
     public static final String KEY_RESOURCE_ID = "resourceId";
 

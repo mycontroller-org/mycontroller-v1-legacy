@@ -16,14 +16,12 @@
  */
 package org.mycontroller.standalone.api.jaxrs.json;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.DataBaseUtils;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,67 +30,33 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.3
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ToString
 @Slf4j
-public class McAbout {
+public class McAbout extends McAboutBase {
     private String applicationVersion;
     private String applicationDbVersion;
     private String applicationLocation;
-
-    private String javaVmVendor;
-    private String javaVmName;
-    private String javaRuntimeVersion;
-    private String javaVersion;
-    private String javaHome;
-
-    private String osArch;
-    private String osName;
-    private String osVersion;
-
-    private String gitBranch;
-    private String gitVersion;
-    private String gitBuiltBy;
-    private String gitCommit;
-    private String gitCreatedBy;
-    private String gitBuildJdk;
-    private String gitBuiltOn;
+    private String databaseType;
+    private String databaseVersion;
 
     public McAbout() {
         applicationVersion = AppProperties.getInstance().getControllerSettings().getVersion();
         applicationDbVersion = AppProperties.getInstance().getControllerSettings().getDbVersion();
         applicationLocation = AppProperties.getInstance().getAppDirectory();
-
-        javaVmVendor = System.getProperty("java.vm.vendor");
-        javaVmName = System.getProperty("java.vm.name");
-        javaRuntimeVersion = System.getProperty("java.runtime.version");
-        javaHome = System.getProperty("java.home");
-
-        osArch = AppProperties.getOsArch();
-        osName = AppProperties.getOsName();
-        osVersion = AppProperties.getOsVersion();
-
-        //Load git commit related details from MANIFEST.MF file
-        String className = this.getClass().getSimpleName() + ".class";
-        String classPath = this.getClass().getResource(className).toString();
-        if (!classPath.startsWith("jar")) {
-            // Class not from JAR
-            return;
-        }
-        String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
+        databaseType = AppProperties.getInstance().getDbType().getText();
         try {
-            Manifest manifest;
-            manifest = new Manifest(new URL(manifestPath).openStream());
-            Attributes attr = manifest.getMainAttributes();
-            gitBranch = attr.getValue("Built-From-Git-Branch");
-            gitVersion = attr.getValue("Implementation-Version");
-            gitBuiltBy = attr.getValue("Built-By");
-            gitCommit = attr.getValue("Built-From-Git-SHA1");
-            gitCreatedBy = attr.getValue("Created-By");
-            gitBuildJdk = attr.getValue("Build-Jdk");
-            gitBuiltOn = attr.getValue("Built-On");
-        } catch (IOException ex) {
-            _logger.error("Error, ", ex);
+            String[] queryResult = DaoUtils.getUserDao().getDao().queryRaw(DataBaseUtils.getDatabaseVersionQuery())
+                    .getFirstResult();
+            if (queryResult != null && queryResult.length > 0
+                    && queryResult[0] != null && queryResult[0].length() > 0) {
+                databaseVersion = queryResult[0].trim();
+            } else {
+                databaseVersion = "Version not found";
+            }
+        } catch (Exception ex) {
+            databaseVersion = "Error: " + ex.getMessage();
+            _logger.error("Exception, ", ex);
         }
-
     }
 }

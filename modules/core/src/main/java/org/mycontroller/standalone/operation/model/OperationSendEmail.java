@@ -52,21 +52,25 @@ public class OperationSendEmail extends Operation {
     public static final String KEY_TO_EMAIL_ADDRESSES = "toEmailAddress";
     public static final String KEY_EMAIL_SUBJECT = "emailSubject";
     public static final String KEY_TEMPLATE = "template";
+    public static final String KEY_TEMPLATE_BINDINGS = "templateBindings";
 
     private String toEmailAddresses;
     private String emailSubject;
     private String template;
+    private HashMap<String, Object> templateBindings;
 
     public OperationSendEmail(OperationTable operationTable) {
         this.updateOperation(operationTable);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void updateOperation(OperationTable operationTable) {
         super.updateOperation(operationTable);
         emailSubject = (String) operationTable.getProperties().get(KEY_EMAIL_SUBJECT);
         toEmailAddresses = (String) operationTable.getProperties().get(KEY_TO_EMAIL_ADDRESSES);
         template = (String) operationTable.getProperties().get(KEY_TEMPLATE);
+        templateBindings = (HashMap<String, Object>) operationTable.getProperties().get(KEY_TEMPLATE_BINDINGS);
     }
 
     @Override
@@ -77,8 +81,16 @@ public class OperationSendEmail extends Operation {
         properties.put(KEY_TO_EMAIL_ADDRESSES, toEmailAddresses);
         properties.put(KEY_EMAIL_SUBJECT, emailSubject);
         properties.put(KEY_TEMPLATE, template);
+        properties.put(KEY_TEMPLATE_BINDINGS, templateBindings);
         operationTable.setProperties(properties);
         return operationTable;
+    }
+
+    public HashMap<String, Object> getTemplateBindings() {
+        if (templateBindings == null) {
+            return new HashMap<String, Object>();
+        }
+        return templateBindings;
     }
 
     @Override
@@ -86,6 +98,7 @@ public class OperationSendEmail extends Operation {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.getType().getText()).append(" [ ");
         stringBuilder.append(toEmailAddresses).append(" ]");
+        stringBuilder.append(", [").append(getTemplateBindings()).append("]");
         return stringBuilder.toString();
     }
 
@@ -127,14 +140,9 @@ public class OperationSendEmail extends Operation {
             emailBody = builder.toString();
         }
 
-        try {
-            EmailUtils.sendSimpleEmail(
-                    toEmailAddresses,
-                    Notification.updateTemplate(notification, emailSubject),
-                    Notification.updateTemplate(notification, emailBody));
-        } catch (EmailException ex) {
-            _logger.error("Error on sending email, ", ex);
-        }
+        HashMap<String, Object> bindings = getTemplateBindings();
+        bindings.put("notification", notification);
+        sendEmail(emailBody, bindings);
         //Update last execution
         setLastExecution(System.currentTimeMillis());
         DaoUtils.getOperationDao().update(this.getOperationTable());
@@ -142,7 +150,38 @@ public class OperationSendEmail extends Operation {
 
     @Override
     public void execute(Timer timer) {
-        _logger.error("Timer will not support for this operation");
+        if (!getEnabled()) {
+            //This operation disabled, nothing to do.
+            return;
+        }
+        String emailBody = null;
+        try {
+            McTemplate mcTemplate = McTemplate.get(template);
+            emailBody = new String(Files.readAllBytes(Paths.get(mcTemplate.getCanonicalPath())),
+                    StandardCharsets.UTF_8);
+        } catch (IOException | IllegalAccessException ex) {
+            _logger.error("Template exception, ", ex);
+            //If failed to load template send email with this text option
+            StringBuilder builder = new StringBuilder();
+            //Add users details
+            builder.append("Dear User,")
+                    .append("\n\nThere is a timer triggered for you!")
+                    .append("\n\nUnable to load your template, hence emailed as text message.");
+            builder.append("\n\n\n-- Powered by").append(" www.MyController.org");
+            emailBody = builder.toString();
+        }
+        sendEmail(emailBody, getTemplateBindings());
+    }
+
+    private void sendEmail(String emailBody, HashMap<String, Object> bindings) {
+        try {
+            EmailUtils.sendSimpleEmail(
+                    toEmailAddresses,
+                    updateTemplate(emailSubject, bindings),
+                    updateTemplate(emailBody, bindings));
+        } catch (EmailException ex) {
+            _logger.error("Error on sending email, ", ex);
+        }
     }
 
 }

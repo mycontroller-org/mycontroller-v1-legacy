@@ -78,7 +78,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
             where.isNotNull(ResourcesLogs.KEY_ID);
             //timestamp before
             if (resourcesLogs.getTimestamp() != null) {
-                where.and().le(ResourcesLogs.KEY_TIMESTAMP, resourcesLogs.getTimestamp());
+                where.and().lt(ResourcesLogs.KEY_TIMESTAMP, resourcesLogs.getTimestamp());
             }
             //message contains
             if (resourcesLogs.getMessage() != null) {
@@ -212,7 +212,8 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, ResourcesLogs.KEY_ID);
+            query.setIdColumn(ResourcesLogs.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

@@ -41,6 +41,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 public class RestUtils {
 
+    public static final String DROP_DOWN_ITEM_LIMIT = "100";
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
     private static final String AUTHENTICATION_SCHEME = "Basic";
     private static ObjectMapper OBJECT_MAPPER = null;

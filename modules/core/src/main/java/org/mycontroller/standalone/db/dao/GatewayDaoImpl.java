@@ -20,8 +20,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
 import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
 
@@ -82,7 +85,8 @@ public class GatewayDaoImpl extends BaseAbstractDaoImpl<GatewayTable, Integer> i
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, GatewayTable.KEY_ID);
+            query.setIdColumn(GatewayTable.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
@@ -99,4 +103,10 @@ public class GatewayDaoImpl extends BaseAbstractDaoImpl<GatewayTable, Integer> i
         return getAll(GatewayTable.KEY_ID, ids);
     }
 
+    public List<GatewayTable> getAll(Query query, String filter, AllowedResources allowedResources) {
+        AuthUtils.updateQueryFilter(query.getFilters(), RESOURCE_TYPE.GATEWAY, allowedResources);
+        query.getFilters().put(GatewayTable.KEY_NAME, filter);
+        query.setAndQuery(false);
+        return super.getAllData(query);
+    }
 }

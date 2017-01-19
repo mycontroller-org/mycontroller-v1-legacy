@@ -56,11 +56,12 @@ public class Node {
     public static final String KEY_LIB_VERSION = "libVersion";
     public static final String KEY_BATTERY_LEVEL = "batteryLevel";
     public static final String KEY_ERASE_CONFIG = "eraseConfig";
-    public static final String KEY_LAST_SEEN = "laseSeen";
+    public static final String KEY_LAST_SEEN = "lastSeen";
     public static final String KEY_RSSI = "rssi";
     public static final String KEY_PROPERTIES = "properties";
     public static final String KEY_PARENT_NODE_EUI = "parentNodeEui";
     public static final String KEY_REGISTRATION_STATE = "registrationState";
+    public static final String KEY_SMART_SLEEP_ENABLED = "smartSleepEnabled";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -112,11 +113,21 @@ public class Node {
     @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING, columnName = KEY_REGISTRATION_STATE)
     private NODE_REGISTRATION_STATE registrationState = NODE_REGISTRATION_STATE.NEW;
 
+    @DatabaseField(canBeNull = true, columnName = KEY_SMART_SLEEP_ENABLED)
+    private Boolean smartSleepEnabled;
+
     public HashMap<String, Object> getProperties() {
         if (properties == null) {
             properties = new HashMap<String, Object>();
         }
         return properties;
+    }
+
+    public Boolean getSmartSleepEnabled() {
+        if (smartSleepEnabled == null) {
+            smartSleepEnabled = false;
+        }
+        return smartSleepEnabled;
     }
 
 }

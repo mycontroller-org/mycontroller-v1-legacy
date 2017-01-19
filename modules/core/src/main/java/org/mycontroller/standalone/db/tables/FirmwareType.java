@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import java.io.Serializable;
+
 import org.mycontroller.standalone.db.DB_TABLES;
 
 import com.j256.ormlite.field.DatabaseField;
@@ -37,7 +39,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString(includeFieldNames = true)
-public class FirmwareType {
+public class FirmwareType implements Serializable {
+    /**  */
+    private static final long serialVersionUID = 8032649859965577327L;
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
 
@@ -47,8 +51,5 @@ public class FirmwareType {
     @DatabaseField(canBeNull = false, unique = true, columnName = KEY_NAME)
     private String name;
 
-    public Integer getId() {
-        return id;
-    }
-
+    private Integer newId;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,7 @@ import javax.ws.rs.BadRequestException;
 
 import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.AppProperties.DB_TYPE;
 import org.mycontroller.standalone.StartApp;
 import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
 import org.mycontroller.standalone.db.DataBaseUtils;
@@ -46,6 +47,10 @@ public class Restore implements Runnable {
 
     public Restore(BackupFile backupFile) {
         this.backupFile = backupFile;
+    }
+
+    private static void loadDefaultProperties() {
+        StartApp.loadInitialProperties(System.getProperty("mc.conf.file"));
     }
 
     public static void restore(BackupFile backupFile) throws IOException {
@@ -66,8 +71,6 @@ public class Restore implements Runnable {
         String extractedLocation = AppProperties.getInstance().getTmpLocation()
                 + backupFile.getName().replaceAll(".zip", "");
         try {
-
-            String oldDatabaseLocation = AppProperties.getInstance().getDbH2DbLocation();
             //Extract zip file
             _logger.debug("Zip file:{}", backupFile.getCanonicalPath());
 
@@ -75,10 +78,36 @@ public class Restore implements Runnable {
             _logger.debug("All the files extracted to '{}'", extractedLocation);
 
             //Validate required files
-            if (!FileUtils.getFile(extractedLocation + File.separator + BRCommons.DATABASE_FILENAME).exists()) {
+            if (!FileUtils.getFile(extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME).exists()) {
                 _logger.error("Unable to continue restore opration! selected file not found! File:{}",
-                        extractedLocation + File.separator + BRCommons.DATABASE_FILENAME);
+                        extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME);
                 return;
+            }
+
+            //Load initial properties
+            if (!StartApp
+                    .loadInitialProperties(extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME)) {
+                loadDefaultProperties();
+                _logger.error("Failed to load properties file from '{}'", extractedLocation + File.separator
+                        + BRCommons.APP_PROPERTIES_FILENAME);
+                return;
+            }
+            boolean executeDbBackup = false;
+            if (AppProperties.getInstance().getDbType() == DB_TYPE.H2DB_EMBEDDED) {
+                executeDbBackup = true;
+            } else if (AppProperties.getInstance().getDbType() == DB_TYPE.H2DB
+                    && AppProperties.getInstance().includeDbBackup()) {
+                executeDbBackup = true;
+            }
+
+            if (executeDbBackup) {
+                //Validate required files
+                if (!FileUtils.getFile(extractedLocation + File.separator + BRCommons.DATABASE_FILENAME).exists()) {
+                    _logger.error("Unable to continue restore opration! selected file not found! File:{}",
+                            extractedLocation + File.separator + BRCommons.DATABASE_FILENAME);
+                    loadDefaultProperties();
+                    return;
+                }
             }
 
             //Stop all services
@@ -91,9 +120,6 @@ public class Restore implements Runnable {
             FileUtils.moveFile(
                     FileUtils.getFile(extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME),
                     FileUtils.getFile(BRCommons.APP_CONF_LOCATION + BRCommons.APP_PROPERTIES_FILENAME));
-
-            //Load initial properties
-            StartApp.loadInitialProperties();
 
             if (AppProperties.getInstance().isWebHttpsEnabled()) {
                 //Remove old files
@@ -114,21 +140,17 @@ public class Restore implements Runnable {
                 FileUtils.copyDirectory(
                         resourcesDir, FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()), true);
             }
-
-            //remove old database
-            if (FileUtils.deleteQuietly(FileUtils.getFile(oldDatabaseLocation + ".h2.db"))) {
-                _logger.debug("Old database removed successfully");
+            if (executeDbBackup) {
+                //restore database
+                if (!DataBaseUtils.restoreDatabase(extractedLocation + File.separator + BRCommons.DATABASE_FILENAME)) {
+                    _logger.error("Database restore failed:{}", extractedLocation + File.separator
+                            + BRCommons.DATABASE_FILENAME);
+                    return;
+                }
             } else {
-                _logger.warn("Unable to remove old database");
+                _logger.info("Database file not included on restore...");
             }
-            //restore database
-            if (DataBaseUtils.restoreDatabase(extractedLocation + File.separator + BRCommons.DATABASE_FILENAME)) {
-                _logger.info("Restore completed successfully. Start '{}' server manually",
-                        AppProperties.APPLICATION_NAME);
-            } else {
-                _logger.error("Restore failed!");
-            }
-
+            _logger.info("Restore completed successfully. Start '{}' server manually", AppProperties.APPLICATION_NAME);
         } finally {
             //clean tmp file
             FileUtils.deleteQuietly(FileUtils.getFile(extractedLocation));
@@ -179,12 +201,26 @@ public class Restore implements Runnable {
     @Override
     public void run() {
         try {
-            //wait few seconds to response for caller
+            //wait few seconds to response for caller REST API
             Thread.sleep(McUtils.ONE_SECOND * 3);
             restore(backupFile);
         } catch (Exception ex) {
             _logger.error("Restore failed!", ex);
         }
+    }
 
+    public static String getDbLocation(String dbUrl) {
+        String finalPath = "../conf/mycontroller";
+        if (dbUrl.startsWith("jdbc:h2:file:")) {
+            String databaseUrl = dbUrl;
+            databaseUrl = databaseUrl.replace("jdbc:h2:file:", "");
+            int toIndex = databaseUrl.indexOf(';');
+            if (toIndex == -1) {
+                toIndex = databaseUrl.length();
+            }
+            finalPath = databaseUrl.substring(0, toIndex);
+        }
+        _logger.debug("Database url:[], location:[]", dbUrl, finalPath);
+        return finalPath;
     }
 }

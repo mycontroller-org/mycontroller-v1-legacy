@@ -94,9 +94,9 @@ public class ExternalServerPhantIO extends ExternalServer {
     }
 
     @Override
-    public void send(SensorVariable sensorVariable) {
+    public synchronized void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
-            ClientResponse<PostResponse> clientResponse = ((PhantIOClient) ExternalServerUtils.getRestClient(getId()))
+            ClientResponse<PostResponse> clientResponse = ((PhantIOClient) ExternalServerUtils.getClient(getId()))
                     .post(getVariableKey(sensorVariable, getKeyFormat()), sensorVariable.getValue());
             if (!clientResponse.isSuccess()) {
                 _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,

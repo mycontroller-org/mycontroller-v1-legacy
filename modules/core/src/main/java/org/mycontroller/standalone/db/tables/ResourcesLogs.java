@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.db.tables;
 
+import java.util.HashMap;
+
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
@@ -85,6 +87,19 @@ public class ResourcesLogs {
             //This resource not available.
         }
         return "Resource not available!";
+    }
+
+    public static ResourcesLogs get(HashMap<String, Object> filters) {
+        return ResourcesLogs.builder()
+                .id((Integer) filters.get(KEY_ID))
+                .logLevel(LOG_LEVEL.fromString((String) filters.get(KEY_LOG_LEVEL)))
+                .resourceType(RESOURCE_TYPE.fromString((String) filters.get(KEY_RESOURCE_TYPE)))
+                .resourceId((Integer) filters.get(KEY_RESOURCE_ID))
+                .messageType(MESSAGE_TYPE.fromString((String) filters.get(KEY_MESSAGE_TYPE)))
+                .logDirection(LOG_DIRECTION.fromString((String) filters.get(KEY_LOG_DIRECTION)))
+                .message((String) filters.get(KEY_MESSAGE))
+                .timestamp((Long) filters.get(KEY_TIMESTAMP))
+                .build();
     }
 
 }

@@ -105,9 +105,9 @@ public class ExternalServerInfluxdb extends ExternalServer {
     }
 
     @Override
-    public void send(SensorVariable sensorVariable) {
+    public synchronized void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
-            ClientResponse<String> clientResponse = ((InfluxdbClient) ExternalServerUtils.getRestClient(getId()))
+            ClientResponse<String> clientResponse = ((InfluxdbClient) ExternalServerUtils.getClient(getId()))
                     .write(getVariableKey(sensorVariable, getKeyFormat()), getTags(), sensorVariable.getTimestamp(),
                             sensorVariable.getValue());
             if (!clientResponse.isSuccess()) {

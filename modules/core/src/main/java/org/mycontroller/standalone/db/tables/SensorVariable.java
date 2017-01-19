@@ -122,7 +122,7 @@ public class SensorVariable {
     }
 
     public HashMap<String, Object> getGraphProperties() {
-        if (graphProperties == null) {
+        if (graphProperties == null || graphProperties.isEmpty()) {
             graphProperties = new HashMap<String, Object>();
             graphProperties.put(KEY_GP_USE_GLOBAL, true);
             graphProperties.put(KEY_GP_TYPE, CHART_TYPE.LINE_CHART.getText());

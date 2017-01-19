@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.mycontroller.standalone</groupId>
     <artifactId>mycontroller-standalone-parent</artifactId>
-    <version>0.0.3.Alpha2-SNAPSHOT</version>
+    <version>0.0.3.Final-SNAPSHOT</version>
   </parent>
 
   <artifactId>mycontroller-dist</artifactId>

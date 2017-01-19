@@ -50,6 +50,7 @@
     <label>{{ 'TIME_RANGE' | translate }}</label>
     <select id="panelSize" class="form-control" pf-select ng-model="config.chartFromTimestamp" required>
       <option value="" ng-hide="true"></option>
+        <option value="300000">{{ 'LAST_5_MINUTES' | translate }}</option>
         <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
         <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
         <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>

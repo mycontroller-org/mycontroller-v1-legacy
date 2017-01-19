@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,6 +105,7 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 gatewayMQTT.setTopicsSubscribe(node.get("topicsSubscribe").asText());
                 gatewayMQTT.setUsername(node.get("username").asText());
                 gatewayMQTT.setPassword(node.get("password").asText());
+                gatewayMQTT.setQos(node.get("qos").asInt());
                 gateway = gatewayMQTT;
                 break;
             case PHANT_IO:
@@ -126,6 +127,7 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
         if (node.get("id") != null) {
             gateway.setId(node.get("id").asInt());
         }
+        gateway.setTxDelay(node.get("txDelay").asLong());
         gateway.setEnabled(node.get("enabled").asBoolean());
         gateway.setName(node.get("name").asText());
         gateway.setType(gatewayType);

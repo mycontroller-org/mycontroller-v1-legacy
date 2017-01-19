@@ -18,6 +18,7 @@ package org.mycontroller.standalone.gateway;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
@@ -51,6 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GatewayUtils {
 
     public static final String OS_ARCH_ARM = "arm";
+    public static final AtomicBoolean GATEWAYS_READY = new AtomicBoolean(false);
 
     public enum GATEWAY_TYPE {
         SERIAL("Serial"),
@@ -216,10 +218,11 @@ public class GatewayUtils {
         for (GatewayTable gatewayTable : gateways) {
             loadGateway(gatewayTable);
         }
-
+        GATEWAYS_READY.set(true);
     }
 
     public static synchronized void unloadAllGateways() {
+        GATEWAYS_READY.set(false);
         HashMap<Integer, IGateway> gateways = McObjectManager.getGateways();
         for (Integer gatewayId : gateways.keySet()) {
             unloadGateway(gatewayId);
@@ -306,5 +309,13 @@ public class GatewayUtils {
                         operation.getOperationType().getText());
                 break;
         }
+    }
+
+    public static String[] getMqttTopics(String topic) {
+        String[] topics = topic.split(GatewayMQTT.TOPICS_SPLITER);
+        for (int topicId = 0; topicId < topics.length; topicId++) {
+            topics[topicId] += "/#";
+        }
+        return topics;
     }
 }

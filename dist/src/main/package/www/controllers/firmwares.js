@@ -128,7 +128,7 @@ myControllerModule.controller('FirmwaresTypeController', function(
 
     modalInstance.result.then(function () {
       FirmwaresFactory.deleteFirmwareTypes($scope.itemIds, function(response) {
-        alertService.success($filter('translate')('ITEM_DELETED_SUCCESSFULLY'));
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -162,6 +162,7 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
     if($stateParams.id){
       FirmwaresFactory.getFirmwareType({"refId":$stateParams.id},function(response) {
         $scope.firmwareType = response;
+        $scope.firmwareType.newId = $scope.firmwareType.id;
       },function(error){
         displayRestError.display(error);
       });
@@ -171,6 +172,9 @@ myControllerModule.controller('FirmwaresTypeControllerAddEdit', function ($scope
   //Save data
   $scope.save = function(){
     $scope.saveProgress = true;
+    if($scope.firmwareType.id === undefined){
+      $scope.firmwareType.id = $scope.firmwareType.newId;
+    }
     if($stateParams.id){
       FirmwaresFactory.updateFirmwareType($scope.firmwareType,function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
@@ -308,7 +312,7 @@ myControllerModule.controller('FirmwaresVersionController', function(
 
     modalInstance.result.then(function () {
       FirmwaresFactory.deleteFirmwareVersions($scope.itemIds, function(response) {
-        alertService.success($filter('translate')('ITEM_DELETED_SUCCESSFULLY'));
+        alertService.success($filter('translate')('ITEMS_DELETED_SUCCESSFULLY'));
         //Update display table
         $scope.getAllItems();
         $scope.itemIds = [];
@@ -340,6 +344,7 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
     if($stateParams.id){
       FirmwaresFactory.getFirmwareVersion({"refId":$stateParams.id},function(response) {
         $scope.item = response;
+        $scope.item.newId = $scope.item.id;
       },function(error){
         displayRestError.display(error);
       });
@@ -349,6 +354,9 @@ myControllerModule.controller('FirmwaresVersionControllerAddEdit', function ($sc
   //Save data
   $scope.save = function(){
     $scope.saveProgress = true;
+    if($scope.item.id === undefined){
+      $scope.item.id = $scope.item.newId;
+    }
     if($stateParams.id){
       FirmwaresFactory.updateFirmwareVersion($scope.item,function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
@@ -527,7 +535,7 @@ $scope.filterConfig = {
 
 
 //add edit item
-myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, alertService, FirmwaresFactory, mchelper, $stateParams, $state, $filter, TypesFactory) {
+myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, CommonServices, displayRestError, alertService, FirmwaresFactory, mchelper, $stateParams, $state, $filter, TypesFactory) {
   $scope.item = {};
 
   //GUI page settings
@@ -551,8 +559,17 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
   $scope.firmwareVersions = TypesFactory.getFirmwareVersions();
 
   //Read File and put it in textarea
-  $scope.displayFileContents = function(contents) {
-        $scope.item.fileString = contents;
+  $scope.displayFileContents = function(contents, fileExtension) {
+    if(fileExtension === 'bin'){
+       $scope.item.fileBytes = Array.from(new Uint8Array(contents));
+       $scope.item.fileType = 'Bin';
+    }else if(fileExtension === 'hex'){
+      $scope.item.fileType = 'Hex';
+      $scope.item.fileString = contents;
+    }else{
+      $scope.item.fileType = 'Hex';
+      $scope.item.fileString = contents;
+    }
   };
 
   //Save data
@@ -571,8 +588,8 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
         alertService.success($filter('translate')('ITEM_CREATED_SUCCESSFULLY'));
         $state.go("firmwaresList");
       },function(error){
-        displayRestError.display(error);
         $scope.saveProgress = false;
+        displayRestError.display(error);
       });
     }
   }
@@ -583,10 +600,9 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
         scope: false,
         link: function(scope, element, attrs) {
             element.bind('change', function(e) {
-
                 var onFileReadFn = $parse(attrs.onReadFile);
                 var reader = new FileReader();
-
+                var fileExtension = element[0].files[0].name.split('.').pop().toLowerCase();
                 reader.onload = function() {
                     var fileContents = reader.result;
                     // invoke parsed function on scope
@@ -597,11 +613,18 @@ myControllerModule.controller('FirmwaresControllerAddEdit', function ($scope, Co
                     // in the scope we pass in to the function
                     scope.$apply(function() {
                         onFileReadFn(scope, {
-                            'contents' : fileContents
+                            'contents' : fileContents,
+                            'fileExtension': fileExtension
                         });
                     });
                 };
-                reader.readAsText(element[0].files[0]);
+                if(fileExtension === 'bin'){
+                  reader.readAsArrayBuffer(element[0].files[0]);
+                }else if(fileExtension === 'hex'){
+                  reader.readAsText(element[0].files[0]);
+                }else{
+                  reader.readAsText(element[0].files[0]);
+                }
             });
         }
     };

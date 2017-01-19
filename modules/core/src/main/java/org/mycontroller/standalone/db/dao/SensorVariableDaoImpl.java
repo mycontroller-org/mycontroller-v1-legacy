@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,17 @@ package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
+import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.auth.AuthUtils;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DbException;
+import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.metrics.MetricsUtils;
@@ -97,7 +105,8 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             }
             if (sensorVariable.getGraphProperties() != null) {
                 if ((boolean) sensorVariable.getGraphProperties().get(SensorVariable.KEY_GP_USE_GLOBAL)) {
-                    updateBuilder.updateColumnValue(SensorVariable.KEY_GRAPH_PROPERTIES, null);
+                    updateBuilder
+                            .updateColumnValue(SensorVariable.KEY_GRAPH_PROPERTIES, new HashMap<String, Object>());
                 } else {
                     updateBuilder.updateColumnValue(SensorVariable.KEY_GRAPH_PROPERTIES,
                             sensorVariable.getGraphProperties());
@@ -259,6 +268,44 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             return new ArrayList<SensorVariable>();
         } catch (SQLException ex) {
             _logger.error("unable to get all items ids:{}", ids, ex);
+            return null;
+        }
+    }
+
+    public List<SensorVariable> getAll(Query query, String filter, AllowedResources allowedResources) {
+        AuthUtils.updateQueryFilter(query.getFilters(), RESOURCE_TYPE.SENSOR_VARIABLE, allowedResources);
+        if (query.getFilters().get(SensorVariable.KEY_SENSOR_DB_ID) == null) {
+            query.setAndQuery(false);
+            if (filter != null) {
+                List<Sensor> sensors = DaoUtils.getSensorDao().getAll(query, filter, null);
+                if (sensors.size() > 0) {
+                    ArrayList<Integer> sensorIds = new ArrayList<Integer>();
+                    for (Sensor sensor : sensors) {
+                        sensorIds.add(sensor.getId());
+                    }
+                    query.getFilters().put(SensorVariable.KEY_SENSOR_DB_ID, sensors);
+                }
+                MESSAGE_TYPE_SET_REQ type = MESSAGE_TYPE_SET_REQ.fromString(filter);
+                if (type != null) {
+                    query.getFilters().put(SensorVariable.KEY_VARIABLE_TYPE, type);
+                }
+            }
+        }
+        //Remove keys
+        query.getFilters().remove(Sensor.KEY_NODE_ID);
+
+        query.setIdColumn(SensorVariable.KEY_ID);
+        query.setOrderBy(SensorVariable.KEY_TIMESTAMP);
+        query.setOrder(Query.ORDER_DESC);
+        return super.getAllData(query);
+    }
+
+    @Override
+    public QueryResponse getAll(Query query) {
+        try {
+            return super.getQueryResponse(query);
+        } catch (SQLException ex) {
+            _logger.error("Error while processing for {}", query, ex);
             return null;
         }
     }

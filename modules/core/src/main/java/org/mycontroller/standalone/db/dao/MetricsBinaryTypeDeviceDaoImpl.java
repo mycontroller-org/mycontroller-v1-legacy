@@ -55,10 +55,38 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
 
     @Override
     public void deletePrevious(MetricsBinaryTypeDevice metric) {
+
         try {
             DeleteBuilder<MetricsBinaryTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().lt(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
-            int count = this.getDao().delete(deleteBuilder.prepare());
+            Where<MetricsBinaryTypeDevice, Object> where = deleteBuilder.where();
+            int whereCount = 0;
+            if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
+                where.eq(MetricsBinaryTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
+                whereCount++;
+            }
+            if (metric.getTimestamp() != null) {
+                where.le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+                whereCount++;
+            }
+            if (metric.getTimestampFrom() != null) {
+                where.ge(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestampFrom());
+                whereCount++;
+            }
+            if (metric.getTimestampTo() != null) {
+                where.le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestampTo());
+                whereCount++;
+            }
+            if (metric.getState() != null) {
+                where.eq(MetricsBinaryTypeDevice.KEY_STATE, metric.getState());
+                whereCount++;
+            }
+
+            if (whereCount > 0) {
+                where.and(whereCount);
+                deleteBuilder.setWhere(where);
+            }
+
+            int count = deleteBuilder.delete();
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric:[{}]", metric, ex);

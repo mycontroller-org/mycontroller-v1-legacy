@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.gateway.model;
-
-import java.util.HashMap;
 
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -65,15 +63,13 @@ public class GatewayPhantIO extends Gateway {
     @JsonIgnore
     public GatewayTable getGatewayTable() {
         GatewayTable gatewayTable = super.getGatewayTable();
-        HashMap<String, Object> properties = new HashMap<String, Object>();
-        properties.put(KEY_URL, url);
-        properties.put(KEY_TRUST_HOST_TYPE, trustHostType.getText());
-        properties.put(KEY_PUBLIC_KEY, publicKey);
-        properties.put(KEY_PRIVATE_KEY, privateKey);
-        properties.put(KEY_POLL_FREQUENCY, pollFrequency);
-        properties.put(KEY_RECORDS_LIMIT, recordsLimit);
-        properties.put(KEY_LAST_UPDATE, lastUpdate);
-        gatewayTable.setProperties(properties);
+        gatewayTable.getProperties().put(KEY_URL, url);
+        gatewayTable.getProperties().put(KEY_TRUST_HOST_TYPE, trustHostType.getText());
+        gatewayTable.getProperties().put(KEY_PUBLIC_KEY, publicKey);
+        gatewayTable.getProperties().put(KEY_PRIVATE_KEY, privateKey);
+        gatewayTable.getProperties().put(KEY_POLL_FREQUENCY, pollFrequency);
+        gatewayTable.getProperties().put(KEY_RECORDS_LIMIT, recordsLimit);
+        gatewayTable.getProperties().put(KEY_LAST_UPDATE, lastUpdate);
         return gatewayTable;
     }
 
@@ -81,14 +77,14 @@ public class GatewayPhantIO extends Gateway {
     @JsonIgnore
     public void updateGateway(GatewayTable gatewayTable) {
         super.updateGateway(gatewayTable);
-        url = (String) gatewayTable.getProperties().get(KEY_URL);
-        trustHostType = TRUST_HOST_TYPE.fromString((String) gatewayTable.getProperties().get(
-                KEY_TRUST_HOST_TYPE));
-        publicKey = (String) gatewayTable.getProperties().get(KEY_PUBLIC_KEY);
-        privateKey = (String) gatewayTable.getProperties().get(KEY_PRIVATE_KEY);
-        pollFrequency = (Integer) gatewayTable.getProperties().get(KEY_POLL_FREQUENCY);
-        recordsLimit = (Long) gatewayTable.getProperties().get(KEY_RECORDS_LIMIT);
-        lastUpdate = (Long) gatewayTable.getProperties().get(KEY_LAST_UPDATE);
+        url = (String) gatewayTable.getProperty(KEY_URL);
+        trustHostType = TRUST_HOST_TYPE.fromString((String) gatewayTable.getProperty(KEY_TRUST_HOST_TYPE,
+                TRUST_HOST_TYPE.DEFAULT.getText()));
+        publicKey = (String) gatewayTable.getProperty(KEY_PUBLIC_KEY);
+        privateKey = (String) gatewayTable.getProperty(KEY_PRIVATE_KEY);
+        pollFrequency = (Integer) gatewayTable.getProperty(KEY_POLL_FREQUENCY, 120);
+        recordsLimit = (Long) gatewayTable.getProperty(KEY_RECORDS_LIMIT, 10L);
+        lastUpdate = (Long) gatewayTable.getProperty(KEY_LAST_UPDATE);
     }
 
     @Override

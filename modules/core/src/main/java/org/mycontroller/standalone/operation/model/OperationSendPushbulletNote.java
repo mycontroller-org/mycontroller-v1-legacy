@@ -42,11 +42,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OperationSendPushbulletNote extends Operation {
 
-    public static final String KEY_IDENS = "idens";
     public static final String KEY_TITLE = "title";
     public static final String KEY_BODY = "body";
+    public static final String KEY_IDENS = "idens";
+    public static final String KEY_CHANNEL_TAGS = "channel_tags";
+    public static final String KEY_EMAILS = "emails";
 
     private String idens;
+    private String channelTags;
+    private String emails;
     private String title;
     private String body;
 
@@ -62,6 +66,8 @@ public class OperationSendPushbulletNote extends Operation {
     public void updateOperation(OperationTable operationTable) {
         super.updateOperation(operationTable);
         idens = (String) operationTable.getProperties().get(KEY_IDENS);
+        channelTags = (String) operationTable.getProperties().get(KEY_CHANNEL_TAGS);
+        emails = (String) operationTable.getProperties().get(KEY_EMAILS);
         title = (String) operationTable.getProperties().get(KEY_TITLE);
         body = (String) operationTable.getProperties().get(KEY_BODY);
 
@@ -73,6 +79,8 @@ public class OperationSendPushbulletNote extends Operation {
         OperationTable operationTable = super.getOperationTable();
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put(KEY_IDENS, idens);
+        properties.put(KEY_CHANNEL_TAGS, channelTags);
+        properties.put(KEY_EMAILS, emails);
         properties.put(KEY_TITLE, title);
         properties.put(KEY_BODY, body);
         operationTable.setProperties(properties);
@@ -95,15 +103,17 @@ public class OperationSendPushbulletNote extends Operation {
         }
         try {
             Notification notification = new Notification(ruleDefinition);
+            HashMap<String, Object> bindings = new HashMap<String, Object>();
+            bindings.put("notification", notification);
             if (body != null && body.trim().length() > 0) {
                 PushbulletUtils.sendNote(
-                        idens,
-                        Notification.updateTemplate(notification, title),
-                        Notification.updateTemplate(notification, body));
+                        idens, emails, channelTags,
+                        updateTemplate(title, bindings),
+                        updateTemplate(body, bindings));
             } else {
                 PushbulletUtils.sendNote(
-                        idens,
-                        Notification.updateTemplate(notification, title),
+                        idens, emails, channelTags,
+                        updateTemplate(title, bindings),
                         notification.toString());
             }
         } catch (Exception ex) {
@@ -117,7 +127,15 @@ public class OperationSendPushbulletNote extends Operation {
 
     @Override
     public void execute(Timer timer) {
-        _logger.error("Timer will not support for this operation");
+        if (!getEnabled()) {
+            //This operation disabled, nothing to do.
+            return;
+        }
+        if (body != null && body.trim().length() > 0) {
+            PushbulletUtils.sendNote(idens, emails, channelTags, title, body);
+        } else {
+            PushbulletUtils.sendNote(idens, emails, channelTags, title, "Error: no body msg specified!");
+        }
     }
 
 }

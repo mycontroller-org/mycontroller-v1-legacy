@@ -105,7 +105,7 @@ public class TimerJob extends Job {
             if (timer.getId() != null) {
                 ResourcesLogsUtils.setTimerLog(LOG_LEVEL.ERROR, timer, ex.getMessage());
             }
-            _logger.error("Exception, ", ex);
+            _logger.error("Exception on timer execution: {}, ", timer, ex);
         }
     }
 }

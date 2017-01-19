@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,14 +53,19 @@ public class AppProperties {
     private static final String SCRIPTS_DIRECTORY = "scripts" + File.separator;
     public static final String CONDITIONS_SCRIPTS_DIRECTORY = "conditions" + File.separator;
     public static final String OPERATIONS_SCRIPTS_DIRECTORY = "operations" + File.separator;
-    private static final String WEB_CONFIGURATIONS_DIR = "configurations";
+    private static final String WEB_CONFIGURATIONS_DIR = "_configurations";
     private static final String HTML_HEADERS_FILE = "html-headers.json";
 
     private String tmpLocation;
     private String resourcesLocation;
     private String appDirectory;
 
-    private String dbH2DbLocation;
+    private DB_TYPE dbType;
+    private Boolean dbBackupInclude;
+    private String dbUrl;
+    private String dbUsername;
+    private String dbPassword;
+
     private String webFileLocation;
     private boolean isWebHttpsEnabled = false;
     private int webHttpPort;
@@ -70,6 +75,11 @@ public class AppProperties {
     private String webBindAddress;
 
     private String mqttBrokerPersistentStore;
+    private String mcPersistentStoresLocation;
+    private Boolean clearMessagesQueueOnStart;
+    private Boolean clearSmartSleepMsgQueueOnStart;
+
+    private Boolean mDNSserviceEnabled = false;
 
     MyControllerSettings controllerSettings;
     EmailSettings emailSettings;
@@ -82,19 +92,60 @@ public class AppProperties {
     BackupSettings backupSettings;
     MqttBrokerSettings mqttBrokerSettings;
 
+    public enum DB_TYPE {
+        H2DB_EMBEDDED("H2 database embedded"),
+        H2DB("H2 database"),
+        MYSQL("MySQL"),
+        MARIADB("MariaDB"),
+        POSTGRESQL("PostgreSQL");
+
+        private final String name;
+
+        private DB_TYPE(String name) {
+            this.name = name;
+        }
+
+        public String getText() {
+            return this.name;
+        }
+
+        public static DB_TYPE get(int id) {
+            for (DB_TYPE type : values()) {
+                if (type.ordinal() == id) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
+
+        public static DB_TYPE fromString(String text) {
+            if (text != null) {
+                for (DB_TYPE type : DB_TYPE.values()) {
+                    if (text.equalsIgnoreCase(type.getText())) {
+                        return type;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
     public enum MC_LANGUAGE {
         CA_ES("català (ES)"),
+        CS_CZ("čeština (CZ)"),
         DE_DE("Deutsch (DE)"),
         EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
+        HU_HU("Magyar (HU)"),
         MK_MK("Македонски (MK)"),
         FR_FR("Français (FR)"),
         NL_NL("Nederlands (NL)"),
         PT_BR("Português (BR)"),
         RO_RO("Română (RO)"),
         RU_RU("Русский (RU)"),
-        TA_IN("தமிழ் (IN)");
+        TA_IN("தமிழ் (IN)"),
+        ZH_CN("中文 (CN)");
 
         private final String name;
 
@@ -202,7 +253,9 @@ public class AppProperties {
 
     public enum NETWORK_TYPE {
         MY_SENSORS("MySensors"),
-        PHANT_IO("Sparkfun [phant.io]");
+        PHANT_IO("Sparkfun [phant.io]"),
+        MY_CONTROLLER("MyController"),
+        RF_LINK("RF link");
 
         private final String type;
 
@@ -243,7 +296,8 @@ public class AppProperties {
         RESOURCES_GROUP("Resources group"),
         RULE_DEFINITION("Rule definition"),
         TIMER("Timer"),
-        SCRIPT("Script");
+        SCRIPT("Script"),
+        UID_TAG("UID tag");
         public static RESOURCE_TYPE get(int id) {
             for (RESOURCE_TYPE trigger_type : values()) {
                 if (trigger_type.ordinal() == id) {
@@ -350,7 +404,8 @@ public class AppProperties {
     public void loadProperties(Properties properties) {
         //Application Directory
         try {
-            appDirectory = FileUtils.getFile(McUtils.getDirectoryLocation("../")).getCanonicalPath();
+            appDirectory = McUtils.getDirectoryLocation(FileUtils.getFile(McUtils.getDirectoryLocation("../"))
+                    .getCanonicalPath());
         } catch (IOException ex) {
             appDirectory = McUtils.getDirectoryLocation("../");
             _logger.error("Unable to set application directory!", ex);
@@ -376,7 +431,20 @@ public class AppProperties {
         createDirectoryLocation(getScriptsOperationsLocation());
 
         //database location
-        dbH2DbLocation = getValue(properties, "mcc.db.h2db.location", "../conf/mycontroller");
+        String dbType = getValue(properties, "mcc.db.type", "H2DB_EMBEDDED");
+        this.dbType = DB_TYPE.valueOf(dbType.toUpperCase());
+        this.dbBackupInclude = McUtils.getBoolean(getValue(properties, "mcc.db.backup.include", "False"));
+        dbUrl = getValue(properties, "mcc.db.url", "jdbc:h2:file:../conf/mycontroller;MVCC=TRUE");
+        if (this.dbType == DB_TYPE.MYSQL) {
+            String mySqlLogger = "logger=org.mycontroller.standalone.loggers.LoggerMySql";
+            if (dbUrl.indexOf('?') != -1) {
+                dbUrl = dbUrl + "?" + mySqlLogger;
+            } else {
+                dbUrl = dbUrl + "&" + mySqlLogger;
+            }
+        }
+        dbUsername = getValue(properties, "mcc.db.username", "mycontroller");
+        dbPassword = getValue(properties, "mcc.db.password", "mycontroller");
 
         //mycontroller web location
         webFileLocation = McUtils.getDirectoryLocation(getValue(properties, "mcc.web.file.location", "../www"));
@@ -386,22 +454,31 @@ public class AppProperties {
 
         //update web details
         webHttpPort = Integer.valueOf(getValue(properties, "mcc.web.http.port", "8443"));
-        if (getValue(properties, "mcc.web.enable.https", "true") != null) {
-            if (Boolean.valueOf(getValue(properties, "mcc.web.enable.https", "true"))) {
-                isWebHttpsEnabled = true;
-                webSslKeystoreFile = getValue(properties, "mcc.web.ssl.keystore.file", "../conf/keystore.jks");
-                webSslKeystorePassword = getValue(properties, "mcc.web.ssl.keystore.password", "mycontroller");
-                webSslKeystoreType = getValue(properties, "mcc.web.ssl.keystore.type", "JKS");
-            }
+        isWebHttpsEnabled = Boolean.valueOf(getValue(properties, "mcc.web.enable.https", "true"));
+        if (isWebHttpsEnabled) {
+            webSslKeystoreFile = getValue(properties, "mcc.web.ssl.keystore.file", "../conf/keystore.jks");
+            webSslKeystorePassword = getValue(properties, "mcc.web.ssl.keystore.password", "mycontroller");
+            webSslKeystoreType = getValue(properties, "mcc.web.ssl.keystore.type", "JKS");
         }
         webBindAddress = getValue(properties, "mcc.web.bind.address", "0.0.0.0");
 
+        //MyController PersistentStore
+        mcPersistentStoresLocation = McUtils.getDirectoryLocation(getValue(properties,
+                "mcc.persistent.stores.location",
+                "../conf/persistent_stores/"));
+        createDirectoryLocation(mcPersistentStoresLocation);
         //MQTT Broker mqttBrokerPersistentStore
-        mqttBrokerPersistentStore = getValue(properties, "mcc.mqtt.broker.persistent.store",
-                "../conf/moquette/moquette_store.mapdb");
+        mqttBrokerPersistentStore = mcPersistentStoresLocation + "/moquette/moquette_store.mapdb";
+        clearMessagesQueueOnStart = McUtils.getBoolean(getValue(properties,
+                "mcc.clear.message.queue.on.start", "true"));
+        clearSmartSleepMsgQueueOnStart = McUtils.getBoolean(getValue(properties,
+                "mcc.clear.smart.sleep.msg.queue.on.start", "true"));
+        //mDNS service, enabled or disabled
+        mDNSserviceEnabled = McUtils.getBoolean(getValue(properties,
+                "mcc.mdns.service.enable", "false"));
     }
 
-    private void createDirectoryLocation(String directoryLocation) {
+    public void createDirectoryLocation(String directoryLocation) {
         if (!FileUtils.getFile(directoryLocation).exists()) {
             if (FileUtils.getFile(directoryLocation).mkdirs()) {
                 _logger.info("Created directory location: {}", directoryLocation);
@@ -501,8 +578,24 @@ public class AppProperties {
         return tmpLocation;
     }
 
-    public String getDbH2DbLocation() {
-        return dbH2DbLocation;
+    public DB_TYPE getDbType() {
+        return dbType;
+    }
+
+    public Boolean includeDbBackup() {
+        return dbBackupInclude;
+    }
+
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public String getDbUsername() {
+        return dbUsername;
+    }
+
+    public String getDbPassword() {
+        return dbPassword;
     }
 
     public String getWebFileLocation() {
@@ -623,5 +716,21 @@ public class AppProperties {
 
     public MqttBrokerSettings getMqttBrokerSettings() {
         return mqttBrokerSettings;
+    }
+
+    public Boolean getClearMessagesQueueOnStart() {
+        return clearMessagesQueueOnStart;
+    }
+
+    public Boolean getClearSmartSleppMsgQueueOnStart() {
+        return clearSmartSleepMsgQueueOnStart;
+    }
+
+    public String getMcPersistentStoresLocation() {
+        return mcPersistentStoresLocation;
+    }
+
+    public boolean isMDNSserviceEnabled() {
+        return mDNSserviceEnabled;
     }
 }

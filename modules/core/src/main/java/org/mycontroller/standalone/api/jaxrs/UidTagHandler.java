@@ -57,7 +57,6 @@ public class UidTagHandler {
     @Path("/")
     public Response getAll(
             @QueryParam(UidTag.KEY_UID) List<Integer> uids,
-            @QueryParam(UidTag.KEY_SENSOR_VARIABLE) List<Integer> sVariableIds,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
@@ -65,7 +64,6 @@ public class UidTagHandler {
         HashMap<String, Object> filters = new HashMap<String, Object>();
 
         filters.put(UidTag.KEY_UID, uids);
-        filters.put(UidTag.KEY_SENSOR_VARIABLE, sVariableIds);
 
         //Query primary filters
         filters.put(Query.ORDER, order);

@@ -84,7 +84,7 @@ public class OperationApi {
     }
 
     public void deleteIds(List<Integer> ids) {
-        OperationUtils.unloadNotificationTimerJobs(ids);
+        OperationUtils.unloadOperationTimerJobs(ids);
         DaoUtils.getOperationDao().deleteByIds(ids);
     }
 
@@ -96,8 +96,8 @@ public class OperationApi {
     }
 
     public void disableIds(List<Integer> ids) {
-        OperationUtils.unloadNotificationTimerJobs(ids);
         for (OperationTable operationTable : DaoUtils.getOperationDao().getAll(ids)) {
+            OperationUtils.unloadOperationTimerJobs(operationTable);
             operationTable.setEnabled(false);
             DaoUtils.getOperationDao().update(operationTable);
         }
@@ -111,8 +111,8 @@ public class OperationApi {
         EmailUtils.sendSimpleEmail(emails, subject, message);
     }
 
-    public void sendPushbulletNote(String idens, String title, String body) {
-        PushbulletUtils.sendNote(idens, title, body);
+    public void sendPushbulletNote(String idens, String emails, String channelTags, String title, String body) {
+        PushbulletUtils.sendNote(idens, emails, channelTags, title, body);
     }
 
 }

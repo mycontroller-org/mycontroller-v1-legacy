@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.gateway.model;
-
-import java.util.HashMap;
 
 import org.mycontroller.standalone.db.tables.GatewayTable;
 
@@ -34,6 +32,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class GatewayMQTT extends Gateway {
+    public static final int DEFAULT_MQTT_QOS = 0;
+
     public static final String TOPICS_SPLITER = ",";
 
     public static final String KEY_BROKER_HOST = "bh";
@@ -42,6 +42,7 @@ public class GatewayMQTT extends Gateway {
     public static final String KEY_TOPICS_SUBSCRIBE = "ts";
     public static final String KEY_USERNAME = "u";
     public static final String KEY_PASSWORD = "p";
+    public static final String KEY_QOS = "qos";
 
     private String brokerHost;
     private String clientId;
@@ -49,6 +50,7 @@ public class GatewayMQTT extends Gateway {
     private String topicsSubscribe;
     private String username;
     private String password;
+    private Integer qos;
 
     public GatewayMQTT() {
 
@@ -62,14 +64,13 @@ public class GatewayMQTT extends Gateway {
     @JsonIgnore
     public GatewayTable getGatewayTable() {
         GatewayTable gatewayTable = super.getGatewayTable();
-        HashMap<String, Object> properties = new HashMap<String, Object>();
-        properties.put(KEY_BROKER_HOST, brokerHost);
-        properties.put(KEY_CLIENT_ID, clientId);
-        properties.put(KEY_TOPICS_PUBLISH, topicsPublish);
-        properties.put(KEY_TOPICS_SUBSCRIBE, topicsSubscribe);
-        properties.put(KEY_USERNAME, username);
-        properties.put(KEY_PASSWORD, password);
-        gatewayTable.setProperties(properties);
+        gatewayTable.getProperties().put(KEY_BROKER_HOST, brokerHost);
+        gatewayTable.getProperties().put(KEY_CLIENT_ID, clientId);
+        gatewayTable.getProperties().put(KEY_TOPICS_PUBLISH, topicsPublish);
+        gatewayTable.getProperties().put(KEY_TOPICS_SUBSCRIBE, topicsSubscribe);
+        gatewayTable.getProperties().put(KEY_USERNAME, username);
+        gatewayTable.getProperties().put(KEY_PASSWORD, password);
+        gatewayTable.getProperties().put(KEY_QOS, qos);
         return gatewayTable;
     }
 
@@ -83,6 +84,17 @@ public class GatewayMQTT extends Gateway {
         topicsSubscribe = (String) gatewayTable.getProperties().get(KEY_TOPICS_SUBSCRIBE);
         username = (String) gatewayTable.getProperties().get(KEY_USERNAME);
         password = (String) gatewayTable.getProperties().get(KEY_PASSWORD);
+        qos = (Integer) gatewayTable.getProperties().get(KEY_QOS);
+        if (qos == null) {
+            qos = DEFAULT_MQTT_QOS;
+        }
+    }
+
+    public Integer getQos() {
+        if (qos == null) {
+            return DEFAULT_MQTT_QOS;
+        }
+        return qos;
     }
 
     @Override

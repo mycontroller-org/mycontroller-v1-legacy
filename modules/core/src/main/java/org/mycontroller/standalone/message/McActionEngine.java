@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,12 @@ package org.mycontroller.standalone.message;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
+import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.ResourceOperationUtils;
+import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -32,6 +34,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.provider.mc.structs.McFirmwareConfig;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareConfigResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -89,7 +92,7 @@ public class McActionEngine implements IMcActionEngine {
                             .nodeEui(node.getEui())
                             .sensorId(McMessage.SENSOR_BROADCAST_ID)
                             .type(MESSAGE_TYPE.C_INTERNAL)
-                            .acknowledge(false)
+                            .ack(McMessage.NO_ACK)
                             .subType(MESSAGE_TYPE_INTERNAL.I_REBOOT.getText())
                             .payload(McMessage.PAYLOAD_EMPTY)
                             .isTxMessage(true)
@@ -103,7 +106,7 @@ public class McActionEngine implements IMcActionEngine {
         }
 
         if (mcMessage != null) {
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
         }
 
     }
@@ -153,12 +156,12 @@ public class McActionEngine implements IMcActionEngine {
                 .nodeEui(sensorVariable.getSensor().getNode().getEui())
                 .sensorId(sensorVariable.getSensor().getSensorId())
                 .type(MESSAGE_TYPE.C_SET)
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .subType(sensorVariable.getVariableType().getText())
                 .payload(payload)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     //Execute Sensor Variable related operations
@@ -168,12 +171,12 @@ public class McActionEngine implements IMcActionEngine {
                 .nodeEui(sensorVariable.getSensor().getNode().getEui())
                 .sensorId(sensorVariable.getSensor().getSensorId())
                 .type(MESSAGE_TYPE.C_REQ)
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .subType(sensorVariable.getVariableType().getText())
                 .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -183,13 +186,13 @@ public class McActionEngine implements IMcActionEngine {
                 .nodeEui(node.getEui())
                 .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_INTERNAL)
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .subType(MESSAGE_TYPE_INTERNAL.I_HEARTBEAT.getText())
                 .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
 
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -199,14 +202,14 @@ public class McActionEngine implements IMcActionEngine {
                 .nodeEui(McMessageUtils.getGatewayNodeId(gatewayEthernet.getNetworkType()))
                 .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_INTERNAL)
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .subType(MESSAGE_TYPE_INTERNAL.I_VERSION.getText())
                 .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
         try {
             if (McObjectManager.getGateway(gatewayEthernet.getId()) != null) {
-                McMessageUtils.sendToProviderBridge(mcMessage);
+                McMessageUtils.sendToMessageQueue(mcMessage);
                 return true;
             } else {
                 _logger.warn("GatewayTable not available! GatewayTable[{}]", gatewayEthernet);
@@ -226,12 +229,12 @@ public class McActionEngine implements IMcActionEngine {
                 .nodeEui(forwardPayload.getDestination().getSensor().getNode().getEui())
                 .sensorId(forwardPayload.getDestination().getSensor().getSensorId())
                 .type(MESSAGE_TYPE.C_SET)
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .subType(forwardPayload.getDestination().getVariableType().getText())
                 .payload(payload)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -241,34 +244,43 @@ public class McActionEngine implements IMcActionEngine {
                 .nodeEui(node.getEui())
                 .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_INTERNAL)
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .subType(MESSAGE_TYPE_INTERNAL.I_REBOOT.getText())
                 .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
     public void uploadFirmware(Node node) {
-        FirmwareConfigResponse firmwareConfigResponse = new FirmwareConfigResponse();
-        firmwareConfigResponse.setByteBufferPosition(0);
-        firmwareConfigResponse.setType(node.getFirmware().getType().getId());
-        firmwareConfigResponse.setVersion(node.getFirmware().getVersion().getId());
-        firmwareConfigResponse.setBlocks(node.getFirmware().getBlocks());
-        firmwareConfigResponse.setCrc(node.getFirmware().getCrc());
-
         McMessage mcMessage = McMessage.builder()
                 .gatewayId(node.getGatewayTable().getId())
                 .nodeEui(node.getEui())
                 .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_STREAM)
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .subType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.getText())
-                .payload(Hex.encodeHexString(firmwareConfigResponse.getByteBuffer().array()).toUpperCase())
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+            FirmwareConfigResponse fwCfgResponse = new FirmwareConfigResponse();
+            fwCfgResponse.setByteBufferPosition(0);
+            fwCfgResponse.setType(node.getFirmware().getType().getId());
+            fwCfgResponse.setVersion(node.getFirmware().getVersion().getId());
+            fwCfgResponse.setBlocks((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCKS));
+            fwCfgResponse.setCrc((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_CRC));
+            mcMessage.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
+        } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER) {
+            McFirmwareConfig fwCfgResponse = new McFirmwareConfig();
+            fwCfgResponse.setByteBufferPosition(0);
+            fwCfgResponse.setType(node.getFirmware().getType().getId());
+            fwCfgResponse.setVersion(node.getFirmware().getVersion().getId());
+            fwCfgResponse.setBlocks((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCKS));
+            fwCfgResponse.setMd5Sum((String) node.getFirmware().getProperties().get(Firmware.KEY_PROP_MD5_HEX));
+            mcMessage.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
+        }
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -283,11 +295,11 @@ public class McActionEngine implements IMcActionEngine {
                 .sensorId(McMessage.SENSOR_BROADCAST_ID)
                 .type(MESSAGE_TYPE.C_INTERNAL)
                 .subType(MESSAGE_TYPE_INTERNAL.I_DISCOVER.getText())
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .payload(McMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override
@@ -302,9 +314,23 @@ public class McActionEngine implements IMcActionEngine {
 
     @Override
     public void eraseConfiguration(Node node) {
-        node.setEraseConfig(true);
-        DaoUtils.getNodeDao().update(node);
-        rebootNode(node);
+        if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER) {
+            McMessage mcMessage = McMessage.builder()
+                    .gatewayId(node.getGatewayTable().getId())
+                    .nodeEui(node.getEui())
+                    .sensorId(McMessage.SENSOR_BROADCAST_ID)
+                    .type(MESSAGE_TYPE.C_INTERNAL)
+                    .subType(MESSAGE_TYPE_INTERNAL.I_FACTORY_RESET.getText())
+                    .ack(McMessage.NO_ACK)
+                    .payload(McMessage.PAYLOAD_EMPTY)
+                    .isTxMessage(true)
+                    .build();
+            McMessageUtils.sendToMessageQueue(mcMessage);
+        } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+            node.setEraseConfig(true);
+            DaoUtils.getNodeDao().update(node);
+            rebootNode(node);
+        }
     }
 
     @Override
@@ -329,11 +355,11 @@ public class McActionEngine implements IMcActionEngine {
                 .sensorId(sensorVariable.getSensor().getSensorId())
                 .type(MESSAGE_TYPE.C_SET)
                 .subType(sensorVariable.getVariableType().getText())
-                .acknowledge(false)
+                .ack(McMessage.NO_ACK)
                 .payload(sensorVariable.getValue())
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToProviderBridge(mcMessage);
+        McMessageUtils.sendToMessageQueue(mcMessage);
     }
 
     @Override

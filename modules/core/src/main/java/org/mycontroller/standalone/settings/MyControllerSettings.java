@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.settings;
 
+import org.mycontroller.standalone.jobs.ResourcesLogsAggregationJob;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -52,6 +53,7 @@ public class MyControllerSettings {
     public static final String SKEY_TABLE_ROWS_LIMIT = "tableRowsLimit";
     public static final String SKEY_AUTO_NODE_REGISTRATION = "autoNodeRegistration";
     public static final String SKEY_EXECUTE_DISCOVER_INTERVAL = "executeDiscoverInterval";
+    public static final String SKEY_RESOURCES_LOGS_RETENTION_DURATION = "resourcesLogsRetentionDuration";
 
     private String language;
     private String timeFormat;
@@ -68,9 +70,11 @@ public class MyControllerSettings {
     private String widgetImageFilesLocation;
     private Integer tableRowsLimit;
     private Boolean autoNodeRegistration;
+    private Long resourcesLogsRetentionDuration;
 
     public static MyControllerSettings get() {
-        return MyControllerSettings.builder()
+        return MyControllerSettings
+                .builder()
                 .language(getValue(SKEY_LANGUAGE))
                 .timeFormat(getValue(SKEY_TIME_FORMAT))
                 .version(getValue(SKEY_VERSION))
@@ -86,6 +90,9 @@ public class MyControllerSettings {
                 .widgetImageFilesLocation(getValue(SKEY_WIDGET_IMAGE_FILES_LOCATION))
                 .tableRowsLimit(McUtils.getInteger(getValue(SKEY_TABLE_ROWS_LIMIT)))
                 .autoNodeRegistration(McUtils.getBoolean(getValue(SKEY_AUTO_NODE_REGISTRATION)))
+                .resourcesLogsRetentionDuration(
+                        McUtils.getLong(getValue(SKEY_RESOURCES_LOGS_RETENTION_DURATION,
+                                String.valueOf(ResourcesLogsAggregationJob.DEFAULT_RETENTION_DURATION))))
                 .build();
     }
 
@@ -129,10 +136,26 @@ public class MyControllerSettings {
         if (autoNodeRegistration != null) {
             updateValue(SKEY_AUTO_NODE_REGISTRATION, autoNodeRegistration);
         }
+        if (resourcesLogsRetentionDuration != null) {
+            if (resourcesLogsRetentionDuration >= McUtils.MINUTE) {
+                updateValue(SKEY_RESOURCES_LOGS_RETENTION_DURATION, resourcesLogsRetentionDuration);
+            } else {
+                updateValue(SKEY_RESOURCES_LOGS_RETENTION_DURATION,
+                        ResourcesLogsAggregationJob.DEFAULT_RETENTION_DURATION);
+            }
+        }
     }
 
     private static String getValue(String subKey) {
         return SettingsUtils.getValue(KEY_MY_CONTROLLER, subKey);
+    }
+
+    private static String getValue(String subKey, String defaultValue) {
+        String value = getValue(subKey);
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
     }
 
     private void updateValue(String subKey, Object value) {

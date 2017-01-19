@@ -85,6 +85,8 @@ public abstract class ExternalServer implements IExternalServerEngine {
         keyFormat = keyFormat.replaceAll(Pattern.quote("$sensorName"), sensorVariable.getSensor().getName());
         keyFormat = keyFormat.replaceAll(Pattern.quote("$sensorId"), sensorVariable.getSensor().getSensorId());
         keyFormat = keyFormat.replaceAll(Pattern.quote("$variableType"), sensorVariable.getVariableType().getText());
+        keyFormat = keyFormat.replaceAll(Pattern.quote("$variableTypeId"),
+                String.valueOf(sensorVariable.getVariableType().ordinal()));
         return keyFormat.replaceAll(" ", "_");
     }
 

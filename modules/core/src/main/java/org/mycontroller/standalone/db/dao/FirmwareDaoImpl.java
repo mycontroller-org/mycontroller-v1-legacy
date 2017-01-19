@@ -82,8 +82,8 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
     private List<Firmware> getAll(Boolean isType, Integer id) {
         try {
             QueryBuilder<Firmware, Integer> queryBuilder = getDao().queryBuilder();
-            queryBuilder.selectColumns("id", Firmware.KEY_TYPE_ID, Firmware.KEY_VERSION_ID, "timestamp", "blocks",
-                    "crc");
+            queryBuilder.selectColumns(Firmware.KEY_ID, Firmware.KEY_TYPE_ID, Firmware.KEY_VERSION_ID,
+                    Firmware.KEY_TIMESTAMP);
             if (isType == null) {
                 //Nothing to do, no filter, get all firmwares
             } else if (isType) {
@@ -102,7 +102,8 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, Firmware.KEY_ID);
+            query.setIdColumn(Firmware.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

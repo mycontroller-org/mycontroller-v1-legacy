@@ -31,12 +31,15 @@ import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.model.Gateway;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Using this API's can do activities on gateway
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
 
+@Slf4j
 public class GatewayApi {
 
     /**
@@ -131,6 +134,7 @@ public class GatewayApi {
             }
 
         } catch (Exception ex) {
+            _logger.error("Exception, ", ex);
             throw new McBadRequestException(ex.getMessage());
         }
     }

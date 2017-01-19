@@ -104,7 +104,7 @@ public class ResourcesLogsUtils {
         }
     }
 
-    public static boolean isLevel(LOG_LEVEL logLevel) {
+    public static boolean isOnAllowedLevel(LOG_LEVEL logLevel) {
         if (LOG_LEVEL.fromString(AppProperties.getInstance().getControllerSettings().getResourcesLogLevel())
                 .ordinal() <= logLevel.ordinal()) {
             return true;
@@ -114,6 +114,9 @@ public class ResourcesLogsUtils {
 
     public static void setAlarmLog(LOG_LEVEL logLevel, RuleDefinition ruleDefinition, Boolean triggered,
             String errorMsg) {
+        if (!isOnAllowedLevel(logLevel)) {
+            return;
+        }
         StringBuilder builder = new StringBuilder();
         if (triggered) {
             builder.append("Triggered: ");
@@ -139,6 +142,9 @@ public class ResourcesLogsUtils {
     }
 
     public static void setTimerLog(LOG_LEVEL logLevel, Timer timer, String errorMsg) {
+        if (!isOnAllowedLevel(logLevel)) {
+            return;
+        }
         StringBuilder builder = new StringBuilder();
         if (errorMsg != null) {
             builder.append("Failed: ").append(timer.getTimerDataString())
@@ -159,6 +165,12 @@ public class ResourcesLogsUtils {
 
     public static void recordSensorsResourcesLog(RESOURCE_TYPE resourceType, Integer resourceId, LOG_LEVEL logLevel,
             MESSAGE_TYPE messageType, boolean isTxMessage, String message) {
+        if (!isOnAllowedLevel(logLevel)) {
+            return;
+        }
+        if (message != null && message.length() > 250) {
+            message = message.substring(0, 250) + "...";
+        }
         ResourcesLogs resourcesLogs = ResourcesLogs.builder()
                 .timestamp(System.currentTimeMillis())
                 .resourceType(resourceType)

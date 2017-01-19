@@ -371,6 +371,11 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
         {id:"Information", value:"fa fa-info", ucode:"\uf129", fname:"FontAwesome"},
         {id:"Gas", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
         {id:"GPS", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Water quality", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"CPU", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Memory", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"Disk", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
+        {id:"PWM", value:"fa fa-eye", ucode:"\uf06e", fname:"FontAwesome"},
       ];
 
   commonService.getSensorIcon = function(key){
@@ -494,6 +499,29 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
   commonService.getTimestamp = function(timestampJson){
     return timestampJson.timeConstant * timestampJson.timestamp;
   };
+
+  //Update mill seconds to readable value
+  commonService.updateReadable = function(milliSeconds, item){
+     if(milliSeconds % 86400000  == 0){
+      item.readableValue = milliSeconds / 86400000;
+      item.timeConstant = "86400000";
+    }else if(milliSeconds % 3600000  == 0){
+      item.readableValue = milliSeconds / 3600000;
+      item.timeConstant = "3600000";
+    }else if(milliSeconds % 60000  == 0){
+      item.readableValue = milliSeconds / 60000;
+      item.timeConstant = "60000";
+    }else{
+      item.readableValue = milliSeconds / 1000;
+      item.timeConstant = "1000";
+    }
+  };
+
+  //Get readable value to milliseconds
+  commonService.getMilliseconds = function(readableValue, timeConstant){
+     return readableValue * timeConstant;
+  };
+
 
  return commonService;
 

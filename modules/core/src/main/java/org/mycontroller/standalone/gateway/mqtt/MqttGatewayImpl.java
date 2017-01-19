@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.gateway.mqtt;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -24,6 +25,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayException;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.message.RawMessage;
@@ -41,7 +43,6 @@ public class MqttGatewayImpl implements IGateway {
     public static final long DISCONNECT_TIME_OUT = 1000 * 1;
     public static final int CONNECTION_TIME_OUT = 1000 * 5;
     public static final int KEEP_ALIVE = 1000 * 5;
-    public static final int MY_SENSORS_QOS = 0;
     private GatewayMQTT gateway = null;
 
     private IMqttClient mqttClient;
@@ -50,8 +51,8 @@ public class MqttGatewayImpl implements IGateway {
     public MqttGatewayImpl(GatewayTable gatewayTable) {
         try {
             this.gateway = new GatewayMQTT(gatewayTable);
-
-            mqttClient = new MqttClient(this.gateway.getBrokerHost(), this.gateway.getClientId());
+            mqttClient = new MqttClient(this.gateway.getBrokerHost(), this.gateway.getClientId()
+                    + "_" + RandomStringUtils.randomAlphanumeric(5));
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setConnectionTimeout(CONNECTION_TIME_OUT);
             connectOptions.setKeepAliveInterval(KEEP_ALIVE);
@@ -62,11 +63,7 @@ public class MqttGatewayImpl implements IGateway {
             mqttClient.connect(connectOptions);
             mqttCallbackListener = new MqttCallbackListener(mqttClient, this.gateway, connectOptions);
             mqttClient.setCallback(mqttCallbackListener);
-            String[] topicsSubscribe = gateway.getTopicsSubscribe().split(GatewayMQTT.TOPICS_SPLITER);
-            for (int topicId = 0; topicId < topicsSubscribe.length; topicId++) {
-                topicsSubscribe[topicId] += "/#";
-            }
-            mqttClient.subscribe(topicsSubscribe);
+            mqttClient.subscribe(GatewayUtils.getMqttTopics(gateway.getTopicsSubscribe()));
             _logger.info("MQTT Gateway[{}] connected successfully..", mqttClient.getServerURI());
             this.gateway.setStatus(STATE.UP, "Connected Successfully");
         } catch (MqttException ex) {
@@ -80,11 +77,11 @@ public class MqttGatewayImpl implements IGateway {
 
     @Override
     public synchronized void write(RawMessage rawMessage) throws GatewayException {
-        _logger.debug("Message to send, Topic:[{}], PayLoad:[{}]", rawMessage.getSubData(),
+        _logger.debug("Message about to send, Topic:[{}], PayLoad:[{}]", rawMessage.getSubData(),
                 rawMessage.getData());
         try {
             MqttMessage message = new MqttMessage(((String) rawMessage.getData()).getBytes());
-            message.setQos(MY_SENSORS_QOS);
+            message.setQos(gateway.getQos());
             String[] topicsPublish = rawMessage.getSubData().split(GatewayMQTT.TOPICS_SPLITER);
             for (String topic : topicsPublish) {
                 mqttClient.publish(topic, message);
