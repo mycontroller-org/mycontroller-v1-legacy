@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -291,7 +291,11 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.gateway.pollFrequency='1';
       $scope.gateway.recordsLimit='10';
       $scope.gateway.trustHostType='';
-    }
+    }else if($scope.gateway.type === 'Philips Hue'){
+          $scope.gateway.url='';
+          $scope.gateway.authorizedUser='';
+          $scope.gateway.pollFrequency='5';
+     }
   };
 
   //GUI page settings

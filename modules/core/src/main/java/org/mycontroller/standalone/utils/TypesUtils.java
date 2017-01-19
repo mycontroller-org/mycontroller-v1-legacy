@@ -1118,6 +1118,11 @@ public class TypesUtils {
                         if (gatewayType == GATEWAY_TYPE.SERIAL) {
                             include = true;
                         }
+                    case PHILIPS_HUE:
+                        if (gatewayType == GATEWAY_TYPE.PHILIPS_HUE) {
+                            include = true;
+                        }
+                        break;
                     default:
                         break;
                 }
