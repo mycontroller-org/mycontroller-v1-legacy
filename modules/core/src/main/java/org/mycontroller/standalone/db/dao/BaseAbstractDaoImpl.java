@@ -377,14 +377,21 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
     public void delete(HashMap<String, Object> map) {
         try {
             DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
+            Where<Tdao, Tid> where = deleteBuilder.where();
+            int whereCount = 0;
             for (String key : map.keySet()) {
                 if (map.get(key) instanceof List) {
-                    deleteBuilder.where().in(key, map.get(key));
+                    where.in(key, map.get(key));
+                    whereCount++;
                 } else {
-                    deleteBuilder.where().eq(key, map.get(key));
+                    where.eq(key, map.get(key));
+                    whereCount++;
                 }
             }
-
+            if (whereCount > 1) {
+                where.and(whereCount);
+            }
+            deleteBuilder.setWhere(where);
             int deleteCount = deleteBuilder.delete();
             _logger.debug("Deleted count:{}, for map:{}", deleteCount, map);
         } catch (SQLException ex) {
