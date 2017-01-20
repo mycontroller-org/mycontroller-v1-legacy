@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -179,6 +179,7 @@ public class OperationSendPayload extends Operation {
                 break;
             case TIMER:
                 TimerUtils.executeTimerOperation(resourceModel, resourceOperation);
+                break;
             case RESOURCES_GROUP:
                 ResourcesGroupUtils.executeResourceGroupsOperation(resourceModel, resourceOperation);
                 break;
