@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -141,5 +141,10 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
         query.setOrderBy(Node.KEY_EUI);
         query.setOrder(Query.ORDER_ASC);
         return super.getAllData(query);
+    }
+
+    @Override
+    public void update(String key, Object value, Integer nodeId) {
+        super.updateBulk(key, value, Node.KEY_ID, nodeId);
     }
 }

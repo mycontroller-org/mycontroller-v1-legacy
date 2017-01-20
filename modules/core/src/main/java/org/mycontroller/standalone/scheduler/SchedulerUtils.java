@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -283,16 +283,12 @@ public class SchedulerUtils {
     }
 
     public static void startNodeAliveCheckJob() {
-        if (AppProperties.getInstance().getControllerSettings().getAliveCheckInterval() < McUtils.MINUTE) {
-            //Nothing to do, just return from here
-            return;
-        }
         SundialJobScheduler.addJob(NodeAliveStatusJob.NAME, NodeAliveStatusJob.class.getName());
         SundialJobScheduler.addSimpleTrigger(
                 NodeAliveStatusJob.TRIGGER_NAME,
                 NodeAliveStatusJob.NAME,
                 -1,
-                AppProperties.getInstance().getControllerSettings().getAliveCheckInterval(),
+                NodeAliveStatusJob.MIN_ALIVE_CHECK_DURATION, //Run this job every x minutes
                 //Start this job after 10 seconds
                 new Date(System.currentTimeMillis() + (McUtils.ONE_SECOND * 10)),
                 null);

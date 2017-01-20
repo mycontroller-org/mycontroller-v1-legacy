@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,5 +42,7 @@ public interface NodeDao extends BaseDao<Node, Integer> {
     List<Integer> getNodeIdsByGatewayIds(List<Integer> ids);
 
     List<Node> getAll(Query query, String filter, AllowedResources allowedResources);
+
+    void update(String key, Object value, Integer nodeId);
 
 }
