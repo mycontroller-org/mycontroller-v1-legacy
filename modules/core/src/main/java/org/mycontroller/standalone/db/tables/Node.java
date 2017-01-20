@@ -155,7 +155,12 @@ public class Node {
         Long _interval = null;
         if (getProperty(key) != null) {
             try {
-                _interval = (Integer) getProperty(key) * McUtils.MINUTE;
+                Object value = getProperty(key);
+                if (value instanceof Integer) {
+                    _interval = (Integer) value * McUtils.MINUTE;
+                } else {
+                    _interval = Integer.valueOf(String.valueOf(value)) * McUtils.MINUTE;
+                }
             } catch (Exception ex) {
                 _logger.warn("Unable to convert the property[{}:{}] to Integer value. Using default value for {}",
                         key, getProperty(key), this, ex);

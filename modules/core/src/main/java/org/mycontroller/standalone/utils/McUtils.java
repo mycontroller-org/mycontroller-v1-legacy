@@ -357,4 +357,16 @@ public class McUtils {
         }
         return "-";
     }
+
+    public static String toString(StackTraceElement[] stackTraceElements) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i < stackTraceElements.length; i++) {
+            builder.append("\n\t at ")
+                    .append(stackTraceElements[i].getClassName()).append(".")
+                    .append(stackTraceElements[i].getMethodName()).append("(")
+                    .append(stackTraceElements[i].getFileName()).append(":")
+                    .append(stackTraceElements[i].getLineNumber()).append(")");
+        }
+        return builder.toString();
+    }
 }

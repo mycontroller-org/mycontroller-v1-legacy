@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -399,7 +399,7 @@ myControllerModule.factory('ResourcesGroupMapFactory', function ($resource) {
 //Read static files
 myControllerModule.factory('ReadFileFactory', function ($resource) {
   return $resource('/:locationName/:fileName', {}, {
-   getConfigFile: { method: 'GET', isArray: false, params: {locationName: 'configurations', fileName:'mycontroller-configs.json'} },
+   getConfigFile: { method: 'GET', isArray: false, params: {locationName: '_configurations', fileName:'mycontroller-configs.json'} },
   })
 });
 
