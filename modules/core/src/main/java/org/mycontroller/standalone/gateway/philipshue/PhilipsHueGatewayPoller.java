@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.mycontroller.restclient.core.ClientResponse;
+import org.mycontroller.restclient.core.jaxrs.Empty;
 import org.mycontroller.restclient.philips.hue.PhilipsHueClient;
 import org.mycontroller.restclient.philips.hue.PhilipsHueClientBuilder;
 import org.mycontroller.restclient.philips.hue.model.LightState;
@@ -31,6 +32,7 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
+import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
@@ -124,17 +126,26 @@ public class PhilipsHueGatewayPoller implements Runnable {
                 for (SensorVariable variable : sensor.getVariables()) {
                     switch (variable.getVariableType()) {
                         case V_STATUS:
+                            if (variable.getValue() == null || variable.getValue().equals(McMessage.PAYLOAD_EMPTY)) {
+                                break;
+                            }
                             if (variable.getValue().equals(value.getState().getOn() ? "1" : "0")) {
                                 updateStatus = false;
                             }
                             break;
                         case V_LIGHT_LEVEL:
+                            if (variable.getValue() == null || variable.getValue().equals(McMessage.PAYLOAD_EMPTY)) {
+                                break;
+                            }
                             if (variable.getValue().equals(
                                     PhilipsHueUtils.toPercent(value.getState().getBri()).toString())) {
                                 updateLightLevel = false;
                             }
                             break;
                         case V_RGB:
+                            if (variable.getValue() == null || variable.getValue().equals(McMessage.PAYLOAD_EMPTY)) {
+                                break;
+                            }
                             if (value.getState().getXy() != null && value.getState().getXy().length == 2) {
                                 Float[] xy = value.getState().getXy();
                                 if (variable.getValue().equals(
@@ -232,7 +243,7 @@ public class PhilipsHueGatewayPoller implements Runnable {
                     try {
                         State state = getHueUpdateState(subType, sensorId, payload);
                         if (state != null) {
-                            ClientResponse<String> updateState = philipsHueClient.lights().updateState(
+                            ClientResponse<Empty> updateState = philipsHueClient.lights().updateState(
                                     sensorId, state);
                             if (updateState != null && !updateState.isSuccess()) {
                                 _logger.debug("Error while updating hue lights: {}, {} ", updateState, rawMessage);
