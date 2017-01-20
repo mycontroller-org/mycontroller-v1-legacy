@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,6 +46,9 @@ public class MetricsDataRetentionSettings {
     public static final String SKEY_RETENTION_TWELVE_HOURS = "aggregationTwelveHours";
     public static final String SKEY_RETENTION_ONE_DAY = "aggregationOneDay";
 
+    public static final String SKEY_RETENTION_BINARY = "retentionBinary";
+    public static final String SKEY_RETENTION_GPS = "retentionGPS";
+
     public static final String SKEY_LAST_AGGREGATION_RAW_DATA = "lastAggregationRawData";
     public static final String SKEY_LAST_AGGREGATION_ONE_MINUTE = "lastAggregationOneMinute";
     public static final String SKEY_LAST_AGGREGATION_FIVE_MINUTES = "lastAggregationFiveMinutes";
@@ -62,6 +65,9 @@ public class MetricsDataRetentionSettings {
     private Long lastAggregationTwelveHours;
     private Long lastAggregationOneDay;
 
+    private Long lastAggregationBinary;
+    private Long lastAggregationGPS;
+
     private Long retentionRawData;
     private Long retentionOneMinute;
     private Long retentionFiveMinutes;
@@ -69,6 +75,10 @@ public class MetricsDataRetentionSettings {
     private Long retentionSixHours;
     private Long retentionTwelveHours;
     private Long retentionOneDay;
+
+    //For Binary and GPS
+    private Long retentionBinary;
+    private Long retentionGPS;
 
     public static MetricsDataRetentionSettings get() {
         return MetricsDataRetentionSettings.builder()
@@ -79,6 +89,8 @@ public class MetricsDataRetentionSettings {
                 .retentionSixHours(McUtils.getLong(getValue(SKEY_RETENTION_SIX_HOURS)))
                 .retentionTwelveHours(McUtils.getLong(getValue(SKEY_RETENTION_TWELVE_HOURS)))
                 .retentionOneDay(McUtils.getLong(getValue(SKEY_RETENTION_ONE_DAY)))
+                .retentionBinary(McUtils.getLong(getValue(SKEY_RETENTION_BINARY, "15552000000")))//180 days
+                .retentionGPS(McUtils.getLong(getValue(SKEY_RETENTION_GPS, "15552000000")))
                 .lastAggregationRawData(McUtils.getLong(getValue(SKEY_LAST_AGGREGATION_RAW_DATA)))
                 .lastAggregationOneMinute(McUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_MINUTE)))
                 .lastAggregationFiveMinutes(McUtils.getLong(getValue(SKEY_LAST_AGGREGATION_FIVE_MINUTES)))
@@ -111,6 +123,12 @@ public class MetricsDataRetentionSettings {
         if (retentionOneDay != null) {
             updateValue(SKEY_RETENTION_ONE_DAY, retentionOneDay);
         }
+        if (retentionBinary != null) {
+            updateValue(SKEY_RETENTION_BINARY, retentionBinary);
+        }
+        if (retentionGPS != null) {
+            updateValue(SKEY_RETENTION_GPS, retentionGPS);
+        }
     }
 
     @JsonIgnore
@@ -140,6 +158,11 @@ public class MetricsDataRetentionSettings {
 
     private static String getValue(String subKey) {
         return SettingsUtils.getValue(KEY_METRICS_DATA_RETENTION, subKey);
+    }
+
+    private static String getValue(String subKey, String defaultValue) {
+        String value = getValue(subKey);
+        return value == null ? defaultValue : value;
     }
 
     private static void updateValue(String subKey, Object value) {
