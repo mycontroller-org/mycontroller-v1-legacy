@@ -72,7 +72,10 @@ public class RFLinkRawMessage {
     private RFLinkRawMessage(RawMessage rawMessage, String nodeEui, String protocol, String key, String value)
             throws RawMessageException {
         gatewayId = rawMessage.getGatewayId();
-        this.nodeEui = nodeEui;
+
+        //Node id always should be in 8 digits with ZERO padding (32bit).
+        this.nodeEui = String.format("%08x", Long.parseLong(nodeEui, 16));
+
         isTxMessage = rawMessage.isTxMessage();
         gatewayId = rawMessage.getGatewayId();
         timestamp = rawMessage.getTimestamp();
