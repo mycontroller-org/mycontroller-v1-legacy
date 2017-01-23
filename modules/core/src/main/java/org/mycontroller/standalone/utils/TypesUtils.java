@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -1100,7 +1100,9 @@ public class TypesUtils {
             if (nwType != null) {
                 switch (nwType) {
                     case MY_SENSORS:
-                        if (gatewayType != GATEWAY_TYPE.PHANT_IO) {
+                        if (gatewayType == GATEWAY_TYPE.SERIAL
+                                || gatewayType == GATEWAY_TYPE.ETHERNET
+                                || gatewayType == GATEWAY_TYPE.MQTT) {
                             include = true;
                         }
                         break;
@@ -1118,6 +1120,12 @@ public class TypesUtils {
                         if (gatewayType == GATEWAY_TYPE.SERIAL) {
                             include = true;
                         }
+                        break;
+                    case PHILIPS_HUE:
+                        if (gatewayType == GATEWAY_TYPE.PHILIPS_HUE) {
+                            include = true;
+                        }
+                        break;
                     default:
                         break;
                 }

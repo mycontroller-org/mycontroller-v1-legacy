@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.provider.rflink;
 
+import java.util.Map;
+
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
@@ -23,6 +25,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.RawMessage;
 import org.mycontroller.standalone.message.RawMessageException;
 import org.mycontroller.standalone.provider.rflink.RFLinkUtils.RFLINK_MESSAGE_TYPE;
+import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.Data;
 import lombok.ToString;
@@ -43,11 +46,19 @@ public class RFLinkRawMessage {
     private String payload;
     private Long timestamp;
     private boolean isTxMessage = false;
-    private String protocol = null;
+    private Map<String, Object> properties = null;
 
     public static final String KEY_PROTOCOL = "protocol";
+    public static final String KEY_TYPE = "type";
     public static final String KEY_ID = "id";
     public static final double DIMMER_REF = 0.15;
+
+    private Object getProperty(String key) {
+        if (properties != null) {
+            return properties.get(key);
+        }
+        return null;
+    }
 
     public RFLinkRawMessage(RawMessage rawMessage, String nodeEui, String key, String value)
             throws RawMessageException {
@@ -61,7 +72,10 @@ public class RFLinkRawMessage {
     private RFLinkRawMessage(RawMessage rawMessage, String nodeEui, String protocol, String key, String value)
             throws RawMessageException {
         gatewayId = rawMessage.getGatewayId();
-        this.nodeEui = nodeEui;
+
+        //Node id always should be in 8 digits with ZERO padding (32bit).
+        this.nodeEui = String.format("%08x", Long.parseLong(nodeEui, 16));
+
         isTxMessage = rawMessage.isTxMessage();
         gatewayId = rawMessage.getGatewayId();
         timestamp = rawMessage.getTimestamp();
@@ -136,7 +150,7 @@ public class RFLinkRawMessage {
         isTxMessage = mcMessage.isTxMessage();
         timestamp = mcMessage.getTimestamp();
         //Update protocol
-        protocol = (String) mcMessage.getProperties().get(KEY_PROTOCOL);
+        setProperties(mcMessage.getProperties());
         RFLinkEngine.updateMessage(this);
     }
 
@@ -145,7 +159,7 @@ public class RFLinkRawMessage {
     }
 
     public RawMessage getRawMessage() throws RawMessageException {
-        if (protocol == null) {
+        if (getProperty(KEY_PROTOCOL) == null) {
             throw new RawMessageException("Protocol cannot be null");
         }
         if (!isTxMessage) {
@@ -154,36 +168,47 @@ public class RFLinkRawMessage {
         StringBuilder builder = new StringBuilder();
         builder
                 .append("10;")
-                .append(getProtocol()).append(";")
+                .append(getProperty(KEY_PROTOCOL)).append(";")
                 .append(getNodeEui()).append(";")
                 .append(getSensorId()).append(";");
-        RFLINK_MESSAGE_TYPE mType = RFLINK_MESSAGE_TYPE.fromString(getSubType());
-        if (mType == null) {
-            throw new RawMessageException("Not supported type: " + this);
-        }
-        switch (mType) {
-            case CMD:
+
+        if (getProperty(KEY_TYPE) == null) {
+            RFLINK_MESSAGE_TYPE mType = RFLINK_MESSAGE_TYPE.fromString(getSubType());
+            if (mType == null) {
+                throw new RawMessageException("Not supported type: " + this);
+            }
+            switch (mType) {
+                case CMD:
+                    builder.append(getPayload().equals("1") ? "ON" : "OFF");
+                    break;
+                case UP:
+                    builder.append("UP");
+                    break;
+                case DOWN:
+                    builder.append("DOWN");
+                    break;
+                case STOP:
+                    builder.append("STOP");
+                    break;
+                case SET_LEVEL:
+                    Integer payloadInt = McUtils.getDouble(getPayload()).intValue();
+                    if (payloadInt == 0) {
+                        builder.append("OFF");
+                    } else {
+                        builder.append(Math.round(payloadInt * DIMMER_REF));
+                    }
+                    break;
+                default:
+                    throw new RawMessageException("Not supported type: " + mType.name());
+            }
+        } else if ("doorbell".equalsIgnoreCase((String) getProperty(KEY_TYPE))) {
+            if (RFLINK_MESSAGE_TYPE.CHIME.getText().equalsIgnoreCase(getSubType())) {
+                builder.append(getPayload());
+            } else if (RFLINK_MESSAGE_TYPE.CMD.getText().equalsIgnoreCase(getSubType())) {
                 builder.append(getPayload().equals("1") ? "ON" : "OFF");
-                break;
-            case UP:
-                builder.append("UP");
-                break;
-            case DOWN:
-                builder.append("DOWN");
-                break;
-            case STOP:
-                builder.append("STOP");
-                break;
-            case SET_LEVEL:
-                Integer payloadInt = Integer.valueOf(getPayload());
-                if (payloadInt == 0) {
-                    builder.append("OFF");
-                } else {
-                    builder.append(Math.round(payloadInt * DIMMER_REF));
-                }
-                break;
-            default:
-                throw new RawMessageException("Not supported type: " + mType.name());
+            } else {
+                throw new RawMessageException("Not supported type: " + getSubType());
+            }
         }
 
         builder.append(";\r\n");

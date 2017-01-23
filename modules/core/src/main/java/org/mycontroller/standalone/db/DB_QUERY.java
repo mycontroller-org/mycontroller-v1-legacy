@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -90,6 +90,16 @@ public class DB_QUERY {
             .format("DELETE FROM ${0}$ WHERE ${1}$='''''{0}''''' AND ${2}$ <= '{1}' ",
                     DB_TABLES.METRICS_COUNTER_TYPE_DEVICE,
                     MetricsCounterTypeDevice.KEY_AGGREGATION_TYPE,
+                    MetricsCounterTypeDevice.KEY_TIMESTAMP);
+
+    public static final String DELETE_METRICS_BINARY = MessageFormat
+            .format("DELETE FROM ${0}$ WHERE ${1}$ <= '{0}' ",
+                    DB_TABLES.METRICS_BINARY_TYPE_DEVICE,
+                    MetricsCounterTypeDevice.KEY_TIMESTAMP);
+
+    public static final String DELETE_METRICS_GPS = MessageFormat
+            .format("DELETE FROM ${0}$ WHERE ${1}$ <= '{0}' ",
+                    DB_TABLES.METRICS_GPS_TYPE_DEVICE,
                     MetricsCounterTypeDevice.KEY_TIMESTAMP);
 
     public static final String SELECT_METRICS_DOUBLE_BY_SENSOR_VARIABLE = MessageFormat

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -269,6 +269,8 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
         $scope.rSixHours = CommonServices.getTimestampJson(response.retentionSixHours);
         $scope.rTwelveHours = CommonServices.getTimestampJson(response.retentionTwelveHours);
         $scope.rOneDay = CommonServices.getTimestampJson(response.retentionOneDay);
+        $scope.rBinary = CommonServices.getTimestampJson(response.retentionBinary);
+        $scope.rGPS = CommonServices.getTimestampJson(response.retentionGPS);
       },function(error){
         displayRestError.display(error);
       });
@@ -305,6 +307,8 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
     $scope.metricsRetention.retentionSixHours = CommonServices.getTimestamp($scope.rSixHours);
     $scope.metricsRetention.retentionTwelveHours = CommonServices.getTimestamp($scope.rTwelveHours);
     $scope.metricsRetention.retentionOneDay = CommonServices.getTimestamp($scope.rOneDay);
+    $scope.metricsRetention.retentionBinary = CommonServices.getTimestamp($scope.rBinary);
+    $scope.metricsRetention.retentionGPS = CommonServices.getTimestamp($scope.rGPS);
 
     SettingsFactory.saveMetricsRetention($scope.metricsRetention,function(response) {
         alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));

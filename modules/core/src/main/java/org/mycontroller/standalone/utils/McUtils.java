@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,7 +111,12 @@ public class McUtils {
     }
 
     public static String getDoubleAsString(double value) {
-        return getDoubleAsString(value, 3);
+        String _value = getDoubleAsString(value, 3);
+        if (_value.endsWith(".0")) {
+            _value = _value.substring(0, _value.length() - 2);
+        }
+
+        return _value;
     }
 
     public static String getDoubleAsString(String value) {
@@ -351,5 +356,17 @@ public class McUtils {
             return value;
         }
         return "-";
+    }
+
+    public static String toString(StackTraceElement[] stackTraceElements) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i < stackTraceElements.length; i++) {
+            builder.append("\n\t at ")
+                    .append(stackTraceElements[i].getClassName()).append(".")
+                    .append(stackTraceElements[i].getMethodName()).append("(")
+                    .append(stackTraceElements[i].getFileName()).append(":")
+                    .append(stackTraceElements[i].getLineNumber()).append(")");
+        }
+        return builder.toString();
     }
 }

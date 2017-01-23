@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -137,7 +137,8 @@ public class MetricApi {
                 tmpTimestampTo += bucketDuration;
                 String sqlSelectQuery = MessageFormat.format(
                         DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_DOUBLE_BY_SENSOR_VARIABLE),
-                        sensorVariableId, String.valueOf(timestampFrom), String.valueOf(tmpTimestampTo));
+                        String.valueOf(sensorVariableId), String.valueOf(timestampFrom),
+                        String.valueOf(tmpTimestampTo));
                 _logger.debug("Sql query:[{}]", sqlSelectQuery);
                 MetricsDoubleTypeDevice metric = null;
                 try {
@@ -259,7 +260,8 @@ public class MetricApi {
 
                 String sqlSelectQuery = MessageFormat.format(
                         DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_COUNTER_BY_SENSOR_VARIABLE),
-                        sensorVariableId, String.valueOf(timestampTmpFrom), String.valueOf(timestampToTmp));
+                        String.valueOf(sensorVariableId), String.valueOf(timestampTmpFrom),
+                        String.valueOf(timestampToTmp));
                 _logger.debug("Sql query:[{}]", sqlSelectQuery);
                 MetricsCounterTypeDevice metric = null;
                 try {
@@ -335,7 +337,7 @@ public class MetricApi {
                 tmpTimestampTo += bucketDuration;
                 String sqlSelectQuery = MessageFormat.format(
                         DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_BATTERY_BY_NODE),
-                        nodeId, String.valueOf(timestampFrom), String.valueOf(tmpTimestampTo));
+                        String.valueOf(nodeId), String.valueOf(timestampFrom), String.valueOf(tmpTimestampTo));
                 _logger.debug("Sql query:[{}]", sqlSelectQuery);
                 MetricsBatteryUsage metric = null;
                 try {

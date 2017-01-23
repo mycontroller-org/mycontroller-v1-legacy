@@ -180,7 +180,7 @@
         <div ng-if="!showGraphSettings"> <!-- Metrics data retention settings -->
           <div class="card-pf-body">
             <form class="form-horizontal" name="mcFormRetention">
-
+              <legend>{{ 'DATA' | translate }}: {{ 'DOUBLE' | translate }}, {{ 'COUNTER' | translate }}</legend>
               <!-- retain raw data -->
               <div class="form-group">
                 <label class="col-sm-2 control-label">{{ 'RAW_DATA' | translate }}</label>
@@ -328,6 +328,48 @@
                   </div>
               </div>
 
+              <!-- retain binary data -->
+              <legend>{{ 'OTHERS' | translate }}</legend>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'BINARY_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'BINARY_DATA' | translate }}" ng-model="$parent.rBinary.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rBinary.timestamp}} {{$parent.rBinary.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rBinary.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
+
+              <!-- retain gps data -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'GPS_DATA' | translate }}</label>
+                <div class="col-sm-4" ng-show="editEnable.metricsDataRetention">
+                  <input ng-show="editEnable.metricsDataRetention" class="form-control mc-form-fixer" placeholder="{{ 'GPS_DATA' | translate }}" ng-model="$parent.rGPS.timestamp" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div ng-if="!editEnable.metricsDataRetention" class="col-sm-6">
+                  <div>{{$parent.rGPS.timestamp}} {{$parent.rGPS.timeConstantString}}</div>
+                </div>
+                  <div class="col-sm-2 mc-form-fixer" ng-show="editEnable.metricsDataRetention" >
+                    <select class="form-control" pf-select ng-model="$parent.rGPS.timeConstant" required>
+                      <option value="" ng-hide="true"></option>
+                      <option value="60000">{{ 'MINUTES' | translate }}</option>
+                      <option value="3600000">{{ 'HOURS' | translate }}</option>
+                      <option value="86400000">{{ 'DAYS' | translate }}</option>
+                      <option value="31536000000">{{ 'YEARS' | translate }}</option>
+                    </select>
+                  </div>
+              </div>
 
             </form>
 

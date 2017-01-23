@@ -873,9 +873,6 @@ public class McMessageEngine implements Runnable {
                 case GPS:
                     data = MetricsGPSTypeDevice.get(mcMessage.getPayload(), mcMessage.getTimestamp()).getPosition();
                     break;
-                case NONE:
-                    //For NONE metric type nothing to do.
-                    break;
                 default:
                     data = mcMessage.getPayload();
                     break;
