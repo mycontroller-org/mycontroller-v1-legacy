@@ -156,6 +156,7 @@
     "ENABLE_EDIT_MODE": "Включить режим редактирования",
     "ENABLE_MIN_MAX": "Включить Мин/Макс",
     "ENABLE_SSL": "Включить SSL",
+    "ENABLE_UNIQUE_NAME": "Enable unique name",
     "ERASE_CONFIGURATION": "Стереть настройки",
     "ERASE_CONFIGURATION_CONFIRMATION_MESSAGE": "Вы собираетесь удалить, всю конфигурацию выбранных элементов.<br>Нажмите 'Удалить конфигурацию', чтобы продолжить.",
     "ERASE_CONFIGURATION_CONFIRMATION_TITLE": "Удалить конфигурацию",

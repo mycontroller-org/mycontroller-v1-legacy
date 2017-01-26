@@ -156,6 +156,7 @@
     "ENABLE_EDIT_MODE": "Edit mode aanzetten",
     "ENABLE_MIN_MAX": "Min/Max Aanzetten",
     "ENABLE_SSL": "SSL gebruiken",
+    "ENABLE_UNIQUE_NAME": "Enable unique name",
     "ERASE_CONFIGURATION": "Configuratie wissen",
     "ERASE_CONFIGURATION_CONFIRMATION_MESSAGE": "U staat op het punt de configuratie te verwijderen van de geselecteerde items.<br> Klik op 'Verwijder configuratie' om door te gaan.",
     "ERASE_CONFIGURATION_CONFIRMATION_TITLE": "Configuratie verwijderen",

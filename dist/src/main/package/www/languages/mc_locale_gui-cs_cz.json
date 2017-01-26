@@ -156,6 +156,7 @@
     "ENABLE_EDIT_MODE": "Povolit mód úprav",
     "ENABLE_MIN_MAX": "Povolit Min/Max",
     "ENABLE_SSL": "Povolit SSL",
+    "ENABLE_UNIQUE_NAME": "Enable unique name",
     "ERASE_CONFIGURATION": "Zrušit konfiguraci",
     "ERASE_CONFIGURATION_CONFIRMATION_MESSAGE": "Chystáte se zrušit kompletní konfiguraci zvolených položek.<br>Stiskněte tlašítko \"Zrušit konfiguraci\" k provedení.",
     "ERASE_CONFIGURATION_CONFIRMATION_TITLE": "Zrušit konfiguraci",

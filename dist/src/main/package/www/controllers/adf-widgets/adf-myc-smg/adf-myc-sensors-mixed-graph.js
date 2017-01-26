@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
         controllerAs: 'mycSensorsMixedGraph',
         config: {
           useInteractiveGuideline:false,
+          enableUniqueName:false,
           chartInterpolate:"linear",
           variableId:[],
           variableType:[],
@@ -99,7 +100,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
 
     function updateChart(){
       mycSensorsMixedGraph.isSyncing = true;
-      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"multiChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
+      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"multiChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp, "enableDetailedKey": config.enableUniqueName === undefined ? false : config.enableUniqueName}, function(resource){
         if(resource.length > 0){
            mycSensorsMixedGraph.chartData = resource[0].chartData;
           //Update display time format

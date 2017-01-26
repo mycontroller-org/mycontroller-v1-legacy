@@ -156,6 +156,7 @@
     "ENABLE_EDIT_MODE": "Enable edit mode",
     "ENABLE_MIN_MAX": "Enable Min/Max",
     "ENABLE_SSL": "Enable SSL",
+    "ENABLE_UNIQUE_NAME": "Enable unique name",
     "ERASE_CONFIGURATION": "Erase configuration",
     "ERASE_CONFIGURATION_CONFIRMATION_MESSAGE": "You are about to erase complete configuration of selected items.<br>Click 'Erase configuration' to proceed further.",
     "ERASE_CONFIGURATION_CONFIRMATION_TITLE": "Избриши конфигурација",

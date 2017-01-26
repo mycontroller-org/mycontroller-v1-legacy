@@ -156,6 +156,7 @@
     "ENABLE_EDIT_MODE": "启用编辑模式",
     "ENABLE_MIN_MAX": "启用最小/最大",
     "ENABLE_SSL": "启用 SSL",
+    "ENABLE_UNIQUE_NAME": "Enable unique name",
     "ERASE_CONFIGURATION": "删除配置",
     "ERASE_CONFIGURATION_CONFIRMATION_MESSAGE": "您将要删除选定项的完整配置。<br>点击清除配置继续下去。",
     "ERASE_CONFIGURATION_CONFIRMATION_TITLE": "清除配置",

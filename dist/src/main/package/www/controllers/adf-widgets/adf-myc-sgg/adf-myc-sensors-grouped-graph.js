@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
         controllerAs: 'mycSensorsGroupedGraph',
         config: {
           useInteractiveGuideline:true,
+          enableUniqueName:false,
           variableId:[],
           variableType:null,
           chartFromTimestamp:'3600000',
@@ -95,7 +96,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
 
     function updateChart(){
       mycSensorsGroupedGraph.isSyncing = true;
-      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"lineChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
+      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"lineChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp, "enableDetailedKey": config.enableUniqueName === undefined ? false : config.enableUniqueName}, function(resource){
         if(resource.length > 0){
            mycSensorsGroupedGraph.chartData = resource[0].chartData;
           //Update display time format

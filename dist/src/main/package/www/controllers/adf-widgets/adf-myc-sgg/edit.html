@@ -29,6 +29,11 @@
   </div>
 
   <div class="form-group">
+    <input ng-model="config.enableUniqueName" type="checkbox"/>
+    <label class="control-label">{{ 'ENABLE_UNIQUE_NAME' | translate }}</label>
+  </div>
+
+  <div class="form-group">
     <label>{{ 'TIME_RANGE' | translate }}</label>
     <select id="panelSize" class="form-control" pf-select ng-model="config.chartFromTimestamp">
       <option value="" ng-hide="true"></option>

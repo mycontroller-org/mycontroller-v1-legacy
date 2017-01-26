@@ -156,6 +156,7 @@
     "ENABLE_EDIT_MODE": "Bearbeitungsmodus aktivieren",
     "ENABLE_MIN_MAX": "Min/Max aktivieren",
     "ENABLE_SSL": "SSL aktivieren",
+    "ENABLE_UNIQUE_NAME": "Enable unique name",
     "ERASE_CONFIGURATION": "Konfiguration löschen",
     "ERASE_CONFIGURATION_CONFIRMATION_MESSAGE": "Sie sind dabei, die vollständige Konfiguration der ausgewählten Elemente zu löschen.<br>Klicken Sie auf 'Konfiguration löschen' um fortzufahren.",
     "ERASE_CONFIGURATION_CONFIRMATION_TITLE": "Konfiguration löschen",

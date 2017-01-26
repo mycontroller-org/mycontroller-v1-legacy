@@ -156,6 +156,7 @@
     "ENABLE_EDIT_MODE": "Activează modul de editare",
     "ENABLE_MIN_MAX": "Activează Min/Max",
     "ENABLE_SSL": "Activează SSL",
+    "ENABLE_UNIQUE_NAME": "Enable unique name",
     "ERASE_CONFIGURATION": "Şterge configurare",
     "ERASE_CONFIGURATION_CONFIRMATION_MESSAGE": "Veți șterge complet configurația elementelor selectate. <br>Faceţi clic pe 'Şterge configurare' pentru a continua mai departe.",
     "ERASE_CONFIGURATION_CONFIRMATION_TITLE": "Şterge configurare",

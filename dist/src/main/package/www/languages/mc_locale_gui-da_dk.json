@@ -156,6 +156,7 @@
     "ENABLE_EDIT_MODE": "Tilmeld rediger-tilstand",
     "ENABLE_MIN_MAX": "Tilmeld Min/Max",
     "ENABLE_SSL": "Tilmeld SSL",
+    "ENABLE_UNIQUE_NAME": "Enable unique name",
     "ERASE_CONFIGURATION": "Slet konfiguration",
     "ERASE_CONFIGURATION_CONFIRMATION_MESSAGE": "Du er ved at slette alle konfigurationsdata for de markerede punkter<br>Klik 'Slet konfiguration' for at fortsætte.",
     "ERASE_CONFIGURATION_CONFIRMATION_TITLE": "Slet konfiguration",

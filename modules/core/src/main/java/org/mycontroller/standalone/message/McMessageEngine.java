@@ -847,7 +847,7 @@ public class McMessageEngine implements Runnable {
             //ResourcesLogs message data
             if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.WARNING)) {
                 this.setSensorVariableData(LOG_LEVEL.WARNING, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage,
-                        "Failed: Data not available in " + AppProperties.APPLICATION_NAME);
+                        "Failed: No data available for this variable");
             }
             _logger.warn("Data not available! but there is request from sensor[{}], Ignored this request!", mcMessage);
         }

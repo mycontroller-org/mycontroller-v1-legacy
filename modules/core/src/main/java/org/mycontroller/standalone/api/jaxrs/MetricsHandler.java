@@ -120,7 +120,8 @@ public class MetricsHandler extends AccessEngine {
             @QueryParam("timestampTo") Long timestampTo,
             @QueryParam("withMinMax") Boolean withMinMax,
             @QueryParam("chartType") String chartType,
-            @QueryParam("bucketDuration") String bucketDuration) {
+            @QueryParam("bucketDuration") String bucketDuration,
+            @QueryParam("enableDetailedKey") Boolean enableDetailedKey) {
         if (!variableIds.isEmpty()) {
             updateSensorVariableIds(variableIds);
         } else if (sensorId != null) {
@@ -132,7 +133,7 @@ public class MetricsHandler extends AccessEngine {
         return RestUtils.getResponse(
                 Status.OK,
                 getMetricsDataJsonNVD3(variableIds, sensorId, timestampFrom, timestampTo,
-                        withMinMax != null ? withMinMax : false, chartType, bucketDuration));
+                        withMinMax != null ? withMinMax : false, chartType, bucketDuration, enableDetailedKey));
     }
 
     @GET
@@ -600,7 +601,11 @@ public class MetricsHandler extends AccessEngine {
             Long timestampFrom,
             Long timestampTo,
             String chartType,
-            String bucketDuration) {
+            String bucketDuration,
+            Boolean enableDetailedKey) {
+        if (enableDetailedKey == null) {
+            enableDetailedKey = Boolean.FALSE;
+        }
 
         //Get sensor variables
         List<SensorVariable> sensorVariables = null;
@@ -667,16 +672,27 @@ public class MetricsHandler extends AccessEngine {
             }
 
             String seriesName = null;
-            String preText = sensorVariable.getSensor().getNode().getEui() + "_"
-                    + sensorVariable.getSensor().getSensorId() + "_";
+            String postText = null;
+            if (enableDetailedKey) {
+                String sensorName = sensorVariable.getSensor().getName() != null
+                        && sensorVariable.getSensor().getName().trim().length() > 0 ? sensorVariable.getSensor()
+                        .getName() : sensorVariable.getSensor().getSensorId();
+                String nodeName = sensorVariable.getSensor().getNode().getName() != null
+                        && sensorVariable.getSensor().getNode().getName().trim().length() > 0 ? sensorVariable
+                        .getSensor().getNode().getName() : sensorVariable.getSensor().getNode().getEui();
+                postText = " [" + nodeName + ">>" + sensorName + "]";
+            } else {
+                postText = "";
+            }
+
             if (isMultiChart) {
-                seriesName = preText + sensorVariable.getVariableType().getText();
+                seriesName = sensorVariable.getVariableType().getText() + postText;
             } else {
                 seriesName = sensorVariable.getSensor().getName();
                 if (seriesName == null) {
-                    seriesName = preText + sensorVariable.getVariableType().getText();
+                    seriesName = sensorVariable.getVariableType().getText() + postText;
                 }
-                seriesName = preText + seriesName;
+                seriesName = seriesName + postText;
             }
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
@@ -784,12 +800,13 @@ public class MetricsHandler extends AccessEngine {
             Long timestampTo,
             Boolean withMinMax,
             String chartType,
-            String bucketDuration) {
+            String bucketDuration,
+            Boolean enableDetailedKey) {
 
         //if chartType not null, call this
         if (chartType != null) {
             return getMetricsDataJsonNVD3WithChartType(variableIds, timestampFrom, timestampTo, chartType,
-                    bucketDuration);
+                    bucketDuration, enableDetailedKey);
         }
 
         //Get sensor variables
