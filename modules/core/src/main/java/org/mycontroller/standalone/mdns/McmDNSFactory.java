@@ -29,6 +29,8 @@ import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.api.SystemApi;
+import org.mycontroller.standalone.api.jaxrs.json.McAbout;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -185,7 +187,8 @@ public class McmDNSFactory {
                     .weight(WEIGHT_DEFAULT)
                     .priority(PRIORITY_DEFAULT)
                     .build();
-            mqttService.getProperties().put("feed", "device");
+            mqttService.setProperty("feed", "device");
+            loadVersionDetails(mqttService);
         }
         return mqttService;
     }
@@ -199,7 +202,8 @@ public class McmDNSFactory {
                     .weight(WEIGHT_DEFAULT)
                     .priority(PRIORITY_DEFAULT)
                     .build();
-            restApiService.getProperties().put("path", "/mc/rest");
+            restApiService.setProperty("path", "/mc/rest");
+            loadVersionDetails(restApiService);
         }
         return restApiService;
     }
@@ -213,9 +217,17 @@ public class McmDNSFactory {
                     .weight(WEIGHT_DEFAULT)
                     .priority(PRIORITY_DEFAULT)
                     .build();
-            httpService.getProperties().put("path", "/index.html");
+            httpService.setProperty("path", "/index.html");
+            loadVersionDetails(httpService);
         }
         return httpService;
     }
 
+    private static void loadVersionDetails(McmDNSServiceInfo dnsServiceInfo) {
+        McAbout mcAbout = new SystemApi().getAbout();
+        dnsServiceInfo.setProperty("appVersion", mcAbout.getApplicationVersion());
+        dnsServiceInfo.setProperty("dbType", mcAbout.getDatabaseType());
+        dnsServiceInfo.setProperty("builtOn", mcAbout.getGitBuiltOn());
+        dnsServiceInfo.setProperty("osName", mcAbout.getOsName());
+    }
 }

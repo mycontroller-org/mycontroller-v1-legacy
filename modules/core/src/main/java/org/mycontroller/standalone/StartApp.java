@@ -321,7 +321,9 @@ public class StartApp {
                         .load(ClassLoader.getSystemClassLoader().getResourceAsStream("mycontroller.properties"));
 
             } else {
-                properties.load(new FileReader(propertiesFile));
+                FileReader fileReader = new FileReader(propertiesFile);
+                properties.load(fileReader);
+                fileReader.close();
             }
             AppProperties.getInstance().loadProperties(properties);
             _logger.debug("Properties are loaded successfuly...");

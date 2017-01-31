@@ -480,9 +480,14 @@ public class AppProperties {
     }
 
     public void createDirectoryLocation(String directoryLocation) {
-        if (!FileUtils.getFile(directoryLocation).exists()) {
-            if (FileUtils.getFile(directoryLocation).mkdirs()) {
-                _logger.info("Created directory location: {}", directoryLocation);
+        File dir = FileUtils.getFile(directoryLocation);
+        if (!dir.exists()) {
+            if (dir.mkdirs()) {
+                try {
+                    _logger.info("Created directory location: [{}]", dir.getCanonicalPath());
+                } catch (IOException ex) {
+                    _logger.error("Failed to get CanonicalPath path of '{}'", directoryLocation);
+                }
             } else {
                 _logger.error("Unable to create directory location: {}", directoryLocation);
             }

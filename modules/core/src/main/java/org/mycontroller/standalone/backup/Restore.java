@@ -117,7 +117,7 @@ public class Restore implements Runnable {
             //Remove old properties file
             FileUtils
                     .deleteQuietly(FileUtils.getFile(BRCommons.APP_CONF_LOCATION + BRCommons.APP_PROPERTIES_FILENAME));
-            FileUtils.moveFile(
+            FileUtils.copyFile(
                     FileUtils.getFile(extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME),
                     FileUtils.getFile(BRCommons.APP_CONF_LOCATION + BRCommons.APP_PROPERTIES_FILENAME));
 
@@ -125,7 +125,7 @@ public class Restore implements Runnable {
                 //Remove old files
                 FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getWebSslKeystoreFile()));
                 //restore key store file
-                FileUtils.moveFile(
+                FileUtils.copyFile(
                         FileUtils.getFile(extractedLocation + File.separator + FileUtils.getFile(
                                 AppProperties.getInstance().getWebSslKeystoreFile()).getName()),
                         FileUtils.getFile(AppProperties.getInstance().getWebSslKeystoreFile()));

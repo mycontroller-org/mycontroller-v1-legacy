@@ -70,14 +70,15 @@ public class NodeApi {
         }
 
         if (McMessageUtils.validateNodeIdByProvider(node)) {
-            if (oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER
+            if ((oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER
+                    || oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS)
                     && !oldNode.getEui().equals(node.getEui())) {
                 McMessage mcMessage = McMessage.builder()
                         .ack(McMessage.NO_ACK)
                         .isScreeningDone(true)
                         .gatewayId(oldNode.getGatewayTable().getId())
                         .isTxMessage(true)
-                        .networkType(NETWORK_TYPE.MY_CONTROLLER)
+                        .networkType(oldNode.getGatewayTable().getNetworkType())
                         .type(MESSAGE_TYPE.C_INTERNAL)
                         .subType(MESSAGE_TYPE_INTERNAL.I_ID_RESPONSE.getText())
                         .nodeEui(oldNode.getEui())

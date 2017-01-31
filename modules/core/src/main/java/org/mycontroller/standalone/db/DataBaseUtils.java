@@ -163,8 +163,10 @@ public class DataBaseUtils {
             }
 
             mcAbout = new SystemApi().getAbout();
-            _logger.info("Application information: [Version:{}, Database version:{}, Built on:{}, Git commit:{}:{}]",
-                    mcAbout.getApplicationVersion(), mcAbout.getApplicationDbVersion(),
+            _logger.info(
+                    "Application information: [Version:{}, Database(type:{}, version:{}, schema version:{}),"
+                            + " Built on:{}, Git commit:{}:{}]", mcAbout.getApplicationVersion(),
+                    mcAbout.getDatabaseType(), mcAbout.getDatabaseVersion(), mcAbout.getApplicationDbVersion(),
                     mcAbout.getGitBuiltOn(), mcAbout.getGitCommit(), mcAbout.getGitBranch());
             dbMigrationStatus = true;
             reloadDao();
