@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariablePurge;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariablePurge;
 import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;

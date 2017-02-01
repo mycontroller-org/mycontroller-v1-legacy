@@ -16,13 +16,26 @@
  */
 package org.mycontroller.standalone.api;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.restclient.core.jaxrs.McHttpClient;
+import org.mycontroller.standalone.api.jaxrs.model.McHttpResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,33 +46,109 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HttpApi {
 
-    // HTTP GET request
-    public String get(String url) {
-        Map<String, String> headers = new HashMap<String, String>();
+    private HttpClient client = null;
+
+    public HttpApi() {
+        client = HttpClientBuilder.create().build();
+    }
+
+    public HttpApi(TRUST_HOST_TYPE trustHostType) {
+        if (trustHostType == TRUST_HOST_TYPE.ANY) {
+            client = new McHttpClient().getHttpClientTrustAll();
+        }
+        client = new McHttpClient().getHttpClient();
+    }
+
+    private Map<String, Object> getDefaultHeader() {
+        Map<String, Object> headers = new HashMap<String, Object>();
         headers.put("User-Agent", "Mozilla/5.0");
-        return get(url, headers);
+        return headers;
     }
 
     // HTTP GET request
-    public String get(String url, Map<String, String> headers) {
+    public McHttpResponse get(String url) {
+        return get(url, getDefaultHeader(), null);
+    }
+
+    // HTTP GET request
+    public McHttpResponse get(String url, Map<String, Object> queryParameters) {
+        return get(url, getDefaultHeader(), queryParameters);
+    }
+
+    // HTTP GET request
+    public McHttpResponse get(String url, Map<String, Object> headers, Map<String, Object> queryParameters) {
         try {
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            // optional default is GET
-            con.setRequestMethod("GET");
-            //add request header
-            if (!headers.isEmpty()) {
-                for (String key : headers.keySet()) {
-                    con.setRequestProperty(key, headers.get(key));
+            HttpGet get = null;
+            if (queryParameters != null && !queryParameters.isEmpty()) {
+                List<NameValuePair> queryParams = new ArrayList<NameValuePair>();
+                for (String key : queryParameters.keySet()) {
+                    queryParams.add(new BasicNameValuePair(key, String.valueOf(queryParameters.get(key))));
                 }
+                get = new HttpGet(new URIBuilder(url).addParameters(queryParams).build());
+            } else {
+                get = new HttpGet(url);
             }
-            int responseCode = con.getResponseCode();
-            _logger.debug("Sending 'GET' request to URL : {}, Response code: {}", url, responseCode);
-            return IOUtils.toString(con.getInputStream());
-        } catch (IOException ex) {
+
+            for (String key : headers.keySet()) {
+                get.setHeader(key, String.valueOf(headers.get(key)));
+            }
+            HttpResponse response = client.execute(get);
+            McHttpResponse httpResponse = McHttpResponse.builder()
+                    .uri(get.getURI())
+                    .responseCode(response.getStatusLine().getStatusCode())
+                    .entity(IOUtils.toString(response.getEntity().getContent()))
+                    .headers(response.getAllHeaders())
+                    .build();
+            _logger.debug("{}", httpResponse);
+            return httpResponse;
+
+        } catch (Exception ex) {
             _logger.error("Exception when calling url:[{}], headers:[{}]", url, headers, ex);
         }
         return null;
+    }
+
+    // HTTP POST request
+    public McHttpResponse post(String url, String entity) {
+        return post(url, getDefaultHeader(), entity);
+    }
+
+    // HTTP POST request
+    public McHttpResponse post(String url, Map<String, Object> headers, String entity) {
+        try {
+            return post(url, headers, new StringEntity(entity));
+        } catch (UnsupportedEncodingException ex) {
+            _logger.error("Exception when calling url:[{}], headers:[{}]", url, headers, ex);
+            return McHttpResponse.builder()
+                    .exception(ex.getMessage())
+                    .build();
+        }
+    }
+
+    // HTTP POST request
+    public McHttpResponse post(String url, Map<String, Object> headers, HttpEntity entity) {
+        try {
+            HttpPost post = new HttpPost(url);
+            for (String key : headers.keySet()) {
+                post.setHeader(key, String.valueOf(headers.get(key)));
+            }
+            post.setEntity(entity);
+            HttpResponse response = client.execute(post);
+            McHttpResponse httpResponse = McHttpResponse.builder()
+                    .uri(post.getURI())
+                    .responseCode(response.getStatusLine().getStatusCode())
+                    .entity(IOUtils.toString(response.getEntity().getContent()))
+                    .headers(response.getAllHeaders())
+                    .build();
+            _logger.debug("{}", httpResponse);
+            return httpResponse;
+
+        } catch (Exception ex) {
+            _logger.error("Exception when calling url:[{}], headers:[{}]", url, headers, ex);
+            return McHttpResponse.builder()
+                    .exception(ex.getMessage())
+                    .build();
+        }
     }
 
 }

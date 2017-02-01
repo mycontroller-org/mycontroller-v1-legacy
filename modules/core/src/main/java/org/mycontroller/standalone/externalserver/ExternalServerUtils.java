@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ import org.mycontroller.standalone.exernalserver.model.ExternalServerEmoncms;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerInfluxdb;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerMqtt;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerPhantIO;
+import org.mycontroller.standalone.exernalserver.model.ExternalServerWUnderground;
 import org.mycontroller.standalone.restclient.emoncms.EmoncmsClientImpl;
 import org.mycontroller.standalone.restclient.influxdb.InfluxdbClientImpl;
 import org.mycontroller.standalone.restclient.phantio.PhantIOClientImpl;
@@ -47,7 +48,8 @@ public class ExternalServerUtils {
         PHANT_IO("Sparkfun [phant.io]"),
         EMONCMS("Emoncms.org"),
         INFLUXDB("Influxdb"),
-        MQTT("MQTT");
+        MQTT("MQTT"),
+        WUNDERGROUND("WUnderground");
         public static EXTERNAL_SERVER_TYPE get(int id) {
             for (EXTERNAL_SERVER_TYPE type : values()) {
                 if (type.ordinal() == id) {
@@ -89,6 +91,8 @@ public class ExternalServerUtils {
                 return new ExternalServerInfluxdb(externalServerTable);
             case MQTT:
                 return new ExternalServerMqtt(externalServerTable);
+            case WUNDERGROUND:
+                return new ExternalServerWUnderground(externalServerTable);
             default:
                 _logger.error("This type External Server not implemented!");
                 break;

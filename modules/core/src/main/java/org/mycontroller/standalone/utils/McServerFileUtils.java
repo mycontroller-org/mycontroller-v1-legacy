@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,8 +37,8 @@ import org.apache.commons.io.filefilter.SizeFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.api.jaxrs.json.ImageFile;
-import org.mycontroller.standalone.api.jaxrs.json.LogFile;
+import org.mycontroller.standalone.api.jaxrs.model.ImageFile;
+import org.mycontroller.standalone.api.jaxrs.model.LogFile;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;

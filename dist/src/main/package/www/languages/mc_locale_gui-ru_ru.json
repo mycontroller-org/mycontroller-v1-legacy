@@ -552,6 +552,8 @@
     "SPECIFICATION_VENDOR": "Производитель",
     "SPECIFICATION_VERSION": "Версия",
     "STACKED_AREA_CHART": "Область ячейки диаграммы",
+    "STATION_ID": "Station id",
+    "STATION_PASSWORD": "Station password",
     "STATUS": "Статус",
     "STATUS_MESSAGE": "Сообщение о состоянии",
     "STATUS_SINCE": "Начиная с",

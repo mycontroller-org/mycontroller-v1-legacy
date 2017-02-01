@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,8 +30,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.spi.HttpRequest;
-import org.mycontroller.standalone.api.jaxrs.json.Authentication;
-import org.mycontroller.standalone.api.jaxrs.json.UserCredential;
+import org.mycontroller.standalone.api.jaxrs.model.Authentication;
+import org.mycontroller.standalone.api.jaxrs.model.UserCredential;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.db.DaoUtils;

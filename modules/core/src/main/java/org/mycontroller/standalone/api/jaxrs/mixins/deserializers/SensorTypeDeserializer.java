@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins.deserializers;
 
 import java.io.IOException;
 
-import org.mycontroller.standalone.api.jaxrs.json.LocaleString;
+import org.mycontroller.standalone.api.jaxrs.model.LocaleString;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import com.fasterxml.jackson.core.JsonParser;

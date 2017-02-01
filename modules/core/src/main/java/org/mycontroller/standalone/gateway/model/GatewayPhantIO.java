@@ -16,9 +16,9 @@
  */
 package org.mycontroller.standalone.gateway.model;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,8 +31,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariablePurge;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariablePurge;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.ForwardPayload;

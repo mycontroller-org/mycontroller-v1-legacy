@@ -552,6 +552,8 @@
     "SPECIFICATION_VENDOR": "Specification Vendor",
     "SPECIFICATION_VERSION": "Verze specifikace",
     "STACKED_AREA_CHART": "Plošný graf",
+    "STATION_ID": "Station id",
+    "STATION_PASSWORD": "Station password",
     "STATUS": "Stav",
     "STATUS_MESSAGE": "Stavová zpráva",
     "STATUS_SINCE": "Poslední aktivita",

@@ -28,10 +28,10 @@ import javax.script.ScriptException;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.api.jaxrs.json.DataPointCounter;
-import org.mycontroller.standalone.api.jaxrs.json.DataPointDouble;
-import org.mycontroller.standalone.api.jaxrs.json.DataPointGPS;
-import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
+import org.mycontroller.standalone.api.jaxrs.model.DataPointCounter;
+import org.mycontroller.standalone.api.jaxrs.model.DataPointDouble;
+import org.mycontroller.standalone.api.jaxrs.model.DataPointGPS;
+import org.mycontroller.standalone.api.jaxrs.model.McHeatMap;
 import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.api.jaxrs.json.HtmlHeaderFiles;
-import org.mycontroller.standalone.api.jaxrs.json.McGuiSettings;
+import org.mycontroller.standalone.api.jaxrs.model.HtmlHeaderFiles;
+import org.mycontroller.standalone.api.jaxrs.model.McGuiSettings;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 

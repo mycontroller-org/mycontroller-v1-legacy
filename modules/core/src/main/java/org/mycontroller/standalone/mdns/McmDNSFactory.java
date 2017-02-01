@@ -30,7 +30,7 @@ import javax.jmdns.ServiceInfo;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.SystemApi;
-import org.mycontroller.standalone.api.jaxrs.json.McAbout;
+import org.mycontroller.standalone.api.jaxrs.model.McAbout;
 
 import lombok.extern.slf4j.Slf4j;
 

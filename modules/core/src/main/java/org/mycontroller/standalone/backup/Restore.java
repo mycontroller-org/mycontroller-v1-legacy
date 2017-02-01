@@ -31,7 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.DB_TYPE;
 import org.mycontroller.standalone.StartApp;
-import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
+import org.mycontroller.standalone.api.jaxrs.model.BackupFile;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.utils.McUtils;
 

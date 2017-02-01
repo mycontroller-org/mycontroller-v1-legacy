@@ -552,6 +552,8 @@
     "SPECIFICATION_VENDOR": "Specification Vendor",
     "SPECIFICATION_VERSION": "Specification Version",
     "STACKED_AREA_CHART": "அடுக்கப்பட்ட பரப்பு விளக்கப்படம்",
+    "STATION_ID": "Station id",
+    "STATION_PASSWORD": "Station password",
     "STATUS": "நிலை",
     "STATUS_MESSAGE": "Status message",
     "STATUS_SINCE": "Status since",

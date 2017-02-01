@@ -552,6 +552,8 @@
     "SPECIFICATION_VENDOR": "Specifikation af Leverandør",
     "SPECIFICATION_VERSION": "Specifikation af Version",
     "STACKED_AREA_CHART": "Stakket areal-diagram",
+    "STATION_ID": "Station id",
+    "STATION_PASSWORD": "Station password",
     "STATUS": "Status",
     "STATUS_MESSAGE": "Statusbesked",
     "STATUS_SINCE": "Status siden",

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins.serializers;
 
 import java.io.IOException;
 
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 
 import com.fasterxml.jackson.core.JsonGenerator;

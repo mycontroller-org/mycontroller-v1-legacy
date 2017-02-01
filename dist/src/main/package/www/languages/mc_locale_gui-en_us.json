@@ -552,6 +552,8 @@
     "SPECIFICATION_VENDOR": "Specification vendor",
     "SPECIFICATION_VERSION": "Specification version",
     "STACKED_AREA_CHART": "Stacked area chart",
+    "STATION_ID": "Station id",
+    "STATION_PASSWORD": "Station password",
     "STATUS": "Status",
     "STATUS_MESSAGE": "Status message",
     "STATUS_SINCE": "Status since",

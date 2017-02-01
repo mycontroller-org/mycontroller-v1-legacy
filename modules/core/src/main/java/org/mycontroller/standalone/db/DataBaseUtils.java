@@ -29,7 +29,7 @@ import org.flywaydb.core.api.FlywayException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.DB_TYPE;
 import org.mycontroller.standalone.api.SystemApi;
-import org.mycontroller.standalone.api.jaxrs.json.McAbout;
+import org.mycontroller.standalone.api.jaxrs.model.McAbout;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;

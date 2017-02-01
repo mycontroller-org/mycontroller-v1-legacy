@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -229,6 +229,8 @@ myControllerModule.controller('ExternalServersControllerAddEdit', function ($sco
       $scope.item.database='';
     }else if($scope.item.type === 'MQTT'){
       $scope.item.keyFormat='$nodeEui/$sensorId/$variableType';
+    }else if($scope.item.type === 'WUnderground'){
+      $scope.item.url='https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php';
     }
   };
 

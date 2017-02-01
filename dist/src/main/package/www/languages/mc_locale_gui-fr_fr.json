@@ -552,6 +552,8 @@
     "SPECIFICATION_VENDOR": "Description fournisseur",
     "SPECIFICATION_VERSION": "Description version",
     "STACKED_AREA_CHART": "Graphique en aires empilées",
+    "STATION_ID": "Station id",
+    "STATION_PASSWORD": "Station password",
     "STATUS": "État",
     "STATUS_MESSAGE": "Message d’état",
     "STATUS_SINCE": "État depuis",

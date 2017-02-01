@@ -552,6 +552,8 @@
     "SPECIFICATION_VENDOR": "规范供应商",
     "SPECIFICATION_VERSION": "规范版本",
     "STACKED_AREA_CHART": "堆积的面积图",
+    "STATION_ID": "Station id",
+    "STATION_PASSWORD": "Station password",
     "STATUS": "状态",
     "STATUS_MESSAGE": "状态消息",
     "STATUS_SINCE": "状态自",

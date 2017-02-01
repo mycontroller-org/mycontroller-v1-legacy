@@ -18,6 +18,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import java.io.IOException;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -30,7 +31,6 @@ import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
 import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;

@@ -552,6 +552,8 @@
     "SPECIFICATION_VENDOR": "Especificació del venedor",
     "SPECIFICATION_VERSION": "Especificació de versió",
     "STACKED_AREA_CHART": "Àrea de Gràfic apilada",
+    "STATION_ID": "Station id",
+    "STATION_PASSWORD": "Station password",
     "STATUS": "Estat",
     "STATUS_MESSAGE": "Missatge d'estat",
     "STATUS_SINCE": "Des de l'estat",
