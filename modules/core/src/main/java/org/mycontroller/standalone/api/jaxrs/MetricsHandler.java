@@ -887,7 +887,9 @@ public class MetricsHandler extends AccessEngine {
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
                             .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
                             .variableType(
-                                    McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
+                                    McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name())
+                                            + (sensorVariable.getName() != null
+                                                    ? " (" + sensorVariable.getName() + ")" : ""))
                             .dataType(sensorVariable.getMetricType().getText())
                             .resourceName(new ResourceModel(
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())

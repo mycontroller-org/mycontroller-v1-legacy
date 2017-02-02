@@ -227,7 +227,10 @@
 <div ng-if="variable.type.en.indexOf('Variable ') > -1" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
   <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
-    <span class="mc-style-ab"><span ng-hide="hideVariableName">{{variable.type.en.replace('Variable ','V')}}: </span>{{variable.value ||"-"}} {{variable.unit}}</span>
+    <span class="mc-style-ab">
+      <span ng-hide="hideVariableName">{{variable.name ? variable.name.length > 12 ? variable.name.substring(0,9)+'.. ' : variable.name : variable.type.en.replace('Variable ','V')}}: </span>
+      {{variable.value ||"-"}} {{variable.unit}}
+    </span>
   </span>
 </div>
 
@@ -235,7 +238,10 @@
 <div ng-if="variable.type.en === 'Volume'" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
   <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
-    <span class="mc-style-ab"><span ng-hide="hideVariableName">Vol: </span>{{variable.value ||"-"}} {{variable.unit}}</span>
+    <span class="mc-style-ab">
+      <span ng-hide="hideVariableName">{{variable.name ? variable.name.length > 12 ? variable.name.substring(0,9)+'.. ' : variable.name : 'Vol'}}: </span>
+      {{variable.value ||"-"}} {{variable.unit}}
+    </span>
   </span>
 </div>
 
@@ -259,6 +265,9 @@
 <div ng-if="definedVariableTypes.indexOf(variable.type.en) == -1">
   <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
-    <span class="mc-style-ab"><span ng-hide="hideVariableName">{{variable.type.en}}: </span>{{variable.value ||"-"}} {{variable.unit}}</span>
+    <span class="mc-style-ab">
+      <span ng-hide="hideVariableName">{{variable.name ? variable.name.length > 12 ? variable.name.substring(0,9)+'.. ' : variable.name : variable.type.en}}: </span>
+      {{variable.value ||"-"}} {{variable.unit}}
+    </span>
   </span>
 </div>
