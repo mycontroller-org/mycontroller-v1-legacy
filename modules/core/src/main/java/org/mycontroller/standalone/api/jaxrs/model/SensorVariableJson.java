@@ -43,6 +43,7 @@ public class SensorVariableJson {
     private Integer id;
     private Integer sensorId;
     private LocaleString type;
+    private String name;
     private String metricType;
     private String unit;
     private UNIT_TYPE unitType;
@@ -54,7 +55,7 @@ public class SensorVariableJson {
     private Boolean readOnly;
     private Double offset;
     private Integer priority;
-    private HashMap<String, Object> graphProperties;
+    private HashMap<String, Object> properties;
 
     @JsonCreator
     private SensorVariableJson() {
@@ -76,7 +77,8 @@ public class SensorVariableJson {
         readOnly = sensorVariable.getReadOnly();
         offset = sensorVariable.getOffset();
         priority = sensorVariable.getPriority();
-        graphProperties = sensorVariable.getGraphProperties();
+        properties = sensorVariable.getProperties();
+        name = sensorVariable.getName();
         value = sensorVariable.getValue();
         friendlyValue = SensorUtils.getValue(sensorVariable);
         timestamp = sensorVariable.getTimestamp();

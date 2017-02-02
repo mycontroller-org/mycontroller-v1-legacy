@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,14 +64,16 @@ public class MqttGatewayImpl implements IGateway {
             mqttCallbackListener = new MqttCallbackListener(mqttClient, this.gateway, connectOptions);
             mqttClient.setCallback(mqttCallbackListener);
             mqttClient.subscribe(GatewayUtils.getMqttTopics(gateway.getTopicsSubscribe()));
-            _logger.info("MQTT Gateway[{}] connected successfully..", mqttClient.getServerURI());
+            _logger.info("MQTT Gateway[name:{}, URI:{}, NetworkType:{}] connected successfully..", gateway.getName(),
+                    mqttClient.getServerURI(), gateway.getNetworkType().getText());
             this.gateway.setStatus(STATE.UP, "Connected Successfully");
         } catch (MqttException ex) {
             this.gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage()
                     + ", Reload this gateway when MQTT Broker comes UP");
             _logger.error("Unable to connect with MQTT broker gateway[{}], Reason Code: {}, "
-                    + "Reload gateway [Id:{}, Name:{}] service when MQTT Broker comes UP!",
-                    mqttClient.getServerURI(), ex.getReasonCode(), gateway.getName(), ex);
+                    + "Reload gateway [Id:{}, Name:{}, NetworkType:{}] service when MQTT Broker comes UP!",
+                    mqttClient.getServerURI(), ex.getReasonCode(), gateway.getName(),
+                    gateway.getNetworkType().getText(), ex);
         }
     }
 

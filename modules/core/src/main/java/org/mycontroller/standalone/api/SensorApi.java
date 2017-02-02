@@ -218,8 +218,7 @@ public class SensorApi {
             //Update priority
             sensorVariable.setPriority(sensorVariableJson.getPriority());
             //Update Graph settings
-            sensorVariable.setGraphProperties(sensorVariableJson.getGraphProperties());
-
+            sensorVariable.setProperties(sensorVariableJson.getProperties());
             //Update sensor variable
             DaoUtils.getSensorVariableDao().update(sensorVariable);
         } else {

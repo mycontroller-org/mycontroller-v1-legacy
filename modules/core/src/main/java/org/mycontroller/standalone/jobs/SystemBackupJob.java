@@ -62,12 +62,12 @@ public class SystemBackupJob extends Job {
         Collections.sort(backupFiles, Collections.reverseOrder());
 
         if (backupFiles.size() > backupSettings.getRetainMax()) {
-            _logger.info("Available backup files:{}, Maximum files retain:{}", backupFiles.size(),
+            _logger.debug("Available backup files:{}, Maximum files retain:{}", backupFiles.size(),
                     backupSettings.getRetainMax());
             for (int deleteIndex = backupSettings.getRetainMax(); deleteIndex < backupFiles.size(); deleteIndex++) {
                 try {
                     FileUtils.forceDelete(FileUtils.getFile(backupFiles.get(deleteIndex).getCanonicalPath()));
-                    _logger.info("Backup file deleted, {}", backupFiles.get(deleteIndex));
+                    _logger.debug("Backup file deleted, {}", backupFiles.get(deleteIndex));
                 } catch (Exception ex) {
                     _logger.error("Backup file deletion failed", ex);
                 }

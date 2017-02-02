@@ -18,7 +18,7 @@
 
 <!-- Status -->
 <div ng-if="variable.type.en === 'Status'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
     <input class="onoffswitch" bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = cs.getInteger(variable.value)" type="checkbox"
     switch-animate="{{cs.mcbStyle.animate}}" switch-handle-width="{{cs.mcbStyle.stateHandleWidth}}" switch-label-width="{{cs.mcbStyle.labelWidth}}"
     switch-off-color="default" switch-on-color="primary" switch-size="{{cs.mcbStyle.size}}" switch-readonly="variable.readOnly"
@@ -29,7 +29,7 @@
 
 <!-- Temperature -->
 <div ng-if="variable.type.en === 'Temperature'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span ng-hide="hideVariableName"><i class="wi wi-thermometer mc-icon-2x"></i></span>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -37,14 +37,14 @@
 
 <!-- Percentage -->
 <div ng-if="variable.type.en === 'Percentage'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
 </div>
 
 <!-- Humidity -->
 <div ng-if="variable.type.en === 'Humidity'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span ng-hide="hideVariableName"><i class="wi wi-humidity mc-icon-2x"></i></span>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -52,7 +52,7 @@
 
 <!-- Pressure -->
 <div ng-if="variable.type.en === 'Pressure'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span ng-hide="hideVariableName"><i class="wi wi-barometer mc-icon-2x"></i></span>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -60,14 +60,14 @@
 
 <!-- Forecast -->
 <div ng-if="variable.type.en === 'Forecast'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-style-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-style-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="wi wi-{{cs.getForecastValue(variable.value)}} mc-icon-2x"></i>
   </span>
 </div>
 
 <!-- Watt -->
 <div ng-if="variable.type.en === 'Watt'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span ng-hide="hideVariableName"><i class="fa fa-bolt mc-icon-2x"></i></span>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -75,7 +75,7 @@
 
 <!-- Weight -->
 <div ng-if="variable.type.en === 'Weight'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="fa fa-balance-scale mc-icon-2x"></i>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -83,28 +83,28 @@
 
 <!-- Stop -->
 <div ng-if="variable.type.en === 'Stop'">
-  <span ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab">
+  <span ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab">
     <i ng-init="variable.value = 1" class="fa fa-stop mc-icon-2x" ng-click="updateVariable(variable)"></i>
   </span>
 </div>
 
 <!-- Up -->
 <div ng-if="variable.type.en === 'Up'">
-  <span ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab">
+  <span ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab">
     <i ng-init="variable.value = 1" class="fa fa-arrow-up mc-icon-2x" ng-click="updateVariable(variable)"></i>
   </span>
 </div>
 
 <!-- Down -->
 <div ng-if="variable.type.en === 'Down'">
-  <span ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab">
+  <span ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab">
     <i ng-init="variable.value = 1" class="fa fa-arrow-down mc-icon-2x" ng-click="updateVariable(variable)"></i>
   </span>
 </div>
 
 <!-- Rain -->
 <div ng-if="variable.type.en === 'Rain'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="wi wi-raindrops mc-icon-2x"></i>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -112,7 +112,7 @@
 
 <!-- Rain rate-->
 <div ng-if="variable.type.en === 'Rain rate'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="wi wi-raindrops mc-icon-2x">r</i>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -120,7 +120,7 @@
 
 <!-- Distance-->
 <div ng-if="variable.type.en === 'Distance'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="fa fa-binoculars mc-icon-2x"></i>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -128,7 +128,7 @@
 
 <!-- Current-->
 <div ng-if="variable.type.en === 'Current'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span ng-hide="hideVariableName"><i class="fa mc-icon-2x">I</i></span>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -136,7 +136,7 @@
 
 <!-- Voltage-->
 <div ng-if="variable.type.en === 'Voltage'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no" onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span ng-hide="hideVariableName"><i class="fa mc-icon-2x">V</i></span>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -144,7 +144,7 @@
 
 <!-- Impedance-->
 <div ng-if="variable.type.en === 'Impedance'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span ng-hide="hideVariableName"><i class="fa mc-icon-2x">Ohm</i></span>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
@@ -153,7 +153,7 @@
 
 <!-- Armed -->
 <div ng-if="variable.type.en === 'Armed'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
     <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = cs.getInteger(variable.value)"type="checkbox"
       switch-animate="{{cs.mcbStyle.animate}}" switch-handle-width="{{cs.mcbStyle.handleWidth}}" switch-label-width="{{cs.mcbStyle.labelWidth}}"
       switch-off-color="default" switch-on-color="primary" switch-size="{{cs.mcbStyle.size}}" switch-readonly="variable.readOnly"
@@ -163,7 +163,7 @@
 
 <!-- Tripped -->
 <div ng-if="variable.type.en === 'Tripped'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
     <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = cs.getInteger(variable.value)"type="checkbox"
       switch-animate="{{cs.mcbStyle.animate}}" switch-handle-width="{{cs.mcbStyle.handleWidth}}" switch-label-width="{{cs.mcbStyle.labelWidth}}"
       switch-off-color="default" switch-on-color="primary" switch-size="{{cs.mcbStyle.size}}" switch-readonly="variable.readOnly"
@@ -173,7 +173,7 @@
 
 <!-- Lock status -->
 <div ng-if="variable.type.en === 'Lock status'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
     <input bs-switch  ng-change="updateVariable(variable)" ng-model="variable.value" ng-init="variable.value = cs.getInteger(variable.value)" type="checkbox"
       switch-animate="{{cs.mcbStyle.animate}}" switch-handle-width="{{cs.mcbStyle.handleWidth}}" switch-label-width="{{cs.mcbStyle.labelWidth}}"
       switch-off-color="danger" switch-on-color="primary" switch-size="{{cs.mcbStyle.size}}" switch-readonly="variable.readOnly"
@@ -183,7 +183,7 @@
 
 <!-- HVAC flow mode -->
 <div ng-if="variable.type.en === 'HVAC flow mode'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-sab-dropdown mc-inline-editer-ab mc-icon-md-1"
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-sab-dropdown mc-inline-editer-ab mc-icon-md-1"
     onbeforesave="updateVariable(variable)" buttons="no" editable-select="variable.value" e-ng-options="hvac.id as hvac.displayName for hvac in hvacOptionsFlowMode">
     <span class="mc-style-ab">{{variable.value || "not set"}}</span>
   </span>
@@ -191,7 +191,7 @@
 
 <!-- HVAC flow state -->
 <div ng-if="variable.type.en === 'HVAC flow state'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-icon-md-1"
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-icon-md-1"
     onbeforesave="updateVariable(variable)" buttons="no" editable-select="variable.value" e-ng-options="hvac.id as hvac.displayName for hvac in hvacOptionsFlowState">
     <span class="mc-style-ab">{{variable.value || "not set"}}</span>
   </span>
@@ -199,7 +199,7 @@
 
 <!-- HVAC fan speed -->
 <div ng-if="variable.type.en === 'HVAC speed'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-icon-md-1"
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab mc-icon-md-1"
     onbeforesave="updateVariable(variable)" e-style="height: 22px;" buttons="no" editable-select="variable.value" e-ng-options="hvac.id as hvac.displayName for hvac in hvacOptionsFanSpeed">
     <span class="mc-style-ab">{{variable.value || "not set"}}</span>
   </span>
@@ -207,7 +207,7 @@
 
 <!-- HVAC Heat set point -->
 <div ng-if="variable.type.en === 'HVAC setpoint heat'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="wi wi-thermometer mc-icon-2x">h</i>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
@@ -216,7 +216,7 @@
 
 <!-- HVAC Cool set point -->
 <div ng-if="variable.type.en === 'HVAC setpoint cool'">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <i class="wi wi-thermometer mc-icon-2x">c</i>
     <span class="mc-style-ab">{{variable.value ||"-"}} {{variable.unit}}</span>
@@ -224,16 +224,16 @@
 </div>
 
 <!-- Variable 1,2,3,4,5 -->
-<div ng-if="variable.type.en.indexOf('Variable ') > -1" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
+<div ng-if="variable.type.en.indexOf('Variable ') > -1" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span class="mc-style-ab"><span ng-hide="hideVariableName">{{variable.type.en.replace('Variable ','V')}}: </span>{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
 </div>
 
 <!-- Volume -->
-<div ng-if="variable.type.en === 'Volume'" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
+<div ng-if="variable.type.en === 'Volume'" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span class="mc-style-ab"><span ng-hide="hideVariableName">Vol: </span>{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>
@@ -241,7 +241,7 @@
 
 <!-- RGB color picker -->
 <div ng-if="variable.type.en === 'RGB'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}">
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}">
     <button style="background-color:{{variable.value}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top"
       ng-disabled="variable.readOnly" ng-change="updateVariable(variable)" ng-model="variable.value">{{variable.value || "-"}}</button>
   </span>
@@ -249,7 +249,7 @@
 
 <!-- RGBW color picker -->
 <div ng-if="variable.type.en === 'RGBW'">
-  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" ng-disabled="variable.readOnly">
+  <span tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" ng-disabled="variable.readOnly">
     <button style="background-color:{{variable.rgba}};width:70px;color:white;" class="btn btn-sm" colorpicker="rgba" colorpicker-position="top" ng-disabled="variable.readOnly"
       ng-init="variable.rgba = cs.hex2rgba(variable.value)" ng-change="updateRgba(variable)" ng-model="variable.rgba">{{variable.value || "-"}}</button>
   </span>
@@ -257,7 +257,7 @@
 
 <!-- Default, if non selected -->
 <div ng-if="definedVariableTypes.indexOf(variable.type.en) == -1">
-  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
+  <span e-ng-disabled="variable.readOnly" tooltip-enable="{{tooltipEnabled}}" uib-tooltip="{{variable.type.locale}}{{variable.name?' ('+variable.name+')':''}}" tooltip-placement="{{tooltipPlacement}}" class="mc-inline-editer-ab" buttons="no"
     onbeforesave="updateVariable(variable)" editable-text="variable.value">
     <span class="mc-style-ab"><span ng-hide="hideVariableName">{{variable.type.en}}: </span>{{variable.value ||"-"}} {{variable.unit}}</span>
   </span>

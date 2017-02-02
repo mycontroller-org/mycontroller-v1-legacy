@@ -18,7 +18,6 @@ package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
@@ -103,14 +102,8 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             if (sensorVariable.getPriority() != null) {
                 updateBuilder.updateColumnValue(SensorVariable.KEY_PRIORITY, sensorVariable.getPriority());
             }
-            if (sensorVariable.getGraphProperties() != null) {
-                if ((boolean) sensorVariable.getGraphProperties().get(SensorVariable.KEY_GP_USE_GLOBAL)) {
-                    updateBuilder
-                            .updateColumnValue(SensorVariable.KEY_GRAPH_PROPERTIES, new HashMap<String, Object>());
-                } else {
-                    updateBuilder.updateColumnValue(SensorVariable.KEY_GRAPH_PROPERTIES,
-                            sensorVariable.getGraphProperties());
-                }
+            if (sensorVariable.getProperties() != null) {
+                updateBuilder.updateColumnValue(SensorVariable.KEY_PROPERTIES, sensorVariable.getProperties());
             }
             if (sensorVariable.getId() != null) {
                 updateBuilder.where().eq(SensorVariable.KEY_ID, sensorVariable.getId());

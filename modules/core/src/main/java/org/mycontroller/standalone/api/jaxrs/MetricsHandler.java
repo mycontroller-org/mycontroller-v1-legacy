@@ -468,7 +468,7 @@ public class MetricsHandler extends AccessEngine {
         for (SensorVariable sVariable : sVariables) {
             String source = TOPOLOGY_PREFIX_SENSOR_VARIABLE + sVariable.getId();
             items.put(source, TopologyItem.builder()
-                    .name(sVariable.getVariableType().getText())
+                    .name(sVariable.getName() != null ? sVariable.getName() : sVariable.getVariableType().getText())
                     .id(sVariable.getId())
                     .type(RESOURCE_TYPE.SENSOR_VARIABLE)
                     .subType(LocaleString.builder()
@@ -671,8 +671,8 @@ public class MetricsHandler extends AccessEngine {
                 chartTypeInternal = metrics.getType();
             }
 
-            String seriesName = null;
-            String postText = null;
+            StringBuilder seriesName = new StringBuilder();
+            StringBuilder postText = new StringBuilder();
             if (enableDetailedKey) {
                 String sensorName = sensorVariable.getSensor().getName() != null
                         && sensorVariable.getSensor().getName().trim().length() > 0 ? sensorVariable.getSensor()
@@ -680,19 +680,28 @@ public class MetricsHandler extends AccessEngine {
                 String nodeName = sensorVariable.getSensor().getNode().getName() != null
                         && sensorVariable.getSensor().getNode().getName().trim().length() > 0 ? sensorVariable
                         .getSensor().getNode().getName() : sensorVariable.getSensor().getNode().getEui();
-                postText = " [" + nodeName + ">>" + sensorName + "]";
+                postText.append(" [").append(nodeName).append(">>").append(sensorName).append("]");
             } else {
-                postText = "";
+                postText.append("");
             }
 
             if (isMultiChart) {
-                seriesName = sensorVariable.getVariableType().getText() + postText;
-            } else {
-                seriesName = sensorVariable.getSensor().getName();
-                if (seriesName == null) {
-                    seriesName = sensorVariable.getVariableType().getText() + postText;
+                seriesName.append(sensorVariable.getVariableType().getText());
+                if (sensorVariable.getName() != null) {
+                    seriesName.append(" (").append(sensorVariable.getName()).append(")");
                 }
-                seriesName = seriesName + postText;
+                seriesName.append(postText);
+            } else {
+                seriesName.append(sensorVariable.getSensor().getName());
+                if (seriesName.length() == 0) {
+                    seriesName.append(sensorVariable.getVariableType().getText());
+                }
+                if (sensorVariable.getName() != null) {
+                    seriesName.append(" (").append(sensorVariable.getName()).append(")");
+                }
+                if (enableDetailedKey) {
+                    seriesName.append(postText);
+                }
             }
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
@@ -712,7 +721,7 @@ public class MetricsHandler extends AccessEngine {
                     if (!doubleMetrics.isEmpty()) {
                         metricDataValues.add(MetricsChartDataNVD3
                                 .builder()
-                                .key(seriesName)
+                                .key(seriesName.toString())
                                 .values(avgMetricDoubleValues)
                                 .type(metrics.getSubType())
                                 //.interpolate(metrics.getInterpolate())
@@ -738,7 +747,7 @@ public class MetricsHandler extends AccessEngine {
                     if (!counterMetrics.isEmpty()) {
                         metricDataValues.add(MetricsChartDataNVD3
                                 .builder()
-                                .key(seriesName)
+                                .key(seriesName.toString())
                                 .values(metricCounterValues)
                                 .type(metrics.getSubType())
                                 //.interpolate(metrics.getInterpolate())
@@ -761,7 +770,7 @@ public class MetricsHandler extends AccessEngine {
                     if (!binaryMetrics.isEmpty()) {
                         metricDataValues.add(MetricsChartDataNVD3
                                 .builder()
-                                .key(seriesName)
+                                .key(seriesName.toString())
                                 .values(metricBinaryValues)
                                 .type(metrics.getSubType())
                                 //.interpolate(metrics.getInterpolate())

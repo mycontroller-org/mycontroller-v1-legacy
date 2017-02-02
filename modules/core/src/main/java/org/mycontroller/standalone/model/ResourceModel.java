@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -201,6 +201,9 @@ public class ResourceModel {
                 .append(", SensorId:").append(sensorVariable.getSensor().getSensorId())
                 .append(", VariableType:")
                 .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
+        if (sensorVariable.getName() != null) {
+            builder.append(" (").append(sensorVariable.getName()).append(")");
+        }
     }
 
     public String getResourceLessDetails() {
@@ -265,5 +268,8 @@ public class ResourceModel {
         updateLDSensor(sensorVariable.getSensor(), builder);
         builder.append(" >> ").append(DISPLAY_KEY_SENSOR_VARIABLE)
                 .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
+        if (sensorVariable.getName() != null) {
+            builder.append(" (").append(sensorVariable.getName()).append(")");
+        }
     }
 }

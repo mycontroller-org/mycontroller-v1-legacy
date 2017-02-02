@@ -46,6 +46,13 @@
           </div>
 
           <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'NAME' | translate }}</label>
+            <div class="col-sm-5 mc-form-fixer-left">
+              <input class="form-control" placeholder="{{ 'NAME' | translate }}" ng-model="sensorVariable.properties.name" />
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'READ_ONLY' | translate }}</label>
             <div class="col-sm-10 mc-form-fixer-left">
               <input type="checkbox" ng-model="sensorVariable.readOnly">
@@ -91,15 +98,15 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ 'USE_GLOBAL' | translate }}</label>
             <div class="col-sm-10 mc-form-fixer-left">
-              <input type="checkbox" ng-model="sensorVariable.graphProperties.useGlobal">
+              <input type="checkbox" ng-model="sensorVariable.properties.useGlobal">
             </div>
           </div>
 
-          <div ng-if="!sensorVariable.graphProperties.useGlobal">
+          <div ng-if="!sensorVariable.properties.useGlobal">
             <div class="form-group">
               <label class="col-sm-2 control-label"></label>
               <div class="col-sm-3 mc-form-fixer-left">
-                <select class="form-control" pf-select ng-model="sensorVariable.graphProperties.type">
+                <select class="form-control" pf-select ng-model="sensorVariable.properties.type">
                   <option value="" ng-hide="true"></option>
                   <option value="lineChart">{{ 'LINE_CHART' | translate }}</option>
                   <option value="historicalBarChart">{{ 'HISTORICAL_BAR_CHART' | translate }}</option>
@@ -107,7 +114,7 @@
                 </select>
               </div>
               <div class="col-sm-3 mc-form-fixer">
-                <select class="form-control" pf-select ng-model="sensorVariable.graphProperties.interpolate">
+                <select class="form-control" pf-select ng-model="sensorVariable.properties.interpolate">
                   <option value="" ng-hide="true"></option>
                   <option value="linear">{{ 'LINEAR' | translate }}</option>
                   <option value="basis">{{ 'BASIS' | translate }}</option>
@@ -123,21 +130,21 @@
                 </select>
               </div>
               <div class="col-sm-1 mc-form-fixer">
-                <button class="form-control" id="color-{{sensorVariable.id}}" style="background-color:{{sensorVariable.graphProperties.color}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top"
-                  ng-model="sensorVariable.graphProperties.color">{{sensorVariable.graphProperties.color || "-"}}</button>
+                <button class="form-control" id="color-{{sensorVariable.id}}" style="background-color:{{sensorVariable.properties.color}};width:70px;color:white;" class="btn btn-sm" colorpicker="hex" colorpicker-position="top"
+                  ng-model="sensorVariable.properties.color">{{sensorVariable.properties.color || "-"}}</button>
               </div>
             </div>
             <div class="form-group">
               <label class="col-sm-2 control-label"></label>
             <div class="col-sm-3 mc-form-fixer-left">
                 <label class="mc-padding">
-                  <input id="area-{{sensorVariable.id}}" type="radio" value="line" ng-model="sensorVariable.graphProperties.subType" /> {{ 'LINE' | translate }}
+                  <input id="area-{{sensorVariable.id}}" type="radio" value="line" ng-model="sensorVariable.properties.subType" /> {{ 'LINE' | translate }}
                 </label>
                 <label class="mc-padding">
-                  <input id="area-{{sensorVariable.id}}" type="radio" value="area" ng-model="sensorVariable.graphProperties.subType" /> {{ 'AREA' | translate }}
+                  <input id="area-{{sensorVariable.id}}" type="radio" value="area" ng-model="sensorVariable.properties.subType" /> {{ 'AREA' | translate }}
                 </label>
                 <label class="mc-padding">
-                  <input id="bar-{{sensorVariable.id}}"type="radio" value="bar" ng-model="sensorVariable.graphProperties.subType" /> {{ 'BAR' | translate }}
+                  <input id="bar-{{sensorVariable.id}}"type="radio" value="bar" ng-model="sensorVariable.properties.subType" /> {{ 'BAR' | translate }}
                 </label>
               </div>
             </div>

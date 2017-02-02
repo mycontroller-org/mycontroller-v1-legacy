@@ -25,7 +25,7 @@
   <div ng-repeat="variable in mycSenVars.variables">
     <div class="col-md-{{12/config.itemsPerRow}}">
       <div class="card-pf card-pf-aggregate-status card-pf-with-action card-pf-accented adf-myc-sen-var">
-        <h2 class="card-pf-title mc-pointer" tooltip-placement="top" uib-tooltip-html="variable.resourceName | mcResourceRepresentation" ui-sref="sensorsDetail({id:variable.sensorId})"><i class="fa fa-eye"></i>{{variable.sensorName}}</h2>
+        <h2 class="card-pf-title mc-pointer" tooltip-placement="top" uib-tooltip-html="variable.resourceName + (variable.name?' ('+variable.name+')':'') | mcResourceRepresentation" ui-sref="sensorsDetail({id:variable.sensorId})"><i class="fa fa-eye"></i>{{variable.sensorName}}</h2>
         <div class="card-pf-body">
           <!-- Sensor variables -->
           <div ng-include src="'partials/common-html/sensor-actions-items.html'"></div>
