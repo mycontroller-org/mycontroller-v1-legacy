@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,12 +68,12 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
                 where.le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
                 whereCount++;
             }
-            if (metric.getTimestampFrom() != null) {
-                where.ge(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestampFrom());
+            if (metric.getStart() != null) {
+                where.ge(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getStart());
                 whereCount++;
             }
-            if (metric.getTimestampTo() != null) {
-                where.le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestampTo());
+            if (metric.getEnd() != null) {
+                where.le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getEnd());
                 whereCount++;
             }
             if (metric.getState() != null) {
@@ -99,11 +99,11 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             QueryBuilder<MetricsBinaryTypeDevice, Object> queryBuilder = this.getDao().queryBuilder();
             Where<MetricsBinaryTypeDevice, Object> where = queryBuilder.where();
             where.eq(MetricsBinaryTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
-            if (metric.getTimestampFrom() != null) {
-                where.and().ge(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestampFrom());
+            if (metric.getStart() != null) {
+                where.and().ge(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getStart());
             }
-            if (metric.getTimestampTo() != null) {
-                where.and().le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestampTo());
+            if (metric.getEnd() != null) {
+                where.and().le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getEnd());
             }
             return queryBuilder.query();
         } catch (SQLException ex) {

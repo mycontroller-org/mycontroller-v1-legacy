@@ -35,6 +35,6 @@ import lombok.ToString;
 public class SensorVariablePurge {
     private Integer id;
     private String value;
-    private Long timestampFrom;
-    private Long timestampTo;
+    private Long start;
+    private Long end;
 }

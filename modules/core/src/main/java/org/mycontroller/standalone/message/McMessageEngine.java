@@ -65,7 +65,6 @@ import org.mycontroller.standalone.provider.mysensors.structs.FirmwareConfigResp
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareRequest;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareResponse;
 import org.mycontroller.standalone.rule.McRuleEngine;
-import org.mycontroller.standalone.uidtag.ExecuteUidTag;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -862,7 +861,7 @@ public class McMessageEngine implements Runnable {
             String data = null;
             switch (metricType) {
                 case BINARY:
-                    data = mcMessage.getPayload().equalsIgnoreCase("0") ? "0" : "1";
+                    data = mcMessage.getPayload().equalsIgnoreCase("1") ? "1" : "0";
                     break;
                 case COUNTER:
                     data = String.valueOf(McUtils.getLong(mcMessage.getPayload()));
@@ -1063,17 +1062,6 @@ public class McMessageEngine implements Runnable {
         //ResourcesLogs message data
         if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
             this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_SET, sensorVariable, mcMessage, null);
-        }
-
-        if (!mcMessage.isTxMessage()) {
-            //Execute UidTag
-            if (sensor.getType() != null
-                    && sensor.getType() != null
-                    && sensor.getType() == MESSAGE_TYPE_PRESENTATION.S_CUSTOM
-                    && sensorVariable.getVariableType() == MESSAGE_TYPE_SET_REQ.V_ID) {
-                ExecuteUidTag executeUidTag = new ExecuteUidTag(sensorVariable);
-                new Thread(executeUidTag).start();
-            }
         }
 
         //TODO: Forward Payload to another node, if any and only on receive from gateway

@@ -53,41 +53,53 @@ public class ResourceModel {
         switch (this.resourceType) {
             case GATEWAY:
                 resource = DaoUtils.getGatewayDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((GatewayTable) resource).getNetworkType();
                 break;
             case NODE:
                 resource = DaoUtils.getNodeDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((Node) resource).getGatewayTable().getNetworkType();
                 break;
             case SENSOR:
                 resource = DaoUtils.getSensorDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((Sensor) resource).getNode().getGatewayTable().getNetworkType();
                 break;
             case SENSOR_VARIABLE:
                 resource = DaoUtils.getSensorVariableDao().get(this.resourceId);
+                isValidResource();
                 networkType = ((SensorVariable) resource).getSensor().getNode().getGatewayTable().getNetworkType();
                 break;
             case RESOURCES_GROUP:
                 resource = DaoUtils.getResourcesGroupDao().get(this.resourceId);
+                isValidResource();
                 break;
             case RULE_DEFINITION:
                 resource = RuleUtils.getRuleDefinition(DaoUtils.getRuleDefinitionDao().getById(resourceId));
+                isValidResource();
                 break;
             case TIMER:
                 resource = DaoUtils.getTimerDao().getById(resourceId);
+                isValidResource();
                 break;
             default:
                 throw new RuntimeException("Not supported ResourceType:" + resourceType);
         }
+
+    }
+
+    private void isValidResource() {
         if (resource == null) {
-            throw new RuntimeException("RESOURCE not available! ResourceType:" + resourceType + ", ResourceId:"
-                    + resourceId);
+            throw new RuntimeException("Resource not available! ResourceType:[" + resourceType.getText()
+                    + "], ResourceId:[" + resourceId + "]");
         }
     }
 
     public ResourceModel(RESOURCE_TYPE resourceType, Object resource) {
         this.resourceType = resourceType;
         this.resource = resource;
+        isValidResource();
         switch (this.resourceType) {
             case GATEWAY:
                 networkType = ((GatewayTable) resource).getNetworkType();
@@ -108,10 +120,6 @@ public class ResourceModel {
                 break;
             default:
                 throw new RuntimeException("Not supported ResourceType:" + resourceType);
-        }
-        if (resource == null) {
-            throw new RuntimeException("RESOURCE not available! ResourceType:" + resourceType + ", ResourceId:"
-                    + resourceId);
         }
     }
 
@@ -136,11 +144,8 @@ public class ResourceModel {
     }
 
     public String getResourceDetails() {
-        if (this.resource == null) {
-            return null;
-        }
+        isValidResource();
         StringBuilder builder = new StringBuilder();
-
         switch (this.resourceType) {
             case GATEWAY:
                 updateDGateway((GatewayTable) this.resource, builder);
@@ -207,9 +212,7 @@ public class ResourceModel {
     }
 
     public String getResourceLessDetails() {
-        if (this.resource == null) {
-            return null;
-        }
+        isValidResource();
         StringBuilder builder = new StringBuilder();
         switch (this.resourceType) {
             case GATEWAY:

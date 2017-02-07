@@ -339,7 +339,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     $scope.metricsSettings = response;
     $scope.chartEnableMinMax = $scope.metricsSettings.enabledMinMax;
     $scope.chartFromTimestamp = $scope.metricsSettings.defaultTimeRange.toString();
-    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp},function(response){
+    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp},function(response){
       $scope.chartData = response;
       $scope.fetching = false;
     });
@@ -351,7 +351,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
 
 
   $scope.updateChart = function(){
-    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
+    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
       //$scope.chartData = resource;
       resource.forEach(function(item) {
         $scope.chartData.forEach(function(itemLocal) {
@@ -496,10 +496,10 @@ myControllerModule.controller('SensorVariableControllerPurge', function ($scope,
   $scope.save = function(){
     //Update time range from/to
     if($scope.purgeFrom){
-      $scope.item.timestampFrom = moment($scope.purgeFrom).format('YYYY-MM-DDTHH:mm:ss');
+      $scope.item.start = moment($scope.purgeFrom).format('YYYY-MM-DDTHH:mm:ss');
     }
     if($scope.purgeTo){
-      $scope.item.timestampTo = moment($scope.purgeTo).format('YYYY-MM-DDTHH:mm:ss');
+      $scope.item.end = moment($scope.purgeTo).format('YYYY-MM-DDTHH:mm:ss');
     }
 
     $scope.saveProgress = true;

@@ -96,7 +96,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
 
     function updateChart(){
       mycSensorsGroupedGraph.isSyncing = true;
-      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"lineChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp, "enableDetailedKey": config.enableUniqueName === undefined ? false : config.enableUniqueName}, function(resource){
+      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"lineChart", "start": new Date().getTime() - config.chartFromTimestamp, "enableDetailedKey": config.enableUniqueName === undefined ? false : config.enableUniqueName}, function(resource){
         if(resource.length > 0){
            mycSensorsGroupedGraph.chartData = resource[0].chartData;
           //Update display time format

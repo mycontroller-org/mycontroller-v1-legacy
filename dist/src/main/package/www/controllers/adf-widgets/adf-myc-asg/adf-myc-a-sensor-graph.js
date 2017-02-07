@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -98,7 +98,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
 
     function updateChart(){
       mycSingleSensorGraph.isSyncing = true;
-      MetricsFactory.getMetricsData({"variableId":config.variableId, "withMinMax":config.withMinMax, "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
+      MetricsFactory.getMetricsData({"variableId":config.variableId, "withMinMax":config.withMinMax, "start": new Date().getTime() - config.chartFromTimestamp}, function(resource){
         if(resource.length > 0){
            mycSingleSensorGraph.chartData = resource[0].chartData;
           //Update display time format

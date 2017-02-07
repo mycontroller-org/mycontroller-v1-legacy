@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,7 +53,7 @@ public class MetricsBinaryTypeDevice {
     @DatabaseField(canBeNull = false, columnName = KEY_STATE)
     private Boolean state;
 
-    private Long timestampFrom;
-    private Long timestampTo;
+    private Long start;
+    private Long end;
 
 }

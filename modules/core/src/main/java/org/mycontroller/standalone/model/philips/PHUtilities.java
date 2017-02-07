@@ -70,7 +70,7 @@ public class PHUtilities {
         }
 
         PointF xy = new PointF(points[0], points[1]);
-        List colorPoints = colorPointsForModel(model);
+        List<PointF> colorPoints = colorPointsForModel(model);
         boolean inReachOfLamps = checkPointInLampsReach(xy, colorPoints);
         if (!inReachOfLamps) {
             PointF pAB = getClosestPointToPoints((PointF) colorPoints.get(0), (PointF) colorPoints.get(1), xy);

@@ -190,6 +190,13 @@ public class McmDNSFactory {
             mqttService.setProperty("feed", "device");
             loadVersionDetails(mqttService);
         }
+        mqttService.setPort(AppProperties.getInstance().getMqttBrokerSettings().getHttpPort());
+        mqttService.setProperty("tcp",
+                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getHttpPort()));
+        mqttService.setProperty("ws",
+                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getWebsocketPort()));
+        mqttService.setProperty("allow anonymous",
+                AppProperties.getInstance().getMqttBrokerSettings().getAllowAnonymous() ? "Yes" : "No");
         return mqttService;
     }
 
@@ -203,6 +210,8 @@ public class McmDNSFactory {
                     .priority(PRIORITY_DEFAULT)
                     .build();
             restApiService.setProperty("path", "/mc/rest");
+            restApiService.setProperty("https enabled",
+                    AppProperties.getInstance().isWebHttpsEnabled() ? "Yes" : "No");
             loadVersionDetails(restApiService);
         }
         return restApiService;
@@ -218,6 +227,8 @@ public class McmDNSFactory {
                     .priority(PRIORITY_DEFAULT)
                     .build();
             httpService.setProperty("path", "/index.html");
+            httpService.setProperty("https enabled",
+                    AppProperties.getInstance().isWebHttpsEnabled() ? "Yes" : "No");
             loadVersionDetails(httpService);
         }
         return httpService;
@@ -226,7 +237,6 @@ public class McmDNSFactory {
     private static void loadVersionDetails(McmDNSServiceInfo dnsServiceInfo) {
         McAbout mcAbout = new SystemApi().getAbout();
         dnsServiceInfo.setProperty("appVersion", mcAbout.getApplicationVersion());
-        dnsServiceInfo.setProperty("dbType", mcAbout.getDatabaseType());
         dnsServiceInfo.setProperty("builtOn", mcAbout.getGitBuiltOn());
         dnsServiceInfo.setProperty("osName", mcAbout.getOsName());
     }

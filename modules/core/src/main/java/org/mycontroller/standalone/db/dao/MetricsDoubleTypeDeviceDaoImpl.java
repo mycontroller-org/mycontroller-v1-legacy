@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,12 +68,12 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                 where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
                 whereCount++;
             }
-            if (metric.getTimestampFrom() != null) {
-                where.ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestampFrom());
+            if (metric.getStart() != null) {
+                where.ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getStart());
                 whereCount++;
             }
-            if (metric.getTimestampTo() != null) {
-                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestampTo());
+            if (metric.getEnd() != null) {
+                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getEnd());
                 whereCount++;
             }
             if (metric.getAvg() != null) {
@@ -134,13 +134,13 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                 whereBuilder.and().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE,
                         metric.getAggregationType());
             }
-            if (metric.getTimestampFrom() != null) {
+            if (metric.getStart() != null) {
                 whereBuilder.and().gt(MetricsDoubleTypeDevice.KEY_TIMESTAMP,
-                        metric.getTimestampFrom());
+                        metric.getStart());
             }
-            if (metric.getTimestampTo() != null) {
+            if (metric.getEnd() != null) {
                 whereBuilder.and().le(MetricsDoubleTypeDevice.KEY_TIMESTAMP,
-                        metric.getTimestampTo());
+                        metric.getEnd());
             }
             return queryBuilder.query();
         } catch (SQLException ex) {
@@ -190,13 +190,13 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
         StringBuilder query = new StringBuilder();
         StringBuilder queryTimestamp = new StringBuilder();
         //timestamp from / to
-        if (metric.getTimestampFrom() != null) {
+        if (metric.getStart() != null) {
             queryTimestamp.append(" AND ").append(MetricsDoubleTypeDevice.KEY_TIMESTAMP).append(" > ")
-                    .append(metric.getTimestampFrom());
+                    .append(metric.getStart());
         }
-        if (metric.getTimestampTo() != null) {
+        if (metric.getEnd() != null) {
             queryTimestamp.append(" AND ").append(MetricsDoubleTypeDevice.KEY_TIMESTAMP).append(" <= ")
-                    .append(metric.getTimestampTo());
+                    .append(metric.getEnd());
         }
         try {
             //Query sample

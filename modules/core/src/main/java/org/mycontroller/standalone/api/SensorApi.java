@@ -281,24 +281,24 @@ public class SensorApi {
             case BINARY:
                 MetricsBinaryTypeDevice metricBinary = new MetricsBinaryTypeDevice();
                 metricBinary.setSensorVariable(sVar);
-                metricBinary.setTimestampFrom(purge.getTimestampFrom());
-                metricBinary.setTimestampTo(purge.getTimestampTo());
+                metricBinary.setStart(purge.getStart());
+                metricBinary.setEnd(purge.getEnd());
                 metricBinary.setState(McUtils.getBoolean(purge.getValue()));
                 DaoUtils.getMetricsBinaryTypeDeviceDao().deletePrevious(metricBinary);
                 break;
             case COUNTER:
                 MetricsCounterTypeDevice metricCounter = new MetricsCounterTypeDevice();
                 metricCounter.setSensorVariable(sVar);
-                metricCounter.setTimestampFrom(purge.getTimestampFrom());
-                metricCounter.setTimestampTo(purge.getTimestampTo());
+                metricCounter.setStart(purge.getStart());
+                metricCounter.setEnd(purge.getEnd());
                 metricCounter.setValue(McUtils.getLong(purge.getValue()));
                 DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
                 break;
             case DOUBLE:
                 MetricsDoubleTypeDevice metricDouble = new MetricsDoubleTypeDevice();
                 metricDouble.setSensorVariable(sVar);
-                metricDouble.setTimestampFrom(purge.getTimestampFrom());
-                metricDouble.setTimestampTo(purge.getTimestampTo());
+                metricDouble.setStart(purge.getStart());
+                metricDouble.setEnd(purge.getEnd());
                 //metricDouble.setAvg(McUtils.getDouble(purge.getValue()));
                 DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble, purge.getValue());
                 break;
