@@ -662,13 +662,8 @@ public class MetricsHandler extends AccessEngine {
             StringBuilder seriesName = new StringBuilder();
             StringBuilder postText = new StringBuilder();
             if (enableDetailedKey) {
-                String sensorName = sensorVariable.getSensor().getName() != null
-                        && sensorVariable.getSensor().getName().trim().length() > 0 ? sensorVariable.getSensor()
-                        .getName() : sensorVariable.getSensor().getSensorId();
-                String nodeName = sensorVariable.getSensor().getNode().getName() != null
-                        && sensorVariable.getSensor().getNode().getName().trim().length() > 0 ? sensorVariable
-                        .getSensor().getNode().getName() : sensorVariable.getSensor().getNode().getEui();
-                postText.append(" [").append(nodeName).append(">>").append(sensorName).append("]");
+                postText.append(" [N]:").append(sensorVariable.getSensor().getNode().getEui()).append(" >> [S]:")
+                        .append(sensorVariable.getSensor().getSensorId());
             } else {
                 postText.append("");
             }
