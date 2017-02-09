@@ -108,8 +108,8 @@ public class ExternalServerInfluxdb extends ExternalServer {
     public synchronized void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
             ClientResponse<String> clientResponse = ((InfluxdbClient) ExternalServerUtils.getClient(getId()))
-                    .write(getVariableKey(sensorVariable, getKeyFormat()), getTags(), sensorVariable.getTimestamp(),
-                            sensorVariable.getValue());
+                    .write(getVariableKey(sensorVariable, getKeyFormat()), getVariableKey(sensorVariable, getTags()),
+                            sensorVariable.getTimestamp(), sensorVariable.getValue());
             if (!clientResponse.isSuccess()) {
                 _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,
                         toString(), getUrl());

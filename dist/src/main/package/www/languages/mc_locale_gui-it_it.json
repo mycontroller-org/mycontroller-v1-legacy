@@ -324,6 +324,7 @@
     "MANAGEMENT_SPECIFICATION_VERSION": "Management Specification Version",
     "MAX": "Max",
     "MAXIMUM_BLOCK_SIZE": "Maximum block size",
+    "MEASUREMENT": "Measurement",
     "MESSAGE": "Message",
     "MESSAGE_CONTAINS": "Message contains",
     "MESSAGE_TYPE": "Message type",

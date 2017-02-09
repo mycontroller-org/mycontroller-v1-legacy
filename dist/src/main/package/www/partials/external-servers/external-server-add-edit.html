@@ -179,17 +179,17 @@
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'TAGS' | translate }}</label>
+              <label class="col-sm-2 control-label">{{ 'MEASUREMENT' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'TAGS' | translate }}" ng-model="item.tags" pf-validation="cs.isContainsSpace(input)" />
+                <input class="form-control" placeholder="{{ 'KEY_FORMAT' | translate }}" ng-model="item.keyFormat" pf-validation="cs.isContainsSpace(input)" required />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'KEY_FORMAT' | translate }}</label>
+              <label class="col-sm-2 control-label">{{ 'TAGS' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'KEY_FORMAT' | translate }}" ng-model="item.keyFormat" pf-validation="cs.isContainsSpace(input)" required />
+                <input class="form-control" placeholder="{{ 'TAGS' | translate }}" ng-model="item.tags" pf-validation="cs.isContainsSpace(input)" />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
               </div>
             </div>

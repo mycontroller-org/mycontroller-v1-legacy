@@ -324,6 +324,7 @@
     "MANAGEMENT_SPECIFICATION_VERSION": "管理规范版本",
     "MAX": "最大",
     "MAXIMUM_BLOCK_SIZE": "最大块值",
+    "MEASUREMENT": "Measurement",
     "MESSAGE": "消息",
     "MESSAGE_CONTAINS": "消息包含",
     "MESSAGE_TYPE": "消息类型",

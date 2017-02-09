@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -78,15 +78,15 @@ public abstract class ExternalServer implements IExternalServerEngine {
         if (keyFormat == null) {
             keyFormat = DEFAULT_KEY_FORMAT;
         }
-        keyFormat = keyFormat.replaceAll("$gatewayName", sensorVariable.getSensor().getNode().getGatewayTable()
-                .getName());
+        keyFormat = keyFormat.replaceAll(Pattern.quote("$gatewayName"),
+                sensorVariable.getSensor().getNode().getGatewayTable().getName());
+        keyFormat = keyFormat.replaceAll(Pattern.quote("$networkType")
+                , sensorVariable.getSensor().getNode().getGatewayTable().getNetworkType().getText());
         keyFormat = keyFormat.replaceAll(Pattern.quote("$nodeName"), sensorVariable.getSensor().getNode().getName());
         keyFormat = keyFormat.replaceAll(Pattern.quote("$nodeEui"), sensorVariable.getSensor().getNode().getEui());
         keyFormat = keyFormat.replaceAll(Pattern.quote("$sensorName"), sensorVariable.getSensor().getName());
         keyFormat = keyFormat.replaceAll(Pattern.quote("$sensorId"), sensorVariable.getSensor().getSensorId());
         keyFormat = keyFormat.replaceAll(Pattern.quote("$variableType"), sensorVariable.getVariableType().getText());
-        keyFormat = keyFormat.replaceAll(Pattern.quote("$variableTypeId"),
-                String.valueOf(sensorVariable.getVariableType().ordinal()));
         return keyFormat.replaceAll(" ", "_");
     }
 
