@@ -106,12 +106,13 @@ public class MySensorsRawMessage {
         // Topic structure:
         // MY_MQTT_TOPIC_PREFIX/NODE-KEY_ID/SENSOR_VARIABLE-KEY_ID/CMD-OPERATION_TYPE/ACK-FLAG/SUB-OPERATION_TYPE
         String[] msgArry = topic.split("/");
-        if (msgArry.length == 6) {
-            nodeId = Integer.valueOf(msgArry[1]);
-            childSensorId = Integer.valueOf(msgArry[2]);
-            messageType = Integer.valueOf(msgArry[3]);
-            ack = Integer.valueOf(msgArry[4]);
-            subType = Integer.valueOf(msgArry[5]);
+        int index = msgArry.length - 5;
+        if (msgArry.length >= 6) {
+            nodeId = Integer.valueOf(msgArry[index]);
+            childSensorId = Integer.valueOf(msgArry[index + 1]);
+            messageType = Integer.valueOf(msgArry[index + 2]);
+            ack = Integer.valueOf(msgArry[index + 3]);
+            subType = Integer.valueOf(msgArry[index + 4]);
             _logger.debug("Message: {}", toString());
         } else {
             _logger.debug("Unknown message format, Topic:[{}], PayLoad:[{}]", topic, message);
