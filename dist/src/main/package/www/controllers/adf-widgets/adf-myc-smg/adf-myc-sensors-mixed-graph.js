@@ -100,7 +100,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
 
     function updateChart(){
       mycSensorsMixedGraph.isSyncing = true;
-      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"multiChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp, "enableDetailedKey": config.enableUniqueName === undefined ? false : config.enableUniqueName}, function(resource){
+      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"multiChart", "start": new Date().getTime() - config.chartFromTimestamp, "enableDetailedKey": config.enableUniqueName === undefined ? false : config.enableUniqueName}, function(resource){
         if(resource.length > 0){
            mycSensorsMixedGraph.chartData = resource[0].chartData;
           //Update display time format
