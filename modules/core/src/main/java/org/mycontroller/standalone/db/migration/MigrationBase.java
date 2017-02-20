@@ -27,7 +27,6 @@ import org.mycontroller.standalone.db.DataBaseUtils;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-
 public abstract class MigrationBase implements JdbcMigration {
 
     private IMigrationClient sqlClient = null;

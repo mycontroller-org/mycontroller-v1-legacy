@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-time', [])
       .widget('mycTime', {
         title: 'MyController time',
         description: 'Displays date and time of MyController',
-        templateUrl: 'controllers/adf-widgets/adf-myc-time/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-time/view.html?mcv=${mc.gui.version}',
         controller: 'mycTimeController',
         controllerAs: 'mycTime',
         config: {
@@ -34,7 +34,7 @@ angular.module('adf.widget.myc-time', [])
           refreshTime:120,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-time/edit.html'
+          templateUrl: 'controllers/adf-widgets/adf-myc-time/edit.html?mcv=${mc.gui.version}'
         }
       });
   })

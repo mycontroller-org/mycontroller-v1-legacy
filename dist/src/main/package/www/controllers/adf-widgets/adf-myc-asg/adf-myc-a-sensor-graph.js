@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
       .widget('mycSingleSensorGraph', {
         title: 'A sensor graphical view',
         description: 'Displays a sensor graphical view',
-        templateUrl: 'controllers/adf-widgets/adf-myc-asg/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-asg/view.html?mcv=${mc.gui.version}',
         controller: 'mycSingleSensorGraphController',
         controllerAs: 'mycSingleSensorGraph',
         config: {
@@ -36,7 +36,7 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-asg/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-asg/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSingleSensorGraphEditController',
           controllerAs: 'mycSingleSensorGraphEdit',
         }

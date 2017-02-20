@@ -22,7 +22,7 @@ angular.module('adf.widget.myc-heat-map', [])
       .widget('mycHeatMap', {
         title: 'Heatmap chart',
         description: 'Displays data as heatmap chart',
-        templateUrl: 'controllers/adf-widgets/adf-myc-hm/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-hm/view.html?mcv=${mc.gui.version}',
         controller: 'mycHeatMapController',
         controllerAs: 'mycHeatMap',
         config: {
@@ -38,7 +38,7 @@ angular.module('adf.widget.myc-heat-map', [])
           showLegends:true,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-hm/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-hm/edit.html?mcv=${mc.gui.version}',
           controller: 'mycHeatMapEditController',
           controllerAs: 'mycHeatMapEdit',
         }

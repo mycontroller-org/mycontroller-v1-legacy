@@ -188,7 +188,7 @@ public class DataBaseUtils {
     }
 
     public static synchronized void reloadDao() {
-        DaoUtils.setIsDaoInitialized(false);
+        _logger.info("Reload DAO triggered...");
         try {
             //reload connection source
             getConnectionSource(true);
@@ -201,7 +201,7 @@ public class DataBaseUtils {
     public static void stop() {
         if (connectionPooledSource != null && connectionPooledSource.isOpen(null)) {
             try {
-                connectionPooledSource.close();
+                connectionPooledSource.closeQuietly();
                 _logger.debug("Database service stopped.");
                 DaoUtils.setIsDaoInitialized(false);
             } catch (Exception ioEx) {

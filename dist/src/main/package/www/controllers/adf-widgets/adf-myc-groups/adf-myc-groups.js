@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-groups', [])
       .widget('mycGroups', {
         title: 'Groups',
         description: 'Change state(ON/OFF) of resources group(Scene control)',
-        templateUrl: 'controllers/adf-widgets/adf-myc-groups/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-groups/view.html?mcv=${mc.gui.version}',
         controller: 'mycGroupsController',
         controllerAs: 'mycGroups',
         config: {
@@ -35,7 +35,7 @@ angular.module('adf.widget.myc-groups', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-groups/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-groups/edit.html?mcv=${mc.gui.version}',
           controller: 'mycGroupsEditController',
           controllerAs: 'mycGroupsEdit',
         }

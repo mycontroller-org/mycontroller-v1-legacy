@@ -26,14 +26,14 @@ angular.module('adf.widget.myc-sunrisetime', [])
       .widget('mycSunriseTime', {
         title: 'Sunrise and sunset time',
         description: 'Displays sunrise and sunset time from MyController configuration',
-        templateUrl: 'controllers/adf-widgets/adf-myc-sunrisetime/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-sunrisetime/view.html?mcv=${mc.gui.version}',
         controller: 'mycSunriseController',
         controllerAs: 'mycSunriseTime',
         config: {
           refreshTime:300,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-sunrisetime/edit.html'
+          templateUrl: 'controllers/adf-widgets/adf-myc-sunrisetime/edit.html?mcv=${mc.gui.version}'
         }
       });
   })

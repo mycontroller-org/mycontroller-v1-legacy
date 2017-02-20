@@ -32,6 +32,7 @@
   <properties>
     <mc.dist.finalName>${project.artifactId}-standalone-${project.version}</mc.dist.finalName>
     <mc.dist.jar.finalName>${mc.dist.finalName}-single</mc.dist.jar.finalName>
+    <mc.gui.version>1</mc.gui.version>
   </properties>
 
   <dependencies>

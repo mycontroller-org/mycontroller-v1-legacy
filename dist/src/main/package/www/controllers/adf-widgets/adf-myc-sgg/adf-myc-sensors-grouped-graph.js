@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
       .widget('mycSensorsGroupedGraph', {
         title: 'Grouped sensors graph',
         description: 'Similar type of sensors grouped graphical view',
-        templateUrl: 'controllers/adf-widgets/adf-myc-sgg/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-sgg/view.html?mcv=${mc.gui.version}',
         controller: 'mycSensorsGroupedGraphController',
         controllerAs: 'mycSensorsGroupedGraph',
         config: {
@@ -38,7 +38,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-sgg/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-sgg/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSensorsGroupedGraphEditController',
           controllerAs: 'mycSensorsGroupedGraphEdit',
         }

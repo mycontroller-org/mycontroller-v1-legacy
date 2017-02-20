@@ -104,7 +104,7 @@ public class SensorVariable {
     @DatabaseField(columnName = KEY_PRIORITY, canBeNull = false, defaultValue = "100")
     private Integer priority;
 
-    @DatabaseField(canBeNull = true, columnName = KEY_PROPERTIES, dataType = DataType.SERIALIZABLE)
+    @DatabaseField(columnName = KEY_PROPERTIES, canBeNull = true, dataType = DataType.SERIALIZABLE)
     private HashMap<String, Object> properties;
 
     public SensorVariable updateUnitAndMetricType() {

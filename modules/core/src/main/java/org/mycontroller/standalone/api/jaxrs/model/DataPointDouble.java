@@ -50,10 +50,10 @@ public class DataPointDouble extends DataPointBase {
                 .max(metric.getMax())
                 .avg(metric.getAvg())
                 .samples(metric.getSamples()).build();
+        dataPoint.setEmpty(false);
         if (start != null) {
             dataPoint.setStart(start);
             dataPoint.setEnd(end);
-            dataPoint.setEmpty(false);
         } else {
             dataPoint.setTimestamp(metric.getTimestamp());
         }
@@ -73,10 +73,10 @@ public class DataPointDouble extends DataPointBase {
                 .max(metric.getMax())
                 .avg(metric.getAvg())
                 .samples(metric.getSamples()).build();
+        dataPoint.setEmpty(false);
         if (start != null) {
             dataPoint.setStart(start);
             dataPoint.setEnd(end);
-            dataPoint.setEmpty(false);
         } else {
             dataPoint.setTimestamp(metric.getTimestamp());
         }

@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
       .widget('mycSensorsMixedGraph', {
         title: 'Mixed sensors graph',
         description: 'Different type of sensors mixed graphical view [refer document]',
-        templateUrl: 'controllers/adf-widgets/adf-myc-smg/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-smg/view.html?mcv=${mc.gui.version}',
         controller: 'mycSensorsMixedGraphController',
         controllerAs: 'mycSensorsMixedGraph',
         config: {
@@ -39,7 +39,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-smg/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-smg/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSensorsMixedGraphEditController',
           controllerAs: 'mycSensorsMixedGraphEdit',
         }

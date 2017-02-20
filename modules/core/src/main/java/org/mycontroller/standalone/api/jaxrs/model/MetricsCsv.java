@@ -20,19 +20,19 @@ package org.mycontroller.standalone.api.jaxrs.model;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-public class MetricsCsvDownload {
+public class MetricsCsv {
     private String fileName;
     private String data;
 
-    public MetricsCsvDownload() {
+    public MetricsCsv() {
 
     }
 
-    public MetricsCsvDownload(String fileName) {
+    public MetricsCsv(String fileName) {
         this(fileName, null);
     }
 
-    public MetricsCsvDownload(String fileName, String data) {
+    public MetricsCsv(String fileName, String data) {
         this.fileName = fileName;
         this.data = data;
     }

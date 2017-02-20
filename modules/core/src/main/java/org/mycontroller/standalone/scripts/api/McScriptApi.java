@@ -28,6 +28,7 @@ import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.TimerApi;
 import org.mycontroller.standalone.api.UidTagApi;
 import org.mycontroller.standalone.api.VariableApi;
+import org.mycontroller.standalone.metrics.CsvExportEngine;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -48,6 +49,7 @@ public class McScriptApi {
     private UtilsApi utilsApi = new UtilsApi();
     private SystemApi systemApi = new SystemApi();
     private HttpApi httpApi = new HttpApi();
+    private CsvExportEngine csvExportEngine = new CsvExportEngine();
 
     public SystemApi system() {
         return systemApi;
@@ -103,5 +105,9 @@ public class McScriptApi {
 
     public HttpApi http() {
         return httpApi;
+    }
+
+    public CsvExportEngine csvExportEngine() {
+        return csvExportEngine;
     }
 }

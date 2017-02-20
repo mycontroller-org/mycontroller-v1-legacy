@@ -49,10 +49,10 @@ public class DataPointGPS extends DataPointBase {
                 .longitude(metric.getLongitude())
                 .altitude(metric.getAltitude())
                 .samples(metric.getSamples()).build();
+        dataPoint.setEmpty(false);
         if (start != null) {
             dataPoint.setStart(start);
             dataPoint.setEnd(end);
-            dataPoint.setEmpty(false);
         } else {
             dataPoint.setTimestamp(metric.getTimestamp());
         }

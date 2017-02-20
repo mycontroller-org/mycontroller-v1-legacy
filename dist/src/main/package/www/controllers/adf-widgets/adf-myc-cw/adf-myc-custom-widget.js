@@ -22,7 +22,7 @@ angular.module('adf.widget.myc-custom-widget', [])
       .widget('mycCustomWidget', {
         title: 'Custom widget',
         description: 'Make your own widget with script and template',
-        templateUrl: 'controllers/adf-widgets/adf-myc-cw/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-cw/view.html?mcv=${mc.gui.version}',
         controller: 'mycCustomWidgetController',
         controllerAs: 'mycCustomWidget',
         config: {
@@ -32,7 +32,7 @@ angular.module('adf.widget.myc-custom-widget', [])
           bindings: '{}',
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-cw/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-cw/edit.html?mcv=${mc.gui.version}',
           controller: 'mycCustomWidgetEditController',
           controllerAs: 'mycCustomWidgetEdit',
         }

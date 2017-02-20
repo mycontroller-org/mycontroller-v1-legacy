@@ -27,9 +27,10 @@ import lombok.ToString;
 @Data
 @ToString
 @Builder
-public class DataPointBase {
+public abstract class DataPointBase {
     private Long timestamp;
     private Long start;
     private Long end;
     private Boolean empty;
+
 }

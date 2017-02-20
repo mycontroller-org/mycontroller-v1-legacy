@@ -16,7 +16,7 @@
  */
 package org.mycontroller.standalone.api.jaxrs.model;
 
-import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
+import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -26,24 +26,23 @@ import lombok.ToString;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+
 @Getter
 @ToString
 @Builder
-public class DataPointCounter extends DataPointBase {
-    private Long value;
-    private Integer samples;
+public class DataPointBinary extends DataPointBase {
+    private Boolean state;
 
-    public static DataPointCounter get(MetricsCounterTypeDevice metric, Long start, Long end) {
+    public static DataPointBinary get(MetricsBinaryTypeDevice metric, Long start, Long end) {
         if (metric == null) {
-            DataPointCounter dataPoint = DataPointCounter.builder().build();
+            DataPointBinary dataPoint = DataPointBinary.builder().build();
             dataPoint.setStart(start);
             dataPoint.setEnd(end);
             dataPoint.setEmpty(true);
             return dataPoint;
         }
-        DataPointCounter dataPoint = DataPointCounter.builder()
-                .value(metric.getValue())
-                .samples(metric.getSamples()).build();
+        DataPointBinary dataPoint = DataPointBinary.builder()
+                .state(metric.getState()).build();
         dataPoint.setEmpty(false);
         if (start != null) {
             dataPoint.setStart(start);

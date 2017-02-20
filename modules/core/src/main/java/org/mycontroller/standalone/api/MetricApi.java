@@ -28,6 +28,7 @@ import javax.script.ScriptException;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.model.DataPointBinary;
 import org.mycontroller.standalone.api.jaxrs.model.DataPointCounter;
 import org.mycontroller.standalone.api.jaxrs.model.DataPointDouble;
 import org.mycontroller.standalone.api.jaxrs.model.DataPointGPS;
@@ -93,15 +94,6 @@ public class MetricApi {
                     .build();
         }
         return metricDouble;
-    }
-
-    public List<MetricsBinaryTypeDevice> getSensorVariableMetricsBinary(Integer sensorVariableId,
-            Long start, Long end) {
-        return DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(MetricsBinaryTypeDevice.builder()
-                .start(start)
-                .end(end)
-                .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
-                .build());
     }
 
     public List<McHeatMap> getHeatMapNodeBatteryLevel(List<Integer> nodeIds) {
@@ -196,6 +188,25 @@ public class MetricApi {
     }
 
     //Metric private api's
+    private List<?> getSensorVariableMetricsBinary(Integer sensorVariableId,
+            Long start, Long end, Boolean isGeneric) {
+        List<MetricsBinaryTypeDevice> metrics = DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(
+                MetricsBinaryTypeDevice.builder()
+                        .start(start)
+                        .end(end)
+                        .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
+                        .build());
+        if (isGeneric) {
+            List<DataPointBinary> genericMetrics = new ArrayList<DataPointBinary>();
+            for (MetricsBinaryTypeDevice metric : metrics) {
+                genericMetrics.add(DataPointBinary.get(metric, null, null));
+            }
+            return genericMetrics;
+        } else {
+            return metrics;
+        }
+    }
+
     private List<?> getSensorVariableMetricsGPS(Integer sensorVariableId,
             Long start, Long end, long bucketDuration, boolean getGeneric) {
         List<MetricsGPSTypeDevice> metricsFinal = new ArrayList<MetricsGPSTypeDevice>();
@@ -250,11 +261,9 @@ public class MetricApi {
         } else {
             Long tmpEnd = start + bucketDuration;
             while (tmpEnd < end) {
-                start = tmpEnd;
                 if (tmpEnd > end) {
                     break;
                 }
-                tmpEnd += bucketDuration;
                 String sqlSelectQuery = MessageFormat.format(
                         DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_DOUBLE_BY_SENSOR_VARIABLE),
                         String.valueOf(sensorVariableId), String.valueOf(start),
@@ -276,6 +285,8 @@ public class MetricApi {
                 if (getGeneric) {
                     metricsGenericFinal.add(DataPointDouble.get(metric, start, tmpEnd));
                 }
+                start = tmpEnd;
+                tmpEnd += bucketDuration;
             }
         }
         if (getGeneric) {
@@ -559,24 +570,37 @@ public class MetricApi {
         return DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(binaryTypeDevice);
     }
 
-    public List<?> getMetricData(Integer resourceId, String resourceType, Long start, Long end, String bucketDuration,
+    public List<?> getMetricData(Integer resourceId, String resourceType, Long start, Long end, String duration,
+            String bucketDuration, Boolean isGeneric) throws McBadRequestException {
+        return getMetricData(getResourceModel(resourceId, resourceType, null), start, end, duration, bucketDuration,
+                isGeneric);
+    }
+
+    public List<?> getMetricData(Integer resourceId, String resourceType, Long start, Long end, String duration,
+            String bucketDuration) throws McBadRequestException {
+        return getMetricData(getResourceModel(resourceId, resourceType, null), start, end, duration, bucketDuration,
+                true);
+    }
+
+    public List<?> getMetricData(String uid, Long start, Long end, String duration, String bucketDuration,
             Boolean isGeneric) throws McBadRequestException {
-        return getMetricData(resourceId, resourceType, start, end, null, bucketDuration, null, isGeneric);
+        return getMetricData(getResourceModel(null, null, uid), start, end, duration, bucketDuration,
+                isGeneric);
     }
 
-    public List<?> getMetricData(Integer resourceId, String resourceType, Long start, Long end, String duration,
-            String bucketDuration, String uid) throws McBadRequestException {
-        return getMetricData(resourceId, resourceType, start, end, duration, bucketDuration, uid, true);
+    public List<?> getMetricData(String uid, Long start, Long end, String duration, String bucketDuration)
+            throws McBadRequestException {
+        return getMetricData(getResourceModel(null, null, uid), start, end, duration, bucketDuration, true);
     }
 
-    public List<?> getMetricData(Integer resourceId, String resourceType, Long start, Long end, String duration,
-            String bucketDuration, String uid, Boolean isGeneric) throws McBadRequestException {
+    public List<?> getMetricData(ResourceModel resourceModel, Long start, Long end, String duration,
+            String bucketDuration) throws McBadRequestException {
+        return getMetricData(resourceModel, start, end, duration, bucketDuration, true);
+    }
+
+    public ResourceModel getResourceModel(Integer resourceId, String resourceType, String uid)
+            throws McBadRequestException {
         if (uid != null) {
-            if (bucketDuration == null) {
-                throw new McBadRequestException(MessageFormat.format(
-                        "Required fields is missing! bucketDuration:[{0}]",
-                        bucketDuration));
-            }
             UidTag uidObj = new UidTagApi().getByUid(uid);
             if (uidObj == null || uidObj.getResource() == null) {
                 throw new McBadRequestException(MessageFormat.format("Requested uid[{0}] not available!", uid));
@@ -589,7 +613,21 @@ public class MetricApi {
             throw new McBadRequestException(MessageFormat.format("Required fields are missing! resourceId:[{0}], "
                     + "resourceType:[{1}]", resourceId, resourceType));
         }
-        ResourceModel resourceModel = new ResourceModel(RESOURCE_TYPE.fromString(resourceType), resourceId);
+        try {
+            return new ResourceModel(RESOURCE_TYPE.fromString(resourceType), resourceId);
+        } catch (Exception ex) {
+            throw new McBadRequestException(ex);
+        }
+
+    }
+
+    public List<?> getMetricData(ResourceModel resourceModel, Long start, Long end, String duration,
+            String bucketDuration, Boolean isGeneric) throws McBadRequestException {
+        if (bucketDuration == null) {
+            throw new McBadRequestException(MessageFormat.format(
+                    "Required fields is missing! bucketDuration:[{0}]",
+                    bucketDuration));
+        }
         Long durationLong = null;
         if (duration != null) {
             durationLong = getBucketDuration(duration, -1);
@@ -612,9 +650,8 @@ public class MetricApi {
         end = getEnd(end);
 
         _logger.debug(
-                "Metric request for (resourceId:{}, resourcetype:{}, start:{}, end:{}, duration:{}, bucketDuration:{},"
-                        + " uid:{}, isGeneric:{})", resourceId, resourceType, start, end, duration, bucketDuration,
-                uid, isGeneric);
+                "Metric request for (start:{}, end:{}, duration:{}, bucketDuration:{}, isGeneric:{}, {})", start, end,
+                duration, bucketDuration, isGeneric, resourceModel);
         long bucketDurationLong = getBucketDuration(bucketDuration);
         if ((end - start) < bucketDurationLong) {
             throw new McBadRequestException(
@@ -628,18 +665,21 @@ public class MetricApi {
 
         switch (resourceModel.getResourceType()) {
             case NODE:
-                return getMetricsBattery(resourceId, start, end, bucketDurationLong, isGeneric);
+                return getMetricsBattery(resourceModel.getResourceId(), start, end, bucketDurationLong, isGeneric);
             case SENSOR_VARIABLE:
                 SensorVariable sVariable = (SensorVariable) resourceModel.getResource();
                 switch (sVariable.getMetricType()) {
                     case BINARY:
-                        return getSensorVariableMetricsBinary(resourceId, start, end);
+                        return getSensorVariableMetricsBinary(resourceModel.getResourceId(), start, end, isGeneric);
                     case COUNTER:
-                        return getSensorVariableMetricsCounter(resourceId, start, end, bucketDuration, isGeneric);
+                        return getSensorVariableMetricsCounter(resourceModel.getResourceId(), start, end,
+                                bucketDuration, isGeneric);
                     case DOUBLE:
-                        return getSensorVariableMetricsDouble(resourceId, start, end, bucketDurationLong, isGeneric);
+                        return getSensorVariableMetricsDouble(resourceModel.getResourceId(), start, end,
+                                bucketDurationLong, isGeneric);
                     case GPS:
-                        return getSensorVariableMetricsGPS(resourceId, start, end, bucketDurationLong, isGeneric);
+                        return getSensorVariableMetricsGPS(resourceModel.getResourceId(), start, end,
+                                bucketDurationLong, isGeneric);
                     default:
                         break;
                 }
@@ -651,8 +691,9 @@ public class MetricApi {
         throw new McBadRequestException(
                 MessageFormat
                         .format("Metric not available for request! {resourceId:[{0}], resourceType:[{1}], start:[{2}],"
-                                + " end:[{3}], duration:[{4}], bucketDuration:[{5}], uid:[{6}], isGeneric:[{7}] ]}",
-                                String.valueOf(resourceId), resourceType, String.valueOf(start), String.valueOf(end),
-                                duration, bucketDuration, uid, String.valueOf(isGeneric)));
+                                + " end:[{3}], duration:[{4}], bucketDuration:[{5}]], isGeneric:[{6}] ]}",
+                                String.valueOf(resourceModel.getResourceId()), resourceModel.getResourceType()
+                                        .getText(), String.valueOf(start), String.valueOf(end),
+                                duration, bucketDuration, String.valueOf(isGeneric)));
     }
 }

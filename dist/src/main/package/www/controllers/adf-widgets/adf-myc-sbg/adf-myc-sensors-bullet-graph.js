@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
       .widget('mycSensorsBulletGraph', {
         title: 'Sensors bullet graph',
         description: 'Monitor sensors value with bullet graph',
-        templateUrl: 'controllers/adf-widgets/adf-myc-sbg/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-sbg/view.html?mcv=${mc.gui.version}',
         controller: 'mycSensorsBulletGraphController',
         controllerAs: 'mycSensorsBulletGraph',
         config: {
@@ -37,7 +37,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-sbg/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-sbg/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSensorsBulletGraphEditController',
           controllerAs: 'mycSensorsBulletGraphEdit',
         }
