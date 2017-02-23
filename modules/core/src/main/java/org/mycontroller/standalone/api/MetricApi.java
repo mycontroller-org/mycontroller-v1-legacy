@@ -537,6 +537,8 @@ public class MetricApi {
             } else {
                 return "raw";
             }
+        } else if (metricType == METRIC_TYPE.BINARY) {
+            return "raw";
         }
         return "1mn";
     }

@@ -627,9 +627,11 @@ public class MetricsHandler extends AccessEngine {
         //Update bucket duration
         String bucketDurationDouble = bucketDuration;
         String bucketDurationCounter = bucketDuration;
+        String bucketDurationBinary = bucketDuration;
         if (bucketDuration == null) {
             bucketDurationDouble = MetricApi.getBucketDuration(start, end, METRIC_TYPE.DOUBLE);
             bucketDurationCounter = MetricApi.getBucketDuration(start, end, METRIC_TYPE.COUNTER);
+            bucketDurationBinary = MetricApi.getBucketDuration(start, end, METRIC_TYPE.BINARY);
         }
 
         for (SensorVariable sensorVariable : sensorVariables) {
@@ -747,7 +749,7 @@ public class MetricsHandler extends AccessEngine {
                     @SuppressWarnings("unchecked")
                     List<MetricsBinaryTypeDevice> binaryMetrics = (List<MetricsBinaryTypeDevice>) metricApi
                             .getMetricData(sensorVariable.getId(), RESOURCE_TYPE.SENSOR_VARIABLE.getText(), start,
-                                    end, duration, bucketDuration, false);
+                                    end, duration, bucketDurationBinary, false);
                     ArrayList<Object> metricBinaryValues = new ArrayList<Object>();
                     for (MetricsBinaryTypeDevice metric : binaryMetrics) {
                         if (isMultiChart) {
@@ -826,9 +828,11 @@ public class MetricsHandler extends AccessEngine {
         //Update bucket duration
         String bucketDurationDouble = bucketDuration;
         String bucketDurationCounter = bucketDuration;
+        String bucketDurationBinary = bucketDuration;
         if (bucketDuration == null) {
             bucketDurationDouble = MetricApi.getBucketDuration(start, end, METRIC_TYPE.DOUBLE);
             bucketDurationCounter = MetricApi.getBucketDuration(start, end, METRIC_TYPE.COUNTER);
+            bucketDurationBinary = MetricApi.getBucketDuration(start, end, METRIC_TYPE.BINARY);
         }
 
         for (SensorVariable sensorVariable : sensorVariables) {
@@ -927,7 +931,7 @@ public class MetricsHandler extends AccessEngine {
                     @SuppressWarnings("unchecked")
                     List<MetricsBinaryTypeDevice> binaryMetrics = (List<MetricsBinaryTypeDevice>) metricApi
                             .getMetricData(sensorVariable.getId(), RESOURCE_TYPE.SENSOR_VARIABLE.getText(), start,
-                                    end, duration, bucketDuration, false);
+                                    end, duration, bucketDurationBinary, false);
                     ArrayList<Object> metricBinaryValues = new ArrayList<Object>();
                     for (MetricsBinaryTypeDevice metric : binaryMetrics) {
                         metricBinaryValues.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });

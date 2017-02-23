@@ -26,8 +26,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 abstract class SensorVariablePurgeMixin {
     @JsonDeserialize(using = DateTimeDeserializer.class)
-    public abstract void setTimestampFrom(Long timestamp);
+    public abstract void setStart(Long timestamp);
 
     @JsonDeserialize(using = DateTimeDeserializer.class)
-    public abstract void setTimestampTo(Long timestamp);
+    public abstract void setEnd(Long timestamp);
 }
