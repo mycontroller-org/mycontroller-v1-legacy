@@ -113,6 +113,7 @@ public class DataBaseUtils {
             // Start the migration
             int migrationsCount = 0;
             try {
+                _logger.info("Checking migration...");
                 migrationsCount = flyway.migrate();
             } catch (FlywayException fEx) {
                 _logger.error("Migration exception, ", fEx);

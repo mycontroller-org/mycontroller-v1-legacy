@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.loggers.LoggerMySql;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
@@ -438,11 +439,11 @@ public class AppProperties {
         this.dbBackupInclude = McUtils.getBoolean(getValue(properties, "mcc.db.backup.include", "False"));
         dbUrl = getValue(properties, "mcc.db.url", "jdbc:h2:file:../conf/mycontroller;MVCC=TRUE");
         if (this.dbType == DB_TYPE.MYSQL) {
-            String mySqlLogger = "logger=org.mycontroller.standalone.loggers.LoggerMySql";
+            String mySqlLogger = "logger=" + LoggerMySql.class.getCanonicalName();
             if (dbUrl.indexOf('?') != -1) {
-                dbUrl = dbUrl + "?" + mySqlLogger;
-            } else {
                 dbUrl = dbUrl + "&" + mySqlLogger;
+            } else {
+                dbUrl = dbUrl + "?" + mySqlLogger;
             }
         }
         dbUsername = getValue(properties, "mcc.db.username", "mycontroller");
