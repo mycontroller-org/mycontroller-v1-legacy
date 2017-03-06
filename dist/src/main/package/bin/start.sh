@@ -25,8 +25,8 @@ cd ${ACTUAL_LOCATION}
 
 
 #Java Heap settings
-HEAP_MIN=-Xms8m
-HEAP_MAX=-Xmx150m
+HEAP_MIN=-Xms32m
+HEAP_MAX=-Xmx256m
 
 JAVA_VERSION="1.7"
 
