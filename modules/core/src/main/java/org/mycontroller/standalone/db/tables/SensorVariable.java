@@ -73,11 +73,11 @@ public class SensorVariable {
     private Integer id;
 
     @DatabaseField(columnName = KEY_SENSOR_DB_ID, canBeNull = false, uniqueCombo = true, foreign = true,
-            maxForeignAutoRefreshLevel = 3, foreignAutoRefresh = true)
+            maxForeignAutoRefreshLevel = 3, foreignAutoRefresh = true, index = true)
     private Sensor sensor;
 
     @DatabaseField(columnName = KEY_VARIABLE_TYPE, canBeNull = false,
-            uniqueCombo = true, dataType = DataType.ENUM_STRING)
+            uniqueCombo = true, dataType = DataType.ENUM_STRING, index = true)
     private MESSAGE_TYPE_SET_REQ variableType;
 
     @DatabaseField(columnName = KEY_METRIC, canBeNull = false, dataType = DataType.ENUM_STRING)

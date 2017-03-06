@@ -452,19 +452,23 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         }
     }
 
-    public long countOf(HashMap<String, List<Object>> columnValues) {
+    public long countOf(HashMap<String, Object> columnValues) {
         try {
             QueryBuilder<Tdao, Tid> queryBuilder = this.getDao().queryBuilder();
             Where<Tdao, Tid> where = queryBuilder.where();
-            boolean appendAND = false;
+            int andCount = 0;
             for (String key : columnValues.keySet()) {
-                if (appendAND) {
-                    where.and();
+                if (columnValues.get(key) instanceof List<?>) {
+                    where.in(key, columnValues.get(key));
                 } else {
-                    appendAND = true;
+                    where.eq(key, columnValues.get(key));
                 }
-                where.in(key, columnValues.get(key));
+                andCount++;
             }
+            if (andCount > 1) {
+                where.and(andCount);
+            }
+            queryBuilder.setWhere(where);
             return queryBuilder.countOf();
         } catch (SQLException ex) {
             _logger.error("unable to get count for query, input[{}]", columnValues, ex);

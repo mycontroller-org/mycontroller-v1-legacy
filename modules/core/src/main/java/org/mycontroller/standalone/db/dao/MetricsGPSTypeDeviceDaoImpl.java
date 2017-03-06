@@ -117,6 +117,7 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
                 whereBuilder.and().le(MetricsGPSTypeDevice.KEY_TIMESTAMP,
                         metric.getEnd());
             }
+            queryBuilder.orderBy(MetricsGPSTypeDevice.KEY_TIMESTAMP, true);
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);

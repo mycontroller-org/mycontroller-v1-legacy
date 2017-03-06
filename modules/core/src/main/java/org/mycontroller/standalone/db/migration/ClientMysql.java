@@ -58,4 +58,13 @@ public class ClientMysql extends ClientBase implements IMigrationClient {
         }
     }
 
+    @Override
+    public void createIndex(String indexSuffix, String tableName, String columnName) throws SQLException {
+        if (hasColumn(tableName, columnName)) {
+            DaoUtils.getUserDao().getDao().executeRaw(
+                    "CREATE UNIQUE INDEX " + getIndexName(indexSuffix, tableName, columnName) + " ON "
+                            + getTableName(tableName) + "(" + getColumnName(columnName) + ")");
+        }
+    }
+
 }

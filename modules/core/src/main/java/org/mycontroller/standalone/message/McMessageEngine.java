@@ -79,19 +79,6 @@ public class McMessageEngine implements Runnable {
     private McMessage mcMessage;
 
     public McMessageEngine(McMessage mcMessage) {
-        switch (mcMessage.getNetworkType()) {
-            case MY_SENSORS:
-                if (mcMessage.getNodeEui().equals("255")) {
-                    mcMessage.setNodeEui(McMessage.NODE_BROADCAST_ID);
-                }
-                if (mcMessage.getSensorId().equals("255")) {
-                    mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
-                }
-                break;
-            default:
-                //Nothing to do
-                break;
-        }
         this.mcMessage = mcMessage;
     }
 

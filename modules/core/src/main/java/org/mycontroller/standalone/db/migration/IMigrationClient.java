@@ -44,6 +44,8 @@ public interface IMigrationClient {
 
     void dropTable(String tableName) throws SQLException;
 
+    void createIndex(String indexSuffix, String tableName, String columnName) throws SQLException;
+
     void dropTable(Class<?> entity) throws SQLException;
 
     void createTable(Class<?> entity) throws SQLException;
@@ -62,5 +64,9 @@ public interface IMigrationClient {
     User getAdminUser();
 
     void executeRaw(String rawQuery) throws SQLException;
+
+    String getDatabaseSchemaVersion();
+
+    int getDatabaseSchemaVersionInt();
 
 }

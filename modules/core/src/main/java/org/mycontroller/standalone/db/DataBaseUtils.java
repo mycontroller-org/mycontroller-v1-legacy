@@ -189,7 +189,7 @@ public class DataBaseUtils {
     }
 
     public static synchronized void reloadDao() {
-        _logger.info("Reload DAO triggered...");
+        _logger.debug("Reload DAO triggered...");
         try {
             //reload connection source
             getConnectionSource(true);

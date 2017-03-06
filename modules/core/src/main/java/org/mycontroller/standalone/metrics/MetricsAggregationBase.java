@@ -24,6 +24,7 @@ import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
+import org.mycontroller.standalone.utils.DataFormatUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.NoArgsConstructor;
@@ -36,66 +37,79 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 public class MetricsAggregationBase {
-
     public static final AtomicBoolean IS_AGGREGATION_RUNNING = new AtomicBoolean(false);
 
     private void aggregateAndInsertForBucketDuration(String sourceType, String resultType,
-            Long timestampFrom, Long timestampTo, String insertSqlQuery, String deletionSqlQuery) {
-        if (sourceType == null || resultType == null || timestampFrom == null || timestampTo == null
+            Long start, Long end, String insertSqlQuery, String deletionSqlQuery) {
+        if (sourceType == null || resultType == null || start == null || end == null
                 || insertSqlQuery == null) {
             _logger.warn(
-                    "Null values are not allowed! sourceType:{}, resultType:{}, timestampFrom:{},"
-                            + " timestampTo:{}, insertSqlQuery:{}",
-                    sourceType, resultType, timestampFrom, timestampTo, insertSqlQuery);
+                    "Null values are not allowed! sourceType:{}, resultType:{}, start:{},"
+                            + " end:{}, insertSqlQuery:{}",
+                    sourceType, resultType, start, end, insertSqlQuery);
             return;
         }
-        String sqlInsertQuery = MessageFormat.format(insertSqlQuery, sourceType, String.valueOf(timestampFrom),
-                String.valueOf(timestampTo), resultType);
-        String sqlDeleteQuery = MessageFormat.format(deletionSqlQuery, sourceType, String.valueOf(timestampTo));
+
+        String sqlInsertQuery = MessageFormat.format(insertSqlQuery, sourceType, String.valueOf(start),
+                String.valueOf(end), resultType);
+        String sqlDeleteQuery = MessageFormat.format(deletionSqlQuery, sourceType, String.valueOf(end));
         _logger.debug(
                 "Running aggregation and data removal for this time range[from:{}, to:{}, sourceType:{},"
-                        + " resultType:{}], SQL query: Insert:[{}], Deletion:[{}]", timestampFrom, timestampTo,
+                        + " resultType:{}], SQL query: Insert:[{}], Deletion:[{}]", start, end,
                 sourceType, resultType, sqlInsertQuery, sqlDeleteQuery);
         try {
+            long startTime = System.currentTimeMillis();
             //Aggregate and insert data
             int insertCount = DaoUtils.getMetricsDoubleTypeDeviceDao().getDao().executeRaw(sqlInsertQuery);
             //Remove aggregated data
             int deleteCount = DaoUtils.getMetricsDoubleTypeDeviceDao().getDao().executeRaw(sqlDeleteQuery);
-            _logger.debug("Query execution result counts >> [insert:{}, delete:{}]", insertCount, deleteCount);
+            _logger.debug("Query execution result. Count[insert:{}, delete:{}], time taken:{} ms", insertCount,
+                    deleteCount, System.currentTimeMillis() - startTime);
         } catch (Exception ex) {
             _logger.error("Error,", ex);
         }
     }
 
     private void executeBucketByBucket(AGGREGATION_TYPE resultType, AGGREGATION_TYPE sourceType,
-            Long timestampFrom, Long timestampTo, Long bucketDuration) {
+            Long start, Long end, Long bucketDuration) {
         _logger.debug("sourceType:{}, resultType:{}, timestampFrom:{}, timestampTo:{}, bucketDuration:{} ms",
-                sourceType, resultType, timestampFrom, timestampTo, bucketDuration);
-
+                sourceType, resultType, start, end, bucketDuration);
         //Complete for all missed and current time
-        while ((timestampFrom + bucketDuration) <= timestampTo) {
+        Long cEnd = start + bucketDuration;
+        while (cEnd <= end) {
+            _logger.debug(
+                    "Running aggregation for '{}'. Converting to '{}'. Config:[bucketDuration:{}, start~end:{}~{}"
+                            + " ({}~{})]", sourceType, resultType, bucketDuration,
+                    start, end, DataFormatUtils.DATE_TIME_24_HRS.format(start),
+                    DataFormatUtils.DATE_TIME_24_HRS.format(cEnd));
 
             //Call aggregation double data (sensor variables)
             //-----------------------------------------------
-            aggregateAndInsertForBucketDuration(String.valueOf(sourceType.ordinal()),
-                    String.valueOf(resultType.ordinal()), timestampFrom, (timestampFrom + bucketDuration),
-                    DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_DOUBLE_AGGREGATION_BY_TYPE),
-                    DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_DOUBLE_BY_TYPE));
+            //Check is there any data on this time range
+            if (DaoUtils.getMetricsDoubleTypeDeviceDao().isRecordFound(sourceType, start, cEnd)) {
+                aggregateAndInsertForBucketDuration(String.valueOf(sourceType.ordinal()),
+                        String.valueOf(resultType.ordinal()), start, cEnd,
+                        DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_DOUBLE_AGGREGATION_BY_TYPE),
+                        DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_DOUBLE_BY_TYPE));
+            }
 
             //Call aggregation for battery usage
             //----------------------------------
-            aggregateAndInsertForBucketDuration(String.valueOf(sourceType.ordinal()),
-                    String.valueOf(resultType.ordinal()), timestampFrom, (timestampFrom + bucketDuration),
-                    DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_BATTERY_AGGREGATION_BY_TYPE),
-                    DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_BATTERY_BY_TYPE));
-
+            //Check is there any data on this time range
+            if (DaoUtils.getMetricsBatteryUsageDao().isRecordFound(sourceType, start, cEnd)) {
+                aggregateAndInsertForBucketDuration(String.valueOf(sourceType.ordinal()),
+                        String.valueOf(resultType.ordinal()), start, cEnd,
+                        DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_BATTERY_AGGREGATION_BY_TYPE),
+                        DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_BATTERY_BY_TYPE));
+            }
             //Call aggregation counter data (sensor variables)
             //-----------------------------------------------
-            aggregateAndInsertForBucketDuration(sourceType.name(), resultType.name(), timestampFrom,
-                    (timestampFrom + bucketDuration),
-                    DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_COUNTER_AGGREGATION_BY_TYPE),
-                    DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_COUNTER_BY_TYPE));
-
+            //Check is there any data on this time range
+            if (DaoUtils.getMetricsCounterTypeDeviceDao().isRecordFound(sourceType, start, cEnd)) {
+                aggregateAndInsertForBucketDuration(sourceType.name(), resultType.name(), start, cEnd,
+                        DB_QUERY.getQuery(DB_QUERY.INSERT_METRICS_COUNTER_AGGREGATION_BY_TYPE),
+                        DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_COUNTER_BY_TYPE));
+            }
             //Update last aggregation status
             //-----------------------------------
             MetricsDataRetentionSettings dataRetentionSettings = null;
@@ -103,29 +117,29 @@ public class MetricsAggregationBase {
             //One minute should handle raw data also
                 case ONE_MINUTE:
                     dataRetentionSettings = MetricsDataRetentionSettings.builder()
-                            .lastAggregationOneMinute((timestampFrom + bucketDuration))
-                            .lastAggregationRawData((timestampFrom + bucketDuration))
+                            .lastAggregationOneMinute(cEnd)
+                            .lastAggregationRawData(cEnd)
                             .build();
                     break;
                 case FIVE_MINUTES:
                     dataRetentionSettings = MetricsDataRetentionSettings.builder()
-                            .lastAggregationFiveMinutes((timestampFrom + bucketDuration)).build();
+                            .lastAggregationFiveMinutes(cEnd).build();
                     break;
                 case ONE_HOUR:
                     dataRetentionSettings = MetricsDataRetentionSettings.builder()
-                            .lastAggregationOneHour((timestampFrom + bucketDuration)).build();
+                            .lastAggregationOneHour(cEnd).build();
                     break;
                 case SIX_HOURS:
                     dataRetentionSettings = MetricsDataRetentionSettings.builder()
-                            .lastAggregationSixHours((timestampFrom + bucketDuration)).build();
+                            .lastAggregationSixHours(cEnd).build();
                     break;
                 case TWELVE_HOURS:
                     dataRetentionSettings = MetricsDataRetentionSettings.builder()
-                            .lastAggregationTwelveHours((timestampFrom + bucketDuration)).build();
+                            .lastAggregationTwelveHours(cEnd).build();
                     break;
                 case ONE_DAY:
                     dataRetentionSettings = MetricsDataRetentionSettings.builder()
-                            .lastAggregationOneDay((timestampFrom + bucketDuration)).build();
+                            .lastAggregationOneDay(cEnd).build();
                     break;
                 default:
                     break;
@@ -151,7 +165,8 @@ public class MetricsAggregationBase {
 
             //Add bucket duration
             //-----------------------------
-            timestampFrom += bucketDuration;
+            start += bucketDuration;
+            cEnd = start + bucketDuration;
         }
     }
 
@@ -170,29 +185,29 @@ public class MetricsAggregationBase {
             //run aggregation for one minute
             executeBucketByBucket(AGGREGATION_TYPE.ONE_MINUTE, AGGREGATION_TYPE.RAW, AppProperties.getInstance()
                     .getMetricsDataRetentionSettings().getLastAggregationOneMinute(),
-                    getToTime(AGGREGATION_TYPE.ONE_MINUTE), McUtils.ONE_MINUTE);
+                    getEndTime(AGGREGATION_TYPE.ONE_MINUTE), McUtils.ONE_MINUTE);
             //run aggregation for five minutes
             executeBucketByBucket(AGGREGATION_TYPE.FIVE_MINUTES, AGGREGATION_TYPE.ONE_MINUTE,
                     AppProperties.getInstance().getMetricsDataRetentionSettings().getLastAggregationFiveMinutes(),
-                    getToTime(AGGREGATION_TYPE.FIVE_MINUTES), McUtils.FIVE_MINUTES);
+                    getEndTime(AGGREGATION_TYPE.FIVE_MINUTES), McUtils.FIVE_MINUTES);
             //run aggregation for one hour
             executeBucketByBucket(AGGREGATION_TYPE.ONE_HOUR, AGGREGATION_TYPE.FIVE_MINUTES,
                     AppProperties.getInstance().getMetricsDataRetentionSettings().getLastAggregationOneHour(),
-                    getToTime(AGGREGATION_TYPE.ONE_HOUR), McUtils.ONE_HOUR);
+                    getEndTime(AGGREGATION_TYPE.ONE_HOUR), McUtils.ONE_HOUR);
             //run aggregation for six hours
             executeBucketByBucket(AGGREGATION_TYPE.SIX_HOURS, AGGREGATION_TYPE.ONE_HOUR,
                     AppProperties.getInstance()
                             .getMetricsDataRetentionSettings().getLastAggregationSixHours(),
-                    getToTime(AGGREGATION_TYPE.SIX_HOURS),
+                    getEndTime(AGGREGATION_TYPE.SIX_HOURS),
                     (McUtils.ONE_HOUR * 6));
             //run aggregation for twelve hours
             executeBucketByBucket(AGGREGATION_TYPE.TWELVE_HOURS, AGGREGATION_TYPE.SIX_HOURS,
                     AppProperties.getInstance().getMetricsDataRetentionSettings().getLastAggregationTwelveHours(),
-                    getToTime(AGGREGATION_TYPE.TWELVE_HOURS), (McUtils.ONE_HOUR * 12));
+                    getEndTime(AGGREGATION_TYPE.TWELVE_HOURS), (McUtils.ONE_HOUR * 12));
             //run aggregation for one day
             executeBucketByBucket(AGGREGATION_TYPE.ONE_DAY, AGGREGATION_TYPE.TWELVE_HOURS,
                     AppProperties.getInstance().getMetricsDataRetentionSettings().getLastAggregationOneDay(),
-                    getToTime(AGGREGATION_TYPE.ONE_DAY), McUtils.ONE_DAY);
+                    getEndTime(AGGREGATION_TYPE.ONE_DAY), McUtils.ONE_DAY);
 
         } finally {
             //set aggregation completed
@@ -200,7 +215,7 @@ public class MetricsAggregationBase {
         }
     }
 
-    public static Long getToTime(AGGREGATION_TYPE aggregationType) {
+    private static Long getEndTime(AGGREGATION_TYPE aggregationType) {
         switch (aggregationType) {
             case ONE_MINUTE:
                 return System.currentTimeMillis()

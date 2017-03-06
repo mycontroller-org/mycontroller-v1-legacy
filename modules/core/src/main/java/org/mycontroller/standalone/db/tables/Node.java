@@ -75,11 +75,11 @@ public class Node {
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_EUI)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_EUI, index = true)
     private String eui;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = true, columnName = KEY_GATEWAY_ID, foreign = true,
-            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_GATEWAY_ID, foreign = true,
+            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1, index = true)
     private GatewayTable gatewayTable;
 
     @DatabaseField(columnName = KEY_NAME)

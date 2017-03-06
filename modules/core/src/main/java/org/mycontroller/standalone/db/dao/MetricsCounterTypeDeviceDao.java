@@ -34,7 +34,10 @@ public interface MetricsCounterTypeDeviceDao extends BaseDao<MetricsCounterTypeD
     List<MetricsCounterTypeDevice> getAll(MetricsCounterTypeDevice metric);
 
     List<MetricsCounterTypeDevice> getAggregationRequiredVariableIds(AGGREGATION_TYPE aggregationType,
-            Long fromTimestamp,
-            Long toTimestamp);
+            Long fromTimestamp, Long toTimestamp);
+
+    long countOf(AGGREGATION_TYPE aggregationType, long start, long end);
+
+    boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end);
 
 }

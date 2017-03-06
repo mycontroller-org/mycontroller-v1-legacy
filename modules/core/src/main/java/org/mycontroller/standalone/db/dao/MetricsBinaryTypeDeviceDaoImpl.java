@@ -105,6 +105,7 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             if (metric.getEnd() != null) {
                 where.and().le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getEnd());
             }
+            queryBuilder.orderBy(MetricsBinaryTypeDevice.KEY_TIMESTAMP, true);
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);

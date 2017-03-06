@@ -46,10 +46,11 @@ public class MetricsCounterTypeDevice {
     public static final String KEY_VALUE = "value";
     public static final String KEY_SAMPLES = "samples";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID)
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID,
+            index = true)
     private SensorVariable sensorVariable;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP, index = true)
     private Long timestamp;
 
     @DatabaseField(canBeNull = false, columnName = KEY_SAMPLES)
@@ -59,7 +60,7 @@ public class MetricsCounterTypeDevice {
     private Long value;
 
     @DatabaseField(uniqueCombo = true, dataType = DataType.ENUM_STRING,
-            canBeNull = false, columnName = KEY_AGGREGATION_TYPE)
+            canBeNull = false, columnName = KEY_AGGREGATION_TYPE, index = true)
     private AGGREGATION_TYPE aggregationType;
 
     private Long start;

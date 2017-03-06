@@ -39,6 +39,15 @@ public class MySensorsUtils {
     public static final int NODE_ID_MIN = 1;
     public static final int NODE_ID_MAX = 254;
 
+    public static final String KEY_RSSI = "rssi:";
+    public static final String KEY_PROPERTIES = "prs:";
+
+    public static final int MAX_INDEX_MESSAGE_TYPE = MYS_MESSAGE_TYPE.values().length;
+    public static final int MAX_INDEX_INTERNAL = MYS_MESSAGE_TYPE_INTERNAL.values().length;
+    public static final int MAX_INDEX_PRESENTATION = MYS_MESSAGE_TYPE_PRESENTATION.values().length;
+    public static final int MAX_INDEX_SET_REQ = MYS_MESSAGE_TYPE_SET_REQ.values().length;
+    public static final int MAX_INDEX_STREAM = MYS_MESSAGE_TYPE_STREAM.values().length;
+
     public static String getMetricType() {
         if (AppProperties.getInstance().getControllerSettings().getUnitConfig() != null) {
             if (AppProperties.getInstance().getControllerSettings().getUnitConfig()

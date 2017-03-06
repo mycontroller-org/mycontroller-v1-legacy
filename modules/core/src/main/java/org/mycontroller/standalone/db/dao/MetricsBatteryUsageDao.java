@@ -34,7 +34,10 @@ public interface MetricsBatteryUsageDao extends BaseDao<MetricsBatteryUsage, Obj
     List<MetricsBatteryUsage> getAll(MetricsBatteryUsage metric);
 
     List<MetricsBatteryUsage> getAggregationRequiredNodeIds(AGGREGATION_TYPE aggregationType,
-            Long fromTimestamp,
-            Long toTimestamp);
+            Long fromTimestamp, Long toTimestamp);
+
+    long countOf(AGGREGATION_TYPE aggregationType, long start, long end);
+
+    boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end);
 
 }

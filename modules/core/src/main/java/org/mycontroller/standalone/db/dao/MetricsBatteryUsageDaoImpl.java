@@ -129,4 +129,30 @@ public class MetricsBatteryUsageDaoImpl extends BaseAbstractDaoImpl<MetricsBatte
             return null;
         }
     }
+
+    @Override
+    public long countOf(AGGREGATION_TYPE aggregationType, long start, long end) {
+        QueryBuilder<MetricsBatteryUsage, Object> queryBuilder = getDao().queryBuilder();
+        try {
+            return queryBuilder.where().gt(MetricsBatteryUsage.KEY_TIMESTAMP, start).and()
+                    .le(MetricsBatteryUsage.KEY_TIMESTAMP, end).and()
+                    .eq(MetricsBatteryUsage.KEY_AGGREGATION_TYPE, aggregationType).countOf();
+        } catch (Exception ex) {
+            _logger.error("Unable to execute countOf query", ex);
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end) {
+        QueryBuilder<MetricsBatteryUsage, Object> queryBuilder = getDao().queryBuilder();
+        try {
+            return queryBuilder.where().gt(MetricsBatteryUsage.KEY_TIMESTAMP, start).and()
+                    .le(MetricsBatteryUsage.KEY_TIMESTAMP, end).and()
+                    .eq(MetricsBatteryUsage.KEY_AGGREGATION_TYPE, aggregationType).queryForFirst() != null;
+        } catch (Exception ex) {
+            _logger.error("Unable to execute countOf query", ex);
+            return true;
+        }
+    }
 }

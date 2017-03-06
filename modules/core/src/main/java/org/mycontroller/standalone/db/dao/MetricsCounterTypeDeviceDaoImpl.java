@@ -117,6 +117,7 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
                 whereBuilder.and().le(MetricsCounterTypeDevice.KEY_TIMESTAMP,
                         metric.getEnd());
             }
+            queryBuilder.orderBy(MetricsCounterTypeDevice.KEY_TIMESTAMP, true);
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
@@ -157,6 +158,32 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
         } catch (SQLException ex) {
             _logger.error("Exception,", ex);
             return null;
+        }
+    }
+
+    @Override
+    public long countOf(AGGREGATION_TYPE aggregationType, long start, long end) {
+        QueryBuilder<MetricsCounterTypeDevice, Object> queryBuilder = getDao().queryBuilder();
+        try {
+            return queryBuilder.where().gt(MetricsCounterTypeDevice.KEY_TIMESTAMP, start).and()
+                    .le(MetricsCounterTypeDevice.KEY_TIMESTAMP, end).and()
+                    .eq(MetricsCounterTypeDevice.KEY_AGGREGATION_TYPE, aggregationType).countOf();
+        } catch (Exception ex) {
+            _logger.error("Unable to execute countOf query", ex);
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end) {
+        QueryBuilder<MetricsCounterTypeDevice, Object> queryBuilder = getDao().queryBuilder();
+        try {
+            return queryBuilder.where().gt(MetricsCounterTypeDevice.KEY_TIMESTAMP, start).and()
+                    .le(MetricsCounterTypeDevice.KEY_TIMESTAMP, end).and()
+                    .eq(MetricsCounterTypeDevice.KEY_AGGREGATION_TYPE, aggregationType).queryForFirst() != null;
+        } catch (Exception ex) {
+            _logger.error("Unable to execute countOf query", ex);
+            return true;
         }
     }
 }

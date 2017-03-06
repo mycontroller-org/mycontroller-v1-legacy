@@ -67,7 +67,7 @@ public interface BaseDao<Tdao, Tid> {
 
     Tdao get(String key, Object value);
 
-    long countOf(HashMap<String, List<Object>> columnValues);
+    long countOf(HashMap<String, Object> columnValues);
 
     long countOf(String key, Object data);
 

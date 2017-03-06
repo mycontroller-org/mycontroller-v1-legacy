@@ -37,6 +37,10 @@ public interface MetricsDoubleTypeDeviceDao extends BaseDao<MetricsDoubleTypeDev
 
     MetricsDoubleTypeDevice getMinMaxAvg(MetricsDoubleTypeDevice metric);
 
+    long countOf(AGGREGATION_TYPE aggregationType, long start, long end);
+
+    boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end);
+
     List<MetricsDoubleTypeDevice> getAggregationRequiredVariableIds(AGGREGATION_TYPE aggregationType,
             Long fromTimestamp,
             Long toTimestamp);

@@ -182,4 +182,29 @@ public class ClientBase {
         _logger.debug("count:{}", count);
     }
 
+    protected String getIndexName(String indexSuffix, String tableName, String columnName) {
+        return getTableName(tableName) + "_" + getColumnName(columnName) + "_" + getColumnName(indexSuffix);
+    }
+
+    public void createIndex(String indexSuffix, String tableName, String columnName) throws SQLException {
+        if (hasColumn(tableName, columnName)) {
+            DaoUtils.getUserDao().getDao().executeRaw(
+                    "CREATE INDEX " + getIndexName(indexSuffix, tableName, columnName) + " ON "
+                            + getTableName(tableName) + "(" + getColumnName(columnName) + ")");
+        }
+    }
+
+    public String getDatabaseSchemaVersion() {
+        return AppProperties.getInstance().getControllerSettings().getDbVersion();
+    }
+
+    public int getDatabaseSchemaVersionInt() {
+        String schemaVersion = getDatabaseSchemaVersion(); //Example: 1.03.05 - 2016 Nov 18
+        int version = 0;
+        if (schemaVersion != null) {
+            version = Integer.valueOf(schemaVersion.split("-")[0].replaceAll("\\.", "").trim());
+        }
+        return version;
+    }
+
 }
