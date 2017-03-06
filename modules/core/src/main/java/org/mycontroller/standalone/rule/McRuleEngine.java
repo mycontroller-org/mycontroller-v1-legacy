@@ -117,7 +117,7 @@ public class McRuleEngine extends Job implements Runnable {
                 _logger.error("Exception,", ex);
             }
             if (System.currentTimeMillis() - startTime > MAX_WAIT_TIME) {
-                _logger.warn("Scheduled Rule exuection skipped. Engine not available for more than {} ms",
+                _logger.warn("Scheduled Rule execution skipped. Engine not available for more than {} ms",
                         MAX_WAIT_TIME);
                 return;
             }

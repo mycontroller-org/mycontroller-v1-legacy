@@ -75,7 +75,7 @@ public class Node {
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_EUI, index = true)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_EUI)
     private String eui;
 
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_GATEWAY_ID, foreign = true,
