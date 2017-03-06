@@ -46,8 +46,7 @@ public class MetricsCounterTypeDevice {
     public static final String KEY_VALUE = "value";
     public static final String KEY_SAMPLES = "samples";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID,
-            index = true)
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID, index = true)
     private SensorVariable sensorVariable;
 
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP, index = true)

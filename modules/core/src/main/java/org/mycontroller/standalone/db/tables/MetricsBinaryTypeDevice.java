@@ -44,8 +44,7 @@ public class MetricsBinaryTypeDevice {
     public static final String KEY_STATE = "state";
 
     @JsonIgnore
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID,
-            index = true)
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID, index = true)
     private SensorVariable sensorVariable;
 
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP, index = true)

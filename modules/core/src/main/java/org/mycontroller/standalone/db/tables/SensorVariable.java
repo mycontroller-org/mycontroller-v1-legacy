@@ -69,7 +69,7 @@ public class SensorVariable {
     public static final String KEY_GP_COLOR = "color";
     public static final String KEY_NAME = "name";
 
-    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID, index = true)
     private Integer id;
 
     @DatabaseField(columnName = KEY_SENSOR_DB_ID, canBeNull = false, uniqueCombo = true, foreign = true,

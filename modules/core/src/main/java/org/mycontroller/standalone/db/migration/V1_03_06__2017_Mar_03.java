@@ -38,44 +38,13 @@ public class V1_03_06__2017_Mar_03 extends MigrationBase {
 
         /** Migration comments
          *  Description:
-         *  1. Add index for some columns
-         *  2. Remove NULL gateway ID in Node table
+         *  1. Remove NULL gateway ID in Node table
          **/
 
-        //Execute only if index is not available// METRICS_DOUBLE_TYPE_DEVICE_AGGREGATIONTYPE_IDX
+        //Execute only if running on existing db
         int schemaVersion = sqlClient().getDatabaseSchemaVersionInt();
         _logger.debug("Schema version:{}", schemaVersion);
         if (schemaVersion != 0 && schemaVersion < 10306) {
-            //Metrics Battery Usage
-            sqlClient().createIndex("idx", "metrics_battery_usage", "nodeId");
-            sqlClient().createIndex("idx", "metrics_battery_usage", "timestamp");
-            sqlClient().createIndex("idx", "metrics_battery_usage", "aggregationType");
-
-            //Metrics Binary Type
-            sqlClient().createIndex("idx", "metrics_binary_type_device", "sensorVariableId");
-            sqlClient().createIndex("idx", "metrics_binary_type_device", "timestamp");
-
-            //Metrics Counter Type
-            sqlClient().createIndex("idx", "metrics_counter_type_device", "sensorVariableId");
-            sqlClient().createIndex("idx", "metrics_counter_type_device", "timestamp");
-            sqlClient().createIndex("idx", "metrics_counter_type_device", "aggregationType");
-
-            //Metrics Double Type
-            sqlClient().createIndex("idx", "metrics_double_type_device", "sensorVariableId");
-            sqlClient().createIndex("idx", "metrics_double_type_device", "timestamp");
-            sqlClient().createIndex("idx", "metrics_double_type_device", "aggregationType");
-
-            //Sensor variables
-            sqlClient().createIndex("idx", "sensor_variable", "sensorDbId");
-            sqlClient().createIndex("idx", "sensor_variable", "variableType");
-
-            //Node table index
-            sqlClient().createIndex("idx", "node", "eui");
-            sqlClient().createIndex("idx", "node", "gatewayId");
-
-            //Sensor table index
-            sqlClient().createIndex("idx", "sensor", "nodeId");
-
             //Update node table
             switch (AppProperties.getInstance().getDbType()) {
                 case H2DB:

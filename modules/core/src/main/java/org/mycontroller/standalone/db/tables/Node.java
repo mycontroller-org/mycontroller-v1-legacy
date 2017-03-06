@@ -79,7 +79,7 @@ public class Node {
     private String eui;
 
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_GATEWAY_ID, foreign = true,
-            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1, index = true)
+            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private GatewayTable gatewayTable;
 
     @DatabaseField(columnName = KEY_NAME)

@@ -72,7 +72,7 @@ public class Sensor {
     private Long lastSeen;
 
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_NODE_ID,
-            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2, index = true)
+            foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 2)
     private Node node;
 
     @DatabaseField(canBeNull = true, foreign = true, columnName = KEY_ROOM_ID,

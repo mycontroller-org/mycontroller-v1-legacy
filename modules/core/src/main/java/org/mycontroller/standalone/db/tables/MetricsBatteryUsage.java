@@ -48,10 +48,10 @@ public class MetricsBatteryUsage {
     public static final String KEY_AVG = "avg";
     public static final String KEY_SAMPLES = "samples";
 
-    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_NODE_ID, index = true)
+    @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_NODE_ID)
     private Node node;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP, index = true)
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
     @DatabaseField(canBeNull = false, columnName = KEY_SAMPLES)
@@ -67,7 +67,7 @@ public class MetricsBatteryUsage {
     private Double avg;
 
     @DatabaseField(uniqueCombo = true, dataType = DataType.ENUM_INTEGER,
-            canBeNull = false, columnName = KEY_AGGREGATION_TYPE, index = true)
+            canBeNull = false, columnName = KEY_AGGREGATION_TYPE)
     private AGGREGATION_TYPE aggregationType;
 
     private Long start;
