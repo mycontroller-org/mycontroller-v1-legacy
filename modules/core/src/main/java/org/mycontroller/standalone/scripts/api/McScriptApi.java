@@ -19,6 +19,7 @@ package org.mycontroller.standalone.scripts.api;
 import org.mycontroller.standalone.api.BackupApi;
 import org.mycontroller.standalone.api.GatewayApi;
 import org.mycontroller.standalone.api.HttpApi;
+import org.mycontroller.standalone.api.MessageQueueApi;
 import org.mycontroller.standalone.api.MetricApi;
 import org.mycontroller.standalone.api.NodeApi;
 import org.mycontroller.standalone.api.OperationApi;
@@ -50,6 +51,7 @@ public class McScriptApi {
     private SystemApi systemApi = new SystemApi();
     private HttpApi httpApi = new HttpApi();
     private CsvExportEngine csvExportEngine = new CsvExportEngine();
+    private MessageQueueApi messageQueueApi = new MessageQueueApi();
 
     public SystemApi system() {
         return systemApi;
@@ -109,5 +111,9 @@ public class McScriptApi {
 
     public CsvExportEngine csvExportEngine() {
         return csvExportEngine;
+    }
+
+    public MessageQueueApi messageQueue() {
+        return messageQueueApi;
     }
 }
