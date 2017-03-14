@@ -19,6 +19,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 import java.io.IOException;
 
 import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.standalone.AppProperties.ALPHABETICAL_CASE;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.exernalserver.model.ExternalServer;
@@ -132,6 +133,9 @@ class ExternalServerDeserializer extends JsonDeserializer<ExternalServer> {
         //Update RuleDefinition details
         if (node.get("id") != null) {
             externalServer.setId(node.get("id").asInt());
+        }
+        if (node.get("keyCase") != null) {
+            externalServer.setKeyCase(ALPHABETICAL_CASE.valueOf(node.get("keyCase").asText().toUpperCase()));
         }
         externalServer.setKeyFormat(node.get("keyFormat").asText());
         externalServer.setEnabled(node.get("enabled").asBoolean());

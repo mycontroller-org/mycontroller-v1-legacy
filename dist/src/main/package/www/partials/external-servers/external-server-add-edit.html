@@ -276,6 +276,20 @@
 
           </div>
 
+          <div ng-if="item.type !== 'WUnderground'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ALPHABETICAL_KEY_CASE' | translate }}</label>
+              <div class="col-sm-5">
+              <select class="form-control" pf-select ng-model="item.keyCase" required >
+                <option value="" ng-hide="true"></option>
+                <option value="DEFAULT">{{ 'DEFAULT' | translate }}</option>
+                <option value="UPPER">{{ 'UPPER' | translate }}</option>
+                <option value="LOWER">{{ 'LOWER' | translate }}</option>
+              </select>
+            </div>
+            </div>
+          </div>
+
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>
 

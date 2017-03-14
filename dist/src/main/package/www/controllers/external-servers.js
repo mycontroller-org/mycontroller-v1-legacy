@@ -206,6 +206,7 @@ myControllerModule.controller('ExternalServersControllerAddEdit', function ($sco
     $scope.item = ExternalServersFactory.get({"id":$stateParams.id});
   }else{
     $scope.item.enabled = true;
+    $scope.item.keyCase='DEFAULT';
   }
   $scope.trustHostTypes = TypesFactory.getTrustHostTypes();
   $scope.types = TypesFactory.getExternalServerTypes();

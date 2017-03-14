@@ -400,6 +400,12 @@ public class AppProperties {
         }
     }
 
+    public enum ALPHABETICAL_CASE {
+        DEFAULT,
+        LOWER,
+        UPPER;
+    }
+
     public static AppProperties getInstance() {
         return _instance;
     }

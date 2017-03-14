@@ -70,7 +70,7 @@ public class ExternalServerEmoncms extends ExternalServer {
     @JsonIgnore
     public ExternalServerTable getExternalServerTable() {
         ExternalServerTable externalServerTable = super.getExternalServerTable();
-        HashMap<String, Object> properties = new HashMap<String, Object>();
+        HashMap<String, Object> properties = getProperties();
         properties.put(KEY_URL, url);
         properties.put(KEY_TRUST_HOST_TYPE, trustHostType.getText());
         properties.put(KEY_WRITE_API_KEY, writeApiKey);
