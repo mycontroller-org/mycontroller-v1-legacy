@@ -140,7 +140,8 @@ public class OperationSendEmail extends Operation {
             emailBody = builder.toString();
         }
 
-        HashMap<String, Object> bindings = getTemplateBindings();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> bindings = (HashMap<String, Object>) getTemplateBindings().clone();
         bindings.put("notification", notification);
         sendEmail(emailBody, bindings);
         //Update last execution
