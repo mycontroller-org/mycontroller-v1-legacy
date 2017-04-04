@@ -45,19 +45,10 @@ public class DataPointDouble extends DataPointBase {
             dataPoint.setEmpty(true);
             return dataPoint;
         }
-        DataPointDouble dataPoint = DataPointDouble.builder()
-                .min(metric.getMin())
-                .max(metric.getMax())
-                .avg(metric.getAvg())
-                .samples(metric.getSamples()).build();
-        dataPoint.setEmpty(false);
-        if (start != null) {
-            dataPoint.setStart(start);
-            dataPoint.setEnd(end);
-        } else {
-            dataPoint.setTimestamp(metric.getTimestamp());
+        else {
+            return get(metric.getMin(), metric.getMax(), metric.getAvg(), metric.getSamples(), metric.getTimestamp(),
+                    metric.getStart(), metric.getEnd());
         }
-        return dataPoint;
     }
 
     public static DataPointDouble get(MetricsBatteryUsage metric, Long start, Long end) {
@@ -67,18 +58,25 @@ public class DataPointDouble extends DataPointBase {
             dataPoint.setEnd(end);
             dataPoint.setEmpty(true);
             return dataPoint;
+        } else {
+            return get(metric.getMin(), metric.getMax(), metric.getAvg(), metric.getSamples(), metric.getTimestamp(),
+                    metric.getStart(), metric.getEnd());
         }
+    }
+
+    public static DataPointDouble get(Double min, Double max, Double avg, Integer samples, Long timestamp, Long start,
+            Long end) {
         DataPointDouble dataPoint = DataPointDouble.builder()
-                .min(metric.getMin())
-                .max(metric.getMax())
-                .avg(metric.getAvg())
-                .samples(metric.getSamples()).build();
+                .min(min)
+                .max(max)
+                .avg(avg)
+                .samples(samples).build();
         dataPoint.setEmpty(false);
         if (start != null) {
             dataPoint.setStart(start);
             dataPoint.setEnd(end);
         } else {
-            dataPoint.setTimestamp(metric.getTimestamp());
+            dataPoint.setTimestamp(timestamp);
         }
         return dataPoint;
     }

@@ -18,12 +18,12 @@ package org.mycontroller.standalone.exernalserver.model;
 
 import java.util.HashMap;
 
+import org.mycontroller.restclient.core.ClientResponse;
 import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.restclient.influxdb.InfluxDBClient;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils;
-import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.influxdb.InfluxdbClient;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -107,7 +107,7 @@ public class ExternalServerInfluxdb extends ExternalServer {
     @Override
     public synchronized void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
-            ClientResponse<String> clientResponse = ((InfluxdbClient) ExternalServerUtils.getClient(getId()))
+            ClientResponse<String> clientResponse = ((InfluxDBClient) ExternalServerUtils.getClient(getId()))
                     .write(getVariableKey(sensorVariable, getKeyFormat()), getVariableKey(sensorVariable, getTags()),
                             sensorVariable.getTimestamp(), sensorVariable.getValue());
             if (!clientResponse.isSuccess()) {

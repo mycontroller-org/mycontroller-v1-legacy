@@ -28,8 +28,7 @@ import io.moquette.spi.security.IAuthenticator;
  */
 public class MqttAuthenticatorImpl implements IAuthenticator {
 
-    @Override
-    public boolean checkValid(String username, byte[] passwordBytes) {
+    public boolean checkValid(String clientId, String username, byte[] passwordBytes) {
         String password = new String(passwordBytes, StandardCharsets.UTF_8);
         return AuthUtils.authenticateMqttUser(username, password);
     }

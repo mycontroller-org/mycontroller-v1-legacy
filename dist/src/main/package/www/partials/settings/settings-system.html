@@ -77,7 +77,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.location" ng-click="updateSettingsLocation();editEnable.location = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveLocation()"  ng-show="editEnable.location" ng-disabled="saveProgress.location || mcForm.$invalid">
               <div ng-show="saveProgress.location" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              {{saveProgress.location ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>
@@ -280,7 +280,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.controller" ng-click="updateSettingsController();editEnable.controller = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveController()"  ng-show="editEnable.controller" ng-disabled="saveProgress.controller || mcFormController.$invalid">
               <div ng-show="saveProgress.controller" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              {{saveProgress.controller ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>

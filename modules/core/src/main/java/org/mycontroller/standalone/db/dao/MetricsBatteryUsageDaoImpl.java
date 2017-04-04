@@ -46,10 +46,22 @@ public class MetricsBatteryUsageDaoImpl extends BaseAbstractDaoImpl<MetricsBatte
     public void deletePrevious(MetricsBatteryUsage metric) {
         try {
             DeleteBuilder<MetricsBatteryUsage, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().eq(MetricsBatteryUsage.KEY_AGGREGATION_TYPE, metric.getAggregationType())
-                    .and().le(MetricsBatteryUsage.KEY_TIMESTAMP, metric.getTimestamp());
+            Where<MetricsBatteryUsage, Object> where = deleteBuilder.where();
+            int whereCount = 0;
+            if (metric.getTimestamp() != null) {
+                where.le(MetricsBatteryUsage.KEY_TIMESTAMP, metric.getTimestamp());
+                whereCount++;
+            }
+            if (metric.getAggregationType() != null) {
+                where.le(MetricsBatteryUsage.KEY_AGGREGATION_TYPE, metric.getAggregationType());
+                whereCount++;
+            }
+            if (whereCount > 0) {
+                where.and(whereCount);
+                deleteBuilder.setWhere(where);
+            }
 
-            int count = this.getDao().delete(deleteBuilder.prepare());
+            int count = deleteBuilder.delete();
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric:[{}]", metric, ex);

@@ -40,17 +40,26 @@ public class DataPointBinary extends DataPointBase {
             dataPoint.setEnd(end);
             dataPoint.setEmpty(true);
             return dataPoint;
+        } else {
+            return get(metric.getState(), metric.getTimestamp(), metric.getStart(), metric.getEnd());
         }
+    }
+
+    public static DataPointBinary get(Boolean state, Long timestamp, Long start, Long end) {
         DataPointBinary dataPoint = DataPointBinary.builder()
-                .state(metric.getState()).build();
+                .state(state).build();
         dataPoint.setEmpty(false);
         if (start != null) {
             dataPoint.setStart(start);
             dataPoint.setEnd(end);
         } else {
-            dataPoint.setTimestamp(metric.getTimestamp());
+            dataPoint.setTimestamp(timestamp);
         }
         return dataPoint;
+    }
+
+    public static DataPointBinary get(Boolean state, Long timestamp) {
+        return get(state, timestamp, null, null);
     }
 
 }

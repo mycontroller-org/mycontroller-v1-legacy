@@ -85,7 +85,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.mqttBroker" ng-click="updateSettingsMqttBroker();editEnable.mqttBroker = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveSettings()"  ng-show="editEnable.mqttBroker" ng-disabled="saveProgress.mqttBroker || mcFormMqttBroker.$invalid">
               <div ng-show="saveProgress.mqttBroker" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              {{saveProgress.mqttBroker ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>

@@ -141,6 +141,10 @@ public class McUtils {
         }
     }
 
+    public static Long getLong(Object value) {
+        return getLong(String.valueOf(value));
+    }
+
     public static Long getLong(String value) {
         if (value != null) {
             try {

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.metrics;
+package org.mycontroller.standalone.metrics.engines;
 
 import java.text.MessageFormat;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @NoArgsConstructor
-public class MetricsAggregationBase {
+public class McMetricsAggregationBase {
     public static final AtomicBoolean IS_AGGREGATION_RUNNING = new AtomicBoolean(false);
 
     private void aggregateAndInsertForBucketDuration(String sourceType, String resultType,

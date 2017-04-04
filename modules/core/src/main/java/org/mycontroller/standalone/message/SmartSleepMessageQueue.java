@@ -123,7 +123,7 @@ public class SmartSleepMessageQueue {
         String queueName = getQueueName(mcMessage.getGatewayId(), mcMessage.getNodeEui());
         ArrayList<McMessage> queue = getQueueInternal(queueName);
         queue.add(mcMessage);
-        _logger.info("Added new {}, on queue [{}], size:{}", mcMessage, queueName, queue.size());
+        _logger.debug("Added new {}, on queue [{}], size:{}", mcMessage, queueName, queue.size());
     }
 
     public synchronized McMessage getMessage(Integer gatewayId, String nodeEui) {

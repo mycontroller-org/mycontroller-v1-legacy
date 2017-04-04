@@ -14,27 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.model;
+package org.mycontroller.standalone.metrics;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.List;
+
+import org.mycontroller.standalone.api.jaxrs.model.DataPointBase;
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
+import org.mycontroller.standalone.metrics.model.Criteria;
+import org.mycontroller.standalone.metrics.model.DataPointer;
+import org.mycontroller.standalone.model.ResourceModel;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
+public interface IMetric {
+    //post single data
+    void post(DataPointer dataPointer);
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class SensorVariablePurge {
-    private Integer id;
-    private String value;
-    private Long start;
-    private Long end;
+    //Get single data
+    DataPointBase get(Criteria criteria);
+
+    //list data
+    List<?> list(Criteria criteria);
+
+    void purge(ResourceModel resourceModel, ResourcePurgeConf purgeConf);
+
+    void purge(ResourceModel resourceModel);
+
+    void purgeEverything();
+
 }

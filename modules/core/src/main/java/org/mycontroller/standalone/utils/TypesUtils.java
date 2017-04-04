@@ -61,6 +61,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
+import org.mycontroller.standalone.metrics.METRIC_ENGINE;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
@@ -1154,6 +1155,15 @@ public class TypesUtils {
         EXTERNAL_SERVER_TYPE[] types = EXTERNAL_SERVER_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (EXTERNAL_SERVER_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getMetricEngineTypes() {
+        METRIC_ENGINE[] types = METRIC_ENGINE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (METRIC_ENGINE type : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;

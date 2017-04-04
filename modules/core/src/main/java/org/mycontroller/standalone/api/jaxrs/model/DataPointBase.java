@@ -31,6 +31,6 @@ public abstract class DataPointBase {
     private Long timestamp;
     private Long start;
     private Long end;
-    private Boolean empty;
+    private boolean empty;
 
 }

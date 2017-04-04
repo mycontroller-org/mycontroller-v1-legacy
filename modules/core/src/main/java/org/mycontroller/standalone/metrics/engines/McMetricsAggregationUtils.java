@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.metrics;
+package org.mycontroller.standalone.metrics.engines;
 
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsGPSTypeDevice;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 
@@ -32,7 +33,7 @@ import lombok.NoArgsConstructor;
  * @since 0.0.1
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MetricsAggregationUtils {
+public class McMetricsAggregationUtils {
 
     //We have purge methods here, however we are using direct SQL query to purge data.
     //Have a look on DB_QUERY.java

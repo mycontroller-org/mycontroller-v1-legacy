@@ -19,6 +19,8 @@ package org.mycontroller.standalone.externalserver;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.restclient.influxdb.InfluxDBClient;
+import org.mycontroller.restclient.influxdb.InfluxDBClientBuilder;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.exernalserver.model.ExternalServer;
@@ -28,7 +30,6 @@ import org.mycontroller.standalone.exernalserver.model.ExternalServerMqtt;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerPhantIO;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerWUnderground;
 import org.mycontroller.standalone.restclient.emoncms.EmoncmsClientImpl;
-import org.mycontroller.standalone.restclient.influxdb.InfluxdbClientImpl;
 import org.mycontroller.standalone.restclient.phantio.PhantIOClientImpl;
 
 import lombok.AccessLevel;
@@ -117,13 +118,16 @@ public class ExternalServerUtils {
                     case INFLUXDB:
                         ExternalServerInfluxdb influxdbServer = (ExternalServerInfluxdb) externalServer;
                         if (influxdbServer.getUsername() != null && influxdbServer.getUsername().length() > 0) {
-                            return new InfluxdbClientImpl(influxdbServer.getUrl(), influxdbServer.getUsername(),
-                                    influxdbServer.getPassword(), influxdbServer.getDatabase(),
-                                    influxdbServer.getTrustHostType());
+                            return new InfluxDBClientBuilder()
+                                    .uri(influxdbServer.getUrl(), influxdbServer.getTrustHostType())
+                                    .basicAuthentication(influxdbServer.getUsername(), influxdbServer.getPassword())
+                                    .addProperty(InfluxDBClient.KEY_DATABASE, influxdbServer.getDatabase())
+                                    .build();
                         } else {
-                            return new InfluxdbClientImpl(influxdbServer.getUrl(),
-                                    influxdbServer.getDatabase(),
-                                    influxdbServer.getTrustHostType());
+                            return new InfluxDBClientBuilder()
+                                    .uri(influxdbServer.getUrl(), influxdbServer.getTrustHostType())
+                                    .addProperty(InfluxDBClient.KEY_DATABASE, influxdbServer.getDatabase())
+                                    .build();
                         }
                     case MQTT:
                         ExternalServerMqtt mqttClient = (ExternalServerMqtt) externalServer;

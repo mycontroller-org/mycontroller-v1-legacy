@@ -35,10 +35,6 @@ import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareData;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
-import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
-import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsGPSTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -54,8 +50,11 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTAT
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.message.McMessageUtils.PAYLOAD_TYPE;
-import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
+import org.mycontroller.standalone.metrics.DATA_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.model.DataPointer;
+import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.provider.mc.structs.McFirmwareConfig;
 import org.mycontroller.standalone.provider.mc.structs.McFirmwareRequest;
 import org.mycontroller.standalone.provider.mc.structs.McFirmwareResponse;
@@ -239,18 +238,12 @@ public class McMessageEngine implements Runnable {
                 node.setBatteryLevel(mcMessage.getPayload());
                 updateNode(node);
                 //Update battery level in to metrics table
-                MetricsBatteryUsage batteryUsage = MetricsBatteryUsage.builder()
-                        .node(node)
+                MetricsUtils.engine().post(DataPointer.builder()
+                        .payload(mcMessage.getPayload())
                         .timestamp(System.currentTimeMillis())
-                        .aggregationType(AGGREGATION_TYPE.RAW)
-                        .avg(McUtils.getDouble(mcMessage.getPayload()))
-                        .min(McUtils.getDouble(mcMessage.getPayload()))
-                        .max(McUtils.getDouble(mcMessage.getPayload()))
-                        .samples(1)
-                        .build();
-
-                DaoUtils.getMetricsBatteryUsageDao().create(batteryUsage);
-
+                        .resourceModel(new ResourceModel(RESOURCE_TYPE.NODE, node))
+                        .dataType(DATA_TYPE.NODE_BATTERY_USAGE)
+                        .build());
                 break;
             case I_TIME:
                 if (mcMessage.isTxMessage()) {
@@ -1000,51 +993,13 @@ public class McMessageEngine implements Runnable {
         sensor.setLastSeen(System.currentTimeMillis());
         DaoUtils.getSensorDao().update(sensor);
 
-        switch (sensorVariable.getMetricType()) {
-            case DOUBLE:
-                DaoUtils.getMetricsDoubleTypeDeviceDao()
-                        .create(MetricsDoubleTypeDevice.builder()
-                                .sensorVariable(sensorVariable)
-                                .aggregationType(AGGREGATION_TYPE.RAW)
-                                .timestamp(sensorVariable.getTimestamp())
-                                .avg(McUtils.getDouble(sensorVariable.getValue()))
-                                .min(McUtils.getDouble(sensorVariable.getValue()))
-                                .max(McUtils.getDouble(sensorVariable.getValue()))
-                                .samples(1).build());
-
-                break;
-            case BINARY:
-                DaoUtils.getMetricsBinaryTypeDeviceDao()
-                        .create(MetricsBinaryTypeDevice.builder()
-                                .sensorVariable(sensorVariable)
-                                .timestamp(sensorVariable.getTimestamp())
-                                .state(McUtils.getBoolean(sensorVariable.getValue())).build());
-                break;
-            case COUNTER:
-                DaoUtils.getMetricsCounterTypeDeviceDao()
-                        .create(MetricsCounterTypeDevice.builder()
-                                .sensorVariable(sensorVariable)
-                                .aggregationType(AGGREGATION_TYPE.RAW)
-                                .timestamp(sensorVariable.getTimestamp())
-                                .value(McUtils.getLong(mcMessage.getPayload()))
-                                .samples(1).build());
-                break;
-            case GPS:
-                MetricsGPSTypeDevice gpsData = MetricsGPSTypeDevice.get(mcMessage.getPayload(),
-                        mcMessage.getTimestamp());
-                gpsData.setSensorVariable(sensorVariable);
-                DaoUtils.getMetricsGPSTypeDeviceDao().create(gpsData);
-                break;
-            case NONE:
-                //For None type nothing to do.
-                break;
-            default:
-                _logger.debug(
-                        "This type not be implemented yet, PayloadType:{}, MessageType:{}, McMessage:{}",
-                        payloadType, MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()).toString(),
-                        mcMessage.getPayload());
-                break;
-        }
+        //Update metric data to metric engine
+        MetricsUtils.engine().post(DataPointer.builder()
+                .payload(mcMessage.getPayload())
+                .timestamp(System.currentTimeMillis())
+                .resourceModel(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable))
+                .dataType(DATA_TYPE.SENSOR_VARIABLE)
+                .build());
 
         //ResourcesLogs message data
         if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {

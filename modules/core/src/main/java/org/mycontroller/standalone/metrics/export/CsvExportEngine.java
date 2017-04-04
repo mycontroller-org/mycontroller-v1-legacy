@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.metrics;
+package org.mycontroller.standalone.metrics.export;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +83,8 @@ public class CsvExportEngine {
 
     private MetricsCsv getMetric(ResourceModel resourceModel, Long start, Long end, String duration,
             String bucketDuration) throws McBadRequestException {
-        List<?> metrics = metricApi.getMetricData(resourceModel, start, end, duration, bucketDuration);
+        //Update dataType when required
+        List<?> metrics = metricApi.getMetricData(resourceModel, start, end, duration, bucketDuration, null);
         return new MetricsCsv(getFileName(resourceModel), getCsvData(resourceModel, metrics));
     }
 
@@ -188,7 +189,7 @@ public class CsvExportEngine {
                     } else {
                         builder.append(metric.getTimestamp()).append(",");
                     }
-                    builder.append(metric.getEmpty()).append(",");
+                    builder.append(metric.isEmpty()).append(",");
                     builder.append(getValue(metric.getSamples())).append(",");
                     builder.append(getValue(metric.getMin())).append(",");
                     builder.append(getValue(metric.getMax())).append(",");
@@ -204,7 +205,7 @@ public class CsvExportEngine {
                     } else {
                         builder.append(metric.getTimestamp()).append(",");
                     }
-                    builder.append(metric.getEmpty()).append(",");
+                    builder.append(metric.isEmpty()).append(",");
                     builder.append(getValue(metric.getSamples())).append(",");
                     builder.append(getValue(metric.getValue()));
                 }
@@ -218,7 +219,7 @@ public class CsvExportEngine {
                     } else {
                         builder.append(metric.getTimestamp()).append(",");
                     }
-                    builder.append(metric.getEmpty()).append(",");
+                    builder.append(metric.isEmpty()).append(",");
                     builder.append(getValue(metric.getSamples())).append(",");
                     builder.append(getValue(metric.getLantitude())).append(",");
                     builder.append(getValue(metric.getLongitude())).append(",");

@@ -76,6 +76,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
     getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
     getExternalServerTypes:  { method: 'GET', isArray: true, params: {type: 'externalServerTypes'}  },
+    getMetricEngineTypes:  { method: 'GET', isArray: true, params: {type: 'metricEngineTypes'}  },
     getTrustHostTypes:  { method: 'GET', isArray: true, params: {type: 'trustHostTypes'}  },
     getNodeRegistrationStatuses:  { method: 'GET', isArray: true, params: {type: 'nodeRegistrationStatuses'}  },
     getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}},
@@ -330,6 +331,8 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     saveMetrics: { method: 'POST', params: {type:'metricsGraph'} },
     getMetricsRetention: { method: 'GET', isArray: false, params: {type:'metricsRetention'} },
     saveMetricsRetention: { method: 'POST', params: {type:'metricsRetention'} },
+    getMetricsEngine: { method: 'GET', isArray: false, params: {type:'metricsEngine'} },
+    saveMetricsEngine: { method: 'POST', params: {type:'metricsEngine'} },
     getUserSettings: { method: 'GET', isArray: false, params: {type:'userSettings'} },
     saveUserSettings: { method: 'POST', params: {type:'userSettings'} },
     getMqttBroker: { method: 'GET', isArray: false, params: {type:'mqttBroker'} },

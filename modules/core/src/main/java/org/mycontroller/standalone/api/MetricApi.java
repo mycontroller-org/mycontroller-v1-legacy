@@ -17,35 +17,29 @@
 package org.mycontroller.standalone.api;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.script.ScriptException;
 
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.api.jaxrs.model.DataPointBinary;
-import org.mycontroller.standalone.api.jaxrs.model.DataPointCounter;
 import org.mycontroller.standalone.api.jaxrs.model.DataPointDouble;
-import org.mycontroller.standalone.api.jaxrs.model.DataPointGPS;
 import org.mycontroller.standalone.api.jaxrs.model.McHeatMap;
-import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsGPSTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.UidTag;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
-import org.mycontroller.standalone.metrics.MetricDouble;
+import org.mycontroller.standalone.metrics.DATA_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.model.Criteria;
+import org.mycontroller.standalone.metrics.model.MetricDouble;
 import org.mycontroller.standalone.model.ResourceCountModel;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.scripts.McScript;
@@ -53,8 +47,6 @@ import org.mycontroller.standalone.scripts.McScriptEngine;
 import org.mycontroller.standalone.scripts.McScriptException;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.utils.McUtils;
-
-import com.j256.ormlite.dao.GenericRawResults;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,14 +63,14 @@ public class MetricApi {
 
     public MetricDouble getSensorVariableMetricDouble(SensorVariable sensorVariable, Long start,
             Long end) {
-        MetricsDoubleTypeDevice queryInput = MetricsDoubleTypeDevice.builder()
+        Criteria criteria = Criteria.builder()
                 .start(start)
                 .end(end)
-                .sensorVariable(sensorVariable)
+                .resourceModel(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable))
                 .build();
+        //Query from metric engine
 
-        MetricsDoubleTypeDevice metric = DaoUtils.getMetricsDoubleTypeDeviceDao().getMinMaxAvg(queryInput);
-
+        DataPointDouble metric = (DataPointDouble) MetricsUtils.engine().get(criteria);
         MetricDouble metricDouble = null;
         //If current value not available, do not allow any value
         if (sensorVariable.getValue() == null || metric.getMin() == null) {
@@ -185,282 +177,6 @@ public class MetricApi {
         }
         McScriptEngine mcScriptEngine = new McScriptEngine(McScript.getMcScript(scriptName));
         return (List<McHeatMap>) mcScriptEngine.executeScript();
-    }
-
-    //Metric private api's
-    private List<?> getSensorVariableMetricsBinary(Integer sensorVariableId,
-            Long start, Long end, Boolean isGeneric) {
-        List<MetricsBinaryTypeDevice> metrics = DaoUtils.getMetricsBinaryTypeDeviceDao().getAll(
-                MetricsBinaryTypeDevice.builder()
-                        .start(start)
-                        .end(end)
-                        .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
-                        .build());
-        if (isGeneric) {
-            List<DataPointBinary> genericMetrics = new ArrayList<DataPointBinary>();
-            for (MetricsBinaryTypeDevice metric : metrics) {
-                genericMetrics.add(DataPointBinary.get(metric, null, null));
-            }
-            return genericMetrics;
-        } else {
-            return metrics;
-        }
-    }
-
-    private List<?> getSensorVariableMetricsGPS(Integer sensorVariableId,
-            Long start, Long end, long bucketDuration, boolean getGeneric) {
-        List<MetricsGPSTypeDevice> metricsFinal = new ArrayList<MetricsGPSTypeDevice>();
-        List<DataPointGPS> metricsGenericFinal = new ArrayList<DataPointGPS>();
-        MetricsGPSTypeDevice metricConfig = MetricsGPSTypeDevice.builder()
-                .sensorVariable(SensorVariable.builder().id(sensorVariableId).build()).build();
-        if (bucketDuration == -1) {
-            metricConfig.setStart(start);
-            metricConfig.setEnd(end);
-            List<MetricsGPSTypeDevice> metrics = DaoUtils.getMetricsGPSTypeDeviceDao().getAll(metricConfig);
-            if (getGeneric) {
-                for (MetricsGPSTypeDevice metric : metrics) {
-                    metricsGenericFinal.add(DataPointGPS.get(metric, null, null));
-                }
-            } else {
-                metricsFinal = metrics;
-            }
-        } else {
-            //TODO: add support for runtime aggregation
-        }
-        if (getGeneric) {
-            return metricsGenericFinal;
-        }
-        return metricsFinal;
-    }
-
-    private List<?> getSensorVariableMetricsDouble(Integer sensorVariableId,
-            Long start, Long end, long bucketDuration, boolean getGeneric) {
-        start = getStart(start);
-        end = getEnd(end);
-        List<MetricsDoubleTypeDevice> metricsFinal = new ArrayList<MetricsDoubleTypeDevice>();
-        List<DataPointDouble> metricsGenericFinal = new ArrayList<DataPointDouble>();
-        _logger.debug("timestamp:[from:{}, to:{}], bucketDuration:{}, totalDuration:{}",
-                start, end, bucketDuration, (end - start));
-        if ((end - start) < bucketDuration) {
-            return metricsFinal;
-        }
-        MetricsDoubleTypeDevice metricConfig = MetricsDoubleTypeDevice.builder()
-                .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
-                .build();
-        if (bucketDuration == -1) {
-            metricConfig.setStart(start);
-            metricConfig.setEnd(end);
-            List<MetricsDoubleTypeDevice> metrics = DaoUtils.getMetricsDoubleTypeDeviceDao().getAll(metricConfig);
-            if (getGeneric) {
-                for (MetricsDoubleTypeDevice metric : metrics) {
-                    metricsGenericFinal.add(DataPointDouble.get(metric, null, null));
-                }
-            } else {
-                metricsFinal = metrics;
-            }
-        } else {
-            Long tmpEnd = start + bucketDuration;
-            while (tmpEnd < end) {
-                if (tmpEnd > end) {
-                    break;
-                }
-                String sqlSelectQuery = MessageFormat.format(
-                        DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_DOUBLE_BY_SENSOR_VARIABLE),
-                        String.valueOf(sensorVariableId), String.valueOf(start),
-                        String.valueOf(tmpEnd));
-                _logger.debug("Sql query:[{}]", sqlSelectQuery);
-                MetricsDoubleTypeDevice metric = null;
-                try {
-                    GenericRawResults<MetricsDoubleTypeDevice> rawResult = DaoUtils
-                            .getMetricsDoubleTypeDeviceDao().getDao().queryRaw(sqlSelectQuery,
-                                    DaoUtils.getMetricsDoubleTypeDeviceDao().getDao().getRawRowMapper());
-                    metric = rawResult.getFirstResult();
-                    _logger.debug("Metric:[{}]", metric);
-                } catch (SQLException ex) {
-                    _logger.error("Exception,", ex);
-                }
-                if (metric != null && !getGeneric) {
-                    metricsFinal.add(metric);
-                }
-                if (getGeneric) {
-                    metricsGenericFinal.add(DataPointDouble.get(metric, start, tmpEnd));
-                }
-                start = tmpEnd;
-                tmpEnd += bucketDuration;
-            }
-        }
-        if (getGeneric) {
-            return metricsGenericFinal;
-        }
-        return metricsFinal;
-    }
-
-    private List<?> getSensorVariableMetricsCounter(Integer sensorVariableId,
-            Long start, Long end, String bucketDurationString, boolean getGeneric) {
-        start = getStart(start);
-        end = getEnd(end);
-        List<MetricsCounterTypeDevice> metricsFinal = new ArrayList<MetricsCounterTypeDevice>();
-        List<DataPointCounter> metricsGenericFinal = new ArrayList<DataPointCounter>();
-        _logger.debug("timestamp:[from:{}, to:{}], bucketDurationString:{}",
-                start, end, bucketDurationString);
-        MetricsCounterTypeDevice metricConfig = MetricsCounterTypeDevice.builder()
-                .sensorVariable(SensorVariable.builder().id(sensorVariableId).build())
-                .build();
-        if (bucketDurationString.equalsIgnoreCase("raw")) {
-            metricConfig.setStart(start);
-            metricConfig.setEnd(end);
-            List<MetricsCounterTypeDevice> metrics = DaoUtils.getMetricsCounterTypeDeviceDao().getAll(metricConfig);
-            if (getGeneric) {
-                for (MetricsCounterTypeDevice metric : metrics) {
-                    metricsGenericFinal.add(DataPointCounter.get(metric, null, null));
-                }
-            } else {
-                metricsFinal = metrics;
-            }
-        } else {
-            Calendar calendarFrom = Calendar.getInstance();
-            Calendar calendarTo = Calendar.getInstance();
-            calendarFrom.setTime(new Date(start));
-            calendarTo.setTime(new Date(end));
-            String[] bucket = bucketDurationString.trim().split("(?<=\\d)(?=\\D)");
-            if (bucket.length != 2) {
-                _logger.warn("Invalid bucketDuration string: {}, result:{}", bucketDurationString, bucket);
-                return metricsFinal;
-            }
-            Integer increment = McUtils.getInteger(bucket[0]);
-            Integer incrementRef = null;
-            String bucketString = bucket[1].toLowerCase();
-
-            switch (bucketString) {
-                case "m":
-                    calendarFrom.set(Calendar.DAY_OF_MONTH, 1);
-                    calendarTo.set(Calendar.DAY_OF_MONTH, 1);
-                    incrementRef = Calendar.MONTH;
-                case "d":
-                    calendarFrom.set(Calendar.HOUR_OF_DAY, 0);
-                    calendarTo.set(Calendar.HOUR_OF_DAY, 0);
-                    if (incrementRef == null) {
-                        incrementRef = Calendar.DATE;
-                    }
-                case "h":
-                    calendarFrom.set(Calendar.MINUTE, 0);
-                    calendarTo.set(Calendar.MINUTE, 0);
-                    if (incrementRef == null) {
-                        incrementRef = Calendar.HOUR;
-                    }
-                case "mn":
-                    calendarFrom.set(Calendar.MILLISECOND, 0);
-                    calendarTo.set(Calendar.MILLISECOND, 0);
-                    calendarFrom.set(Calendar.SECOND, 0);
-                    calendarTo.set(Calendar.SECOND, 0);
-                    if (incrementRef == null) {
-                        incrementRef = Calendar.MINUTE;
-                    }
-            }
-            while (calendarFrom.before(calendarTo) || calendarFrom.equals(calendarTo)) {
-                long timestampTmpFrom = calendarFrom.getTimeInMillis();
-                calendarFrom.add(incrementRef, increment);
-                long endTmp = calendarFrom.getTimeInMillis();
-
-                String sqlSelectQuery = MessageFormat.format(
-                        DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_COUNTER_BY_SENSOR_VARIABLE),
-                        String.valueOf(sensorVariableId), String.valueOf(timestampTmpFrom),
-                        String.valueOf(endTmp));
-                _logger.debug("Sql query:[{}]", sqlSelectQuery);
-                MetricsCounterTypeDevice metric = null;
-                try {
-                    GenericRawResults<MetricsCounterTypeDevice> rawResult = DaoUtils
-                            .getMetricsCounterTypeDeviceDao().getDao().queryRaw(sqlSelectQuery,
-                                    DaoUtils.getMetricsCounterTypeDeviceDao().getDao().getRawRowMapper());
-                    metric = rawResult.getFirstResult();
-                    _logger.debug("Metric:[{}]", metric);
-                } catch (SQLException ex) {
-                    _logger.error("Exception,", ex);
-                }
-                if (metric != null && !getGeneric) {
-                    metricsFinal.add(metric);
-                }
-                if (getGeneric) {
-                    metricsGenericFinal.add(DataPointCounter.get(metric, start, endTmp));
-                }
-                if ((bucketString.equals("mn") || bucketString.equals("h"))
-                        && endTmp > System.currentTimeMillis()) {
-                    break;
-                }
-            }
-        }
-        if (getGeneric) {
-            return metricsGenericFinal;
-        }
-        return metricsFinal;
-    }
-
-    private List<?> getMetricsBattery(Integer nodeId, Long start, Long end,
-            Long bucketDuration, boolean getGeneric) {
-        start = getStart(start);
-        end = getEnd(end);
-        List<MetricsBatteryUsage> metricsFinal = new ArrayList<MetricsBatteryUsage>();
-        List<DataPointDouble> metricsGenericFinal = new ArrayList<DataPointDouble>();
-        _logger.debug("timestamp:[from:{}, to:{}], bucketDuration:{}, totalDuration:{}",
-                start, end, bucketDuration, (end - start));
-        if ((end - start) < bucketDuration) {
-            return metricsFinal;
-        }
-        MetricsBatteryUsage metricConfig = MetricsBatteryUsage.builder()
-                .node(Node.builder().id(nodeId).build())
-                .build();
-        if (bucketDuration == -1) {
-            metricConfig.setStart(start);
-            metricConfig.setEnd(end);
-            List<MetricsBatteryUsage> metrics = DaoUtils.getMetricsBatteryUsageDao().getAll(metricConfig);
-            if (getGeneric) {
-                for (MetricsBatteryUsage metric : metrics) {
-                    metricsGenericFinal.add(DataPointDouble.get(metric, null, null));
-                }
-            } else {
-                metricsFinal = metrics;
-            }
-        } else {
-            Long tmpEnd = start + bucketDuration;
-            while (tmpEnd < end) {
-
-                start = tmpEnd;
-                if (tmpEnd > end) {
-                    break;
-                }
-                tmpEnd += bucketDuration;
-                String sqlSelectQuery = MessageFormat.format(
-                        DB_QUERY.getQuery(DB_QUERY.SELECT_METRICS_BATTERY_BY_NODE),
-                        String.valueOf(nodeId), String.valueOf(start), String.valueOf(tmpEnd));
-                _logger.debug("Sql query:[{}]", sqlSelectQuery);
-                MetricsBatteryUsage metric = null;
-                try {
-                    GenericRawResults<MetricsBatteryUsage> rawResult = DaoUtils
-                            .getMetricsBatteryUsageDao().getDao().queryRaw(sqlSelectQuery,
-                                    DaoUtils.getMetricsBatteryUsageDao().getDao().getRawRowMapper());
-                    metric = rawResult.getFirstResult();
-                    _logger.debug("Metric:[{}]", metric);
-                } catch (SQLException ex) {
-                    _logger.error("Exception,", ex);
-                }
-                if (metric != null && !getGeneric) {
-                    metricsFinal.add(metric);
-                }
-                if (getGeneric) {
-                    metricsGenericFinal.add(DataPointDouble.get(metric, start, tmpEnd));
-                }
-
-                metricConfig.setStart(start);
-                start = tmpEnd;
-                if (tmpEnd > end) {
-                    break;
-                }
-            }
-        }
-        if (getGeneric) {
-            return metricsGenericFinal;
-        }
-        return metricsFinal;
     }
 
     //Utils methods
@@ -573,31 +289,15 @@ public class MetricApi {
     }
 
     public List<?> getMetricData(Integer resourceId, String resourceType, Long start, Long end, String duration,
-            String bucketDuration, Boolean isGeneric) throws McBadRequestException {
+            String bucketDuration, DATA_TYPE dataType) throws McBadRequestException {
         return getMetricData(getResourceModel(resourceId, resourceType, null), start, end, duration, bucketDuration,
-                isGeneric);
-    }
-
-    public List<?> getMetricData(Integer resourceId, String resourceType, Long start, Long end, String duration,
-            String bucketDuration) throws McBadRequestException {
-        return getMetricData(getResourceModel(resourceId, resourceType, null), start, end, duration, bucketDuration,
-                true);
+                dataType);
     }
 
     public List<?> getMetricData(String uid, Long start, Long end, String duration, String bucketDuration,
-            Boolean isGeneric) throws McBadRequestException {
-        return getMetricData(getResourceModel(null, null, uid), start, end, duration, bucketDuration,
-                isGeneric);
-    }
-
-    public List<?> getMetricData(String uid, Long start, Long end, String duration, String bucketDuration)
+            DATA_TYPE dataType)
             throws McBadRequestException {
-        return getMetricData(getResourceModel(null, null, uid), start, end, duration, bucketDuration, true);
-    }
-
-    public List<?> getMetricData(ResourceModel resourceModel, Long start, Long end, String duration,
-            String bucketDuration) throws McBadRequestException {
-        return getMetricData(resourceModel, start, end, duration, bucketDuration, true);
+        return getMetricData(getResourceModel(null, null, uid), start, end, duration, bucketDuration, dataType);
     }
 
     public ResourceModel getResourceModel(Integer resourceId, String resourceType, String uid)
@@ -624,7 +324,7 @@ public class MetricApi {
     }
 
     public List<?> getMetricData(ResourceModel resourceModel, Long start, Long end, String duration,
-            String bucketDuration, Boolean isGeneric) throws McBadRequestException {
+            String bucketDuration, DATA_TYPE dataType) throws McBadRequestException {
         if (bucketDuration == null) {
             throw new McBadRequestException(MessageFormat.format(
                     "Required fields is missing! bucketDuration:[{0}]",
@@ -652,50 +352,37 @@ public class MetricApi {
         end = getEnd(end);
 
         _logger.debug(
-                "Metric request for (start:{}, end:{}, duration:{}, bucketDuration:{}, isGeneric:{}, {})", start, end,
-                duration, bucketDuration, isGeneric, resourceModel);
+                "Metric request for (start:{}, end:{}, duration:{}, bucketDuration:{}, {})", start, end, duration,
+                bucketDuration, resourceModel);
+        if (dataType == null) {
+            switch (resourceModel.getResourceType()) {
+                case NODE:
+                    dataType = DATA_TYPE.NODE_BATTERY_USAGE;
+                    break;
+                case SENSOR_VARIABLE:
+                    dataType = DATA_TYPE.SENSOR_VARIABLE;
+                    break;
+                default:
+                    break;
+            }
+        }
         long bucketDurationLong = getBucketDuration(bucketDuration);
         if ((end - start) < bucketDurationLong) {
             throw new McBadRequestException(
                     "'bucketDuration' must be lesser than 'end' - 'start' or 'duration'. Validation(bucketDuration:"
                             + bucketDurationLong + " ms, end - start:" + (end - start) + " ms, duration:"
                             + durationLong + " ms), Input(bucketDuration:" + bucketDuration + ", start:" + start
-                            + ", end:" + end + ", duration:" + duration + ")");
+                            + ", end:" + end + ", duration:" + duration + ", dataType:" + dataType + ")");
         }
         //give result if bucketDuration and duration are equal.
         start--;
 
-        switch (resourceModel.getResourceType()) {
-            case NODE:
-                return getMetricsBattery(resourceModel.getResourceId(), start, end, bucketDurationLong, isGeneric);
-            case SENSOR_VARIABLE:
-                SensorVariable sVariable = (SensorVariable) resourceModel.getResource();
-                switch (sVariable.getMetricType()) {
-                    case BINARY:
-                        return getSensorVariableMetricsBinary(resourceModel.getResourceId(), start, end, isGeneric);
-                    case COUNTER:
-                        return getSensorVariableMetricsCounter(resourceModel.getResourceId(), start, end,
-                                bucketDuration, isGeneric);
-                    case DOUBLE:
-                        return getSensorVariableMetricsDouble(resourceModel.getResourceId(), start, end,
-                                bucketDurationLong, isGeneric);
-                    case GPS:
-                        return getSensorVariableMetricsGPS(resourceModel.getResourceId(), start, end,
-                                bucketDurationLong, isGeneric);
-                    default:
-                        break;
-                }
-                break;
-            default:
-                break;
-
-        }
-        throw new McBadRequestException(
-                MessageFormat
-                        .format("Metric not available for request! {resourceId:[{0}], resourceType:[{1}], start:[{2}],"
-                                + " end:[{3}], duration:[{4}], bucketDuration:[{5}]], isGeneric:[{6}] ]}",
-                                String.valueOf(resourceModel.getResourceId()), resourceModel.getResourceType()
-                                        .getText(), String.valueOf(start), String.valueOf(end),
-                                duration, bucketDuration, String.valueOf(isGeneric)));
+        return MetricsUtils.engine().list(Criteria.builder()
+                .resourceModel(resourceModel)
+                .start(start)
+                .end(end)
+                .bucketDuration(bucketDuration)
+                .dataType(dataType)
+                .build());
     }
 }

@@ -37,8 +37,8 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.SensorApi;
 import org.mycontroller.standalone.api.jaxrs.model.ApiError;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
-import org.mycontroller.standalone.api.jaxrs.model.SensorVariablePurge;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -222,7 +222,7 @@ public class SensorHandler extends AccessEngine {
     @RolesAllowed({ "Admin" })
     @PUT
     @Path("/purgeVariable")
-    public Response purgeVariable(SensorVariablePurge purge) {
+    public Response purgeVariable(ResourcePurgeConf purge) {
         try {
             sensorApi.purgeSensorVariable(purge);
             return RestUtils.getResponse(Status.OK);

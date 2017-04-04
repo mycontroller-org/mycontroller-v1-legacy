@@ -38,6 +38,9 @@ import org.mycontroller.standalone.api.jaxrs.model.HtmlHeaderFiles;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.email.EmailUtils;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
+import org.mycontroller.standalone.metrics.MetricsUtils;
+import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
@@ -261,6 +264,23 @@ public class SettingsHandler extends AccessEngine {
         metricsDataRetentionSettings.save();
         SettingsUtils.updateAllSettings();
         return RestUtils.getResponse(Status.OK);
+    }
+
+    @GET
+    @Path("/metricsEngine")
+    public Response getMetricsEngine() {
+        return RestUtils.getResponse(Status.OK, MetricsUtils.getEngineConf());
+    }
+
+    @POST
+    @Path("/metricsEngine")
+    public Response saveMetricsEngine(MetricEngineConf conf) {
+        try {
+            MetricsUtils.updateEngine(conf);
+            return RestUtils.getResponse(Status.OK);
+        } catch (McBadRequestException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, ApiMessage.builder().message(ex.getMessage()).build());
+        }
     }
 
     @GET

@@ -71,6 +71,12 @@ public class TypesHandler extends AccessEngine {
     }
 
     @GET
+    @Path("/metricEngineTypes")
+    public Response getMetricEngineTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMetricEngineTypes());
+    }
+
+    @GET
     @Path("/gatewaySerialDrivers")
     public Response getGatewaySerialDrivers() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGatewaySerialDrivers());

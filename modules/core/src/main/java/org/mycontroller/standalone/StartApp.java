@@ -19,6 +19,7 @@ package org.mycontroller.standalone;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -69,6 +70,7 @@ import org.mycontroller.standalone.externalserver.ExternalServerUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.mdns.McmDNSFactory;
 import org.mycontroller.standalone.message.MessageMonitorThread;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
@@ -99,7 +101,8 @@ public class StartApp {
         }
     }
 
-    public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException {
+    public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException,
+            URISyntaxException {
         start = System.currentTimeMillis();
         loadInitialProperties(System.getProperty("mc.conf.file"));
         _logger.debug("App Properties: {}", AppProperties.getInstance().toString());
@@ -226,7 +229,7 @@ public class StartApp {
         }
     }
 
-    private static boolean startServices() throws ClassNotFoundException, SQLException {
+    private static boolean startServices() throws ClassNotFoundException, SQLException, URISyntaxException {
         //Start order..
         // - set to default locale
         // - Add Shutdown hook
@@ -249,6 +252,9 @@ public class StartApp {
 
         //Start DB migration service
         DataBaseUtils.runDatabaseMigration();
+
+        //Load Metric engine factory
+        MetricsUtils.loadEngine();
 
         //Initialize MapDB store
         MapDbFactory.init();

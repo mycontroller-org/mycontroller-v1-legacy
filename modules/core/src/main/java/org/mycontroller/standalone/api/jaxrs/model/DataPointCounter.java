@@ -40,16 +40,22 @@ public class DataPointCounter extends DataPointBase {
             dataPoint.setEnd(end);
             dataPoint.setEmpty(true);
             return dataPoint;
+        } else {
+            return get(metric.getValue(), metric.getSamples(), metric.getTimestamp(), metric.getStart(),
+                    metric.getEnd());
         }
+    }
+
+    public static DataPointCounter get(Long value, Integer samples, Long timestamp, Long start, Long end) {
         DataPointCounter dataPoint = DataPointCounter.builder()
-                .value(metric.getValue())
-                .samples(metric.getSamples()).build();
+                .value(value)
+                .samples(samples).build();
         dataPoint.setEmpty(false);
         if (start != null) {
             dataPoint.setStart(start);
             dataPoint.setEnd(end);
         } else {
-            dataPoint.setTimestamp(metric.getTimestamp());
+            dataPoint.setTimestamp(timestamp);
         }
         return dataPoint;
     }

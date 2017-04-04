@@ -24,7 +24,9 @@ import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.metrics.MetricsAggregationBase;
+import org.mycontroller.standalone.metrics.METRIC_ENGINE;
+import org.mycontroller.standalone.metrics.MetricsUtils;
+import org.mycontroller.standalone.metrics.engines.McMetricsAggregationBase;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +49,12 @@ public class MetricsAggregationJob extends Job {
 
     @Override
     public void doRun() throws JobInterruptException {
+        if (MetricsUtils.type() != METRIC_ENGINE.MY_CONTROLLER) {
+            //If some of external metric engine configured. no need to run internal metric aggregation
+            return;
+        }
         _logger.debug("Metrics aggregation job triggered");
-        new MetricsAggregationBase().runAggregation();
+        new McMetricsAggregationBase().runAggregation();
 
         //Execute purge of binary and gps data
         MetricsDataRetentionSettings retentionSettings = AppProperties.getInstance().getMetricsDataRetentionSettings();
