@@ -270,17 +270,19 @@ public class InfluxDBEngine implements IMetric {
                                     (Long) values.get(0),
                                     (Long) values.get(0) + duration));
                         } else {
-                            DataPointCounter data = DataPointCounter.builder().build();
+                            DataPointCounter data = DataPointCounter.builder().samples(samples).build();
                             data.setEmpty(true);
+                            data.setStart((Long) values.get(0));
+                            data.setEnd((Long) values.get(0) + duration);
                             metricDataCounter.add(data);
                         }
                     } else {
                         metricDataCounter.add(DataPointCounter.get(
                                 McUtils.getLong(values.get(1)),
                                 1,
-                                null,
                                 (Long) values.get(0),
-                                (Long) values.get(0) + duration));
+                                null,
+                                null));
                     }
                 }
                 return metricDataCounter;
@@ -301,8 +303,10 @@ public class InfluxDBEngine implements IMetric {
                                     (Long) values.get(0),
                                     (Long) values.get(0) + duration));
                         } else {
-                            DataPointDouble data = DataPointDouble.builder().build();
+                            DataPointDouble data = DataPointDouble.builder().samples(samples).build();
                             data.setEmpty(true);
+                            data.setStart((Long) values.get(0));
+                            data.setEnd((Long) values.get(0) + duration);
                             metricDataDouble.add(data);
                         }
 

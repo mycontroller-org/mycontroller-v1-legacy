@@ -143,6 +143,7 @@ public class AppProperties {
         HU_HU("Magyar (HU)"),
         MK_MK("Македонски (MK)"),
         NL_NL("Nederlands (NL)"),
+        NO_NO("norsk (NO)"),
         PT_BR("Português (BR)"),
         RO_RO("Română (RO)"),
         RU_RU("Русский (RU)"),
