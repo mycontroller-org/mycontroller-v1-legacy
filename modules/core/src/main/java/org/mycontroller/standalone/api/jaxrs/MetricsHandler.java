@@ -1028,7 +1028,7 @@ public class MetricsHandler extends AccessEngine {
                     }
                 case BINARY:
                 case DOUBLE:
-                    if (timeDifferance > (McUtils.ONE_DAY * 365)) {
+                    if (timeDifferance > (McUtils.ONE_DAY * 360)) {
                         return AppProperties.getInstance().getDateFormat();
                     } else if (timeDifferance > McUtils.ONE_DAY * 7) {
                         return "MMM dd, " + AppProperties.getInstance().getTimeFormat();
