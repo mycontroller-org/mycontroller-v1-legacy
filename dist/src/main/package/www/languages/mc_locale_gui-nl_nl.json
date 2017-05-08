@@ -334,7 +334,7 @@
     "METRIC": "Metriek",
     "METRICS": "Metriek",
     "METRIC_ENGINE": "Metric engine",
-    "METRIC_ENGINE_DIALOG_CONFIRMATION_MSG": "You are about to change metrics data backend engine settings.<br>This action will lead data loss. Read user manual for further details.<br>MyController will not import/export metric data when switching metric engine!",
+    "METRIC_ENGINE_DIALOG_CONFIRMATION_MSG": "U staat op het punt om de metrics database backend engine instellingen aan te passen. <br>Deze actie resulteerd in dataverlies. Raadpleeg de gebuikershandleiding voor verdere details.<br>MyController zal geen data importeren/exporteren bij het veranderen van de metric engine!",
     "METRIC_TYPE": "Metric type",
     "MILLISECONDS": "Milliseconden",
     "MINIMUM_HEIGHT": "Minimale hoogte",
