@@ -23,6 +23,7 @@ import java.util.List;
 import org.mycontroller.restclient.core.ClientResponse;
 import org.mycontroller.restclient.influxdb.InfluxDBClient;
 import org.mycontroller.restclient.influxdb.InfluxDBClientBuilder;
+import org.mycontroller.restclient.influxdb.model.Pong;
 import org.mycontroller.restclient.influxdb.model.QueryResult;
 import org.mycontroller.restclient.influxdb.model.Series;
 import org.mycontroller.standalone.api.MetricApi;
@@ -526,5 +527,25 @@ public class InfluxDBEngine implements IMetric {
         purgeMeasurement(MEASUREMENT_RESOURCE_BINARY);  //Purge binary
         purgeMeasurement(MEASUREMENT_RESOURCE_COUNTER); //Purge counter
         purgeMeasurement(MEASUREMENT_RESOURCE_DOUBLE);  //Purge double
+    }
+
+    @Override
+    public org.mycontroller.standalone.metrics.model.Pong ping() {
+        org.mycontroller.standalone.metrics.model.Pong pong = null;
+        try {
+            Pong influxPong = client.ping();
+            pong = org.mycontroller.standalone.metrics.model.Pong.builder()
+                    .reachable(influxPong.isReachable())
+                    .version(influxPong.getVersion())
+                    .build();
+            _logger.info("Ping response of influxDB {}", influxPong);
+        } catch (Exception ex) {
+            pong = org.mycontroller.standalone.metrics.model.Pong.builder()
+                    .reachable(false)
+                    .error(ex.getMessage())
+                    .build();
+            _logger.debug("Error, ", ex);
+        }
+        return pong;
     }
 }

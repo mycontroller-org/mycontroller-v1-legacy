@@ -14,29 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.metrics.engine.conf;
+package org.mycontroller.standalone.metrics.model;
 
-import java.io.Serializable;
-
-import org.mycontroller.standalone.metrics.METRIC_ENGINE;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-@Data
+
+@Builder
+@Getter
 @ToString
-@NoArgsConstructor
-public abstract class MetricEngineConf implements Serializable {
-    /**  */
-    private static final long serialVersionUID = 1630884105267914616L;
-
-    private METRIC_ENGINE type;
-    private boolean purgeEveryThing = false;
-    private boolean testOnly = false;
-
+public class Pong {
+    private boolean reachable;
+    private String version = "-";
+    private String error;
 }

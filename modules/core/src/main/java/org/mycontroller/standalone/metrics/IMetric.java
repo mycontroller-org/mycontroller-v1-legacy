@@ -22,6 +22,7 @@ import org.mycontroller.standalone.api.jaxrs.model.DataPointBase;
 import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.metrics.model.Criteria;
 import org.mycontroller.standalone.metrics.model.DataPointer;
+import org.mycontroller.standalone.metrics.model.Pong;
 import org.mycontroller.standalone.model.ResourceModel;
 
 /**
@@ -43,5 +44,7 @@ public interface IMetric {
     void purge(ResourceModel resourceModel);
 
     void purgeEverything();
+
+    Pong ping();
 
 }

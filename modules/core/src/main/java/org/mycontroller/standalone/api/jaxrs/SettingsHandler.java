@@ -41,6 +41,7 @@ import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
+import org.mycontroller.standalone.metrics.model.Pong;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
@@ -274,10 +275,18 @@ public class SettingsHandler extends AccessEngine {
 
     @POST
     @Path("/metricsEngine")
-    public Response saveMetricsEngine(MetricEngineConf conf) {
+    public Response ping(MetricEngineConf conf) {
         try {
-            MetricsUtils.updateEngine(conf);
-            return RestUtils.getResponse(Status.OK);
+            if (conf.isTestOnly()) {
+                Pong pong = MetricsUtils.ping(conf);
+                if (!pong.isReachable()) {
+                    return RestUtils.getResponse(Status.SERVICE_UNAVAILABLE, pong);
+                }
+                return RestUtils.getResponse(Status.OK, pong);
+            } else {
+                MetricsUtils.updateEngine(conf);
+                return RestUtils.getResponse(Status.OK);
+            }
         } catch (McBadRequestException ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, ApiMessage.builder().message(ex.getMessage()).build());
         }

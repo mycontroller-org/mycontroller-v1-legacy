@@ -27,6 +27,7 @@ import org.mycontroller.standalone.metrics.engine.conf.InfluxDBConf;
 import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
 import org.mycontroller.standalone.metrics.engine.conf.MyControllerConf;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -41,6 +42,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @since 0.0.3
  */
 @JsonDeserialize(using = MetricEngineConfDeserializer.class)
+@JsonIgnoreProperties(value = { "purgeEveryThing", "testOnly" })
 abstract class MetricEngineConfMixin {
     @JsonSerialize(using = MetricEngineTypeSerializer.class)
     public abstract String getType();
@@ -99,6 +101,9 @@ class MetricEngineConfDeserializer extends JsonDeserializer<MetricEngineConf> {
         conf.setType(type);
         if (node.get("purgeEveryThing") != null) {
             conf.setPurgeEveryThing(node.get("purgeEveryThing").asBoolean());
+        }
+        if (node.get("testOnly") != null) {
+            conf.setTestOnly(node.get("testOnly").asBoolean());
         }
         return conf;
     }

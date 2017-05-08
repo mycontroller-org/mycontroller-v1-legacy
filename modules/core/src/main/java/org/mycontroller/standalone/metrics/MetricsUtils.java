@@ -28,6 +28,7 @@ import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
 import org.mycontroller.standalone.metrics.engine.conf.MyControllerConf;
 import org.mycontroller.standalone.metrics.engines.InfluxDBEngine;
 import org.mycontroller.standalone.metrics.engines.McMetricEngine;
+import org.mycontroller.standalone.metrics.model.Pong;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -164,20 +165,23 @@ public class MetricsUtils {
 
     public static void loadEngine() throws URISyntaxException {
         engineConf = getEngineConf();
-        switch (type()) {
+        metricEngine = getEngine(engineConf);
+    }
+
+    private static IMetric getEngine(MetricEngineConf engineConf) throws URISyntaxException {
+        switch (engineConf.getType()) {
             case HAWKULAR:
                 //TODO://
                 break;
             case INFLUXDB:
-                metricEngine = new InfluxDBEngine((InfluxDBConf) engineConf);
-                break;
+                return new InfluxDBEngine((InfluxDBConf) engineConf);
             case MY_CONTROLLER:
-                metricEngine = new McMetricEngine();
-                break;
+                return new McMetricEngine();
             default:
                 break;
 
         }
+        throw new RuntimeException("Not implemented yet. Type:" + engineConf.getType());
     }
 
     public static METRIC_ENGINE type() {
@@ -238,7 +242,7 @@ public class MetricsUtils {
                     saveMetricEngineDataInDB(KEY_TYPE, conf.getType().name());
                     saveMetricEngineDataInDB(KEY_CONF, data);
                     loadEngine();
-                    if (conf.getPurgeEveryThing() != null && conf.getPurgeEveryThing()) {
+                    if (conf.isPurgeEveryThing()) {
                         _logger.info("Purging existing data triggered for {}", engineConf);
                         engine().purgeEverything();
                     }
@@ -249,6 +253,14 @@ public class MetricsUtils {
                 break;
             default:
                 throw new RuntimeException("This type not available. " + conf);
+        }
+    }
+
+    public static Pong ping(MetricEngineConf conf) throws McBadRequestException {
+        try {
+            return getEngine(conf).ping();
+        } catch (URISyntaxException ex) {
+            throw new McBadRequestException(ex.getMessage(), ex);
         }
     }
 

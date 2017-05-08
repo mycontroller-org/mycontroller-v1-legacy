@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.jaxrs.model.DataPointBase;
 import org.mycontroller.standalone.api.jaxrs.model.DataPointBinary;
 import org.mycontroller.standalone.api.jaxrs.model.DataPointCounter;
@@ -43,6 +44,7 @@ import org.mycontroller.standalone.metrics.IMetric;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.mycontroller.standalone.metrics.model.Criteria;
 import org.mycontroller.standalone.metrics.model.DataPointer;
+import org.mycontroller.standalone.metrics.model.Pong;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.utils.McUtils;
 
@@ -476,6 +478,15 @@ public class McMetricEngine implements IMetric {
                 MetricsDoubleTypeDevice.builder().timestamp(System.currentTimeMillis()).build());
         DaoUtils.getMetricsGPSTypeDeviceDao().deletePrevious(
                 MetricsGPSTypeDevice.builder().timestamp(System.currentTimeMillis()).build());
+    }
+
+    @Override
+    public Pong ping() {
+        return Pong.builder()
+                .reachable(DaoUtils.isDaoInitialized())
+                .version(new SystemApi().getAbout().getApplicationVersion())
+                .error(DaoUtils.isDaoInitialized() ? null : "looks like DAO not initialized yet!")
+                .build();
     }
 
 }
