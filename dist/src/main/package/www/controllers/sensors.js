@@ -303,7 +303,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
                 top: 5,
                 right: 20,
                 bottom: 60,
-                left: 65
+                left: 80
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
             noData: $filter('translate')('NO_DATA_AVAILABLE'),

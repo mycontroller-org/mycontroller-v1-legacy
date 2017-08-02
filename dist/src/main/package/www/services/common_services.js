@@ -305,10 +305,10 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
           value:"day-thunderstorm",
         },{
           id:"stable",
-          value:"na",
+          value:"day-sunny",
         },{
           id:"unstable",
-          value:"na",
+          value:"sprinkle",
         },{
           id:"na",
           value:"na",

@@ -56,7 +56,7 @@ public class UidTagHandler {
     @GET
     @Path("/")
     public Response getAll(
-            @QueryParam(UidTag.KEY_UID) List<Integer> uids,
+            @QueryParam(UidTag.KEY_UID) List<String> uids,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
