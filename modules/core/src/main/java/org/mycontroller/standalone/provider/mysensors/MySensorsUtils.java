@@ -36,8 +36,8 @@ public class MySensorsUtils {
     public static final int ACK = 1;
     public static final int NO_ACK = 0;
     public static final String EMPTY_DATA = "";
-    public static final int NODE_ID_MIN = 1;
-    public static final int NODE_ID_MAX = 254;
+    public static final int NODE_ID_MIN = 1; //Always starts from number 1
+    public static final int NODE_ID_MAX = 254; //Last usable address for MySensors is 254
 
     public static final String KEY_RSSI = "rssi:";
     public static final String KEY_PROPERTIES = "p:";
@@ -62,9 +62,9 @@ public class MySensorsUtils {
     }
 
     public static int getNextNodeId(Integer gatewayId) throws NodeIdException {
-        int nodeId = 1; //Always starts from number 1
+        int nodeId = NODE_ID_MIN;
         boolean isIdAvailable = false;
-        for (; nodeId < 255; nodeId++) {
+        for (; nodeId <= NODE_ID_MAX; nodeId++) {
             if (DaoUtils.getNodeDao().get(gatewayId, String.valueOf(nodeId)) == null) {
                 isIdAvailable = true;
                 break;
