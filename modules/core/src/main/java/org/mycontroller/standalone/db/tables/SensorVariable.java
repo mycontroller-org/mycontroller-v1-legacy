@@ -67,6 +67,11 @@ public class SensorVariable {
     public static final String KEY_GP_INTERPOLATE = "interpolate";
     public static final String KEY_GP_SUBTYPE = "subType";
     public static final String KEY_GP_COLOR = "color";
+    public static final String KEY_GP_MARGIN_LEFT = "marginLeft";
+    public static final String KEY_GP_MARGIN_RIGHT = "marginRight";
+    public static final String KEY_GP_MARGIN_TOP = "marginTop";
+    public static final String KEY_GP_MARGIN_BOTTOM = "marginBottom";
+
     public static final String KEY_NAME = "name";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID, index = true)
@@ -132,6 +137,11 @@ public class SensorVariable {
             properties.put(KEY_GP_INTERPOLATE, "linear");
             properties.put(KEY_GP_SUBTYPE, "line");
             properties.put(KEY_GP_COLOR, "#ff7f0e");
+            properties.put(KEY_GP_MARGIN_LEFT, 65);
+            properties.put(KEY_GP_MARGIN_RIGHT, 20);
+            properties.put(KEY_GP_MARGIN_TOP, 5);
+            properties.put(KEY_GP_MARGIN_BOTTOM, 60);
+
         }
         return properties;
     }
@@ -145,6 +155,10 @@ public class SensorVariable {
                 properties.remove(KEY_GP_INTERPOLATE);
                 properties.remove(KEY_GP_SUBTYPE);
                 properties.remove(KEY_GP_COLOR);
+                properties.remove(KEY_GP_MARGIN_LEFT);
+                properties.remove(KEY_GP_MARGIN_RIGHT);
+                properties.remove(KEY_GP_MARGIN_TOP);
+                properties.remove(KEY_GP_MARGIN_BOTTOM);
             }
             if (properties.get(KEY_NAME) != null && ((String) properties.get(KEY_NAME)).trim().length() == 0) {
                 properties.remove(KEY_NAME);

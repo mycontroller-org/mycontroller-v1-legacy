@@ -640,6 +640,14 @@ input.mc-color-steel-blue{
 }
 
 
+/* ADF Table widget */
+.adf-table > tbody > tr > td{
+  padding-left: 2px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 5px;
+  vertical-align: middle;
+}
 
 
 /* on-off button*/

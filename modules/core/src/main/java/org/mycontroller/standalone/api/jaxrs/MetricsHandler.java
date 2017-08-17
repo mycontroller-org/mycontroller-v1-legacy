@@ -925,6 +925,10 @@ public class MetricsHandler extends AccessEngine {
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
                             .chartType(metrics.getType())
                             .chartInterpolate(metrics.getInterpolate())
+                            .marginLeft(metrics.getMarginLeft())
+                            .marginRight(metrics.getMarginRight())
+                            .marginTop(metrics.getMarginTop())
+                            .marginBottom(metrics.getMarginBottom())
                             .build());
 
                     break;
@@ -965,6 +969,10 @@ public class MetricsHandler extends AccessEngine {
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
                             .chartType(metrics.getType())
                             .chartInterpolate(metrics.getInterpolate())
+                            .marginLeft(metrics.getMarginLeft())
+                            .marginRight(metrics.getMarginRight())
+                            .marginTop(metrics.getMarginTop())
+                            .marginBottom(metrics.getMarginBottom())
                             .build());
 
                     break;
@@ -1000,6 +1008,10 @@ public class MetricsHandler extends AccessEngine {
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
                             .chartType(metrics.getType())
                             .chartInterpolate(metrics.getInterpolate())
+                            .marginLeft(metrics.getMarginLeft())
+                            .marginRight(metrics.getMarginRight())
+                            .marginTop(metrics.getMarginTop())
+                            .marginBottom(metrics.getMarginBottom())
                             .build());
                     break;
                 default:

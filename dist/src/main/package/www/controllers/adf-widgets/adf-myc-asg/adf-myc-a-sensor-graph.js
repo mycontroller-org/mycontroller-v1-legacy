@@ -34,6 +34,10 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
           withMinMax:false,
           chartFromTimestamp:'3600000',
           refreshTime:30,
+          marginTop:5,
+          marginRight:20,
+          marginBottom:60,
+          marginLeft:65,
         },
         edit: {
           templateUrl: 'controllers/adf-widgets/adf-myc-asg/edit.html?mcv=${mc.gui.version}',
@@ -53,16 +57,18 @@ angular.module('adf.widget.myc-a-sensor-graph', [])
     $scope.hideVariableName=true;
     $scope.cs = CommonServices;
 
+    CommonServices.updateGraphMarginDefault(config);
+
     mycSingleSensorGraph.chartOptions = {
         chart: {
             type: 'lineChart',
             noErrorCheck: true,
             height: 225,
             margin : {
-                top: 5,
-                right: 20,
-                bottom: 60,
-                left: 65
+                top: config.marginTop,
+                right: config.marginRight,
+                bottom: config.marginBottom,
+                left: config.marginLeft,
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
             noData:"No data available.",

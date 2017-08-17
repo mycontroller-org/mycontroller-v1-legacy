@@ -34,6 +34,40 @@
   </div>
 
   <div class="form-group">
+    <label>{{ 'MARGIN' | translate }}</label>
+    <table class="adf-table">
+      <tr>
+        <td>
+          <label>{{ 'LEFT' | translate }}</label>
+        </td>
+        <td>
+          <input class="form-control" type="number" id="left" placeholder="{{'LEFT' | translate}}" ng-model="config.marginLeft" pf-validation="mycSensorsMixedGraphEdit.cs.isNumber(input)" required>
+        </td>
+        <td>
+          <label class="mc-margin-right">{{ 'RIGHT' | translate }}</label>
+        </td>
+        <td>
+          <input class="form-control" type="number" id="right" placeholder="{{'RIGHT' | translate}}" ng-model="config.marginRight" pf-validation="mycSensorsMixedGraphEdit.cs.isNumber(input)" required>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>{{ 'TOP' | translate }}</label>
+        </td>
+        <td>
+          <input class="form-control" type="number" id="top" placeholder="{{'TOP' | translate}}" ng-model="config.marginTop" pf-validation="mycSensorsMixedGraphEdit.cs.isNumber(input)" required>
+        </td>
+        <td>
+          <label>{{ 'BOTTOM' | translate }}</label>
+        </td>
+        <td>
+          <input class="form-control" type="number" id="bottom" placeholder="{{'BOTTOM' | translate}}" ng-model="config.marginBottom" pf-validation="mycSensorsMixedGraphEdit.cs.isNumber(input)" required>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="form-group">
     <label>{{ 'INTERPOLATE_TYPE' | translate }}</label>
     <select class="form-control" pf-select ng-model="config.chartInterpolate" required>
       <option value="" ng-hide="true"></option>

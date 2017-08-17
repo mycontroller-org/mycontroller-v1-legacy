@@ -36,6 +36,10 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
           variableType:null,
           chartFromTimestamp:'3600000',
           refreshTime:30,
+          marginTop:5,
+          marginRight:20,
+          marginBottom:60,
+          marginLeft:65,
         },
         edit: {
           templateUrl: 'controllers/adf-widgets/adf-myc-sgg/edit.html?mcv=${mc.gui.version}',
@@ -51,16 +55,18 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
     mycSensorsGroupedGraph.isSyncing = false;
     mycSensorsGroupedGraph.cs = CommonServices;
 
+    CommonServices.updateGraphMarginDefault(config);
+
     mycSensorsGroupedGraph.chartOptions = {
         chart: {
             type: 'lineChart',
             noErrorCheck: true,
             height: 225,
             margin : {
-                top: 5,
-                right: 20,
-                bottom: 60,
-                left: 65
+                top: config.marginTop,
+                right: config.marginRight,
+                bottom: config.marginBottom,
+                left: config.marginLeft,
             },
             color: d3.scale.category10().range(),
             noData: $filter('translate')('NO_DATA_AVAILABLE'),

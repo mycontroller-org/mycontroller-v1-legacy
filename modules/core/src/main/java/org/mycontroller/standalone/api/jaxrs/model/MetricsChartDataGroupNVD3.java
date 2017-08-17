@@ -46,5 +46,9 @@ public class MetricsChartDataGroupNVD3 {
     private String resourceName;
     private String chartType;
     private String chartInterpolate;
+    private Integer marginLeft;
+    private Integer marginRight;
+    private Integer marginTop;
+    private Integer marginBottom;
 
 }

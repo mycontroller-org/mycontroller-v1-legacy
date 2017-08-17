@@ -37,6 +37,10 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
           variableType:[],
           chartFromTimestamp:'3600000',
           refreshTime:30,
+          marginTop:5,
+          marginRight:20,
+          marginBottom:60,
+          marginLeft:65,
         },
         edit: {
           templateUrl: 'controllers/adf-widgets/adf-myc-smg/edit.html?mcv=${mc.gui.version}',
@@ -45,11 +49,13 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
         }
       });
   })
-  .controller('mycSensorsMixedGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory){
+  .controller('mycSensorsMixedGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory, CommonServices){
     var mycSensorsMixedGraph = this;
     mycSensorsMixedGraph.showLoading = true;
     mycSensorsMixedGraph.showError = false;
     mycSensorsMixedGraph.isSyncing = false;
+
+    CommonServices.updateGraphMarginDefault(config);
 
     mycSensorsMixedGraph.chartOptions = {
         chart: {
@@ -57,10 +63,10 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
             noErrorCheck: true,
             height: 225,
             margin : {
-                top: 5,
-                bottom: 60,
-                right: 65,
-                left: 65
+                top: config.marginTop,
+                right: config.marginRight,
+                bottom: config.marginBottom,
+                left: config.marginLeft,
             },
             color: d3.scale.category10().range(),
             duration: 500,
