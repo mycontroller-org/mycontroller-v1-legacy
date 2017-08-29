@@ -259,7 +259,7 @@ public class AppProperties {
         MY_SENSORS("MySensors"),
         PHANT_IO("Sparkfun [phant.io]"),
         MY_CONTROLLER("MyController"),
-        RF_LINK("RF link"),
+        RF_LINK("RFLink"),
         PHILIPS_HUE("Philips Hue");
 
         private final String type;

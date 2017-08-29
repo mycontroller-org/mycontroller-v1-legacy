@@ -22,7 +22,6 @@ import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.MetricEngineTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.TrustHostTypeSerializer;
 import org.mycontroller.standalone.metrics.METRIC_ENGINE;
-import org.mycontroller.standalone.metrics.engine.conf.HawkularConf;
 import org.mycontroller.standalone.metrics.engine.conf.InfluxDBConf;
 import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
 import org.mycontroller.standalone.metrics.engine.conf.MyControllerConf;
@@ -81,18 +80,6 @@ class MetricEngineConfDeserializer extends JsonDeserializer<MetricEngineConf> {
                     infulxConf.setPassword(node.get("password").asText());
                 }
                 conf = infulxConf;
-                break;
-            case HAWKULAR:
-                HawkularConf hwkConf = HawkularConf.builder()
-                        .url(node.get("url").asText())
-                        .trustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()))
-                        .tenant(node.get("tenant").asText())
-                        .build();
-                if (node.get("username") != null) {
-                    hwkConf.setUsername(node.get("username").asText());
-                    hwkConf.setPassword(node.get("password").asText());
-                }
-                conf = hwkConf;
                 break;
             default:
                 break;

@@ -22,7 +22,6 @@ import java.net.URISyntaxException;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
-import org.mycontroller.standalone.metrics.engine.conf.HawkularConf;
 import org.mycontroller.standalone.metrics.engine.conf.InfluxDBConf;
 import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
 import org.mycontroller.standalone.metrics.engine.conf.MyControllerConf;
@@ -170,9 +169,6 @@ public class MetricsUtils {
 
     private static IMetric getEngine(MetricEngineConf engineConf) throws URISyntaxException {
         switch (engineConf.getType()) {
-            case HAWKULAR:
-                //TODO://
-                break;
             case INFLUXDB:
                 return new InfluxDBEngine((InfluxDBConf) engineConf);
             case MY_CONTROLLER:
@@ -206,8 +202,6 @@ public class MetricsUtils {
         }
         try {
             switch (getEngineType()) {
-                case HAWKULAR:
-                    return OBJECT_MAPPER.readValue(conf, HawkularConf.class);
                 case INFLUXDB:
                     return OBJECT_MAPPER.readValue(conf, InfluxDBConf.class);
                 case MY_CONTROLLER:
@@ -234,7 +228,6 @@ public class MetricsUtils {
     public static void updateEngine(MetricEngineConf conf) throws McBadRequestException {
         String data = null;
         switch (conf.getType()) {
-            case HAWKULAR:
             case INFLUXDB:
             case MY_CONTROLLER:
                 try {

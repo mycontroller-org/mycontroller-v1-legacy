@@ -22,8 +22,7 @@ package org.mycontroller.standalone.metrics;
  */
 public enum METRIC_ENGINE {
     MY_CONTROLLER("MyController"),
-    INFLUXDB("InfluxDB"),
-    HAWKULAR("Hawkular");
+    INFLUXDB("InfluxDB");
 
     public static METRIC_ENGINE get(int id) {
         for (METRIC_ENGINE type : values()) {
