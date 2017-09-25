@@ -129,5 +129,5 @@ Executable scripts are located in `mycontroller/bin/`
 * Other Platforms
 
 ```
-java -Xms8m -Xmx100m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -cp "../lib/*" org.mycontroller.standalone.StartApp
+java -Xms8m -Xmx256m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -cp "../lib/*" org.mycontroller.standalone.StartApp
 ```
