@@ -29,8 +29,8 @@ MyController.org supports multiple languages. If you have interest to add/transl
 
 MyController.org is a very lightweight server, It required very less resource, believe me ;)
 
-  * Disk        : ~30 MB (may require more space, when we store metrics data for long time)
-  * Memory(RAM) : 100 MB
+  * Disk        : ~100 MB (may require more space, when we store metrics data for long time)
+  * Memory(RAM) : 256 MB
   * Java        : 1.8 or later
 
 ===== Supported Platforms (tested)
