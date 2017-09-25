@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,7 +54,11 @@ public class PhantIOProviderBridge implements IProviderBridge {
         }
         try {
             _logger.debug("Received raw message: [{}]", rawMessage);
-            McMessageUtils.sendToMcMessageEngine(new PhantIORawMessage(rawMessage).getMcMessage());
+            McMessage mcMessage = new PhantIORawMessage(rawMessage).getMcMessage();
+            McMessageUtils.sendToMcMessageEngine(mcMessage);
+            if (rawMessage.isTxMessage()) {
+                executeMcMessage(mcMessage);
+            }
         } catch (RawMessageException ex) {
             _logger.error("Unable to process this rawMessage:{}", rawMessage, ex);
         }
@@ -74,5 +78,10 @@ public class PhantIOProviderBridge implements IProviderBridge {
             throw new RuntimeException("Node EUI should not contain any space");
         }
         return true;
+    }
+
+    @Override
+    public RawMessage getRawMessage(McMessage mcMessage) throws RawMessageException {
+        return new PhantIORawMessage(mcMessage).getRawMessage();
     }
 }

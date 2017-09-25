@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.DateTimeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.LogDirectionDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.LogLevelDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.MessageTypeDeserializer;
@@ -61,5 +62,8 @@ abstract class ResourcesLogsMixin {
 
     @JsonDeserialize(using = MessageTypeDeserializer.class)
     public abstract void setMessageType(MESSAGE_TYPE messageType);
+
+    @JsonDeserialize(using = DateTimeDeserializer.class)
+    public abstract void setTimestamp(Long timestamp);
 
 }

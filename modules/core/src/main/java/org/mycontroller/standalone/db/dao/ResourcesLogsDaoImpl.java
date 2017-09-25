@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
@@ -78,7 +78,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
             where.isNotNull(ResourcesLogs.KEY_ID);
             //timestamp before
             if (resourcesLogs.getTimestamp() != null) {
-                where.and().le(ResourcesLogs.KEY_TIMESTAMP, resourcesLogs.getTimestamp());
+                where.and().lt(ResourcesLogs.KEY_TIMESTAMP, resourcesLogs.getTimestamp());
             }
             //message contains
             if (resourcesLogs.getMessage() != null) {
@@ -212,7 +212,8 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, ResourcesLogs.KEY_ID);
+            query.setIdColumn(ResourcesLogs.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,13 +22,18 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.provider.mc.McProviderBridge;
 import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
 import org.mycontroller.standalone.provider.phantio.PhantIOProviderBridge;
+import org.mycontroller.standalone.provider.philipshue.PhilipsHueProviderBridge;
+import org.mycontroller.standalone.provider.rflink.RFLinkProviderBridge;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -125,7 +130,10 @@ public class McMessageUtils {
         I_PONG("Pong"),
         I_REGISTRATION_REQUEST("Registration request"),
         I_REGISTRATION_RESPONSE("Registration response"),
-        I_DEBUG("Debug");
+        I_DEBUG("Debug"),
+        I_RSSI("RSSI"),
+        I_PROPERTIES("Properties"),
+        I_FACTORY_RESET("Factory reset");
         public static MESSAGE_TYPE_INTERNAL get(int id) {
             for (MESSAGE_TYPE_INTERNAL type : values()) {
                 if (type.ordinal() == id) {
@@ -198,7 +206,11 @@ public class McMessageUtils {
         S_INFO("Information"),
         S_GAS("Gas"),
         S_GPS("GPS"),
-        S_WATER_QUALITY("Water quality");
+        S_WATER_QUALITY("Water quality"),
+        S_CPU("CPU"),
+        S_MEMORY("Memory"),
+        S_DISK("Disk"),
+        S_PWM("PWM");
 
         public static MESSAGE_TYPE_PRESENTATION get(int id) {
             for (MESSAGE_TYPE_PRESENTATION type : values()) {
@@ -289,7 +301,12 @@ public class McMessageUtils {
         V_EC("EC"),
         V_VAR("Volt-ampere reactive"),
         V_VA("Volt-ampere"),
-        V_POWER_FACTOR("Power factor");
+        V_POWER_FACTOR("Power factor"),
+        V_USED("Used"),
+        V_FREE("Free"),
+        V_TOTAL("Total"),
+        V_COUNT("Count"),
+        V_RATE("Rate");
 
         public static MESSAGE_TYPE_SET_REQ get(int id) {
             for (MESSAGE_TYPE_SET_REQ type : values()) {
@@ -362,7 +379,7 @@ public class McMessageUtils {
     }
 
     public enum PAYLOAD_TYPE {
-        PL_DOUBLE, PL_BOOLEAN, PL_HEX, PL_STRING, PL_LONG;
+        PL_DOUBLE, PL_BOOLEAN, PL_HEX, PL_STRING, PL_LONG, PL_GPS;
     }
 
     public static METRIC_TYPE getMetricType(PAYLOAD_TYPE payloadType) {
@@ -373,6 +390,8 @@ public class McMessageUtils {
                 return METRIC_TYPE.DOUBLE;
             case PL_LONG:
                 return METRIC_TYPE.COUNTER;
+            case PL_GPS:
+                return METRIC_TYPE.GPS;
             default:
                 return METRIC_TYPE.NONE;
         }
@@ -469,6 +488,19 @@ public class McMessageUtils {
                 return PAYLOAD_TYPE.PL_STRING;
             case V_HVAC_FLOW_MODE:
                 return PAYLOAD_TYPE.PL_STRING;
+            case V_FREE:
+            case V_USED:
+                return PAYLOAD_TYPE.PL_DOUBLE;
+            case V_COUNT:
+                return PAYLOAD_TYPE.PL_STRING;
+            case V_RATE:
+                return PAYLOAD_TYPE.PL_STRING;
+            case V_POSITION:
+                return PAYLOAD_TYPE.PL_GPS;
+            case V_ORP:
+                return PAYLOAD_TYPE.PL_DOUBLE;
+            case V_PH:
+                return PAYLOAD_TYPE.PL_DOUBLE;
             default:
                 //Make default to string
                 return PAYLOAD_TYPE.PL_STRING;
@@ -514,6 +546,9 @@ public class McMessageUtils {
     //Sensor provider bridge
     private static IProviderBridge mySensorsBridge = new MySensorsProviderBridge();
     private static IProviderBridge phantIOBridge = new PhantIOProviderBridge();
+    private static IProviderBridge rpiAgentBridge = new McProviderBridge();
+    private static IProviderBridge rfLinkBridge = new RFLinkProviderBridge();
+    private static IProviderBridge philipsHueProviderBridge = new PhilipsHueProviderBridge();
 
     public static synchronized void sendToGateway(RawMessage rawMessage) {
         //Send message to nodes [going out from MyController]
@@ -538,6 +573,15 @@ public class McMessageUtils {
             case PHANT_IO:
                 phantIOBridge.executeRawMessage(rawMessage);
                 break;
+            case MY_CONTROLLER:
+                rpiAgentBridge.executeRawMessage(rawMessage);
+                break;
+            case RF_LINK:
+                rfLinkBridge.executeRawMessage(rawMessage);
+                break;
+            case PHILIPS_HUE:
+                philipsHueProviderBridge.executeRawMessage(rawMessage);
+                break;
             default:
                 _logger.warn("Unknown provider: {}", rawMessage.getNetworkType());
                 break;
@@ -545,19 +589,65 @@ public class McMessageUtils {
 
     }
 
-    public static synchronized void sendToProviderBridge(McMessage mcMessage) {
+    public static synchronized void sendToMessageQueue(McMessage mcMessage) {
         if (mcMessage.getNetworkType() == null) {
             mcMessage.setNetworkType(GatewayUtils.getNetworkType(mcMessage.getGatewayId()));
         }
-        if (mcMessage.isTxMessage() && !mcMessage.isScreeningDone()) {
-            sendToMcMessageEngine(mcMessage);
+        //Do not block stream message on smartSleep
+        if (mcMessage.isTxMessage() && mcMessage.getType() != MESSAGE_TYPE.C_STREAM) {
+            Node node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());
+            if (node != null && node.getSmartSleepEnabled()) {
+                if (mcMessage.isTxMessage() && !mcMessage.isScreeningDone()) {
+                    sendToMcMessageEngine(mcMessage);
+                }
+                SmartSleepMessageQueue.getInstance().putMessage(mcMessage);
+                return;
+            }
         }
+        //Get Raw Message and add it on Message queue
+        try {
+            RawMessageQueue.getInstance().putMessage(getRawMessage(mcMessage));
+        } catch (McBadRequestException | RawMessageException ex) {
+            _logger.error("Unable to process this {}", mcMessage, ex);
+        }
+    }
+
+    private static RawMessage getRawMessage(McMessage mcMessage) throws RawMessageException, McBadRequestException {
+        switch (mcMessage.getNetworkType()) {
+            case MY_SENSORS:
+                return mySensorsBridge.getRawMessage(mcMessage);
+            case PHANT_IO:
+                return phantIOBridge.getRawMessage(mcMessage);
+            case MY_CONTROLLER:
+                return rpiAgentBridge.getRawMessage(mcMessage);
+            case RF_LINK:
+                //RFLink Tx message parsing does not supported, hence process before create rawMessage
+                sendToMcMessageEngine(mcMessage);
+                return rfLinkBridge.getRawMessage(mcMessage);
+            case PHILIPS_HUE:
+                return philipsHueProviderBridge.getRawMessage(mcMessage);
+            default:
+                _logger.warn("Unknown provider: {} for ", mcMessage.getNetworkType(), mcMessage);
+                throw new McBadRequestException("Unknown provider: " + mcMessage.getNetworkType());
+        }
+    }
+
+    public static synchronized void sendToProviderBridgeFinal(McMessage mcMessage) {
         switch (mcMessage.getNetworkType()) {
             case MY_SENSORS:
                 mySensorsBridge.executeMcMessage(mcMessage);
                 break;
             case PHANT_IO:
                 phantIOBridge.executeMcMessage(mcMessage);
+                break;
+            case MY_CONTROLLER:
+                rpiAgentBridge.executeMcMessage(mcMessage);
+                break;
+            case RF_LINK:
+                rfLinkBridge.executeMcMessage(mcMessage);
+                break;
+            case PHILIPS_HUE:
+                philipsHueProviderBridge.executeMcMessage(mcMessage);
                 break;
             default:
                 _logger.warn("Unknown provider: {}", mcMessage.getNetworkType());
@@ -567,7 +657,9 @@ public class McMessageUtils {
     }
 
     public static synchronized void sendToMcMessageEngine(McMessage mcMessage) {
-        new Thread(new McMessageEngine(mcMessage)).start();
+        //Do not run new thread. for testing
+        //new Thread(new McMessageEngine(mcMessage)).start();
+        new McMessageEngine(mcMessage).run();
     }
 
     public static synchronized boolean validateNodeIdByProvider(Node node) {
@@ -577,6 +669,12 @@ public class McMessageUtils {
                 return mySensorsBridge.validateNodeId(node);
             case PHANT_IO:
                 return phantIOBridge.validateNodeId(node);
+            case MY_CONTROLLER:
+                return rpiAgentBridge.validateNodeId(node);
+            case RF_LINK:
+                return rfLinkBridge.validateNodeId(node);
+            case PHILIPS_HUE:
+                return philipsHueProviderBridge.validateNodeId(node);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
@@ -590,6 +688,12 @@ public class McMessageUtils {
                 return mySensorsBridge.validateSensorId(sensor);
             case PHANT_IO:
                 return phantIOBridge.validateSensorId(sensor);
+            case MY_CONTROLLER:
+                return rpiAgentBridge.validateSensorId(sensor);
+            case RF_LINK:
+                return rfLinkBridge.validateSensorId(sensor);
+            case PHILIPS_HUE:
+                return philipsHueProviderBridge.validateSensorId(sensor);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;

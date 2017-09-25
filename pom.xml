@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,19 +17,18 @@
     limitations under the License.
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.mycontroller</groupId>
     <artifactId>mycontroller-parent</artifactId>
-    <version>9</version>
+    <version>24</version>
   </parent>
 
   <groupId>org.mycontroller.standalone</groupId>
   <artifactId>mycontroller-standalone-parent</artifactId>
-  <version>0.0.3.Alpha2</version>
+  <version>1.0.0.Final</version>
   <url>https://github.com/mycontroller-org</url>
   <inceptionYear>2015</inceptionYear>
   <packaging>pom</packaging>
@@ -252,6 +251,29 @@
       <artifactId>jython</artifactId>
     </dependency>
 
+    <!-- MariaDB driver -->
+    <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+    </dependency>
+
+    <!-- MySQL database driver -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+
+    <!-- PostgreSQL database driver -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+
+    <!-- JmDNS registration and discovery-->
+    <dependency>
+      <groupId>org.jmdns</groupId>
+      <artifactId>jmdns</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

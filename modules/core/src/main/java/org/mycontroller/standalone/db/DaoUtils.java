@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,8 @@ import org.mycontroller.standalone.db.dao.ExternalServerResourceMapDao;
 import org.mycontroller.standalone.db.dao.ExternalServerResourceMapDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareDao;
 import org.mycontroller.standalone.db.dao.FirmwareDaoImpl;
+import org.mycontroller.standalone.db.dao.FirmwareDataDao;
+import org.mycontroller.standalone.db.dao.FirmwareDataDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareTypeDao;
 import org.mycontroller.standalone.db.dao.FirmwareTypeDaoImpl;
 import org.mycontroller.standalone.db.dao.FirmwareVersionDao;
@@ -40,6 +42,8 @@ import org.mycontroller.standalone.db.dao.MetricsCounterTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsCounterTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDao;
 import org.mycontroller.standalone.db.dao.MetricsDoubleTypeDeviceDaoImpl;
+import org.mycontroller.standalone.db.dao.MetricsGPSTypeDeviceDao;
+import org.mycontroller.standalone.db.dao.MetricsGPSTypeDeviceDaoImpl;
 import org.mycontroller.standalone.db.dao.NodeDao;
 import org.mycontroller.standalone.db.dao.NodeDaoImpl;
 import org.mycontroller.standalone.db.dao.OperationDao;
@@ -108,6 +112,7 @@ public class DaoUtils {
     private static ExternalServerDao externalServerDao = null;
     private static ExternalServerResourceMapDao externalServerResourceMapDao = null;
     private static FirmwareDao firmwareDao = null;
+    private static FirmwareDataDao firmwareDataDao = null;
     private static FirmwareTypeDao firmwareTypeDao = null;
     private static FirmwareVersionDao firmwareVersionDao = null;
     private static ForwardPayloadDao forwardPayloadDao = null;
@@ -116,6 +121,7 @@ public class DaoUtils {
     private static MetricsBinaryTypeDeviceDao metricsBinaryTypeDeviceDao = null;
     private static MetricsCounterTypeDeviceDao metricsCounterTypeDeviceDao = null;
     private static MetricsDoubleTypeDeviceDao metricsDoubleTypeDeviceDao = null;
+    private static MetricsGPSTypeDeviceDao metricsGPSTypeDeviceDao = null;
     private static NodeDao nodeDao = null;
     private static OperationDao operationDao = null;
     private static OperationRuleDefinitionMapDao operationRuleDefinitionMapDao = null;
@@ -151,6 +157,7 @@ public class DaoUtils {
             externalServerDao = new ExternalServerDaoImpl(DataBaseUtils.getConnectionSource());
             externalServerResourceMapDao = new ExternalServerResourceMapDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareDao = new FirmwareDaoImpl(DataBaseUtils.getConnectionSource());
+            firmwareDataDao = new FirmwareDataDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareTypeDao = new FirmwareTypeDaoImpl(DataBaseUtils.getConnectionSource());
             firmwareVersionDao = new FirmwareVersionDaoImpl(DataBaseUtils.getConnectionSource());
             forwardPayloadDao = new ForwardPayloadDaoImpl(DataBaseUtils.getConnectionSource());
@@ -159,6 +166,7 @@ public class DaoUtils {
             metricsBinaryTypeDeviceDao = new MetricsBinaryTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             metricsCounterTypeDeviceDao = new MetricsCounterTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             metricsDoubleTypeDeviceDao = new MetricsDoubleTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
+            metricsGPSTypeDeviceDao = new MetricsGPSTypeDeviceDaoImpl(DataBaseUtils.getConnectionSource());
             nodeDao = new NodeDaoImpl(DataBaseUtils.getConnectionSource());
             operationDao = new OperationDaoImpl(DataBaseUtils.getConnectionSource());
             operationRuleDefinitionMapDao = new OperationRuleDefinitionMapDaoImpl(DataBaseUtils.getConnectionSource());
@@ -188,8 +196,6 @@ public class DaoUtils {
             isDaoInitialized = true;
         } catch (SQLException sqlEx) {
             _logger.error("Unable to load Dao,", sqlEx);
-        } catch (DbException dbEx) {
-            _logger.error("Unable to load Dao,", dbEx);
         }
     }
 
@@ -207,6 +213,10 @@ public class DaoUtils {
 
     public static MetricsDoubleTypeDeviceDao getMetricsDoubleTypeDeviceDao() {
         return metricsDoubleTypeDeviceDao;
+    }
+
+    public static MetricsGPSTypeDeviceDao getMetricsGPSTypeDeviceDao() {
+        return metricsGPSTypeDeviceDao;
     }
 
     public static SystemJobDao getSystemJobDao() {
@@ -343,6 +353,10 @@ public class DaoUtils {
 
     public static ResourceDao getResourceDao() {
         return resourceDao;
+    }
+
+    public static FirmwareDataDao getFirmwareDataDao() {
+        return firmwareDataDao;
     }
 
 }

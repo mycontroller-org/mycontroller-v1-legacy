@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,26 +86,27 @@ public class PhantIORawMessage {
     }
 
     public void setPayload(Object payload) {
-        payload = String.valueOf(payload);
+        this.payload = String.valueOf(payload);
     }
 
     public RawMessage getRawMessage() {
         return RawMessage.builder()
                 .gatewayId(gatewayId)
                 .data(Arrays.asList(sensorId, payload))
+                .isTxMessage(isTxMessage)
                 .build();
     }
 
     public McMessage getMcMessage() {
         return McMessage.builder()
-                .acknowledge(false)
-                .gatewayId(gatewayId)
-                .nodeEui(nodeEui)
-                .sensorId(sensorId)
+                .ack(McMessage.NO_ACK)
+                .gatewayId(getGatewayId())
+                .nodeEui(getNodeEui())
+                .sensorId(getSensorId())
                 .networkType(NETWORK_TYPE.PHANT_IO)
-                .type(messageType)
-                .subType(subType)
-                .timestamp(timestamp)
+                .type(getMessageType())
+                .subType(getSubType())
+                .timestamp(getTimestamp())
                 .isTxMessage(isTxMessage())
                 .payload(getPayload()).build();
     }

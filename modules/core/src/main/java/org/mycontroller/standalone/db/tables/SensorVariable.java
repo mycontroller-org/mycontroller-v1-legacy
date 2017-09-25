@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,15 +60,21 @@ public class SensorVariable {
     public static final String KEY_READ_ONLY = "readOnly";
     public static final String KEY_OFFSET = "offset";
     public static final String KEY_PRIORITY = "priority";
-    public static final String KEY_GRAPH_PROPERTIES = "graphProperties";
+    public static final String KEY_PROPERTIES = "graphProperties";
 
     public static final String KEY_GP_USE_GLOBAL = "useGlobal";
     public static final String KEY_GP_TYPE = "type";
     public static final String KEY_GP_INTERPOLATE = "interpolate";
     public static final String KEY_GP_SUBTYPE = "subType";
     public static final String KEY_GP_COLOR = "color";
+    public static final String KEY_GP_MARGIN_LEFT = "marginLeft";
+    public static final String KEY_GP_MARGIN_RIGHT = "marginRight";
+    public static final String KEY_GP_MARGIN_TOP = "marginTop";
+    public static final String KEY_GP_MARGIN_BOTTOM = "marginBottom";
 
-    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
+    public static final String KEY_NAME = "name";
+
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID, index = true)
     private Integer id;
 
     @DatabaseField(columnName = KEY_SENSOR_DB_ID, canBeNull = false, uniqueCombo = true, foreign = true,
@@ -103,8 +109,8 @@ public class SensorVariable {
     @DatabaseField(columnName = KEY_PRIORITY, canBeNull = false, defaultValue = "100")
     private Integer priority;
 
-    @DatabaseField(canBeNull = true, columnName = KEY_GRAPH_PROPERTIES, dataType = DataType.SERIALIZABLE)
-    private HashMap<String, Object> graphProperties;
+    @DatabaseField(columnName = KEY_PROPERTIES, canBeNull = true, dataType = DataType.SERIALIZABLE)
+    private HashMap<String, Object> properties;
 
     public SensorVariable updateUnitAndMetricType() {
         if (this.unitType == null) {
@@ -121,23 +127,55 @@ public class SensorVariable {
         this.value = value;
     }
 
-    public HashMap<String, Object> getGraphProperties() {
-        if (graphProperties == null) {
-            graphProperties = new HashMap<String, Object>();
-            graphProperties.put(KEY_GP_USE_GLOBAL, true);
-            graphProperties.put(KEY_GP_TYPE, CHART_TYPE.LINE_CHART.getText());
-            graphProperties.put(KEY_GP_INTERPOLATE, "linear");
-            graphProperties.put(KEY_GP_SUBTYPE, "line");
-            graphProperties.put(KEY_GP_COLOR, "#ff7f0e");
+    public HashMap<String, Object> getProperties() {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
         }
-        return graphProperties;
+        if (properties.get(KEY_GP_USE_GLOBAL) == null || (Boolean) properties.get(KEY_GP_USE_GLOBAL)) {
+            properties.put(KEY_GP_USE_GLOBAL, true);
+            properties.put(KEY_GP_TYPE, CHART_TYPE.LINE_CHART.getText());
+            properties.put(KEY_GP_INTERPOLATE, "linear");
+            properties.put(KEY_GP_SUBTYPE, "line");
+            properties.put(KEY_GP_COLOR, "#ff7f0e");
+            properties.put(KEY_GP_MARGIN_LEFT, 65);
+            properties.put(KEY_GP_MARGIN_RIGHT, 20);
+            properties.put(KEY_GP_MARGIN_TOP, 5);
+            properties.put(KEY_GP_MARGIN_BOTTOM, 60);
+
+        }
+        return properties;
+    }
+
+    public void setProperties(HashMap<String, Object> properties) {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        } else {
+            if (properties.get(KEY_GP_USE_GLOBAL) == null || (Boolean) properties.get(KEY_GP_USE_GLOBAL)) {
+                properties.remove(KEY_GP_TYPE);
+                properties.remove(KEY_GP_INTERPOLATE);
+                properties.remove(KEY_GP_SUBTYPE);
+                properties.remove(KEY_GP_COLOR);
+                properties.remove(KEY_GP_MARGIN_LEFT);
+                properties.remove(KEY_GP_MARGIN_RIGHT);
+                properties.remove(KEY_GP_MARGIN_TOP);
+                properties.remove(KEY_GP_MARGIN_BOTTOM);
+            }
+            if (properties.get(KEY_NAME) != null && ((String) properties.get(KEY_NAME)).trim().length() == 0) {
+                properties.remove(KEY_NAME);
+            }
+        }
+        this.properties = properties;
     }
 
     public MetricsGraph getMetricsGraph() {
-        if ((boolean) getGraphProperties().get(KEY_GP_USE_GLOBAL)) {
+        if (getProperties().get(KEY_GP_USE_GLOBAL) == null || (boolean) getProperties().get(KEY_GP_USE_GLOBAL)) {
             return AppProperties.getInstance().getMetricsGraphSettings().getMetric(variableType.getText());
         } else {
-            return MetricsGraph.get(graphProperties);
+            return MetricsGraph.get(properties);
         }
+    }
+
+    public String getName() {
+        return (String) getProperties().get(KEY_NAME);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,10 @@ public class MetricsBatteryUsage {
     public static final String KEY_NODE_ID = "nodeId";
     public static final String KEY_TIMESTAMP = "timestamp";
     public static final String KEY_AGGREGATION_TYPE = "aggregationType";
+    public static final String KEY_MIN = "min";
+    public static final String KEY_MAX = "max";
+    public static final String KEY_AVG = "avg";
+    public static final String KEY_SAMPLES = "samples";
 
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_NODE_ID)
     private Node node;
@@ -50,23 +54,23 @@ public class MetricsBatteryUsage {
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_SAMPLES)
     private Integer samples;
 
-    @DatabaseField
+    @DatabaseField(columnName = KEY_MIN)
     private Double min;
 
-    @DatabaseField
+    @DatabaseField(columnName = KEY_MAX)
     private Double max;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = KEY_AVG)
     private Double avg;
 
     @DatabaseField(uniqueCombo = true, dataType = DataType.ENUM_INTEGER,
             canBeNull = false, columnName = KEY_AGGREGATION_TYPE)
     private AGGREGATION_TYPE aggregationType;
 
-    private Long timestampFrom;
-    private Long timestampTo;
+    private Long start;
+    private Long end;
 
 }

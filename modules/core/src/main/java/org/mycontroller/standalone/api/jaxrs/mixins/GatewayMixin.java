@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import java.io.IOException;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -28,8 +29,8 @@ import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
+import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -105,6 +106,7 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 gatewayMQTT.setTopicsSubscribe(node.get("topicsSubscribe").asText());
                 gatewayMQTT.setUsername(node.get("username").asText());
                 gatewayMQTT.setPassword(node.get("password").asText());
+                gatewayMQTT.setQos(node.get("qos").asInt());
                 gateway = gatewayMQTT;
                 break;
             case PHANT_IO:
@@ -119,6 +121,14 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 gatewayPhantIO.setRecordsLimit(node.get("recordsLimit").asLong());
                 gatewayPhantIO.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));
                 gateway = gatewayPhantIO;
+                break;
+            case PHILIPS_HUE:
+                GatewayPhilipsHue gatewayPhilipsHue = new GatewayPhilipsHue();
+                gatewayPhilipsHue.setAuthorizedUser(node.get(GatewayPhilipsHue.KEY_AUTORIZED_USER).asText());
+                gatewayPhilipsHue.setPollFrequency(node.get(GatewayPhilipsHue.KEY_POLL_FREQUENCY).asInt());
+                gatewayPhilipsHue.setUrl(node.get(GatewayPhilipsHue.KEY_URL).asText());
+                gateway = gatewayPhilipsHue;
+                break;
             default:
                 break;
         }
@@ -126,6 +136,7 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
         if (node.get("id") != null) {
             gateway.setId(node.get("id").asInt());
         }
+        gateway.setTxDelay(node.get("txDelay").asLong());
         gateway.setEnabled(node.get("enabled").asBoolean());
         gateway.setName(node.get("name").asText());
         gateway.setType(gatewayType);

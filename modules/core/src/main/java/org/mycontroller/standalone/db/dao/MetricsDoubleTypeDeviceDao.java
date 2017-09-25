@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,11 +29,17 @@ public interface MetricsDoubleTypeDeviceDao extends BaseDao<MetricsDoubleTypeDev
 
     void deletePrevious(MetricsDoubleTypeDevice metric);
 
+    void deletePrevious(MetricsDoubleTypeDevice metric, String delimiter);
+
     void deleteBySensorVariableRefId(int sensorRefId);
 
     List<MetricsDoubleTypeDevice> getAll(MetricsDoubleTypeDevice metric);
 
     MetricsDoubleTypeDevice getMinMaxAvg(MetricsDoubleTypeDevice metric);
+
+    long countOf(AGGREGATION_TYPE aggregationType, long start, long end);
+
+    boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end);
 
     List<MetricsDoubleTypeDevice> getAggregationRequiredVariableIds(AGGREGATION_TYPE aggregationType,
             Long fromTimestamp,

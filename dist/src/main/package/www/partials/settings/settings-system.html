@@ -70,6 +70,14 @@
               </div>
             </div>
 
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'LOCATION_NAME' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.name" required />
+                <div ng-hide="editEnable.location">{{locationSettings.name}}</div>
+              </div>
+            </div>
+
           </form>
 
           <div class="form-actions text-right">
@@ -77,7 +85,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.location" ng-click="updateSettingsLocation();editEnable.location = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveLocation()"  ng-show="editEnable.location" ng-disabled="saveProgress.location || mcForm.$invalid">
               <div ng-show="saveProgress.location" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              {{saveProgress.location ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>
@@ -137,16 +145,6 @@
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'REGISTER_NODES_AUTOMATICALLY' | translate }}</label>
-              <div class="col-sm-5">
-                <input bs-switch ng-change="editEnable.controller = true" ng-model="controllerSettings.autoNodeRegistration" type="checkbox"
-                      switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
-                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
-                      ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
-              </div>
-            </div>
-
-            <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'RESOURCES_LOG_LEVEL' | translate }}</label>
               <div class="col-sm-5">
                 <div ng-show="editEnable.controller">
@@ -155,6 +153,32 @@
                   </select>
                 </div>
                 <span ng-hide="editEnable.controller">{{controllerSettings.resourcesLogLevel}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RESOURCES_LOG_RETENTION_DURATION' | translate }}</label>
+              <div class="col-sm-5" ng-hide="editEnable.controller">
+                <span>{{resourcesLogsRetentionDurationMinutes}} {{ 'MINUTES' | translate }}</span>
+              </div>
+              <div  ng-show="editEnable.controller">
+                <div class="col-sm-2">
+                  <input class="form-control" ng-model="resourcesLogsRetentionDurationMinutes" pf-validation="cs.isNumber(input)" required />
+                  <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+                </div>
+                <div class="col-sm-3 mc-form-fixer">
+                  <span>{{ 'MINUTES' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'REGISTER_NODES_AUTOMATICALLY' | translate }}</label>
+              <div class="col-sm-5">
+                <input bs-switch ng-change="editEnable.controller = true" ng-model="controllerSettings.autoNodeRegistration" type="checkbox"
+                      switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
+                      switch-off-color="default" switch-on-color="primary" ng-true-value="true"
+                      ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
               </div>
             </div>
 
@@ -264,7 +288,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.controller" ng-click="updateSettingsController();editEnable.controller = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveController()"  ng-show="editEnable.controller" ng-disabled="saveProgress.controller || mcFormController.$invalid">
               <div ng-show="saveProgress.controller" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              {{saveProgress.controller ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>

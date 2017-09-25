@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,6 +48,7 @@ public class McConditionCompare extends McRuleBase {
         //Update current value
         try {
             setActualValue(super.getResourceValue(rdCompare.getResourceType(), rdCompare.getResourceId()));
+            setActualUnit(super.getResourceUnit(rdCompare.getResourceType(), rdCompare.getResourceId()));
             date2ValueString = super
                     .getResourceValue(rdCompare.getData2ResourceType(), rdCompare.getData2ResourceId());
         } catch (IllegalAccessException ex) {

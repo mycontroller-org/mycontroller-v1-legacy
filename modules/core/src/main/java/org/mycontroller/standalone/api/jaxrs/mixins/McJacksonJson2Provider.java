@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
@@ -52,6 +53,7 @@ import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.exernalserver.model.ExternalServer;
 import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.message.McMessage;
+import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 import org.mycontroller.standalone.scripts.McScript;
@@ -87,12 +89,13 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         //AddMixIns
-        mapper.addMixIn(RuleDefinitionTable.class, RuleDefinitionMixin.class);
         mapper.addMixIn(Dashboard.class, DashboardMixin.class);
         mapper.addMixIn(ExternalServerTable.class, ExternalServerMixin.class);
         mapper.addMixIn(Firmware.class, FirmwareMixin.class);
         mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixIn(GatewayTable.class, GatewayMixin.class);
+        mapper.addMixIn(MetricEngineConf.class, MetricEngineConfMixin.class);
+        mapper.addMixIn(McScript.class, McScriptMixin.class);
         mapper.addMixIn(Node.class, NodeMixin.class);
         mapper.addMixIn(OperationTable.class, OperationMixin.class);
         mapper.addMixIn(Resource.class, ResourceMixin.class);
@@ -100,12 +103,13 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
         mapper.addMixIn(ResourcesLogs.class, ResourcesLogsMixin.class);
         mapper.addMixIn(Role.class, RoleMixin.class);
+        mapper.addMixIn(RuleDefinitionTable.class, RuleDefinitionMixin.class);
         mapper.addMixIn(Sensor.class, SensorMixin.class);
-        mapper.addMixIn(Timer.class, TimerMixin.class);
-        mapper.addMixIn(User.class, UserMixin.class);
-        mapper.addMixIn(McScript.class, McScriptMixin.class);
         mapper.addMixIn(SensorVariable.class, SensorVariableMixin.class);
         mapper.addMixIn(SensorVariableJson.class, SensorVariableJsonMixin.class);
+        mapper.addMixIn(Timer.class, TimerMixin.class);
+        mapper.addMixIn(UidTag.class, UidTagMixin.class);
+        mapper.addMixIn(User.class, UserMixin.class);
 
         if (_logger.isDebugEnabled()) {
             _logger.debug("Response: Headers:{}", httpHeaders);
@@ -124,24 +128,27 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         //AddMixIns
-        mapper.addMixIn(RuleDefinition.class, RuleDefinitionMixin.class);
         mapper.addMixIn(Dashboard.class, DashboardMixin.class);
         mapper.addMixIn(ExternalServer.class, ExternalServerMixin.class);
         mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixIn(Gateway.class, GatewayMixin.class);
+        mapper.addMixIn(MetricEngineConf.class, MetricEngineConfMixin.class);
+        mapper.addMixIn(McMessage.class, McMessageMixin.class);
+        mapper.addMixIn(McScript.class, McScriptMixin.class);
         mapper.addMixIn(Node.class, NodeMixin.class);
         mapper.addMixIn(Operation.class, OperationMixin.class);
         mapper.addMixIn(Resource.class, ResourceMixin.class);
         mapper.addMixIn(ResourcesGroup.class, ResourcesGroupMixin.class);
         mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
+        mapper.addMixIn(ResourcesLogs.class, ResourcesLogsMixin.class);
         mapper.addMixIn(Role.class, RoleMixin.class);
+        mapper.addMixIn(RuleDefinition.class, RuleDefinitionMixin.class);
         mapper.addMixIn(Sensor.class, SensorMixin.class);
-        mapper.addMixIn(Timer.class, TimerMixin.class);
-        mapper.addMixIn(User.class, UserMixin.class);
-        mapper.addMixIn(McScript.class, McScriptMixin.class);
-        mapper.addMixIn(UidTag.class, UidTagMixin.class);
-        mapper.addMixIn(McMessage.class, McMessageMixin.class);
         mapper.addMixIn(SensorVariableJson.class, SensorVariableJsonMixin.class);
+        mapper.addMixIn(ResourcePurgeConf.class, SensorVariablePurgeMixin.class);
+        mapper.addMixIn(Timer.class, TimerMixin.class);
+        mapper.addMixIn(UidTag.class, UidTagMixin.class);
+        mapper.addMixIn(User.class, UserMixin.class);
 
         _logger.debug("Request: Headers:{}", httpHeaders);
 

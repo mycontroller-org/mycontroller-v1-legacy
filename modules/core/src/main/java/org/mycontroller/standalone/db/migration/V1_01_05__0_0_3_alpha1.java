@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,7 +42,9 @@ public class V1_01_05__0_0_3_alpha1 extends MigrationBase {
 
         //Migration #1
         //Add roomId in sensors table
-        addColumn("sensor", "roomId", "INTEGER");
+        if (!sqlClient().hasColumn("sensor", "roomId")) {
+            sqlClient().addColumn("sensor", "roomId", "INTEGER");
+        }
 
         _logger.info("Migration completed successfully.");
     }

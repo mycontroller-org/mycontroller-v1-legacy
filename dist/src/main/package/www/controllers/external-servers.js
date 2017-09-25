@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -206,9 +206,16 @@ myControllerModule.controller('ExternalServersControllerAddEdit', function ($sco
     $scope.item = ExternalServersFactory.get({"id":$stateParams.id});
   }else{
     $scope.item.enabled = true;
+    $scope.item.keyCase='DEFAULT';
   }
   $scope.trustHostTypes = TypesFactory.getTrustHostTypes();
   $scope.types = TypesFactory.getExternalServerTypes();
+  //Reset common things in all server types
+  $scope.item.keyFormat='$nodeEui_$sensorId_$variableType';
+  $scope.item.trustHostType='';
+  $scope.item.url='';
+  $scope.item.username='';
+  $scope.item.password='';
 
   //Update type change
   $scope.updateTypeChange = function (){
@@ -220,14 +227,12 @@ myControllerModule.controller('ExternalServersControllerAddEdit', function ($sco
       $scope.item.url='https://emoncms.org';
       $scope.item.writeApiKey='';
     }else if($scope.item.type === 'Influxdb'){
-      $scope.item.url='';
       $scope.item.database='';
-      $scope.item.username='';
-      $scope.item.password='';
+    }else if($scope.item.type === 'MQTT'){
+      $scope.item.keyFormat='$nodeEui/$sensorId/$variableType';
+    }else if($scope.item.type === 'WUnderground'){
+      $scope.item.url='https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php';
     }
-    //Reset common things in all server types
-    $scope.item.keyFormat='$nodeEui_$sensorId_$variableType';
-    $scope.item.trustHostType='';
   };
 
   //GUI page settings

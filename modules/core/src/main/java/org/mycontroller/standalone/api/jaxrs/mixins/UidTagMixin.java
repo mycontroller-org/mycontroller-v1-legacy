@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,49 +16,23 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
-import java.io.IOException;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.ResourceTypeDeserializer;
+import org.mycontroller.standalone.api.jaxrs.mixins.serializers.ResourceTypeSerializer;
 
-import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.db.tables.UidTag;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-@JsonDeserialize(using = UidTagDeserializer.class)
 abstract class UidTagMixin {
 
-}
+    @JsonSerialize(using = ResourceTypeSerializer.class)
+    public abstract String getResourceType();
 
-class UidTagDeserializer extends JsonDeserializer<UidTag> {
+    @JsonDeserialize(using = ResourceTypeDeserializer.class)
+    public abstract void setResourceType(RESOURCE_TYPE resourceType);
 
-    @Override
-    public UidTag deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
-        ObjectCodec objectCodec = jp.getCodec();
-        JsonNode node = objectCodec.readTree(jp);
-
-        final JsonNode sVariableNode = node.get("sensorVariable");
-
-        if (node.get("uid") == null || sVariableNode == null || sVariableNode.get("id") == null) {
-            return null;
-        }
-
-        UidTag uidTag = UidTag.builder()
-                .uid(node.get("uid").asText())
-                .sensorVariable(SensorVariable.builder().id(sVariableNode.get("id").asInt()).build())
-                .build();
-        if (node.get("id") != null) {
-            uidTag.setId(node.get("id").asInt());
-        }
-        return uidTag;
-    }
 }

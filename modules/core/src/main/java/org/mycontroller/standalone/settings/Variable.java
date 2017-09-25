@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import org.mycontroller.standalone.db.tables.Settings;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -32,7 +32,7 @@ import lombok.ToString;
 
 @Builder
 @ToString(includeFieldNames = true)
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Variable {

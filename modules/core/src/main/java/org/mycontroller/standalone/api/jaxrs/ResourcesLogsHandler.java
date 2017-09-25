@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,11 +33,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.SystemApi;
+import org.mycontroller.standalone.api.jaxrs.model.AllowedResources;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
-import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
@@ -53,6 +53,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
 public class ResourcesLogsHandler extends AccessEngine {
+    private SystemApi systemApi = new SystemApi();
 
     @GET
     @Path("/")
@@ -88,14 +89,14 @@ public class ResourcesLogsHandler extends AccessEngine {
         filters.put(Query.PAGE_LIMIT, pageLimit);
         filters.put(Query.PAGE, page);
 
-        return RestUtils.getResponse(Status.OK, DaoUtils.getResourcesLogsDao().getAll(Query.get(filters)));
+        return RestUtils.getResponse(Status.OK, systemApi.getResourcesLogsAll(filters));
     }
 
     @RolesAllowed({ "Admin" })
     @PUT
     @Path("/")
     public Response purge(ResourcesLogs resourcesLogs) {
-        DaoUtils.getResourcesLogsDao().deleteAll(resourcesLogs);
+        systemApi.purgeResourcesLogs(resourcesLogs);
         return RestUtils.getResponse(Status.OK);
     }
 
@@ -103,7 +104,7 @@ public class ResourcesLogsHandler extends AccessEngine {
     @POST
     @Path("/delete")
     public Response purge(List<Integer> ids) {
-        DaoUtils.getResourcesLogsDao().delete(ids);
+        systemApi.purgeResourcesLogs(ids);
         return RestUtils.getResponse(Status.OK);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,15 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
-import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.UidTag;
 
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 import lombok.extern.slf4j.Slf4j;
@@ -50,22 +52,18 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     }
 
     @Override
-    public void deleteBySensorVariableIds(List<Integer> sVariableIds) {
-        super.delete(UidTag.KEY_SENSOR_VARIABLE, sVariableIds);
-    }
-
-    @Override
-    public void deleteBySensorId(Integer sId) {
-        List<Integer> senosrVariableIds = DaoUtils.getSensorVariableDao().getSensorVariableIds(sId);
-        if (senosrVariableIds != null && !senosrVariableIds.isEmpty()) {
-            deleteBySensorVariableIds(senosrVariableIds);
-        }
+    public void delete(RESOURCE_TYPE resourceType, Integer resourceId) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put(UidTag.KEY_RESOURCE_TYPE, resourceType);
+        map.put(UidTag.KEY_RESOURCE_ID, resourceId);
+        super.delete(map);
     }
 
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, UidTag.KEY_ID);
+            query.setIdColumn(UidTag.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
@@ -73,10 +71,17 @@ public class UidTagDaoImpl extends BaseAbstractDaoImpl<UidTag, Integer> implemen
     }
 
     @Override
-    public UidTag getBySensorVariableId(Integer sVariableId) {
-        List<UidTag> uidTags = super.getAll(UidTag.KEY_SENSOR_VARIABLE, sVariableId);
-        if (uidTags != null && !uidTags.isEmpty()) {
-            return uidTags.get(0);
+    public UidTag get(RESOURCE_TYPE resourceType, Integer resourceId) {
+        QueryBuilder<UidTag, Integer> queryBuilder = getDao().queryBuilder();
+        try {
+            queryBuilder.where().eq(UidTag.KEY_RESOURCE_TYPE, resourceType).and()
+                    .eq(UidTag.KEY_RESOURCE_ID, resourceId);
+            List<UidTag> uidTags = queryBuilder.query();
+            if (uidTags != null && !uidTags.isEmpty()) {
+                return uidTags.get(0);
+            }
+        } catch (SQLException ex) {
+            _logger.error("Error, ", ex);
         }
         return null;
     }

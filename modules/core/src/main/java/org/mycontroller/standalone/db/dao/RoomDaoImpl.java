@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,15 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.Room;
 
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +49,8 @@ public class RoomDaoImpl extends BaseAbstractDaoImpl<Room, Integer> implements R
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, Room.KEY_ID);
+            query.setIdColumn(Room.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
@@ -85,6 +89,63 @@ public class RoomDaoImpl extends BaseAbstractDaoImpl<Room, Integer> implements R
             return rooms.get(0);
         }
         return null;
+    }
+
+    @Override
+    public Room getByNameAndParentId(String name, Integer parentId) {
+        try {
+            QueryBuilder<Room, Integer> queryBuilder = this.getDao().queryBuilder();
+            Where<Room, Integer> where = queryBuilder.where();
+            int whereCount = 0;
+            where.eq(Room.KEY_NAME, name);
+            whereCount++;
+            if (parentId == null) {
+                where.isNull(Room.KEY_PARENT_ID);
+            } else {
+                where.eq(Room.KEY_PARENT_ID, parentId);
+            }
+            whereCount++;
+
+            where.and(whereCount);
+
+            queryBuilder.setWhere(where);
+
+            List<Room> rooms = queryBuilder.query();
+            if (rooms != null && !rooms.isEmpty()) {
+                return rooms.get(0);
+            }
+        } catch (SQLException ex) {
+            _logger.error("unable to get room", ex);
+        }
+        return null;
+    }
+
+    private void updateParentId(List<Integer> parentIds, Room room) {
+        if (room == null || room.getParentId() == null) {
+            return;
+        } else {
+            parentIds.add(room.getParentId());
+            updateParentId(parentIds, this.getById(room.getParentId()));
+        }
+    }
+
+    @Override
+    public List<Integer> getParentIds(Integer id) {
+        List<Integer> parentIds = new ArrayList<Integer>();
+        updateParentId(parentIds, this.getById(id));
+        return parentIds;
+    }
+
+    @Override
+    public List<Integer> getChildrenIds(Integer id) {
+        List<Integer> childrenIds = new ArrayList<Integer>();
+        List<Room> children = this.getByParentId(id);
+        if (children != null && !children.isEmpty()) {
+            for (Room room : children) {
+                childrenIds.add(room.getId());
+            }
+        }
+        return childrenIds;
     }
 
 }

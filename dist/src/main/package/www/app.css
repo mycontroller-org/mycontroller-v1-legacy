@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -532,7 +532,7 @@ input.mc-color-steel-blue{
 }
 
 .mc-sensor-variable-detail{
-  height:75px;
+  height:80px;
 }
 
 .mc-sensor-action-tiles{
@@ -640,6 +640,14 @@ input.mc-color-steel-blue{
 }
 
 
+/* ADF Table widget */
+.adf-table > tbody > tr > td{
+  padding-left: 2px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 5px;
+  vertical-align: middle;
+}
 
 
 /* on-off button*/
@@ -808,7 +816,8 @@ kubernetes-topology-icon svg {
 }
 
 .tick line {
-  display: none;
+  /* When you do not want to display grid line on your charts enable, 'display:none;' */
+  /* display: none; */
 }
 
 .modal-body {

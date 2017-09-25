@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,15 +19,17 @@ package org.mycontroller.standalone.externalserver;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.restclient.influxdb.InfluxDBClient;
+import org.mycontroller.restclient.influxdb.InfluxDBClientBuilder;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.exernalserver.model.ExternalServer;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerEmoncms;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerInfluxdb;
+import org.mycontroller.standalone.exernalserver.model.ExternalServerMqtt;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerPhantIO;
-import org.mycontroller.standalone.restclient.IRestClient;
+import org.mycontroller.standalone.exernalserver.model.ExternalServerWUnderground;
 import org.mycontroller.standalone.restclient.emoncms.EmoncmsClientImpl;
-import org.mycontroller.standalone.restclient.influxdb.InfluxdbClientImpl;
 import org.mycontroller.standalone.restclient.phantio.PhantIOClientImpl;
 
 import lombok.AccessLevel;
@@ -41,12 +43,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExternalServerUtils {
-    private static final HashMap<Integer, IRestClient> restClients = new HashMap<Integer, IRestClient>();
+    private static final HashMap<Integer, Object> EXTERNAL_SERVER_CLIENTS = new HashMap<Integer, Object>();
 
     public enum EXTERNAL_SERVER_TYPE {
         PHANT_IO("Sparkfun [phant.io]"),
         EMONCMS("Emoncms.org"),
-        INFLUXDB("Influxdb");
+        INFLUXDB("Influxdb"),
+        MQTT("MQTT"),
+        WUNDERGROUND("WUnderground");
         public static EXTERNAL_SERVER_TYPE get(int id) {
             for (EXTERNAL_SERVER_TYPE type : values()) {
                 if (type.ordinal() == id) {
@@ -86,6 +90,10 @@ public class ExternalServerUtils {
                 return new ExternalServerPhantIO(externalServerTable);
             case INFLUXDB:
                 return new ExternalServerInfluxdb(externalServerTable);
+            case MQTT:
+                return new ExternalServerMqtt(externalServerTable);
+            case WUNDERGROUND:
+                return new ExternalServerWUnderground(externalServerTable);
             default:
                 _logger.error("This type External Server not implemented!");
                 break;
@@ -93,7 +101,7 @@ public class ExternalServerUtils {
         return null;
     }
 
-    private static IRestClient getRestClientByExtSerId(Integer extServerId) {
+    private static Object getClientByExtSerId(Integer extServerId) {
         try {
             ExternalServerTable extServerTable = DaoUtils.getExternalServerTableDao().getById(extServerId);
             if (extServerTable != null) {
@@ -110,15 +118,25 @@ public class ExternalServerUtils {
                     case INFLUXDB:
                         ExternalServerInfluxdb influxdbServer = (ExternalServerInfluxdb) externalServer;
                         if (influxdbServer.getUsername() != null && influxdbServer.getUsername().length() > 0) {
-                            return new InfluxdbClientImpl(influxdbServer.getUrl(), influxdbServer.getUsername(),
-                                    influxdbServer.getPassword(), influxdbServer.getDatabase(),
-                                    influxdbServer.getTrustHostType());
+                            return new InfluxDBClientBuilder()
+                                    .uri(influxdbServer.getUrl(), influxdbServer.getTrustHostType())
+                                    .basicAuthentication(influxdbServer.getUsername(), influxdbServer.getPassword())
+                                    .addProperty(InfluxDBClient.KEY_DATABASE, influxdbServer.getDatabase())
+                                    .build();
                         } else {
-                            return new InfluxdbClientImpl(influxdbServer.getUrl(),
-                                    influxdbServer.getDatabase(),
-                                    influxdbServer.getTrustHostType());
+                            return new InfluxDBClientBuilder()
+                                    .uri(influxdbServer.getUrl(), influxdbServer.getTrustHostType())
+                                    .addProperty(InfluxDBClient.KEY_DATABASE, influxdbServer.getDatabase())
+                                    .build();
                         }
-
+                    case MQTT:
+                        ExternalServerMqtt mqttClient = (ExternalServerMqtt) externalServer;
+                        return new ExternalMqttClient(
+                                mqttClient.getUrl(),
+                                mqttClient.getName(),
+                                mqttClient.getUsername(),
+                                mqttClient.getPassword(),
+                                mqttClient.getTrustHostType());
                     default:
                         _logger.error("This type rest client not implemented yet.");
                         break;
@@ -130,15 +148,28 @@ public class ExternalServerUtils {
         return null;
     }
 
-    public static IRestClient getRestClient(Integer extServerId) {
-        if (restClients.get(extServerId) == null) {
-            restClients.put(extServerId, getRestClientByExtSerId(extServerId));
+    public static Object getClient(Integer extServerId) {
+        if (EXTERNAL_SERVER_CLIENTS.get(extServerId) == null) {
+            EXTERNAL_SERVER_CLIENTS.put(extServerId, getClientByExtSerId(extServerId));
         }
-        return restClients.get(extServerId);
+        return EXTERNAL_SERVER_CLIENTS.get(extServerId);
     }
 
     public static void removeRestClient(Integer extServerId) {
-        restClients.put(extServerId, null);
+        if (EXTERNAL_SERVER_CLIENTS.get(extServerId) != null) {
+            ExternalServerTable extServer = DaoUtils.getExternalServerTableDao().getById(extServerId);
+            if (extServer.getType() == EXTERNAL_SERVER_TYPE.MQTT) {
+                ExternalMqttClient client = (ExternalMqttClient) EXTERNAL_SERVER_CLIENTS.get(extServerId);
+                client.disconnect();
+            }
+            EXTERNAL_SERVER_CLIENTS.put(extServerId, null);
+        }
+    }
+
+    public static synchronized void clearServers() {
+        for (Integer key : EXTERNAL_SERVER_CLIENTS.keySet()) {
+            removeRestClient(key);
+        }
     }
 
     public static void update(ExternalServer externalServer) {

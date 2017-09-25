@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,16 +26,17 @@ angular.module('adf.widget.myc-sen-vars', [])
       .widget('mycSenVars', {
         title: 'Sensors',
         description: 'Monitor and change sensors state',
-        templateUrl: 'controllers/adf-widgets/adf-myc-sen-vars/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-sen-vars/view.html?mcv=${mc.gui.version}',
         controller: 'mycSenVarsController',
         controllerAs: 'mycSenVars',
         config: {
           variableIds:[],
+          showIcon: true,
           itemsPerRow:"2",
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-sen-vars/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-sen-vars/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSenVarsEditController',
           controllerAs: 'mycSenVarsEdit',
         }
@@ -48,7 +49,7 @@ angular.module('adf.widget.myc-sen-vars', [])
     mycSenVars.isSyncing = true;
     mycSenVars.variables = {};
     $scope.tooltipEnabled = false;
-    $scope.hideVariableName=true;
+    $scope.hideVariableName= !config.showIcon;
     $scope.cs = CommonServices;
 
     //HVAC heater options - HVAC flow state

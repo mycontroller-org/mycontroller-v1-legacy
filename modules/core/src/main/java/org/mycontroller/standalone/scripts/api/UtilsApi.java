@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,29 +16,37 @@
  */
 package org.mycontroller.standalone.scripts.api;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import org.mycontroller.standalone.api.jaxrs.json.McHeatMap;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.apache.commons.mail.EmailException;
+import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.api.jaxrs.model.McHeatMap;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
+import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.RuleUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.utils.McUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-
+@Slf4j
 public class UtilsApi {
 
     public Query getQuery() {
@@ -80,5 +88,32 @@ public class UtilsApi {
             return "Never";
         }
         return McUtils.getFriendlyTime(System.currentTimeMillis() - timestamp, true);
+    }
+
+    public String formatTime(String pattern) {
+        return formatTime(pattern, null);
+    }
+
+    public String formatTime(String pattern, Long timestamp) {
+        Date date = null;
+        if (timestamp != null) {
+            date = new Date(timestamp);
+        } else {
+            date = new Date();
+        }
+        return new SimpleDateFormat(pattern).format(date);
+    }
+
+    public LocationSettings getServerLocationSettings() {
+        return AppProperties.getInstance().getLocationSettings();
+    }
+
+    public void sendEmail(String toAddresses, String subject, String message) {
+        try {
+            EmailUtils.sendSimpleEmail(toAddresses, subject, message);
+        } catch (EmailException ex) {
+            _logger.error("Unable to send an email:[toAddress:{}, subject:{}, message:{}], Exception:{}", toAddresses,
+                    subject, message, ex.toString(), ex);
+        }
     }
 }

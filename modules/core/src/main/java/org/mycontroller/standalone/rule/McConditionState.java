@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,6 +51,7 @@ public class McConditionState extends McRuleBase {
         //Update current value
         try {
             setActualValue(super.getResourceValue(rdState.getResourceType(), rdState.getResourceId()));
+            setActualUnit(super.getResourceUnit(rdState.getResourceType(), rdState.getResourceId()));
             if (rdState.getResourceType() == RESOURCE_TYPE.SENSOR_VARIABLE) {
                 actualState = McUtils.getInteger(getActualValue()) > 0 ? STATE.ON : STATE.OFF;
             } else {

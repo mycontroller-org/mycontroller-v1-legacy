@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,8 @@ package org.mycontroller.standalone.db.dao;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableInfo;
 
@@ -37,9 +39,11 @@ public interface BaseDao<Tdao, Tid> {
 
     void delete(String key, Object value);
 
-    void delete(String key, List<Object> values);
+    void delete(String key, List<?> values);
 
     void update(Tdao tdao);
+
+    void updateId(Tdao tdao, Tid tid);
 
     void updateBulk(String setColName, Object setColValue);
 
@@ -59,12 +63,18 @@ public interface BaseDao<Tdao, Tid> {
 
     List<Tdao> getAll(String key, Object value);
 
-    long countOf(HashMap<String, List<Object>> columnValues);
+    List<Tdao> getAllData(Query query);
+
+    Tdao get(String key, Object value);
+
+    long countOf(HashMap<String, Object> columnValues);
 
     long countOf(String key, Object data);
 
     Dao<Tdao, Tid> getDao();
 
     TableInfo<Tdao, Tid> getTableInfo();
+
+    void delete(HashMap<String, Object> map);
 
 }

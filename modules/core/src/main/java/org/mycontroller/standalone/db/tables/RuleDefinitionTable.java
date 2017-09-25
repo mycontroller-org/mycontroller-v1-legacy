@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,6 +58,8 @@ public class RuleDefinitionTable {
     public static final String KEY_DAMPENING_TYPE = "dampeningType";
     public static final String KEY_CONDITION_PROPERTIES = "conditionProperties";
     public static final String KEY_DAMPENING_PROPERTIES = "dampeningProperties";
+    public static final String KEY_RE_ENABLE = "reEnable";
+    public static final String KEY_RE_ENABLE_DELAY = "reEnableDelay";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -67,6 +69,12 @@ public class RuleDefinitionTable {
 
     @DatabaseField(canBeNull = false, columnName = KEY_DISABLE_WHEN_TRIGGER)
     private Boolean disableWhenTrigger;
+
+    @DatabaseField(canBeNull = false, columnName = KEY_RE_ENABLE)
+    private Boolean reEnable;
+
+    @DatabaseField(canBeNull = true, columnName = KEY_RE_ENABLE_DELAY)
+    private Long reEnableDelay;
 
     @DatabaseField(canBeNull = false, unique = true, columnName = KEY_NAME)
     private String name;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
       .widget('mycSensorsBulletGraph', {
         title: 'Sensors bullet graph',
         description: 'Monitor sensors value with bullet graph',
-        templateUrl: 'controllers/adf-widgets/adf-myc-sbg/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-sbg/view.html?mcv=${mc.gui.version}',
         controller: 'mycSensorsBulletGraphController',
         controllerAs: 'mycSensorsBulletGraph',
         config: {
@@ -37,7 +37,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-sbg/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-sbg/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSensorsBulletGraphEditController',
           controllerAs: 'mycSensorsBulletGraphEdit',
         }
@@ -74,7 +74,7 @@ angular.module('adf.widget.myc-sensors-bullet-graph', [])
 
     function loadVariables(){
       mycSensorsBulletGraph.isSyncing = true;
-      MetricsFactory.getBulletChart({'variableId':config.variableIds, "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(response){
+      MetricsFactory.getBulletChart({'variableId':config.variableIds, "start": new Date().getTime() - config.chartFromTimestamp}, function(response){
           mycSensorsBulletGraph.sensorVariables = response;
           angular.forEach(mycSensorsBulletGraph.sensorVariables, function(item){
             if(item.markers && item.markers[0]){

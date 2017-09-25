@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -130,6 +130,16 @@ public class SchedulerUtils {
         _logger.debug("Job removed:[Name:{},CronName:{}]", jobName, getCronTriggerName(jobName));
     }
 
+    public static void removeJobIfStartsWith(String jobName) {
+        List<String> jobNames = SundialJobScheduler.getAllJobNames();
+        for (String jName : jobNames) {
+            if (jName.startsWith(jobName)) {
+                _logger.debug("There is a match: jName:[{}] will b removed.", jName);
+                removeJob(jName);
+            }
+        }
+    }
+
     public static String getTimerJobName(Timer timer) {
         if (timer.getId() != null) {
             return TIMER_JOB_REF + timer.getId() + "_" + timer.getName();
@@ -179,58 +189,16 @@ public class SchedulerUtils {
                 jobData,
                 false);
 
-        Calendar timeCal = null;
-        Calendar sunssCal = null;
-        if (TIMER_TYPE.CRON != timer.getTimerType() && TIMER_TYPE.SIMPLE != timer.getTimerType()) {
-            timeCal = Calendar.getInstance();
-            timeCal.setTimeInMillis(timer.getTriggerTime());
-            sunssCal = Calendar.getInstance();
-        }
-
-        switch (timer.getTimerType()) {
-            case CRON:
-            case SIMPLE:
-            case NORMAL:
-                break;
-            case BEFORE_SUNRISE:
-                sunssCal.setTime(TimerUtils.getSunriseTime());
-                sunssCal.add(Calendar.HOUR_OF_DAY, -(timeCal.get(Calendar.HOUR_OF_DAY)));
-                sunssCal.add(Calendar.MINUTE, -(timeCal.get(Calendar.MINUTE)));
-                sunssCal.add(Calendar.SECOND, -(timeCal.get(Calendar.SECOND)));
-                timeCal = sunssCal;
-                break;
-            case AFTER_SUNRISE:
-                sunssCal.setTime(TimerUtils.getSunriseTime());
-                sunssCal.add(Calendar.HOUR_OF_DAY, (timeCal.get(Calendar.HOUR_OF_DAY)));
-                sunssCal.add(Calendar.MINUTE, (timeCal.get(Calendar.MINUTE)));
-                sunssCal.add(Calendar.SECOND, (timeCal.get(Calendar.SECOND)));
-                timeCal = sunssCal;
-                break;
-            case BEFORE_SUNSET:
-                sunssCal.setTime(TimerUtils.getSunsetTime());
-                sunssCal.add(Calendar.HOUR_OF_DAY, -(timeCal.get(Calendar.HOUR_OF_DAY)));
-                sunssCal.add(Calendar.MINUTE, -(timeCal.get(Calendar.MINUTE)));
-                sunssCal.add(Calendar.SECOND, -(timeCal.get(Calendar.SECOND)));
-                timeCal = sunssCal;
-                break;
-            case AFTER_SUNSET:
-                sunssCal.setTime(TimerUtils.getSunsetTime());
-                sunssCal.add(Calendar.HOUR_OF_DAY, (timeCal.get(Calendar.HOUR_OF_DAY)));
-                sunssCal.add(Calendar.MINUTE, (timeCal.get(Calendar.MINUTE)));
-                sunssCal.add(Calendar.SECOND, (timeCal.get(Calendar.SECOND)));
-                timeCal = sunssCal;
-                break;
-            default:
-                break;
-        }
+        //Load sunrise, sunset, normal timeCalender
+        Calendar timeCalendar = TimerUtils.getSunriseSunsetCalendar(timer.getTimerType(), timer.getTriggerTime());
         String cronExpression = null;
         if (TIMER_TYPE.CRON == timer.getTimerType()) {
             cronExpression = timer.getFrequencyData();
         } else if (TIMER_TYPE.SIMPLE != timer.getTimerType()) {
             cronExpression = getCronExpression(
-                    timeCal.get(Calendar.SECOND),
-                    timeCal.get(Calendar.MINUTE),
-                    timeCal.get(Calendar.HOUR_OF_DAY),
+                    timeCalendar.get(Calendar.SECOND),
+                    timeCalendar.get(Calendar.MINUTE),
+                    timeCalendar.get(Calendar.HOUR_OF_DAY),
                     timer);
         }
 
@@ -299,6 +267,10 @@ public class SchedulerUtils {
         removeJob(getTimerJobName(timer));
     }
 
+    public static synchronized void unloadTimerJobIfContains(Timer timer) {
+        removeJobIfStartsWith(getTimerJobName(timer));
+    }
+
     public static synchronized void unloadTimerJobs(List<Timer> timers) {
         for (Timer timer : timers) {
             unloadTimerJob(timer);
@@ -311,16 +283,12 @@ public class SchedulerUtils {
     }
 
     public static void startNodeAliveCheckJob() {
-        if (AppProperties.getInstance().getControllerSettings().getAliveCheckInterval() < McUtils.MINUTE) {
-            //Nothing to do, just return from here
-            return;
-        }
         SundialJobScheduler.addJob(NodeAliveStatusJob.NAME, NodeAliveStatusJob.class.getName());
         SundialJobScheduler.addSimpleTrigger(
                 NodeAliveStatusJob.TRIGGER_NAME,
                 NodeAliveStatusJob.NAME,
                 -1,
-                AppProperties.getInstance().getControllerSettings().getAliveCheckInterval(),
+                NodeAliveStatusJob.MIN_ALIVE_CHECK_DURATION, //Run this job every x minutes
                 //Start this job after 10 seconds
                 new Date(System.currentTimeMillis() + (McUtils.ONE_SECOND * 10)),
                 null);

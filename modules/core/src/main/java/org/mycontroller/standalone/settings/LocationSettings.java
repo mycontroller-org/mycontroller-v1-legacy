@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.settings;
+
+import java.util.TimeZone;
 
 import org.mycontroller.standalone.utils.McUtils;
 
@@ -48,6 +50,7 @@ public class LocationSettings {
     private String longitude;
     private Long sunriseTime;
     private Long sunsetTime;
+    private Integer timezoneOffset;
 
     public static LocationSettings get() {
         return LocationSettings.builder()
@@ -55,7 +58,8 @@ public class LocationSettings {
                 .latitude(getValue(SKEY_LATITUDE))
                 .longitude(getValue(SKEY_LONGITUDE))
                 .sunriseTime(McUtils.getLong(getValue(SKEY_SUNRISE_TIME)))
-                .sunsetTime(McUtils.getLong(getValue(SKEY_SUNSET_TIME))).build();
+                .sunsetTime(McUtils.getLong(getValue(SKEY_SUNSET_TIME)))
+                .timezoneOffset(TimeZone.getDefault().getOffset(System.currentTimeMillis())).build();
     }
 
     public void save() {

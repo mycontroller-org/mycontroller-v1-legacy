@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ myControllerModule.factory('SensorsFactory', function ($resource, $http, $base64
     deleteIds: { method: 'POST', params: {sensorId: 'deleteIds'} },
     updateVariable: { method: 'PUT', params: {sensorId: 'updateVariable', id:null}},
     updateVariableConfig: { method: 'PUT', params: {sensorId: 'updateVariableConfig', id:null}},
+    purgeVariable: { method: 'PUT', params: {sensorId: 'purgeVariable', id:null}},
     getVariables: { method: 'GET', isArray: true, params: {sensorId: 'getVariables', id:null}},
     getVariable: { method: 'GET', isArray: false, params: {sensorId: 'getVariable'}},
     sendRawMessage: { method: 'POST', params: {sensorId:'sendRawMessage'} },
@@ -75,6 +76,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
   return $resource('/mc/rest/types/:type/:id', {id: '@id'}, {
     getNodeTypes:  { method: 'GET', isArray: true, params: {type: 'nodeTypes'}  },
     getExternalServerTypes:  { method: 'GET', isArray: true, params: {type: 'externalServerTypes'}  },
+    getMetricEngineTypes:  { method: 'GET', isArray: true, params: {type: 'metricEngineTypes'}  },
     getTrustHostTypes:  { method: 'GET', isArray: true, params: {type: 'trustHostTypes'}  },
     getNodeRegistrationStatuses:  { method: 'GET', isArray: true, params: {type: 'nodeRegistrationStatuses'}  },
     getSensorTypes:  { method: 'GET', isArray: true, params: {type: 'sensorTypes'}},
@@ -146,8 +148,8 @@ myControllerModule.factory('TypesFactory', function ($resource) {
 myControllerModule.factory('MetricsFactory', function ($resource) {
   return $resource('/mc/rest/metrics/:type', {}, {
     getResourceCount: { method: 'GET', isArray: false, params: {type: 'resourceCount'}},
-    getMetricsData: { method: 'GET', isArray: true, params: {type: 'metricsData'}},
-    getBatteryMetrics: { method: 'GET', isArray: false, params: {type: 'metricsBattery'}},
+    getMetricsData: { method: 'GET', isArray: true, params: {type: 'nvd3data'}},
+    getBatteryMetrics: { method: 'GET', isArray: false, params: {type: 'statsBattery'}},
     getBulletChart: { method: 'GET', isArray: true, params: {type: 'bulletChart'}},
     getTopologyData: { method: 'GET', isArray: false, params: {type: 'topology'}},
 
@@ -329,6 +331,8 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     saveMetrics: { method: 'POST', params: {type:'metricsGraph'} },
     getMetricsRetention: { method: 'GET', isArray: false, params: {type:'metricsRetention'} },
     saveMetricsRetention: { method: 'POST', params: {type:'metricsRetention'} },
+    getMetricsEngine: { method: 'GET', isArray: false, params: {type:'metricsEngine'} },
+    saveMetricsEngine: { method: 'POST', params: {type:'metricsEngine'} },
     getUserSettings: { method: 'GET', isArray: false, params: {type:'userSettings'} },
     saveUserSettings: { method: 'POST', params: {type:'userSettings'} },
     getMqttBroker: { method: 'GET', isArray: false, params: {type:'mqttBroker'} },
@@ -398,7 +402,7 @@ myControllerModule.factory('ResourcesGroupMapFactory', function ($resource) {
 //Read static files
 myControllerModule.factory('ReadFileFactory', function ($resource) {
   return $resource('/:locationName/:fileName', {}, {
-   getConfigFile: { method: 'GET', isArray: false, params: {locationName: 'configurations', fileName:'mycontroller-configs.json'} },
+   getConfigFile: { method: 'GET', isArray: false, params: {locationName: '_configurations', fileName:'mycontroller-configs.json'} },
   })
 });
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package org.mycontroller.standalone.operation.model;
 
 import java.util.HashMap;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
@@ -123,15 +124,15 @@ public class OperationSendPayload extends Operation {
 
     @Override
     public void execute(RuleDefinition ruleDefinition) {
-        sendPayload();
+        sendPayload(ruleDefinition);
     }
 
     @Override
     public void execute(Timer timer) {
-        sendPayload();
+        sendPayload(null);
     }
 
-    private void sendPayload() {
+    private void sendPayload(RuleDefinition ruleDefinition) {
         if (!getEnabled()) {
             //This operation disabled, nothing to do.
             return;
@@ -139,12 +140,20 @@ public class OperationSendPayload extends Operation {
         if (getDelayTime() == 0) { //Send payload immediately
             sendPayload(getResourceType(), getResourceId(), getPayload());
         } else {  //Create timer to send payload
+            String jobName = null;
+            if (ruleDefinition != null) {
+                jobName = OperationUtils.getSendPayloadTimerJobName(ruleDefinition, getOperationTable())
+                        + RandomStringUtils.randomAlphabetic(5);
+            } else {
+                jobName = OperationUtils.getSendPayloadTimerJobName(getOperationTable())
+                        + RandomStringUtils.randomAlphabetic(5);
+            }
             HashMap<String, Object> properties = new HashMap<String, Object>();
             properties.put(TimerJob.KEY_RESOURCE_TYPE, getResourceType());
             properties.put(TimerJob.KEY_RESOURCE_ID, getResourceId());
             properties.put(TimerJob.KEY_PAYLOAD, getPayload());
             TimerSimple timerSimple = new TimerSimple(
-                    OperationUtils.getSendPayloadTimerJobName(getOperationTable()),//Job Name
+                    jobName,//Job Name
                     this.getDelayTime(),
                     1//Repeat count
             );
@@ -170,6 +179,7 @@ public class OperationSendPayload extends Operation {
                 break;
             case TIMER:
                 TimerUtils.executeTimerOperation(resourceModel, resourceOperation);
+                break;
             case RESOURCES_GROUP:
                 ResourcesGroupUtils.executeResourceGroupsOperation(resourceModel, resourceOperation);
                 break;

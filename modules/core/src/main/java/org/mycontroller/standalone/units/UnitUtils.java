@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ public class UnitUtils {
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_DISTANCE, "cm", "mm", "m", 1.0, 100.0, 10.0, 100.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_EC, "μS/cm", "μS/cm", "μS/cm", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_FLOW, "m", "m", "m", 1.0, 1.0, 1.0, 1.0));
-        addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_GUST, "mph", "mph", "mph", 1.0, 1.0, 1.0, 1.0));
+        addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_GUST, "km/h", "km/h", "km/h", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_HUMIDITY, "%", "%", "%", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_IMPEDANCE, "Ω", "Ω", "KΩ", 1.0, 1000.0, 1.0, 1000.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_KWH, "kWh", "kWh", "kWh", 1.0, 1.0, 1.0, 1.0));
@@ -45,7 +45,8 @@ public class UnitUtils {
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_PERCENTAGE, "%", "%", "%", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_PH, "PH", "PH", "PH", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_POWER_FACTOR, "PF", "PF", "PF", 1.0, 1.0, 1.0, 1.0));
-        addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_PRESSURE, "psi", "psi", "psi", 1.0, 1.0, 1.0, 1.0));
+        addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_PRESSURE, "hPa", "hPa", "hPa", 1.0, 1.0, 1.0, 1.0));
+        addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_PRESSURE_BARO, "inHg", "inHg", "inHg", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_RAIN, "mm", "mm", "cm", 1.0, 10.0, 1.0, 10.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_RAINRATE, "mm/hr", "mm/hr", "cm/hr", 1.0, 10.0, 1.0, 10.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_TEMPERATURE, "°C", "°C", "°C", 1.0, 1.0, 1.0, 1.0));
@@ -55,7 +56,7 @@ public class UnitUtils {
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_VOLTAGE, "V", "mV", "V", 1.0, 1.0, 1000.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_WATT, "W", "mW", "W", 1.0, 1.0, 1000.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_WEIGHT, "kg", "g", "kg", 1.0, 1.0, 1000.0, 1.0));
-        addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_WIND, "mph", "mph", "mph", 1.0, 1.0, 1.0, 1.0));
+        addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_WIND, "km/h", "km/h", "km/h", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsMetric, Unit.get(UNIT_TYPE.U_NONE, "", "", "", 1.0, 1.0, 1.0, 1.0));
 
         //Update units Imperial
@@ -74,6 +75,7 @@ public class UnitUtils {
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_PH, "PH", "PH", "PH", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_POWER_FACTOR, "PF", "PF", "PF", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_PRESSURE, "psi", "psi", "psi", 1.0, 1.0, 1.0, 1.0));
+        addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_PRESSURE_BARO, "inHg", "inHg", "inHg", 1.0, 1.0, 1.0, 1.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_RAIN, "mm", "mm", "cm", 1.0, 10.0, 1.0, 10.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_RAINRATE, "mm/hr", "mm/hr", "cm/hr", 1.0, 10.0, 1.0, 10.0));
         addUnit(unitsImperial, Unit.get(UNIT_TYPE.U_TEMPERATURE, "°F", "°F", "°F", 1.0, 1.0, 1.0, 1.0));
@@ -96,6 +98,7 @@ public class UnitUtils {
         U_HUMIDITY("Humidity"),
         U_PERCENTAGE("Percentage"),
         U_PRESSURE("Pressure"),
+        U_PRESSURE_BARO("Pressure baro"),
         U_RAIN("Rain"),
         U_RAINRATE("Rainrate"),
         U_WIND("Wind"),

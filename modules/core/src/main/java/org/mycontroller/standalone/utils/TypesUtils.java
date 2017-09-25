@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.mycontroller.standalone.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.AppProperties.MC_TIME_FORMAT;
@@ -27,7 +28,8 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -59,10 +61,10 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
+import org.mycontroller.standalone.metrics.METRIC_ENGINE;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
@@ -478,17 +480,24 @@ public class TypesUtils {
                     switch (resourceTypeFilter) {
                         case RULE_DEFINITION:
                         case TIMER:
-                            if (type != RESOURCE_TYPE.SENSOR
-                                    && type != RESOURCE_TYPE.RULE_DEFINITION
-                                    && type != RESOURCE_TYPE.TIMER) {
+                            if (type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.RULE_DEFINITION
+                                    && type != RESOURCE_TYPE.TIMER && type != RESOURCE_TYPE.UID_TAG) {
                                 typesIdNameMappers.add(TypesIdNameMapper.builder()
                                         .id(type.getText()).displayName(type.getText()).build());
                             }
                             break;
                         case RESOURCES_GROUP:
                             if (type != RESOURCE_TYPE.RULE_DEFINITION && type != RESOURCE_TYPE.TIMER
-                                    && type != RESOURCE_TYPE.SENSOR
+                                    && type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.UID_TAG
                                     && type != RESOURCE_TYPE.RESOURCES_GROUP) {
+                                typesIdNameMappers.add(TypesIdNameMapper.builder()
+                                        .id(type.getText()).displayName(type.getText()).build());
+                            }
+                            break;
+                        case UID_TAG:
+                            if (type != RESOURCE_TYPE.RULE_DEFINITION && type != RESOURCE_TYPE.TIMER
+                                    && type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.RESOURCES_GROUP
+                                    && type != RESOURCE_TYPE.UID_TAG && type != RESOURCE_TYPE.SCRIPT) {
                                 typesIdNameMappers.add(TypesIdNameMapper.builder()
                                         .id(type.getText()).displayName(type.getText()).build());
                             }
@@ -507,7 +516,8 @@ public class TypesUtils {
                             }
                             break;
                         case SEND_PAYLOAD:
-                            if (type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.SCRIPT) {
+                            if (type != RESOURCE_TYPE.SENSOR && type != RESOURCE_TYPE.SCRIPT
+                                    && type != RESOURCE_TYPE.UID_TAG) {
                                 typesIdNameMappers.add(TypesIdNameMapper.builder()
                                         .id(type.getText()).displayName(type.getText()).build());
                             }
@@ -525,7 +535,12 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getResources(User user, String resourceType) {
+    public static ArrayList<TypesIdNameMapper> getResources(User user, String resourceType, String filter, long page,
+            long pageLimit) {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         if (resourceType == null) {
             return null;
         }
@@ -536,9 +551,9 @@ public class TypesUtils {
             case GATEWAY:
                 List<GatewayTable> gateways = null;
                 if (AuthUtils.isSuperAdmin(user)) {
-                    gateways = DaoUtils.getGatewayDao().getAll();
+                    gateways = DaoUtils.getGatewayDao().getAll(query, filter, null);
                 } else {
-                    gateways = DaoUtils.getGatewayDao().getAll(user.getAllowedResources().getGatewayIds());
+                    gateways = DaoUtils.getGatewayDao().getAll(query, filter, user.getAllowedResources());
                 }
                 for (GatewayTable type : gateways) {
                     typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getId()).displayName(type.getName())
@@ -548,9 +563,9 @@ public class TypesUtils {
             case NODE:
                 List<Node> nodes = null;
                 if (AuthUtils.isSuperAdmin(user)) {
-                    nodes = DaoUtils.getNodeDao().getAll();
+                    nodes = DaoUtils.getNodeDao().getAll(query, filter, null);
                 } else {
-                    nodes = DaoUtils.getNodeDao().getAll(user.getAllowedResources().getNodeIds());
+                    nodes = DaoUtils.getNodeDao().getAll(query, filter, user.getAllowedResources());
                 }
                 for (Node type : nodes) {
                     builder.setLength(0);
@@ -563,9 +578,9 @@ public class TypesUtils {
             case SENSOR:
                 List<Sensor> sensors = null;
                 if (AuthUtils.isSuperAdmin(user)) {
-                    sensors = DaoUtils.getSensorDao().getAll();
+                    sensors = DaoUtils.getSensorDao().getAll(query, filter, null);
                 } else {
-                    sensors = DaoUtils.getSensorDao().getAll(user.getAllowedResources().getSensorIds());
+                    sensors = DaoUtils.getSensorDao().getAll(query, filter, user.getAllowedResources());
                 }
                 for (Sensor type : sensors) {
                     builder.setLength(0);
@@ -579,10 +594,10 @@ public class TypesUtils {
             case SENSOR_VARIABLE:
                 List<SensorVariable> sensorVariables = null;
                 if (AuthUtils.isSuperAdmin(user)) {
-                    sensorVariables = DaoUtils.getSensorVariableDao().getAll();
+                    sensorVariables = DaoUtils.getSensorVariableDao().getAll(query, filter, null);
                 } else {
-                    sensorVariables = DaoUtils.getSensorVariableDao().getAll(
-                            user.getAllowedResources().getSensorVariableIds());
+                    sensorVariables = DaoUtils.getSensorVariableDao()
+                            .getAll(query, filter, user.getAllowedResources());
                 }
                 for (SensorVariable type : sensorVariables) {
                     builder.setLength(0);
@@ -604,12 +619,16 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getGateways(User user) {
+    public static ArrayList<TypesIdNameMapper> getGateways(User user, String filter, long page, long pageLimit) {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         List<GatewayTable> gateways = null;
         if (AuthUtils.isSuperAdmin(user)) {
-            gateways = DaoUtils.getGatewayDao().getAll();
+            gateways = DaoUtils.getGatewayDao().getAll(query, filter, null);
         } else {
-            gateways = DaoUtils.getGatewayDao().getAll(user.getAllowedResources().getGatewayIds());
+            gateways = DaoUtils.getGatewayDao().getAll(query, filter, user.getAllowedResources());
         }
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (GatewayTable gatewayTable : gateways) {
@@ -620,16 +639,22 @@ public class TypesUtils {
         return typesIdNameMappers;
     }
 
-    public static ArrayList<TypesIdNameMapper> getNodes(User user, Integer gatewayId) {
+    public static ArrayList<TypesIdNameMapper> getNodes(User user, Integer gatewayId, String filter, long page,
+            long pageLimit) {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         List<Node> nodes = null;
         if (AuthUtils.isSuperAdmin(user)) {
             if (gatewayId != null) {
-                nodes = DaoUtils.getNodeDao().getAllByGatewayId(gatewayId);
+                query.getFilters().put(Node.KEY_GATEWAY_ID, gatewayId);
+                nodes = DaoUtils.getNodeDao().getAll(query, filter, null);
             } else {
-                nodes = DaoUtils.getNodeDao().getAll();
+                nodes = DaoUtils.getNodeDao().getAll(query, filter, null);
             }
         } else {
-            nodes = DaoUtils.getNodeDao().getAll(user.getAllowedResources().getNodeIds());
+            nodes = DaoUtils.getNodeDao().getAll(query, filter, user.getAllowedResources());
         }
 
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
@@ -735,7 +760,11 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getSensors(User user, Integer nodeId, Integer roomId,
-            Boolean enableNoRoomFilter) {
+            Boolean enableNoRoomFilter, String filter, long page, long pageLimit) {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         List<Node> nodes = new ArrayList<Node>();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         if (enableNoRoomFilter == null) {
@@ -745,12 +774,13 @@ public class TypesUtils {
         if (AuthUtils.isSuperAdmin(user)) {
             if (nodeId != null) {
                 nodes.add(Node.builder().id(nodeId).build());
-                sensors = DaoUtils.getSensorDao().getAllByNodeId(nodeId);
+                query.getFilters().put(Sensor.KEY_NODE_ID, nodeId);
+                sensors = DaoUtils.getSensorDao().getAll(query, filter, null);
             } else {
-                sensors = DaoUtils.getSensorDao().getAll();
+                sensors = DaoUtils.getSensorDao().getAll(query, filter, null);
             }
         } else {
-            sensors = DaoUtils.getSensorDao().getAll(user.getAllowedResources().getSensorIds());
+            sensors = DaoUtils.getSensorDao().getAll(query, filter, user.getAllowedResources());
         }
 
         boolean include = false;
@@ -798,8 +828,12 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getSensorVariables(User user, Integer sensorId,
-            Integer sensorVariableId, List<String> variableTypes, List<String> metricTypes)
-            throws IllegalAccessException {
+            Integer sensorVariableId, List<String> variableTypes, List<String> metricTypes, String filter, long page,
+            long pageLimit) throws IllegalAccessException {
+        Query query = Query.builder()
+                .page(page)
+                .pageLimit(pageLimit)
+                .build();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         List<SensorVariable> sensorVariables = null;
         if (!AuthUtils.isSuperAdmin(user)) {
@@ -818,12 +852,13 @@ public class TypesUtils {
         }
 
         if (sensorVariableId != null) {
-            sensorVariables = DaoUtils.getSensorVariableDao().getAll(
-                    user.getAllowedResources().getSensorVariableIds());
+            query.getFilters().put(SensorVariable.KEY_ID, sensorVariableId);
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll(query, filter, null);
         } else if (sensorId != null) {
-            sensorVariables = DaoUtils.getSensorVariableDao().getAllBySensorId(sensorId);
+            query.getFilters().put(SensorVariable.KEY_SENSOR_DB_ID, sensorId);
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll(query, filter, null);
         } else if (sensorVariables == null) {
-            sensorVariables = DaoUtils.getSensorVariableDao().getAll();
+            sensorVariables = DaoUtils.getSensorVariableDao().getAll(query, filter, null);
         }
 
         if (sensorVariables != null) {
@@ -1066,12 +1101,29 @@ public class TypesUtils {
             if (nwType != null) {
                 switch (nwType) {
                     case MY_SENSORS:
-                        if (gatewayType != GATEWAY_TYPE.PHANT_IO) {
+                        if (gatewayType == GATEWAY_TYPE.SERIAL
+                                || gatewayType == GATEWAY_TYPE.ETHERNET
+                                || gatewayType == GATEWAY_TYPE.MQTT) {
                             include = true;
                         }
                         break;
                     case PHANT_IO:
                         if (gatewayType == GATEWAY_TYPE.PHANT_IO) {
+                            include = true;
+                        }
+                        break;
+                    case MY_CONTROLLER:
+                        if (gatewayType == GATEWAY_TYPE.MQTT) {
+                            include = true;
+                        }
+                        break;
+                    case RF_LINK:
+                        if (gatewayType == GATEWAY_TYPE.SERIAL) {
+                            include = true;
+                        }
+                        break;
+                    case PHILIPS_HUE:
+                        if (gatewayType == GATEWAY_TYPE.PHILIPS_HUE) {
                             include = true;
                         }
                         break;
@@ -1103,6 +1155,15 @@ public class TypesUtils {
         EXTERNAL_SERVER_TYPE[] types = EXTERNAL_SERVER_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (EXTERNAL_SERVER_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getMetricEngineTypes() {
+        METRIC_ENGINE[] types = METRIC_ENGINE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (METRIC_ENGINE type : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;

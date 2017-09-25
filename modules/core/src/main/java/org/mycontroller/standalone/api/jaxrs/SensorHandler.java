@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,10 +33,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.SensorApi;
-import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
+import org.mycontroller.standalone.api.jaxrs.model.ApiError;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -110,10 +112,8 @@ public class SensorHandler extends AccessEngine {
         //Add nodeIds
         filters.put(Sensor.KEY_NODE_ID, nodeIds);
 
-        //Add id filter if he is non-admin
-        if (!AuthUtils.isSuperAdmin(securityContext)) {
-            filters.put(Sensor.KEY_ID, AuthUtils.getUser(securityContext).getAllowedResources().getSensorIds());
-        }
+        //Update query filter if he is non-admin
+        AuthUtils.updateQueryFilter(securityContext, filters, RESOURCE_TYPE.SENSOR);
 
         return RestUtils.getResponse(Status.OK, sensorApi.getAll(filters));
     }
@@ -175,12 +175,12 @@ public class SensorHandler extends AccessEngine {
 
     @PUT
     @Path("/updateVariable")
-    public Response sendpayload(SensorVariableJson sensorVariableJson) {
+    public Response sendPayload(SensorVariableJson sensorVariableJson) {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
             this.hasAccessSensor(sensorVariable.getSensor().getId());
             try {
-                sensorApi.sendpayload(sensorVariableJson);
+                sensorApi.sendPayload(sensorVariableJson);
                 return RestUtils.getResponse(Status.OK);
             } catch (NumberFormatException | McInvalidException | McBadRequestException ex) {
                 return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
@@ -213,6 +213,18 @@ public class SensorHandler extends AccessEngine {
     public Response sendRawMessage(McMessage mcMessage) {
         try {
             sensorApi.sendRawMessage(mcMessage);
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @RolesAllowed({ "Admin" })
+    @PUT
+    @Path("/purgeVariable")
+    public Response purgeVariable(ResourcePurgeConf purge) {
+        try {
+            sensorApi.purgeSensorVariable(purge);
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

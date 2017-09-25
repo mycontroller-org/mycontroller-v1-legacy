@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.message;
+
+import java.io.Serializable;
+import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
@@ -36,11 +39,17 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class McMessage {
+public class McMessage implements Serializable {
+    /**  */
+    private static final long serialVersionUID = -677512912537380066L;
+
     public static final String SENSOR_BROADCAST_ID = "SENSOR_BC";
     public static final String NODE_BROADCAST_ID = "NODE_BC";
     public static final String PAYLOAD_EMPTY = "";
     public static final String GATEWAY_NODE_ID = "NODE_GY";
+    public static final int NO_ACK = 0;
+    public static final int ACK_REQUEST = 1;
+    public static final int ACK_RESPONSE = 2;
 
     @NonNull
     private Integer gatewayId;
@@ -48,12 +57,13 @@ public class McMessage {
     private String sensorId;
     private MESSAGE_TYPE type;
     private String subType;
-    private boolean acknowledge;
+    private int ack = NO_ACK;
     private String payload;
     private boolean isTxMessage;
     private NETWORK_TYPE networkType;
     private boolean isScreeningDone = false;
     private Long timestamp;
+    private HashMap<String, Object> properties = null;
 
     public boolean validate() {
         if (gatewayId == null
@@ -71,5 +81,20 @@ public class McMessage {
             timestamp = System.currentTimeMillis();
         }
         return timestamp;
+    }
+
+    public HashMap<String, Object> getProperties() {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        }
+        return properties;
+    }
+
+    public boolean isAckResponse() {
+        return ack == ACK_RESPONSE;
+    }
+
+    public boolean isAckRequest() {
+        return ack == ACK_REQUEST;
     }
 }

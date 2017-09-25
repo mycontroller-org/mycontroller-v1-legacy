@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,6 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.Resource;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.exernalserver.model.ExternalServerEmoncms;
-import org.mycontroller.standalone.exernalserver.model.ExternalServerInfluxdb;
-import org.mycontroller.standalone.exernalserver.model.ExternalServerPhantIO;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -69,29 +66,14 @@ public class ExternalServerEngine implements Runnable {
         if (resource.getExternalServersObject() != null) {
             for (ExternalServerTable extServer : resource.getExternalServersObject()) {
                 if (extServer.getEnabled()) {
-                    IExternalServerEngine extServerEngine = null;
+                    IExternalServerEngine extServerEngine = ExternalServerUtils.getExternalServer(extServer);
                     try {
-                        switch (extServer.getType()) {
-                            case EMONCMS:
-                                extServerEngine = new ExternalServerEmoncms(extServer);
-                                break;
-                            case PHANT_IO:
-                                extServerEngine = new ExternalServerPhantIO(extServer);
-                                break;
-                            case INFLUXDB:
-                                extServerEngine = new ExternalServerInfluxdb(extServer);
-                                break;
-                            default:
-                                _logger.warn("This type external server not impleted yet! {}", extServer.getType());
-                                break;
-                        }
                         if (extServerEngine != null) {
                             extServerEngine.send(sensorVariable);
                         }
                     } catch (Exception ex) {
                         _logger.error("Exception when sending data to server: {}, ", extServerEngine.toString(), ex);
                     }
-
                 }
             }
         }

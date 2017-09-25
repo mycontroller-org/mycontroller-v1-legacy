@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,15 @@ package org.mycontroller.standalone.db.tables;
 
 import java.util.HashMap;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
+import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
+import org.mycontroller.standalone.utils.McUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -32,6 +36,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -43,6 +48,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString(includeFieldNames = true)
+@Slf4j
 public class Node {
     public static final String KEY_FIRMWARE_ID = "firmwareId";
     public static final String KEY_GATEWAY_ID = "gatewayId";
@@ -61,6 +67,10 @@ public class Node {
     public static final String KEY_PROPERTIES = "properties";
     public static final String KEY_PARENT_NODE_EUI = "parentNodeEui";
     public static final String KEY_REGISTRATION_STATE = "registrationState";
+    public static final String KEY_SMART_SLEEP_ENABLED = "smartSleepEnabled";
+    //Properties key
+    public static final String KEY_ALIVE_CHECK_INTERVAL = "aliveCheckInterval";
+    public static final String KEY_HEARTBEAT_LAST_TX_TIME = "hbTx";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -68,7 +78,7 @@ public class Node {
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_EUI)
     private String eui;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = true, columnName = KEY_GATEWAY_ID, foreign = true,
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_GATEWAY_ID, foreign = true,
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private GatewayTable gatewayTable;
 
@@ -112,6 +122,9 @@ public class Node {
     @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING, columnName = KEY_REGISTRATION_STATE)
     private NODE_REGISTRATION_STATE registrationState = NODE_REGISTRATION_STATE.NEW;
 
+    @DatabaseField(canBeNull = true, columnName = KEY_SMART_SLEEP_ENABLED)
+    private Boolean smartSleepEnabled;
+
     public HashMap<String, Object> getProperties() {
         if (properties == null) {
             properties = new HashMap<String, Object>();
@@ -119,4 +132,69 @@ public class Node {
         return properties;
     }
 
+    public Boolean getSmartSleepEnabled() {
+        if (smartSleepEnabled == null) {
+            smartSleepEnabled = false;
+        }
+        return smartSleepEnabled;
+    }
+
+    @JsonIgnore
+    public Object getProperty(String key) {
+        return getProperties().get(key);
+    }
+
+    @JsonIgnore
+    public HashMap<String, Object> setProperty(String key, Object value) {
+        getProperties().put(key, value);
+        return getProperties();
+    }
+
+    @JsonIgnore
+    private Long getInterval(String key) {
+        Long _interval = null;
+        if (getProperty(key) != null) {
+            try {
+                Object value = getProperty(key);
+                if (value instanceof Integer) {
+                    _interval = (Integer) value * McUtils.MINUTE;
+                } else {
+                    _interval = Integer.valueOf(String.valueOf(value)) * McUtils.MINUTE;
+                }
+            } catch (Exception ex) {
+                _logger.warn("Unable to convert the property[{}:{}] to Integer value. Using default value for {}",
+                        key, getProperty(key), this, ex);
+            }
+        }
+        if (_interval == null) {
+            _interval = AppProperties.getInstance().getControllerSettings().getAliveCheckInterval();
+        }
+        if (_interval < NodeAliveStatusJob.MIN_ALIVE_CHECK_DURATION) {
+            return NodeAliveStatusJob.MIN_ALIVE_CHECK_DURATION;
+        }
+        return _interval;
+    }
+
+    @JsonIgnore
+    public Long getAliveCheckInterval() {
+        return getInterval(KEY_ALIVE_CHECK_INTERVAL);
+    }
+
+    @JsonIgnore
+    public Long getHeartbeatInterval() {
+        return getAliveCheckInterval();
+    }
+
+    @JsonIgnore
+    public Long getLastHeartbeatTxTime() {
+        if (getProperty(KEY_HEARTBEAT_LAST_TX_TIME) == null) {
+            return 0L;
+        } else {
+            try {
+                return (Long) getProperty(KEY_HEARTBEAT_LAST_TX_TIME);
+            } catch (Exception ex) {
+                return 0L;
+            }
+        }
+    }
 }

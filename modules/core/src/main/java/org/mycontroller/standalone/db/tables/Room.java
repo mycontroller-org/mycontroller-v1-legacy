@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,13 +48,13 @@ public class Room {
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
 
-    @DatabaseField(columnName = KEY_NAME, unique = true, canBeNull = false)
+    @DatabaseField(columnName = KEY_NAME, uniqueCombo = true, canBeNull = false)
     private String name;
 
     @DatabaseField(columnName = KEY_DESCRIPTION, canBeNull = true)
     private String description;
 
-    @DatabaseField(columnName = KEY_PARENT_ID, canBeNull = true)
+    @DatabaseField(columnName = KEY_PARENT_ID, uniqueCombo = true, canBeNull = true)
     private Integer parentId;
 
     @DatabaseField(columnName = KEY_ICON, canBeNull = true)

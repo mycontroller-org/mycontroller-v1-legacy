@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
-import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
@@ -35,6 +34,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.0.2
  */
 public class NodeAliveStatusJob extends Job {
+    public static final long MIN_ALIVE_CHECK_DURATION = McUtils.MINUTE * 5; //Run this job every five minutes once
     public static final String NAME = "node_alive_status_job";
     public static final String TRIGGER_NAME = "node_alive_status_trigger";
     private static final Logger _logger = LoggerFactory.getLogger(NodeAliveStatusJob.class);
@@ -45,12 +45,8 @@ public class NodeAliveStatusJob extends Job {
     @Override
     public void doRun() throws JobInterruptException {
         _logger.debug("Executing 'node alive check' job");
-        if (AppProperties.getInstance().getControllerSettings().getAliveCheckInterval() < McUtils.MINUTE) {
-            //Nothing to do, just return from here
-            return;
-        }
         try {
-            this.sendHearbeat();
+            this.sendHeartbeat();
             long referenceTimestamp = 0;
             while (referenceTimestamp <= WAIT_TIME_TO_CHECK_ALIVE_STATUS) {
                 if (terminateAliveCheck) {
@@ -60,13 +56,14 @@ public class NodeAliveStatusJob extends Job {
                 Thread.sleep(100);
                 referenceTimestamp += 100;
             }
-            this.checkHearbeat();
+            this.checkHeartbeat();
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
         }
     }
 
-    private void sendHearbeat() {
+    private void sendHeartbeat() {
+        long currentTime = System.currentTimeMillis();
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
         for (Node node : nodes) {
             //If gateway not available, do not send
@@ -74,30 +71,35 @@ public class NodeAliveStatusJob extends Job {
                     || McObjectManager.getGateway(node.getGatewayTable().getId()).getGateway().getState() != STATE.UP) {
                 return;
             }
-            //for now supports only for MySensors
+            //for now supports only for MySensors and MyController
             if (node.getGatewayTable().getEnabled()
-                    && node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
+                    && (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
+                    || node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER)
+                    && currentTime >= (node.getLastHeartbeatTxTime() + node.getHeartbeatInterval())) {
                 McObjectManager.getMcActionEngine().sendAliveStatusRequest(node);
+                DaoUtils.getNodeDao().update(Node.KEY_PROPERTIES,
+                        node.setProperty(Node.KEY_HEARTBEAT_LAST_TX_TIME, currentTime), node.getId());
             }
         }
     }
 
-    private void checkHearbeat() {
+    private void checkHeartbeat() {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
-        long aliveCheckInterval = AppProperties.getInstance().getControllerSettings().getAliveCheckInterval();
-        if (aliveCheckInterval < McUtils.MINUTE) {
-            aliveCheckInterval = McUtils.MINUTE;
-        }
         for (Node node : nodes) {
+            STATE newState = null;
             if (node.getLastSeen() == null
-                    || node.getLastSeen() <= (System.currentTimeMillis() - aliveCheckInterval)) {
+                    || node.getLastSeen() <= (System.currentTimeMillis() - node.getAliveCheckInterval())) {
                 if (node.getGatewayTable().getEnabled()) {
-                    node.setState(STATE.DOWN);
+                    if (node.getState() != STATE.DOWN) {
+                        newState = STATE.DOWN;
+                    }
                 } else {
-                    node.setState(STATE.UNAVAILABLE);
+                    newState = STATE.UNAVAILABLE;
                 }
-                DaoUtils.getNodeDao().update(node);
-                _logger.debug("Node is in not reachable state, Node:[{}]", node);
+                if (newState != null) {
+                    DaoUtils.getNodeDao().update(Node.KEY_STATE, newState, node.getId());
+                    _logger.debug("Node is in not reachable state, Node:[{}]", node);
+                }
             }
         }
     }

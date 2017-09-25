@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ import javax.ws.rs.BadRequestException;
 
 import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.AppProperties.DB_TYPE;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.exceptions.McException;
 import org.mycontroller.standalone.utils.McUtils;
@@ -51,29 +52,44 @@ public class Backup {
 
         BRCommons.setBackupRestoreRunning(true);
         String applicationBackupDir = AppProperties.getInstance().getBackupSettings().getBackupLocation()
-                + prefix + BRCommons.FILE_NAME_IDENTITY
-                + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date());
+                + prefix + BRCommons.FILE_NAME_IDENTITY + "_"
+                + AppProperties.getInstance().getDbType().name().toLowerCase()
+                + new SimpleDateFormat("-yyyy_MM_dd-HH_mm_ss").format(new Date());
         //Create parent dir if not exist
         try {
             FileUtils.forceMkdir(FileUtils.getFile(applicationBackupDir));
-            String databaseBackup = AppProperties.getInstance().getTmpLocation() + BRCommons.DATABASE_FILENAME;
-            if (DataBaseUtils.backupDatabase(databaseBackup)) {
-                //Copy database file
-                FileUtils.moveFile(
-                        FileUtils.getFile(databaseBackup),
-                        FileUtils.getFile(applicationBackupDir + File.separator + BRCommons.DATABASE_FILENAME));
-                //copy static files
-                copyStaticFiles(applicationBackupDir);
-                _logger.debug("Copied all the files");
-                //create zip file
-                McUtils.createZipFile(applicationBackupDir, applicationBackupDir + ".zip");
-                _logger.debug("zip file creation done");
-                //clean temporary files
-                FileUtils.deleteDirectory(FileUtils.getFile(applicationBackupDir));
-                return backupZipFileName;
-            } else {
-                throw new McException("Database backup failed!");
+            boolean includeDdBackup = false;
+            if (AppProperties.getInstance().getDbType() == DB_TYPE.H2DB_EMBEDDED) {
+                includeDdBackup = true;
+            } else if (AppProperties.getInstance().getDbType() == DB_TYPE.H2DB
+                    && AppProperties.getInstance().includeDbBackup()) {
+                includeDdBackup = true;
             }
+
+            if (includeDdBackup) {
+                String databaseBackup = AppProperties.getInstance().getTmpLocation() + BRCommons.DATABASE_FILENAME;
+
+                if (DataBaseUtils.backupDatabase(databaseBackup)) {
+                    //Copy database file
+                    FileUtils.moveFile(
+                            FileUtils.getFile(databaseBackup),
+                            FileUtils.getFile(applicationBackupDir + File.separator + BRCommons.DATABASE_FILENAME));
+                    //copy static files
+                } else {
+                    throw new McException("Database backup failed!");
+                }
+            }
+
+            //copy static files
+            copyStaticFiles(applicationBackupDir);
+            _logger.debug("Copied all the files");
+            //create zip file
+            McUtils.createZipFile(applicationBackupDir, applicationBackupDir + ".zip");
+            _logger.debug("zip file creation done");
+            //clean temporary files
+            FileUtils.deleteDirectory(FileUtils.getFile(applicationBackupDir));
+            return backupZipFileName;
+
         } catch (IOException ex) {
             _logger.error("Exception,", ex);
             throw ex;

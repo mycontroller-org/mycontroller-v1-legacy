@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -256,16 +256,16 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
 
         //Update date
         if($scope.timer.timerType !== 'Simple' || $scope.timer.timerType !== 'Cron'){
-          $scope.lTriggerTime = new Date($scope.timer.triggerTime);
+          $scope.lTriggerTime = moment("1970-01-01T" + $scope.timer.triggerTime);
         }
         //Update validity from/to
         if($scope.timer.validityFrom){
-          $scope.vFromString = $filter('date')($scope.timer.validityFrom, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
-          $scope.vFromDate = new Date($scope.timer.validityFrom);
+          $scope.vFromDate = new Date(moment($scope.timer.validityFrom).utc());
+          $scope.vFromString = $filter('date')($scope.vFromDate.getTime(), mchelper.cfg.dateFormat);
         }
         if($scope.timer.validityTo){
-          $scope.vToString = $filter('date')($scope.timer.validityTo, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
-          $scope.vToDate = new Date($scope.timer.validityTo);
+          $scope.vToDate = new Date(moment($scope.timer.validityTo).utc());
+          $scope.vToString = $filter('date')($scope.vToDate.getTime(), mchelper.cfg.dateFormat);
         }
         //Clone job
         if($stateParams.action === 'clone'){
@@ -306,12 +306,13 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
   //Get trigger time
   $scope.setTriggerTime = function(isDefault){
     if(!$scope.lTriggerTime){
-      $scope.lTriggerTime = new Date();
+      $scope.lTriggerTime = moment();
       if(isDefault){
-        $scope.lTriggerTime.setHours(00,00,00,00);
+        $scope.lTriggerTime.hour(00);
+        $scope.lTriggerTime.minute(00);
+        $scope.lTriggerTime.second(00);
       }
     }
-    $scope.lTriggerTime.setFullYear(0000,00,00);
   };
 
   $scope.frequencyData;
@@ -343,7 +344,7 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
 
   //Convert as display string
   $scope.getDateTimeDisplayFormat = function (newDate) {
-    return $filter('date')(newDate, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
+    return $filter('date')(newDate.getTime(), mchelper.cfg.dateFormat);
   };
 
   //GUI page settings
@@ -364,10 +365,10 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
 
     //Update validity from/to
     if($scope.vFromDate){
-      $scope.timer.validityFrom = $scope.vFromDate.getTime();
+      $scope.timer.validityFrom = moment($scope.vFromDate).format('YYYY-MM-DDTHH:mm:ss');
     }
     if($scope.vToDate){
-      $scope.timer.validityTo = $scope.vToDate.getTime();
+      $scope.timer.validityTo = moment($scope.vToDate).format('YYYY-MM-DDTHH:mm:ss');
     }
 
     //Update Frequency Data
@@ -393,10 +394,8 @@ myControllerModule.controller('TimersControllerAddEdit', function ($scope, Types
       if(!$scope.lTriggerTime){
         $scope.lTriggerTime = new Date();
       }
-      $scope.lTriggerTime.setFullYear(0000,00,00);
       //set seconds to zero until the issue resolved >> https://github.com/mycontroller-org/mycontroller/issues/214
-      $scope.lTriggerTime.setSeconds(00);
-      $scope.timer.triggerTime = $scope.lTriggerTime.getTime();
+      $scope.timer.triggerTime = moment($scope.lTriggerTime).format('HH:mm:00');
     }
       $scope.saveProgress = true;
     if($stateParams.id){

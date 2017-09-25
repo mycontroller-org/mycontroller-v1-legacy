@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -268,7 +268,9 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
             $scope.updatePayloadOperations($scope.item.resourceType);
           }
         }else if($scope.item.type === 'Execute script'){
-          $scope.item.scriptBindings = angular.toJson(response.scriptBindings);
+          $scope.item.altScriptBindings = angular.toJson(response.scriptBindings);
+        }else if($scope.item.type === 'Send email'){
+          $scope.item.altTemplateBindings = angular.toJson(response.templateBindings);
         }
 
         //Update delay time
@@ -286,7 +288,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
         displayRestError.display(error);
       });
   }else{
-    $scope.item.scriptBindings='{ }';
+    $scope.item.altScriptBindings='{}';
+    $scope.item.altTemplateBindings='{}';
   }
 
   //--------------pre load -----------
@@ -314,7 +317,9 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
     }
     //Change string to JSON string
     if($scope.item.type === 'Execute script'){
-      $scope.item.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.scriptBindings+')')));
+      $scope.item.scriptBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.altScriptBindings+')')));
+    }else if($scope.item.type === 'Send email'){
+      $scope.item.templateBindings = angular.fromJson(JSON.stringify(eval('('+$scope.item.altTemplateBindings+')')));
     }
     $scope.saveProgress = true;
     if($stateParams.id){

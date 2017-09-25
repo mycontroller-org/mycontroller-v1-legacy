@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ public class DB_TABLES {
     public static final String EXTERNAL_SERVER = "externalServer";
     public static final String EXTERNAL_SERVER_RESOURCE_MAP = "externalServerResourceMap";
     public static final String FIRMWARE = "firmware";
+    public static final String FIRMWARE_DATA = "firmware_data";
     public static final String FIRMWARE_TYPE = "firmware_type";
     public static final String FIRMWARE_VERSION = "firmware_version";
     public static final String FORWARD_PAYLOAD = "forward_payload";
@@ -32,6 +33,7 @@ public class DB_TABLES {
     public static final String METRICS_BINARY_TYPE_DEVICE = "metrics_binary_type_device";
     public static final String METRICS_COUNTER_TYPE_DEVICE = "metrics_counter_type_device";
     public static final String METRICS_DOUBLE_TYPE_DEVICE = "metrics_double_type_device";
+    public static final String METRICS_GPS_TYPE_DEVICE = "metrics_gps_type_device";
     public static final String NODE = "node";
     public static final String OPERATION = "operation";
     public static final String OPERATION_RULE_MAP = "rule_operation_map";

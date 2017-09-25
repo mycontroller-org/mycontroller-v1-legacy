@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -31,8 +32,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
+import org.mycontroller.standalone.api.jaxrs.model.ApiError;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
@@ -69,6 +71,12 @@ public class TypesHandler extends AccessEngine {
     }
 
     @GET
+    @Path("/metricEngineTypes")
+    public Response getMetricEngineTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMetricEngineTypes());
+    }
+
+    @GET
     @Path("/gatewaySerialDrivers")
     public Response getGatewaySerialDrivers() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getGatewaySerialDrivers());
@@ -99,21 +107,30 @@ public class TypesHandler extends AccessEngine {
 
     @GET
     @Path("/resources")
-    public Response getResources(@QueryParam("resourceType") String resourceType) {
+    public Response getResources(@QueryParam("resourceType") String resourceType,
+            @QueryParam("filter") String filter,
+            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
         return RestUtils.getResponse(Status.OK,
-                TypesUtils.getResources(AuthUtils.getUser(securityContext), resourceType));
+                TypesUtils.getResources(AuthUtils.getUser(securityContext), resourceType, filter, page, pageLimit));
     }
 
     @GET
     @Path("/gateways")
-    public Response getGateways() {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getGateways(AuthUtils.getUser(securityContext)));
+    public Response getGateways(@QueryParam("filter") String filter,
+            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getGateways(AuthUtils.getUser(securityContext), filter, page, pageLimit));
     }
 
     @GET
     @Path("/nodes")
-    public Response getNodes(@QueryParam("gatewayId") Integer gatewayId) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getNodes(AuthUtils.getUser(securityContext), gatewayId));
+    public Response getNodes(@QueryParam("gatewayId") Integer gatewayId, @QueryParam("filter") String filter,
+            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getNodes(AuthUtils.getUser(securityContext), gatewayId, filter, page, pageLimit));
     }
 
     @GET
@@ -133,8 +150,12 @@ public class TypesHandler extends AccessEngine {
     public Response getSensors(
             @QueryParam("nodeId") Integer nodeId,
             @QueryParam("roomId") Integer roomId,
-            @QueryParam("enableNoRoomFilter") Boolean enableNoRoomFilter) {
-        return RestUtils.getResponse(Status.OK, TypesUtils.getSensors(getUser(), nodeId, roomId, enableNoRoomFilter));
+            @QueryParam("enableNoRoomFilter") Boolean enableNoRoomFilter,
+            @QueryParam("filter") String filter,
+            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
+        return RestUtils.getResponse(Status.OK,
+                TypesUtils.getSensors(getUser(), nodeId, roomId, enableNoRoomFilter, filter, page, pageLimit));
     }
 
     @GET
@@ -143,11 +164,14 @@ public class TypesHandler extends AccessEngine {
             @QueryParam("sensorId") Integer sensorId,
             @QueryParam("sensorVariableId") Integer sensorVariableId,
             @QueryParam("variableType") List<String> variableTypes,
-            @QueryParam("metricType") List<String> metricTypes) {
+            @QueryParam("metricType") List<String> metricTypes,
+            @QueryParam("filter") String filter,
+            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
         try {
             return RestUtils.getResponse(Status.OK,
                     TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId, sensorVariableId,
-                            variableTypes, metricTypes));
+                            variableTypes, metricTypes, filter, page, pageLimit));
         } catch (IllegalAccessException ex) {
             return RestUtils.getResponse(Status.FORBIDDEN, new ApiError(ex.getMessage()));
         }

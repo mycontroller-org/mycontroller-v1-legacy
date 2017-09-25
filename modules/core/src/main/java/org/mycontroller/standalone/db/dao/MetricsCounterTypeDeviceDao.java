@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,10 @@ public interface MetricsCounterTypeDeviceDao extends BaseDao<MetricsCounterTypeD
     List<MetricsCounterTypeDevice> getAll(MetricsCounterTypeDevice metric);
 
     List<MetricsCounterTypeDevice> getAggregationRequiredVariableIds(AGGREGATION_TYPE aggregationType,
-            Long fromTimestamp,
-            Long toTimestamp);
+            Long fromTimestamp, Long toTimestamp);
+
+    long countOf(AGGREGATION_TYPE aggregationType, long start, long end);
+
+    boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end);
 
 }

@@ -1,5 +1,5 @@
 @REM
-@REM Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+@REM Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
 @REM and other contributors as indicated by the @author tags.
 @REM
 @REM Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,8 @@
 @REM
 
 @ECHO OFF
-SET HEAP_MIN=-Xms8m
-SET HEAP_MAX=-Xmx100m
+SET HEAP_MIN=-Xms32m
+SET HEAP_MAX=-Xmx256m
 
 SET CONF_PROPERTIES_FILE=../conf/mycontroller.properties
 SET CONF_LOG_FILE=../conf/logback.xml

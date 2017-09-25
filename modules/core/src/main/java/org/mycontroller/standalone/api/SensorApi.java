@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
 import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
@@ -37,7 +39,9 @@ import org.mycontroller.standalone.exceptions.McException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,9 +56,9 @@ public class SensorApi {
     public QueryResponse getAll(HashMap<String, Object> filters) {
         Query query = Query.get(filters);
         if (query.getOrderBy().equalsIgnoreCase(Sensor.KEY_NODE_EUI)) {
-            query.setOrderByRawQuery(DB_QUERY.ORDER_BY_NODE_EUI);
+            query.setOrderByRawQuery(DB_QUERY.getQuery(DB_QUERY.ORDER_BY_NODE_EUI));
         } else if (query.getOrderBy().equalsIgnoreCase(Sensor.KEY_NODE_NAME)) {
-            query.setOrderByRawQuery(DB_QUERY.ORDER_BY_NODE_NAME);
+            query.setOrderByRawQuery(DB_QUERY.getQuery(DB_QUERY.ORDER_BY_NODE_NAME));
         }
         return DaoUtils.getSensorDao().getAll(query);
     }
@@ -79,7 +83,7 @@ public class SensorApi {
 
     public void update(Sensor sensor) throws McException {
         Sensor availabilityCheck = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
-        if (availabilityCheck != null && sensor.getId() != availabilityCheck.getId()) {
+        if (availabilityCheck != null && !sensor.getId().equals(availabilityCheck.getId())) {
             throw new McDuplicateException("A sensor available with this sensor id!");
         }
         try {
@@ -129,24 +133,48 @@ public class SensorApi {
         return sensorVariableJson;
     }
 
+    public QueryResponse getVariables(HashMap<String, Object> filters) {
+        Query query = Query.get(filters);
+        QueryResponse queryResponse = DaoUtils.getSensorVariableDao().getAll(query);
+        if (queryResponse != null) {
+            @SuppressWarnings("unchecked")
+            List<SensorVariable> variables = (List<SensorVariable>) queryResponse.getData();
+            List<SensorVariableJson> variablesJson = new ArrayList<SensorVariableJson>();
+            for (SensorVariable variable : variables) {
+                variablesJson.add(new SensorVariableJson(variable));
+            }
+            queryResponse.setData(variablesJson);
+        }
+        return queryResponse;
+    }
+
     public SensorVariableJson getVariable(Integer id) {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(id);
         //Convert to SensorVariableJson
         return new SensorVariableJson(sensorVariable);
     }
 
-    public void sendpayload(SensorVariableJson sensorVariableJson) throws McInvalidException, McBadRequestException {
+    public void sendPayload(SensorVariableJson sensorVariableJson) throws McInvalidException, McBadRequestException {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
+        if (sensorVariable != null) {
+            sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
+            sendPayload(sensorVariable);
+        } else {
+            throw new McBadRequestException("null not allowed");
+        }
+    }
+
+    public void sendPayload(SensorVariable sensorVariable) throws McInvalidException, McBadRequestException {
         if (sensorVariable != null) {
             switch (sensorVariable.getMetricType()) {
                 case BINARY:
-                    if (McUtils.getBoolean(sensorVariableJson.getValue() == null)) {
-                        throw new McInvalidException("Invalid value: " + sensorVariableJson.getValue());
+                    if (McUtils.getBoolean(sensorVariable.getValue() == null)) {
+                        throw new McInvalidException("Invalid value: " + sensorVariable.getValue());
                     }
                     break;
                 case DOUBLE:
-                    if (McUtils.getDouble(sensorVariableJson.getValue()) == null) {
-                        throw new McInvalidException("Invalid value: " + sensorVariableJson.getValue());
+                    if (McUtils.getDouble(sensorVariable.getValue()) == null) {
+                        throw new McInvalidException("Invalid value: " + sensorVariable.getValue());
                     }
                     break;
 
@@ -154,7 +182,7 @@ public class SensorApi {
                     break;
             }
 
-            sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
+            sensorVariable.setValue(String.valueOf(sensorVariable.getValue()));
             McObjectManager.getMcActionEngine().sendPayload(sensorVariable);
         } else {
             throw new McBadRequestException("null not allowed");
@@ -166,19 +194,8 @@ public class SensorApi {
         if (sensorVariable != null) {
             if (!sensorVariable.getMetricType().getText().equalsIgnoreCase(sensorVariableJson.getMetricType())) {
                 //clear existing data
-                switch (sensorVariable.getMetricType()) {
-                    case DOUBLE:
-                        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
-                        break;
-                    case BINARY:
-                        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
-                        break;
-                    case COUNTER:
-                        DaoUtils.getMetricsCounterTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
-                        break;
-                    default:
-                        break;
-                }
+                MetricsUtils.engine().purge(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable));
+                //Update new metric type
                 sensorVariable.setMetricType(METRIC_TYPE.fromString(sensorVariableJson.getMetricType()));
             }
             //Update Unit type
@@ -190,8 +207,7 @@ public class SensorApi {
             //Update priority
             sensorVariable.setPriority(sensorVariableJson.getPriority());
             //Update Graph settings
-            sensorVariable.setGraphProperties(sensorVariableJson.getGraphProperties());
-
+            sensorVariable.setProperties(sensorVariableJson.getProperties());
             //Update sensor variable
             DaoUtils.getSensorVariableDao().update(sensorVariable);
         } else {
@@ -234,9 +250,21 @@ public class SensorApi {
         mcMessage.setTxMessage(true);
         mcMessage.setScreeningDone(false);
         if (mcMessage.validate()) {
-            McMessageUtils.sendToProviderBridge(mcMessage);
+            McMessageUtils.sendToMessageQueue(mcMessage);
         } else {
             throw new McBadRequestException("Required field is missing! " + mcMessage);
         }
+    }
+
+    public void purgeSensorVariable(ResourcePurgeConf purge) throws McBadRequestException {
+        _logger.debug("{}", purge);
+        if (purge.getId() == null) {
+            throw new McBadRequestException("Required field is missing! " + purge);
+        }
+        SensorVariable sVar = DaoUtils.getSensorVariableDao().getById(purge.getId());
+        if (sVar == null) {
+            throw new McBadRequestException("Selected sensor variable is not found! " + purge);
+        }
+        MetricsUtils.engine().purge(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sVar), purge);
     }
 }

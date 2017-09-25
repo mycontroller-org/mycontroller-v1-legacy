@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,7 @@ public class McUtils {
     public static final long HOUR = MINUTE * 60;
     public static final long DAY = HOUR * 24;
     public static final DecimalFormat decimalFormat = new DecimalFormat("#.###");
+    public static final DecimalFormat ZERO_PRECISION = new DecimalFormat("#");
     public static final String MC_LOCALE_FILE_NAME = "mc_locale/mc_locale_java";
 
     public static final long KB = 1024;
@@ -91,20 +92,36 @@ public class McUtils {
     }
 
     public static Double getDouble(String value) {
+        return getDouble(value, DOUBLE_ROUND);
+    }
+
+    public static Double getDouble(String value, int scale) {
         if (value != null) {
-            return round(Double.valueOf(value), DOUBLE_ROUND);
+            return round(Double.valueOf(value), scale);
         }
         return null;
     }
 
-    public static String getDoubleAsString(double value) {
-        Double truncatedDouble = new BigDecimal(value).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+    public static String getDoubleAsString(double value, int scale) {
+        Double truncatedDouble = new BigDecimal(value).setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+        if (scale == 0) {
+            return ZERO_PRECISION.format(truncatedDouble);
+        }
         return String.valueOf(truncatedDouble);
+    }
+
+    public static String getDoubleAsString(double value) {
+        String _value = getDoubleAsString(value, 3);
+        if (_value.endsWith(".0")) {
+            _value = _value.substring(0, _value.length() - 2);
+        }
+
+        return _value;
     }
 
     public static String getDoubleAsString(String value) {
         try {
-            if (value != null) {
+            if (value != null && !value.equalsIgnoreCase("null")) {
                 return getDoubleAsString(Double.valueOf(value));
             } else {
                 return "-";
@@ -122,6 +139,10 @@ public class McUtils {
         } else {
             return null;
         }
+    }
+
+    public static Long getLong(Object value) {
+        return getLong(String.valueOf(value));
     }
 
     public static Long getLong(String value) {
@@ -300,7 +321,17 @@ public class McUtils {
             }
             _logger.debug("Writing '{}' to zip file", file.getAbsolutePath());
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-            zos.putNextEntry(new ZipEntry(file.getCanonicalPath().replace(removePrefix, "")));
+            String directoryName = file.getParentFile().getCanonicalPath().replace(removePrefix, "");
+            if (File.separator.equals("\\")) {
+                directoryName = directoryName.replaceAll("\\\\", "/");
+            }
+            String finalName = directoryName + "/" + file.getName();
+            if (finalName.startsWith("/")) {
+                finalName = finalName.substring(1);
+            }
+            _logger.debug("Filename:[{}], removePrefix:{}, finalName:[{}]",
+                    file.getCanonicalPath(), removePrefix, finalName);
+            zos.putNextEntry(new ZipEntry(finalName));
 
             int length;
             while ((length = fis.read(bytes)) >= 0) {
@@ -339,5 +370,17 @@ public class McUtils {
             return value;
         }
         return "-";
+    }
+
+    public static String toString(StackTraceElement[] stackTraceElements) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i < stackTraceElements.length; i++) {
+            builder.append("\n\t at ")
+                    .append(stackTraceElements[i].getClassName()).append(".")
+                    .append(stackTraceElements[i].getMethodName()).append("(")
+                    .append(stackTraceElements[i].getFileName()).append(":")
+                    .append(stackTraceElements[i].getLineNumber()).append(")");
+        }
+        return builder.toString();
     }
 }

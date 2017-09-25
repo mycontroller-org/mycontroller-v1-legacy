@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+# Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
 # and other contributors as indicated by the @author tags.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,8 @@ cd ${ACTUAL_LOCATION}
 
 
 #Java Heap settings
-HEAP_MIN=-Xms8m
-HEAP_MAX=-Xmx100m
+HEAP_MIN=-Xms32m
+HEAP_MAX=-Xmx256m
 
 JAVA_VERSION="1.7"
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SensorsController', function(alertService,
-$scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams, $filter) {
+$scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRestError, mchelper, CommonServices, $stateParams, $filter, $interval) {
 
   //GUI page settings
   $scope.headerStringList = $filter('translate')('SENSORS_DETAIL');
@@ -41,14 +41,21 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
     $scope.query.nodeId = $stateParams.nodeId;
   }
 
+  $scope.isRunning = false;
   //get all Sensors
   $scope.getAllItems = function(){
+    if($scope.isRunning){
+      return;
+    }
+    $scope.isRunning = true;
     SensorsFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
+      $scope.isRunning = false;
     },function(error){
       displayRestError.display(error);
+      $scope.isRunning = false;
     });
   }
 
@@ -197,10 +204,18 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
   $scope.getSensorVariableTypes = function(variables){
     var types = [];
     angular.forEach(variables, function(variable){
-      types.push(variable.type.locale);
+      types.push(variable.name ? variable.name : variable.type.locale);
     });
     return types.join(', ');
   }
+
+ // global page refresh
+  var promise = $interval($scope.getAllItems, mchelper.cfg.globalPageRefreshTime);
+
+  // cancel interval on scope destroy
+  $scope.$on('$destroy', function(){
+    $interval.cancel(promise);
+  });
 
 });
 
@@ -288,7 +303,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
                 top: 5,
                 right: 20,
                 bottom: 60,
-                left: 65
+                left: 80
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
             noData: $filter('translate')('NO_DATA_AVAILABLE'),
@@ -324,7 +339,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     $scope.metricsSettings = response;
     $scope.chartEnableMinMax = $scope.metricsSettings.enabledMinMax;
     $scope.chartFromTimestamp = $scope.metricsSettings.defaultTimeRange.toString();
-    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp},function(response){
+    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp},function(response){
       $scope.chartData = response;
       $scope.fetching = false;
     });
@@ -336,7 +351,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
 
 
   $scope.updateChart = function(){
-    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
+    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
       //$scope.chartData = resource;
       resource.forEach(function(item) {
         $scope.chartData.forEach(function(itemLocal) {
@@ -357,6 +372,11 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     var chOptions = angular.copy($scope.chartOptions);
     chOptions.chart.type = chData.chartType;
     chOptions.chart.interpolate = chData.chartInterpolate;
+    //Update margins
+    chOptions.chart.margin.left = chData.marginLeft;
+    chOptions.chart.margin.right = chData.marginRight;
+    chOptions.chart.margin.top = chData.marginTop;
+    chOptions.chart.margin.bottom = chData.marginBottom;
     //Update display time format
     $scope.chartTimeFormat = chData.timeFormat;
     if(chData.dataType === 'Double'){
@@ -427,7 +447,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
 
   //Update data for N seconds once
   var updatePageData = function(){
-    //$scope.item = SensorsFactory.get({"id":$stateParams.id});
+    $scope.item = SensorsFactory.get({"id":$stateParams.id}); //This line introduces flickering on refresh
     $scope.updateChart();
   }
 
@@ -438,6 +458,66 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
   $scope.$on('$destroy', function(){
     $interval.cancel(promise);
   });
+
+});
+
+//Purge sensor variable controller
+myControllerModule.controller('SensorVariableControllerPurge', function ($scope, $stateParams, $state, SensorsFactory, TypesFactory,
+  mchelper, alertService, displayRestError, $filter, CommonServices, $uibModal) {
+  $scope.mchelper = mchelper;
+  $scope.cs = CommonServices;
+  $scope.sensorVariable = {};
+  $scope.item = {};
+  $scope.metricTypes = {};
+  $scope.unitTypes = {};
+  $scope.orgSvar = {};
+
+  if($stateParams.id){
+    SensorsFactory.getVariable({"id":$stateParams.id},function(response) {
+        $scope.sensorVariable = response;
+        $scope.orgSvar = angular.copy(response);
+        $scope.item.id = $scope.sensorVariable.id;
+        $scope.item.depthSearch = false;
+      },function(error){
+        displayRestError.display(error);
+      });
+  }
+
+  //GUI page settings
+  $scope.headerStringAdd = $filter('translate')('PURGE_SENSOR_VARIABLE');
+  $scope.cancelButtonState = "sensorsDetail({id: sensorVariable.sensorId})"; //Cancel button state
+  $scope.saveProgress = false;
+  $scope.saveButtonName = $filter('translate')('PURGE');
+  $scope.savingButtonName = $filter('translate')('PURGING');
+  $scope.saveButtonTooltip = $filter('translate')('PURGE_WARNING');
+
+
+  //Convert as display string
+  $scope.getDateTimeDisplayFormat = function (newDate) {
+    return $filter('date')(newDate, mchelper.cfg.dateFormat, mchelper.cfg.timezone);
+  };
+
+  //Save data - here it's purge
+  $scope.save = function(){
+    //Update time range from/to
+    if($scope.purgeFrom){
+      $scope.item.start = moment($scope.purgeFrom).format('YYYY-MM-DDTHH:mm:ss');
+    }
+    if($scope.purgeTo){
+      $scope.item.end = moment($scope.purgeTo).format('YYYY-MM-DDTHH:mm:ss');
+    }
+
+    $scope.saveProgress = true;
+    if($stateParams.id){
+      SensorsFactory.purgeVariable($scope.item,function(response) {
+        alertService.success($filter('translate')('PURGE_DONE_SUCCESSFULLY'));
+        $state.go("sensorsDetail", {"id": $scope.sensorVariable.sensorId});
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress = false;
+      });
+    }
+  }
 
 });
 

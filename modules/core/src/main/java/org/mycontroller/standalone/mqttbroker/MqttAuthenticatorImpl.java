@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,8 +28,7 @@ import io.moquette.spi.security.IAuthenticator;
  */
 public class MqttAuthenticatorImpl implements IAuthenticator {
 
-    @Override
-    public boolean checkValid(String username, byte[] passwordBytes) {
+    public boolean checkValid(String clientId, String username, byte[] passwordBytes) {
         String password = new String(passwordBytes, StandardCharsets.UTF_8);
         return AuthUtils.authenticateMqttUser(username, password);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,6 +49,7 @@ public class McConditionThreshold extends McRuleBase {
         //Update current value
         try {
             setActualValue(super.getResourceValue(rdThreshold.getResourceType(), rdThreshold.getResourceId()));
+            setActualUnit(super.getResourceUnit(rdThreshold.getResourceType(), rdThreshold.getResourceId()));
         } catch (IllegalAccessException ex) {
             _logger.error("Failed to get actual value", ex);
             return false;

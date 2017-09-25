@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,6 +46,10 @@ public class MetricsGraph {
     private String interpolate;
     private String subType;
     private String color;
+    private Integer marginLeft;
+    private Integer marginRight;
+    private Integer marginTop;
+    private Integer marginBottom;
 
     public enum CHART_TYPE {
         LINE_CHART("lineChart"),
@@ -91,6 +95,10 @@ public class MetricsGraph {
                 .interpolate((String) gMap.get(SensorVariable.KEY_GP_INTERPOLATE))
                 .subType((String) gMap.get(SensorVariable.KEY_GP_SUBTYPE))
                 .color((String) gMap.get(SensorVariable.KEY_GP_COLOR))
+                .marginLeft((Integer) gMap.get(SensorVariable.KEY_GP_MARGIN_LEFT))
+                .marginRight((Integer) gMap.get(SensorVariable.KEY_GP_MARGIN_RIGHT))
+                .marginTop((Integer) gMap.get(SensorVariable.KEY_GP_MARGIN_TOP))
+                .marginBottom((Integer) gMap.get(SensorVariable.KEY_GP_MARGIN_BOTTOM))
                 .build();
     }
 

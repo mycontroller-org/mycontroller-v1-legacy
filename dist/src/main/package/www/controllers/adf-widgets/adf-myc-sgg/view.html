@@ -25,7 +25,7 @@
 </div>
 
 <div ng-if="!(mycSensorsGroupedGraph.showLoading || mycSensorsGroupedGraph.showError)">
-  <label>{{ 'SENSOR_VARIABLE_TYPE' | translate }}: {{config.variableType}}</label>
+  <!-- <label>{{ 'SENSOR_VARIABLE_TYPE' | translate }}: {{config.variableType}}</label> -->
   <nvd3 id="sgg-{{config.variableId.join('-')}}" options='mycSensorsGroupedGraph.chartOptions' data="mycSensorsGroupedGraph.chartData"></nvd3>
   <div ng-if="config.variableId.length === 0" ng-include src="'partials/common-html/no-items-filter-sm.html'"></div>
 </div>

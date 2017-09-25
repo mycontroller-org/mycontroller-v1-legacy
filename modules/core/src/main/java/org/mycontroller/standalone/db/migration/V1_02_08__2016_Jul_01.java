@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,7 +54,9 @@ public class V1_02_08__2016_Jul_01 extends MigrationBase {
          * steps
          * 1. remove all the units
          * */
-        executeRaw("DELETE FROM SETTINGS WHERE SUBKEY='variableUnit'");
+        sqlClient().executeRaw(
+                "DELETE FROM " + sqlClient().getTableName("settings") + " WHERE "
+                        + sqlClient().getColumnName("subKey") + "='variableUnit'");
 
         /** Migration #2
          * Added/update new columns in 'Sensor variable' table
@@ -64,17 +66,19 @@ public class V1_02_08__2016_Jul_01 extends MigrationBase {
          * 3. reload dao
          * 4. update units and metrictype
          * */
-        dropColumn("SENSOR_VARIABLE", "UNIT");
-        addColumn("SENSOR_VARIABLE", "UNITTYPE", "VARCHAR(100)");
-        addColumn("SENSOR_VARIABLE", "READONLY", "TINYINT DEFAULT FALSE NOT NULL");
-        addColumn("SENSOR_VARIABLE", "\"OFFSET\"", "DOUBLE PRECISION DEFAULT 0.0 NOT NULL");
-        addColumn("SENSOR_VARIABLE", "PRIORITY", "INTEGER DEFAULT 100 NOT NULL");
-        addColumn("SENSOR_VARIABLE", "GRAPHPROPERTIES", "BLOB");
-        reloadDao();
-        List<SensorVariable> sVariables = DaoUtils.getSensorVariableDao().getAll();
-        for (SensorVariable sVariable : sVariables) {
-            sVariable.updateUnitAndMetricType();
-            DaoUtils.getSensorVariableDao().update(sVariable);
+        if (sqlClient().hasColumn("sensor_variable", "unit")) {
+            sqlClient().dropColumn("sensor_variable", "unit");
+            sqlClient().addColumn("sensor_variable", "unitType", "VARCHAR(100)");
+            sqlClient().addColumn("sensor_variable", "readOnly", "TINYINT DEFAULT FALSE NOT NULL");
+            sqlClient().addColumn("sensor_variable", "\"offset\"", "DOUBLE PRECISION DEFAULT 0.0 NOT NULL");
+            sqlClient().addColumn("sensor_variable", "priority", "INTEGER DEFAULT 100 NOT NULL");
+            sqlClient().addColumn("sensor_variable", "graphProperties", "BLOB");
+            reloadDao();
+            List<SensorVariable> sVariables = DaoUtils.getSensorVariableDao().getAll();
+            for (SensorVariable sVariable : sVariables) {
+                sVariable.updateUnitAndMetricType();
+                DaoUtils.getSensorVariableDao().update(sVariable);
+            }
         }
 
         /** Migration #3

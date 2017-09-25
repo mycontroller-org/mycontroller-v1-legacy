@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,20 @@
  */
 package org.mycontroller.standalone.operation.model;
 
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+
+import javax.script.ScriptException;
+
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.operation.IOperationEngine;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
+import org.mycontroller.standalone.scripts.McScript;
+import org.mycontroller.standalone.scripts.McScriptEngine;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils;
+import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
+import org.mycontroller.standalone.scripts.McScriptException;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -34,6 +45,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
+@Slf4j
 public abstract class Operation implements IOperationEngine {
     private Integer id;
     private Boolean enabled;
@@ -76,6 +88,22 @@ public abstract class Operation implements IOperationEngine {
             "permission", "permissions", "allowedResources" })
     private User getUserJson() {
         return user;
+    }
+
+    public static String updateTemplate(String source, HashMap<String, Object> bindings) {
+        McScript mcTemplateScript = McScript.builder()
+                .type(SCRIPT_TYPE.OPERATION)
+                .engineName(McScriptEngineUtils.MC_TEMPLATE_ENGINE)
+                .data(source)
+                .bindings(bindings)
+                .build();
+        McScriptEngine templateEngine = new McScriptEngine(mcTemplateScript);
+        try {
+            return (String) templateEngine.executeScript();
+        } catch (FileNotFoundException | McScriptException | ScriptException ex) {
+            _logger.error("Exception: {}", mcTemplateScript, ex);
+            return "<pre>Exception: " + ex.getMessage() + "</pre>";
+        }
     }
 
 }

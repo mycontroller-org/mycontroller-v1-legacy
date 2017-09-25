@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -109,8 +109,8 @@ public class OperationUtils {
         return OPERATION_SEND_PAYLOAD_TIMER_JOB + operationTable.getId() + "_";
     }
 
-    public static void unloadNotificationTimerJobs(List<Integer> notificationIds) {
-        for (OperationTable operationTable : DaoUtils.getOperationDao().getAll(notificationIds)) {
+    public static void unloadOperationTimerJobs(List<Integer> operationIds) {
+        for (OperationTable operationTable : DaoUtils.getOperationDao().getAll(operationIds)) {
             unloadOperationTimerJobs(operationTable);
         }
     }
@@ -118,13 +118,8 @@ public class OperationUtils {
     public static void unloadOperationTimerJobs(OperationTable operationTable) {
         //Unload timer job
         Timer timer = new Timer();
-        List<String> allJobs = SchedulerUtils.getAllJobNames();
-        for (String jobName : allJobs) {
-            if (jobName.startsWith(getSendPayloadTimerJobName(operationTable))) {
-                timer.setName(jobName);
-                SchedulerUtils.unloadTimerJob(timer);
-            }
-        }
+        timer.setName(getSendPayloadTimerJobName(operationTable));
+        SchedulerUtils.unloadTimerJobIfContains(timer);
     }
 
     public static void unloadOperationTimerJobs(RuleDefinition ruleDefinition) {
@@ -135,17 +130,29 @@ public class OperationUtils {
         for (OperationTable operationTable : operationTables) {
             if (operationTable.getType() == OPERATION_TYPE.SEND_PAYLOAD) {
                 timer.setName(getSendPayloadTimerJobName(ruleDefinition, operationTable));
-                SchedulerUtils.unloadTimerJob(timer);
+                SchedulerUtils.unloadTimerJobIfContains(timer);
             }
         }
     }
 
-    public static void disableAlarmDefinition(RuleDefinition ruleDefinition) {
+    public static void disableRuleDefinition(RuleDefinition ruleDefinition) {
         //unload notification timer jobs
         unloadOperationTimerJobs(ruleDefinition);
         //Disable
         ruleDefinition.setEnabled(false);
         DaoUtils.getRuleDefinitionDao().update(ruleDefinition.getRuleDefinitionTable());
+    }
+
+    public static void unloadOperationTimerJobs(Timer timer) {
+        //Unload timer job which is scheduled by operations
+        Timer timerTmp = new Timer();
+        List<OperationTable> operationTables = DaoUtils.getOperationDao().getByTimerId(timer.getId());
+        for (OperationTable operationTable : operationTables) {
+            if (operationTable.getType() == OPERATION_TYPE.SEND_PAYLOAD) {
+                timerTmp.setName(getSendPayloadTimerJobName(operationTable));
+                SchedulerUtils.unloadTimerJobIfContains(timerTmp);
+            }
+        }
     }
 
 }

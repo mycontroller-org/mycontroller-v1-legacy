@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,13 +33,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.api.NodeApi;
-import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.model.ApiError;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -50,6 +54,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTAT
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "User" })
+@Slf4j
 public class NodeHandler extends AccessEngine {
     private NodeApi nodeApi = new NodeApi();
 
@@ -81,10 +86,8 @@ public class NodeHandler extends AccessEngine {
         filters.put(Query.PAGE_LIMIT, pageLimit);
         filters.put(Query.PAGE, page);
 
-        //Add id filter if he is non-admin
-        if (!isSuperAdmin()) {
-            filters.put(Node.KEY_ID, getUser().getAllowedResources().getNodeIds());
-        }
+        //Update query filter if he is non-admin
+        AuthUtils.updateQueryFilter(securityContext, filters, RESOURCE_TYPE.NODE);
 
         return RestUtils.getResponse(Status.OK, nodeApi.getAll(filters));
     }
@@ -148,6 +151,7 @@ public class NodeHandler extends AccessEngine {
             nodeApi.uploadFirmware(ids);
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
+            _logger.error("Error,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }

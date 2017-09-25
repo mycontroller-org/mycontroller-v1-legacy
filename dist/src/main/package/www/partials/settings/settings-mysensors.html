@@ -60,7 +60,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.mySensors" ng-click="updateSettingsMySensors();editEnable.mySensors = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveMySensors()"  ng-show="editEnable.mySensors" ng-disabled="saveProgress.mySensors">
               <div ng-show="saveProgress.mySensors" class="spinner spinner-xs"></div>
-              {{ 'SAVE' | translate }}
+              {{saveProgress.mySensors ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>

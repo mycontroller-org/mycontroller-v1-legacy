@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,18 @@
  */
 package org.mycontroller.standalone.metrics.jobs;
 
+import java.sql.SQLException;
+import java.text.MessageFormat;
+
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
-import org.mycontroller.standalone.metrics.MetricsAggregationBase;
+import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.db.DB_QUERY;
+import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.metrics.METRIC_ENGINE;
+import org.mycontroller.standalone.metrics.MetricsUtils;
+import org.mycontroller.standalone.metrics.engines.McMetricsAggregationBase;
+import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,10 +38,34 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetricsAggregationJob extends Job {
 
+    private void executeSqlQuery(String sqlQuery) {
+        try {
+            int deleteCount = DaoUtils.getMetricsDoubleTypeDeviceDao().getDao().executeRaw(sqlQuery);
+            _logger.debug("Sql Query[{}], Deletion count:{}", sqlQuery, deleteCount);
+        } catch (SQLException ex) {
+            _logger.error("Exception when executing query[{}] ", sqlQuery, ex);
+        }
+    }
+
     @Override
     public void doRun() throws JobInterruptException {
+        if (MetricsUtils.type() != METRIC_ENGINE.MY_CONTROLLER) {
+            //If some of external metric engine configured. no need to run internal metric aggregation
+            return;
+        }
         _logger.debug("Metrics aggregation job triggered");
-        new MetricsAggregationBase().runAggregation();
+        new McMetricsAggregationBase().runAggregation();
+
+        //Execute purge of binary and gps data
+        MetricsDataRetentionSettings retentionSettings = AppProperties.getInstance().getMetricsDataRetentionSettings();
+        //Binary data
+        String sqlDeleteQueryBinary = MessageFormat.format(DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_BINARY),
+                String.valueOf(System.currentTimeMillis() - retentionSettings.getRetentionBinary()));
+        executeSqlQuery(sqlDeleteQueryBinary);
+        //GPS data
+        String sqlDeleteQueryGPS = MessageFormat.format(DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_GPS),
+                String.valueOf(System.currentTimeMillis() - retentionSettings.getRetentionGPS()));
+        executeSqlQuery(sqlDeleteQueryGPS);
         _logger.debug("Metrics aggregation job completed");
     }
 }

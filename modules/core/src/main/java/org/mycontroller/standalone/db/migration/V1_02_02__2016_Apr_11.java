@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,8 +60,8 @@ public class V1_02_02__2016_Apr_11 extends MigrationBase {
          * 1. Remove old table
          * 2. Create new table
          */
-        dropTable("uid_tag");//Drop table
-        createTable(UidTag.class);//create table
+        sqlClient().dropTable("uid_tag");//Drop table
+        sqlClient().createTable(UidTag.class);//create table
 
         _logger.info("Migration completed successfully.");
     }

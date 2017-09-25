@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.mycontroller.standalone.db.tables;
+
+import java.io.Serializable;
 
 import org.mycontroller.standalone.db.DB_TABLES;
 
@@ -37,7 +39,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString(includeFieldNames = true)
-public class FirmwareVersion {
+public class FirmwareVersion implements Serializable {
+    /**  */
+    private static final long serialVersionUID = -8741911886088122681L;
     public static final String KEY_ID = "id";
     public static final String KEY_VERSION = "version";
 
@@ -47,4 +51,5 @@ public class FirmwareVersion {
     @DatabaseField(canBeNull = false, unique = true, columnName = KEY_VERSION)
     private String version;
 
+    private Integer newId;
 }

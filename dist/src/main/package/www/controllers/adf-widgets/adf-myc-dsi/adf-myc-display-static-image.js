@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-dsi', [])
       .widget('mycDisplayStaticImage', {
         title: 'Display image file',
         description: 'Displays image file from local disk or url',
-        templateUrl: 'controllers/adf-widgets/adf-myc-dsi/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-dsi/view.html?mcv=${mc.gui.version}',
         controller: 'mycDisplayStaticImageController',
         controllerAs: 'mycDisplayStaticImage',
         config: {
@@ -35,7 +35,7 @@ angular.module('adf.widget.myc-dsi', [])
           refreshTime:30,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-dsi/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-dsi/edit.html?mcv=${mc.gui.version}',
           controller: 'mycDisplayStaticImageEditController',
           controllerAs: 'mycDisplayStaticImageEdit',
         }

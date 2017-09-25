@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,18 +56,18 @@ public class V1_02_09__2016_Jul_16 extends MigrationBase {
          * 3. removed column: otherData
          * */
         //Execute only if changes not available in database
-        if (!hasColumn("NODE", "REGISTRATIONSTATE")) {
-            addColumn("NODE", "PARENTNODEEUI", "VARCHAR(255)");
-            addColumn("NODE", "PROPERTIES", "BLOB");
-            dropColumn("NODE", "OTHERDATA");
-            addColumn("NODE", "REGISTRATIONSTATE", "VARCHAR(100)");
+        if (!sqlClient().hasColumn("node", "registrationState")) {
+            sqlClient().addColumn("node", "registrationState", "VARCHAR(100)");
+            sqlClient().addColumn("node", "parentNodeEui", "VARCHAR(255)");
+            sqlClient().addColumn("node", "properties", "BLOB");
+            sqlClient().dropColumn("node", "otherData");
             reloadDao();
             List<Node> nodes = DaoUtils.getNodeDao().getAll();
             for (Node node : nodes) {
                 node.setRegistrationState(NODE_REGISTRATION_STATE.REGISTERED);
                 DaoUtils.getNodeDao().update(node);
             }
-            alterColumn("NODE", "REGISTRATIONSTATE", "VARCHAR(100) NOT NULL");
+            sqlClient().alterColumn("node", "registrationState", "VARCHAR(100) NOT NULL");
         }
 
         /** Migration #2

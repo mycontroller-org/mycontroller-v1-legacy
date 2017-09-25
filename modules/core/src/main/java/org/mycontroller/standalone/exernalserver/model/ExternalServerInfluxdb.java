@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@ package org.mycontroller.standalone.exernalserver.model;
 
 import java.util.HashMap;
 
+import org.mycontroller.restclient.core.ClientResponse;
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.restclient.influxdb.InfluxDBClient;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils;
-import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
-import org.mycontroller.standalone.restclient.influxdb.InfluxdbClient;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -81,7 +81,7 @@ public class ExternalServerInfluxdb extends ExternalServer {
     @JsonIgnore
     public ExternalServerTable getExternalServerTable() {
         ExternalServerTable externalServerTable = super.getExternalServerTable();
-        HashMap<String, Object> properties = new HashMap<String, Object>();
+        HashMap<String, Object> properties = getProperties();
         properties.put(KEY_URL, url);
         properties.put(KEY_TRUST_HOST_TYPE, trustHostType.getText());
         properties.put(KEY_DATABASE, database);
@@ -105,11 +105,11 @@ public class ExternalServerInfluxdb extends ExternalServer {
     }
 
     @Override
-    public void send(SensorVariable sensorVariable) {
+    public synchronized void send(SensorVariable sensorVariable) {
         if (getEnabled()) {
-            ClientResponse<String> clientResponse = ((InfluxdbClient) ExternalServerUtils.getRestClient(getId()))
-                    .write(getVariableKey(sensorVariable, getKeyFormat()), getTags(), sensorVariable.getTimestamp(),
-                            sensorVariable.getValue());
+            ClientResponse<String> clientResponse = ((InfluxDBClient) ExternalServerUtils.getClient(getId()))
+                    .write(getVariableKey(sensorVariable, getKeyFormat()), getVariableKey(sensorVariable, getTags()),
+                            sensorVariable.getTimestamp(), sensorVariable.getValue());
             if (!clientResponse.isSuccess()) {
                 _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,
                         toString(), getUrl());

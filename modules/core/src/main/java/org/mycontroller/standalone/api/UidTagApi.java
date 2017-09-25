@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.UidTag;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
@@ -45,8 +45,8 @@ public class UidTagApi {
         return DaoUtils.getUidTagDao().getByUid(uid);
     }
 
-    public UidTag getBySensorVariableId(int sVariableId) {
-        return DaoUtils.getUidTagDao().getBySensorVariableId(sVariableId);
+    public UidTag get(RESOURCE_TYPE resourceType, Integer resourceId) {
+        return DaoUtils.getUidTagDao().get(resourceType, resourceId);
     }
 
     public void delete(List<Integer> ids) {
@@ -65,17 +65,17 @@ public class UidTagApi {
                 throw new McDuplicateException(
                         "This UID["
                                 + uidTag.getUid()
-                                + "] tagged with another sensor variable["
-                                + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck
-                                        .getSensorVariable()).getResourceLessDetails() + "].");
+                                + "] tagged with another resource variable["
+                                + new ResourceModel(uidTag.getResourceType(), uidTag.getResourceId())
+                                        .getResourceLessDetails() + "].");
             }
-            UidTag svAvailabilityCheck = DaoUtils.getUidTagDao().getBySensorVariableId(
-                    uidTag.getSensorVariable().getId());
-            if (svAvailabilityCheck != null && !svAvailabilityCheck.getId().equals(availabilityCheck.getId())) {
-                throw new McDuplicateException("This sensor variable["
-                        + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck
-                                .getSensorVariable()).getResourceLessDetails() + "] tagged with another UID["
-                        + uidTag.getUid() + "] .");
+            UidTag rsAvailabilityCheck = DaoUtils.getUidTagDao().get(uidTag.getResourceType(), uidTag.getResourceId());
+            if (rsAvailabilityCheck != null && !rsAvailabilityCheck.getId().equals(availabilityCheck.getId())) {
+                throw new McDuplicateException(
+                        "This resource variable["
+                                + new ResourceModel(rsAvailabilityCheck.getResourceType(), rsAvailabilityCheck
+                                        .getResourceId()).getResourceLessDetails() + "] tagged with another UID["
+                                + rsAvailabilityCheck.getUid() + "] .");
             }
         } else {
             throw new McBadRequestException("Selected entry not available!");
@@ -86,16 +86,15 @@ public class UidTagApi {
     public void add(UidTag uidTag) throws McDuplicateException {
         UidTag availabilityCheck = DaoUtils.getUidTagDao().getByUid(uidTag.getUid());
         if (availabilityCheck != null) {
-            throw new McDuplicateException("This UID[" + uidTag.getUid() + "] tagged with another sensor variable["
-                    + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck
-                            .getSensorVariable()).getResourceLessDetails() + "].");
+            throw new McDuplicateException("This UID[" + uidTag.getUid() + "] tagged with another resource["
+                    + new ResourceModel(uidTag.getResourceType(), uidTag.getResourceId()).getResourceLessDetails()
+                    + "].");
         }
-        availabilityCheck = DaoUtils.getUidTagDao().getBySensorVariableId(uidTag.getSensorVariable().getId());
+        availabilityCheck = DaoUtils.getUidTagDao().get(uidTag.getResourceType(), uidTag.getResourceId());
         if (availabilityCheck != null) {
-            throw new McDuplicateException("This sensor variable["
-                    + new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, availabilityCheck
-                            .getSensorVariable()).getResourceLessDetails() + "] tagged with another UID["
-                    + uidTag.getUid() + "] .");
+            throw new McDuplicateException("This resource["
+                    + new ResourceModel(uidTag.getResourceType(), uidTag.getResourceId()).getResourceLessDetails()
+                    + "] tagged with another UID[" + availabilityCheck.getUid() + "] .");
         }
         DaoUtils.getUidTagDao().create(uidTag);
     }

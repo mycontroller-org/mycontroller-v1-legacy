@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,10 +47,10 @@ public class V1_02_04__2016_Apr_25 extends MigrationBase {
          * 3. Reload dao's
          * */
         //Add column 'parentId'
-        addColumn("room", "parentId", "INTEGER");
+        sqlClient().addColumn("room", "parentId", "INTEGER");
 
         //Add column 'icon'
-        addColumn("room", "icon", "VARCHAR(255)");
+        sqlClient().addColumn("room", "icon", "VARCHAR(255)");
 
         //Reload dao
         reloadDao();

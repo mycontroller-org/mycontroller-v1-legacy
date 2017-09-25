@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.mycontroller.standalone;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -65,8 +66,11 @@ import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.auth.McContainerRequestFilter;
 import org.mycontroller.standalone.db.DataBaseUtils;
+import org.mycontroller.standalone.externalserver.ExternalServerUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils;
+import org.mycontroller.standalone.mdns.McmDNSFactory;
 import org.mycontroller.standalone.message.MessageMonitorThread;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
@@ -97,9 +101,10 @@ public class StartApp {
         }
     }
 
-    public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException {
+    public static synchronized void startMycontroller() throws ClassNotFoundException, SQLException,
+            URISyntaxException {
         start = System.currentTimeMillis();
-        loadInitialProperties();
+        loadInitialProperties(System.getProperty("mc.conf.file"));
         _logger.debug("App Properties: {}", AppProperties.getInstance().toString());
         _logger.debug("Operating System detail:[os:{},arch:{},version:{}]",
                 AppProperties.getOsName(), AppProperties.getOsArch(), AppProperties.getOsVersion());
@@ -209,6 +214,10 @@ public class StartApp {
         _logger.info("TJWS server started successfully, HTTPS Enabled?:{}, HTTP(S) Port: [{}]",
                 AppProperties.getInstance().isWebHttpsEnabled(),
                 AppProperties.getInstance().getWebHttpPort());
+
+        if (AppProperties.getInstance().isMDNSserviceEnabled()) {
+            McmDNSFactory.updateHttpService(true);
+        }
     }
 
     private static void stopHTTPWebServer() {
@@ -220,12 +229,14 @@ public class StartApp {
         }
     }
 
-    private static boolean startServices() throws ClassNotFoundException, SQLException {
+    private static boolean startServices() throws ClassNotFoundException, SQLException, URISyntaxException {
         //Start order..
         // - set to default locale
         // - Add Shutdown hook
         // - Start DB service
+        // - Initialize MapDB store
         // - Set to locale actual
+        // - Check password reset file
         // - Start message Monitor Thread
         // - Load starting values
         // - Start MQTT Broker
@@ -239,8 +250,14 @@ public class StartApp {
         //Add Shutdown hook
         new AppShutdownHook().attachShutDownHook();
 
-        //Start DB service
-        DataBaseUtils.loadDatabase();
+        //Start DB migration service
+        DataBaseUtils.runDatabaseMigration();
+
+        //Load Metric engine factory
+        MetricsUtils.loadEngine();
+
+        //Initialize MapDB store
+        MapDbFactory.init();
 
         //Create or update static json file used for GUI before login
         SettingsUtils.updateStaticJsonInformationFile();
@@ -251,6 +268,9 @@ public class StartApp {
 
         //List available script engines information
         McScriptEngineUtils.listAvailableEngines();
+
+        //Check password reset file
+        ResetPassword.executeResetPassword();
 
         //Start message Monitor Thread
         //Create new thread to monitor received logs
@@ -279,6 +299,7 @@ public class StartApp {
     public static synchronized void stopServices() {
         //Stop order..
         // - stop web server
+        // - clear external servers
         // - Stop scheduler
         // - Stop GatewayTable Listener
         // - Stop MQTT broker
@@ -286,18 +307,19 @@ public class StartApp {
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
         stopHTTPWebServer();
+        ExternalServerUtils.clearServers();
         SchedulerUtils.stop();
         GatewayUtils.unloadAllGateways();
         MoquetteMqttBroker.stop();
-        MessageMonitorThread.setTerminationIssued(true);
+        MessageMonitorThread.shutdown();
         DataBaseUtils.stop();
+        MapDbFactory.close();
         _logger.debug("All services stopped.");
         //Remove references
         McObjectManager.clearAllReferences();
     }
 
-    public static boolean loadInitialProperties() {
-        String propertiesFile = System.getProperty("mc.conf.file");
+    public static boolean loadInitialProperties(String propertiesFile) {
         try {
             Properties properties = new Properties();
             if (propertiesFile == null) {
@@ -305,7 +327,9 @@ public class StartApp {
                         .load(ClassLoader.getSystemClassLoader().getResourceAsStream("mycontroller.properties"));
 
             } else {
-                properties.load(new FileReader(propertiesFile));
+                FileReader fileReader = new FileReader(propertiesFile);
+                properties.load(fileReader);
+                fileReader.close();
             }
             AppProperties.getInstance().loadProperties(properties);
             _logger.debug("Properties are loaded successfuly...");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package org.mycontroller.standalone.gateway;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
@@ -32,9 +33,11 @@ import org.mycontroller.standalone.gateway.model.Gateway;
 import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
+import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
 import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
 import org.mycontroller.standalone.gateway.phantio.PhantIOGatewayImpl;
+import org.mycontroller.standalone.gateway.philipshue.PhilipsHueGatewayImpl;
 import org.mycontroller.standalone.gateway.serialport.MYCSerialPort;
 import org.mycontroller.standalone.model.ResourceModel;
 
@@ -51,12 +54,14 @@ import lombok.extern.slf4j.Slf4j;
 public class GatewayUtils {
 
     public static final String OS_ARCH_ARM = "arm";
+    public static final AtomicBoolean GATEWAYS_READY = new AtomicBoolean(false);
 
     public enum GATEWAY_TYPE {
         SERIAL("Serial"),
         ETHERNET("Ethernet"),
         MQTT("MQTT"),
-        PHANT_IO("Sparkfun [phant.io]");
+        PHANT_IO("Sparkfun [phant.io]"),
+        PHILIPS_HUE("Hue bridge");
         public static GATEWAY_TYPE get(int id) {
             for (GATEWAY_TYPE type : values()) {
                 if (type.ordinal() == id) {
@@ -138,6 +143,8 @@ public class GatewayUtils {
                 return new GatewayMQTT(gatewayTable);
             case PHANT_IO:
                 return new GatewayPhantIO(gatewayTable);
+            case PHILIPS_HUE:
+                return new GatewayPhilipsHue(gatewayTable);
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());
                 return null;
@@ -185,6 +192,8 @@ public class GatewayUtils {
                 break;
             case PHANT_IO:
                 iGateway = new PhantIOGatewayImpl(gatewayTable);
+            case PHILIPS_HUE:
+                iGateway = new PhilipsHueGatewayImpl(gatewayTable);
                 break;
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());
@@ -216,10 +225,11 @@ public class GatewayUtils {
         for (GatewayTable gatewayTable : gateways) {
             loadGateway(gatewayTable);
         }
-
+        GATEWAYS_READY.set(true);
     }
 
     public static synchronized void unloadAllGateways() {
+        GATEWAYS_READY.set(false);
         HashMap<Integer, IGateway> gateways = McObjectManager.getGateways();
         for (Integer gatewayId : gateways.keySet()) {
             unloadGateway(gatewayId);
@@ -306,5 +316,13 @@ public class GatewayUtils {
                         operation.getOperationType().getText());
                 break;
         }
+    }
+
+    public static String[] getMqttTopics(String topic) {
+        String[] topics = topic.split(GatewayMQTT.TOPICS_SPLITER);
+        for (int topicId = 0; topicId < topics.length; topicId++) {
+            topics[topicId] += "/#";
+        }
+        return topics;
     }
 }

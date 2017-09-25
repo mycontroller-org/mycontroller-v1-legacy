@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ public class BRCommons {
     public static final String APP_PROPERTIES_FILENAME = "mycontroller.properties";
     public static final String APP_CONF_LOCATION = "../conf/";
     public static final String RESOURCES_LOCATION = "resources" + File.separator;
-    public static final String FILE_NAME_IDENTITY = "_mc_backup-";
+    public static final String FILE_NAME_IDENTITY = "_mc_backup";
 
     private static boolean isbackupRestoreRunning = false;
 

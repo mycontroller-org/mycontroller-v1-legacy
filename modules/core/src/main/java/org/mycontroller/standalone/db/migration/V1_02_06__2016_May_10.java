@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,7 @@ public class V1_02_06__2016_May_10 extends MigrationBase {
          * steps
          * 1. Alter column to string
          * */
-        alterColumn("uid_tag", "uid", "VARCHAR(255)");
+        sqlClient().alterColumn("uid_tag", "uid", "VARCHAR(255)");
 
         _logger.info("Migration completed successfully.");
     }

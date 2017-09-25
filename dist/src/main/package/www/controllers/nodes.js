@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('NodesController', function(alertService,
-$scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter) {
+$scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonServices, mchelper, $filter, $interval) {
 
   //GUI page settings
   $scope.headerStringList = $filter('translate')('NODES_DETAIL');
@@ -40,14 +40,21 @@ $scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonS
     $scope.query.gatewayId = $stateParams.gatewayId;
   }
 
-  //get all Nodes
+  $scope.isRunning = false;
+  //get all Items
   $scope.getAllItems = function(){
+    if($scope.isRunning){
+      return;
+    }
+    $scope.isRunning = true;
     NodesFactory.getAll($scope.query, function(response) {
       $scope.queryResponse = response;
       $scope.filteredList = $scope.queryResponse.data;
       $scope.filterConfig.resultsCount = $scope.queryResponse.query.filteredCount;
+      $scope.isRunning = false;
     },function(error){
       displayRestError.display(error);
+      $scope.isRunning = false;
     });
   }
 
@@ -259,18 +266,33 @@ $scope, NodesFactory, $stateParams, $state, $uibModal, displayRestError, CommonS
     }
   };
 
+ // global page refresh
+  var promise = $interval($scope.getAllItems, mchelper.cfg.globalPageRefreshTime);
+
+  // cancel interval on scope destroy
+  $scope.$on('$destroy', function(){
+    $interval.cancel(promise);
+  });
+
 });
 
 
 // Nodes other controllers
 
 //Add/Edit Node
-myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, mchelper, alertService, displayRestError, $filter, $state) {
+myControllerModule.controller('NodesControllerAddEdit', function ($scope, $stateParams, GatewaysFactory, NodesFactory, TypesFactory, mchelper, alertService, displayRestError, $filter, $state, CommonServices) {
   //Load mchelper variables to this scope
   $scope.mchelper = mchelper;
+  $scope.cs = CommonServices;
   $scope.node = {};
+  $scope.node.altproperties='{}';
   if($stateParams.id){
-    $scope.node = NodesFactory.get({"nodeId":$stateParams.id});
+    NodesFactory.get({"nodeId":$stateParams.id},function(response) {
+      $scope.node = response;
+      $scope.node.altproperties = angular.toJson(response.properties);
+    },function(error){
+        displayRestError.display(error);
+    });
   }
   $scope.node.gateway = {};
   $scope.gateways = TypesFactory.getGateways();
@@ -288,7 +310,9 @@ myControllerModule.controller('NodesControllerAddEdit', function ($scope, $state
 
 
   $scope.save = function(){
-      $scope.saveProgress = true;
+    $scope.saveProgress = true;
+    $scope.node.properties = angular.fromJson(JSON.stringify(eval('('+$scope.node.altproperties+')')));
+    console.log(angular.toJson($scope.node.altproperties));
     if($stateParams.id){
       NodesFactory.update($scope.node,function(response) {
         alertService.success($filter('translate')('ITEM_UPDATED_SUCCESSFULLY'));
@@ -366,7 +390,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
     $scope.metricsSettings = response;
     $scope.chartEnableMinMax = $scope.metricsSettings.enabledMinMax;
     $scope.chartFromTimestamp = $scope.metricsSettings.defaultTimeRange.toString();
-    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp},function(response){
+    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp},function(response){
       $scope.batteryChartData = response;
       //Update display time format
       $scope.chartTimeFormat = response.timeFormat;
@@ -379,7 +403,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
   $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, $scope.chartTimeFormat, mchelper.cfg.timezone)};
 
   $scope.updateChart = function(){
-    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
+    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
       $scope.batteryChartData.chartData = resource.chartData;
       //Update display time format
       $scope.chartTimeFormat = resource.timeFormat;

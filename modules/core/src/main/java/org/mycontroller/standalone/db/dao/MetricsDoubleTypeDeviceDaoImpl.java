@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,12 +46,65 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
 
     @Override
     public void deletePrevious(MetricsDoubleTypeDevice metric) {
+        deletePrevious(metric, null);
+    }
+
+    @Override
+    public void deletePrevious(MetricsDoubleTypeDevice metric, String delimiter) {
         try {
             DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            deleteBuilder.where().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType())
-                    .and().le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+            Where<MetricsDoubleTypeDevice, Object> where = deleteBuilder.where();
+            int whereCount = 0;
 
-            int count = this.getDao().delete(deleteBuilder.prepare());
+            if (metric.getAggregationType() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType());
+                whereCount++;
+            }
+            if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
+                whereCount++;
+            }
+            if (metric.getTimestamp() != null) {
+                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+                whereCount++;
+            }
+            if (metric.getStart() != null) {
+                where.ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getStart());
+                whereCount++;
+            }
+            if (metric.getEnd() != null) {
+                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getEnd());
+                whereCount++;
+            }
+            if (metric.getAvg() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_AVG, metric.getAvg());
+                whereCount++;
+            } else if (delimiter != null) {
+                if (delimiter.startsWith(">")) {
+                    where.gt(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
+                } else if (delimiter.startsWith("<")) {
+                    where.lt(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
+                } else if (delimiter.startsWith("=")) {
+                    where.eq(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
+                } else {
+                    where.eq(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter));
+                }
+                whereCount++;
+            }
+            if (metric.getMin() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_MIN, metric.getMin());
+                whereCount++;
+            }
+            if (metric.getMax() != null) {
+                where.eq(MetricsDoubleTypeDevice.KEY_MAX, metric.getMax());
+                whereCount++;
+            }
+
+            if (whereCount > 0) {
+                where.and(whereCount);
+                deleteBuilder.setWhere(where);
+            }
+            int count = deleteBuilder.delete();
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric:[{}]", metric, ex);
@@ -81,14 +134,15 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                 whereBuilder.and().eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE,
                         metric.getAggregationType());
             }
-            if (metric.getTimestampFrom() != null) {
+            if (metric.getStart() != null) {
                 whereBuilder.and().gt(MetricsDoubleTypeDevice.KEY_TIMESTAMP,
-                        metric.getTimestampFrom());
+                        metric.getStart());
             }
-            if (metric.getTimestampTo() != null) {
+            if (metric.getEnd() != null) {
                 whereBuilder.and().le(MetricsDoubleTypeDevice.KEY_TIMESTAMP,
-                        metric.getTimestampTo());
+                        metric.getEnd());
             }
+            queryBuilder.orderBy(MetricsDoubleTypeDevice.KEY_TIMESTAMP, true);
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
@@ -137,13 +191,13 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
         StringBuilder query = new StringBuilder();
         StringBuilder queryTimestamp = new StringBuilder();
         //timestamp from / to
-        if (metric.getTimestampFrom() != null) {
+        if (metric.getStart() != null) {
             queryTimestamp.append(" AND ").append(MetricsDoubleTypeDevice.KEY_TIMESTAMP).append(" > ")
-                    .append(metric.getTimestampFrom());
+                    .append(metric.getStart());
         }
-        if (metric.getTimestampTo() != null) {
+        if (metric.getEnd() != null) {
             queryTimestamp.append(" AND ").append(MetricsDoubleTypeDevice.KEY_TIMESTAMP).append(" <= ")
-                    .append(metric.getTimestampTo());
+                    .append(metric.getEnd());
         }
         try {
             //Query sample
@@ -252,5 +306,33 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
         }
 
         return null;
+    }
+
+    @Override
+    public long countOf(AGGREGATION_TYPE aggregationType, long start, long end) {
+        QueryBuilder<MetricsDoubleTypeDevice, Object> queryBuilder = getDao().queryBuilder();
+        try {
+            return queryBuilder.where().gt(MetricsDoubleTypeDevice.KEY_TIMESTAMP, start).and()
+                    .le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, end).and()
+                    .eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, aggregationType).countOf();
+        } catch (Exception ex) {
+            _logger.error("Unable to execute countOf query", ex);
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end) {
+        QueryBuilder<MetricsDoubleTypeDevice, Object> queryBuilder = getDao().queryBuilder();
+        try {
+            return queryBuilder.where()
+                    .gt(MetricsDoubleTypeDevice.KEY_TIMESTAMP, start).and()
+                    .le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, end).and()
+                    .eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, aggregationType)
+                    .queryForFirst() != null;
+        } catch (Exception ex) {
+            _logger.error("Unable to execute countOf query", ex);
+            return true;
+        }
     }
 }

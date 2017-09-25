@@ -77,8 +77,7 @@
           <th class="mc-align-center"><input type="checkbox" ng-checked="itemIds.length == filteredList.length" ng-click="selectAllItems()"></th>
           <th>{{ 'TYPE' | translate }}</th>
           <th>{{ 'VERSION' | translate }}</th>
-          <th>{{ 'BLOCKS' | translate }}</th>
-          <th>{{ 'CRC' | translate }}</th>
+          <th>{{ 'PROPERTIES' | translate }}</th>
           <th>{{ 'UPLOADED_ON' | translate }}</th>
         </thead>
         <tbody>
@@ -87,8 +86,7 @@
             <td class="mc-align-center"><input type="checkbox" ng-checked="itemIds.indexOf(item.id) != -1"></td>
             <td>{{item.type.name}}</td>
             <td>{{item.version.version}}</td>
-            <td>{{item.blocks}}</td>
-            <td>{{item.crc}}</td>
+            <td><span ng-repeat="(key, value) in item.properties track by $index">{{$index != 0 ? ', ' : ''}}{{key}}: {{ value }}</span></td>
             <td>{{item.timestamp | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</td>
           </tr>
         </tbody>

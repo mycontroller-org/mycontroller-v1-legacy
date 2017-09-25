@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,7 +81,7 @@ public class ResourceOperationUtils {
         }
         switch (specialOperation.getOperationType()) {
             case TOGGLE:
-                revisedValue = McUtils.getDoubleAsString(Double.valueOf(orginalValue) > 0 ? 0.0 : 1.0);
+                revisedValue = McUtils.getDoubleAsString(Double.valueOf(orginalValue) > 0 ? 0.0 : 1.0, 0);
                 break;
             case INCREMENT:
                 revisedValue = McUtils.getDoubleAsString(Double.valueOf(orginalValue) + 1);

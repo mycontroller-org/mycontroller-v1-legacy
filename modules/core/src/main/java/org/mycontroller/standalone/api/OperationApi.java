@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.mail.EmailException;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.email.EmailUtils;
@@ -84,7 +84,7 @@ public class OperationApi {
     }
 
     public void deleteIds(List<Integer> ids) {
-        OperationUtils.unloadNotificationTimerJobs(ids);
+        OperationUtils.unloadOperationTimerJobs(ids);
         DaoUtils.getOperationDao().deleteByIds(ids);
     }
 
@@ -96,8 +96,8 @@ public class OperationApi {
     }
 
     public void disableIds(List<Integer> ids) {
-        OperationUtils.unloadNotificationTimerJobs(ids);
         for (OperationTable operationTable : DaoUtils.getOperationDao().getAll(ids)) {
+            OperationUtils.unloadOperationTimerJobs(operationTable);
             operationTable.setEnabled(false);
             DaoUtils.getOperationDao().update(operationTable);
         }
@@ -111,8 +111,8 @@ public class OperationApi {
         EmailUtils.sendSimpleEmail(emails, subject, message);
     }
 
-    public void sendPushbulletNote(String idens, String title, String body) {
-        PushbulletUtils.sendNote(idens, title, body);
+    public void sendPushbulletNote(String idens, String emails, String channelTags, String title, String body) {
+        PushbulletUtils.sendNote(idens, emails, channelTags, title, body);
     }
 
 }

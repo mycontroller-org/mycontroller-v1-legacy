@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,10 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
 import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.SensorTypeDeserializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.SensorVariablesSerializer;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import com.fasterxml.jackson.annotation.JsonGetter;

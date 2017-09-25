@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -94,6 +94,7 @@ public class PhantIOGatewayPoller implements Runnable {
                                 .gatewayId(gateway.getId())
                                 //data order: key, value, timestamp
                                 .data(Arrays.asList(key, record.get(key), timestamp))
+                                .timestamp(timestamp)
                                 .networkType(gateway.getNetworkType())
                                 .build());
                         gateway.setLastUpdate(timestamp);

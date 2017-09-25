@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -93,8 +93,10 @@ public class OperationSendSMS extends Operation {
         }
         try {
             Notification notification = new Notification(ruleDefinition);
+            HashMap<String, Object> bindings = new HashMap<String, Object>();
+            bindings.put("notification", notification);
             if (customMessage != null && customMessage.trim().length() > 0) {
-                SMSUtils.sendSMS(toPhoneNumbers, Notification.updateTemplate(notification, customMessage));
+                SMSUtils.sendSMS(toPhoneNumbers, updateTemplate(customMessage, bindings));
             } else {
                 SMSUtils.sendSMS(toPhoneNumbers, notification.toString());
             }
@@ -108,7 +110,16 @@ public class OperationSendSMS extends Operation {
 
     @Override
     public void execute(Timer timer) {
-        _logger.error("Timer will not support for this operation");
+        if (!getEnabled()) {
+            //This operation disabled, nothing to do.
+            return;
+        }
+        if (customMessage != null && customMessage.trim().length() > 0) {
+            SMSUtils.sendSMS(toPhoneNumbers, customMessage);
+        } else {
+            SMSUtils.sendSMS(toPhoneNumbers, "ERROR: No msg specified!");
+        }
+
     }
 
 }

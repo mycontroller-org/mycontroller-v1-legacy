@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -31,12 +31,15 @@ import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.model.Gateway;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Using this API's can do activities on gateway
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
 
+@Slf4j
 public class GatewayApi {
 
     /**
@@ -131,6 +134,7 @@ public class GatewayApi {
             }
 
         } catch (Exception ex) {
+            _logger.error("Exception, ", ex);
             throw new McBadRequestException(ex.getMessage());
         }
     }

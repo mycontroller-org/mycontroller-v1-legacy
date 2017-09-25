@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +42,12 @@ public class McRuleListener implements RuleListener {
     @Override
     public void onSuccess(Rule rule) {
         _logger.debug("Rule executed successfully:{}", rule);
+    }
+
+    @Override
+    public boolean beforeEvaluate(Rule rule) {
+        //TODO: If you want to perform some pre-check do here.
+        return true;
     }
 
 }

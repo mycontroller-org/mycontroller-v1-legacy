@@ -16,19 +16,57 @@
 
 -->
 <form role="form">
+
   <div class="form-group">
     <label>{{ 'REFRESH_TIME_SECONDS' | translate }}</label>
     <input type="text" class="form-control" id="refreshTime" placeholder="{{'REFRESH_TIME_SECONDS' | translate}}" ng-model="config.refreshTime" pf-validation="mycSingleSensorGraphEdit.cs.isNumber(input)" required>
     <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
   </div>
+
   <div class="form-group">
     <input ng-model="config.withMinMax" type="checkbox"/>
     <label class="control-label">{{ 'ENABLE_MIN_MAX' | translate }}</label>
   </div>
+
+  <div class="form-group">
+    <label>{{ 'MARGIN' | translate }}</label>
+    <table class="adf-table">
+      <tr>
+        <td>
+          <label>{{ 'LEFT' | translate }}</label>
+        </td>
+        <td>
+          <input class="form-control" type="number" id="left" placeholder="{{'LEFT' | translate}}" ng-model="config.marginLeft" pf-validation="mycSingleSensorGraphEdit.cs.isNumber(input)" required>
+        </td>
+        <td>
+          <label class="mc-margin-right">{{ 'RIGHT' | translate }}</label>
+        </td>
+        <td>
+          <input class="form-control" type="number" id="right" placeholder="{{'RIGHT' | translate}}" ng-model="config.marginRight" pf-validation="mycSingleSensorGraphEdit.cs.isNumber(input)" required>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>{{ 'TOP' | translate }}</label>
+        </td>
+        <td>
+          <input class="form-control" type="number" id="top" placeholder="{{'TOP' | translate}}" ng-model="config.marginTop" pf-validation="mycSingleSensorGraphEdit.cs.isNumber(input)" required>
+        </td>
+        <td>
+          <label>{{ 'BOTTOM' | translate }}</label>
+        </td>
+        <td>
+          <input class="form-control" type="number" id="bottom" placeholder="{{'BOTTOM' | translate}}" ng-model="config.marginBottom" pf-validation="mycSingleSensorGraphEdit.cs.isNumber(input)" required>
+        </td>
+      </tr>
+    </table>
+  </div>
+
   <div class="form-group">
     <label>{{ 'TIME_RANGE' | translate }}</label>
     <select id="panelSize" class="form-control" pf-select ng-model="config.chartFromTimestamp">
       <option value="" ng-hide="true"></option>
+        <option value="300000">{{ 'LAST_5_MINUTES' | translate }}</option>
         <option value="3600000">{{ 'LAST_HOUR' | translate }}</option>
         <option value="21600000">{{ 'LAST_6_HOURS' | translate }}</option>
         <option value="43200000">{{ 'LAST_12_HOURS' | translate }}</option>
@@ -38,6 +76,7 @@
         <option value="31536000000">{{ 'LAST_YEAR' | translate }}</option>
     </select>
   </div>
+
   <div class="form-group">
     <label>{{ 'SENSOR_VARIABLE' | translate }}</label>
     <select id="senVars" class="form-control" pf-select data-live-search="true" ng-model="config.variableId">
@@ -45,4 +84,5 @@
       <option ng-repeat="res in mycSingleSensorGraphEdit.variables" ng-bind-html="res.displayName | mcResourceRepresentation" value="{{res.id}}"  ng-selected="config.variableId == res.id"></option>
     </select>
   </div>
+
 </form>

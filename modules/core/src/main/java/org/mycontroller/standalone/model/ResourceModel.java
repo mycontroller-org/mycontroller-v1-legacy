@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,41 +53,53 @@ public class ResourceModel {
         switch (this.resourceType) {
             case GATEWAY:
                 resource = DaoUtils.getGatewayDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((GatewayTable) resource).getNetworkType();
                 break;
             case NODE:
                 resource = DaoUtils.getNodeDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((Node) resource).getGatewayTable().getNetworkType();
                 break;
             case SENSOR:
                 resource = DaoUtils.getSensorDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((Sensor) resource).getNode().getGatewayTable().getNetworkType();
                 break;
             case SENSOR_VARIABLE:
                 resource = DaoUtils.getSensorVariableDao().get(this.resourceId);
+                isValidResource();
                 networkType = ((SensorVariable) resource).getSensor().getNode().getGatewayTable().getNetworkType();
                 break;
             case RESOURCES_GROUP:
                 resource = DaoUtils.getResourcesGroupDao().get(this.resourceId);
+                isValidResource();
                 break;
             case RULE_DEFINITION:
                 resource = RuleUtils.getRuleDefinition(DaoUtils.getRuleDefinitionDao().getById(resourceId));
+                isValidResource();
                 break;
             case TIMER:
                 resource = DaoUtils.getTimerDao().getById(resourceId);
+                isValidResource();
                 break;
             default:
-                throw new RuntimeException("Not supported KEY_RESOURCE_TYPE:" + resourceType);
+                throw new RuntimeException("Not supported ResourceType:" + resourceType);
         }
+
+    }
+
+    private void isValidResource() {
         if (resource == null) {
-            throw new RuntimeException("RESOURCE not available! KEY_RESOURCE_TYPE:" + resourceType + ", ResourceId:"
-                    + resourceId);
+            throw new RuntimeException("Resource not available! ResourceType:[" + resourceType.getText()
+                    + "], ResourceId:[" + resourceId + "]");
         }
     }
 
     public ResourceModel(RESOURCE_TYPE resourceType, Object resource) {
         this.resourceType = resourceType;
         this.resource = resource;
+        isValidResource();
         switch (this.resourceType) {
             case GATEWAY:
                 networkType = ((GatewayTable) resource).getNetworkType();
@@ -107,11 +119,7 @@ public class ResourceModel {
                 networkType = null;
                 break;
             default:
-                throw new RuntimeException("Not supported KEY_RESOURCE_TYPE:" + resourceType);
-        }
-        if (resource == null) {
-            throw new RuntimeException("RESOURCE not available! KEY_RESOURCE_TYPE:" + resourceType + ", ResourceId:"
-                    + resourceId);
+                throw new RuntimeException("Not supported ResourceType:" + resourceType);
         }
     }
 
@@ -136,42 +144,20 @@ public class ResourceModel {
     }
 
     public String getResourceDetails() {
-        if (this.resource == null) {
-            return null;
-        }
+        isValidResource();
         StringBuilder builder = new StringBuilder();
-
         switch (this.resourceType) {
             case GATEWAY:
-                GatewayTable gatewayTable = (GatewayTable) this.resource;
-                builder.append("Type:").append(this.networkType.getText())
-                        .append(", Id:").append(gatewayTable.getId())
-                        .append(", Name:").append(gatewayTable.getName());
+                updateDGateway((GatewayTable) this.resource, builder);
                 break;
             case NODE:
-                Node node = (Node) this.resource;
-                builder.append("Type:").append(this.networkType.getText())
-                        .append(", GatewayTable:").append(node.getGatewayTable().getName())
-                        .append(", NodeEui:").append(node.getEui())
-                        .append(", Name:").append(node.getName());
+                updateDNode((Node) this.resource, builder);
                 break;
             case SENSOR:
-                Sensor sensor = (Sensor) this.resource;
-                builder.append("Type:").append(this.networkType.getText())
-                        .append(", GatewayTable:").append(sensor.getNode().getGatewayTable().getName())
-                        .append(", NodeEui:").append(sensor.getNode().getEui())
-                        .append(", SensorId:").append(sensor.getSensorId())
-                        .append(", Name:").append(sensor.getName());
+                updateDSensor((Sensor) this.resource, builder);
                 break;
             case SENSOR_VARIABLE:
-                SensorVariable sensorVariable = (SensorVariable) this.resource;
-                builder.append("Type:").append(this.networkType.getText())
-                        .append(", GatewayTable:")
-                        .append(sensorVariable.getSensor().getNode().getGatewayTable().getName())
-                        .append(", NodeEui:").append(sensorVariable.getSensor().getNode().getEui())
-                        .append(", SensorId:").append(sensorVariable.getSensor().getSensorId())
-                        .append(", VariableType:")
-                        .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
+                updateDSensorVariable((SensorVariable) this.resource, builder);
                 break;
             case RESOURCES_GROUP:
                 ResourcesGroup resourcesGroup = (ResourcesGroup) this.resource;
@@ -192,40 +178,54 @@ public class ResourceModel {
         return builder.toString();
     }
 
-    public String getResourceLessDetails() {
-        if (this.resource == null) {
-            return null;
+    private void updateDGateway(GatewayTable gatewayTable, StringBuilder builder) {
+        builder.append("Type:").append(this.networkType.getText())
+                .append(", Id:").append(gatewayTable.getId())
+                .append(", Name:").append(gatewayTable.getName());
+    }
+
+    private void updateDNode(Node node, StringBuilder builder) {
+        builder.append("Type:").append(this.networkType.getText())
+                .append(", Gateway:").append(node.getGatewayTable().getName())
+                .append(", NodeEui:").append(node.getEui())
+                .append(", Name:").append(node.getName());
+    }
+
+    private void updateDSensor(Sensor sensor, StringBuilder builder) {
+        builder.append("Type:").append(this.networkType.getText())
+                .append(", Gateway:").append(sensor.getNode().getGatewayTable().getName())
+                .append(", NodeEui:").append(sensor.getNode().getEui())
+                .append(", SensorId:").append(sensor.getSensorId())
+                .append(", Name:").append(sensor.getName());
+    }
+
+    private void updateDSensorVariable(SensorVariable sensorVariable, StringBuilder builder) {
+        builder.append("Type:").append(this.networkType.getText())
+                .append(", Gateway:").append(sensorVariable.getSensor().getNode().getGatewayTable().getName())
+                .append(", NodeEui:").append(sensorVariable.getSensor().getNode().getEui())
+                .append(", SensorId:").append(sensorVariable.getSensor().getSensorId())
+                .append(", VariableType:")
+                .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
+        if (sensorVariable.getName() != null) {
+            builder.append(" (").append(sensorVariable.getName()).append(")");
         }
+    }
+
+    public String getResourceLessDetails() {
+        isValidResource();
         StringBuilder builder = new StringBuilder();
         switch (this.resourceType) {
             case GATEWAY:
-                GatewayTable gatewayTable = (GatewayTable) this.resource;
-                builder.append(DISPLAY_KEY_GATEWAY).append(gatewayTable.getName());
+                updateLDGateway((GatewayTable) this.resource, builder);
                 break;
             case NODE:
-                Node node = (Node) this.resource;
-                builder.append(DISPLAY_KEY_GATEWAY).append(node.getGatewayTable().getName()).append(" >> ")
-                        .append(DISPLAY_KEY_NODE).append(node.getEui())
-                        .append(":").append(node.getName());
+                updateLDNode((Node) this.resource, builder);
                 break;
             case SENSOR:
-                Sensor sensor = (Sensor) this.resource;
-                builder.append(DISPLAY_KEY_GATEWAY).append(sensor.getNode().getGatewayTable().getName())
-                        .append(" >> ")
-                        .append(DISPLAY_KEY_NODE).append(sensor.getNode().getEui()).append(":")
-                        .append(sensor.getNode().getName()).append(" >> ").append(DISPLAY_KEY_SENSOR)
-                        .append(sensor.getSensorId()).append(":").append(sensor.getName());
+                updateLDSensor((Sensor) this.resource, builder);
                 break;
             case SENSOR_VARIABLE:
-                SensorVariable sensorVariable = (SensorVariable) this.resource;
-                builder.append(DISPLAY_KEY_GATEWAY)
-                        .append(sensorVariable.getSensor().getNode().getGatewayTable().getName())
-                        .append(" >> ").append(DISPLAY_KEY_NODE).append(sensorVariable.getSensor().getNode().getEui())
-                        .append(":").append(sensorVariable.getSensor().getNode().getName())
-                        .append(" >> ").append(DISPLAY_KEY_SENSOR).append(sensorVariable.getSensor().getSensorId())
-                        .append(":").append(sensorVariable.getSensor().getName())
-                        .append(" >> ").append(DISPLAY_KEY_SENSOR_VARIABLE)
-                        .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
+                updateLDSensorVariable((SensorVariable) this.resource, builder);
                 break;
             case RESOURCES_GROUP:
                 ResourcesGroup resourcesGroup = (ResourcesGroup) this.resource;
@@ -243,5 +243,36 @@ public class ResourceModel {
                 break;
         }
         return builder.toString();
+    }
+
+    private void updateLDGateway(GatewayTable gatewayTable, StringBuilder builder) {
+        builder.append(DISPLAY_KEY_GATEWAY).append(gatewayTable.getName());
+    }
+
+    private void updateLDNode(Node node, StringBuilder builder) {
+        updateLDGateway(node.getGatewayTable(), builder);
+        builder.append(" >> ").append(DISPLAY_KEY_NODE).append(node.getEui());
+        if (node.getName() != null && node.getName().length() > 0) {
+            builder.append(":").append(node.getName());
+        }
+    }
+
+    private void updateLDSensor(Sensor sensor, StringBuilder builder) {
+        updateLDNode(sensor.getNode(), builder);
+        builder.append(" >> ").append(DISPLAY_KEY_SENSOR).append(sensor.getSensorId());
+        if (sensor.getName() != null && sensor.getName().length() > 0) {
+            builder.append(":").append(sensor.getName());
+        } else if (sensor.getType() != null) {
+            builder.append(":").append(McObjectManager.getMcLocale().getString(sensor.getType().name()));
+        }
+    }
+
+    private void updateLDSensorVariable(SensorVariable sensorVariable, StringBuilder builder) {
+        updateLDSensor(sensorVariable.getSensor(), builder);
+        builder.append(" >> ").append(DISPLAY_KEY_SENSOR_VARIABLE)
+                .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
+        if (sensorVariable.getName() != null) {
+            builder.append(" (").append(sensorVariable.getName()).append(")");
+        }
     }
 }

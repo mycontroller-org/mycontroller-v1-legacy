@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,8 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.Firmware;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -82,8 +82,8 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
     private List<Firmware> getAll(Boolean isType, Integer id) {
         try {
             QueryBuilder<Firmware, Integer> queryBuilder = getDao().queryBuilder();
-            queryBuilder.selectColumns("id", Firmware.KEY_TYPE_ID, Firmware.KEY_VERSION_ID, "timestamp", "blocks",
-                    "crc");
+            queryBuilder.selectColumns(Firmware.KEY_ID, Firmware.KEY_TYPE_ID, Firmware.KEY_VERSION_ID,
+                    Firmware.KEY_TIMESTAMP);
             if (isType == null) {
                 //Nothing to do, no filter, get all firmwares
             } else if (isType) {
@@ -102,7 +102,8 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
     @Override
     public QueryResponse getAll(Query query) {
         try {
-            return this.getQueryResponse(query, Firmware.KEY_ID);
+            query.setIdColumn(Firmware.KEY_ID);
+            return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
             return null;
