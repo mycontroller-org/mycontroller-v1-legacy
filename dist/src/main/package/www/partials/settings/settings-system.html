@@ -70,6 +70,14 @@
               </div>
             </div>
 
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'LOCATION_NAME' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.location" class="form-control" ng-model="locationSettings.name" required />
+                <div ng-hide="editEnable.location">{{locationSettings.name}}</div>
+              </div>
+            </div>
+
           </form>
 
           <div class="form-actions text-right">

@@ -320,6 +320,7 @@
     "LOADED": "Chargé",
     "LOADING": "Chargement...",
     "LOCATION": "Emplacement",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Message d'identification",
     "LOGS": "Logs",
     "LOG_DIRECTION": "Sens log",

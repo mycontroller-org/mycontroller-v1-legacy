@@ -320,6 +320,7 @@
     "LOADED": "Загруженно",
     "LOADING": "Загрузка ...",
     "LOCATION": "Место нахождения",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Сообщение при входе",
     "LOGS": "Логи",
     "LOG_DIRECTION": "Директория логов",

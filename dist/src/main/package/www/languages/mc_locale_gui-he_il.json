@@ -320,6 +320,7 @@
     "LOADED": "נטען",
     "LOADING": "טוען",
     "LOCATION": "מיקום",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "הודעת התחברות",
     "LOGS": "לוגים",
     "LOG_DIRECTION": "לוג כיוון",

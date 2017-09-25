@@ -306,6 +306,8 @@ public class MySensorsRawMessage {
                         mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_PROPERTIES.getText());
                         mcMessage.setPayload(getPayload().replace(MySensorsUtils.KEY_PROPERTIES, "").trim());
                         mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
+                    } else {
+                        mcMessage.setSubType(MYS_MESSAGE_TYPE_SET_REQ.get(subType).getText());
                     }
                 } else {
                     mcMessage.setSubType(MYS_MESSAGE_TYPE_SET_REQ.get(subType).getText());

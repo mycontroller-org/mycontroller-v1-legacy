@@ -320,6 +320,7 @@
     "LOADED": "Cargado",
     "LOADING": "Cargando...",
     "LOCATION": "Ubicación",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Mensaje de inicio de sesión",
     "LOGS": "Registros",
     "LOG_DIRECTION": "Registrar dirección",

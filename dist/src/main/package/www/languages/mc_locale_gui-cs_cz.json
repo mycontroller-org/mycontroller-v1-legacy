@@ -320,6 +320,7 @@
     "LOADED": "Nahráno",
     "LOADING": "Nahrávám...",
     "LOCATION": "Umístění",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Přihlašovací zpráva",
     "LOGS": "Logy",
     "LOG_DIRECTION": "Směr zprávy",

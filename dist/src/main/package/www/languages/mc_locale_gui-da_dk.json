@@ -320,6 +320,7 @@
     "LOADED": "Indsamlet",
     "LOADING": "Indsamler...",
     "LOCATION": "Lokation",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Login-besked",
     "LOGS": "Logbøger",
     "LOG_DIRECTION": "Log-retning",

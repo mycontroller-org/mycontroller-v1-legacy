@@ -320,6 +320,7 @@
     "LOADED": "已加载",
     "LOADING": "正在加载...",
     "LOCATION": "位置",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "登录消息",
     "LOGS": "日志",
     "LOG_DIRECTION": "日志方向",

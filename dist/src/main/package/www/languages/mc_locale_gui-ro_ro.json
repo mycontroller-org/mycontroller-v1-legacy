@@ -320,6 +320,7 @@
     "LOADED": "Încărcat",
     "LOADING": "Încărcare...",
     "LOCATION": "Locaţie",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Mesaj autentificare",
     "LOGS": "Jurnale",
     "LOG_DIRECTION": "Direcție jurnal",

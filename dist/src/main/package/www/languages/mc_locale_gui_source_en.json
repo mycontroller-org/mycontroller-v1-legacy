@@ -320,6 +320,7 @@
   "LOADED": "Loaded",
   "LOADING": "Loading...",
   "LOCATION": "Location",
+  "LOCATION_NAME": "Location name",
   "LOGIN_MESSAGE": "Login message",
   "LOGS": "Logs",
   "LOG_DIRECTION": "Log direction",

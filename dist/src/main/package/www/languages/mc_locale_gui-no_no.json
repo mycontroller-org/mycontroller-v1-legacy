@@ -320,6 +320,7 @@
     "LOADED": "Belastet",
     "LOADING": "Laster...",
     "LOCATION": "Plassering",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Logg inn melding",
     "LOGS": "Logger",
     "LOG_DIRECTION": "Logg retning",

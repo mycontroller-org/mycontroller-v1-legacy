@@ -320,6 +320,7 @@
     "LOADED": "Loaded",
     "LOADING": "இயக்கத்தில் உள்ளது...",
     "LOCATION": "இடம்",
+    "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Login message",
     "LOGS": "Logs",
     "LOG_DIRECTION": "Log direction",
