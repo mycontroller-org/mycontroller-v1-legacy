@@ -38,6 +38,7 @@ MyController.org is java based application server. We can run it in any platform
 
 - Linux
 - Windows
+- Orange PI
 - Raspberry PI (Oracle Java recommend)
 
 == MyController and MySensors Setup
