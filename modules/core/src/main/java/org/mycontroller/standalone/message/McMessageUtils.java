@@ -133,7 +133,13 @@ public class McMessageUtils {
         I_DEBUG("Debug"),
         I_RSSI("RSSI"),
         I_PROPERTIES("Properties"),
-        I_FACTORY_RESET("Factory reset");
+        I_FACTORY_RESET("Factory reset"),
+        I_SIGNAL_REPORT_REQUEST("Siganel report request"),
+        I_SIGNAL_REPORT_REVERSE("Siganl report reverse"),
+        I_SIGNAL_REPORT_RESPONSE("Signal report response"),
+        I_PRE_SLEEP_NOTIFICATION("Pre sleep notification"),
+        I_POST_SLEEP_NOTIFICATION("Post sleep notification");
+
         public static MESSAGE_TYPE_INTERNAL get(int id) {
             for (MESSAGE_TYPE_INTERNAL type : values()) {
                 if (type.ordinal() == id) {

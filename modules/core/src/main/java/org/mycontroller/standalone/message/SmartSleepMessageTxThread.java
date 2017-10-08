@@ -19,6 +19,8 @@ package org.mycontroller.standalone.message;
 import java.util.ArrayList;
 
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.tables.Node;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,6 +59,9 @@ public class SmartSleepMessageTxThread implements Runnable {
         }
         started(gatewayId + "_" + nodeEui);
         try {
+            Node node = DaoUtils.getNodeDao().get(gatewayId, nodeEui);
+            Long sleepWaitDuration = (Long) node.getProperty(Node.KEY_SMART_SLEEP_WAIT_DURATION);
+            Long startTime = System.currentTimeMillis();
             while (true) {
                 McMessage mcMessage = SmartSleepMessageQueue.getInstance().getMessage(gatewayId, nodeEui);
                 if (mcMessage != null) {
@@ -65,6 +70,10 @@ public class SmartSleepMessageTxThread implements Runnable {
                     Thread.sleep(McObjectManager.getGateway(mcMessage.getGatewayId()).getGateway().getTxDelay(),
                             333333);
                 } else {
+                    break;
+                }
+                //Check still do we have duration on receiver side
+                if (sleepWaitDuration != null && (System.currentTimeMillis() <= (startTime + sleepWaitDuration))) {
                     break;
                 }
             }
