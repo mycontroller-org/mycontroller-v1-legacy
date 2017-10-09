@@ -73,7 +73,7 @@ public class SmartSleepMessageTxThread implements Runnable {
                     break;
                 }
                 //Check still do we have duration on receiver side
-                if (sleepWaitDuration != null && (System.currentTimeMillis() <= (startTime + sleepWaitDuration))) {
+                if (sleepWaitDuration != null && (System.currentTimeMillis() >= (startTime + sleepWaitDuration))) {
                     break;
                 }
             }
