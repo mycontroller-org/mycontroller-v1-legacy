@@ -26,8 +26,8 @@
 
     <ul class="nav nav-tabs nav-tabs-pf">
       <li ng-repeat="item in dashboards" ng-class="{'active' : item.id === dId}"><a href="" ng-click="changeDashboard(item)">{{item.title}}</a></li>
-      <li class="pull-right"><span ng-disabled="dashboards.length >= mchelper.cfg.dashboardLimit" class="btn btn-primary mc-margin" style="margin-top:5px;" type="button" ng-click="createNewDashboad()">{{ 'NEW_DASHBOARD' | translate }}</span></li>
-      <li class="pull-right"><span ng-disabled="dashboards.length == 1 && dId" class="btn btn-danger mc-margin" style="margin-top:5px;" type="button" ng-click="deleteDashboad()">{{ 'DELETE_DASHBOARD' | translate }}</span></li>
+      <li ng-if="!mchelper.userSettings.hideMenu" class="pull-right" uib-tooltip="{{ 'NEW_DASHBOARD' | translate }}" tooltip-placement="left"><span ng-disabled="dashboards.length >= mchelper.cfg.dashboardLimit" class="btn btn-primary mc-margin" style="margin-top:5px;" type="button" ng-click="createNewDashboad()"><i class="fa fa-plus"></i> {{ 'NEW' | translate }}</span></li>
+      <li ng-if="!mchelper.userSettings.hideMenu" class="pull-right" uib-tooltip="{{ 'DELETE_DASHBOARD' | translate }}" tooltip-placement="left"><span ng-disabled="dashboards.length == 1 && dId" class="btn btn-danger mc-margin" style="margin-top:5px;" type="button" ng-click="deleteDashboad()"><i class="fa fa-trash"></i> {{ 'DELETE' | translate }}</span></li>
     </ul>
 
       <!-- Loading icon disaplay -->

@@ -50,8 +50,8 @@
           </div>
         </div>
 
-        <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group">
-          <a class="btn btn-primary" type="button" ui-sref="nodesAddEdit">{{ 'ADD_NODE' | translate }}</a>
+        <div ng-show="mchelper.user.permission === 'Super admin'" class="btn-group" role="group" uib-tooltip="{{ 'ADD_NODE' | translate }}" tooltip-placement="left">
+          <a class="btn btn-primary" type="button" ui-sref="nodesAddEdit"><i class="fa fa-plus"></i> {{ 'ADD' | translate }}</a>
         </div>
 
       </div>
