@@ -40,8 +40,10 @@ public class MetricsAggregationJob extends Job {
 
     private void executeSqlQuery(String sqlQuery) {
         try {
+            long startTime = System.currentTimeMillis();
             int deleteCount = DaoUtils.getMetricsDoubleTypeDeviceDao().getDao().executeRaw(sqlQuery);
-            _logger.debug("Sql Query[{}], Deletion count:{}", sqlQuery, deleteCount);
+            _logger.debug("Sql Query[{}], Deletion count:{}, Time taken:{} ms", sqlQuery, deleteCount,
+                    System.currentTimeMillis() - startTime);
         } catch (SQLException ex) {
             _logger.error("Exception when executing query[{}] ", sqlQuery, ex);
         }
@@ -56,6 +58,7 @@ public class MetricsAggregationJob extends Job {
         _logger.debug("Metrics aggregation job triggered");
         new McMetricsAggregationBase().runAggregation();
 
+        _logger.debug("Executing purge of binary and GPS data.");
         //Execute purge of binary and gps data
         MetricsDataRetentionSettings retentionSettings = AppProperties.getInstance().getMetricsDataRetentionSettings();
         //Binary data
