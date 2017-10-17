@@ -59,16 +59,33 @@ public class MetricsAggregationJob extends Job {
         new McMetricsAggregationBase().runAggregation();
 
         _logger.debug("Executing purge of binary and GPS data.");
+
         //Execute purge of binary and gps data
         MetricsDataRetentionSettings retentionSettings = AppProperties.getInstance().getMetricsDataRetentionSettings();
+
+        long currentTimestamp = System.currentTimeMillis();
+        long lowestTimestamp = 315532800000L; //1980-JAN-01 00:00:00.0000
+
         //Binary data
         String sqlDeleteQueryBinary = MessageFormat.format(DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_BINARY),
-                String.valueOf(System.currentTimeMillis() - retentionSettings.getRetentionBinary()));
+                String.valueOf(retentionSettings.getLastAggregationBinary() != null ?
+                        retentionSettings.getLastAggregationBinary() : lowestTimestamp),
+                String.valueOf(currentTimestamp - retentionSettings.getRetentionBinary()));
         executeSqlQuery(sqlDeleteQueryBinary);
+        //Update last aggregation status
+        retentionSettings.setLastAggregationBinary(currentTimestamp - retentionSettings.getRetentionBinary());
+        retentionSettings.updateInternal();
+
         //GPS data
         String sqlDeleteQueryGPS = MessageFormat.format(DB_QUERY.getQuery(DB_QUERY.DELETE_METRICS_GPS),
-                String.valueOf(System.currentTimeMillis() - retentionSettings.getRetentionGPS()));
+                String.valueOf(retentionSettings.getLastAggregationGPS() != null ?
+                        retentionSettings.getLastAggregationGPS() : lowestTimestamp),
+                String.valueOf(currentTimestamp - retentionSettings.getRetentionGPS()));
         executeSqlQuery(sqlDeleteQueryGPS);
+        //Update last aggregation status
+        retentionSettings.setLastAggregationGPS(currentTimestamp - retentionSettings.getRetentionGPS());
+        retentionSettings.updateInternal();
+
         _logger.debug("Metrics aggregation job completed");
     }
 }

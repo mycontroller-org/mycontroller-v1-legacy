@@ -56,6 +56,8 @@ public class MetricsDataRetentionSettings {
     public static final String SKEY_LAST_AGGREGATION_SIX_HOURS = "lastAggregationSixHours";
     public static final String SKEY_LAST_AGGREGATION_TWELVE_HOURS = "lastAggregationTwelveHours";
     public static final String SKEY_LAST_AGGREGATION_ONE_DAY = "lastAggregationOneDay";
+    public static final String SKEY_LAST_AGGREGATION_BINARY = "lastAggregationBinary";
+    public static final String SKEY_LAST_AGGREGATION_GPS = "lastAggregationGPS";
 
     private Long lastAggregationRawData;
     private Long lastAggregationOneMinute;
@@ -98,6 +100,8 @@ public class MetricsDataRetentionSettings {
                 .lastAggregationSixHours(McUtils.getLong(getValue(SKEY_LAST_AGGREGATION_SIX_HOURS)))
                 .lastAggregationTwelveHours(McUtils.getLong(getValue(SKEY_LAST_AGGREGATION_TWELVE_HOURS)))
                 .lastAggregationOneDay(McUtils.getLong(getValue(SKEY_LAST_AGGREGATION_ONE_DAY)))
+                .lastAggregationBinary(McUtils.getLong(getValue(SKEY_LAST_AGGREGATION_BINARY)))
+                .lastAggregationGPS(McUtils.getLong(getValue(SKEY_LAST_AGGREGATION_GPS)))
                 .build();
     }
 
@@ -153,6 +157,12 @@ public class MetricsDataRetentionSettings {
         }
         if (lastAggregationOneDay != null) {
             updateValue(SKEY_LAST_AGGREGATION_ONE_DAY, lastAggregationOneDay);
+        }
+        if (lastAggregationBinary != null) {
+            updateValue(SKEY_LAST_AGGREGATION_BINARY, lastAggregationBinary);
+        }
+        if (lastAggregationGPS != null) {
+            updateValue(SKEY_LAST_AGGREGATION_GPS, lastAggregationGPS);
         }
     }
 

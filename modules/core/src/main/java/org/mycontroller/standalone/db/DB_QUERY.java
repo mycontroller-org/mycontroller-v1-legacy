@@ -93,12 +93,12 @@ public class DB_QUERY {
                     MetricsCounterTypeDevice.KEY_TIMESTAMP);
 
     public static final String DELETE_METRICS_BINARY = MessageFormat
-            .format("DELETE FROM ${0}$ WHERE ${1}$ <= '{0}' ",
+            .format("DELETE FROM ${0}$ WHERE ${1}$ > '{0}' AND ${1}$ <= '{1}' ",
                     DB_TABLES.METRICS_BINARY_TYPE_DEVICE,
                     MetricsCounterTypeDevice.KEY_TIMESTAMP);
 
     public static final String DELETE_METRICS_GPS = MessageFormat
-            .format("DELETE FROM ${0}$ WHERE ${1}$ <= '{0}' ",
+            .format("DELETE FROM ${0}$ WHERE ${1}$ > '{0}' AND ${1}$ <= '{1}' ",
                     DB_TABLES.METRICS_GPS_TYPE_DEVICE,
                     MetricsCounterTypeDevice.KEY_TIMESTAMP);
 
