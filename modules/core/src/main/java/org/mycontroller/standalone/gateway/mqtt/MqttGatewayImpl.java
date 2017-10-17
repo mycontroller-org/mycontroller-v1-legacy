@@ -74,6 +74,9 @@ public class MqttGatewayImpl implements IGateway {
                     + "Reload gateway [Id:{}, Name:{}, NetworkType:{}] service when MQTT Broker comes UP!",
                     mqttClient.getServerURI(), ex.getReasonCode(), gateway.getName(),
                     gateway.getNetworkType().getText(), ex);
+        }catch(Exception ex){
+            this.gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
+            _logger.error("Exception,", ex);
         }
     }
 
