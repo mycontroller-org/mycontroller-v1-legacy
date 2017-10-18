@@ -20,6 +20,7 @@ import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
@@ -83,6 +84,10 @@ public class ResourceModel {
                 resource = DaoUtils.getTimerDao().getById(resourceId);
                 isValidResource();
                 break;
+            case FORWARD_PAYLOAD:
+                resource = DaoUtils.getForwardPayloadDao().getById(resourceId);
+                isValidResource();
+                break;
             default:
                 throw new RuntimeException("Not supported ResourceType:" + resourceType);
         }
@@ -116,6 +121,7 @@ public class ResourceModel {
             case RESOURCES_GROUP:
             case RULE_DEFINITION:
             case TIMER:
+            case FORWARD_PAYLOAD:
                 networkType = null;
                 break;
             default:
@@ -172,6 +178,11 @@ public class ResourceModel {
                 Timer timer = (Timer) this.resource;
                 builder.append("Timer:[Name:").append(timer.getName()).append("]");
                 break;
+            case FORWARD_PAYLOAD:
+                ForwardPayload forwardPayload = (ForwardPayload) this.resource;
+                updateDSensorVariable((SensorVariable) forwardPayload.getSource(), builder);
+                builder.append(" >>> ");
+                updateDSensorVariable((SensorVariable) forwardPayload.getDestination(), builder);
             default:
                 break;
         }
@@ -238,6 +249,12 @@ public class ResourceModel {
             case TIMER:
                 Timer timer = (Timer) this.resource;
                 builder.append(DISPLAY_KEY_TIMER).append(timer.getName());
+                break;
+            case FORWARD_PAYLOAD:
+                ForwardPayload forwardPayload = (ForwardPayload) this.resource;
+                updateLDSensorVariable((SensorVariable) forwardPayload.getSource(), builder);
+                builder.append(" >>> ");
+                updateLDSensorVariable((SensorVariable) forwardPayload.getDestination(), builder);
                 break;
             default:
                 break;

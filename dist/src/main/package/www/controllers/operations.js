@@ -242,6 +242,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
       return TypesFactory.getRuleDefinitions();
     }else if(resourceType === 'Timer'){
       return TypesFactory.getTimers();
+    }else if(resourceType === 'Forward payload'){
+      return TypesFactory.getForwardPayloads();
     }else if(resourceType === 'Value'){
       $scope.updateThresholdValueTypes($scope.item.resourceType);
       return null;

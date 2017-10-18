@@ -190,6 +190,12 @@ public class TypesHandler extends AccessEngine {
     }
 
     @GET
+    @Path("/forwardPayloads")
+    public Response getForwardPayloads() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getForwardPayloads(AuthUtils.getUser(securityContext)));
+    }
+
+    @GET
     @Path("/ruleDefinitions")
     public Response getRuleDefinitions() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getRuleDefinitions(AuthUtils.getUser(securityContext)));

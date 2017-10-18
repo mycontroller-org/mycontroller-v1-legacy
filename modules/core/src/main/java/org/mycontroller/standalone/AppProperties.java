@@ -302,7 +302,8 @@ public class AppProperties {
         RULE_DEFINITION("Rule definition"),
         TIMER("Timer"),
         SCRIPT("Script"),
-        UID_TAG("UID tag");
+        UID_TAG("UID tag"),
+        FORWARD_PAYLOAD("Forward payload");
         public static RESOURCE_TYPE get(int id) {
             for (RESOURCE_TYPE trigger_type : values()) {
                 if (trigger_type.ordinal() == id) {

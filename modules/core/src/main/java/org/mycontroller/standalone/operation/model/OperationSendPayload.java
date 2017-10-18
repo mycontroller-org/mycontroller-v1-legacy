@@ -22,8 +22,11 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.api.ForwardPayloadApi;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
+import org.mycontroller.standalone.db.ResourceOperationUtils.SEND_PAYLOAD_OPERATIONS;
+import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.gateway.GatewayUtils;
@@ -182,6 +185,21 @@ public class OperationSendPayload extends Operation {
                 break;
             case RESOURCES_GROUP:
                 ResourcesGroupUtils.executeResourceGroupsOperation(resourceModel, resourceOperation);
+                break;
+            case FORWARD_PAYLOAD:
+                if (resourceModel.getResource() instanceof ForwardPayload) {
+                    ForwardPayload forwardPayload = (ForwardPayload) resourceModel.getResource();
+                    ForwardPayloadApi forwardPayloadApi = new ForwardPayloadApi();
+                    if (resourceOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.ENABLE) {
+                        forwardPayloadApi.enable(forwardPayload.getId());
+                    } else if (resourceOperation.getOperationType() == SEND_PAYLOAD_OPERATIONS.DISABLE) {
+                        forwardPayloadApi.disable(forwardPayload.getId());
+                    } else {
+                        _logger.warn("Not supported operation:[{}]", resourceOperation.getOperationType());
+                    }
+                } else {
+                    _logger.warn("Not supported resource:[{}]", resourceModel.getResource());
+                }
                 break;
             default:
                 McObjectManager.getMcActionEngine().executeSendPayload(resourceModel, resourceOperation);

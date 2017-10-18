@@ -94,6 +94,7 @@ myControllerModule.factory('TypesFactory', function ($resource) {
     getSensorVariables:  { method: 'GET', isArray: true, params: {type: 'sensorVariables'} },
     getRuleDefinitions:  { method: 'GET', isArray: true, params: {type: 'ruleDefinitions'} },
     getTimers:  { method: 'GET', isArray: true, params: {type: 'timers'} },
+    getForwardPayloads:  { method: 'GET', isArray: true, params: {type: 'forwardPayloads'} },
     getSensorValueTypes:  { method: 'GET', isArray: true, params: {type: 'sensorValueTypes'}  },
     getResourcesGroups:  { method: 'GET', isArray: true, params: {type: 'resourcesGroups'}  },
     getOperationTypes:  { method: 'GET', isArray: true, params: {type: 'operationTypes'}  },

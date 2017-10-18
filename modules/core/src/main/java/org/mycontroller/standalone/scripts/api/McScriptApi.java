@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.scripts.api;
 
 import org.mycontroller.standalone.api.BackupApi;
+import org.mycontroller.standalone.api.ForwardPayloadApi;
 import org.mycontroller.standalone.api.GatewayApi;
 import org.mycontroller.standalone.api.HttpApi;
 import org.mycontroller.standalone.api.MessageQueueApi;
@@ -52,6 +53,7 @@ public class McScriptApi {
     private HttpApi httpApi = new HttpApi();
     private CsvExportEngine csvExportEngine = new CsvExportEngine();
     private MessageQueueApi messageQueueApi = new MessageQueueApi();
+    private ForwardPayloadApi forwardPayloadApi = new ForwardPayloadApi();
 
     public SystemApi system() {
         return systemApi;
@@ -115,5 +117,9 @@ public class McScriptApi {
 
     public MessageQueueApi messageQueue() {
         return messageQueueApi;
+    }
+
+    public ForwardPayloadApi forwardPayload() {
+        return forwardPayloadApi;
     }
 }

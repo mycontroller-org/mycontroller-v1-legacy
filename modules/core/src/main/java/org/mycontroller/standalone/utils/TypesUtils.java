@@ -28,6 +28,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.api.ForwardPayloadApi;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
@@ -41,6 +42,7 @@ import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareType;
 import org.mycontroller.standalone.db.tables.FirmwareVersion;
+import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.OperationTable;
@@ -301,53 +303,44 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getPayloadOperations(String resourceTypeString) {
-        SEND_PAYLOAD_OPERATIONS[] types = SEND_PAYLOAD_OPERATIONS.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         RESOURCE_TYPE resourceType = RESOURCE_TYPE.fromString(resourceTypeString);
+        ArrayList<SEND_PAYLOAD_OPERATIONS> operations = new ArrayList<SEND_PAYLOAD_OPERATIONS>();
         if (resourceType == null) {
             resourceType = RESOURCE_TYPE.SENSOR_VARIABLE;
         }
-        for (SEND_PAYLOAD_OPERATIONS type : types) {
-            switch (resourceType) {
-                case RULE_DEFINITION:
-                case TIMER:
-                    if (type == SEND_PAYLOAD_OPERATIONS.ENABLE || type == SEND_PAYLOAD_OPERATIONS.DISABLE) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-                case GATEWAY:
-                    if (type == SEND_PAYLOAD_OPERATIONS.ENABLE || type == SEND_PAYLOAD_OPERATIONS.DISABLE
-                            || type == SEND_PAYLOAD_OPERATIONS.RELOAD || type == SEND_PAYLOAD_OPERATIONS.START
-                            || type == SEND_PAYLOAD_OPERATIONS.STOP) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-                case NODE:
-                    if (type == SEND_PAYLOAD_OPERATIONS.REBOOT) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-                case RESOURCES_GROUP:
-                    if (type == SEND_PAYLOAD_OPERATIONS.ON || type == SEND_PAYLOAD_OPERATIONS.OFF) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-                case SENSOR_VARIABLE:
-                    if (type == SEND_PAYLOAD_OPERATIONS.TOGGLE || type == SEND_PAYLOAD_OPERATIONS.INCREMENT
-                            || type == SEND_PAYLOAD_OPERATIONS.DECREMENT) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-
+        switch (resourceType) {
+            case RULE_DEFINITION:
+            case TIMER:
+            case FORWARD_PAYLOAD:
+                operations.add(SEND_PAYLOAD_OPERATIONS.ENABLE);
+                operations.add(SEND_PAYLOAD_OPERATIONS.DISABLE);
+                break;
+            case GATEWAY:
+                operations.add(SEND_PAYLOAD_OPERATIONS.ENABLE);
+                operations.add(SEND_PAYLOAD_OPERATIONS.DISABLE);
+                operations.add(SEND_PAYLOAD_OPERATIONS.RELOAD);
+                operations.add(SEND_PAYLOAD_OPERATIONS.START);
+                operations.add(SEND_PAYLOAD_OPERATIONS.STOP);
+                break;
+            case NODE:
+                operations.add(SEND_PAYLOAD_OPERATIONS.REBOOT);
+                break;
+            case RESOURCES_GROUP:
+                operations.add(SEND_PAYLOAD_OPERATIONS.ON);
+                operations.add(SEND_PAYLOAD_OPERATIONS.OFF);
+                break;
+            case SENSOR_VARIABLE:
+                operations.add(SEND_PAYLOAD_OPERATIONS.INCREMENT);
+                operations.add(SEND_PAYLOAD_OPERATIONS.DECREMENT);
+                operations.add(SEND_PAYLOAD_OPERATIONS.TOGGLE);
+                break;
+            default:
+                break;
+        }
+        for (SEND_PAYLOAD_OPERATIONS operation : operations) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(operation.getText())
+                    .displayName(operation.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -706,6 +699,22 @@ public class TypesUtils {
         for (Timer timer : timers) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(timer.getId())
                     .displayName(new ResourceModel(RESOURCE_TYPE.TIMER, timer).getResourceLessDetails()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getForwardPayloads(User user) {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        List<ForwardPayload> items = null;
+        if (AuthUtils.isSuperAdmin(user)) {
+            items = new ForwardPayloadApi().getAll();
+        } else {
+            return typesIdNameMappers;
+        }
+        for (ForwardPayload item : items) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(item.getId())
+                    .displayName(new ResourceModel(RESOURCE_TYPE.FORWARD_PAYLOAD, item).getResourceLessDetails())
+                    .build());
         }
         return typesIdNameMappers;
     }

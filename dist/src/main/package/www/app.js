@@ -768,7 +768,8 @@ myControllerModule.filter('mcResourceRepresentation', function() {
     if(text === undefined){
       return undefined;
     }
-    return text.replace(/>>/g, '<i class="fa fa-chevron-right"></i>')
+    return text.replace(/>>>/g, '<i class="fa fa-forward"></i>')
+               .replace(/>>/g, '<i class="fa fa-chevron-right"></i>')
                .replace(/\[RG\]:/g, '<i class="pficon pficon-replicator fa-lg mc-margin-icon"></i> ')
                .replace(/\[G\]:/g, '<i class="fa fa-plug"></i> ')
                .replace(/\[N\]:/g, '<i class="fa fa-sitemap"></i> ')
