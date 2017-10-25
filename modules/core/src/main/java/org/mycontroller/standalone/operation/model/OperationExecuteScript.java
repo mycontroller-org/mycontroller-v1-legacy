@@ -54,6 +54,7 @@ public class OperationExecuteScript extends Operation {
 
     private String scriptFile;
     private HashMap<String, Object> scriptBindings;
+    private HashMap<String, Object> scriptBindingsTemp = new HashMap<String, Object>();
 
     public OperationExecuteScript(OperationTable operationTable) {
         this.updateOperation(operationTable);
@@ -99,7 +100,7 @@ public class OperationExecuteScript extends Operation {
             throw new RuntimeException("Cannot execute script without script file name! Rule definition: "
                     + ruleDefinition.getName());
         }
-        scriptBindings.put("notification", new Notification(ruleDefinition));
+        scriptBindingsTemp.put("notification", new Notification(ruleDefinition));
         //execute script
         executeScript();
     }
@@ -121,12 +122,13 @@ public class OperationExecuteScript extends Operation {
         }
         McScript mcScript = null;
         try {
+            scriptBindingsTemp.putAll(getScriptBindings());
             File script = FileUtils.getFile(
                     AppProperties.getInstance().getScriptsLocation() + scriptFile);
             mcScript = McScript.builder()
                     .name(script.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(script.getCanonicalPath()))
-                    .bindings(getScriptBindings())
+                    .bindings(scriptBindingsTemp)
                     .build();
             McScriptEngine mcScriptEngine = new McScriptEngine(mcScript);
             Object result = mcScriptEngine.executeScript();
