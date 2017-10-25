@@ -54,7 +54,7 @@ public class MetricsGPSTypeDevice {
     @DatabaseField(canBeNull = false, foreign = true, uniqueCombo = true, columnName = KEY_SENSOR_VARIABLE_ID)
     private SensorVariable sensorVariable;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
+    @DatabaseField(index = true, uniqueCombo = true, canBeNull = false, columnName = KEY_TIMESTAMP)
     private Long timestamp;
 
     @DatabaseField(canBeNull = false, columnName = KEY_SAMPLES)

@@ -25,6 +25,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.operation.Notification;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngine;
@@ -98,6 +99,7 @@ public class OperationExecuteScript extends Operation {
             throw new RuntimeException("Cannot execute script without script file name! Rule definition: "
                     + ruleDefinition.getName());
         }
+        scriptBindings.put("notification", new Notification(ruleDefinition));
         //execute script
         executeScript();
     }
