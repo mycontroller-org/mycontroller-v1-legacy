@@ -142,6 +142,7 @@ public class AppProperties {
         FR_FR("Français (FR)"),
         HE_IL("עִברִית (IL)"),
         HU_HU("Magyar (HU)"),
+        IT_IT("italiano (IT)"),
         MK_MK("Македонски (MK)"),
         NL_NL("Nederlands (NL)"),
         NO_NO("norsk (NO)"),
@@ -260,7 +261,8 @@ public class AppProperties {
         PHANT_IO("Sparkfun [phant.io]"),
         MY_CONTROLLER("MyController"),
         RF_LINK("RFLink"),
-        PHILIPS_HUE("Philips Hue");
+        PHILIPS_HUE("Philips Hue"),
+        WUNDERGROUND("Weather Underground");
 
         private final String type;
 
