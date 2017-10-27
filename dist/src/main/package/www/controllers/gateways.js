@@ -296,6 +296,10 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.gateway.url='';
       $scope.gateway.authorizedUser='';
       $scope.gateway.pollFrequency='5';
+     }else if($scope.gateway.type === 'Weather Underground'){
+      $scope.gateway.apiKey='';
+      $scope.gateway.location='autoip';
+      $scope.gateway.pollFrequency='15';
      }
   };
 

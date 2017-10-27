@@ -273,6 +273,50 @@
             </div>
           </div>
 
+          <!-- Weather Underground Gateway -->
+          <div ng-if="gateway.type === 'Weather Underground'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TRUST_HOST' | translate }}</label>
+              <div class="col-sm-5">
+                <select class="form-control" pf-select ng-options="type.id as type.displayName for type in trustHostTypes  | orderBy:'displayName'" ng-model="gateway.trustHostType" required >
+                  <option value="" ng-hide="true"></option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'KEY' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'KEY' | translate }}" ng-model="gateway.apiKey" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'LOCATION' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'LOCATION' | translate }}" ng-model="gateway.location" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'LOCATION_IP' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'LOCATION_IP' | translate }}" ng-model="gateway.geoIp" pf-validation="cs.isContainsSpace(input)" />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'POLL_FREQUENCY_MINUTES' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'POLL_FREQUENCY_MINUTES' | translate }}" ng-model="gateway.pollFrequency"  pf-validation="cs.isNumber(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Include save form buttons -->
           <div ng-include src="'partials/common-html/save-form.html'"></div>
 

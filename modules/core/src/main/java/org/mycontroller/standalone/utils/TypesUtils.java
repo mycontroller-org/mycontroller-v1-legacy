@@ -1099,55 +1099,47 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getGatewayTypes(String networkType) {
-        GatewayUtils.GATEWAY_TYPE[] types = GatewayUtils.GATEWAY_TYPE.values();
         NETWORK_TYPE nwType = null;
         if (networkType != null) {
             nwType = NETWORK_TYPE.fromString(networkType);
         }
+        ArrayList<GATEWAY_TYPE> gatewayTypes = new ArrayList<GatewayUtils.GATEWAY_TYPE>();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        for (GatewayUtils.GATEWAY_TYPE gatewayType : types) {
-            boolean include = false;
-            if (nwType != null) {
-                switch (nwType) {
-                    case MY_SENSORS:
-                        if (gatewayType == GATEWAY_TYPE.SERIAL
-                                || gatewayType == GATEWAY_TYPE.ETHERNET
-                                || gatewayType == GATEWAY_TYPE.MQTT) {
-                            include = true;
-                        }
-                        break;
-                    case PHANT_IO:
-                        if (gatewayType == GATEWAY_TYPE.PHANT_IO) {
-                            include = true;
-                        }
-                        break;
-                    case MY_CONTROLLER:
-                        if (gatewayType == GATEWAY_TYPE.MQTT) {
-                            include = true;
-                        }
-                        break;
-                    case RF_LINK:
-                        if (gatewayType == GATEWAY_TYPE.SERIAL) {
-                            include = true;
-                        }
-                        break;
-                    case PHILIPS_HUE:
-                        if (gatewayType == GATEWAY_TYPE.PHILIPS_HUE) {
-                            include = true;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                include = true;
+        if (nwType != null) {
+            switch (nwType) {
+                case MY_SENSORS:
+                    gatewayTypes.add(GATEWAY_TYPE.ETHERNET);
+                    gatewayTypes.add(GATEWAY_TYPE.MQTT);
+                    gatewayTypes.add(GATEWAY_TYPE.SERIAL);
+                    break;
+                case PHANT_IO:
+                    gatewayTypes.add(GATEWAY_TYPE.PHANT_IO);
+                    break;
+                case MY_CONTROLLER:
+                    gatewayTypes.add(GATEWAY_TYPE.MQTT);
+                    break;
+                case RF_LINK:
+                    gatewayTypes.add(GATEWAY_TYPE.SERIAL);
+                    break;
+                case PHILIPS_HUE:
+                    gatewayTypes.add(GATEWAY_TYPE.PHILIPS_HUE);
+                    break;
+                case WUNDERGROUND:
+                    gatewayTypes.add(GATEWAY_TYPE.WUNDERGROUND);
+                    break;
+                default:
+                    break;
             }
-            if (include) {
-                typesIdNameMappers.add(TypesIdNameMapper.builder().id(gatewayType.getText())
-                        .displayName(McObjectManager.getMcLocale().getString(gatewayType.name())).build());
+        } else {
+            for (GATEWAY_TYPE type : GATEWAY_TYPE.values()) {
+                gatewayTypes.add(type);
             }
-
         }
+        for (GATEWAY_TYPE type : gatewayTypes) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
+                    .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
+        }
+
         return typesIdNameMappers;
     }
 

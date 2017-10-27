@@ -321,6 +321,7 @@
     "LOADED": "Ingeladen",
     "LOADING": "Laden...",
     "LOCATION": "Locatie",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Locatie naam",
     "LOGIN_MESSAGE": "Aanmeld boodschap",
     "LOGS": "Logs",

@@ -321,6 +321,7 @@
     "LOADED": "Loaded",
     "LOADING": "Loading...",
     "LOCATION": "Location",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Login message",
     "LOGS": "Logs",

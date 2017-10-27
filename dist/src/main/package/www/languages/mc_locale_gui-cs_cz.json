@@ -321,6 +321,7 @@
     "LOADED": "Nahráno",
     "LOADING": "Nahrávám...",
     "LOCATION": "Umístění",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Přihlašovací zpráva",
     "LOGS": "Logy",

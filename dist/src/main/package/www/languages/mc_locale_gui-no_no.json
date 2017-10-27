@@ -321,6 +321,7 @@
     "LOADED": "Belastet",
     "LOADING": "Laster...",
     "LOCATION": "Plassering",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Logg inn melding",
     "LOGS": "Logger",

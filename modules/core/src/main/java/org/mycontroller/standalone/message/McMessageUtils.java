@@ -34,6 +34,7 @@ import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
 import org.mycontroller.standalone.provider.phantio.PhantIOProviderBridge;
 import org.mycontroller.standalone.provider.philipshue.PhilipsHueProviderBridge;
 import org.mycontroller.standalone.provider.rflink.RFLinkProviderBridge;
+import org.mycontroller.standalone.provider.wunderground.WUProviderBridge;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -124,7 +125,7 @@ public class McMessageUtils {
         I_PRESENTATION("Presentation"),
         I_DISCOVER("Discover"),
         I_DISCOVER_RESPONSE("Discover respone"),
-        I_HEARTBEAT_RESPONSE("Heartbeat Response"),
+        I_HEARTBEAT_RESPONSE("Heartbeat WUResponse"),
         I_LOCKED("Locked"),
         I_PING("Ping"),
         I_PONG("Pong"),
@@ -555,6 +556,7 @@ public class McMessageUtils {
     private static IProviderBridge rpiAgentBridge = new McProviderBridge();
     private static IProviderBridge rfLinkBridge = new RFLinkProviderBridge();
     private static IProviderBridge philipsHueProviderBridge = new PhilipsHueProviderBridge();
+    private static IProviderBridge wundergroundProviderBridge = new WUProviderBridge();
 
     public static synchronized void sendToGateway(RawMessage rawMessage) {
         //Send message to nodes [going out from MyController]
@@ -587,6 +589,9 @@ public class McMessageUtils {
                 break;
             case PHILIPS_HUE:
                 philipsHueProviderBridge.executeRawMessage(rawMessage);
+                break;
+            case WUNDERGROUND:
+                wundergroundProviderBridge.executeRawMessage(rawMessage);
                 break;
             default:
                 _logger.warn("Unknown provider: {}", rawMessage.getNetworkType());
@@ -632,6 +637,8 @@ public class McMessageUtils {
                 return rfLinkBridge.getRawMessage(mcMessage);
             case PHILIPS_HUE:
                 return philipsHueProviderBridge.getRawMessage(mcMessage);
+            case WUNDERGROUND:
+                return wundergroundProviderBridge.getRawMessage(mcMessage);
             default:
                 _logger.warn("Unknown provider: {} for ", mcMessage.getNetworkType(), mcMessage);
                 throw new McBadRequestException("Unknown provider: " + mcMessage.getNetworkType());
@@ -655,6 +662,8 @@ public class McMessageUtils {
             case PHILIPS_HUE:
                 philipsHueProviderBridge.executeMcMessage(mcMessage);
                 break;
+            case WUNDERGROUND:
+                wundergroundProviderBridge.executeMcMessage(mcMessage);
             default:
                 _logger.warn("Unknown provider: {}", mcMessage.getNetworkType());
                 break;
@@ -681,6 +690,8 @@ public class McMessageUtils {
                 return rfLinkBridge.validateNodeId(node);
             case PHILIPS_HUE:
                 return philipsHueProviderBridge.validateNodeId(node);
+            case WUNDERGROUND:
+                return wundergroundProviderBridge.validateNodeId(node);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;
@@ -700,6 +711,8 @@ public class McMessageUtils {
                 return rfLinkBridge.validateSensorId(sensor);
             case PHILIPS_HUE:
                 return philipsHueProviderBridge.validateSensorId(sensor);
+            case WUNDERGROUND:
+                return wundergroundProviderBridge.validateSensorId(sensor);
             default:
                 _logger.warn("Unknown provider: {}", networkType);
                 return false;

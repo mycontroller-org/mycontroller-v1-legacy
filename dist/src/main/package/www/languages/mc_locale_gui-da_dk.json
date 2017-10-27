@@ -321,6 +321,7 @@
     "LOADED": "Indsamlet",
     "LOADING": "Indsamler...",
     "LOCATION": "Lokation",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Login-besked",
     "LOGS": "Logbøger",

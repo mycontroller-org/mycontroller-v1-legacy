@@ -321,6 +321,7 @@
     "LOADED": "Încărcat",
     "LOADING": "Încărcare...",
     "LOCATION": "Locaţie",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "Mesaj autentificare",
     "LOGS": "Jurnale",

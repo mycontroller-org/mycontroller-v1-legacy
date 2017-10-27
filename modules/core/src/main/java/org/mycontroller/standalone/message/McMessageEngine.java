@@ -1023,7 +1023,7 @@ public class McMessageEngine implements Runnable {
         //Update metric data to metric engine
         MetricsUtils.engine().post(DataPointer.builder()
                 .payload(mcMessage.getPayload())
-                .timestamp(System.currentTimeMillis())
+                .timestamp(mcMessage.getTimestamp())
                 .resourceModel(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable))
                 .dataType(DATA_TYPE.SENSOR_VARIABLE)
                 .build());

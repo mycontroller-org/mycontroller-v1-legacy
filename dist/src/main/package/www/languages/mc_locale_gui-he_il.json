@@ -321,6 +321,7 @@
     "LOADED": "נטען",
     "LOADING": "טוען",
     "LOCATION": "מיקום",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Location name",
     "LOGIN_MESSAGE": "הודעת התחברות",
     "LOGS": "לוגים",

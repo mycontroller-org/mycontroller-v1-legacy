@@ -321,6 +321,7 @@
     "LOADED": "Caricato",
     "LOADING": "Caricamento...",
     "LOCATION": "Luogo",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Nome luogo",
     "LOGIN_MESSAGE": "Messaggio di login",
     "LOGS": "Logs",

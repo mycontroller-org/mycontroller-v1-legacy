@@ -44,7 +44,7 @@ public class RuleDefinitionsReEnableJob extends Job {
         filters.put(RuleDefinitionTable.KEY_RE_ENABLE, true);
         filters.put(Query.PAGE_LIMIT, -1L);
         QueryResponse response = RULE_API.getAll(filters);
-        _logger.debug("Response:{}", response);
+        _logger.debug("WUResponse:{}", response);
         if (response.getData() != null) {
             @SuppressWarnings("unchecked")
             List<RuleDefinition> rules = (List<RuleDefinition>) response.getData();

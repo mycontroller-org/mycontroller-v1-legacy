@@ -321,6 +321,7 @@
     "LOADED": "Chargé",
     "LOADING": "Chargement...",
     "LOCATION": "Emplacement",
+    "LOCATION_IP": "Location IP",
     "LOCATION_NAME": "Nom emplacement",
     "LOGIN_MESSAGE": "Message d'identification",
     "LOGS": "Logs",

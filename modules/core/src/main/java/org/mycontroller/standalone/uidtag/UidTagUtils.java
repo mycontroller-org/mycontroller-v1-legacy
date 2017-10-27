@@ -28,7 +28,7 @@ public class UidTagUtils {
     public enum UIDQ_TYPE {
         SET("Set"),
         REQUEST("Request"),
-        RESPONSE("Response"),
+        RESPONSE("WUResponse"),
         UNAVAILABLE("Unavailable");
 
         public static UIDQ_TYPE get(int id) {

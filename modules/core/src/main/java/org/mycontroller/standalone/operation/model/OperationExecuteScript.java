@@ -132,7 +132,7 @@ public class OperationExecuteScript extends Operation {
                     .build();
             McScriptEngine mcScriptEngine = new McScriptEngine(mcScript);
             Object result = mcScriptEngine.executeScript();
-            _logger.debug("script executed. Result:{}, {}", result, mcScript);
+            _logger.debug("script executed. QueryResponse:{}, {}", result, mcScript);
         } catch (Exception ex) {
             _logger.error("Exception on {}", mcScript, ex);
         }

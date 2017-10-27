@@ -31,6 +31,7 @@ import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
 import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
+import org.mycontroller.standalone.gateway.model.GatewayWunderground;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -128,6 +129,18 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 gatewayPhilipsHue.setPollFrequency(node.get(GatewayPhilipsHue.KEY_POLL_FREQUENCY).asInt());
                 gatewayPhilipsHue.setUrl(node.get(GatewayPhilipsHue.KEY_URL).asText());
                 gateway = gatewayPhilipsHue;
+                break;
+            case WUNDERGROUND:
+                GatewayWunderground gatewayWunderground = new GatewayWunderground();
+                gatewayWunderground.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
+                gatewayWunderground.setApiKey(node.get("apiKey").asText());
+                gatewayWunderground.setLocation(node.get("location").asText());
+                if (node.get("geoIp") != null) {
+                    gatewayWunderground.setGeoIp(node.get("geoIp").asText());
+                }
+                gatewayWunderground.setPollFrequency(node.get("pollFrequency").asInt());
+                gatewayWunderground.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));
+                gateway = gatewayWunderground;
                 break;
             default:
                 break;

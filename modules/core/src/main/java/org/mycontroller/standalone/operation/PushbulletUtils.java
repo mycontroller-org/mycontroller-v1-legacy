@@ -60,7 +60,7 @@ public class PushbulletUtils {
             push.clearTargets();
             ClientResponse<PushResponse> responsePushbullet = pushbulletClient.sendPush(push);
             if (responsePushbullet.isSuccess()) {
-                _logger.debug("Note push sent successfully..., Response:{}", responsePushbullet.getEntity());
+                _logger.debug("Note push sent successfully..., WUResponse:{}", responsePushbullet.getEntity());
             } else {
                 _logger.warn("Note push sending failed:{}]", responsePushbullet);
             }
@@ -92,7 +92,7 @@ public class PushbulletUtils {
             }
             ClientResponse<PushResponse> responsePushbullet = pushbulletClient.sendPush(push);
             if (responsePushbullet.isSuccess()) {
-                _logger.debug("Note push sent successfully..., Response:{}", responsePushbullet.getEntity());
+                _logger.debug("Note push sent successfully..., WUResponse:{}", responsePushbullet.getEntity());
             } else {
                 _logger.warn("Note push sending failed:{}]", responsePushbullet);
             }
@@ -112,7 +112,7 @@ public class PushbulletUtils {
         if (responsePushbullet.isSuccess()) {
             return responsePushbullet.getEntity();
         } else {
-            _logger.error("Failed to get current user. Response:{}", responsePushbullet);
+            _logger.error("Failed to get current user. WUResponse:{}", responsePushbullet);
             throw new IllegalAccessException(responsePushbullet.getErrorMsg());
         }
     }

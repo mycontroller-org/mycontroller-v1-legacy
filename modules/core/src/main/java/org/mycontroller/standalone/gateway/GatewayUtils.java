@@ -35,10 +35,12 @@ import org.mycontroller.standalone.gateway.model.GatewayMQTT;
 import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
 import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
 import org.mycontroller.standalone.gateway.model.GatewaySerial;
+import org.mycontroller.standalone.gateway.model.GatewayWunderground;
 import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
 import org.mycontroller.standalone.gateway.phantio.PhantIOGatewayImpl;
 import org.mycontroller.standalone.gateway.philipshue.PhilipsHueGatewayImpl;
 import org.mycontroller.standalone.gateway.serialport.MYCSerialPort;
+import org.mycontroller.standalone.gateway.wunderground.WundergroundGatewayImpl;
 import org.mycontroller.standalone.model.ResourceModel;
 
 import lombok.AccessLevel;
@@ -61,7 +63,8 @@ public class GatewayUtils {
         ETHERNET("Ethernet"),
         MQTT("MQTT"),
         PHANT_IO("Sparkfun [phant.io]"),
-        PHILIPS_HUE("Hue bridge");
+        PHILIPS_HUE("Hue bridge"),
+        WUNDERGROUND("Weather Underground");
         public static GATEWAY_TYPE get(int id) {
             for (GATEWAY_TYPE type : values()) {
                 if (type.ordinal() == id) {
@@ -145,6 +148,8 @@ public class GatewayUtils {
                 return new GatewayPhantIO(gatewayTable);
             case PHILIPS_HUE:
                 return new GatewayPhilipsHue(gatewayTable);
+            case WUNDERGROUND:
+                return new GatewayWunderground(gatewayTable);
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());
                 return null;
@@ -194,6 +199,9 @@ public class GatewayUtils {
                 iGateway = new PhantIOGatewayImpl(gatewayTable);
             case PHILIPS_HUE:
                 iGateway = new PhilipsHueGatewayImpl(gatewayTable);
+                break;
+            case WUNDERGROUND:
+                iGateway = new WundergroundGatewayImpl(gatewayTable);
                 break;
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());

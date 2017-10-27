@@ -140,7 +140,7 @@ public class MySensorsUtils {
         I_PRESENTATION("Presentation"),
         I_DISCOVER("Discover"),
         I_DISCOVER_RESPONSE("Discover respone"),
-        I_HEARTBEAT_RESPONSE("Heartbeat Response"),
+        I_HEARTBEAT_RESPONSE("Heartbeat WUResponse"),
         I_LOCKED("Locked"),
         I_PING("Ping"),
         I_PONG("Pong"),
