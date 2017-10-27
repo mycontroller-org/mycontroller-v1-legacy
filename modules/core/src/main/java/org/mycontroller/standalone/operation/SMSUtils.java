@@ -64,7 +64,7 @@ public class SMSUtils {
                 .sendMessage(messagePlivo);
         if (responsePlivo.isSuccess()) {
             _logger.debug("SMS sent successfully...");
-            _logger.debug("WUResponse:{}", responsePlivo.getEntity());
+            _logger.debug("Response:{}", responsePlivo.getEntity());
         } else {
             _logger.warn("SMS sending failed:{}]", responsePlivo);
         }
@@ -105,7 +105,7 @@ public class SMSUtils {
             responseTwilio = twilioClient.sendMessage(messageTwilio);
             if (responseTwilio.isSuccess()) {
                 _logger.debug("SMS sent successfully...");
-                _logger.debug("WUResponse:{}", responseTwilio.getEntity());
+                _logger.debug("Response:{}", responseTwilio.getEntity());
             } else {
                 _logger.warn("SMS sending failed:{}]", responseTwilio);
             }
