@@ -135,8 +135,8 @@ public class McMessageUtils {
         I_RSSI("RSSI"),
         I_PROPERTIES("Properties"),
         I_FACTORY_RESET("Factory reset"),
-        I_SIGNAL_REPORT_REQUEST("Siganel report request"),
-        I_SIGNAL_REPORT_REVERSE("Siganl report reverse"),
+        I_SIGNAL_REPORT_REQUEST("Signal report request"),
+        I_SIGNAL_REPORT_REVERSE("Signal report reverse"),
         I_SIGNAL_REPORT_RESPONSE("Signal report response"),
         I_PRE_SLEEP_NOTIFICATION("Pre sleep notification"),
         I_POST_SLEEP_NOTIFICATION("Post sleep notification");
