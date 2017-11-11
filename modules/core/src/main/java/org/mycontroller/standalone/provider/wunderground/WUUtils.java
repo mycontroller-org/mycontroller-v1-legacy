@@ -26,4 +26,5 @@ public class WUUtils {
     public static final String S_ID_HUMIDITY = "humidity";
     public static final String S_ID_TEMPERATURE = "temperature";
     public static final String S_ID_WIND = "wind";
+    public static final String NODE_EUI = "wu_node";
 }

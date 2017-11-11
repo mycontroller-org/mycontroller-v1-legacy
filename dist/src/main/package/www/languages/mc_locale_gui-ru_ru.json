@@ -336,6 +336,7 @@
     "MAX": "Максимум",
     "MAXIMUM_BLOCK_SIZE": "Максимальный размер блока",
     "MEASUREMENT": "Измерение",
+    "MERGE_STATIONS": "Merge stations",
     "MESSAGE": "Сообщение",
     "MESSAGE_CONTAINS": "Сообщение содержит",
     "MESSAGE_TYPE": "Тип сообщения",

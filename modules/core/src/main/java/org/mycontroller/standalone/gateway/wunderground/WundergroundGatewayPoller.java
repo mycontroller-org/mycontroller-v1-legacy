@@ -119,6 +119,11 @@ public class WundergroundGatewayPoller implements Runnable {
         }
 
         String nodeEui = response.getCurrent_observation().getStation_id();
+        //Set unique nodeEui based on location name
+        if (gateway.getMergeAllStations()) {
+            nodeEui = WUUtils.NODE_EUI;
+        }
+
         CurrentObservation observation = response.getCurrent_observation();
         UNIT_CONFIG unitConfig = UNIT_CONFIG.fromString(AppProperties.getInstance().getControllerSettings()
                 .getUnitConfig());

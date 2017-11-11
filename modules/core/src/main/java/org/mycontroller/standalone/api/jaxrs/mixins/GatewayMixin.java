@@ -135,6 +135,7 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
                 gatewayWunderground.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
                 gatewayWunderground.setApiKey(node.get("apiKey").asText());
                 gatewayWunderground.setLocation(node.get("location").asText());
+                gatewayWunderground.setMergeAllStations(node.get("mergeAllStations").asBoolean());
                 if (node.get("geoIp") != null) {
                     gatewayWunderground.setGeoIp(node.get("geoIp").asText());
                 }

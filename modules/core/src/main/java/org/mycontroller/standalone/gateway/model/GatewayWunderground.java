@@ -38,6 +38,7 @@ public class GatewayWunderground extends Gateway {
     public static final String KEY_TRUST_HOST_TYPE = "trustHostType";
     public static final String KEY_API_KEY = "apiKey";
     public static final String KEY_LOCATION = "location";
+    public static final String KEY_MERGE_ALL_STATIONS = "mergeAllStations";
     public static final String KEY_GEO_IP = "geoIp";
     public static final String KEY_POLL_FREQUENCY = "pollFrequency";
     public static final String KEY_LAST_UPDATE = "lastUpdate";
@@ -47,6 +48,7 @@ public class GatewayWunderground extends Gateway {
     private String apiKey;
     private String location;
     private String geoIp;
+    private Boolean mergeAllStations;
     private Integer pollFrequency;
     private Long lastUpdate;
     private Long lastObservationTime;
@@ -66,6 +68,7 @@ public class GatewayWunderground extends Gateway {
         gatewayTable.getProperties().put(KEY_TRUST_HOST_TYPE, trustHostType.getText());
         gatewayTable.getProperties().put(KEY_API_KEY, apiKey);
         gatewayTable.getProperties().put(KEY_LOCATION, location);
+        gatewayTable.getProperties().put(KEY_MERGE_ALL_STATIONS, mergeAllStations);
         gatewayTable.getProperties().put(KEY_GEO_IP, geoIp);
         gatewayTable.getProperties().put(KEY_POLL_FREQUENCY, pollFrequency);
         gatewayTable.getProperties().put(KEY_LAST_UPDATE, lastUpdate);
@@ -81,6 +84,10 @@ public class GatewayWunderground extends Gateway {
                 TRUST_HOST_TYPE.DEFAULT.getText()));
         apiKey = (String) gatewayTable.getProperty(KEY_API_KEY);
         location = (String) gatewayTable.getProperty(KEY_LOCATION);
+        mergeAllStations = (Boolean) gatewayTable.getProperty(KEY_MERGE_ALL_STATIONS);
+        if (mergeAllStations == null) {
+            mergeAllStations = false;
+        }
         geoIp = (String) gatewayTable.getProperty(KEY_GEO_IP);
         if (geoIp != null && geoIp.length() == 0) {
             geoIp = null;
