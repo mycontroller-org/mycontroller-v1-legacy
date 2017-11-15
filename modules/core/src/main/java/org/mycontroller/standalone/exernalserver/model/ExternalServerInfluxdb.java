@@ -24,6 +24,7 @@ import org.mycontroller.restclient.influxdb.InfluxDBClient;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils;
+import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -109,7 +110,7 @@ public class ExternalServerInfluxdb extends ExternalServer {
         if (getEnabled()) {
             ClientResponse<String> clientResponse = ((InfluxDBClient) ExternalServerUtils.getClient(getId()))
                     .write(getVariableKey(sensorVariable, getKeyFormat()), getVariableKey(sensorVariable, getTags()),
-                            sensorVariable.getTimestamp(), sensorVariable.getValue());
+                            sensorVariable.getTimestamp(), getValue(sensorVariable));
             if (!clientResponse.isSuccess()) {
                 _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,
                         toString(), getUrl());
@@ -117,6 +118,16 @@ public class ExternalServerInfluxdb extends ExternalServer {
                 _logger.debug("Remote server update status: {}, Remote server:{}, {}", clientResponse,
                         toString(), getUrl());
             }
+        }
+    }
+
+    @JsonIgnore
+    private String getValue(SensorVariable sensorVariable) {
+        METRIC_TYPE mType = sensorVariable.getMetricType();
+        if (mType == METRIC_TYPE.BINARY || mType == METRIC_TYPE.COUNTER || mType == METRIC_TYPE.DOUBLE) {
+            return sensorVariable.getValue();
+        } else {
+            return "\"" + sensorVariable.getValue() + "\"";
         }
     }
 
