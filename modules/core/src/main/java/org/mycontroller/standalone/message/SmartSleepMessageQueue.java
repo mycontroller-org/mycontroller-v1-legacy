@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,29 +54,64 @@ public class SmartSleepMessageQueue {
         return gatewayId + "_" + nodeEui;
     }
 
-    private ArrayList<McMessage> getQueue(String queueName) {
+    private ArrayList<McMessage> getQueueInternal(String queueName) {
         if (!messagesQueue.containsKey(queueName)) {
             messagesQueue.put(queueName, new ArrayList<McMessage>());
         }
         return messagesQueue.get(queueName);
     }
 
-    public synchronized void removeQueue(Integer gatewayId, String nodeEui) {
-        String queueName = getQueueName(gatewayId, nodeEui);
+    @SuppressWarnings("unchecked")
+    public ArrayList<McMessage> getQueue(String queueName) {
+        if (!messagesQueue.containsKey(queueName)) {
+            return new ArrayList<McMessage>();
+        }
+        return (ArrayList<McMessage>) messagesQueue.get(queueName).clone();
+    }
+
+    public ArrayList<McMessage> getQueue(Integer gatewayId, String nodeEui) {
+        return getQueue(getQueueName(gatewayId, nodeEui));
+    }
+
+    public ArrayList<String> getQueueNames() {
+        ArrayList<String> names = new ArrayList<String>();
+        names.addAll(messagesQueue.keySet());
+        return names;
+    }
+
+    public synchronized void removeQueue(String queueName) {
         if (messagesQueue.containsKey(queueName)) {
             messagesQueue.remove(queueName);
             _logger.debug("Queue removed:[{}]", queueName);
         }
     }
 
-    public synchronized void removeMessages(Integer gatewayId, String nodeEui, String sensorId) {
-        String queueName = getQueueName(gatewayId, nodeEui);
-        ArrayList<McMessage> queue = getQueue(queueName);
+    public synchronized void removeQueue(Integer gatewayId, String nodeEui) {
+        removeQueue(getQueueName(gatewayId, nodeEui));
+    }
+
+    public synchronized void removeMessages(String queueName, String sensorId) {
+        ArrayList<McMessage> queue = getQueueInternal(queueName);
         for (int index = 0; index < queue.size(); index++) {
             if (queue.get(index).getSensorId().equals(sensorId)) {
                 queue.remove(index);
             }
         }
+    }
+
+    public synchronized void removeMessages(Integer gatewayId, String nodeEui, int index) {
+        removeMessages(getQueueName(gatewayId, nodeEui), index);
+    }
+
+    public synchronized void removeMessages(String queueName, int index) {
+        ArrayList<McMessage> queue = getQueueInternal(queueName);
+        if (queue.size() > index) {
+            queue.remove(index);
+        }
+    }
+
+    public synchronized void removeMessages(Integer gatewayId, String nodeEui, String sensorId) {
+        removeMessages(getQueueName(gatewayId, nodeEui), sensorId);
     }
 
     public void clearAll() {
@@ -86,7 +121,7 @@ public class SmartSleepMessageQueue {
 
     public synchronized void putMessage(McMessage mcMessage) {
         String queueName = getQueueName(mcMessage.getGatewayId(), mcMessage.getNodeEui());
-        ArrayList<McMessage> queue = getQueue(queueName);
+        ArrayList<McMessage> queue = getQueueInternal(queueName);
         queue.add(mcMessage);
         _logger.debug("Added new {}, on queue [{}], size:{}", mcMessage, queueName, queue.size());
     }
@@ -94,7 +129,7 @@ public class SmartSleepMessageQueue {
     public synchronized McMessage getMessage(Integer gatewayId, String nodeEui) {
         String queueName = getQueueName(gatewayId, nodeEui);
         McMessage mcMessage = null;
-        ArrayList<McMessage> queue = getQueue(queueName);
+        ArrayList<McMessage> queue = getQueueInternal(queueName);
         if (!queue.isEmpty()) {
             mcMessage = queue.remove(0);
         }

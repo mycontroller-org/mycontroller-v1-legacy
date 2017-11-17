@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,6 +55,15 @@ public class ClientMysql extends ClientBase implements IMigrationClient {
             _logger.debug("Renamed table:{}, NewTable:{}, Change count:{}", tableName, newTableName, changeCount);
         } else {
             _logger.warn("Selected table[{}] not found!", tableName);
+        }
+    }
+
+    @Override
+    public void createIndex(String indexSuffix, String tableName, String columnName) throws SQLException {
+        if (hasColumn(tableName, columnName)) {
+            DaoUtils.getUserDao().getDao().executeRaw(
+                    "CREATE INDEX " + getIndexName(indexSuffix, tableName, columnName) + " ON "
+                            + getTableName(tableName) + "(" + getColumnName(columnName) + ")");
         }
     }
 

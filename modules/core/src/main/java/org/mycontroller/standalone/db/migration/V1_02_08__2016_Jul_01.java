@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,8 +70,7 @@ public class V1_02_08__2016_Jul_01 extends MigrationBase {
             sqlClient().dropColumn("sensor_variable", "unit");
             sqlClient().addColumn("sensor_variable", "unitType", "VARCHAR(100)");
             sqlClient().addColumn("sensor_variable", "readOnly", "TINYINT DEFAULT FALSE NOT NULL");
-            sqlClient().addColumn("sensor_variable", "offset", "DOUBLE PRECISION DEFAULT 0.0 NOT NULL");
-            sqlClient().addColumn("sensor_variable", "offset", "DOUBLE PRECISION DEFAULT 0.0 NOT NULL");
+            sqlClient().addColumn("sensor_variable", "\"offset\"", "DOUBLE PRECISION DEFAULT 0.0 NOT NULL");
             sqlClient().addColumn("sensor_variable", "priority", "INTEGER DEFAULT 100 NOT NULL");
             sqlClient().addColumn("sensor_variable", "graphProperties", "BLOB");
             reloadDao();

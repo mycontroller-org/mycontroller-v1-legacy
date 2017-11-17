@@ -240,7 +240,7 @@ myControllerModule.controller('SettingsSystemMySensors', function(alertService, 
 
 });
 
-myControllerModule.controller('SettingsMetricsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper, CommonServices,  $uibModal) {
+myControllerModule.controller('SettingsMetricsController', function(alertService, $scope, $filter, SettingsFactory, TypesFactory, displayRestError, mchelper, CommonServices,  $uibModal) {
 
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
@@ -276,9 +276,21 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
       });
   }
 
+  //Update engine settings
+  $scope.updateSettingsMetricsEngine = function(){
+    SettingsFactory.getMetricsEngine(function(response) {
+        $scope.metricsEngine = response;
+        $scope.metricsEngine.purgeEveryThing = false;
+      },function(error){
+        displayRestError.display(error);
+      });
+  }
 
   //Pre-load
+  $scope.engineTypes = TypesFactory.getMetricEngineTypes();
+  $scope.trustHostTypes = TypesFactory.getTrustHostTypes();
   $scope.metricsSettings = {};
+  $scope.updateSettingsMetricsEngine();
   $scope.updateSettingsMetricsRetention();
   $scope.updateSettingsMetrics();
 
@@ -293,6 +305,20 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
       },function(error){
         displayRestError.display(error);
         $scope.saveProgress.metrics = false;
+      });
+  };
+
+  //Save engine settings
+  $scope.saveMetricsEngine = function(){
+    $scope.saveProgress.metricsEngine = true;
+    SettingsFactory.saveMetricsEngine($scope.metricsEngine,function(response) {
+        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
+        $scope.saveProgress.metricsEngine = false;
+        $scope.updateSettingsMetricsEngine();
+        $scope.editEnable.metricsEngine = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.metricsEngine = false;
       });
   };
 
@@ -321,7 +347,7 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
       });
   };
 
-  //edit confirmation
+  //edit retention confirmation
   $scope.retentionWarning = function (size) {
     var addModalInstance = $uibModal.open({
     templateUrl: 'partials/common-html/edit-confirmation-modal.html',
@@ -337,12 +363,37 @@ myControllerModule.controller('SettingsMetricsController', function(alertService
     }
   };
 
+
+  //edit engine confirmation
+  $scope.engineChnageWarning = function (size) {
+    var addModalInstance = $uibModal.open({
+    templateUrl: 'partials/common-html/edit-confirmation-modal.html',
+    controller: 'MetricsEngineWarnController',
+    size: size,
+    resolve: {}
+    });
+    addModalInstance.result.then(function () {
+      $scope.editEnable.metricsEngine = true;
+    }),
+    function () {
+      //console.log('Modal dismissed at: ' + new Date());
+    }
+  };
+
 });
 
 //retention change Modal
 myControllerModule.controller('MetricsRetentionWarnController', function ($scope, $uibModalInstance, $filter) {
   $scope.header = $filter('translate')('RETENTION_DIALOG_TITLE');
   $scope.message = $filter('translate')('RETENTION_DIALOG_CONFIRMATION_MSG');
+  $scope.continute = function() {$uibModalInstance.close(); };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
+});
+
+//metric engine change Modal
+myControllerModule.controller('MetricsEngineWarnController', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('RETENTION_DIALOG_TITLE');
+  $scope.message = $filter('translate')('METRIC_ENGINE_DIALOG_CONFIRMATION_MSG');
   $scope.continute = function() {$uibModalInstance.close(); };
   $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
 });

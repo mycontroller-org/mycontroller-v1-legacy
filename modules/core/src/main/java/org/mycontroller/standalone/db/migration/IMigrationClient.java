@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,8 @@ public interface IMigrationClient {
 
     void dropTable(String tableName) throws SQLException;
 
+    void createIndex(String indexSuffix, String tableName, String columnName) throws SQLException;
+
     void dropTable(Class<?> entity) throws SQLException;
 
     void createTable(Class<?> entity) throws SQLException;
@@ -62,5 +64,9 @@ public interface IMigrationClient {
     User getAdminUser();
 
     void executeRaw(String rawQuery) throws SQLException;
+
+    String getDatabaseSchemaVersion();
+
+    int getDatabaseSchemaVersionInt();
 
 }

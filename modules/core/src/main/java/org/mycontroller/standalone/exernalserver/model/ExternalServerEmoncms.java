@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,11 @@ package org.mycontroller.standalone.exernalserver.model;
 
 import java.util.HashMap;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils;
 import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.restclient.emoncms.EmoncmsClient;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -70,7 +70,7 @@ public class ExternalServerEmoncms extends ExternalServer {
     @JsonIgnore
     public ExternalServerTable getExternalServerTable() {
         ExternalServerTable externalServerTable = super.getExternalServerTable();
-        HashMap<String, Object> properties = new HashMap<String, Object>();
+        HashMap<String, Object> properties = getProperties();
         properties.put(KEY_URL, url);
         properties.put(KEY_TRUST_HOST_TYPE, trustHostType.getText());
         properties.put(KEY_WRITE_API_KEY, writeApiKey);

@@ -18,9 +18,9 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
-import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.AllowedResources;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.Node;
 
 /**

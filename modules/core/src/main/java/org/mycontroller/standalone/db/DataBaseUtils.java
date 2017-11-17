@@ -29,7 +29,7 @@ import org.flywaydb.core.api.FlywayException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.DB_TYPE;
 import org.mycontroller.standalone.api.SystemApi;
-import org.mycontroller.standalone.api.jaxrs.json.McAbout;
+import org.mycontroller.standalone.api.jaxrs.model.McAbout;
 import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
@@ -113,6 +113,7 @@ public class DataBaseUtils {
             // Start the migration
             int migrationsCount = 0;
             try {
+                _logger.info("Checking migration...");
                 migrationsCount = flyway.migrate();
             } catch (FlywayException fEx) {
                 _logger.error("Migration exception, ", fEx);
@@ -163,8 +164,10 @@ public class DataBaseUtils {
             }
 
             mcAbout = new SystemApi().getAbout();
-            _logger.info("Application information: [Version:{}, Database version:{}, Built on:{}, Git commit:{}:{}]",
-                    mcAbout.getApplicationVersion(), mcAbout.getApplicationDbVersion(),
+            _logger.info(
+                    "Application information: [Version:{}, Database(type:{}, version:{}, schema version:{}),"
+                            + " Built on:{}, Git commit:{}:{}]", mcAbout.getApplicationVersion(),
+                    mcAbout.getDatabaseType(), mcAbout.getDatabaseVersion(), mcAbout.getApplicationDbVersion(),
                     mcAbout.getGitBuiltOn(), mcAbout.getGitCommit(), mcAbout.getGitBranch());
             dbMigrationStatus = true;
             reloadDao();
@@ -186,7 +189,7 @@ public class DataBaseUtils {
     }
 
     public static synchronized void reloadDao() {
-        DaoUtils.setIsDaoInitialized(false);
+        _logger.debug("Reload DAO triggered...");
         try {
             //reload connection source
             getConnectionSource(true);
@@ -199,7 +202,7 @@ public class DataBaseUtils {
     public static void stop() {
         if (connectionPooledSource != null && connectionPooledSource.isOpen(null)) {
             try {
-                connectionPooledSource.close();
+                connectionPooledSource.closeQuietly();
                 _logger.debug("Database service stopped.");
                 DaoUtils.setIsDaoInitialized(false);
             } catch (Exception ioEx) {

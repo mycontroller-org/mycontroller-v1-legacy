@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -390,7 +390,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
     $scope.metricsSettings = response;
     $scope.chartEnableMinMax = $scope.metricsSettings.enabledMinMax;
     $scope.chartFromTimestamp = $scope.metricsSettings.defaultTimeRange.toString();
-    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp},function(response){
+    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp},function(response){
       $scope.batteryChartData = response;
       //Update display time format
       $scope.chartTimeFormat = response.timeFormat;
@@ -403,7 +403,7 @@ myControllerModule.controller('NodesControllerDetail', function ($scope, $stateP
   $scope.chartOptions.chart.xAxis.tickFormat = function(d) {return $filter('date')(d, $scope.chartTimeFormat, mchelper.cfg.timezone)};
 
   $scope.updateChart = function(){
-    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
+    MetricsFactory.getBatteryMetrics({"nodeId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
       $scope.batteryChartData.chartData = resource.chartData;
       //Update display time format
       $scope.chartTimeFormat = resource.timeFormat;

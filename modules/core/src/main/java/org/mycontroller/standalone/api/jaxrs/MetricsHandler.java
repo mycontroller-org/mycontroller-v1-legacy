@@ -41,32 +41,30 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.MC_LOCALE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.api.MetricApi;
-import org.mycontroller.standalone.api.UidTagApi;
-import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.LocaleString;
-import org.mycontroller.standalone.api.jaxrs.json.MetricsBulletChartNVD3;
-import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataGroupNVD3;
-import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataNVD3;
-import org.mycontroller.standalone.api.jaxrs.json.MetricsChartDataXY;
-import org.mycontroller.standalone.api.jaxrs.json.TopologyItem;
-import org.mycontroller.standalone.api.jaxrs.json.TopologyKinds;
-import org.mycontroller.standalone.api.jaxrs.json.TopologyRelation;
+import org.mycontroller.standalone.api.jaxrs.model.ApiError;
+import org.mycontroller.standalone.api.jaxrs.model.DataPointBinary;
+import org.mycontroller.standalone.api.jaxrs.model.DataPointCounter;
+import org.mycontroller.standalone.api.jaxrs.model.DataPointDouble;
+import org.mycontroller.standalone.api.jaxrs.model.LocaleString;
+import org.mycontroller.standalone.api.jaxrs.model.MetricsBulletChartNVD3;
+import org.mycontroller.standalone.api.jaxrs.model.MetricsChartDataGroupNVD3;
+import org.mycontroller.standalone.api.jaxrs.model.MetricsChartDataNVD3;
+import org.mycontroller.standalone.api.jaxrs.model.MetricsChartDataXY;
+import org.mycontroller.standalone.api.jaxrs.model.TopologyItem;
+import org.mycontroller.standalone.api.jaxrs.model.TopologyKinds;
+import org.mycontroller.standalone.api.jaxrs.model.TopologyRelation;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.SensorUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
-import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
-import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.db.tables.UidTag;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
-import org.mycontroller.standalone.metrics.MetricDouble;
-import org.mycontroller.standalone.metrics.MetricsCsvEngine;
+import org.mycontroller.standalone.metrics.DATA_TYPE;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.export.CsvExportEngine;
+import org.mycontroller.standalone.metrics.model.MetricDouble;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
 import org.mycontroller.standalone.scripts.McScriptException;
@@ -116,11 +114,13 @@ public class MetricsHandler extends AccessEngine {
     public Response getMetricsNvd3Data(
             @QueryParam("sensorId") Integer sensorId,
             @QueryParam("variableId") List<Integer> variableIds,
-            @QueryParam("timestampFrom") Long timestampFrom,
-            @QueryParam("timestampTo") Long timestampTo,
+            @QueryParam("start") Long start,
+            @QueryParam("end") Long end,
+            @QueryParam("duration") String duration,
             @QueryParam("withMinMax") Boolean withMinMax,
             @QueryParam("chartType") String chartType,
-            @QueryParam("bucketDuration") String bucketDuration) {
+            @QueryParam("bucketDuration") String bucketDuration,
+            @QueryParam("enableDetailedKey") Boolean enableDetailedKey) {
         if (!variableIds.isEmpty()) {
             updateSensorVariableIds(variableIds);
         } else if (sensorId != null) {
@@ -129,10 +129,14 @@ public class MetricsHandler extends AccessEngine {
             return RestUtils.getResponse(Status.BAD_REQUEST,
                     new ApiError("Either sensor id or sensor variable id(s) is required!"));
         }
-        return RestUtils.getResponse(
-                Status.OK,
-                getMetricsDataJsonNVD3(variableIds, sensorId, timestampFrom, timestampTo,
-                        withMinMax != null ? withMinMax : false, chartType, bucketDuration));
+        try {
+            return RestUtils.getResponse(
+                    Status.OK,
+                    getMetricsDataJsonNVD3(variableIds, sensorId, start, end, duration,
+                            withMinMax != null ? withMinMax : false, chartType, bucketDuration, enableDetailedKey));
+        } catch (McBadRequestException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
     }
 
     @GET
@@ -142,65 +146,20 @@ public class MetricsHandler extends AccessEngine {
             @QueryParam("resourceType") String resourceType,
             @QueryParam("start") Long start,
             @QueryParam("end") Long end,
+            @QueryParam("duration") String duration,
             @QueryParam("bucketDuration") String bucketDuration,
-            @QueryParam("uid") String uid) {
-
-        if (uid != null) {
-            if (bucketDuration == null) {
-                return RestUtils.getResponse(Status.BAD_REQUEST,
-                        new ApiError(MessageFormat.format("Required fields is missing! bucketDuration:[{0}]",
-                                bucketDuration)));
-            }
-            UidTag uidObj = new UidTagApi().getByUid(uid);
-            if (uidObj == null || uidObj.getResource() == null) {
-                return RestUtils.getResponse(Status.BAD_REQUEST,
-                        new ApiError(MessageFormat.format("Requested uid[{0}] not available!", uid)));
-            }
-            resourceId = uidObj.getResourceId();
-            resourceType = uidObj.getResourceType().getText();
-        }
-
-        if (uid == null && (resourceId == null || resourceType == null)) {
-            return RestUtils.getResponse(Status.BAD_REQUEST,
-                    new ApiError(MessageFormat.format("Required fields are missing! resourceId:[{0}], "
-                            + "resourceType:[{1}]", resourceId, resourceType)));
-        }
+            @QueryParam("uid") String uid,
+            @QueryParam("dataType") String dataType) {
         try {
-            ResourceModel resourceModel = new ResourceModel(RESOURCE_TYPE.fromString(resourceType), resourceId);
-            switch (resourceModel.getResourceType()) {
-                case NODE:
-                    hasAccessNode(resourceId);
-                    return RestUtils.getResponse(Status.OK,
-                            metricApi.getMetricsBattery(resourceId, start, end, bucketDuration, true));
-                case SENSOR_VARIABLE:
-                    hasAccessSensorVariable(resourceId);
-                    SensorVariable sVariable = (SensorVariable) resourceModel.getResource();
-                    switch (sVariable.getMetricType()) {
-                        case BINARY:
-                            return RestUtils.getResponse(Status.OK,
-                                    metricApi.getSensorVariableMetricsBinary(resourceId, start, end));
-                        case COUNTER:
-                            return RestUtils.getResponse(Status.OK, metricApi.getSensorVariableMetricsCounter(
-                                    resourceId, start, end, bucketDuration, true));
-                        case DOUBLE:
-                            return RestUtils.getResponse(Status.OK, metricApi.getSensorVariableMetricsDouble(
-                                    resourceId, start, end, bucketDuration, true));
-                        case GPS:
-                            return RestUtils.getResponse(Status.OK, metricApi.getSensorVariableMetricsGPS(
-                                    resourceId, start, end, bucketDuration, true));
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    break;
-
+            DATA_TYPE dType = null;
+            if (dataType != null) {
+                DATA_TYPE.valueOf(dataType.toUpperCase());
             }
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(
-                    "Metric not available for requested resource type!"));
-        } catch (Exception ex) {
-            _logger.error("Exception, ", ex);
-            return RestUtils.getResponse(Status.BAD_REQUEST, ex.getMessage());
+            return RestUtils.getResponse(Status.OK,
+                    getMetricsDataInternal(getResourceModel(resourceId, resourceType, uid),
+                            start, end, duration, bucketDuration, dType));
+        } catch (McBadRequestException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }
 
@@ -208,15 +167,15 @@ public class MetricsHandler extends AccessEngine {
     @Path("/bulletChart")
     public Response getBulletChart(
             @QueryParam("variableId") List<Integer> variableIds,
-            @QueryParam("timestampFrom") Long timestampFrom,
-            @QueryParam("timestampTo") Long timestampTo) {
+            @QueryParam("start") Long start,
+            @QueryParam("end") Long end) {
         if (!variableIds.isEmpty()) {
             updateSensorVariableIds(variableIds);
         } else {
             return RestUtils.getResponse(Status.BAD_REQUEST,
                     new ApiError("Sensor variable id(s) is required!"));
         }
-        return RestUtils.getResponse(Status.OK, getMetricsBulletChart(variableIds, timestampFrom, timestampTo));
+        return RestUtils.getResponse(Status.OK, getMetricsBulletChart(variableIds, start, end));
     }
 
     @GET
@@ -270,15 +229,21 @@ public class MetricsHandler extends AccessEngine {
     }
 
     @GET
-    @Path("/csvFile")
-    public Response getCsvFile(@QueryParam("variableTypeId") int variableTypeId,
-            @QueryParam("aggregationType") int aggregationType) {
+    @Path("/export")
+    public Response getResourceData(@QueryParam("resourceId") Integer resourceId,
+            @QueryParam("resourceType") String resourceType,
+            @QueryParam("start") Long start,
+            @QueryParam("end") Long end,
+            @QueryParam("duration") String duration,
+            @QueryParam("bucketDuration") String bucketDuration,
+            @QueryParam("uid") String uid) {
         try {
+            ResourceModel resourceModel = getResourceModel(resourceId, resourceType, uid);
             return RestUtils.getResponse(Status.OK,
-                    new MetricsCsvEngine().getMetricsCSV(variableTypeId, aggregationType));
+                    new CsvExportEngine().getMetric(resourceModel.getResourceId(), resourceModel
+                            .getResourceType().getText(), start, end, duration, bucketDuration));
         } catch (Exception ex) {
-            return RestUtils.getResponse(Status.BAD_REQUEST,
-                    new ApiError(ex.getMessage()));
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }
 
@@ -286,15 +251,19 @@ public class MetricsHandler extends AccessEngine {
     @Path("/statsBattery")
     public Response getMetricsBattery(
             @QueryParam("nodeId") Integer nodeId,
-            @QueryParam("timestampFrom") Long timestampFrom,
-            @QueryParam("timestampTo") Long timestampTo,
+            @QueryParam("start") Long start,
+            @QueryParam("end") Long end,
             @QueryParam("withMinMax") Boolean withMinMax,
             @QueryParam("bucketDuration") String bucketDuration) {
         //Access check
         hasAccessNode(nodeId);
-        return RestUtils.getResponse(Status.OK,
-                getMetricsBatteryJsonNVD3(nodeId, timestampFrom, timestampTo,
-                        withMinMax != null ? withMinMax : false, bucketDuration));
+        try {
+            return RestUtils.getResponse(Status.OK,
+                    getMetricsBatteryJsonNVD3(nodeId, start, end,
+                            withMinMax != null ? withMinMax : false, bucketDuration));
+        } catch (McBadRequestException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
     }
 
     @GET
@@ -337,6 +306,36 @@ public class MetricsHandler extends AccessEngine {
         }
 
         return RestUtils.getResponse(Status.OK, data);
+    }
+
+    private ResourceModel getResourceModel(Integer resourceId, String resourceType, String uid)
+            throws McBadRequestException {
+        ResourceModel resourceModel = metricApi.getResourceModel(resourceId, resourceType, uid);
+        switch (resourceModel.getResourceType()) {
+            case NODE:
+                hasAccessNode(resourceId);
+                break;
+            case SENSOR_VARIABLE:
+                hasAccessSensorVariable(resourceId);
+                break;
+            default:
+                break;
+        }
+        return resourceModel;
+    }
+
+    private List<?> getMetricsDataInternal(ResourceModel resourceModel, Long start, Long end, String duration,
+            String bucketDuration, DATA_TYPE dataType) throws McBadRequestException {
+        if (bucketDuration == null) {
+            throw new McBadRequestException(MessageFormat.format(
+                    "Required fields is missing! bucketDuration:[{0}]", bucketDuration));
+        }
+        try {
+            return metricApi.getMetricData(resourceModel, start, end, duration, bucketDuration, dataType);
+        } catch (Exception ex) {
+            _logger.error("Exception, ", ex);
+            throw new McBadRequestException(ex);
+        }
     }
 
     private void updateGatewayTopology(HashMap<String, TopologyItem> items,
@@ -467,7 +466,7 @@ public class MetricsHandler extends AccessEngine {
         for (SensorVariable sVariable : sVariables) {
             String source = TOPOLOGY_PREFIX_SENSOR_VARIABLE + sVariable.getId();
             items.put(source, TopologyItem.builder()
-                    .name(sVariable.getVariableType().getText())
+                    .name(sVariable.getName() != null ? sVariable.getName() : sVariable.getVariableType().getText())
                     .id(sVariable.getId())
                     .type(RESOURCE_TYPE.SENSOR_VARIABLE)
                     .subType(LocaleString.builder()
@@ -487,17 +486,14 @@ public class MetricsHandler extends AccessEngine {
     }
 
     private List<MetricsBulletChartNVD3> getMetricsBulletChart(List<Integer> variableIds,
-            Long timestampFrom, Long timestampTo) {
+            Long start, Long end) {
+        if (end == null) {
+            end = System.currentTimeMillis();
+        }
         ArrayList<MetricsBulletChartNVD3> bulletCharts = new ArrayList<MetricsBulletChartNVD3>();
         List<SensorVariable> sensorVariables = DaoUtils.getSensorVariableDao().getAll(variableIds);
-        //Update from/to time
-        MetricsDoubleTypeDevice queryInput = MetricsDoubleTypeDevice.builder().timestampFrom(timestampFrom)
-                .timestampTo(timestampTo).build();
         for (SensorVariable sensorVariable : sensorVariables) {
-            //Update sensor variable
-            queryInput.setSensorVariable(sensorVariable);
-
-            MetricDouble metric = metricApi.getSensorVariableMetricDouble(sensorVariable, timestampFrom, timestampTo);
+            MetricDouble metric = metricApi.getSensorVariableMetricDouble(sensorVariable, start, end);
 
             String unit = sensorVariable.getUnitType() != UNIT_TYPE.U_NONE ? " ("
                     + UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit() + ")" : "";
@@ -539,27 +535,33 @@ public class MetricsHandler extends AccessEngine {
         return bulletCharts;
     }
 
-    private MetricsChartDataGroupNVD3 getMetricsBatteryJsonNVD3(Integer nodeId, Long timestampFrom,
-            Long timestampTo, Boolean withMinMax, String bucketDuration) {
+    private MetricsChartDataGroupNVD3 getMetricsBatteryJsonNVD3(Integer nodeId, Long start,
+            Long end, Boolean withMinMax, String bucketDuration) throws McBadRequestException {
         if (bucketDuration == null) {
-            bucketDuration = MetricApi.getBucketDuration(timestampFrom, timestampTo, METRIC_TYPE.DOUBLE);
+            bucketDuration = MetricApi.getBucketDuration(start, end, METRIC_TYPE.DOUBLE);
         }
         ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
         //Get metrics
         @SuppressWarnings("unchecked")
-        List<MetricsBatteryUsage> batteryMetrics = (List<MetricsBatteryUsage>) metricApi.getMetricsBattery(nodeId,
-                timestampFrom, timestampTo,
-                bucketDuration, false);
+        List<DataPointDouble> batteryMetrics = (List<DataPointDouble>) metricApi.getMetricData(nodeId,
+                RESOURCE_TYPE.NODE.getText(), start, end, null, bucketDuration, DATA_TYPE.NODE_BATTERY_USAGE);
         ArrayList<Object> avgMetricValues = new ArrayList<Object>();
         ArrayList<Object> minMetricValues = new ArrayList<Object>();
         ArrayList<Object> maxMetricValues = new ArrayList<Object>();
-        for (MetricsBatteryUsage metric : batteryMetrics) {
-            avgMetricValues.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
-            if (withMinMax) {
-                minMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMin() });
-                maxMetricValues.add(new Object[] { metric.getTimestamp(), metric.getMax() });
+        long timestamp = 0L;
+        for (DataPointDouble metric : batteryMetrics) {
+            if (!metric.isEmpty()) {
+                if (metric.getStart() != null) {
+                    timestamp = metric.getStart();
+                } else {
+                    timestamp = metric.getTimestamp();
+                }
+                avgMetricValues.add(new Object[] { timestamp, metric.getAvg() });
+                if (withMinMax) {
+                    minMetricValues.add(new Object[] { timestamp, metric.getMin() });
+                    maxMetricValues.add(new Object[] { timestamp, metric.getMax() });
+                }
             }
-
         }
         MetricsGraph metricBattery = AppProperties.getInstance().getMetricsGraphSettings().getBattery();
         preDoubleData.add(MetricsChartDataNVD3.builder()
@@ -587,7 +589,7 @@ public class MetricsHandler extends AccessEngine {
                 .metricsChartDataNVD3(preDoubleData)
                 .internalId(nodeId)
                 .unit("%")
-                .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
+                .timeFormat(getTimeFormat(start, METRIC_TYPE.DOUBLE))
                 .id(nodeId)
                 .resourceName(new ResourceModel(RESOURCE_TYPE.NODE, nodeId).getResourceLessDetails())
                 .chartType(metricBattery.getType())
@@ -597,10 +599,15 @@ public class MetricsHandler extends AccessEngine {
 
     private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3WithChartType(
             List<Integer> variableIds,
-            Long timestampFrom,
-            Long timestampTo,
+            Long start,
+            Long end,
+            String duration,
             String chartType,
-            String bucketDuration) {
+            String bucketDuration,
+            Boolean enableDetailedKey) throws McBadRequestException {
+        if (enableDetailedKey == null) {
+            enableDetailedKey = Boolean.FALSE;
+        }
 
         //Get sensor variables
         List<SensorVariable> sensorVariables = null;
@@ -629,9 +636,11 @@ public class MetricsHandler extends AccessEngine {
         //Update bucket duration
         String bucketDurationDouble = bucketDuration;
         String bucketDurationCounter = bucketDuration;
+        String bucketDurationBinary = bucketDuration;
         if (bucketDuration == null) {
-            bucketDurationDouble = MetricApi.getBucketDuration(timestampFrom, timestampTo, METRIC_TYPE.DOUBLE);
-            bucketDurationCounter = MetricApi.getBucketDuration(timestampFrom, timestampTo, METRIC_TYPE.COUNTER);
+            bucketDurationDouble = MetricApi.getBucketDuration(start, end, METRIC_TYPE.DOUBLE);
+            bucketDurationCounter = MetricApi.getBucketDuration(start, end, METRIC_TYPE.COUNTER);
+            bucketDurationBinary = MetricApi.getBucketDuration(start, end, METRIC_TYPE.BINARY);
         }
 
         for (SensorVariable sensorVariable : sensorVariables) {
@@ -666,37 +675,60 @@ public class MetricsHandler extends AccessEngine {
                 chartTypeInternal = metrics.getType();
             }
 
-            String seriesName = null;
-            String preText = sensorVariable.getSensor().getNode().getEui() + "_"
-                    + sensorVariable.getSensor().getSensorId() + "_";
-            if (isMultiChart) {
-                seriesName = preText + sensorVariable.getVariableType().getText();
+            StringBuilder seriesName = new StringBuilder();
+            StringBuilder postText = new StringBuilder();
+            if (enableDetailedKey) {
+                postText.append(" [N]:").append(sensorVariable.getSensor().getNode().getEui()).append(" >> [S]:")
+                        .append(sensorVariable.getSensor().getSensorId());
             } else {
-                seriesName = sensorVariable.getSensor().getName();
-                if (seriesName == null) {
-                    seriesName = preText + sensorVariable.getVariableType().getText();
+                postText.append("");
+            }
+
+            if (isMultiChart) {
+                seriesName.append(sensorVariable.getVariableType().getText());
+                if (sensorVariable.getName() != null) {
+                    seriesName.append(" (").append(sensorVariable.getName()).append(")");
                 }
-                seriesName = preText + seriesName;
+                seriesName.append(postText);
+            } else {
+                seriesName.append(sensorVariable.getSensor().getName());
+                if (seriesName.length() == 0) {
+                    seriesName.append(sensorVariable.getVariableType().getText());
+                }
+                if (sensorVariable.getName() != null) {
+                    seriesName.append(" (").append(sensorVariable.getName()).append(")");
+                }
+                if (enableDetailedKey) {
+                    seriesName.append(postText);
+                }
             }
             switch (sensorVariable.getMetricType()) {
                 case DOUBLE:
                     @SuppressWarnings("unchecked")
-                    List<MetricsDoubleTypeDevice> doubleMetrics = (List<MetricsDoubleTypeDevice>) metricApi
-                            .getSensorVariableMetricsDouble(
-                                    sensorVariable.getId(), timestampFrom, timestampTo, bucketDurationDouble, false);
+                    List<DataPointDouble> doubleMetrics = (List<DataPointDouble>) metricApi
+                            .getMetricData(sensorVariable.getId(), RESOURCE_TYPE.SENSOR_VARIABLE.getText(),
+                                    start, end, duration, bucketDurationDouble, DATA_TYPE.SENSOR_VARIABLE);
                     ArrayList<Object> avgMetricDoubleValues = new ArrayList<Object>();
-                    for (MetricsDoubleTypeDevice metric : doubleMetrics) {
-                        if (isMultiChart) {
-                            avgMetricDoubleValues.add(MetricsChartDataXY.builder().x(metric.getTimestamp())
-                                    .y(metric.getAvg()).build());
-                        } else {
-                            avgMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
+                    long timestamp = 0L;
+                    for (DataPointDouble metric : doubleMetrics) {
+                        if (!metric.isEmpty()) {
+                            if (metric.getStart() != null) {
+                                timestamp = metric.getStart();
+                            } else {
+                                timestamp = metric.getTimestamp();
+                            }
+                            if (isMultiChart) {
+                                avgMetricDoubleValues.add(MetricsChartDataXY.builder().x(timestamp)
+                                        .y(metric.getAvg()).build());
+                            } else {
+                                avgMetricDoubleValues.add(new Object[] { timestamp, metric.getAvg() });
+                            }
                         }
                     }
                     if (!doubleMetrics.isEmpty()) {
                         metricDataValues.add(MetricsChartDataNVD3
                                 .builder()
-                                .key(seriesName)
+                                .key(seriesName.toString())
                                 .values(avgMetricDoubleValues)
                                 .type(metrics.getSubType())
                                 //.interpolate(metrics.getInterpolate())
@@ -707,22 +739,29 @@ public class MetricsHandler extends AccessEngine {
                     break;
                 case COUNTER:
                     @SuppressWarnings("unchecked")
-                    List<MetricsCounterTypeDevice> counterMetrics = (List<MetricsCounterTypeDevice>) metricApi
-                            .getSensorVariableMetricsCounter(
-                                    sensorVariable.getId(), timestampFrom, timestampTo, bucketDurationCounter, false);
+                    List<DataPointCounter> counterMetrics = (List<DataPointCounter>) metricApi
+                            .getMetricData(sensorVariable.getId(), RESOURCE_TYPE.SENSOR_VARIABLE.getText(),
+                                    start, end, duration, bucketDurationCounter, DATA_TYPE.SENSOR_VARIABLE);
                     ArrayList<Object> metricCounterValues = new ArrayList<Object>();
-                    for (MetricsCounterTypeDevice metric : counterMetrics) {
-                        if (isMultiChart) {
-                            metricCounterValues.add(MetricsChartDataXY.builder().x(metric.getTimestamp())
-                                    .y(metric.getValue()).build());
-                        } else {
-                            metricCounterValues.add(new Object[] { metric.getTimestamp(), metric.getValue() });
+                    for (DataPointCounter metric : counterMetrics) {
+                        if (!metric.isEmpty()) {
+                            if (metric.getStart() != null) {
+                                timestamp = metric.getStart();
+                            } else {
+                                timestamp = metric.getTimestamp();
+                            }
+                            if (isMultiChart) {
+                                metricCounterValues.add(MetricsChartDataXY.builder().x(timestamp)
+                                        .y(metric.getValue()).build());
+                            } else {
+                                metricCounterValues.add(new Object[] { timestamp, metric.getValue() });
+                            }
                         }
                     }
                     if (!counterMetrics.isEmpty()) {
                         metricDataValues.add(MetricsChartDataNVD3
                                 .builder()
-                                .key(seriesName)
+                                .key(seriesName.toString())
                                 .values(metricCounterValues)
                                 .type(metrics.getSubType())
                                 //.interpolate(metrics.getInterpolate())
@@ -731,21 +770,26 @@ public class MetricsHandler extends AccessEngine {
                     }
                     break;
                 case BINARY:
-                    List<MetricsBinaryTypeDevice> binaryMetrics = metricApi.getSensorVariableMetricsBinary(
-                            sensorVariable.getId(), timestampFrom, timestampTo);
+                    @SuppressWarnings("unchecked")
+                    List<DataPointBinary> binaryMetrics = (List<DataPointBinary>) metricApi
+                            .getMetricData(sensorVariable.getId(), RESOURCE_TYPE.SENSOR_VARIABLE.getText(), start,
+                                    end, duration, bucketDurationBinary, DATA_TYPE.SENSOR_VARIABLE);
                     ArrayList<Object> metricBinaryValues = new ArrayList<Object>();
-                    for (MetricsBinaryTypeDevice metric : binaryMetrics) {
-                        if (isMultiChart) {
-                            metricBinaryValues.add(MetricsChartDataXY.builder().x(metric.getTimestamp())
-                                    .y(metric.getState() ? 1 : 0).build());
-                        } else {
-                            metricBinaryValues.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
+                    for (DataPointBinary metric : binaryMetrics) {
+                        if (!metric.isEmpty()) {
+                            if (isMultiChart) {
+                                metricBinaryValues.add(MetricsChartDataXY.builder().x(metric.getTimestamp())
+                                        .y(metric.getState() ? 1 : 0).build());
+                            } else {
+                                metricBinaryValues
+                                        .add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
+                            }
                         }
                     }
                     if (!binaryMetrics.isEmpty()) {
                         metricDataValues.add(MetricsChartDataNVD3
                                 .builder()
-                                .key(seriesName)
+                                .key(seriesName.toString())
                                 .values(metricBinaryValues)
                                 .type(metrics.getSubType())
                                 //.interpolate(metrics.getInterpolate())
@@ -769,7 +813,7 @@ public class MetricsHandler extends AccessEngine {
                 .metricsChartDataNVD3(metricDataValues)
                 .unit(unit)
                 .unit2(unit2)
-                .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
+                .timeFormat(getTimeFormat(start, METRIC_TYPE.DOUBLE))
                 .chartType(chartType)
                 .chartInterpolate(chartInterpolate)
                 .build());
@@ -780,16 +824,18 @@ public class MetricsHandler extends AccessEngine {
     private ArrayList<MetricsChartDataGroupNVD3> getMetricsDataJsonNVD3(
             List<Integer> variableIds,
             Integer sensorId,
-            Long timestampFrom,
-            Long timestampTo,
+            Long start,
+            Long end,
+            String duration,
             Boolean withMinMax,
             String chartType,
-            String bucketDuration) {
+            String bucketDuration,
+            Boolean enableDetailedKey) throws McBadRequestException {
 
         //if chartType not null, call this
         if (chartType != null) {
-            return getMetricsDataJsonNVD3WithChartType(variableIds, timestampFrom, timestampTo, chartType,
-                    bucketDuration);
+            return getMetricsDataJsonNVD3WithChartType(variableIds, start, end, duration, chartType,
+                    bucketDuration, enableDetailedKey);
         }
 
         //Get sensor variables
@@ -809,9 +855,11 @@ public class MetricsHandler extends AccessEngine {
         //Update bucket duration
         String bucketDurationDouble = bucketDuration;
         String bucketDurationCounter = bucketDuration;
+        String bucketDurationBinary = bucketDuration;
         if (bucketDuration == null) {
-            bucketDurationDouble = MetricApi.getBucketDuration(timestampFrom, timestampTo, METRIC_TYPE.DOUBLE);
-            bucketDurationCounter = MetricApi.getBucketDuration(timestampFrom, timestampTo, METRIC_TYPE.COUNTER);
+            bucketDurationDouble = MetricApi.getBucketDuration(start, end, METRIC_TYPE.DOUBLE);
+            bucketDurationCounter = MetricApi.getBucketDuration(start, end, METRIC_TYPE.COUNTER);
+            bucketDurationBinary = MetricApi.getBucketDuration(start, end, METRIC_TYPE.BINARY);
         }
 
         for (SensorVariable sensorVariable : sensorVariables) {
@@ -820,17 +868,25 @@ public class MetricsHandler extends AccessEngine {
                 case DOUBLE:
                     ArrayList<MetricsChartDataNVD3> preDoubleData = new ArrayList<MetricsChartDataNVD3>();
                     @SuppressWarnings("unchecked")
-                    List<MetricsDoubleTypeDevice> doubleMetrics = (List<MetricsDoubleTypeDevice>) metricApi
-                            .getSensorVariableMetricsDouble(sensorVariable.getId(), timestampFrom, timestampTo,
-                                    bucketDurationDouble, false);
+                    List<DataPointDouble> doubleMetrics = (List<DataPointDouble>) metricApi
+                            .getMetricData(sensorVariable.getId(), RESOURCE_TYPE.SENSOR_VARIABLE.getText(),
+                                    start, end, duration, bucketDurationDouble, DATA_TYPE.SENSOR_VARIABLE);
                     ArrayList<Object> avgMetricDoubleValues = new ArrayList<Object>();
                     ArrayList<Object> minMetricDoubleValues = new ArrayList<Object>();
                     ArrayList<Object> maxMetricDoubleValues = new ArrayList<Object>();
-                    for (MetricsDoubleTypeDevice metric : doubleMetrics) {
-                        avgMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getAvg() });
-                        if (withMinMax) {
-                            minMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getMin() });
-                            maxMetricDoubleValues.add(new Object[] { metric.getTimestamp(), metric.getMax() });
+                    long timestamp = 0L;
+                    for (DataPointDouble metric : doubleMetrics) {
+                        if (!metric.isEmpty()) {
+                            if (metric.getStart() != null) {
+                                timestamp = metric.getStart();
+                            } else {
+                                timestamp = metric.getTimestamp();
+                            }
+                            avgMetricDoubleValues.add(new Object[] { timestamp, metric.getAvg() });
+                            if (withMinMax) {
+                                minMetricDoubleValues.add(new Object[] { timestamp, metric.getMin() });
+                                maxMetricDoubleValues.add(new Object[] { timestamp, metric.getMax() });
+                            }
                         }
                     }
                     preDoubleData.add(MetricsChartDataNVD3.builder()
@@ -859,26 +915,39 @@ public class MetricsHandler extends AccessEngine {
                             .id(sensorVariable.getId())
                             .internalId(sensorVariable.getSensor().getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
-                            .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.DOUBLE))
+                            .timeFormat(getTimeFormat(start, METRIC_TYPE.DOUBLE))
                             .variableType(
-                                    McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
+                                    McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name())
+                                            + (sensorVariable.getName() != null
+                                                    ? " (" + sensorVariable.getName() + ")" : ""))
                             .dataType(sensorVariable.getMetricType().getText())
                             .resourceName(new ResourceModel(
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
                             .chartType(metrics.getType())
                             .chartInterpolate(metrics.getInterpolate())
+                            .marginLeft(metrics.getMarginLeft())
+                            .marginRight(metrics.getMarginRight())
+                            .marginTop(metrics.getMarginTop())
+                            .marginBottom(metrics.getMarginBottom())
                             .build());
 
                     break;
                 case COUNTER:
                     ArrayList<MetricsChartDataNVD3> preCounterData = new ArrayList<MetricsChartDataNVD3>();
                     @SuppressWarnings("unchecked")
-                    List<MetricsCounterTypeDevice> counterMetrics = (List<MetricsCounterTypeDevice>) metricApi
-                            .getSensorVariableMetricsCounter(
-                                    sensorVariable.getId(), timestampFrom, timestampTo, bucketDurationCounter, false);
+                    List<DataPointCounter> counterMetrics = (List<DataPointCounter>) metricApi
+                            .getMetricData(sensorVariable.getId(), RESOURCE_TYPE.SENSOR_VARIABLE.getText(),
+                                    start, end, duration, bucketDurationCounter, DATA_TYPE.SENSOR_VARIABLE);
                     ArrayList<Object> metricCounterValues = new ArrayList<Object>();
-                    for (MetricsCounterTypeDevice metric : counterMetrics) {
-                        metricCounterValues.add(new Object[] { metric.getTimestamp(), metric.getValue() });
+                    for (DataPointCounter metric : counterMetrics) {
+                        if (!metric.isEmpty()) {
+                            if (metric.getStart() != null) {
+                                timestamp = metric.getStart();
+                            } else {
+                                timestamp = metric.getTimestamp();
+                            }
+                            metricCounterValues.add(new Object[] { timestamp, metric.getValue() });
+                        }
                     }
                     preCounterData.add(MetricsChartDataNVD3.builder()
                             .key(sensorVariable.getVariableType().getText())
@@ -892,7 +961,7 @@ public class MetricsHandler extends AccessEngine {
                             .id(sensorVariable.getId())
                             .internalId(sensorVariable.getSensor().getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
-                            .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.COUNTER))
+                            .timeFormat(getTimeFormat(start, METRIC_TYPE.COUNTER))
                             .variableType(
                                     McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
                             .dataType(sensorVariable.getMetricType().getText())
@@ -900,16 +969,24 @@ public class MetricsHandler extends AccessEngine {
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
                             .chartType(metrics.getType())
                             .chartInterpolate(metrics.getInterpolate())
+                            .marginLeft(metrics.getMarginLeft())
+                            .marginRight(metrics.getMarginRight())
+                            .marginTop(metrics.getMarginTop())
+                            .marginBottom(metrics.getMarginBottom())
                             .build());
 
                     break;
                 case BINARY:
                     ArrayList<MetricsChartDataNVD3> preBinaryData = new ArrayList<MetricsChartDataNVD3>();
-                    List<MetricsBinaryTypeDevice> binaryMetrics = metricApi.getSensorVariableMetricsBinary(
-                            sensorVariable.getId(), timestampFrom, timestampTo);
+                    @SuppressWarnings("unchecked")
+                    List<DataPointBinary> binaryMetrics = (List<DataPointBinary>) metricApi
+                            .getMetricData(sensorVariable.getId(), RESOURCE_TYPE.SENSOR_VARIABLE.getText(), start,
+                                    end, duration, bucketDurationBinary, DATA_TYPE.SENSOR_VARIABLE);
                     ArrayList<Object> metricBinaryValues = new ArrayList<Object>();
-                    for (MetricsBinaryTypeDevice metric : binaryMetrics) {
-                        metricBinaryValues.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
+                    for (DataPointBinary metric : binaryMetrics) {
+                        if (!metric.isEmpty()) {
+                            metricBinaryValues.add(new Object[] { metric.getTimestamp(), metric.getState() ? 1 : 0 });
+                        }
                     }
                     preBinaryData.add(MetricsChartDataNVD3.builder()
                             .key(sensorVariable.getVariableType().getText())
@@ -923,7 +1000,7 @@ public class MetricsHandler extends AccessEngine {
                             .id(sensorVariable.getId())
                             .internalId(sensorVariable.getSensor().getId())
                             .unit(UnitUtils.getUnit(sensorVariable.getUnitType()).getUnit())
-                            .timeFormat(getTimeFormat(timestampFrom, METRIC_TYPE.BINARY))
+                            .timeFormat(getTimeFormat(start, METRIC_TYPE.BINARY))
                             .variableType(
                                     McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()))
                             .dataType(sensorVariable.getMetricType().getText())
@@ -931,6 +1008,10 @@ public class MetricsHandler extends AccessEngine {
                                     RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable).getResourceLessDetails())
                             .chartType(metrics.getType())
                             .chartInterpolate(metrics.getInterpolate())
+                            .marginLeft(metrics.getMarginLeft())
+                            .marginRight(metrics.getMarginRight())
+                            .marginTop(metrics.getMarginTop())
+                            .marginBottom(metrics.getMarginBottom())
                             .build());
                     break;
                 default:
@@ -942,10 +1023,10 @@ public class MetricsHandler extends AccessEngine {
         return finalData;
     }
 
-    private String getTimeFormat(Long timestampFrom, METRIC_TYPE metricType) {
-        if (timestampFrom != null) {
+    private String getTimeFormat(Long start, METRIC_TYPE metricType) {
+        if (start != null) {
             //subtract 5 seconds to get proper timeformat
-            Long timeDifferance = System.currentTimeMillis() - timestampFrom - (McUtils.ONE_SECOND * 5);
+            Long timeDifferance = System.currentTimeMillis() - start - (McUtils.ONE_SECOND * 5);
             switch (metricType) {
                 case COUNTER:
                     if (timeDifferance > (McUtils.ONE_DAY * 30)) {
@@ -959,7 +1040,7 @@ public class MetricsHandler extends AccessEngine {
                     }
                 case BINARY:
                 case DOUBLE:
-                    if (timeDifferance > (McUtils.ONE_DAY * 365)) {
+                    if (timeDifferance > (McUtils.ONE_DAY * 360)) {
                         return AppProperties.getInstance().getDateFormat();
                     } else if (timeDifferance > McUtils.ONE_DAY * 7) {
                         return "MMM dd, " + AppProperties.getInstance().getTimeFormat();

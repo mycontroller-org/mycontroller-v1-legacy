@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mycontroller.standalone.api.jaxrs.json.McAbout;
-import org.mycontroller.standalone.api.jaxrs.json.McGuiSettings;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.McAbout;
+import org.mycontroller.standalone.api.jaxrs.model.McGuiSettings;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
 import org.mycontroller.standalone.db.DaoUtils;

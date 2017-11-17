@@ -1,6 +1,6 @@
 <!--
 
-    Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,6 +59,78 @@
       <outputDirectory>mycontroller/www</outputDirectory>
     </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>src/main/package/www/index.html</source>
+      <outputDirectory>mycontroller/www/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/app.js</source>
+      <outputDirectory>mycontroller/www/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-asg/adf-myc-a-sensor-graph.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-asg/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-cb/adf-myc-custom-buttons.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-cb/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-cw/adf-myc-custom-widget.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-cw/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-dsi/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-groups/adf-myc-groups.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-groups/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-hm/adf-myc-heat-map.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-hm/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-sbg/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-sen-vars/adf-myc-sen-vars.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-sen-vars/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-sgg/adf-myc-sensors-grouped-graph.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-sgg/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-smg/adf-myc-sensors-mixed-graph.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-smg/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-sunrisetime/adf-myc-sunrise.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-sunrisetime/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/package/www/controllers/adf-widgets/adf-myc-time/adf-myc-time.js</source>
+      <outputDirectory>mycontroller/www/controllers/adf-widgets/adf-myc-time/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+  </files>
 
   <dependencySets>
     <dependencySet>

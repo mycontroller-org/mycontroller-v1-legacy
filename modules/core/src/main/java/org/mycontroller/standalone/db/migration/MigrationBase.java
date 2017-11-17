@@ -20,14 +20,12 @@ import java.util.HashMap;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.db.DataBaseUtils;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-
 public abstract class MigrationBase implements JdbcMigration {
 
     private IMigrationClient sqlClient = null;
@@ -56,10 +54,6 @@ public abstract class MigrationBase implements JdbcMigration {
 
     protected void reloadDao() {
         DataBaseUtils.reloadDao();
-    }
-
-    protected String getApplicationDbVersion() {
-        return new SystemApi().getAbout().getApplicationDbVersion();
     }
 
     public IMigrationClient sqlClient() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -204,7 +204,7 @@ $scope, SensorsFactory, TypesFactory, NodesFactory, $state, $uibModal, displayRe
   $scope.getSensorVariableTypes = function(variables){
     var types = [];
     angular.forEach(variables, function(variable){
-      types.push(variable.type.locale);
+      types.push(variable.name ? variable.name : variable.type.locale);
     });
     return types.join(', ');
   }
@@ -303,7 +303,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
                 top: 5,
                 right: 20,
                 bottom: 60,
-                left: 65
+                left: 80
             },
             color: ["#2ca02c","#1f77b4", "#ff7f0e"],
             noData: $filter('translate')('NO_DATA_AVAILABLE'),
@@ -339,7 +339,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     $scope.metricsSettings = response;
     $scope.chartEnableMinMax = $scope.metricsSettings.enabledMinMax;
     $scope.chartFromTimestamp = $scope.metricsSettings.defaultTimeRange.toString();
-    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp},function(response){
+    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp},function(response){
       $scope.chartData = response;
       $scope.fetching = false;
     });
@@ -351,7 +351,7 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
 
 
   $scope.updateChart = function(){
-    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "timestampFrom": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
+    MetricsFactory.getMetricsData({"sensorId":$stateParams.id, "withMinMax":$scope.chartEnableMinMax, "start": new Date().getTime() - $scope.chartFromTimestamp}, function(resource){
       //$scope.chartData = resource;
       resource.forEach(function(item) {
         $scope.chartData.forEach(function(itemLocal) {
@@ -372,6 +372,11 @@ myControllerModule.controller('SensorsControllerDetail', function ($scope, $stat
     var chOptions = angular.copy($scope.chartOptions);
     chOptions.chart.type = chData.chartType;
     chOptions.chart.interpolate = chData.chartInterpolate;
+    //Update margins
+    chOptions.chart.margin.left = chData.marginLeft;
+    chOptions.chart.margin.right = chData.marginRight;
+    chOptions.chart.margin.top = chData.marginTop;
+    chOptions.chart.margin.bottom = chData.marginBottom;
     //Update display time format
     $scope.chartTimeFormat = chData.timeFormat;
     if(chData.dataType === 'Double'){
@@ -496,10 +501,10 @@ myControllerModule.controller('SensorVariableControllerPurge', function ($scope,
   $scope.save = function(){
     //Update time range from/to
     if($scope.purgeFrom){
-      $scope.item.timestampFrom = moment($scope.purgeFrom).format('YYYY-MM-DDTHH:mm:ss');
+      $scope.item.start = moment($scope.purgeFrom).format('YYYY-MM-DDTHH:mm:ss');
     }
     if($scope.purgeTo){
-      $scope.item.timestampTo = moment($scope.purgeTo).format('YYYY-MM-DDTHH:mm:ss');
+      $scope.item.end = moment($scope.purgeTo).format('YYYY-MM-DDTHH:mm:ss');
     }
 
     $scope.saveProgress = true;

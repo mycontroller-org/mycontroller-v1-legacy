@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -84,12 +84,13 @@ public class McpRawMessage implements Cloneable {
         // Topic structure:
         // MY_MQTT_TOPIC_PREFIX/NODE-EUI/SENSOR_ID/MESSAGE_TYPE/MESSAGE_SUB_TYPE/ACK
         String[] msgArry = topic.split("/");
-        if (msgArry.length == 6) {
-            nodeEui = msgArry[1];
-            sensorId = msgArry[2];
-            messageType = MESSAGE_TYPE.valueOf(msgArry[3]);
-            subType = msgArry[4];
-            ack = McUtils.getInteger(msgArry[5]);
+        int index = msgArry.length - 5;
+        if (msgArry.length >= 6) {
+            nodeEui = msgArry[index];
+            sensorId = msgArry[index + 1];
+            messageType = MESSAGE_TYPE.valueOf(msgArry[index + 2]);
+            subType = msgArry[index + 3];
+            ack = McUtils.getInteger(msgArry[index + 4]);
             _logger.debug("Message: {}", toString());
         } else {
             _logger.debug("Unknown message format, Topic:[{}], Payload:[{}]", topic, message);

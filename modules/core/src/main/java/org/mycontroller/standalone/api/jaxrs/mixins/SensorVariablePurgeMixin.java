@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +26,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 abstract class SensorVariablePurgeMixin {
     @JsonDeserialize(using = DateTimeDeserializer.class)
-    public abstract void setTimestampFrom(Long timestamp);
+    public abstract void setStart(Long timestamp);
 
     @JsonDeserialize(using = DateTimeDeserializer.class)
-    public abstract void setTimestampTo(Long timestamp);
+    public abstract void setEnd(Long timestamp);
 }

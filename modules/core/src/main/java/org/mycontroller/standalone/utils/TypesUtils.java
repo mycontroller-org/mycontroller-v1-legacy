@@ -19,6 +19,7 @@ package org.mycontroller.standalone.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.AppProperties.MC_TIME_FORMAT;
@@ -27,8 +28,9 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
+import org.mycontroller.standalone.api.ForwardPayloadApi;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.TypesIdNameMapper;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.auth.AuthUtils.PERMISSION_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
@@ -40,6 +42,7 @@ import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareType;
 import org.mycontroller.standalone.db.tables.FirmwareVersion;
+import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.OperationTable;
@@ -60,10 +63,10 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
+import org.mycontroller.standalone.metrics.METRIC_ENGINE;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
@@ -300,53 +303,44 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getPayloadOperations(String resourceTypeString) {
-        SEND_PAYLOAD_OPERATIONS[] types = SEND_PAYLOAD_OPERATIONS.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         RESOURCE_TYPE resourceType = RESOURCE_TYPE.fromString(resourceTypeString);
+        ArrayList<SEND_PAYLOAD_OPERATIONS> operations = new ArrayList<SEND_PAYLOAD_OPERATIONS>();
         if (resourceType == null) {
             resourceType = RESOURCE_TYPE.SENSOR_VARIABLE;
         }
-        for (SEND_PAYLOAD_OPERATIONS type : types) {
-            switch (resourceType) {
-                case RULE_DEFINITION:
-                case TIMER:
-                    if (type == SEND_PAYLOAD_OPERATIONS.ENABLE || type == SEND_PAYLOAD_OPERATIONS.DISABLE) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-                case GATEWAY:
-                    if (type == SEND_PAYLOAD_OPERATIONS.ENABLE || type == SEND_PAYLOAD_OPERATIONS.DISABLE
-                            || type == SEND_PAYLOAD_OPERATIONS.RELOAD || type == SEND_PAYLOAD_OPERATIONS.START
-                            || type == SEND_PAYLOAD_OPERATIONS.STOP) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-                case NODE:
-                    if (type == SEND_PAYLOAD_OPERATIONS.REBOOT) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-                case RESOURCES_GROUP:
-                    if (type == SEND_PAYLOAD_OPERATIONS.ON || type == SEND_PAYLOAD_OPERATIONS.OFF) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-                case SENSOR_VARIABLE:
-                    if (type == SEND_PAYLOAD_OPERATIONS.TOGGLE || type == SEND_PAYLOAD_OPERATIONS.INCREMENT
-                            || type == SEND_PAYLOAD_OPERATIONS.DECREMENT) {
-                        typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
-                                .displayName(type.getText()).build());
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-
+        switch (resourceType) {
+            case RULE_DEFINITION:
+            case TIMER:
+            case FORWARD_PAYLOAD:
+                operations.add(SEND_PAYLOAD_OPERATIONS.ENABLE);
+                operations.add(SEND_PAYLOAD_OPERATIONS.DISABLE);
+                break;
+            case GATEWAY:
+                operations.add(SEND_PAYLOAD_OPERATIONS.ENABLE);
+                operations.add(SEND_PAYLOAD_OPERATIONS.DISABLE);
+                operations.add(SEND_PAYLOAD_OPERATIONS.RELOAD);
+                operations.add(SEND_PAYLOAD_OPERATIONS.START);
+                operations.add(SEND_PAYLOAD_OPERATIONS.STOP);
+                break;
+            case NODE:
+                operations.add(SEND_PAYLOAD_OPERATIONS.REBOOT);
+                break;
+            case RESOURCES_GROUP:
+                operations.add(SEND_PAYLOAD_OPERATIONS.ON);
+                operations.add(SEND_PAYLOAD_OPERATIONS.OFF);
+                break;
+            case SENSOR_VARIABLE:
+                operations.add(SEND_PAYLOAD_OPERATIONS.INCREMENT);
+                operations.add(SEND_PAYLOAD_OPERATIONS.DECREMENT);
+                operations.add(SEND_PAYLOAD_OPERATIONS.TOGGLE);
+                break;
+            default:
+                break;
+        }
+        for (SEND_PAYLOAD_OPERATIONS operation : operations) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(operation.getText())
+                    .displayName(operation.getText()).build());
         }
         return typesIdNameMappers;
     }
@@ -705,6 +699,22 @@ public class TypesUtils {
         for (Timer timer : timers) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(timer.getId())
                     .displayName(new ResourceModel(RESOURCE_TYPE.TIMER, timer).getResourceLessDetails()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getForwardPayloads(User user) {
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        List<ForwardPayload> items = null;
+        if (AuthUtils.isSuperAdmin(user)) {
+            items = new ForwardPayloadApi().getAll();
+        } else {
+            return typesIdNameMappers;
+        }
+        for (ForwardPayload item : items) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(item.getId())
+                    .displayName(new ResourceModel(RESOURCE_TYPE.FORWARD_PAYLOAD, item).getResourceLessDetails())
+                    .build());
         }
         return typesIdNameMappers;
     }
@@ -1089,55 +1099,47 @@ public class TypesUtils {
     }
 
     public static ArrayList<TypesIdNameMapper> getGatewayTypes(String networkType) {
-        GatewayUtils.GATEWAY_TYPE[] types = GatewayUtils.GATEWAY_TYPE.values();
         NETWORK_TYPE nwType = null;
         if (networkType != null) {
             nwType = NETWORK_TYPE.fromString(networkType);
         }
+        ArrayList<GATEWAY_TYPE> gatewayTypes = new ArrayList<GatewayUtils.GATEWAY_TYPE>();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
-        for (GatewayUtils.GATEWAY_TYPE gatewayType : types) {
-            boolean include = false;
-            if (nwType != null) {
-                switch (nwType) {
-                    case MY_SENSORS:
-                        if (gatewayType == GATEWAY_TYPE.SERIAL
-                                || gatewayType == GATEWAY_TYPE.ETHERNET
-                                || gatewayType == GATEWAY_TYPE.MQTT) {
-                            include = true;
-                        }
-                        break;
-                    case PHANT_IO:
-                        if (gatewayType == GATEWAY_TYPE.PHANT_IO) {
-                            include = true;
-                        }
-                        break;
-                    case MY_CONTROLLER:
-                        if (gatewayType == GATEWAY_TYPE.MQTT) {
-                            include = true;
-                        }
-                        break;
-                    case RF_LINK:
-                        if (gatewayType == GATEWAY_TYPE.SERIAL) {
-                            include = true;
-                        }
-                        break;
-                    case PHILIPS_HUE:
-                        if (gatewayType == GATEWAY_TYPE.PHILIPS_HUE) {
-                            include = true;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                include = true;
+        if (nwType != null) {
+            switch (nwType) {
+                case MY_SENSORS:
+                    gatewayTypes.add(GATEWAY_TYPE.ETHERNET);
+                    gatewayTypes.add(GATEWAY_TYPE.MQTT);
+                    gatewayTypes.add(GATEWAY_TYPE.SERIAL);
+                    break;
+                case PHANT_IO:
+                    gatewayTypes.add(GATEWAY_TYPE.PHANT_IO);
+                    break;
+                case MY_CONTROLLER:
+                    gatewayTypes.add(GATEWAY_TYPE.MQTT);
+                    break;
+                case RF_LINK:
+                    gatewayTypes.add(GATEWAY_TYPE.SERIAL);
+                    break;
+                case PHILIPS_HUE:
+                    gatewayTypes.add(GATEWAY_TYPE.PHILIPS_HUE);
+                    break;
+                case WUNDERGROUND:
+                    gatewayTypes.add(GATEWAY_TYPE.WUNDERGROUND);
+                    break;
+                default:
+                    break;
             }
-            if (include) {
-                typesIdNameMappers.add(TypesIdNameMapper.builder().id(gatewayType.getText())
-                        .displayName(McObjectManager.getMcLocale().getString(gatewayType.name())).build());
+        } else {
+            for (GATEWAY_TYPE type : GATEWAY_TYPE.values()) {
+                gatewayTypes.add(type);
             }
-
         }
+        for (GATEWAY_TYPE type : gatewayTypes) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText())
+                    .displayName(McObjectManager.getMcLocale().getString(type.name())).build());
+        }
+
         return typesIdNameMappers;
     }
 
@@ -1154,6 +1156,15 @@ public class TypesUtils {
         EXTERNAL_SERVER_TYPE[] types = EXTERNAL_SERVER_TYPE.values();
         ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
         for (EXTERNAL_SERVER_TYPE type : types) {
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
+        }
+        return typesIdNameMappers;
+    }
+
+    public static ArrayList<TypesIdNameMapper> getMetricEngineTypes() {
+        METRIC_ENGINE[] types = METRIC_ENGINE.values();
+        ArrayList<TypesIdNameMapper> typesIdNameMappers = new ArrayList<TypesIdNameMapper>();
+        for (METRIC_ENGINE type : types) {
             typesIdNameMappers.add(TypesIdNameMapper.builder().id(type.getText()).displayName(type.getText()).build());
         }
         return typesIdNameMappers;

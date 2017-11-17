@@ -30,7 +30,7 @@ import lombok.ToString;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = "password")
 public class GatewayMQTT extends Gateway {
     public static final int DEFAULT_MQTT_QOS = 0;
 

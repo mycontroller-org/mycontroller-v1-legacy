@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,29 +26,36 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
       .widget('mycSensorsMixedGraph', {
         title: 'Mixed sensors graph',
         description: 'Different type of sensors mixed graphical view [refer document]',
-        templateUrl: 'controllers/adf-widgets/adf-myc-smg/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-smg/view.html?mcv=${mc.gui.version}',
         controller: 'mycSensorsMixedGraphController',
         controllerAs: 'mycSensorsMixedGraph',
         config: {
           useInteractiveGuideline:false,
+          enableUniqueName:false,
           chartInterpolate:"linear",
           variableId:[],
           variableType:[],
           chartFromTimestamp:'3600000',
           refreshTime:30,
+          marginTop:5,
+          marginRight:20,
+          marginBottom:60,
+          marginLeft:65,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-smg/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-smg/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSensorsMixedGraphEditController',
           controllerAs: 'mycSensorsMixedGraphEdit',
         }
       });
   })
-  .controller('mycSensorsMixedGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory){
+  .controller('mycSensorsMixedGraphController', function($scope, $interval, config, mchelper, $filter, MetricsFactory, CommonServices){
     var mycSensorsMixedGraph = this;
     mycSensorsMixedGraph.showLoading = true;
     mycSensorsMixedGraph.showError = false;
     mycSensorsMixedGraph.isSyncing = false;
+
+    CommonServices.updateGraphMarginDefault(config);
 
     mycSensorsMixedGraph.chartOptions = {
         chart: {
@@ -56,10 +63,10 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
             noErrorCheck: true,
             height: 225,
             margin : {
-                top: 5,
-                bottom: 60,
-                right: 65,
-                left: 65
+                top: config.marginTop,
+                right: config.marginRight,
+                bottom: config.marginBottom,
+                left: config.marginLeft,
             },
             color: d3.scale.category10().range(),
             duration: 500,
@@ -99,7 +106,7 @@ angular.module('adf.widget.myc-sensors-mixed-graph', [])
 
     function updateChart(){
       mycSensorsMixedGraph.isSyncing = true;
-      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"multiChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
+      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"multiChart", "start": new Date().getTime() - config.chartFromTimestamp, "enableDetailedKey": config.enableUniqueName === undefined ? false : config.enableUniqueName}, function(resource){
         if(resource.length > 0){
            mycSensorsMixedGraph.chartData = resource[0].chartData;
           //Update display time format

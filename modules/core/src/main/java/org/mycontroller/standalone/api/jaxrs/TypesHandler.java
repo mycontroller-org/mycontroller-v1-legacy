@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,9 +32,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.TypesIdNameMapper;
+import org.mycontroller.standalone.api.jaxrs.model.ApiError;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.TypesIdNameMapper;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
@@ -68,6 +68,12 @@ public class TypesHandler extends AccessEngine {
     @Path("/externalServerTypes")
     public Response getExternalServerTypes() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getExternalServerTypes());
+    }
+
+    @GET
+    @Path("/metricEngineTypes")
+    public Response getMetricEngineTypes() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getMetricEngineTypes());
     }
 
     @GET
@@ -181,6 +187,12 @@ public class TypesHandler extends AccessEngine {
     @Path("/timers")
     public Response getTimers() {
         return RestUtils.getResponse(Status.OK, TypesUtils.getTimers(AuthUtils.getUser(securityContext)));
+    }
+
+    @GET
+    @Path("/forwardPayloads")
+    public Response getForwardPayloads() {
+        return RestUtils.getResponse(Status.OK, TypesUtils.getForwardPayloads(AuthUtils.getUser(securityContext)));
     }
 
     @GET

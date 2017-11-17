@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,15 +62,6 @@ public class UidTag {
 
     @JsonIgnore
     Object resource;
-
-    @JsonIgnore
-    @Deprecated
-    public SensorVariable getSensorVariable() {
-        if (getResourceType() == RESOURCE_TYPE.SENSOR_VARIABLE) {
-            return (SensorVariable) getResource();
-        }
-        return null;
-    }
 
     @JsonIgnore
     public Object getResource() {

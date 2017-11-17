@@ -29,8 +29,8 @@ MyController.org supports multiple languages. If you have interest to add/transl
 
 MyController.org is a very lightweight server, It required very less resource, believe me ;)
 
-  * Disk        : ~30 MB (may require more space, when we store metrics data for long time)
-  * Memory(RAM) : 100 MB
+  * Disk        : ~100 MB (may require more space, when we store metrics data for long time)
+  * Memory(RAM) : 256 MB
   * Java        : 1.8 or later
 
 ===== Supported Platforms (tested)
@@ -38,6 +38,7 @@ MyController.org is java based application server. We can run it in any platform
 
 - Linux
 - Windows
+- Orange PI
 - Raspberry PI (Oracle Java recommend)
 
 == MyController and MySensors Setup
@@ -128,5 +129,5 @@ Executable scripts are located in `mycontroller/bin/`
 * Other Platforms
 
 ```
-java -Xms8m -Xmx100m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -cp "../lib/*" org.mycontroller.standalone.StartApp
+java -Xms8m -Xmx256m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -cp "../lib/*" org.mycontroller.standalone.StartApp
 ```

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -242,6 +242,8 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
       return TypesFactory.getRuleDefinitions();
     }else if(resourceType === 'Timer'){
       return TypesFactory.getTimers();
+    }else if(resourceType === 'Forward payload'){
+      return TypesFactory.getForwardPayloads();
     }else if(resourceType === 'Value'){
       $scope.updateThresholdValueTypes($scope.item.resourceType);
       return null;

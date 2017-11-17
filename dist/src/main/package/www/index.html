@@ -23,193 +23,193 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <title>MyController.org - The Open Source Controller</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="images/favicon.ico?mcv=${mc.gui.version}">
 
     <!-- CSS Files -->
     <!-- ********************************************************** -->
     <!-- PatternFly Styles -->
     <!-- Note: No other CSS files are needed regardless of what other JS packages located in patternfly/components that you decide to pull in -->
-    <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly.min.css" />
-    <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly-additions.min.css" />
+    <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly.min.css?mcv=${mc.gui.version}" />
+    <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly-additions.min.css?mcv=${mc.gui.version}" />
 
     <!-- Angular-PatternFly Styles -->
-    <link rel="stylesheet" href="libs/angular-patternfly/angular-patternfly.min.css" />
+    <link rel="stylesheet" href="libs/angular-patternfly/angular-patternfly.min.css?mcv=${mc.gui.version}" />
 
     <!-- Font awesome icons-->
-    <link rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css?mcv=${mc.gui.version}">
 
     <!-- weather icons -->
-    <link rel="stylesheet" type="text/css" href="libs/weather-icons/css/weather-icons.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/weather-icons/css/weather-icons.min.css?mcv=${mc.gui.version}">
 
     <!-- Font icons - Font Mfizz -->
-    <link rel="stylesheet" type="text/css" href="libs/font-mfizz-1.2/font-mfizz.css">
+    <link rel="stylesheet" type="text/css" href="libs/font-mfizz-1.2/font-mfizz.css?mcv=${mc.gui.version}">
 
     <!-- angular-xeditable -->
-    <link rel="stylesheet" type="text/css" href="libs/angular-xeditable/css/xeditable.css">
+    <link rel="stylesheet" type="text/css" href="libs/angular-xeditable/css/xeditable.css?mcv=${mc.gui.version}">
 
     <!-- https://github.com/buberdds/angular-bootstrap-colorpicker -->
-    <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-colorpicker/colorpicker.min.css"/>
+    <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-colorpicker/colorpicker.min.css?mcv=${mc.gui.version}"/>
 
     <!-- https://github.com/dalelotts/angular-bootstrap-datetimepicker -->
-    <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-datetimepicker/css/datetimepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="libs/angular-bootstrap-datetimepicker/css/datetimepicker.css?mcv=${mc.gui.version}"/>
 
     <!-- nvd3 chart -->
-    <link rel="stylesheet" type="text/css" href="libs/nvd3/nv.d3.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/nvd3/nv.d3.min.css?mcv=${mc.gui.version}">
 
     <!-- bootstrap-duallistbox -->
-    <link rel="stylesheet" type="text/css" href="libs/bootstrap-duallistbox/dist/bootstrap-duallistbox.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap-duallistbox/dist/bootstrap-duallistbox.min.css?mcv=${mc.gui.version}">
 
     <!-- angular-dashboard-framework -->
-    <link rel="stylesheet" type="text/css" href="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.css?mcv=${mc.gui.version}">
 
     <!-- https://github.com/kubernetes-ui/topology-graph css -->
-    <link rel="stylesheet" type="text/css" href="libs/kubernetes-topology-graph/topology-graph.css">
+    <link rel="stylesheet" type="text/css" href="libs/kubernetes-topology-graph/topology-graph.css?mcv=${mc.gui.version}">
 
     <!-- Application specific css -->
-    <link rel="stylesheet" type="text/css" href="app.css">
+    <link rel="stylesheet" type="text/css" href="app.css?mcv=${mc.gui.version}">
 
 
     <!-- JS Files -->
     <!-- ********************************************************** -->
 
     <!-- jQuery -->
-    <script src="libs/jquery/dist/jquery.min.js"></script>
+    <script src="libs/jquery/dist/jquery.min.js?mcv=${mc.gui.version}"></script>
 
     <!-- Bootstrap JS --> <!-- If I remove this, main menu drop down is not working as expected! -->
-    <script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="libs/bootstrap/dist/js/bootstrap.min.js?mcv=${mc.gui.version}"></script>
 
     <!-- C3, D3 - Charting Libraries -->
-    <script src="libs/d3/d3.min.js"></script>
-    <script src="libs/c3/c3.min.js"></script>
+    <script src="libs/d3/d3.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/c3/c3.min.js?mcv=${mc.gui.version}"></script>
 
     <!-- PatternFly Custom Componets -  Sidebar, Popovers and Datatables Customizations -->
     <!-- Note: jquery.dataTables.js must occur in the html source before patternfly*.js.-->
-    <script src="libs/patternfly/dist/js/patternfly.min.js"></script>
+    <script src="libs/patternfly/dist/js/patternfly.min.js?mcv=${mc.gui.version}"></script>
 
     <!-- Bootstrap Select -->
-    <script src="libs/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="libs/bootstrap-select/dist/js/bootstrap-select.min.js?mcv=${mc.gui.version}"></script>
 
     <!-- Bootstrap Switch -->
-    <script src="libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+    <script src="libs/bootstrap-switch/dist/js/bootstrap-switch.min.js?mcv=${mc.gui.version}"></script>
 
     <!-- Angular Application? You May Want to Consider Pulling Angular-PatternFly And Angular-UI Bootstrap instead of bootstrap.js -->
     <!-- See https://github.com/patternfly/angular-patternfly for more information -->
 
     <!-- AngularJS -->
-    <script src="libs/angular/angular.min.js"></script>
+    <script src="libs/angular/angular.min.js?mcv=${mc.gui.version}"></script>
 
     <!-- Bootstrap JS -->
-    <script src="libs/angular-bootstrap/ui-bootstrap-tpls-0.14.3.min.js"></script>
+    <script src="libs/angular-bootstrap/ui-bootstrap-tpls-0.14.3.min.js?mcv=${mc.gui.version}"></script>
 
-    <script src="libs/lodash/lodash.min.js"></script>
+    <script src="libs/lodash/lodash.min.js?mcv=${mc.gui.version}"></script>
 
 
     <!-- Angular-PatternFly  -->
-    <script src="libs/angular-patternfly/angular-patternfly.min.js"></script>
+    <script src="libs/angular-patternfly/angular-patternfly.min.js?mcv=${mc.gui.version}"></script>
 
 
     <!-- xeditable JS -->
-    <script src="libs/angular-xeditable/js/xeditable.min.js"></script>
+    <script src="libs/angular-xeditable/js/xeditable.min.js?mcv=${mc.gui.version}"></script>
 
     <!-- pagination -->
-    <script src="libs/angularUtils-pagination/dirPagination.js"></script>
+    <script src="libs/angularUtils-pagination/dirPagination.js?mcv=${mc.gui.version}"></script>
 
 
     <!-- Third party js-->
-    <script src="libs/angular-ui-router/angular-ui-router.min.js"></script>
-    <script src="libs/angular-resource/angular-resource.min.js"></script>
-    <script src="libs/angular-base64/angular-base64.min.js"></script>
-    <script src="libs/remarkable-bootstrap-notify/bootstrap-notify.min.js"></script>
-    <script src="libs/angular-cookies/angular-cookies.min.js"></script>
-    <script src="libs/moment/moment.min.js"></script>
-    <script src="libs/angular-moment/angular-moment.min.js"></script>
-    <script src="libs/angular-bootstrap-datetimepicker/js/datetimepicker.js"></script>
-    <script src="libs/angular-bootstrap-colorpicker/bootstrap-colorpicker-module.min.js"></script>
-    <script src="libs/angular-file-saver/angular-file-saver.bundle.min.js"></script>
+    <script src="libs/angular-ui-router/angular-ui-router.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-resource/angular-resource.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-base64/angular-base64.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/remarkable-bootstrap-notify/bootstrap-notify.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-cookies/angular-cookies.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/moment/moment.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-moment/angular-moment.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-bootstrap-datetimepicker/js/datetimepicker.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-bootstrap-colorpicker/bootstrap-colorpicker-module.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-file-saver/angular-file-saver.bundle.min.js?mcv=${mc.gui.version}"></script>
     <!-- nvd3 chart lib -->
-    <script src="libs/nvd3/nv.d3.min.js"></script>
-    <script src="libs/angular-nvd3/dist/angular-nvd3.min.js"></script>
+    <script src="libs/nvd3/nv.d3.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-nvd3/dist/angular-nvd3.min.js?mcv=${mc.gui.version}"></script>
     <!-- https://github.com/kubernetes-ui/topology-graph -->
-    <script src="libs/kubernetes-topology-graph/topology-graph.js"></script>
+    <script src="libs/kubernetes-topology-graph/topology-graph.js?mcv=${mc.gui.version}"></script>
     <!-- bootstrap-duallistbox -->
-    <script src="libs/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js"></script>
+    <script src="libs/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js?mcv=${mc.gui.version}"></script>
     <!-- angular-bootstrap-duallistbox -->
-    <script src="libs/angular-bootstrap-duallistbox/dist/angular-bootstrap-duallistbox.min.js"></script>
+    <script src="libs/angular-bootstrap-duallistbox/dist/angular-bootstrap-duallistbox.min.js?mcv=${mc.gui.version}"></script>
     <!-- Multi Language support-->
-    <script src="libs/angular-translate/angular-translate.min.js"></script>
-    <script src="libs/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="libs/angular-translate-loader-url/atlu.min.js"></script>
-    <script src="libs/angular-translate-loader-static-files/atlsf.min.js"></script>
+    <script src="libs/angular-translate/angular-translate.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-sanitize/angular-sanitize.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-translate-loader-url/atlu.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-translate-loader-static-files/atlsf.min.js?mcv=${mc.gui.version}"></script>
 
-    <script src="libs/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
+    <script src="libs/angular-bootstrap-switch/dist/angular-bootstrap-switch.js?mcv=${mc.gui.version}"></script>
 
-    <script src="libs/Sortable/Sortable.min.js"></script>
-    <script src="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.js"></script>
-    <script src="libs/adf-structures-base/dist/adf-structures-base.min.js"></script>
-    <script src="libs/adf-widget-news/dist/adf-widget-news.min.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-asg/adf-myc-a-sensor-graph.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-cb/adf-myc-custom-buttons.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-cw/adf-myc-custom-widget.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-groups/adf-myc-groups.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-hm/adf-myc-heat-map.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-sen-vars/adf-myc-sen-vars.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-sgg/adf-myc-sensors-grouped-graph.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-smg/adf-myc-sensors-mixed-graph.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-sunrisetime/adf-myc-sunrise.js"></script>
-    <script src="controllers/adf-widgets/adf-myc-time/adf-myc-time.js"></script>
+    <script src="libs/Sortable/Sortable.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/angular-dashboard-framework/dist/angular-dashboard-framework.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/adf-structures-base/dist/adf-structures-base.min.js?mcv=${mc.gui.version}"></script>
+    <script src="libs/adf-widget-news/dist/adf-widget-news.min.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-asg/adf-myc-a-sensor-graph.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-cb/adf-myc-custom-buttons.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-cw/adf-myc-custom-widget.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-groups/adf-myc-groups.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-hm/adf-myc-heat-map.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-sbg/adf-myc-sensors-bullet-graph.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-sen-vars/adf-myc-sen-vars.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-sgg/adf-myc-sensors-grouped-graph.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-smg/adf-myc-sensors-mixed-graph.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-sunrisetime/adf-myc-sunrise.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-time/adf-myc-time.js?mcv=${mc.gui.version}"></script>
 
     <!-- Google api for maps: https://github.com/allenhwkim/angularjs-google-maps -->
-    <script src="libs/angularjs-google-maps/ng-map.min.js"></script>
+    <script src="libs/angularjs-google-maps/ng-map.min.js?mcv=${mc.gui.version}"></script>
     <!-- Include google maps -->
-    <script src="https://maps.google.com/maps/api/js"></script>
+    <script src="https://maps.google.com/maps/api/js?mcv=${mc.gui.version}"></script>
 
     <!-- Application js-->
-    <script src="app.js"></script>
-    <script src="controllers/additional-headers.js"></script>
-    <script src="controllers/backup.js"></script>
-    <script src="controllers/dashboard.js"></script>
-    <script src="controllers/external-servers.js"></script>
-    <script src="controllers/firmwares.js"></script>
-    <script src="controllers/forward-payload.js"></script>
-    <script src="controllers/gateways.js"></script>
-    <script src="controllers/nodes.js"></script>
-    <script src="controllers/operations.js"></script>
-    <script src="controllers/resources-data.js"></script>
-    <script src="controllers/resources-group.js"></script>
-    <script src="controllers/resources-logs.js"></script>
-    <script src="controllers/roles.js"></script>
-    <script src="controllers/rooms.js"></script>
-    <script src="controllers/rule-engine.js"></script>
-    <script src="controllers/scripts.js"></script>
-    <script src="controllers/send-raw-message.js"></script>
-    <script src="controllers/sensors-action.js"></script>
-    <script src="controllers/sensors.js"></script>
-    <script src="controllers/settings.js"></script>
-    <script src="controllers/status.js"></script>
-    <script src="controllers/templates.js"></script>
-    <script src="controllers/timers.js"></script>
-    <script src="controllers/topology.js"></script>
-    <script src="controllers/uid-tags.js"></script>
-    <script src="controllers/users.js"></script>
-    <script src="controllers/variables-mapper.js"></script>
-    <script src="controllers/variables-repository.js"></script>
+    <script src="app.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/additional-headers.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/backup.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/dashboard.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/external-servers.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/firmwares.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/forward-payload.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/gateways.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/nodes.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/operations.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/resources-data.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/resources-group.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/resources-logs.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/roles.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/rooms.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/rule-engine.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/scripts.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/send-raw-message.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/sensors-action.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/sensors.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/settings.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/status.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/templates.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/timers.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/topology.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/uid-tags.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/users.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/variables-mapper.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/variables-repository.js?mcv=${mc.gui.version}"></script>
 
     <!-- Add services -->
-    <script src="services/alert_services.js"></script>
-    <script src="services/common_services.js"></script>
-    <script src="services/rest_services.js"></script>
-    <script src="services/topology_service.js"></script>
-    <script src="services/validation_services.js"></script>
+    <script src="services/alert_services.js?mcv=${mc.gui.version}"></script>
+    <script src="services/common_services.js?mcv=${mc.gui.version}"></script>
+    <script src="services/rest_services.js?mcv=${mc.gui.version}"></script>
+    <script src="services/topology_service.js?mcv=${mc.gui.version}"></script>
+    <script src="services/validation_services.js?mcv=${mc.gui.version}"></script>
 
     <!-- Add directives -->
-    <script src="services/directives.js"></script>
+    <script src="services/directives.js?mcv=${mc.gui.version}"></script>
 
     <!-- Add additional headers -->
     <link rel="import" href="/_configurations/additional-headers.html">
     <!-- Add angularJS custom controllers -->
-    <script src="/_configurations/custom-controllers.js"></script>
+    <script src="/_configurations/custom-controllers.js?mcv=${mc.gui.version}"></script>
 
   </head>
 
@@ -248,6 +248,8 @@
               <i class="fa fa-life-ring fa-lg"></i> {{ 'SUPPORT' | translate }} <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
+              <li><a href="http://forum.mycontroller.org/"><i class="fa fa-file-text fa-lg"></i> {{ 'FORUM' | translate }}</a></li>
+              <li><a href="https://gitter.im/mycontroller-org/mycontroller"><i class="fa fa-comments fa-lg"></i> {{ 'GITTER_MESSAGING' | translate }}</a></li>
               <li><a href="https://github.com/mycontroller-org/mycontroller/releases"><i class="fa fa-file-archive-o fa-lg"></i> {{ 'RELEASES' | translate }}</a></li>
               <li><a href="http://www.mycontroller.org"><i class="fa fa-book fa-lg"></i> {{ 'DOCUMENTS' | translate }}</a></li>
               <li><a href="https://github.com/mycontroller-org/mycontroller"><i class="fa fa-github fa-lg"></i> {{ 'SOURCE_CODE' | translate }}</a></li>

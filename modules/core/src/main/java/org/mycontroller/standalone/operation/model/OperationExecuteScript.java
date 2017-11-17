@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.operation.Notification;
 import org.mycontroller.standalone.rule.model.RuleDefinition;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngine;
@@ -53,6 +54,7 @@ public class OperationExecuteScript extends Operation {
 
     private String scriptFile;
     private HashMap<String, Object> scriptBindings;
+    private HashMap<String, Object> scriptBindingsTemp = new HashMap<String, Object>();
 
     public OperationExecuteScript(OperationTable operationTable) {
         this.updateOperation(operationTable);
@@ -98,6 +100,7 @@ public class OperationExecuteScript extends Operation {
             throw new RuntimeException("Cannot execute script without script file name! Rule definition: "
                     + ruleDefinition.getName());
         }
+        scriptBindingsTemp.put("notification", new Notification(ruleDefinition));
         //execute script
         executeScript();
     }
@@ -119,16 +122,17 @@ public class OperationExecuteScript extends Operation {
         }
         McScript mcScript = null;
         try {
+            scriptBindingsTemp.putAll(getScriptBindings());
             File script = FileUtils.getFile(
                     AppProperties.getInstance().getScriptsLocation() + scriptFile);
             mcScript = McScript.builder()
                     .name(script.getCanonicalPath())
                     .extension(FilenameUtils.getExtension(script.getCanonicalPath()))
-                    .bindings(getScriptBindings())
+                    .bindings(scriptBindingsTemp)
                     .build();
             McScriptEngine mcScriptEngine = new McScriptEngine(mcScript);
             Object result = mcScriptEngine.executeScript();
-            _logger.debug("script executed. Result:{}, {}", result, mcScript);
+            _logger.debug("script executed. QueryResponse:{}, {}", result, mcScript);
         } catch (Exception ex) {
             _logger.error("Exception on {}", mcScript, ex);
         }

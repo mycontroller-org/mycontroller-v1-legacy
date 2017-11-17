@@ -20,18 +20,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariableJson;
-import org.mycontroller.standalone.api.jaxrs.json.SensorVariablePurge;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
+import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
 import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.SensorUtils;
-import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.Room;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -41,7 +39,9 @@ import org.mycontroller.standalone.exceptions.McException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
 import org.mycontroller.standalone.message.McMessage;
 import org.mycontroller.standalone.message.McMessageUtils;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -194,19 +194,8 @@ public class SensorApi {
         if (sensorVariable != null) {
             if (!sensorVariable.getMetricType().getText().equalsIgnoreCase(sensorVariableJson.getMetricType())) {
                 //clear existing data
-                switch (sensorVariable.getMetricType()) {
-                    case DOUBLE:
-                        DaoUtils.getMetricsDoubleTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
-                        break;
-                    case BINARY:
-                        DaoUtils.getMetricsBinaryTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
-                        break;
-                    case COUNTER:
-                        DaoUtils.getMetricsCounterTypeDeviceDao().deleteBySensorVariableRefId(sensorVariable.getId());
-                        break;
-                    default:
-                        break;
-                }
+                MetricsUtils.engine().purge(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable));
+                //Update new metric type
                 sensorVariable.setMetricType(METRIC_TYPE.fromString(sensorVariableJson.getMetricType()));
             }
             //Update Unit type
@@ -218,8 +207,7 @@ public class SensorApi {
             //Update priority
             sensorVariable.setPriority(sensorVariableJson.getPriority());
             //Update Graph settings
-            sensorVariable.setGraphProperties(sensorVariableJson.getGraphProperties());
-
+            sensorVariable.setProperties(sensorVariableJson.getProperties());
             //Update sensor variable
             DaoUtils.getSensorVariableDao().update(sensorVariable);
         } else {
@@ -268,7 +256,7 @@ public class SensorApi {
         }
     }
 
-    public void purgeSensorVariable(SensorVariablePurge purge) throws McBadRequestException {
+    public void purgeSensorVariable(ResourcePurgeConf purge) throws McBadRequestException {
         _logger.debug("{}", purge);
         if (purge.getId() == null) {
             throw new McBadRequestException("Required field is missing! " + purge);
@@ -277,35 +265,6 @@ public class SensorApi {
         if (sVar == null) {
             throw new McBadRequestException("Selected sensor variable is not found! " + purge);
         }
-
-        switch (sVar.getMetricType()) {
-            case BINARY:
-                MetricsBinaryTypeDevice metricBinary = new MetricsBinaryTypeDevice();
-                metricBinary.setSensorVariable(sVar);
-                metricBinary.setTimestampFrom(purge.getTimestampFrom());
-                metricBinary.setTimestampTo(purge.getTimestampTo());
-                metricBinary.setState(McUtils.getBoolean(purge.getValue()));
-                DaoUtils.getMetricsBinaryTypeDeviceDao().deletePrevious(metricBinary);
-                break;
-            case COUNTER:
-                MetricsCounterTypeDevice metricCounter = new MetricsCounterTypeDevice();
-                metricCounter.setSensorVariable(sVar);
-                metricCounter.setTimestampFrom(purge.getTimestampFrom());
-                metricCounter.setTimestampTo(purge.getTimestampTo());
-                metricCounter.setValue(McUtils.getLong(purge.getValue()));
-                DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
-                break;
-            case DOUBLE:
-                MetricsDoubleTypeDevice metricDouble = new MetricsDoubleTypeDevice();
-                metricDouble.setSensorVariable(sVar);
-                metricDouble.setTimestampFrom(purge.getTimestampFrom());
-                metricDouble.setTimestampTo(purge.getTimestampTo());
-                //metricDouble.setAvg(McUtils.getDouble(purge.getValue()));
-                DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble, purge.getValue());
-                break;
-            default:
-                //Nothing to do
-                break;
-        }
+        MetricsUtils.engine().purge(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sVar), purge);
     }
 }

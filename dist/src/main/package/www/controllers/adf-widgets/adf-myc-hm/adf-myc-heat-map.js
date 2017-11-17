@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 'use strict';
 
 angular.module('adf.widget.myc-heat-map', [])
@@ -23,7 +22,7 @@ angular.module('adf.widget.myc-heat-map', [])
       .widget('mycHeatMap', {
         title: 'Heatmap chart',
         description: 'Displays data as heatmap chart',
-        templateUrl: 'controllers/adf-widgets/adf-myc-hm/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-hm/view.html?mcv=${mc.gui.version}',
         controller: 'mycHeatMapController',
         controllerAs: 'mycHeatMap',
         config: {
@@ -39,7 +38,7 @@ angular.module('adf.widget.myc-heat-map', [])
           showLegends:true,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-hm/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-hm/edit.html?mcv=${mc.gui.version}',
           controller: 'mycHeatMapEditController',
           controllerAs: 'mycHeatMapEdit',
         }

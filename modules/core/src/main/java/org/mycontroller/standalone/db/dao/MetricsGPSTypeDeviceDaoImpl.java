@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,12 +66,12 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
                 where.le(MetricsGPSTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
                 whereCount++;
             }
-            if (metric.getTimestampFrom() != null) {
-                where.ge(MetricsGPSTypeDevice.KEY_TIMESTAMP, metric.getTimestampFrom());
+            if (metric.getStart() != null) {
+                where.ge(MetricsGPSTypeDevice.KEY_TIMESTAMP, metric.getStart());
                 whereCount++;
             }
-            if (metric.getTimestampTo() != null) {
-                where.le(MetricsGPSTypeDevice.KEY_TIMESTAMP, metric.getTimestampTo());
+            if (metric.getEnd() != null) {
+                where.le(MetricsGPSTypeDevice.KEY_TIMESTAMP, metric.getEnd());
                 whereCount++;
             }
 
@@ -109,14 +109,15 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
                 whereBuilder.and().eq(MetricsGPSTypeDevice.KEY_AGGREGATION_TYPE,
                         metric.getAggregationType());
             }
-            if (metric.getTimestampFrom() != null) {
+            if (metric.getStart() != null) {
                 whereBuilder.and().gt(MetricsGPSTypeDevice.KEY_TIMESTAMP,
-                        metric.getTimestampFrom());
+                        metric.getStart());
             }
-            if (metric.getTimestampTo() != null) {
+            if (metric.getEnd() != null) {
                 whereBuilder.and().le(MetricsGPSTypeDevice.KEY_TIMESTAMP,
-                        metric.getTimestampTo());
+                        metric.getEnd());
             }
+            queryBuilder.orderBy(MetricsGPSTypeDevice.KEY_TIMESTAMP, true);
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
@@ -146,13 +147,13 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
 
     @Override
     public List<MetricsGPSTypeDevice> getAggregationRequiredVariableIds(AGGREGATION_TYPE aggregationType,
-            Long fromTimestamp, Long toTimestamp) {
+            Long start, Long end) {
         QueryBuilder<MetricsGPSTypeDevice, Object> queryBuilder = this.getDao().queryBuilder();
         try {
             return queryBuilder.distinct().selectColumns(MetricsGPSTypeDevice.KEY_SENSOR_VARIABLE_ID)
                     .where().eq(MetricsGPSTypeDevice.KEY_AGGREGATION_TYPE, aggregationType).and()
-                    .gt(MetricsGPSTypeDevice.KEY_TIMESTAMP, fromTimestamp).and()
-                    .le(MetricsGPSTypeDevice.KEY_TIMESTAMP, toTimestamp)
+                    .gt(MetricsGPSTypeDevice.KEY_TIMESTAMP, start).and()
+                    .le(MetricsGPSTypeDevice.KEY_TIMESTAMP, end)
                     .query();
         } catch (SQLException ex) {
             _logger.error("Exception,", ex);

@@ -28,20 +28,21 @@
     <div class="col-md-12">
       <div class="card-pf card-pf-accented">
         <div >
-          <ul ng-init="showGraphSettings=true" class="nav nav-tabs   nav-tabs-pf">
-            <li ng-class="{'active' : showGraphSettings}"><a ng-click="showGraphSettings=true" href=""><i class="fa fa-area-chart fa-lg"></i> {{ 'GRAPHS_SETTINGS' | translate }}</i></a></li>
-            <li ng-class="{'active' : !showGraphSettings}"><a ng-click="showGraphSettings=false" href=""><i class="fa fa-database fa-lg"></i> {{ 'DATA_RETENTION_SETTINGS' | translate }}</i></a></li>
+          <ul ng-init="tabSelection='graph'" class="nav nav-tabs   nav-tabs-pf">
+            <li ng-class="{'active' : tabSelection==='graph'}"><a ng-click="tabSelection='graph'" href=""><i class="fa fa-area-chart fa-lg"></i> {{ 'GRAPHS_SETTINGS' | translate }}</i></a></li>
+            <li ng-class="{'active' : tabSelection==='engine'}"><a ng-click="tabSelection='engine'" href=""><i class="fa fa-database fa-lg"></i> {{ 'METRIC_ENGINE' | translate }}</i></a></li>
+            <li ng-class="{'active' : tabSelection==='retention'}"><a ng-click="tabSelection='retention'" href=""><i class="fa fa-database fa-lg"></i> {{ 'DATA_RETENTION_SETTINGS' | translate }}</i></a></li>
           </ul>
         </div>
 
-        <div ng-if="showGraphSettings"> <!-- Metrics Graph settings -->
+        <div ng-if="tabSelection==='graph'"> <!-- Metrics Graph settings -->
           <div class="card-pf-body">
             <div class="form-actions text-right">
               <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metrics" ng-click="editEnable.metrics = true">{{ 'EDIT' | translate }}</button>
               <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metrics" ng-click="updateSettingsMetrics();editEnable.metrics = false">{{ 'CANCEL' | translate }}</button>
               <button type="button" class="btn btn-primary" ng-click="saveMetrics()"  ng-show="editEnable.metrics" ng-disabled="saveProgress.metrics">
                 <div ng-show="saveProgress.metrics" class="spinner spinner-xs"></div>
-                {{ 'SAVE' | translate }}
+                {{saveProgress.metrics ? 'SAVING' : 'SAVE' | translate}}
               </button>
             </div>
             <form class="form-horizontal">
@@ -169,15 +170,162 @@
               <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metrics" ng-click="updateSettingsMetrics();editEnable.metrics = false">{{ 'CANCEL' | translate }}</button>
               <button type="button" class="btn btn-primary" ng-click="saveMetrics()"  ng-show="editEnable.metrics" ng-disabled="saveProgress.metrics">
                 <div ng-show="saveProgress.metrics" class="spinner spinner-xs"></div>
-                {{ 'SAVE' | translate }}
+                {{saveProgress.metrics ? 'SAVING' : 'SAVE' | translate}}
               </button>
             </div>
           </div>
         </div><!-- Metrics Graph settings -->
 
 
+        <div ng-if="tabSelection==='engine'"> <!-- Metrics engine settings -->
+          <div class="card-pf-body">
+            <form class="form-horizontal" name="mcFormEngine">
 
-        <div ng-if="!showGraphSettings"> <!-- Metrics data retention settings -->
+              <!-- engine type -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'TYPE' | translate }}</label>
+                <div class="col-sm-4">
+                  <select class="form-control" pf-select ng-disabled="!editEnable.metricsEngine"
+                    ng-options="type.id as type.displayName for type in engineTypes  | orderBy:'displayName'" ng-model="metricsEngine.type" required >
+                    <option value="" ng-hide="true"></option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Influxdb server -->
+              <div ng-if="metricsEngine.type === 'InfluxDB'">
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'TRUST_HOST' | translate }}</label>
+                <div class="col-sm-4">
+                  <select class="form-control"  ng-disabled="!editEnable.metricsEngine"
+                    pf-select ng-options="type.id as type.displayName for type in trustHostTypes  | orderBy:'displayName'" ng-model="metricsEngine.trustHostType" required >
+                    <option value="" ng-hide="true"></option>
+                  </select>
+                </div>
+              </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ 'URL' | translate }}</label>
+                  <div ng-if="!editEnable.metricsEngine" class="col-sm-8">
+                    <div>{{metricsEngine.url}}</div>
+                  </div>
+                  <div class="col-sm-8" ng-show="editEnable.metricsEngine">
+                    <input class="form-control" placeholder="{{ 'URL' | translate }}" ng-model="metricsEngine.url" pf-validation="cs.isContainsSpace(input)" required />
+                    <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ 'USERNAME' | translate }}</label>
+                  <div ng-if="!editEnable.metricsEngine" class="col-sm-8">
+                    <div>{{metricsEngine.username}}</div>
+                  </div>
+                  <div class="col-sm-8" ng-show="editEnable.metricsEngine">
+                    <input class="form-control" placeholder="{{ 'USERNAME' | translate }}" ng-model="metricsEngine.username" pf-validation="cs.isContainsSpace(input)" />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ 'PASSWORD' | translate }}</label>
+                  <div ng-if="!editEnable.metricsEngine" class="col-sm-8">
+                    <div>{{metricsEngine.password ? "******" : ""}}</div>
+                  </div>
+                  <div class="col-sm-8" ng-show="editEnable.metricsEngine">
+                    <input type="password" class="form-control" placeholder="{{ 'PASSWORD' | translate }}" ng-model="metricsEngine.password" pf-validation="cs.isContainsSpace(input)" ng-required="metricsEngine.username"/>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ 'DATABASE' | translate }}</label>
+                  <div ng-if="!editEnable.metricsEngine" class="col-sm-8">
+                    <div>{{metricsEngine.database}}</div>
+                  </div>
+                  <div class="col-sm-8" ng-show="editEnable.metricsEngine">
+                    <input class="form-control" placeholder="{{ 'DATABASE' | translate }}" ng-model="metricsEngine.database" pf-validation="cs.isContainsSpace(input)" required />
+                    <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+                  </div>
+                </div>
+              </div><!-- InfluxDb settings -->
+
+
+              <!-- Hawkular server -->
+              <div ng-if="metricsEngine.type === 'Hawkular'">
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'TRUST_HOST' | translate }}</label>
+                <div class="col-sm-4">
+                  <select class="form-control"  ng-disabled="!editEnable.metricsEngine"
+                    pf-select ng-options="type.id as type.displayName for type in trustHostTypes  | orderBy:'displayName'" ng-model="metricsEngine.trustHostType" required >
+                    <option value="" ng-hide="true"></option>
+                  </select>
+                </div>
+              </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ 'URL' | translate }}</label>
+                  <div ng-if="!editEnable.metricsEngine" class="col-sm-8">
+                    <div>{{metricsEngine.url}}</div>
+                  </div>
+                  <div class="col-sm-8" ng-show="editEnable.metricsEngine">
+                    <input class="form-control" placeholder="{{ 'URL' | translate }}" ng-model="metricsEngine.url" pf-validation="cs.isContainsSpace(input)" required />
+                    <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ 'USERNAME' | translate }}</label>
+                  <div ng-if="!editEnable.metricsEngine" class="col-sm-8">
+                    <div>{{metricsEngine.username}}</div>
+                  </div>
+                  <div class="col-sm-8" ng-show="editEnable.metricsEngine">
+                    <input class="form-control" placeholder="{{ 'USERNAME' | translate }}" ng-model="metricsEngine.username" pf-validation="cs.isContainsSpace(input)" />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ 'PASSWORD' | translate }}</label>
+                  <div ng-if="!editEnable.metricsEngine" class="col-sm-8">
+                    <div>{{metricsEngine.password ? "******" : ""}}</div>
+                  </div>
+                  <div class="col-sm-8" ng-show="editEnable.metricsEngine">
+                    <input type="password" class="form-control" placeholder="{{ 'PASSWORD' | translate }}" ng-model="metricsEngine.password" pf-validation="cs.isContainsSpace(input)" ng-required="metricsEngine.username"/>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ 'TENANT' | translate }}</label>
+                  <div ng-if="!editEnable.metricsEngine" class="col-sm-8">
+                    <div>{{metricsEngine.tenant}}</div>
+                  </div>
+                  <div class="col-sm-8" ng-show="editEnable.metricsEngine">
+                    <input class="form-control" placeholder="{{ 'DATABASE' | translate }}" ng-model="metricsEngine.tenant" pf-validation="cs.isContainsSpace(input)" required />
+                    <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+                  </div>
+                </div>
+              </div><!-- Hawkular settings -->
+
+              <!-- Purge everything -->
+              <div class="form-group" ng-if="editEnable.metricsEngine">
+                <label class="col-sm-2 control-label">{{ 'PURGE_EXISTING_DATA' | translate }}</label>
+                <div class="col-sm-8">
+                  <input type="checkbox" ng-model="metricsEngine.purgeEveryThing">
+                </div>
+              </div>
+
+            </form>
+
+            <div class="form-actions text-right">
+              <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metricsEngine" ng-click="engineChnageWarning()">{{ 'EDIT' | translate }}</button>
+              <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metricsEngine" ng-click="updateSettingsMetricsEngine();editEnable.metricsEngine = false">{{ 'CANCEL' | translate }}</button>
+              <button type="button" class="btn btn-primary" ng-click="saveMetricsEngine()"  ng-show="editEnable.metricsEngine" ng-disabled="saveProgress.metricsEngine || mcFormEngine.$invalid">
+                <div ng-show="saveProgress.metricsEngine" class="spinner spinner-xs"></div>
+                {{saveProgress.metricsEngine ? 'SAVING' : 'SAVE' | translate}}
+              </button>
+            </div>
+          </div>
+        </div><!-- Metrics engine settings -->
+
+
+        <div ng-if="tabSelection==='retention'"> <!-- Metrics data retention settings -->
           <div class="card-pf-body">
             <form class="form-horizontal" name="mcFormRetention">
               <legend>{{ 'DATA' | translate }}: {{ 'DOUBLE' | translate }}, {{ 'COUNTER' | translate }}</legend>
@@ -377,12 +525,12 @@
               <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.metricsDataRetention" ng-click="retentionWarning()">{{ 'EDIT' | translate }}</button>
               <button type="button" class="btn btn-default" class="button" ng-show="editEnable.metricsDataRetention" ng-click="updateSettingsMetricsRetention();editEnable.metricsDataRetention = false">{{ 'CANCEL' | translate }}</button>
               <button type="button" class="btn btn-primary" ng-click="saveMetricsRetention()"  ng-show="editEnable.metricsDataRetention" ng-disabled="saveProgress.metricsDataRetention || mcFormRetention.$invalid">
-                <div ng-show="saveProgress.metrics" class="spinner spinner-xs"></div>
-                {{ 'SAVE' | translate }}
+                <div ng-show="saveProgress.metricsDataRetention" class="spinner spinner-xs"></div>
+                {{saveProgress.metricsDataRetention ? 'SAVING' : 'SAVE' | translate}}
               </button>
             </div>
           </div>
-        </div><!-- Metrics Graph settings -->
+        </div><!-- Metrics retention settings -->
 
       </div>
     </div>

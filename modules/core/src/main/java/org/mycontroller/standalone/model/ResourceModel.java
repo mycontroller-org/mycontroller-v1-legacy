@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
@@ -53,41 +54,57 @@ public class ResourceModel {
         switch (this.resourceType) {
             case GATEWAY:
                 resource = DaoUtils.getGatewayDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((GatewayTable) resource).getNetworkType();
                 break;
             case NODE:
                 resource = DaoUtils.getNodeDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((Node) resource).getGatewayTable().getNetworkType();
                 break;
             case SENSOR:
                 resource = DaoUtils.getSensorDao().getById(this.resourceId);
+                isValidResource();
                 networkType = ((Sensor) resource).getNode().getGatewayTable().getNetworkType();
                 break;
             case SENSOR_VARIABLE:
                 resource = DaoUtils.getSensorVariableDao().get(this.resourceId);
+                isValidResource();
                 networkType = ((SensorVariable) resource).getSensor().getNode().getGatewayTable().getNetworkType();
                 break;
             case RESOURCES_GROUP:
                 resource = DaoUtils.getResourcesGroupDao().get(this.resourceId);
+                isValidResource();
                 break;
             case RULE_DEFINITION:
                 resource = RuleUtils.getRuleDefinition(DaoUtils.getRuleDefinitionDao().getById(resourceId));
+                isValidResource();
                 break;
             case TIMER:
                 resource = DaoUtils.getTimerDao().getById(resourceId);
+                isValidResource();
+                break;
+            case FORWARD_PAYLOAD:
+                resource = DaoUtils.getForwardPayloadDao().getById(resourceId);
+                isValidResource();
                 break;
             default:
                 throw new RuntimeException("Not supported ResourceType:" + resourceType);
         }
+
+    }
+
+    private void isValidResource() {
         if (resource == null) {
-            throw new RuntimeException("RESOURCE not available! ResourceType:" + resourceType + ", ResourceId:"
-                    + resourceId);
+            throw new RuntimeException("Resource not available! ResourceType:[" + resourceType.getText()
+                    + "], ResourceId:[" + resourceId + "]");
         }
     }
 
     public ResourceModel(RESOURCE_TYPE resourceType, Object resource) {
         this.resourceType = resourceType;
         this.resource = resource;
+        isValidResource();
         switch (this.resourceType) {
             case GATEWAY:
                 networkType = ((GatewayTable) resource).getNetworkType();
@@ -104,14 +121,11 @@ public class ResourceModel {
             case RESOURCES_GROUP:
             case RULE_DEFINITION:
             case TIMER:
+            case FORWARD_PAYLOAD:
                 networkType = null;
                 break;
             default:
                 throw new RuntimeException("Not supported ResourceType:" + resourceType);
-        }
-        if (resource == null) {
-            throw new RuntimeException("RESOURCE not available! ResourceType:" + resourceType + ", ResourceId:"
-                    + resourceId);
         }
     }
 
@@ -136,11 +150,8 @@ public class ResourceModel {
     }
 
     public String getResourceDetails() {
-        if (this.resource == null) {
-            return null;
-        }
+        isValidResource();
         StringBuilder builder = new StringBuilder();
-
         switch (this.resourceType) {
             case GATEWAY:
                 updateDGateway((GatewayTable) this.resource, builder);
@@ -167,6 +178,11 @@ public class ResourceModel {
                 Timer timer = (Timer) this.resource;
                 builder.append("Timer:[Name:").append(timer.getName()).append("]");
                 break;
+            case FORWARD_PAYLOAD:
+                ForwardPayload forwardPayload = (ForwardPayload) this.resource;
+                updateDSensorVariable((SensorVariable) forwardPayload.getSource(), builder);
+                builder.append(" >>> ");
+                updateDSensorVariable((SensorVariable) forwardPayload.getDestination(), builder);
             default:
                 break;
         }
@@ -201,12 +217,13 @@ public class ResourceModel {
                 .append(", SensorId:").append(sensorVariable.getSensor().getSensorId())
                 .append(", VariableType:")
                 .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
+        if (sensorVariable.getName() != null) {
+            builder.append(" (").append(sensorVariable.getName()).append(")");
+        }
     }
 
     public String getResourceLessDetails() {
-        if (this.resource == null) {
-            return null;
-        }
+        isValidResource();
         StringBuilder builder = new StringBuilder();
         switch (this.resourceType) {
             case GATEWAY:
@@ -232,6 +249,12 @@ public class ResourceModel {
             case TIMER:
                 Timer timer = (Timer) this.resource;
                 builder.append(DISPLAY_KEY_TIMER).append(timer.getName());
+                break;
+            case FORWARD_PAYLOAD:
+                ForwardPayload forwardPayload = (ForwardPayload) this.resource;
+                updateLDSensorVariable((SensorVariable) forwardPayload.getSource(), builder);
+                builder.append(" >>> ");
+                updateLDSensorVariable((SensorVariable) forwardPayload.getDestination(), builder);
                 break;
             default:
                 break;
@@ -265,5 +288,8 @@ public class ResourceModel {
         updateLDSensor(sensorVariable.getSensor(), builder);
         builder.append(" >> ").append(DISPLAY_KEY_SENSOR_VARIABLE)
                 .append(McObjectManager.getMcLocale().getString(sensorVariable.getVariableType().name()));
+        if (sensorVariable.getName() != null) {
+            builder.append(" (").append(sensorVariable.getName()).append(")");
+        }
     }
 }

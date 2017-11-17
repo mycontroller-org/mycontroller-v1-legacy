@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.api.jaxrs.json.BackupFile;
+import org.mycontroller.standalone.api.jaxrs.model.BackupFile;
 import org.mycontroller.standalone.backup.Backup;
 import org.mycontroller.standalone.settings.BackupSettings;
 
@@ -62,12 +62,12 @@ public class SystemBackupJob extends Job {
         Collections.sort(backupFiles, Collections.reverseOrder());
 
         if (backupFiles.size() > backupSettings.getRetainMax()) {
-            _logger.info("Available backup files:{}, Maximum files retain:{}", backupFiles.size(),
+            _logger.debug("Available backup files:{}, Maximum files retain:{}", backupFiles.size(),
                     backupSettings.getRetainMax());
             for (int deleteIndex = backupSettings.getRetainMax(); deleteIndex < backupFiles.size(); deleteIndex++) {
                 try {
                     FileUtils.forceDelete(FileUtils.getFile(backupFiles.get(deleteIndex).getCanonicalPath()));
-                    _logger.info("Backup file deleted, {}", backupFiles.get(deleteIndex));
+                    _logger.debug("Backup file deleted, {}", backupFiles.get(deleteIndex));
                 } catch (Exception ex) {
                     _logger.error("Backup file deletion failed", ex);
                 }

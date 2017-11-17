@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ angular.module('adf.widget.myc-custom-buttons', [])
       .widget('mycCustomBtns', {
         title: 'Sensor custom buttons',
         description: 'Create custom buttons',
-        templateUrl: 'controllers/adf-widgets/adf-myc-cb/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-cb/view.html?mcv=${mc.gui.version}',
         controller: 'mycCusBtnsController',
         controllerAs: 'mycCBtns',
         config: {
@@ -37,7 +37,7 @@ angular.module('adf.widget.myc-custom-buttons', [])
           buttonsJson:"[\n]",
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-cb/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-cb/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSenVarsEditController',
           controllerAs: 'mycCBtnsEdit',
         }

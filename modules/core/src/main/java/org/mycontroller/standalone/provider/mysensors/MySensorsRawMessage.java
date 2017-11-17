@@ -74,6 +74,48 @@ public class MySensorsRawMessage {
         }
         timestamp = rawMessage.getTimestamp();
         MySensorsEngine.updateMessage(this);
+        validate();
+    }
+
+    private void validate() throws RawMessageException {
+        if (nodeId < 0 || nodeId > 255) {
+            throw new RawMessageException("Invalid range for 'nodeId':" + this);
+        }
+        if (childSensorId < 0 || childSensorId > 255) {
+            throw new RawMessageException("Invalid range for childSensorId:" + this);
+        }
+        if (messageType < 0 || messageType > MySensorsUtils.MAX_INDEX_MESSAGE_TYPE) {
+            throw new RawMessageException("Invalid range for 'command':" + this);
+        }
+        switch (MYS_MESSAGE_TYPE.get(messageType)) {
+            case C_INTERNAL:
+                if (subType < 0 || subType > MySensorsUtils.MAX_INDEX_INTERNAL) {
+                    throw new RawMessageException("Invalid range for 'internal' type:" + this);
+                }
+                break;
+            case C_PRESENTATION:
+                if (subType < 0 || subType > MySensorsUtils.MAX_INDEX_PRESENTATION) {
+                    throw new RawMessageException("Invalid range for 'presentation' type:" + this);
+                }
+                break;
+            case C_SET:
+            case C_REQ:
+                if (subType < 0 || subType > MySensorsUtils.MAX_INDEX_SET_REQ) {
+                    throw new RawMessageException("Invalid range for 'set/req' type:" + this);
+                }
+                break;
+            case C_STREAM:
+                if (subType < 0 || subType > MySensorsUtils.MAX_INDEX_STREAM) {
+                    throw new RawMessageException("Invalid range for 'stream' type:" + this);
+                }
+                break;
+        }
+        if (ack < 0 || ack > 1) {
+            throw new RawMessageException("Invalid range for 'ack':" + this);
+        }
+        if (payload == null) {
+            payload = MySensorsUtils.EMPTY_DATA;
+        }
     }
 
     public MySensorsRawMessage(McMessage mcMessage) throws RawMessageException {
@@ -97,6 +139,7 @@ public class MySensorsRawMessage {
         isTxMessage = mcMessage.isTxMessage();
         timestamp = mcMessage.getTimestamp();
         MySensorsEngine.updateMessage(this);
+        validate();
     }
 
     private void updateMQTTMessage(String topic, String message) throws RawMessageException {
@@ -106,12 +149,13 @@ public class MySensorsRawMessage {
         // Topic structure:
         // MY_MQTT_TOPIC_PREFIX/NODE-KEY_ID/SENSOR_VARIABLE-KEY_ID/CMD-OPERATION_TYPE/ACK-FLAG/SUB-OPERATION_TYPE
         String[] msgArry = topic.split("/");
-        if (msgArry.length == 6) {
-            nodeId = Integer.valueOf(msgArry[1]);
-            childSensorId = Integer.valueOf(msgArry[2]);
-            messageType = Integer.valueOf(msgArry[3]);
-            ack = Integer.valueOf(msgArry[4]);
-            subType = Integer.valueOf(msgArry[5]);
+        int index = msgArry.length - 5;
+        if (msgArry.length >= 6) {
+            nodeId = Integer.valueOf(msgArry[index]);
+            childSensorId = Integer.valueOf(msgArry[index + 1]);
+            messageType = Integer.valueOf(msgArry[index + 2]);
+            ack = Integer.valueOf(msgArry[index + 3]);
+            subType = Integer.valueOf(msgArry[index + 4]);
             _logger.debug("Message: {}", toString());
         } else {
             _logger.debug("Unknown message format, Topic:[{}], PayLoad:[{}]", topic, message);
@@ -220,13 +264,13 @@ public class MySensorsRawMessage {
     }
 
     public McMessage getMcMessage() {
-        String sensorId = getChildSensorId() == 255 ? McMessage.SENSOR_BROADCAST_ID : getChildSensorIdString();
-        String nodeId = getNodeId() == 255 ? McMessage.NODE_BROADCAST_ID : getNodeEui();
+        String sensorIdMc = getChildSensorId() == 255 ? McMessage.SENSOR_BROADCAST_ID : getChildSensorIdString();
+        String nodeIdMc = getNodeId() == 255 ? McMessage.NODE_BROADCAST_ID : getNodeEui();
         McMessage mcMessage = McMessage.builder()
                 .ack(getAck() == 1 ? 2 : 0)//MySensors gateway never request ack
                 .gatewayId(getGatewayId())
-                .nodeEui(nodeId)
-                .sensorId(sensorId)
+                .nodeEui(nodeIdMc)
+                .sensorId(sensorIdMc)
                 .networkType(NETWORK_TYPE.MY_SENSORS)
                 .isTxMessage(isTxMessage())
                 .payload(getPayload())
@@ -251,12 +295,20 @@ public class MySensorsRawMessage {
             case C_SET:
                 if (!isTxMessage()
                         && MYS_MESSAGE_TYPE_SET_REQ.get(subType) == MYS_MESSAGE_TYPE_SET_REQ.V_VAR5
-                        && getPayload() != null
-                        && getPayload().startsWith("rssi:")) {
-                    mcMessage.setType(MESSAGE_TYPE.C_INTERNAL);
-                    mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_RSSI.getText());
-                    mcMessage.setPayload(getPayload().replace("rssi:", "").trim());
-                    mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
+                        && getPayload() != null) {
+                    if (getPayload().startsWith(MySensorsUtils.KEY_RSSI)) {
+                        mcMessage.setType(MESSAGE_TYPE.C_INTERNAL);
+                        mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_RSSI.getText());
+                        mcMessage.setPayload(getPayload().replace(MySensorsUtils.KEY_RSSI, "").trim());
+                        mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
+                    } else if (getPayload().startsWith(MySensorsUtils.KEY_PROPERTIES)) {
+                        mcMessage.setType(MESSAGE_TYPE.C_INTERNAL);
+                        mcMessage.setSubType(MESSAGE_TYPE_INTERNAL.I_PROPERTIES.getText());
+                        mcMessage.setPayload(getPayload().replace(MySensorsUtils.KEY_PROPERTIES, "").trim());
+                        mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
+                    } else {
+                        mcMessage.setSubType(MYS_MESSAGE_TYPE_SET_REQ.get(subType).getText());
+                    }
                 } else {
                     mcMessage.setSubType(MYS_MESSAGE_TYPE_SET_REQ.get(subType).getText());
                 }

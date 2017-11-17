@@ -45,4 +45,8 @@ public class McmDNSServiceInfo {
         }
         return properties;
     }
+
+    public void setProperty(String key, Object value) {
+        getProperties().put(key, value);
+    }
 }

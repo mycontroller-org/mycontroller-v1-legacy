@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,33 @@
  */
 package org.mycontroller.standalone.metrics;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import org.mycontroller.standalone.db.DaoUtils;
+import org.mycontroller.standalone.db.tables.Settings;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
+import org.mycontroller.standalone.metrics.engine.conf.InfluxDBConf;
+import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
+import org.mycontroller.standalone.metrics.engine.conf.MyControllerConf;
+import org.mycontroller.standalone.metrics.engines.InfluxDBEngine;
+import org.mycontroller.standalone.metrics.engines.McMetricEngine;
+import org.mycontroller.standalone.metrics.model.Pong;
 import org.mycontroller.standalone.utils.McUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class MetricsUtils {
     public static final long RAW_DATA_MAX_RETAIN_TIME = McUtils.ONE_MINUTE;        // 1 minute
     public static final long ONE_MINUTE_MAX_RETAIN_TIME = McUtils.ONE_HOUR * 6;    // 6 Hours
@@ -129,6 +146,115 @@ public class MetricsUtils {
             }
             return null;
         }
-
     }
+
+    //Metric engine related
+    private static final String KEY_METRIC_ENGINE = "metricEngine";
+    private static final String KEY_TYPE = "type";
+    private static final String KEY_CONF = "conf";
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private static IMetric metricEngine = null;
+    private static MetricEngineConf engineConf = null;
+
+    public static IMetric engine() {
+        return metricEngine;
+    }
+
+    public static void loadEngine() throws URISyntaxException {
+        engineConf = getEngineConf();
+        metricEngine = getEngine(engineConf);
+    }
+
+    private static IMetric getEngine(MetricEngineConf engineConf) throws URISyntaxException {
+        switch (engineConf.getType()) {
+            case INFLUXDB:
+                return new InfluxDBEngine((InfluxDBConf) engineConf);
+            case MY_CONTROLLER:
+                return new McMetricEngine();
+            default:
+                break;
+
+        }
+        throw new RuntimeException("Not implemented yet. Type:" + engineConf.getType());
+    }
+
+    public static METRIC_ENGINE type() {
+        return engineConf.getType();
+    }
+
+    private static METRIC_ENGINE getEngineType() {
+        return METRIC_ENGINE.valueOf(getMetricEngineDataInDB(KEY_TYPE));
+    }
+
+    public static MetricEngineConf getEngineConf() {
+        String conf = getMetricEngineDataInDB(KEY_CONF);
+        if (conf == null) {
+            MyControllerConf mcConf = new MyControllerConf();
+            mcConf.setType(METRIC_ENGINE.MY_CONTROLLER);
+            try {
+                updateEngine(mcConf);
+                conf = getMetricEngineDataInDB(KEY_CONF);
+            } catch (McBadRequestException ex) {
+                _logger.error("Exception,", ex);
+            }
+        }
+        try {
+            switch (getEngineType()) {
+                case INFLUXDB:
+                    return OBJECT_MAPPER.readValue(conf, InfluxDBConf.class);
+                case MY_CONTROLLER:
+                    return OBJECT_MAPPER.readValue(conf, MyControllerConf.class);
+            }
+        } catch (IOException ex) {
+            _logger.error("Exception,", ex);
+        }
+        return null;
+    }
+
+    private static String getMetricEngineDataInDB(String subKey) {
+        Settings settings = DaoUtils.getSettingsDao().get(null, KEY_METRIC_ENGINE, subKey);
+        if (settings == null) {
+            return null;
+        }
+        return settings.getValue();
+    }
+
+    private static void saveMetricEngineDataInDB(String subKey, String data) {
+        DaoUtils.getSettingsDao().update(KEY_METRIC_ENGINE, subKey, data);
+    }
+
+    public static void updateEngine(MetricEngineConf conf) throws McBadRequestException {
+        String data = null;
+        switch (conf.getType()) {
+            case INFLUXDB:
+            case MY_CONTROLLER:
+                try {
+                    data = OBJECT_MAPPER.writeValueAsString(conf);
+                    saveMetricEngineDataInDB(KEY_TYPE, conf.getType().name());
+                    saveMetricEngineDataInDB(KEY_CONF, data);
+                    loadEngine();
+                    if (conf.isPurgeEveryThing()) {
+                        _logger.info("Purging existing data triggered for {}", engineConf);
+                        engine().purgeEverything();
+                    }
+                } catch (JsonProcessingException | URISyntaxException ex) {
+                    _logger.error("Exception,", ex);
+                    throw new McBadRequestException(ex.getMessage());
+                }
+                break;
+            default:
+                throw new RuntimeException("This type not available. " + conf);
+        }
+    }
+
+    public static Pong ping(MetricEngineConf conf) throws McBadRequestException {
+        try {
+            return getEngine(conf).ping();
+        } catch (URISyntaxException ex) {
+            throw new McBadRequestException(ex.getMessage(), ex);
+        }
+    }
+
 }

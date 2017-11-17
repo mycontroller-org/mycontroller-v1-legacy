@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,8 @@ package org.mycontroller.standalone.externalserver;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mycontroller.restclient.influxdb.InfluxDBClient;
+import org.mycontroller.restclient.influxdb.InfluxDBClientBuilder;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.exernalserver.model.ExternalServer;
@@ -26,8 +28,8 @@ import org.mycontroller.standalone.exernalserver.model.ExternalServerEmoncms;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerInfluxdb;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerMqtt;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerPhantIO;
+import org.mycontroller.standalone.exernalserver.model.ExternalServerWUnderground;
 import org.mycontroller.standalone.restclient.emoncms.EmoncmsClientImpl;
-import org.mycontroller.standalone.restclient.influxdb.InfluxdbClientImpl;
 import org.mycontroller.standalone.restclient.phantio.PhantIOClientImpl;
 
 import lombok.AccessLevel;
@@ -47,7 +49,8 @@ public class ExternalServerUtils {
         PHANT_IO("Sparkfun [phant.io]"),
         EMONCMS("Emoncms.org"),
         INFLUXDB("Influxdb"),
-        MQTT("MQTT");
+        MQTT("MQTT"),
+        WUNDERGROUND("WUnderground");
         public static EXTERNAL_SERVER_TYPE get(int id) {
             for (EXTERNAL_SERVER_TYPE type : values()) {
                 if (type.ordinal() == id) {
@@ -89,6 +92,8 @@ public class ExternalServerUtils {
                 return new ExternalServerInfluxdb(externalServerTable);
             case MQTT:
                 return new ExternalServerMqtt(externalServerTable);
+            case WUNDERGROUND:
+                return new ExternalServerWUnderground(externalServerTable);
             default:
                 _logger.error("This type External Server not implemented!");
                 break;
@@ -113,13 +118,16 @@ public class ExternalServerUtils {
                     case INFLUXDB:
                         ExternalServerInfluxdb influxdbServer = (ExternalServerInfluxdb) externalServer;
                         if (influxdbServer.getUsername() != null && influxdbServer.getUsername().length() > 0) {
-                            return new InfluxdbClientImpl(influxdbServer.getUrl(), influxdbServer.getUsername(),
-                                    influxdbServer.getPassword(), influxdbServer.getDatabase(),
-                                    influxdbServer.getTrustHostType());
+                            return new InfluxDBClientBuilder()
+                                    .uri(influxdbServer.getUrl(), influxdbServer.getTrustHostType())
+                                    .basicAuthentication(influxdbServer.getUsername(), influxdbServer.getPassword())
+                                    .addProperty(InfluxDBClient.KEY_DATABASE, influxdbServer.getDatabase())
+                                    .build();
                         } else {
-                            return new InfluxdbClientImpl(influxdbServer.getUrl(),
-                                    influxdbServer.getDatabase(),
-                                    influxdbServer.getTrustHostType());
+                            return new InfluxDBClientBuilder()
+                                    .uri(influxdbServer.getUrl(), influxdbServer.getTrustHostType())
+                                    .addProperty(InfluxDBClient.KEY_DATABASE, influxdbServer.getDatabase())
+                                    .build();
                         }
                     case MQTT:
                         ExternalServerMqtt mqttClient = (ExternalServerMqtt) externalServer;

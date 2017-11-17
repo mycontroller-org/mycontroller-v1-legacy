@@ -98,7 +98,7 @@
             <label class="col-sm-2 control-label">{{ 'FIRMWARE' | translate }}</label>
             <div class="col-sm-10">
               <select class="form-control" pf-select data-live-search="true" ng-options="firmware.id as firmware.displayName for firmware in firmwares | orderBy:'displayName'" ng-model="node.firmware.id">
-                <option value="" ng-hide="true"></option>
+                <option value="" ng-hide="false">{{ 'NOTHING_SELECTED' | translate }}</option>
               </select>
             </div>
           </div>

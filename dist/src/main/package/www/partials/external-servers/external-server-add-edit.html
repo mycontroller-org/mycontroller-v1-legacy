@@ -179,17 +179,17 @@
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'TAGS' | translate }}</label>
+              <label class="col-sm-2 control-label">{{ 'MEASUREMENT' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'TAGS' | translate }}" ng-model="item.tags" pf-validation="cs.isContainsSpace(input)" />
+                <input class="form-control" placeholder="{{ 'KEY_FORMAT' | translate }}" ng-model="item.keyFormat" pf-validation="cs.isContainsSpace(input)" required />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'KEY_FORMAT' | translate }}</label>
+              <label class="col-sm-2 control-label">{{ 'TAGS' | translate }}</label>
               <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'KEY_FORMAT' | translate }}" ng-model="item.keyFormat" pf-validation="cs.isContainsSpace(input)" required />
+                <input class="form-control" placeholder="{{ 'TAGS' | translate }}" ng-model="item.tags" pf-validation="cs.isContainsSpace(input)" />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
               </div>
             </div>
@@ -237,6 +237,57 @@
               </div>
             </div>
 
+          </div>
+
+          <!-- WUnderground Server -->
+          <div ng-if="item.type === 'WUnderground'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'URL' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'URL' | translate }}" ng-model="item.url" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'TRUST_HOST' | translate }}</label>
+            <div class="col-sm-5">
+              <select class="form-control" pf-select ng-options="type.id as type.displayName for type in trustHostTypes  | orderBy:'displayName'" ng-model="item.trustHostType" required >
+                <option value="" ng-hide="true"></option>
+              </select>
+            </div>
+          </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'STATION_ID' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'STATION_ID' | translate }}" ng-model="item.stationId" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'STATION_PASSWORD' | translate }}</label>
+              <div class="col-sm-10">
+                <input class="form-control" placeholder="{{ 'STATION_PASSWORD' | translate }}" ng-model="item.stationPassword" pf-validation="cs.isContainsSpace(input)" required />
+                <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div ng-if="item.type !== 'WUnderground'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ALPHABETICAL_KEY_CASE' | translate }}</label>
+              <div class="col-sm-5">
+              <select class="form-control" pf-select ng-model="item.keyCase" required >
+                <option value="" ng-hide="true"></option>
+                <option value="DEFAULT">{{ 'DEFAULT' | translate }}</option>
+                <option value="UPPER">{{ 'UPPER' | translate }}</option>
+                <option value="LOWER">{{ 'LOWER' | translate }}</option>
+              </select>
+            </div>
+            </div>
           </div>
 
           <!-- Include save form buttons -->

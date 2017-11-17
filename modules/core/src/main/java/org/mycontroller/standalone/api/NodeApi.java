@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -70,14 +70,15 @@ public class NodeApi {
         }
 
         if (McMessageUtils.validateNodeIdByProvider(node)) {
-            if (oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER
+            if ((oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER
+                    || oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS)
                     && !oldNode.getEui().equals(node.getEui())) {
                 McMessage mcMessage = McMessage.builder()
                         .ack(McMessage.NO_ACK)
                         .isScreeningDone(true)
                         .gatewayId(oldNode.getGatewayTable().getId())
                         .isTxMessage(true)
-                        .networkType(NETWORK_TYPE.MY_CONTROLLER)
+                        .networkType(oldNode.getGatewayTable().getNetworkType())
                         .type(MESSAGE_TYPE.C_INTERNAL)
                         .subType(MESSAGE_TYPE_INTERNAL.I_ID_RESPONSE.getText())
                         .nodeEui(oldNode.getEui())

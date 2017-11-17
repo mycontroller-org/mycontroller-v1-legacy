@@ -17,8 +17,10 @@
 package org.mycontroller.standalone.scripts.api;
 
 import org.mycontroller.standalone.api.BackupApi;
+import org.mycontroller.standalone.api.ForwardPayloadApi;
 import org.mycontroller.standalone.api.GatewayApi;
 import org.mycontroller.standalone.api.HttpApi;
+import org.mycontroller.standalone.api.MessageQueueApi;
 import org.mycontroller.standalone.api.MetricApi;
 import org.mycontroller.standalone.api.NodeApi;
 import org.mycontroller.standalone.api.OperationApi;
@@ -28,6 +30,7 @@ import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.TimerApi;
 import org.mycontroller.standalone.api.UidTagApi;
 import org.mycontroller.standalone.api.VariableApi;
+import org.mycontroller.standalone.metrics.export.CsvExportEngine;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -48,6 +51,9 @@ public class McScriptApi {
     private UtilsApi utilsApi = new UtilsApi();
     private SystemApi systemApi = new SystemApi();
     private HttpApi httpApi = new HttpApi();
+    private CsvExportEngine csvExportEngine = new CsvExportEngine();
+    private MessageQueueApi messageQueueApi = new MessageQueueApi();
+    private ForwardPayloadApi forwardPayloadApi = new ForwardPayloadApi();
 
     public SystemApi system() {
         return systemApi;
@@ -103,5 +109,17 @@ public class McScriptApi {
 
     public HttpApi http() {
         return httpApi;
+    }
+
+    public CsvExportEngine csvExportEngine() {
+        return csvExportEngine;
+    }
+
+    public MessageQueueApi messageQueue() {
+        return messageQueueApi;
+    }
+
+    public ForwardPayloadApi forwardPayload() {
+        return forwardPayloadApi;
     }
 }

@@ -68,6 +68,9 @@ public class Node {
     public static final String KEY_PARENT_NODE_EUI = "parentNodeEui";
     public static final String KEY_REGISTRATION_STATE = "registrationState";
     public static final String KEY_SMART_SLEEP_ENABLED = "smartSleepEnabled";
+    public static final String KEY_SMART_SLEEP_WAIT_DURATION = "smartSleepWaitDuration";
+    public static final String KEY_SMART_SLEEP_DURATION = "smartSleepDuration";
+
     //Properties key
     public static final String KEY_ALIVE_CHECK_INTERVAL = "aliveCheckInterval";
     public static final String KEY_HEARTBEAT_LAST_TX_TIME = "hbTx";
@@ -78,7 +81,7 @@ public class Node {
     @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_EUI)
     private String eui;
 
-    @DatabaseField(uniqueCombo = true, canBeNull = true, columnName = KEY_GATEWAY_ID, foreign = true,
+    @DatabaseField(uniqueCombo = true, canBeNull = false, columnName = KEY_GATEWAY_ID, foreign = true,
             foreignAutoRefresh = true, maxForeignAutoRefreshLevel = 1)
     private GatewayTable gatewayTable;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,18 +26,23 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
       .widget('mycSensorsGroupedGraph', {
         title: 'Grouped sensors graph',
         description: 'Similar type of sensors grouped graphical view',
-        templateUrl: 'controllers/adf-widgets/adf-myc-sgg/view.html',
+        templateUrl: 'controllers/adf-widgets/adf-myc-sgg/view.html?mcv=${mc.gui.version}',
         controller: 'mycSensorsGroupedGraphController',
         controllerAs: 'mycSensorsGroupedGraph',
         config: {
           useInteractiveGuideline:true,
+          enableUniqueName:false,
           variableId:[],
           variableType:null,
           chartFromTimestamp:'3600000',
           refreshTime:30,
+          marginTop:5,
+          marginRight:20,
+          marginBottom:60,
+          marginLeft:65,
         },
         edit: {
-          templateUrl: 'controllers/adf-widgets/adf-myc-sgg/edit.html',
+          templateUrl: 'controllers/adf-widgets/adf-myc-sgg/edit.html?mcv=${mc.gui.version}',
           controller: 'mycSensorsGroupedGraphEditController',
           controllerAs: 'mycSensorsGroupedGraphEdit',
         }
@@ -50,16 +55,18 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
     mycSensorsGroupedGraph.isSyncing = false;
     mycSensorsGroupedGraph.cs = CommonServices;
 
+    CommonServices.updateGraphMarginDefault(config);
+
     mycSensorsGroupedGraph.chartOptions = {
         chart: {
             type: 'lineChart',
             noErrorCheck: true,
             height: 225,
             margin : {
-                top: 5,
-                right: 20,
-                bottom: 60,
-                left: 65
+                top: config.marginTop,
+                right: config.marginRight,
+                bottom: config.marginBottom,
+                left: config.marginLeft,
             },
             color: d3.scale.category10().range(),
             noData: $filter('translate')('NO_DATA_AVAILABLE'),
@@ -95,7 +102,7 @@ angular.module('adf.widget.myc-sensors-grouped-graph', [])
 
     function updateChart(){
       mycSensorsGroupedGraph.isSyncing = true;
-      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"lineChart", "timestampFrom": new Date().getTime() - config.chartFromTimestamp}, function(resource){
+      MetricsFactory.getMetricsData({"variableId":config.variableId, "chartType":"lineChart", "start": new Date().getTime() - config.chartFromTimestamp, "enableDetailedKey": config.enableUniqueName === undefined ? false : config.enableUniqueName}, function(resource){
         if(resource.length > 0){
            mycSensorsGroupedGraph.chartData = resource[0].chartData;
           //Update display time format

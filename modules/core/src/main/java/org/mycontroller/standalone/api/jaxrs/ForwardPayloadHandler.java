@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,11 +33,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.ForwardPayloadApi;
+import org.mycontroller.standalone.api.jaxrs.model.ApiError;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
-import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
+import org.mycontroller.standalone.exceptions.McBadRequestException;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -50,32 +51,34 @@ import org.mycontroller.standalone.db.tables.ForwardPayload;
 @RolesAllowed({ "Admin" })
 public class ForwardPayloadHandler {
 
+    ForwardPayloadApi forwardPayloadApi = new ForwardPayloadApi();
+
     @POST
     @Path("/")
     public Response add(ForwardPayload forwardPayload) {
-        if (forwardPayload.getSource().getId() == forwardPayload.getDestination().getId()) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(
-                    "Source and destination should be different!"));
+        try {
+            forwardPayloadApi.add(forwardPayload);
+            return RestUtils.getResponse(Status.CREATED);
+        } catch (McBadRequestException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
-        DaoUtils.getForwardPayloadDao().create(forwardPayload);
-        return RestUtils.getResponse(Status.CREATED);
     }
 
     @PUT
     @Path("/")
     public Response update(ForwardPayload forwardPayload) {
-        if (forwardPayload.getSource().getId() == forwardPayload.getDestination().getId()) {
-            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(
-                    "Source and destination should be different!"));
+        try {
+            forwardPayloadApi.update(forwardPayload);
+            return RestUtils.getResponse(Status.OK);
+        } catch (McBadRequestException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
-        DaoUtils.getForwardPayloadDao().update(forwardPayload);
-        return RestUtils.getResponse(Status.OK);
     }
 
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") int id) {
-        return RestUtils.getResponse(Status.OK, DaoUtils.getForwardPayloadDao().getById(id));
+        return RestUtils.getResponse(Status.OK, forwardPayloadApi.get(id));
     }
 
     @GET
@@ -100,28 +103,28 @@ public class ForwardPayloadHandler {
         filters.put(Query.PAGE_LIMIT, pageLimit);
         filters.put(Query.PAGE, page);
 
-        return RestUtils.getResponse(Status.OK, DaoUtils.getForwardPayloadDao().getAll(Query.get(filters)));
+        return RestUtils.getResponse(Status.OK, forwardPayloadApi.getAll(filters));
 
     }
 
     @POST
     @Path("/delete")
     public Response delete(List<Integer> ids) {
-        DaoUtils.getForwardPayloadDao().deleteByIds(ids);
+        forwardPayloadApi.delete(ids);
         return RestUtils.getResponse(Status.OK);
     }
 
     @POST
     @Path("/enable")
     public Response enable(List<Integer> ids) {
-        DaoUtils.getForwardPayloadDao().enable(ids);
+        forwardPayloadApi.enable(ids);
         return RestUtils.getResponse(Status.OK);
     }
 
     @POST
     @Path("/disable")
     public Response disable(List<Integer> ids) {
-        DaoUtils.getForwardPayloadDao().disable(ids);
+        forwardPayloadApi.disable(ids);
         return RestUtils.getResponse(Status.OK);
     }
 

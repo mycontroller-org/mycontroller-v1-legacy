@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,21 +77,21 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
     /* Dashboard */
     .state('dashboardMain', {
       url:"/dashboard",
-      templateUrl: "partials/dashboard/dashboard.html",
+      templateUrl: "partials/dashboard/dashboard.html?mcv=${mc.gui.version}",
       controller: "DashboardListController",
        data: {
         requireLogin: true
       }
     }).state('dashboardRoomsSensorsList', {
       url:"/dashboard/rooms/list/:id",
-      templateUrl: "partials/rooms/rooms-sensors-list.html",
+      templateUrl: "partials/rooms/rooms-sensors-list.html?mcv=${mc.gui.version}",
       controller: "RoomsSensorsControllerList",
        data: {
         requireLogin: true
       }
     }).state('dashboardTopology', {
       url:"/dashboard/topology/:resourceType/:resourceId",
-      templateUrl: "partials/topology/topology.html",
+      templateUrl: "partials/topology/topology.html?mcv=${mc.gui.version}",
       controller: "TopologyController",
        data: {
         requireLogin: true
@@ -101,175 +101,175 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
     /* Resources */
     .state('gatewaysList', {
       url:"/resources/gateways/list",
-      templateUrl: "partials/gateways/gateways-list.html",
+      templateUrl: "partials/gateways/gateways-list.html?mcv=${mc.gui.version}",
       controller: "GatewaysController",
        data: {
         requireLogin: true
       }
     }).state('gatewaysAddEdit', {
       url:"/resources/gateways/addedit/:id",
-      templateUrl: "partials/gateways/gateway-add-edit.html",
+      templateUrl: "partials/gateways/gateway-add-edit.html?mcv=${mc.gui.version}",
       controller: "GatewaysControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('gatewaysDetail', {
       url:"/resources/gateways/detail/:id",
-      templateUrl: "partials/gateways/gateways-detail.html",
+      templateUrl: "partials/gateways/gateways-detail.html?mcv=${mc.gui.version}",
       controller: "GatewaysControllerDetail",
        data: {
         requireLogin: true
       }
     }).state('nodesList', {
       url:"/resources/nodes/list/:gatewayId",
-      templateUrl: "partials/nodes/nodes-list.html",
+      templateUrl: "partials/nodes/nodes-list.html?mcv=${mc.gui.version}",
       controller: "NodesController",
        data: {
         requireLogin: true
       }
     }).state('nodesAddEdit', {
       url:"/resources/nodes/addedit/:id",
-      templateUrl: "partials/nodes/node-add-edit.html",
+      templateUrl: "partials/nodes/node-add-edit.html?mcv=${mc.gui.version}",
       controller: "NodesControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('nodesDetail', {
       url:"/resources/nodes/detail/:id",
-      templateUrl: "partials/nodes/node-detail.html",
+      templateUrl: "partials/nodes/node-detail.html?mcv=${mc.gui.version}",
       controller: "NodesControllerDetail",
        data: {
         requireLogin: true
       }
     }).state('sensorsList', {
       url:"/resources/sensors/list/:nodeId",
-      templateUrl: "partials/sensors/sensors-list.html",
+      templateUrl: "partials/sensors/sensors-list.html?mcv=${mc.gui.version}",
       controller: "SensorsController",
       data: {
         requireLogin: true
       }
     }).state('sensorsAddEdit', {
       url:"/resources/sensors/addedit/:id",
-      templateUrl: "partials/sensors/sensor-add-edit.html",
+      templateUrl: "partials/sensors/sensor-add-edit.html?mcv=${mc.gui.version}",
       controller: "SensorsControllerAddEdit",
       data: {
         requireLogin: true
       }
     }).state('sensorVariablePurge', {
       url:"/resources/sensorvariable/purge/:id",
-      templateUrl: "partials/sensors/sensor-variable-purge.html",
+      templateUrl: "partials/sensors/sensor-variable-purge.html?mcv=${mc.gui.version}",
       controller: "SensorVariableControllerPurge",
       data: {
         requireLogin: true
       }
     }).state('sensorVariableEdit', {
       url:"/resources/sensorvariable/edit/:id",
-      templateUrl: "partials/sensors/sensor-variable-edit.html",
+      templateUrl: "partials/sensors/sensor-variable-edit.html?mcv=${mc.gui.version}",
       controller: "SensorVariableControllerEdit",
       data: {
         requireLogin: true
       }
     }).state('sensorsDetail', {
       url:"/resources/sensors/detail/:id",
-      templateUrl: "partials/sensors/sensors-detail.html",
+      templateUrl: "partials/sensors/sensors-detail.html?mcv=${mc.gui.version}",
       controller: "SensorsControllerDetail",
       data: {
         requireLogin: true
       }
     }).state('rulesList', {
       url:"/resources/rules/list/:resourceType/:resourceId",
-      templateUrl: "partials/rule-engine/rules-list.html",
+      templateUrl: "partials/rule-engine/rules-list.html?mcv=${mc.gui.version}",
       controller: "RuleEngineController",
        data: {
         requireLogin: true
       }
     }).state('rulesAddEdit', {
       url:"/resources/rules/addedit/:id/:action",
-      templateUrl: "partials/rule-engine/rules-add-edit.html",
+      templateUrl: "partials/rule-engine/rules-add-edit.html?mcv=${mc.gui.version}",
       controller: "RuleEngineControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('operationsList', {
       url:"/resources/operations/list",
-      templateUrl: "partials/operations/operations-list.html",
+      templateUrl: "partials/operations/operations-list.html?mcv=${mc.gui.version}",
       controller: "OperationsController",
        data: {
         requireLogin: true
       }
     }).state('operationsAddEdit', {
       url:"/resources/operations/addedit/:id/:action",
-      templateUrl: "partials/operations/operations-add-edit.html",
+      templateUrl: "partials/operations/operations-add-edit.html?mcv=${mc.gui.version}",
       controller: "OperationsControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('forwardPayloadList', {
       url:"/resources/forwardpayload/list/:sensorId",
-      templateUrl: "partials/forward-payload/forward-payload-list.html",
+      templateUrl: "partials/forward-payload/forward-payload-list.html?mcv=${mc.gui.version}",
       controller: "ForwardPayloadController",
        data: {
         requireLogin: true
       }
     }).state('forwardPayloadAddEdit', {
       url:"/resources/forwardpayload/addedit/:id",
-      templateUrl: "partials/forward-payload/forward-payload-add-edit.html",
+      templateUrl: "partials/forward-payload/forward-payload-add-edit.html?mcv=${mc.gui.version}",
       controller: "ForwardPayloadControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('resourcesGroupList', {
       url:"/resources/groups/list/:resourceType/:resourceId",
-      templateUrl: "partials/resources-group/resources-group-list.html",
+      templateUrl: "partials/resources-group/resources-group-list.html?mcv=${mc.gui.version}",
       controller: "ResourcesGroupController",
        data: {
         requireLogin: true
       }
     }).state('resourcesGroupAddEdit', {
       url:"/resources/groups/addedit/:id",
-      templateUrl: "partials/resources-group/resources-group-add-edit.html",
+      templateUrl: "partials/resources-group/resources-group-add-edit.html?mcv=${mc.gui.version}",
       controller: "ResourcesGroupControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('timersList', {
       url:"/resources/timers/list/:resourceType/:resourceId",
-      templateUrl: "partials/timers/timers-list.html",
+      templateUrl: "partials/timers/timers-list.html?mcv=${mc.gui.version}",
       controller: "TimersController",
        data: {
         requireLogin: true
       }
     }).state('timersAddEdit', {
       url:"/resources/timers/addedit/:id/:action",
-      templateUrl: "partials/timers/timer-add-edit.html",
+      templateUrl: "partials/timers/timer-add-edit.html?mcv=${mc.gui.version}",
       controller: "TimersControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('resourcesGroupMapList', {
       url:"/resources/groups/map/list/:id",
-      templateUrl: "partials/resources-group/resources-group-map-list.html",
+      templateUrl: "partials/resources-group/resources-group-map-list.html?mcv=${mc.gui.version}",
       controller: "ResourcesGroupMapController",
        data: {
         requireLogin: true
       }
     }).state('resourcesGroupMapAddEdit', {
       url:"/resources/groups/map/addedit/:groupId/:id",
-      templateUrl: "partials/resources-group/resources-group-map-add-edit.html",
+      templateUrl: "partials/resources-group/resources-group-map-add-edit.html?mcv=${mc.gui.version}",
       controller: "ResourcesGroupMapControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('roomsList', {
       url:"/resources/rooms/list",
-      templateUrl: "partials/rooms/rooms-list.html",
+      templateUrl: "partials/rooms/rooms-list.html?mcv=${mc.gui.version}",
       controller: "RoomsControllerList",
        data: {
         requireLogin: true
       }
     }).state('roomsAddEdit', {
       url:"/resources/rooms/addedit/:id",
-      templateUrl: "partials/rooms/rooms-add-edit.html",
+      templateUrl: "partials/rooms/rooms-add-edit.html?mcv=${mc.gui.version}",
       controller: "RoomsControllerAddEdit",
        data: {
         requireLogin: true
@@ -279,14 +279,14 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
     /* Action board */
     .state('actionBoardSensorsList', {
       url:"/actionboard/sensorsaction/list",
-      templateUrl: "partials/action-board/sensors-action-list.html",
+      templateUrl: "partials/action-board/sensors-action-list.html?mcv=${mc.gui.version}",
       controller: "SensorsActionControllerList",
        data: {
         requireLogin: true
       }
     }).state('sendRawMessage', {
       url:"/actionboard/sendrawmessage",
-      templateUrl: "partials/send-raw-message/send-raw-message.html",
+      templateUrl: "partials/send-raw-message/send-raw-message.html?mcv=${mc.gui.version}",
       controller: "SendRawMessageController",
        data: {
         requireLogin: true
@@ -296,35 +296,35 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
     /* Status */
     .state('aboutMyController', {
       url:"/status/about",
-      templateUrl: "partials/status/about.html",
+      templateUrl: "partials/status/about.html?mcv=${mc.gui.version}",
       controller: "McAboutController",
       data: {
         requireLogin: true
       }
     }).state('statusSystem', {
       url:"/status/system",
-      templateUrl: "partials/status/system-status.html",
+      templateUrl: "partials/status/system-status.html?mcv=${mc.gui.version}",
       controller: "StatusSystemController",
       data: {
         requireLogin: true
       }
     }).state('resourcesLogsList', {
       url:"/status/resourceslogs/:resourceType/:resourceId",
-      templateUrl: "partials/resources-logs/resources-logs-list.html",
+      templateUrl: "partials/resources-logs/resources-logs-list.html?mcv=${mc.gui.version}",
       controller: "ResourcesLogsController",
       data: {
         requireLogin: true
       }
     }).state('resourcesLogsPurge', {
       url:"/status/resourceslogs/purge",
-      templateUrl: "partials/resources-logs/resources-logs-purge.html",
+      templateUrl: "partials/resources-logs/resources-logs-purge.html?mcv=${mc.gui.version}",
       controller: "ResourcesLogsPurgeController",
       data: {
         requireLogin: true
       }
     }).state('mycontrollerLogList', {
       url:"/status/log/mycontroller",
-      templateUrl: "partials/status/mc-log-list.html",
+      templateUrl: "partials/status/mc-log-list.html?mcv=${mc.gui.version}",
       controller: "StatusMcLogController",
       data: {
         requireLogin: true
@@ -334,133 +334,133 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
     /* Utilities */
     .state('scriptsList', {
       url:"/utilities/scripts/list",
-      templateUrl: "partials/scripts/scripts-list.html",
+      templateUrl: "partials/scripts/scripts-list.html?mcv=${mc.gui.version}",
       controller: "ScriptsController",
        data: {
         requireLogin: true
       }
     }).state('scriptsAddEdit', {
       url:"/utilities/scripts/addedit/:name",
-      templateUrl: "partials/scripts/scripts-add-edit.html",
+      templateUrl: "partials/scripts/scripts-add-edit.html?mcv=${mc.gui.version}",
       controller: "ScriptsControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('templatesList', {
       url:"/utilities/templates/list",
-      templateUrl: "partials/templates/templates-list.html",
+      templateUrl: "partials/templates/templates-list.html?mcv=${mc.gui.version}",
       controller: "TemplatesController",
        data: {
         requireLogin: true
       }
     }).state('templatesAddEdit', {
       url:"/utilities/templates/addedit/:name",
-      templateUrl: "partials/templates/templates-add-edit.html",
+      templateUrl: "partials/templates/templates-add-edit.html?mcv=${mc.gui.version}",
       controller: "TemplatesControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('additionalHeadersUpdate', {
       url:"/utilities/additionalheaders/update",
-      templateUrl: "partials/additional-headers/additional-headers-update.html",
+      templateUrl: "partials/additional-headers/additional-headers-update.html?mcv=${mc.gui.version}",
       controller: "AdditionalHeadersUpdateController",
        data: {
         requireLogin: true
       }
     }).state('variablesRepositoryList', {
       url:"/utilities/variables/list",
-      templateUrl: "partials/variables-repository/variables-list.html",
+      templateUrl: "partials/variables-repository/variables-list.html?mcv=${mc.gui.version}",
       controller: "VariablesRepositoryController",
        data: {
         requireLogin: true
       }
     }).state('variablesRepositoryAddEdit', {
       url:"/utilities/variables/addedit/:id",
-      templateUrl: "partials/variables-repository/variables-add-edit.html",
+      templateUrl: "partials/variables-repository/variables-add-edit.html?mcv=${mc.gui.version}",
       controller: "VariablesRepositoryControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('firmwaresList', {
       url:"/utilities/firmwares/list",
-      templateUrl: "partials/firmwares/firmwares-list.html",
+      templateUrl: "partials/firmwares/firmwares-list.html?mcv=${mc.gui.version}",
       controller: "FirmwaresController",
        data: {
         requireLogin: true
       }
     }).state('firmwaresAddEdit', {
       url:"/utilities/firmwares/addedit/:id",
-      templateUrl: "partials/firmwares/firmwares-add-edit.html",
+      templateUrl: "partials/firmwares/firmwares-add-edit.html?mcv=${mc.gui.version}",
       controller: "FirmwaresControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('firmwaresTypeList', {
       url:"/utilities/firmwares/type/list",
-      templateUrl: "partials/firmwares/firmwares-type-list.html",
+      templateUrl: "partials/firmwares/firmwares-type-list.html?mcv=${mc.gui.version}",
       controller: "FirmwaresTypeController",
        data: {
         requireLogin: true
       }
     }).state('firmwaresTypeAddEdit', {
       url:"/utilities/firmwares/type/addedit/:id",
-      templateUrl: "partials/firmwares/firmwares-type-add-edit.html",
+      templateUrl: "partials/firmwares/firmwares-type-add-edit.html?mcv=${mc.gui.version}",
       controller: "FirmwaresTypeControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('firmwaresVersionList', {
       url:"/utilities/firmwares/version/list",
-      templateUrl: "partials/firmwares/firmwares-version-list.html",
+      templateUrl: "partials/firmwares/firmwares-version-list.html?mcv=${mc.gui.version}",
       controller: "FirmwaresVersionController",
        data: {
         requireLogin: true
       }
     }).state('firmwaresVersionAddEdit', {
       url:"/utilities/firmwares/version/addedit/:id",
-      templateUrl: "partials/firmwares/firmwares-version-add-edit.html",
+      templateUrl: "partials/firmwares/firmwares-version-add-edit.html?mcv=${mc.gui.version}",
       controller: "FirmwaresVersionControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('uidTagsList', {
       url:"/utilities/uidtags/list",
-      templateUrl: "partials/uid-tags/uid-tags-list.html",
+      templateUrl: "partials/uid-tags/uid-tags-list.html?mcv=${mc.gui.version}",
       controller: "UidTagsController",
        data: {
         requireLogin: true
       }
     }).state('uidTagsAddEdit', {
       url:"/utilities/uidtags/addedit/:id",
-      templateUrl: "partials/uid-tags/uid-tags-add-edit.html",
+      templateUrl: "partials/uid-tags/uid-tags-add-edit.html?mcv=${mc.gui.version}",
       controller: "UidTagsControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('resourcesDataList', {
       url:"/utilities/resourcesdata/list",
-      templateUrl: "partials/resources-data/resources-data-list.html",
+      templateUrl: "partials/resources-data/resources-data-list.html?mcv=${mc.gui.version}",
       controller: "ResourcesDataController",
        data: {
         requireLogin: true
       }
     }).state('resourcesDataAddEdit', {
       url:"/utilities/resourcesdata/addedit/:id",
-      templateUrl: "partials/resources-data/resources-data-add-edit.html",
+      templateUrl: "partials/resources-data/resources-data-add-edit.html?mcv=${mc.gui.version}",
       controller: "ResourcesDataControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('externalServersList', {
       url:"/utilities/externalserver/list",
-      templateUrl: "partials/external-servers/external-servers-list.html",
+      templateUrl: "partials/external-servers/external-servers-list.html?mcv=${mc.gui.version}",
       controller: "ExternalServerController",
        data: {
         requireLogin: true
       }
     }).state('externalServersAddEdit', {
       url:"/utilities/externalserver/addedit/:id",
-      templateUrl: "partials/external-servers/external-server-add-edit.html",
+      templateUrl: "partials/external-servers/external-server-add-edit.html?mcv=${mc.gui.version}",
       controller: "ExternalServersControllerAddEdit",
        data: {
         requireLogin: true
@@ -470,98 +470,98 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
     /* Settings */
     .state('settingsProfileUpdate', {
       url:"/settings/profile/update",
-      templateUrl: "partials/users-roles/profile-update.html",
+      templateUrl: "partials/users-roles/profile-update.html?mcv=${mc.gui.version}",
       controller: "ProfileControllerUpdate",
        data: {
         requireLogin: true
       }
     }).state('settingsSystem', {
       url:"/settings/system",
-      templateUrl: "partials/settings/settings-system.html",
+      templateUrl: "partials/settings/settings-system.html?mcv=${mc.gui.version}",
       controller: "SettingsSystemController",
        data: {
         requireLogin: true
       }
     }).state('settingsNotifications', {
       url:"/settings/notifications",
-      templateUrl: "partials/settings/settings-notifications.html",
+      templateUrl: "partials/settings/settings-notifications.html?mcv=${mc.gui.version}",
       controller: "SettingsNotificationsController",
        data: {
         requireLogin: true
       }
     }).state('settingsMqttBroker', {
       url:"/settings/mqttbroker",
-      templateUrl: "partials/settings/settings-mqtt-broker.html",
+      templateUrl: "partials/settings/settings-mqtt-broker.html?mcv=${mc.gui.version}",
       controller: "SettingsMqttBrokerController",
        data: {
         requireLogin: true
       }
     }).state('settingsMetrics', {
       url:"/settings/metrics",
-      templateUrl: "partials/settings/settings-metrics.html",
+      templateUrl: "partials/settings/settings-metrics.html?mcv=${mc.gui.version}",
       controller: "SettingsMetricsController",
        data: {
         requireLogin: true
       }
     }).state('settingsMySensors', {
       url:"/settings/mysensors",
-      templateUrl: "partials/settings/settings-mysensors.html",
+      templateUrl: "partials/settings/settings-mysensors.html?mcv=${mc.gui.version}",
       controller: "SettingsSystemMySensors",
        data: {
         requireLogin: true
       }
     }).state('settingsVariablesMapperList', {
       url:"/settings/variablesmapper/list",
-      templateUrl: "partials/variables-mapper/variables-mapper-list.html",
+      templateUrl: "partials/variables-mapper/variables-mapper-list.html?mcv=${mc.gui.version}",
       controller: "VariablesMapperListController",
        data: {
         requireLogin: true
       }
     }).state('settingsVariablesMapperEdit', {
       url:"/settings/variablesmapper/edit/:sensorType",
-      templateUrl: "partials/variables-mapper/variables-mapper-edit.html",
+      templateUrl: "partials/variables-mapper/variables-mapper-edit.html?mcv=${mc.gui.version}",
       controller: "VariablesMapperEditController",
        data: {
         requireLogin: true
       }
     }).state('settingsUsersList', {
       url:"/settings/users/list",
-      templateUrl: "partials/users-roles/users-list.html",
+      templateUrl: "partials/users-roles/users-list.html?mcv=${mc.gui.version}",
       controller: "UsersControllerList",
        data: {
         requireLogin: true
       }
     }).state('settingsUsersAddEdit', {
       url:"/settings/users/addedit/:id",
-      templateUrl: "partials/users-roles/users-add-edit.html",
+      templateUrl: "partials/users-roles/users-add-edit.html?mcv=${mc.gui.version}",
       controller: "UsersControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('settingsRolesList', {
       url:"/settings/roles/list",
-      templateUrl: "partials/users-roles/roles-list.html",
+      templateUrl: "partials/users-roles/roles-list.html?mcv=${mc.gui.version}",
       controller: "RolesControllerList",
        data: {
         requireLogin: true
       }
     }).state('settingsRolesAddEdit', {
       url:"/settings/roles/addedit/:id",
-      templateUrl: "partials/users-roles/roles-add-edit.html",
+      templateUrl: "partials/users-roles/roles-add-edit.html?mcv=${mc.gui.version}",
       controller: "RolesControllerAddEdit",
        data: {
         requireLogin: true
       }
     }).state('settingsBackupList', {
       url:"/settings/backup/list",
-      templateUrl: "partials/backup/backup-list.html",
+      templateUrl: "partials/backup/backup-list.html?mcv=${mc.gui.version}",
       controller: "BackupControllerList",
        data: {
         requireLogin: true
       }
     }).state('settingsBackupAuto', {
       url:"/settings/backup/settings",
-      templateUrl: "partials/backup/automatic-backup-settings.html",
+      templateUrl: "partials/backup/automatic-backup-settings.html?mcv=${mc.gui.version}",
       controller: "BackupControllerAutoSettings",
        data: {
         requireLogin: true
@@ -571,7 +571,7 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
     /* Login */
     .state('login', {
       url:"/login",
-      templateUrl: "partials/authentication/login.html",
+      templateUrl: "partials/authentication/login.html?mcv=${mc.gui.version}",
       controller: "LoginController",
       data: {
         requireLogin: false
@@ -768,7 +768,8 @@ myControllerModule.filter('mcResourceRepresentation', function() {
     if(text === undefined){
       return undefined;
     }
-    return text.replace(/>>/g, '<i class="fa fa-chevron-right"></i>')
+    return text.replace(/>>>/g, '<i class="fa fa-forward"></i>')
+               .replace(/>>/g, '<i class="fa fa-chevron-right"></i>')
                .replace(/\[RG\]:/g, '<i class="pficon pficon-replicator fa-lg mc-margin-icon"></i> ')
                .replace(/\[G\]:/g, '<i class="fa fa-plug"></i> ')
                .replace(/\[N\]:/g, '<i class="fa fa-sitemap"></i> ')

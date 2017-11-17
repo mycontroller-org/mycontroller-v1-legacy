@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.loggers.LoggerMySql;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
@@ -133,14 +134,18 @@ public class AppProperties {
     public enum MC_LANGUAGE {
         CA_ES("català (ES)"),
         CS_CZ("čeština (CZ)"),
+        DA_DK("Dansk (DK)"),
         DE_DE("Deutsch (DE)"),
         EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
-        HU_HU("Magyar (HU)"),
-        MK_MK("Македонски (MK)"),
         FR_FR("Français (FR)"),
+        HE_IL("עִברִית (IL)"),
+        HU_HU("Magyar (HU)"),
+        IT_IT("italiano (IT)"),
+        MK_MK("Македонски (MK)"),
         NL_NL("Nederlands (NL)"),
+        NO_NO("norsk (NO)"),
         PT_BR("Português (BR)"),
         RO_RO("Română (RO)"),
         RU_RU("Русский (RU)"),
@@ -255,8 +260,9 @@ public class AppProperties {
         MY_SENSORS("MySensors"),
         PHANT_IO("Sparkfun [phant.io]"),
         MY_CONTROLLER("MyController"),
-        RF_LINK("RF link"),
-        PHILIPS_HUE("Philips Hue");
+        RF_LINK("RFLink"),
+        PHILIPS_HUE("Philips Hue"),
+        WUNDERGROUND("Weather Underground");
 
         private final String type;
 
@@ -298,7 +304,8 @@ public class AppProperties {
         RULE_DEFINITION("Rule definition"),
         TIMER("Timer"),
         SCRIPT("Script"),
-        UID_TAG("UID tag");
+        UID_TAG("UID tag"),
+        FORWARD_PAYLOAD("Forward payload");
         public static RESOURCE_TYPE get(int id) {
             for (RESOURCE_TYPE trigger_type : values()) {
                 if (trigger_type.ordinal() == id) {
@@ -398,6 +405,12 @@ public class AppProperties {
         }
     }
 
+    public enum ALPHABETICAL_CASE {
+        DEFAULT,
+        LOWER,
+        UPPER;
+    }
+
     public static AppProperties getInstance() {
         return _instance;
     }
@@ -437,11 +450,11 @@ public class AppProperties {
         this.dbBackupInclude = McUtils.getBoolean(getValue(properties, "mcc.db.backup.include", "False"));
         dbUrl = getValue(properties, "mcc.db.url", "jdbc:h2:file:../conf/mycontroller;MVCC=TRUE");
         if (this.dbType == DB_TYPE.MYSQL) {
-            String mySqlLogger = "logger=org.mycontroller.standalone.loggers.LoggerMySql";
+            String mySqlLogger = "logger=" + LoggerMySql.class.getCanonicalName();
             if (dbUrl.indexOf('?') != -1) {
-                dbUrl = dbUrl + "?" + mySqlLogger;
-            } else {
                 dbUrl = dbUrl + "&" + mySqlLogger;
+            } else {
+                dbUrl = dbUrl + "?" + mySqlLogger;
             }
         }
         dbUsername = getValue(properties, "mcc.db.username", "mycontroller");
@@ -480,9 +493,14 @@ public class AppProperties {
     }
 
     public void createDirectoryLocation(String directoryLocation) {
-        if (!FileUtils.getFile(directoryLocation).exists()) {
-            if (FileUtils.getFile(directoryLocation).mkdirs()) {
-                _logger.info("Created directory location: {}", directoryLocation);
+        File dir = FileUtils.getFile(directoryLocation);
+        if (!dir.exists()) {
+            if (dir.mkdirs()) {
+                try {
+                    _logger.info("Created directory location: [{}]", dir.getCanonicalPath());
+                } catch (IOException ex) {
+                    _logger.error("Failed to get CanonicalPath path of '{}'", directoryLocation);
+                }
             } else {
                 _logger.error("Unable to create directory location: {}", directoryLocation);
             }

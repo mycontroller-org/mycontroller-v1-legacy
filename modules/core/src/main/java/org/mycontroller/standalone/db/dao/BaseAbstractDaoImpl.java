@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
-import org.mycontroller.standalone.api.jaxrs.json.AllowedResources;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
-import org.mycontroller.standalone.api.jaxrs.json.QueryResponse;
+import org.mycontroller.standalone.api.jaxrs.model.AllowedResources;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
+import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -452,19 +452,23 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         }
     }
 
-    public long countOf(HashMap<String, List<Object>> columnValues) {
+    public long countOf(HashMap<String, Object> columnValues) {
         try {
             QueryBuilder<Tdao, Tid> queryBuilder = this.getDao().queryBuilder();
             Where<Tdao, Tid> where = queryBuilder.where();
-            boolean appendAND = false;
+            int andCount = 0;
             for (String key : columnValues.keySet()) {
-                if (appendAND) {
-                    where.and();
+                if (columnValues.get(key) instanceof List<?>) {
+                    where.in(key, columnValues.get(key));
                 } else {
-                    appendAND = true;
+                    where.eq(key, columnValues.get(key));
                 }
-                where.in(key, columnValues.get(key));
+                andCount++;
             }
+            if (andCount > 1) {
+                where.and(andCount);
+            }
+            queryBuilder.setWhere(where);
             return queryBuilder.countOf();
         } catch (SQLException ex) {
             _logger.error("unable to get count for query, input[{}]", columnValues, ex);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ import org.h2.store.fs.FileUtils;
 import org.mycontroller.standalone.AppProperties;
 
 import io.moquette.server.config.IConfig;
+import io.moquette.server.config.IResourceLoader;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -38,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.2
  */
 @Slf4j
-public class BrokerConfiguration implements IConfig {
+public class BrokerConfiguration extends IConfig {
 
     private final Properties m_properties = new Properties();
 
@@ -91,6 +92,11 @@ public class BrokerConfiguration implements IConfig {
         _logger.debug("Get property with default value [name:{}, value:{}, defaultValue:{}]", name,
                 m_properties.getProperty(name), defaultValue);
         return m_properties.getProperty(name, defaultValue);
+    }
+
+    @Override
+    public IResourceLoader getResourceLoader() {
+        return null;
     }
 
 }

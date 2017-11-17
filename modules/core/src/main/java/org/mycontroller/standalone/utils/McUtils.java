@@ -96,7 +96,7 @@ public class McUtils {
     }
 
     public static Double getDouble(String value, int scale) {
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             return round(Double.valueOf(value), scale);
         }
         return null;
@@ -139,6 +139,10 @@ public class McUtils {
         } else {
             return null;
         }
+    }
+
+    public static Long getLong(Object value) {
+        return getLong(String.valueOf(value));
     }
 
     public static Long getLong(String value) {
@@ -317,7 +321,17 @@ public class McUtils {
             }
             _logger.debug("Writing '{}' to zip file", file.getAbsolutePath());
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-            zos.putNextEntry(new ZipEntry(file.getCanonicalPath().replace(removePrefix, "")));
+            String directoryName = file.getParentFile().getCanonicalPath().replace(removePrefix, "");
+            if (File.separator.equals("\\")) {
+                directoryName = directoryName.replaceAll("\\\\", "/");
+            }
+            String finalName = directoryName + "/" + file.getName();
+            if (finalName.startsWith("/")) {
+                finalName = finalName.substring(1);
+            }
+            _logger.debug("Filename:[{}], removePrefix:{}, finalName:[{}]",
+                    file.getCanonicalPath(), removePrefix, finalName);
+            zos.putNextEntry(new ZipEntry(finalName));
 
             int length;
             while ((length = fis.read(bytes)) >= 0) {

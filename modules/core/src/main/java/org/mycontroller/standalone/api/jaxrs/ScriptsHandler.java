@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,9 +32,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.mycontroller.standalone.api.jaxrs.json.ApiError;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.PyTypeSerializer;
+import org.mycontroller.standalone.api.jaxrs.model.ApiError;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils.SCRIPT_TYPE;
@@ -42,6 +42,8 @@ import org.mycontroller.standalone.utils.McScriptFileUtils;
 import org.python.core.PyType;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -52,6 +54,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "Admin" })
+@Slf4j
 public class ScriptsHandler extends AccessEngine {
     public static final String KEY_TYPE = "type";
     public static final String KEY_NAME = "name";
@@ -144,6 +147,7 @@ public class ScriptsHandler extends AccessEngine {
             }
             return RestUtils.getResponse(Status.OK, RestUtils.getObjectMapper().writeValueAsString(bindingsFinal));
         } catch (Exception ex) {
+            _logger.error("Exception,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }

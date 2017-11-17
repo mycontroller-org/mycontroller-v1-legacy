@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -140,7 +140,8 @@ public class OperationSendEmail extends Operation {
             emailBody = builder.toString();
         }
 
-        HashMap<String, Object> bindings = getTemplateBindings();
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> bindings = (HashMap<String, Object>) getTemplateBindings().clone();
         bindings.put("notification", notification);
         sendEmail(emailBody, bindings);
         //Update last execution
@@ -148,6 +149,7 @@ public class OperationSendEmail extends Operation {
         DaoUtils.getOperationDao().update(this.getOperationTable());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute(Timer timer) {
         if (!getEnabled()) {
@@ -170,7 +172,7 @@ public class OperationSendEmail extends Operation {
             builder.append("\n\n\n-- Powered by").append(" www.MyController.org");
             emailBody = builder.toString();
         }
-        sendEmail(emailBody, getTemplateBindings());
+        sendEmail(emailBody, (HashMap<String, Object>) getTemplateBindings().clone());
     }
 
     private void sendEmail(String emailBody, HashMap<String, Object> bindings) {

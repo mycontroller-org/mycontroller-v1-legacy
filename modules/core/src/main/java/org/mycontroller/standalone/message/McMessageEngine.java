@@ -35,10 +35,6 @@ import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareData;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.GatewayTable;
-import org.mycontroller.standalone.db.tables.MetricsBatteryUsage;
-import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
-import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.db.tables.MetricsGPSTypeDevice;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -54,8 +50,11 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTAT
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.message.McMessageUtils.PAYLOAD_TYPE;
-import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
+import org.mycontroller.standalone.metrics.DATA_TYPE;
+import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
+import org.mycontroller.standalone.metrics.model.DataPointer;
+import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.provider.mc.structs.McFirmwareConfig;
 import org.mycontroller.standalone.provider.mc.structs.McFirmwareRequest;
 import org.mycontroller.standalone.provider.mc.structs.McFirmwareResponse;
@@ -65,7 +64,6 @@ import org.mycontroller.standalone.provider.mysensors.structs.FirmwareConfigResp
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareRequest;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareResponse;
 import org.mycontroller.standalone.rule.McRuleEngine;
-import org.mycontroller.standalone.uidtag.ExecuteUidTag;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -80,19 +78,6 @@ public class McMessageEngine implements Runnable {
     private McMessage mcMessage;
 
     public McMessageEngine(McMessage mcMessage) {
-        switch (mcMessage.getNetworkType()) {
-            case MY_SENSORS:
-                if (mcMessage.getNodeEui().equals("255")) {
-                    mcMessage.setNodeEui(McMessage.NODE_BROADCAST_ID);
-                }
-                if (mcMessage.getSensorId().equals("255")) {
-                    mcMessage.setSensorId(McMessage.SENSOR_BROADCAST_ID);
-                }
-                break;
-            default:
-                //Nothing to do
-                break;
-        }
         this.mcMessage = mcMessage;
     }
 
@@ -253,18 +238,12 @@ public class McMessageEngine implements Runnable {
                 node.setBatteryLevel(mcMessage.getPayload());
                 updateNode(node);
                 //Update battery level in to metrics table
-                MetricsBatteryUsage batteryUsage = MetricsBatteryUsage.builder()
-                        .node(node)
+                MetricsUtils.engine().post(DataPointer.builder()
+                        .payload(mcMessage.getPayload())
                         .timestamp(System.currentTimeMillis())
-                        .aggregationType(AGGREGATION_TYPE.RAW)
-                        .avg(McUtils.getDouble(mcMessage.getPayload()))
-                        .min(McUtils.getDouble(mcMessage.getPayload()))
-                        .max(McUtils.getDouble(mcMessage.getPayload()))
-                        .samples(1)
-                        .build();
-
-                DaoUtils.getMetricsBatteryUsageDao().create(batteryUsage);
-
+                        .resourceModel(new ResourceModel(RESOURCE_TYPE.NODE, node))
+                        .dataType(DATA_TYPE.NODE_BATTERY_USAGE)
+                        .build());
                 break;
             case I_TIME:
                 if (mcMessage.isTxMessage()) {
@@ -372,6 +351,29 @@ public class McMessageEngine implements Runnable {
             case I_ID_RESPONSE:
                 _logger.debug("Internal Message, Type:I_ID_RESPONSE[{}]", mcMessage);
                 return;
+            case I_POST_SLEEP_NOTIFICATION:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                //Update sleep duration
+                Long sleepDuration = McUtils.getLong(mcMessage.getPayload());
+                node = getNode(mcMessage);
+                node.setState(STATE.UP);
+                node.setProperty(Node.KEY_SMART_SLEEP_DURATION, sleepDuration);
+                updateNode(node);
+                break;
+            case I_PRE_SLEEP_NOTIFICATION:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                //Update sleep wait duration
+                Long sleepWaitDuration = McUtils.getLong(mcMessage.getPayload());
+                node = getNode(mcMessage);
+                node.setState(STATE.UP);
+                node.setProperty(Node.KEY_SMART_SLEEP_WAIT_DURATION, sleepWaitDuration);
+                updateNode(node);
+                sendSleepMessages(node, mcMessage);
+                break;
             case I_HEARTBEAT:
             case I_HEARTBEAT_RESPONSE:
                 if (mcMessage.isTxMessage()) {
@@ -380,10 +382,7 @@ public class McMessageEngine implements Runnable {
                 node = getNode(mcMessage);
                 node.setState(STATE.UP);
                 updateNode(node);
-                if (node.getSmartSleepEnabled()) {
-                    new Thread(new SmartSleepMessageTxThread(
-                            mcMessage.getGatewayId(), mcMessage.getNodeEui())).start();
-                }
+                sendSleepMessages(node, mcMessage);
                 break;
             case I_DISCOVER:
                 if (mcMessage.isTxMessage()) {
@@ -453,6 +452,13 @@ public class McMessageEngine implements Runnable {
                                 + "This type may not be supported (or) not implemented yet",
                         MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()), mcMessage);
                 break;
+        }
+    }
+
+    private void sendSleepMessages(Node node, McMessage mcMessage) {
+        if (node.getSmartSleepEnabled()) {
+            new Thread(new SmartSleepMessageTxThread(
+                    mcMessage.getGatewayId(), mcMessage.getNodeEui())).start();
         }
     }
 
@@ -847,7 +853,7 @@ public class McMessageEngine implements Runnable {
             //ResourcesLogs message data
             if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.WARNING)) {
                 this.setSensorVariableData(LOG_LEVEL.WARNING, MESSAGE_TYPE.C_REQ, sensorVariable, mcMessage,
-                        "Failed: Data not available in " + AppProperties.APPLICATION_NAME);
+                        "Failed: No data available for this variable");
             }
             _logger.warn("Data not available! but there is request from sensor[{}], Ignored this request!", mcMessage);
         }
@@ -862,7 +868,7 @@ public class McMessageEngine implements Runnable {
             String data = null;
             switch (metricType) {
                 case BINARY:
-                    data = mcMessage.getPayload().equalsIgnoreCase("0") ? "0" : "1";
+                    data = mcMessage.getPayload().equalsIgnoreCase("1") ? "1" : "0";
                     break;
                 case COUNTER:
                     data = String.valueOf(McUtils.getLong(mcMessage.getPayload()));
@@ -1014,66 +1020,17 @@ public class McMessageEngine implements Runnable {
         sensor.setLastSeen(System.currentTimeMillis());
         DaoUtils.getSensorDao().update(sensor);
 
-        switch (sensorVariable.getMetricType()) {
-            case DOUBLE:
-                DaoUtils.getMetricsDoubleTypeDeviceDao()
-                        .create(MetricsDoubleTypeDevice.builder()
-                                .sensorVariable(sensorVariable)
-                                .aggregationType(AGGREGATION_TYPE.RAW)
-                                .timestamp(sensorVariable.getTimestamp())
-                                .avg(McUtils.getDouble(sensorVariable.getValue()))
-                                .min(McUtils.getDouble(sensorVariable.getValue()))
-                                .max(McUtils.getDouble(sensorVariable.getValue()))
-                                .samples(1).build());
-
-                break;
-            case BINARY:
-                DaoUtils.getMetricsBinaryTypeDeviceDao()
-                        .create(MetricsBinaryTypeDevice.builder()
-                                .sensorVariable(sensorVariable)
-                                .timestamp(sensorVariable.getTimestamp())
-                                .state(McUtils.getBoolean(sensorVariable.getValue())).build());
-                break;
-            case COUNTER:
-                DaoUtils.getMetricsCounterTypeDeviceDao()
-                        .create(MetricsCounterTypeDevice.builder()
-                                .sensorVariable(sensorVariable)
-                                .aggregationType(AGGREGATION_TYPE.RAW)
-                                .timestamp(sensorVariable.getTimestamp())
-                                .value(McUtils.getLong(mcMessage.getPayload()))
-                                .samples(1).build());
-                break;
-            case GPS:
-                MetricsGPSTypeDevice gpsData = MetricsGPSTypeDevice.get(mcMessage.getPayload(),
-                        mcMessage.getTimestamp());
-                gpsData.setSensorVariable(sensorVariable);
-                DaoUtils.getMetricsGPSTypeDeviceDao().create(gpsData);
-                break;
-            case NONE:
-                //For None type nothing to do.
-                break;
-            default:
-                _logger.debug(
-                        "This type not be implemented yet, PayloadType:{}, MessageType:{}, McMessage:{}",
-                        payloadType, MESSAGE_TYPE_SET_REQ.fromString(mcMessage.getSubType()).toString(),
-                        mcMessage.getPayload());
-                break;
-        }
+        //Update metric data to metric engine
+        MetricsUtils.engine().post(DataPointer.builder()
+                .payload(mcMessage.getPayload())
+                .timestamp(mcMessage.getTimestamp())
+                .resourceModel(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable))
+                .dataType(DATA_TYPE.SENSOR_VARIABLE)
+                .build());
 
         //ResourcesLogs message data
         if (ResourcesLogsUtils.isOnAllowedLevel(LOG_LEVEL.INFO)) {
             this.setSensorVariableData(LOG_LEVEL.INFO, MESSAGE_TYPE.C_SET, sensorVariable, mcMessage, null);
-        }
-
-        if (!mcMessage.isTxMessage()) {
-            //Execute UidTag
-            if (sensor.getType() != null
-                    && sensor.getType() != null
-                    && sensor.getType() == MESSAGE_TYPE_PRESENTATION.S_CUSTOM
-                    && sensorVariable.getVariableType() == MESSAGE_TYPE_SET_REQ.V_ID) {
-                ExecuteUidTag executeUidTag = new ExecuteUidTag(sensorVariable);
-                new Thread(executeUidTag).start();
-            }
         }
 
         //TODO: Forward Payload to another node, if any and only on receive from gateway

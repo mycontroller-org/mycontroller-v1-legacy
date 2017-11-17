@@ -99,11 +99,11 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.email" ng-click="sendTestEmail()"
               ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">
               <div ng-if="testing.email" class="spinner spinner-xs"></div>
-                {{testing.email? ('TESTING' | translate):('TEST_CONNECTION' | translate)}}
+                {{testing.email ? 'TESTING' : 'TEST_CONNECTION' | translate}}
             </button>
             <button type="button" class="btn btn-primary" ng-click="saveEmail()"  ng-show="editEnable.email" ng-disabled="saveProgress.email || mcFormEmailNotification.$invalid">
               <div ng-show="saveProgress.email" class="spinner spinner-xs"></div>
-              {{saveProgress.email? ('SAVING' | translate):('SAVE' | translate)}}
+              {{saveProgress.email ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>
@@ -162,7 +162,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.pushbullet" ng-click="updateSettingsPushbullet();editEnable.pushbullet = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="savePushbullet()"  ng-show="editEnable.pushbullet" ng-disabled="saveProgress.pushbullet || mcFormPushbulletNotification.$invalid">
               <div ng-show="saveProgress.pushbullet" class="spinner spinner-xs"></div>
-              {{saveProgress.pushbullet? ('SAVING' | translate):('SAVE' | translate)}}
+              {{saveProgress.pushbullet ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>
@@ -222,7 +222,7 @@
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.sms" ng-click="updateSettingsSms();editEnable.sms = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveSms()"  ng-show="editEnable.sms" ng-disabled="saveProgress.sms || mcFormSMSNotification.$invalid">
               <div ng-show="saveProgress.sms" class="spinner spinner-xs"></div>
-              {{saveProgress.sms? ('SAVING' | translate):('SAVE' | translate)}}
+              {{saveProgress.sms ? 'SAVING' : 'SAVE' | translate}}
             </button>
           </div>
         </div>

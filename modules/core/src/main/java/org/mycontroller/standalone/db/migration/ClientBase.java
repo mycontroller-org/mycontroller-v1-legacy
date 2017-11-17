@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -180,6 +180,31 @@ public class ClientBase {
     public void executeRaw(String rawQuery) throws SQLException {
         int count = DaoUtils.getUserDao().getDao().executeRaw(rawQuery);
         _logger.debug("count:{}", count);
+    }
+
+    protected String getIndexName(String indexSuffix, String tableName, String columnName) {
+        return getTableName(tableName) + "_" + getColumnName(columnName) + "_" + getColumnName(indexSuffix);
+    }
+
+    public void createIndex(String indexSuffix, String tableName, String columnName) throws SQLException {
+        if (hasColumn(tableName, columnName)) {
+            DaoUtils.getUserDao().getDao().executeRaw(
+                    "CREATE INDEX " + getIndexName(indexSuffix, tableName, columnName) + " ON "
+                            + getTableName(tableName) + "(" + getColumnName(columnName) + ")");
+        }
+    }
+
+    public String getDatabaseSchemaVersion() {
+        return AppProperties.getInstance().getControllerSettings().getDbVersion();
+    }
+
+    public int getDatabaseSchemaVersionInt() {
+        String schemaVersion = getDatabaseSchemaVersion(); //Example: 1.03.05 - 2016 Nov 18
+        int version = 0;
+        if (schemaVersion != null) {
+            version = Integer.valueOf(schemaVersion.split("-")[0].replaceAll("\\.", "").trim());
+        }
+        return version;
     }
 
 }

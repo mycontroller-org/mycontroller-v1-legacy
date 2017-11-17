@@ -305,10 +305,10 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
           value:"day-thunderstorm",
         },{
           id:"stable",
-          value:"na",
+          value:"day-sunny",
         },{
           id:"unstable",
-          value:"na",
+          value:"sprinkle",
         },{
           id:"na",
           value:"na",
@@ -522,6 +522,15 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
      return readableValue * timeConstant;
   };
 
+  //Update default graph margin settings
+  commonService.updateGraphMarginDefault = function(item){
+    if(item.marginTop === undefined){
+      item.marginTop = 5;
+      item.marginRight = 20;
+      item.marginBottom = 60;
+      item.marginLeft = 65;
+    }
+  }
 
  return commonService;
 

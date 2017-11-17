@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@ package org.mycontroller.standalone.api.jaxrs.mixins;
 
 import java.io.IOException;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.standalone.AppProperties.ALPHABETICAL_CASE;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.exernalserver.model.ExternalServer;
@@ -25,9 +27,9 @@ import org.mycontroller.standalone.exernalserver.model.ExternalServerEmoncms;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerInfluxdb;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerMqtt;
 import org.mycontroller.standalone.exernalserver.model.ExternalServerPhantIO;
+import org.mycontroller.standalone.exernalserver.model.ExternalServerWUnderground;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils;
 import org.mycontroller.standalone.externalserver.ExternalServerUtils.EXTERNAL_SERVER_TYPE;
-import org.mycontroller.standalone.restclient.RestFactory.TRUST_HOST_TYPE;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -117,12 +119,23 @@ class ExternalServerDeserializer extends JsonDeserializer<ExternalServer> {
                 extServerMqttClient.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
                 externalServer = extServerMqttClient;
                 break;
+            case WUNDERGROUND:
+                ExternalServerWUnderground extServerWUnderground = new ExternalServerWUnderground();
+                extServerWUnderground.setUrl(node.get("url").asText());
+                extServerWUnderground.setStationId(node.get("stationId").asText());
+                extServerWUnderground.setStationPassword(node.get("stationPassword").asText());
+                extServerWUnderground.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
+                externalServer = extServerWUnderground;
+                break;
             default:
                 break;
         }
         //Update RuleDefinition details
         if (node.get("id") != null) {
             externalServer.setId(node.get("id").asInt());
+        }
+        if (node.get("keyCase") != null) {
+            externalServer.setKeyCase(ALPHABETICAL_CASE.valueOf(node.get("keyCase").asText().toUpperCase()));
         }
         externalServer.setKeyFormat(node.get("keyFormat").asText());
         externalServer.setEnabled(node.get("enabled").asBoolean());

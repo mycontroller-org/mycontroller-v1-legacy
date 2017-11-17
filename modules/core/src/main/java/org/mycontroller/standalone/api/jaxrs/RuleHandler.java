@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.RuleApi;
-import org.mycontroller.standalone.api.jaxrs.json.Query;
+import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
