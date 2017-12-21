@@ -19,27 +19,27 @@ Development: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branc
 
 == About
 
-*MyController.org* is automation controller for home, office or any place.
-Primarly this project started to support http://www.mysensors.org/[MySensors]. But later it expands support to other network also. Considered system resources in mind on development, as a outcome even we can run it on Raspberry PI (256 MB) very first model.
+*MyController.org* is an IoT automation controller for home, office or any place.
+Primarly this project was started to support http://www.mysensors.org/[MySensors]. Later it was expanded to support other networks also. MyController.org was designed to run with limited resources. For instance, it can run on the first generation Raspberry Pi.
 
 == Localization
-MyController.org supports multiple languages. If you have interest to add/translate your native language for MyController.org send a request on https://www.transifex.com/mycontrollerorg/multi-locale/[Transifex MyController.org locale project]
+MyController.org supports multiple languages. If you are interested in providing a translation for your native language, send a request via https://www.transifex.com/mycontrollerorg/multi-locale/[Transifex MyController.org locale project]
 
-== System Requirement
+== System Requirements
 
-MyController.org is a very lightweight server, It required very less resource, believe me ;)
+MyController.org is a very lightweight server. Its resource requirements are modest:
 
   * Disk        : ~100 MB (may require more space, when we store metrics data for long time)
   * Memory(RAM) : 256 MB
   * Java        : 1.8 or later
 
 ===== Supported Platforms (tested)
-MyController.org is java based application server. We can run it in any platform where Java support is available.
+MyController.org is a Java-based application server. It can run on any platform where Java support is available.
 
 - Linux
 - Windows
 - Orange PI
-- Raspberry PI (Oracle Java recommend)
+- Raspberry PI (Oracle Java recommended)
 
 == MyController and MySensors Setup
 
@@ -53,21 +53,21 @@ image::extra/images/MyController-MySensors-RF.png[MyController  and MySensors se
 
 ====== Configuration
 
-Extract downloaded bundle where exactly do you want to run. Configuration files located in `mycontroller/conf`
+Extract the downloaded bundle in the directory where you want it to run. The configuration files are located in `mycontroller/conf`
 
 File: `mycontroller.properties`
 
-*Temporary file*
+*Temporary files*
 ----
 mcc.tmp.location=tmp/ # <1>
 ----
-<1> You can change default location and file name. This file used as server temporery location. Used for the operation such as backup, restore, etc.,
+<1> You can change the default location and file name. This directory is used as a temporary location for operations such as backup, restore, etc.
 
 *Database Configuration*
 ----
 mcc.db.h2db.location=../conf/mycontroller # <1>
 ----
-<1> You can change default location and file name. File will be stored with the file extension `.h2.db`. Do not add file extension.
+<1> You can change the default location and file name. The database file will be stored with the extension `.h2.db`. Do not add file extension to this property.
 
 *Web server configuration*
 ----
@@ -80,10 +80,10 @@ mcc.web.ssl.keystore.password=mycontroller  # <5>
 mcc.web.ssl.keystore.type=JKS  # <5>
 ----
 
-<1> bind interface address. by default it will bind with all the available interface.
-<2> Enable/disable https. Only one protocol supported at a time. true - `https`, false - `http`.
+<1> Bind interface address. 0.0.0.0 means it will bind to all available interfaces. 
+<2> Enable/disable https. Only one protocol is supported at a time. true - `https`, false - `http`.
 <3> Port number of `http/https` to access MyController.org server.
-<4> web files location, no need to touch this one.
+<4> Web files location, no need to touch this one.
 <5> If `https` is enabled these fields are mandatory.
 
 Default URL: `https://<ip>:8443` (ex: `https://localhost:8443`)
@@ -102,11 +102,11 @@ mcc.mqtt.broker.websocket.port=7080 # <4>
 mcc.mqtt.broker.persistent.store=../conf/moquette/moquette_store.mapdb # <5>
 ----
 
-<1> Enable/disable inbuilt MQTT broker. by default it will be enabled. `true`- enabled, `false` - disabled
-<2> bind interface address. by default it will bind with all the available interface.
+<1> Enable/disable builtin MQTT broker. By default it is enabled. `true`- enabled, `false` - disabled
+<2> Bind interface address for the MQTT broker. By default it will bind to all available interfaces.
 <3> MQTT broker port
-<4> websoicket port
-<5> internal use. no need to touch this one.
+<4> Websoicket port
+<5> Internal use. no need to touch this one.
 
 
 *Logger configuration*
