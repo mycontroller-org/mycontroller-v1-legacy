@@ -80,7 +80,7 @@ mcc.web.ssl.keystore.password=mycontroller  # <5>
 mcc.web.ssl.keystore.type=JKS  # <5>
 ----
 
-<1> Bind interface address. 0.0.0.0 means it will bind to all available interfaces. 
+<1> Bind interface address. 0.0.0.0 means it will bind to all available interfaces.
 <2> Enable/disable https. Only one protocol is supported at a time. true - `https`, false - `http`.
 <3> Port number of `http/https` to access MyController.org server.
 <4> Web files location, no need to touch this one.
