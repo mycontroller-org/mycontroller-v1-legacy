@@ -111,12 +111,24 @@ public abstract class ExternalServer implements IExternalServerEngine {
                 getFormatedKey(sensorVariable.getSensor().getNode().getGatewayTable().getName()));
         keyFormat = keyFormat.replaceAll(Pattern.quote("$networkType"),
                 getFormatedKey(sensorVariable.getSensor().getNode().getGatewayTable().getNetworkType().getText()));
-        keyFormat = keyFormat.replaceAll(Pattern.quote("$nodeName"),
-                getFormatedKey(sensorVariable.getSensor().getNode().getName()));
+        //fill with nodeEui, if there is no nodeName
+        if (sensorVariable.getSensor().getNode().getName() != null) {
+            keyFormat = keyFormat.replaceAll(Pattern.quote("$nodeName"),
+                    getFormatedKey(sensorVariable.getSensor().getNode().getName()));
+        } else {
+            keyFormat = keyFormat.replaceAll(Pattern.quote("$nodeName"),
+                    getFormatedKey(sensorVariable.getSensor().getNode().getEui()));
+        }
         keyFormat = keyFormat.replaceAll(Pattern.quote("$nodeEui"),
                 getFormatedKey(sensorVariable.getSensor().getNode().getEui()));
-        keyFormat = keyFormat.replaceAll(Pattern.quote("$sensorName"),
-                getFormatedKey(sensorVariable.getSensor().getName()));
+        //fill with sensorId, if there is no sensorName
+        if (sensorVariable.getSensor().getName() != null) {
+            keyFormat = keyFormat.replaceAll(Pattern.quote("$sensorName"),
+                    getFormatedKey(sensorVariable.getSensor().getName()));
+        } else {
+            keyFormat = keyFormat.replaceAll(Pattern.quote("$sensorName"),
+                    getFormatedKey(sensorVariable.getSensor().getSensorId()));
+        }
         keyFormat = keyFormat.replaceAll(Pattern.quote("$sensorId"),
                 getFormatedKey(sensorVariable.getSensor().getSensorId()));
         keyFormat = keyFormat.replaceAll(Pattern.quote("$variableType"),
