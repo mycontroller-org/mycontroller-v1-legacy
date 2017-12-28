@@ -351,6 +351,29 @@ public class McMessageEngine implements Runnable {
             case I_ID_RESPONSE:
                 _logger.debug("Internal Message, Type:I_ID_RESPONSE[{}]", mcMessage);
                 return;
+            case I_POST_SLEEP_NOTIFICATION:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                //Update sleep duration
+                Long sleepDuration = McUtils.getLong(mcMessage.getPayload());
+                node = getNode(mcMessage);
+                node.setState(STATE.UP);
+                node.setProperty(Node.KEY_SMART_SLEEP_DURATION, sleepDuration);
+                updateNode(node);
+                break;
+            case I_PRE_SLEEP_NOTIFICATION:
+                if (mcMessage.isTxMessage()) {
+                    return;
+                }
+                //Update sleep wait duration
+                Long sleepWaitDuration = McUtils.getLong(mcMessage.getPayload());
+                node = getNode(mcMessage);
+                node.setState(STATE.UP);
+                node.setProperty(Node.KEY_SMART_SLEEP_WAIT_DURATION, sleepWaitDuration);
+                updateNode(node);
+                sendSleepMessages(node, mcMessage);
+                break;
             case I_HEARTBEAT:
             case I_HEARTBEAT_RESPONSE:
                 if (mcMessage.isTxMessage()) {
@@ -359,10 +382,7 @@ public class McMessageEngine implements Runnable {
                 node = getNode(mcMessage);
                 node.setState(STATE.UP);
                 updateNode(node);
-                if (node.getSmartSleepEnabled()) {
-                    new Thread(new SmartSleepMessageTxThread(
-                            mcMessage.getGatewayId(), mcMessage.getNodeEui())).start();
-                }
+                sendSleepMessages(node, mcMessage);
                 break;
             case I_DISCOVER:
                 if (mcMessage.isTxMessage()) {
@@ -432,6 +452,13 @@ public class McMessageEngine implements Runnable {
                                 + "This type may not be supported (or) not implemented yet",
                         MESSAGE_TYPE_INTERNAL.fromString(mcMessage.getSubType()), mcMessage);
                 break;
+        }
+    }
+
+    private void sendSleepMessages(Node node, McMessage mcMessage) {
+        if (node.getSmartSleepEnabled()) {
+            new Thread(new SmartSleepMessageTxThread(
+                    mcMessage.getGatewayId(), mcMessage.getNodeEui())).start();
         }
     }
 
@@ -996,7 +1023,7 @@ public class McMessageEngine implements Runnable {
         //Update metric data to metric engine
         MetricsUtils.engine().post(DataPointer.builder()
                 .payload(mcMessage.getPayload())
-                .timestamp(System.currentTimeMillis())
+                .timestamp(mcMessage.getTimestamp())
                 .resourceModel(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, sensorVariable))
                 .dataType(DATA_TYPE.SENSOR_VARIABLE)
                 .build());

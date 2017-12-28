@@ -149,6 +149,7 @@ public class OperationSendEmail extends Operation {
         DaoUtils.getOperationDao().update(this.getOperationTable());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute(Timer timer) {
         if (!getEnabled()) {
@@ -171,7 +172,7 @@ public class OperationSendEmail extends Operation {
             builder.append("\n\n\n-- Powered by").append(" www.MyController.org");
             emailBody = builder.toString();
         }
-        sendEmail(emailBody, getTemplateBindings());
+        sendEmail(emailBody, (HashMap<String, Object>) getTemplateBindings().clone());
     }
 
     private void sendEmail(String emailBody, HashMap<String, Object> bindings) {

@@ -45,6 +45,7 @@ public class EmailUtils {
         if (initializeEmail) {
             initializeEmail(AppProperties.getInstance().getEmailSettings());
         }
+        email.setCharset("UTF-8");
         email.setSubject(subject);
         email.setHtmlMsg(message);
         email.addTo(emails.split(","));

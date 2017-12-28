@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.mycontroller.standalone</groupId>
     <artifactId>mycontroller-standalone-parent</artifactId>
-    <version>1.0.0.Final</version>
+    <version>1.1.0.Final</version>
   </parent>
 
   <artifactId>mycontroller-dist</artifactId>
@@ -32,7 +32,7 @@
   <properties>
     <mc.dist.finalName>${project.artifactId}-standalone-${project.version}</mc.dist.finalName>
     <mc.dist.jar.finalName>${mc.dist.finalName}-single</mc.dist.jar.finalName>
-    <mc.gui.version>6</mc.gui.version>
+    <mc.gui.version>9</mc.gui.version>
   </properties>
 
   <dependencies>

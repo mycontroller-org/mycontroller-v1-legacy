@@ -43,6 +43,8 @@ import org.python.core.PyType;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
@@ -52,6 +54,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @RolesAllowed({ "Admin" })
+@Slf4j
 public class ScriptsHandler extends AccessEngine {
     public static final String KEY_TYPE = "type";
     public static final String KEY_NAME = "name";
@@ -144,6 +147,7 @@ public class ScriptsHandler extends AccessEngine {
             }
             return RestUtils.getResponse(Status.OK, RestUtils.getObjectMapper().writeValueAsString(bindingsFinal));
         } catch (Exception ex) {
+            _logger.error("Exception,", ex);
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
         }
     }

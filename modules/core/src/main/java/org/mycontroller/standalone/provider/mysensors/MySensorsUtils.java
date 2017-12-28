@@ -146,7 +146,13 @@ public class MySensorsUtils {
         I_PONG("Pong"),
         I_REGISTRATION_REQUEST("Registration request"),
         I_REGISTRATION_RESPONSE("Registration response"),
-        I_DEBUG("Debug");
+        I_DEBUG("Debug"),
+        I_SIGNAL_REPORT_REQUEST("Signal report request"),       //!< Device signal strength request
+        I_SIGNAL_REPORT_REVERSE("Signal report reverse"),       //!< Internal
+        I_SIGNAL_REPORT_RESPONSE("Signal report response"),     //!< Device signal strength response (RSSI)
+        I_PRE_SLEEP_NOTIFICATION("Pre sleep notification"),     //!< Message sent before node is going to sleep
+        I_POST_SLEEP_NOTIFICATION("Post sleep notification");   //!< Message sent after node woke up (if enabled);
+
         public static MYS_MESSAGE_TYPE_INTERNAL get(int id) {
             for (MYS_MESSAGE_TYPE_INTERNAL type : values()) {
                 if (type.ordinal() == id) {

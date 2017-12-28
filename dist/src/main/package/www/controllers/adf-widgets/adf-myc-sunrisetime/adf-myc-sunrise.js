@@ -53,6 +53,7 @@ angular.module('adf.widget.myc-sunrisetime', [])
           mycSunriseTime.sunsetTime = $filter('date')(response.sunsetTime, mchelper.cfg.timeFormatWithoutSeconds, mchelper.cfg.timezone);
           mycSunriseTime.latitude = response.latitude;
           mycSunriseTime.longitude = response.longitude;
+          mycSunriseTime.name = response.name;
           mycSunriseTime.isSyncing = false;
           if(mycSunriseTime.showLoading){
             mycSunriseTime.showLoading = false;
