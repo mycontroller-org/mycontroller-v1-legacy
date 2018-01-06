@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -133,6 +133,14 @@ public abstract class ExternalServer implements IExternalServerEngine {
                 getFormatedKey(sensorVariable.getSensor().getSensorId()));
         keyFormat = keyFormat.replaceAll(Pattern.quote("$variableType"),
                 getFormatedKey(sensorVariable.getVariableType().getText()));
+        //Update sensorVariableName
+        if (sensorVariable.getName() != null) {
+            keyFormat = keyFormat.replaceAll(Pattern.quote("$variableName"),
+                    getFormatedKey(sensorVariable.getName()));
+        } else {
+            keyFormat = keyFormat.replaceAll(Pattern.quote("$variableName"),
+                    getFormatedKey(String.valueOf(sensorVariable.getId())));
+        }
         return keyFormat.replaceAll(" ", "_");
     }
 
