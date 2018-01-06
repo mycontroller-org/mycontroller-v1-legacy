@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -482,7 +482,7 @@ public class AppProperties {
                 "../conf/persistent_stores/"));
         createDirectoryLocation(mcPersistentStoresLocation);
         //MQTT Broker mqttBrokerPersistentStore
-        mqttBrokerPersistentStore = mcPersistentStoresLocation + "/moquette/moquette_store.mapdb";
+        mqttBrokerPersistentStore = mcPersistentStoresLocation + "moquette/moquette_store.mapdb";
         clearMessagesQueueOnStart = McUtils.getBoolean(getValue(properties,
                 "mcc.clear.message.queue.on.start", "true"));
         clearSmartSleepMsgQueueOnStart = McUtils.getBoolean(getValue(properties,

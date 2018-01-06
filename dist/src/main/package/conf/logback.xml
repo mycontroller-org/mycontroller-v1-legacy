@@ -1,6 +1,6 @@
 <!--
 
-    Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,9 @@
   <logger level="WARN" name="com.j256.ormlite.table.TableUtils" />
   <logger level="WARN" name="com.xeiam.sundial" />
   <logger level="WARN" name="org.quartz" />
+  <logger level="WARN" name="io.moquette"/>
+  <logger level="ERROR" name="io.moquette.persistence.mapdb.MapDBSessionsStore"/>
+  <logger level="ERROR" name="io.moquette.spi.impl.PersistentQueueMessageSender"/>
 
   <logger level="INFO" name="org.mycontroller.standalone" />
   <logger level="INFO" name="org.mycontroller.standalone.api" />

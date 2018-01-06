@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import static io.moquette.BrokerConstants.HOST_PROPERTY_NAME;
 import static io.moquette.BrokerConstants.PASSWORD_FILE_PROPERTY_NAME;
 import static io.moquette.BrokerConstants.PERSISTENT_STORE_PROPERTY_NAME;
 import static io.moquette.BrokerConstants.PORT_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.STORAGE_CLASS_NAME;
 import static io.moquette.BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME;
 
 import java.util.Properties;
@@ -71,6 +72,9 @@ public class BrokerConfiguration extends IConfig {
             m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
             m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
         }
+
+        //Session storage class
+        m_properties.put(STORAGE_CLASS_NAME, io.moquette.persistence.mapdb.MapDBPersistentStore.class.getName());
 
         _logger.debug("Properties:[{}]", m_properties);
     }

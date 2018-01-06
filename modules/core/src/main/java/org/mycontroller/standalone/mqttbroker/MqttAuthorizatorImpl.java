@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@ package org.mycontroller.standalone.mqttbroker;
 
 import org.mycontroller.standalone.auth.AuthUtils;
 
+import io.moquette.spi.impl.subscriptions.Topic;
+
 import io.moquette.spi.security.IAuthorizator;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,15 +31,15 @@ import lombok.extern.slf4j.Slf4j;
 public class MqttAuthorizatorImpl implements IAuthorizator {
 
     @Override
-    public boolean canRead(String topic, String username, String client) {
+    public boolean canRead(Topic topic, String username, String client) {
         _logger.debug("Can read check for Topic:{}, Username:{}, Client:{}", topic, username, client);
-        return AuthUtils.canReadMqttPermission(username, topic);
+        return AuthUtils.canReadMqttPermission(username, topic.toString());
     }
 
     @Override
-    public boolean canWrite(String topic, String username, String client) {
+    public boolean canWrite(Topic topic, String username, String client) {
         _logger.debug("Can write check for Topic:{}, Username:{}, Client:{}", topic, username, client);
-        return AuthUtils.canWriteMqttPermission(username, topic);
+        return AuthUtils.canWriteMqttPermission(username, topic.toString());
     }
 
 }
