@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,8 +50,10 @@ public class V1_02_07__2016_May_19 extends MigrationBase {
                 .enabled(true)
                 .allowAnonymous(false)
                 .bindAddress("0.0.0.0")
-                .httpPort(1883)
+                .mqttPort(1883)
+                .mqttsPort(8883)
                 .websocketPort(7080)
+                .sslEnabled(false)
                 .build().save();
 
         _logger.info("Migration completed successfully.");

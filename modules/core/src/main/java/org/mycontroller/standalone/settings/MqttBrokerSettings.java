@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.settings;
 
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AllArgsConstructor;
@@ -38,16 +39,24 @@ public class MqttBrokerSettings {
 
     public static final String KEY_MQTT_BROKER = "mqttBroker";
     public static final String SKEY_ENABLED = "enabled";
+    public static final String SKEY_SSL_ENABLED = "sslEnabled";
     public static final String SKEY_BIND_ADDRESS = "bindAddress";
-    public static final String SKEY_HTTP_PORT = "httpPort";
+    public static final String SKEY_MQTT_PORT = "mqttPort";
+    public static final String SKEY_MQTTS_PORT = "mqttsPort";
     public static final String SKEY_WEBSOCKET_PORT = "websocketPort";
     public static final String SKEY_ALLOW_ANONYMOUS = "allowAnonymous";
 
     private Boolean enabled;
+    private Boolean sslEnabled;
     private String bindAddress;
-    private Integer httpPort;
+    private Integer mqttPort;
+    private Integer mqttsPort;
     private Integer websocketPort;
     private Boolean allowAnonymous;
+
+    private Boolean enabledOnBackend;
+    private String sslKeystoreFile;
+    private String sslKeystorePassword;
 
     public Boolean getEnabled() {
         return enabled == null ? false : enabled;
@@ -58,12 +67,19 @@ public class MqttBrokerSettings {
     }
 
     public static MqttBrokerSettings get() {
-        return MqttBrokerSettings.builder()
-                .enabled(McUtils.getBoolean(getValue(SKEY_ENABLED)))
-                .bindAddress(getValue(SKEY_BIND_ADDRESS))
-                .httpPort(McUtils.getInteger(getValue(SKEY_HTTP_PORT)))
-                .websocketPort(McUtils.getInteger(getValue(SKEY_WEBSOCKET_PORT)))
-                .allowAnonymous(McUtils.getBoolean(getValue(SKEY_ALLOW_ANONYMOUS)))
+        return MqttBrokerSettings
+                .builder()
+                .enabled(McUtils.getBoolean(getValue(SKEY_ENABLED, "false"))
+                        && AppProperties.getInstance().isMqttBrokerEnabled())
+                .sslEnabled(McUtils.getBoolean(getValue(SKEY_SSL_ENABLED, "false")))
+                .bindAddress(getValue(SKEY_BIND_ADDRESS, "0.0.0.0"))
+                .mqttPort(McUtils.getInteger(getValue(SKEY_MQTT_PORT, "1883")))
+                .mqttsPort(McUtils.getInteger(getValue(SKEY_MQTTS_PORT, "8883")))
+                .websocketPort(McUtils.getInteger(getValue(SKEY_WEBSOCKET_PORT, "8080")))
+                .allowAnonymous(McUtils.getBoolean(getValue(SKEY_ALLOW_ANONYMOUS, "false")))
+                .enabledOnBackend(AppProperties.getInstance().isMqttBrokerEnabled())
+                .sslKeystoreFile(AppProperties.getInstance().getMqttSslKeystoreFile())
+                .sslKeystorePassword(AppProperties.getInstance().getMqttSslKeystorePassword())
                 .build();
     }
 
@@ -71,11 +87,17 @@ public class MqttBrokerSettings {
         if (enabled != null) {
             updateValue(SKEY_ENABLED, enabled);
         }
+        if (sslEnabled != null) {
+            updateValue(SKEY_SSL_ENABLED, sslEnabled);
+        }
         if (bindAddress != null) {
             updateValue(SKEY_BIND_ADDRESS, bindAddress.trim());
         }
-        if (httpPort != null) {
-            updateValue(SKEY_HTTP_PORT, httpPort);
+        if (mqttPort != null) {
+            updateValue(SKEY_MQTT_PORT, mqttPort);
+        }
+        if (mqttsPort != null) {
+            updateValue(SKEY_MQTTS_PORT, mqttsPort);
         }
         if (websocketPort != null) {
             updateValue(SKEY_WEBSOCKET_PORT, websocketPort);
@@ -85,8 +107,9 @@ public class MqttBrokerSettings {
         }
     }
 
-    private static String getValue(String subKey) {
-        return SettingsUtils.getValue(KEY_MQTT_BROKER, subKey);
+    private static String getValue(String subKey, String defaultValue) {
+        return SettingsUtils.getValue(KEY_MQTT_BROKER, subKey) != null ?
+                SettingsUtils.getValue(KEY_MQTT_BROKER, subKey) : defaultValue;
     }
 
     private void updateValue(String subKey, Object value) {

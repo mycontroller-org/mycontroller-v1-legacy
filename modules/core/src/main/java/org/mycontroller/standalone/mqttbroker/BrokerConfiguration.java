@@ -20,9 +20,14 @@ import static io.moquette.BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME;
 import static io.moquette.BrokerConstants.AUTHENTICATOR_CLASS_NAME;
 import static io.moquette.BrokerConstants.AUTHORIZATOR_CLASS_NAME;
 import static io.moquette.BrokerConstants.HOST_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.JKS_PATH_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.KEY_MANAGER_PASSWORD_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.KEY_STORE_PASSWORD_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.NEED_CLIENT_AUTH;
 import static io.moquette.BrokerConstants.PASSWORD_FILE_PROPERTY_NAME;
 import static io.moquette.BrokerConstants.PERSISTENT_STORE_PROPERTY_NAME;
 import static io.moquette.BrokerConstants.PORT_PROPERTY_NAME;
+import static io.moquette.BrokerConstants.SSL_PORT_PROPERTY_NAME;
 import static io.moquette.BrokerConstants.STORAGE_CLASS_NAME;
 import static io.moquette.BrokerConstants.WEB_SOCKET_PORT_PROPERTY_NAME;
 
@@ -57,7 +62,7 @@ public class BrokerConfiguration extends IConfig {
     private void loadProperties() {
         m_properties.put(HOST_PROPERTY_NAME, AppProperties.getInstance().getMqttBrokerSettings().getBindAddress());
         m_properties.put(PORT_PROPERTY_NAME,
-                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getHttpPort()));
+                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getMqttPort()));
         m_properties.put(WEB_SOCKET_PORT_PROPERTY_NAME,
                 String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getWebsocketPort()));
 
@@ -71,6 +76,19 @@ public class BrokerConfiguration extends IConfig {
             m_properties.put(ALLOW_ANONYMOUS_PROPERTY_NAME, "false");
             m_properties.put(AUTHENTICATOR_CLASS_NAME, MqttAuthenticatorImpl.class.getName());
             m_properties.put(AUTHORIZATOR_CLASS_NAME, MqttAuthorizatorImpl.class.getName());
+        }
+
+        //SSL settings
+        if (AppProperties.getInstance().getMqttBrokerSettings().getSslEnabled()) {
+            m_properties.put(NEED_CLIENT_AUTH, "false");
+            m_properties.put(SSL_PORT_PROPERTY_NAME,
+                    String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getMqttsPort()));
+            m_properties.put(JKS_PATH_PROPERTY_NAME,
+                    AppProperties.getInstance().getMqttBrokerSettings().getSslKeystoreFile());
+            m_properties.put(KEY_STORE_PASSWORD_PROPERTY_NAME,
+                    AppProperties.getInstance().getMqttBrokerSettings().getSslKeystorePassword());
+            m_properties.put(KEY_MANAGER_PASSWORD_PROPERTY_NAME,
+                    AppProperties.getInstance().getMqttBrokerSettings().getSslKeystorePassword());
         }
 
         //Session storage class

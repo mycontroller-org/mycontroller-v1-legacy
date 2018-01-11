@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayException;
@@ -51,8 +53,11 @@ public class MqttGatewayImpl implements IGateway {
     public MqttGatewayImpl(GatewayTable gatewayTable) {
         try {
             this.gateway = new GatewayMQTT(gatewayTable);
+            //
+            MqttDefaultFilePersistence myPersistence = new MqttDefaultFilePersistence(AppProperties.getInstance()
+                    .getMcPersistentStoresLocation() + "/mqtt_clients/");
             mqttClient = new MqttClient(this.gateway.getBrokerHost(), this.gateway.getClientId()
-                    + "_" + RandomStringUtils.randomAlphanumeric(5));
+                    + "_" + RandomStringUtils.randomAlphanumeric(5), myPersistence);
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setConnectionTimeout(CONNECTION_TIME_OUT);
             connectOptions.setKeepAliveInterval(KEEP_ALIVE);
@@ -74,7 +79,7 @@ public class MqttGatewayImpl implements IGateway {
                     + "Reload gateway [Id:{}, Name:{}, NetworkType:{}] service when MQTT Broker comes UP!",
                     mqttClient.getServerURI(), ex.getReasonCode(), gateway.getName(),
                     gateway.getNetworkType().getText(), ex);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             this.gateway.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
             _logger.error("Exception,", ex);
         }
