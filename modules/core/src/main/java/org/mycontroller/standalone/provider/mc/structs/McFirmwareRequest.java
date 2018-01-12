@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,7 @@ public class McFirmwareRequest extends McCommon {
             _logger.error("Unable to create 'FirmwareConfigResponse' struct", ex);
         }
     }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

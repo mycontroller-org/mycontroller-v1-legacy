@@ -21,9 +21,8 @@ import java.io.IOException;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.mdns.McmDNSFactory;
 
-import io.moquette.server.config.IConfig;
-
 import io.moquette.server.Server;
+import io.moquette.server.config.IConfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

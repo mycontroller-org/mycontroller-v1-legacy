@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,7 +57,7 @@ public class McProviderBridge implements IProviderBridge {
             _logger.debug("Received raw message: [{}]", rawMessage);
             McMessage mcMessage = new McpRawMessage(rawMessage).getMcMessage();
             McMessageUtils.sendToMcMessageEngine(mcMessage);
-            if(rawMessage.isTxMessage()){
+            if (rawMessage.isTxMessage()) {
                 executeMcMessage(mcMessage);
             }
         } catch (RawMessageException ex) {

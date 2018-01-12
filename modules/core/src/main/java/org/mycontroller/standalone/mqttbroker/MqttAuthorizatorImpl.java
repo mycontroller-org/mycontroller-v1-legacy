@@ -19,7 +19,6 @@ package org.mycontroller.standalone.mqttbroker;
 import org.mycontroller.standalone.auth.AuthUtils;
 
 import io.moquette.spi.impl.subscriptions.Topic;
-
 import io.moquette.spi.security.IAuthorizator;
 import lombok.extern.slf4j.Slf4j;
 
