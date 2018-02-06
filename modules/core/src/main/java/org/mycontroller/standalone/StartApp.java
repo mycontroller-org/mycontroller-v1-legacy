@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,12 +66,12 @@ import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.auth.McContainerRequestFilter;
 import org.mycontroller.standalone.db.DataBaseUtils;
-import org.mycontroller.standalone.externalserver.ExternalServerUtils;
+import org.mycontroller.standalone.externalserver.ExternalServerFactory;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.mdns.McmDNSFactory;
-import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
+import org.mycontroller.standalone.offheap.OffHeapFactory;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.settings.SettingsUtils;
@@ -257,7 +257,8 @@ public class StartApp {
         MetricsUtils.loadEngine();
 
         //Initialize MapDB store
-        MapDbFactory.init();
+        //MapDbFactory.init();
+        OffHeapFactory.init();
 
         //Create or update static json file used for GUI before login
         SettingsUtils.updateStaticJsonInformationFile();
@@ -274,9 +275,9 @@ public class StartApp {
 
         //Start message Monitor Thread
         //Create new thread to monitor received logs
-        MessageMonitorThread messageMonitorThread = new MessageMonitorThread();
-        Thread thread = new Thread(messageMonitorThread);
-        thread.start();
+        //MessageMonitorThread messageMonitorThread = new MessageMonitorThread();
+        //Thread thread = new Thread(messageMonitorThread);
+        //thread.start();
 
         // - Load starting values
         loadStartingValues();
@@ -285,7 +286,7 @@ public class StartApp {
         MoquetteMqttBroker.start();
 
         //Start all the gateways
-        GatewayUtils.loadAllGateways();
+        GatewayUtils.loadEngineAll();
 
         // - Start scheduler
         SchedulerUtils.startScheduler();
@@ -307,13 +308,13 @@ public class StartApp {
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
         stopHTTPWebServer();
-        ExternalServerUtils.clearServers();
+        ExternalServerFactory.clearDrivers();
         SchedulerUtils.stop();
-        GatewayUtils.unloadAllGateways();
+        GatewayUtils.unloadEngineAll();
         MoquetteMqttBroker.stop();
-        MessageMonitorThread.shutdown();
         DataBaseUtils.stop();
-        MapDbFactory.close();
+        OffHeapFactory.close();
+        McThreadPoolFactory.shutdownNow();
         _logger.debug("All services stopped.");
         //Remove references
         McObjectManager.clearAllReferences();

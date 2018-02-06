@@ -39,7 +39,7 @@
               <dl class="dl-horizontal">
                 <dt>{{ 'NAME' | translate }}</dt> <dd>{{item.name}}</dd>
                 <dt>{{ 'ENABLED' | translate }}</dt> <dd>{{item.enabled?"Enabled":"Disabled"}}</dd>
-                <dt>{{ 'TX_MESSAGE_PROCESSING_DELAY' | translate }}</dt><dd>{{item.txDelay}} {{ 'MILLISECONDS' | translate }}</dd>
+                <dt>{{ 'TRANSMIT_DELAY' | translate }}</dt><dd>{{item.txDelay}} {{ 'MILLISECONDS_SHORT' | translate }}</dd>
                 <dt>{{ 'TYPE' | translate }}</dt> <dd>{{item.type}}</dd>
                 <dt>{{ 'NETWORK_TYPE' | translate }}</dt> <dd>{{item.networkType}}</dd>
                 <dt>{{ 'CONNECTION_DETAILS' | translate }}</dt> <dd>{{item.connectionDetails}}</dd>
@@ -76,6 +76,25 @@
                   <a class="mc-inline-editer-ab" ng-if="resourceCount.resourcesGroups > 0" ui-sref="resourcesGroupList({ resourceType:resourceCount.resourceType, resourceId: resourceCount.resourceId})">{{resourceCount.resourcesGroups}}</a>
                   <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
                 </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xs-6 col-sm-6 col-lg-6">
+          <div class="card-pf card-pf-utilization card-pf-accented">
+            <div class="card-pf-heading">
+              <h2 class="card-pf-title">{{ 'STATISTICS' | translate }}</h2>
+            </div>
+            <div class="card-pf-body">
+              <dl class="dl-horizontal">
+                <dt>{{ 'AVERAGE_TIME' | translate }}</dt> <dd>{{statistics.timeAverage | number: 2}}  {{ 'MILLISECONDS_SHORT' | translate }}</dd>
+                <dt>{{ 'LAST_MINUTE_AVERAGE' | translate }}</dt> <dd>{{statistics.timeAverageLastMinute | number: 2}}  {{ 'MILLISECONDS_SHORT' | translate }}</dd>
+                <dt>{{ 'LAST_MESSAGE' | translate }}</dt> <dd>{{statistics.timeLastMessage}}  {{ 'MILLISECONDS_SHORT' | translate }} <span ng-if="statistics.timestamp != 0">| </span><span uib-tooltip="{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="statistics.timestamp"></span></dd>
+                <dt>{{ 'LAST_MINUTE_RATE' | translate }}</dt> <dd>{{statistics.countLastMinute}}</dd>
+                <dt>{{ 'COUNT' | translate }}</dt><dd>{{statistics.count}}</dd>
+                <dt>{{ 'FAILURE_COUNT' | translate }}</dt><dd>{{statistics.countFailure}}</dd>
+                <dt>{{ 'MESSAGES_IN_QUEUE' | translate }}</dt> <dd>{{statistics.sizeQueue}}</dd>
               </dl>
             </div>
           </div>

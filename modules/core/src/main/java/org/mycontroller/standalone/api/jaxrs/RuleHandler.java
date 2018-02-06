@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,7 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -94,14 +94,14 @@ public class RuleHandler extends AccessEngine {
 
     @POST
     @Path("/")
-    public Response add(RuleDefinition ruleDefinition) {
+    public Response add(RuleDefinitionAbstract ruleDefinition) {
         ruleApi.add(ruleDefinition);
         return RestUtils.getResponse(Status.CREATED);
     }
 
     @PUT
     @Path("/")
-    public Response update(RuleDefinition ruleDefinition) {
+    public Response update(RuleDefinitionAbstract ruleDefinition) {
         ruleApi.update(ruleDefinition);
         return RestUtils.getResponse(Status.NO_CONTENT);
     }

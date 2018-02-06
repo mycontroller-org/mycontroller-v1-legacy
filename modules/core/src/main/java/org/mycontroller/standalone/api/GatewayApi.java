@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,8 @@ import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.gateway.GatewayUtils;
-import org.mycontroller.standalone.gateway.model.Gateway;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
+import org.mycontroller.standalone.provider.EngineStatistics;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,7 +60,7 @@ public class GatewayApi {
      */
     public QueryResponse getAll(HashMap<String, Object> filters) {
         QueryResponse queryResponse = getAllRaw(filters);
-        ArrayList<Gateway> gateways = new ArrayList<Gateway>();
+        ArrayList<GatewayConfig> gateways = new ArrayList<GatewayConfig>();
         @SuppressWarnings("unchecked")
         List<GatewayTable> gatewayTables = (List<GatewayTable>) queryResponse.getData();
         for (GatewayTable gatewayTable : gatewayTables) {
@@ -69,11 +70,15 @@ public class GatewayApi {
         return queryResponse;
     }
 
-    public Gateway getGateway(GatewayTable gatewayTable) {
+    public GatewayConfig getGateway(GatewayTable gatewayTable) {
         return GatewayUtils.getGateway(gatewayTable);
     }
 
-    public Gateway get(HashMap<String, Object> filters) {
+    public EngineStatistics getStatistics(Integer gatewayId) {
+        return McObjectManager.getEngine(gatewayId).processingRate();
+    }
+
+    public GatewayConfig get(HashMap<String, Object> filters) {
         QueryResponse response = getAllRaw(filters);
         @SuppressWarnings("unchecked")
         List<GatewayTable> items = (List<GatewayTable>) response.getData();
@@ -91,16 +96,16 @@ public class GatewayApi {
         return DaoUtils.getGatewayDao().getAll(Query.get(filters));
     }
 
-    public Gateway get(Integer gatewayId) {
+    public GatewayConfig get(Integer gatewayId) {
         return GatewayUtils.getGateway(getRaw(gatewayId));
     }
 
-    public void add(Gateway gateway) {
-        GatewayUtils.addGateway(gateway.getGatewayTable());
+    public void add(GatewayConfig gatewayConfig) {
+        GatewayUtils.addGateway(gatewayConfig.getGatewayTable());
     }
 
-    public void update(Gateway gateway) {
-        GatewayUtils.updateGateway(gateway.getGatewayTable());
+    public void update(GatewayConfig gatewayConfig) {
+        GatewayUtils.updateGateway(gatewayConfig.getGatewayTable());
     }
 
     public void delete(List<Integer> ids) {
@@ -116,7 +121,7 @@ public class GatewayApi {
     }
 
     public void reload(List<Integer> ids) {
-        GatewayUtils.reloadGateways(ids);
+        GatewayUtils.reloadEngines(ids);
     }
 
     public void executeNodeDiscover(List<Integer> ids) throws McBadRequestException {
@@ -125,8 +130,8 @@ public class GatewayApi {
                 GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(id);
                 if (gatewayTable.getEnabled()) {
                     //If gateway not available, do not send
-                    if (McObjectManager.getGateway(gatewayTable.getId()) == null
-                            || McObjectManager.getGateway(gatewayTable.getId()).getGateway().getState() != STATE.UP) {
+                    if (McObjectManager.getEngine(gatewayTable.getId()) == null
+                            || McObjectManager.getEngine(gatewayTable.getId()).config().getState() != STATE.UP) {
                         return;
                     }
                     McObjectManager.getMcActionEngine().discover(id);

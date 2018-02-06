@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,12 +29,11 @@ import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_STREAM;
 import org.mycontroller.standalone.model.ResourceModel;
-import org.mycontroller.standalone.provider.mc.structs.McFirmwareConfig;
+import org.mycontroller.standalone.provider.mycontroller.structs.McFirmwareConfig;
 import org.mycontroller.standalone.provider.mysensors.structs.FirmwareConfigResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -81,20 +80,34 @@ public class McActionEngine implements IMcActionEngine {
     }
 
     //Private Methods
+
+    private void send(IMessage message) {
+        if (McObjectManager.getEngine(message.getGatewayId()) != null) {
+            Node _node = DaoUtils.getNodeDao().get(message.getGatewayId(), message.getNodeEui());
+            if (_node != null && _node.getSmartSleepEnabled()) {
+                McObjectManager.getEngine(message.getGatewayId()).sendSleepNode(message);
+            } else {
+                McObjectManager.getEngine(message.getGatewayId()).send(message);
+            }
+        } else {
+            _logger.warn("Engine not available to send {}", message);
+        }
+    }
+
     // Execute Node related operations
     private void executeNodeOperationSendPayload(Node node, ResourceOperation operation) {
-        McMessage mcMessage = null;
+        IMessage message = null;
         if (operation.getOperationType() != null) {
             switch (operation.getOperationType()) {
                 case REBOOT:
-                    mcMessage = McMessage.builder()
+                    message = MessageImpl.builder()
                             .gatewayId(node.getGatewayTable().getId())
                             .nodeEui(node.getEui())
-                            .sensorId(McMessage.SENSOR_BROADCAST_ID)
-                            .type(MESSAGE_TYPE.C_INTERNAL)
-                            .ack(McMessage.NO_ACK)
+                            .sensorId(IMessage.SENSOR_BROADCAST_ID)
+                            .type(MESSAGE_TYPE.C_INTERNAL.getText())
+                            .ack(IMessage.NO_ACK)
                             .subType(MESSAGE_TYPE_INTERNAL.I_REBOOT.getText())
-                            .payload(McMessage.PAYLOAD_EMPTY)
+                            .payload(IMessage.PAYLOAD_EMPTY)
                             .isTxMessage(true)
                             .build();
                     break;
@@ -105,8 +118,8 @@ public class McActionEngine implements IMcActionEngine {
             }
         }
 
-        if (mcMessage != null) {
-            McMessageUtils.sendToMessageQueue(mcMessage);
+        if (message != null) {
+            send(message);
         }
 
     }
@@ -114,7 +127,7 @@ public class McActionEngine implements IMcActionEngine {
     //Execute Sensor Variable related operations
     private void executeSensorVariableOperationSendPayload(SensorVariable sensorVariable, ResourceOperation operation) {
         String payload = null;
-        McMessage mcMessage = null;
+        IMessage message = null;
         if (operation.getOperationType() != null) {
             switch (operation.getOperationType()) {
                 case ADD:
@@ -151,115 +164,115 @@ public class McActionEngine implements IMcActionEngine {
         } else {
             payload = operation.getPayload();
         }
-        mcMessage = McMessage.builder()
+        message = MessageImpl.builder()
                 .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
                 .nodeEui(sensorVariable.getSensor().getNode().getEui())
                 .sensorId(sensorVariable.getSensor().getSensorId())
-                .type(MESSAGE_TYPE.C_SET)
-                .ack(McMessage.NO_ACK)
+                .type(MESSAGE_TYPE.C_SET.getText())
+                .ack(IMessage.NO_ACK)
                 .subType(sensorVariable.getVariableType().getText())
                 .payload(payload)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToMessageQueue(mcMessage);
+        send(message);
     }
 
     //Execute Sensor Variable related operations
     private void executeSensorVariableOperationRequestPayload(SensorVariable sensorVariable) {
-        McMessage mcMessage = McMessage.builder()
+        IMessage message = MessageImpl.builder()
                 .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
                 .nodeEui(sensorVariable.getSensor().getNode().getEui())
                 .sensorId(sensorVariable.getSensor().getSensorId())
-                .type(MESSAGE_TYPE.C_REQ)
-                .ack(McMessage.NO_ACK)
+                .type(MESSAGE_TYPE.C_REQ.getText())
+                .ack(IMessage.NO_ACK)
                 .subType(sensorVariable.getVariableType().getText())
-                .payload(McMessage.PAYLOAD_EMPTY)
+                .payload(IMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToMessageQueue(mcMessage);
+        send(message);
     }
 
     @Override
-    public void sendAliveStatusRequest(Node node) {
-        McMessage mcMessage = McMessage.builder()
+    public String sendAliveStatusRequest(Node node) {
+        IMessage message = MessageImpl.builder()
                 .gatewayId(node.getGatewayTable().getId())
                 .nodeEui(node.getEui())
-                .sensorId(McMessage.SENSOR_BROADCAST_ID)
-                .type(MESSAGE_TYPE.C_INTERNAL)
-                .ack(McMessage.NO_ACK)
+                .sensorId(IMessage.SENSOR_BROADCAST_ID)
+                .type(MESSAGE_TYPE.C_INTERNAL.getText())
+                .ack(IMessage.NO_ACK)
                 .subType(MESSAGE_TYPE_INTERNAL.I_HEARTBEAT.getText())
-                .payload(McMessage.PAYLOAD_EMPTY)
+                .payload(IMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-
-        McMessageUtils.sendToMessageQueue(mcMessage);
+        send(message);
+        return message.getEventTopic();
     }
 
-    @Override
-    public boolean checkEthernetGatewayAliveState(GatewayEthernet gatewayEthernet) {
-        McMessage mcMessage = McMessage.builder()
-                .gatewayId(gatewayEthernet.getId())
-                .nodeEui(McMessageUtils.getGatewayNodeId(gatewayEthernet.getNetworkType()))
-                .sensorId(McMessage.SENSOR_BROADCAST_ID)
-                .type(MESSAGE_TYPE.C_INTERNAL)
-                .ack(McMessage.NO_ACK)
-                .subType(MESSAGE_TYPE_INTERNAL.I_VERSION.getText())
-                .payload(McMessage.PAYLOAD_EMPTY)
-                .isTxMessage(true)
-                .build();
-        try {
-            if (McObjectManager.getGateway(gatewayEthernet.getId()) != null) {
-                McMessageUtils.sendToMessageQueue(mcMessage);
-                return true;
-            } else {
-                _logger.warn("GatewayTable not available! GatewayTable[{}]", gatewayEthernet);
+    /*    @Override
+        public boolean checkEthernetGatewayAliveState(GatewayConfigEthernet gatewayConfigEthernet) {
+            IMessage message = MessageImpl.builder()
+                    .gatewayId(gatewayConfigEthernet.getId())
+                    .nodeEui(McMessageUtils.getGatewayNodeId(gatewayConfigEthernet.getNetworkType()))
+                    .sensorId(IMessage.SENSOR_BROADCAST_ID)
+                    .type(MESSAGE_TYPE.C_INTERNAL)
+                    .ack(IMessage.NO_ACK)
+                    .subType(MESSAGE_TYPE_INTERNAL.I_VERSION.getText())
+                    .payload(IMessage.PAYLOAD_EMPTY)
+                    .isTxMessage(true)
+                    .build();
+            try {
+                if (McObjectManager.getGateway(gatewayConfigEthernet.getId()) != null) {
+                    send(message);
+                    return true;
+                } else {
+                    _logger.warn("GatewayTable not available! GatewayTable[{}]", gatewayConfigEthernet);
+                    return false;
+                }
+            } catch (Exception ex) {
+                _logger.error("Exception while checking gateway connection status: {}", ex.getMessage());
                 return false;
             }
-        } catch (Exception ex) {
-            _logger.error("Exception while checking gateway connection status: {}", ex.getMessage());
-            return false;
-        }
 
-    }
+        }*/
 
     @Override
     public void executeForwardPayload(ForwardPayload forwardPayload, String payload) {
-        McMessage mcMessage = McMessage.builder()
+        IMessage message = MessageImpl.builder()
                 .gatewayId(forwardPayload.getDestination().getSensor().getNode().getGatewayTable().getId())
                 .nodeEui(forwardPayload.getDestination().getSensor().getNode().getEui())
                 .sensorId(forwardPayload.getDestination().getSensor().getSensorId())
-                .type(MESSAGE_TYPE.C_SET)
-                .ack(McMessage.NO_ACK)
+                .type(MESSAGE_TYPE.C_SET.getText())
+                .ack(IMessage.NO_ACK)
                 .subType(forwardPayload.getDestination().getVariableType().getText())
                 .payload(payload)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToMessageQueue(mcMessage);
+        send(message);
     }
 
     @Override
     public void rebootNode(Node node) {
-        McMessage mcMessage = McMessage.builder()
+        IMessage message = MessageImpl.builder()
                 .gatewayId(node.getGatewayTable().getId())
                 .nodeEui(node.getEui())
-                .sensorId(McMessage.SENSOR_BROADCAST_ID)
-                .type(MESSAGE_TYPE.C_INTERNAL)
-                .ack(McMessage.NO_ACK)
+                .sensorId(IMessage.SENSOR_BROADCAST_ID)
+                .type(MESSAGE_TYPE.C_INTERNAL.getText())
+                .ack(IMessage.NO_ACK)
                 .subType(MESSAGE_TYPE_INTERNAL.I_REBOOT.getText())
-                .payload(McMessage.PAYLOAD_EMPTY)
+                .payload(IMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToMessageQueue(mcMessage);
+        send(message);
     }
 
     @Override
     public void uploadFirmware(Node node) {
-        McMessage mcMessage = McMessage.builder()
+        IMessage message = MessageImpl.builder()
                 .gatewayId(node.getGatewayTable().getId())
                 .nodeEui(node.getEui())
-                .sensorId(McMessage.SENSOR_BROADCAST_ID)
-                .type(MESSAGE_TYPE.C_STREAM)
-                .ack(McMessage.NO_ACK)
+                .sensorId(IMessage.SENSOR_BROADCAST_ID)
+                .type(MESSAGE_TYPE.C_STREAM.getText())
+                .ack(IMessage.NO_ACK)
                 .subType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_CONFIG_RESPONSE.getText())
                 .isTxMessage(true)
                 .build();
@@ -270,7 +283,7 @@ public class McActionEngine implements IMcActionEngine {
             fwCfgResponse.setVersion(node.getFirmware().getVersion().getId());
             fwCfgResponse.setBlocks((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCKS));
             fwCfgResponse.setCrc((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_CRC));
-            mcMessage.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
+            message.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
         } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER) {
             McFirmwareConfig fwCfgResponse = new McFirmwareConfig();
             fwCfgResponse.setByteBufferPosition(0);
@@ -278,9 +291,9 @@ public class McActionEngine implements IMcActionEngine {
             fwCfgResponse.setVersion(node.getFirmware().getVersion().getId());
             fwCfgResponse.setBlocks((Integer) node.getFirmware().getProperties().get(Firmware.KEY_PROP_BLOCKS));
             fwCfgResponse.setMd5Sum((String) node.getFirmware().getProperties().get(Firmware.KEY_PROP_MD5_HEX));
-            mcMessage.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
+            message.setPayload(Hex.encodeHexString(fwCfgResponse.getByteBuffer().array()).toUpperCase());
         }
-        McMessageUtils.sendToMessageQueue(mcMessage);
+        send(message);
     }
 
     @Override
@@ -289,17 +302,17 @@ public class McActionEngine implements IMcActionEngine {
         //Before start node discover, remove existing map for this gateway
         DaoUtils.getNodeDao().updateBulk(Node.KEY_PARENT_NODE_EUI, null, Node.KEY_GATEWAY_ID, gatewayId);
         //Send discover broadcast message
-        McMessage mcMessage = McMessage.builder()
+        IMessage message = MessageImpl.builder()
                 .gatewayId(gatewayId)
-                .nodeEui(McMessage.NODE_BROADCAST_ID)
-                .sensorId(McMessage.SENSOR_BROADCAST_ID)
-                .type(MESSAGE_TYPE.C_INTERNAL)
+                .nodeEui(IMessage.NODE_BROADCAST_ID)
+                .sensorId(IMessage.SENSOR_BROADCAST_ID)
+                .type(MESSAGE_TYPE.C_INTERNAL.getText())
                 .subType(MESSAGE_TYPE_INTERNAL.I_DISCOVER.getText())
-                .ack(McMessage.NO_ACK)
-                .payload(McMessage.PAYLOAD_EMPTY)
+                .ack(IMessage.NO_ACK)
+                .payload(IMessage.PAYLOAD_EMPTY)
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToMessageQueue(mcMessage);
+        send(message);
     }
 
     @Override
@@ -313,24 +326,26 @@ public class McActionEngine implements IMcActionEngine {
     }
 
     @Override
-    public void eraseConfiguration(Node node) {
+    public String eraseConfiguration(Node node) {
         if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER) {
-            McMessage mcMessage = McMessage.builder()
+            IMessage message = MessageImpl.builder()
                     .gatewayId(node.getGatewayTable().getId())
                     .nodeEui(node.getEui())
-                    .sensorId(McMessage.SENSOR_BROADCAST_ID)
-                    .type(MESSAGE_TYPE.C_INTERNAL)
+                    .sensorId(IMessage.SENSOR_BROADCAST_ID)
+                    .type(MESSAGE_TYPE.C_INTERNAL.getText())
                     .subType(MESSAGE_TYPE_INTERNAL.I_FACTORY_RESET.getText())
-                    .ack(McMessage.NO_ACK)
-                    .payload(McMessage.PAYLOAD_EMPTY)
+                    .ack(IMessage.NO_ACK)
+                    .payload(IMessage.PAYLOAD_EMPTY)
                     .isTxMessage(true)
                     .build();
-            McMessageUtils.sendToMessageQueue(mcMessage);
+            send(message);
+            return message.getEventTopic();
         } else if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS) {
             node.setEraseConfig(true);
             DaoUtils.getNodeDao().update(node);
             rebootNode(node);
         }
+        return null;
     }
 
     @Override
@@ -344,22 +359,23 @@ public class McActionEngine implements IMcActionEngine {
     }
 
     @Override
-    public void sendPayload(SensorVariable sensorVariable) {
+    public String sendPayload(SensorVariable sensorVariable) {
         if (sensorVariable.getReadOnly()) {
             _logger.warn("For 'readOnly' sensor variable, cannot send payload!, {}", sensorVariable);
-            return;
+            return null;
         }
-        McMessage mcMessage = McMessage.builder()
+        IMessage message = MessageImpl.builder()
                 .gatewayId(sensorVariable.getSensor().getNode().getGatewayTable().getId())
                 .nodeEui(sensorVariable.getSensor().getNode().getEui())
                 .sensorId(sensorVariable.getSensor().getSensorId())
-                .type(MESSAGE_TYPE.C_SET)
+                .type(MESSAGE_TYPE.C_SET.getText())
                 .subType(sensorVariable.getVariableType().getText())
-                .ack(McMessage.NO_ACK)
+                .ack(IMessage.NO_ACK)
                 .payload(sensorVariable.getValue())
                 .isTxMessage(true)
                 .build();
-        McMessageUtils.sendToMessageQueue(mcMessage);
+        send(message);
+        return message.getEventTopic();
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.loggers.LoggerMySql;
+import org.mycontroller.standalone.db.LoggerMySql;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;

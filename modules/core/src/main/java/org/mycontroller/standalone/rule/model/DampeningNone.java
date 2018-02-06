@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.3
  */
-public class DampeningNone extends Dampening {
+public class DampeningNone extends DampeningAbstract {
 
     @Override
     public String getDampeningString() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DampeningActiveTime extends Dampening {
+public class DampeningActiveTime extends DampeningAbstract {
     public static final String KEY_ACTIVE_TIME = "activeTime";
     public static final String KEY_ACTIVE_FROM = "activeFrom";
 

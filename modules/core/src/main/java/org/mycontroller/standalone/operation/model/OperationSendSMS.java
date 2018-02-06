@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.operation.Notification;
 import org.mycontroller.standalone.operation.SMSUtils;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -82,7 +82,7 @@ public class OperationSendSMS extends Operation {
     }
 
     @Override
-    public void execute(RuleDefinition ruleDefinition) {
+    public void execute(RuleDefinitionAbstract ruleDefinition) {
         if (!getEnabled()) {
             //This operation disabled, nothing to do.
             return;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,7 +54,7 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.User;
-import org.mycontroller.standalone.externalserver.ExternalServerUtils.EXTERNAL_SERVER_TYPE;
+import org.mycontroller.standalone.externalserver.ExternalServerFactory.EXTERNAL_SERVER_TYPE;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,8 +29,7 @@ import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McDuplicateException;
-import org.mycontroller.standalone.message.McMessage;
-import org.mycontroller.standalone.message.McMessageUtils;
+import org.mycontroller.standalone.message.IMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_INTERNAL;
 
@@ -69,23 +68,21 @@ public class NodeApi {
             throw new McDuplicateException("A node available with this EUI.");
         }
 
-        if (McMessageUtils.validateNodeIdByProvider(node)) {
+        if (McObjectManager.getEngine(node.getGatewayTable().getId()).validate(node)) {
             if ((oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER
                     || oldNode.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS)
                     && !oldNode.getEui().equals(node.getEui())) {
-                McMessage mcMessage = McMessage.builder()
-                        .ack(McMessage.NO_ACK)
-                        .isScreeningDone(true)
+                IMessage message = IMessage.builder()
+                        .ack(IMessage.NO_ACK)
                         .gatewayId(oldNode.getGatewayTable().getId())
                         .isTxMessage(true)
-                        .networkType(oldNode.getGatewayTable().getNetworkType())
-                        .type(MESSAGE_TYPE.C_INTERNAL)
+                        .type(MESSAGE_TYPE.C_INTERNAL.getText())
                         .subType(MESSAGE_TYPE_INTERNAL.I_ID_RESPONSE.getText())
                         .nodeEui(oldNode.getEui())
-                        .sensorId(McMessage.SENSOR_BROADCAST_ID)
+                        .sensorId(IMessage.SENSOR_BROADCAST_ID)
                         .payload(node.getEui())
                         .build();
-                McMessageUtils.sendToMessageQueue(mcMessage);
+                McObjectManager.getEngine(node.getGatewayTable().getId()).send(message);
             }
             DaoUtils.getNodeDao().update(node);
         }
@@ -97,7 +94,7 @@ public class NodeApi {
         }
         GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(node.getGatewayTable().getId());
         node.setGatewayTable(gatewayTable);
-        if (McMessageUtils.validateNodeIdByProvider(node)) {
+        if (McObjectManager.getEngine(node.getGatewayTable().getId()).validate(node)) {
             DaoUtils.getNodeDao().create(node);
         }
     }

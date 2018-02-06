@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -252,6 +252,7 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
   $scope.gateway = {};
   $scope.gateway.enabled = true;
   $scope.gateway.txDelay = 0;
+  $scope.gateway.reconnectDelay = 120;
   $scope.gatewayTypes = {};
   $scope.trustHostTypes = TypesFactory.getTrustHostTypes();
   $scope.gatewayNetworkTypes = TypesFactory.getGatewayNetworkTypes();
@@ -273,7 +274,6 @@ myControllerModule.controller('GatewaysControllerAddEdit', function ($scope, Typ
       $scope.gateway.driver='';
       $scope.gateway.portName='';
       $scope.gateway.baudRate='';
-      $scope.gateway.retryFrequency='';
     }else if($scope.gateway.type === 'Ethernet'){
       $scope.gateway.host='';
       $scope.gateway.port='';
@@ -348,5 +348,6 @@ myControllerModule.controller('GatewaysControllerDetail', function ($scope, $sta
   $scope.headerStringList = $filter('translate')('GATEWAY_DETAILS');
 
   $scope.item = GatewaysFactory.get({"gatewayId":$stateParams.id});
+  $scope.statistics = GatewaysFactory.statistics({"gatewayId":$stateParams.id});
   $scope.resourceCount = MetricsFactory.getResourceCount({"resourceType":"Gateway", "resourceId":$stateParams.id});
 });

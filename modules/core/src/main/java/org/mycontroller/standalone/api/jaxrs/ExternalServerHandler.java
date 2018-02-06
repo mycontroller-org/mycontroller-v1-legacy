@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,8 +40,8 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McDuplicateException;
-import org.mycontroller.standalone.exernalserver.model.ExternalServer;
-import org.mycontroller.standalone.externalserver.ExternalServerUtils.EXTERNAL_SERVER_TYPE;
+import org.mycontroller.standalone.externalserver.ExternalServerFactory.EXTERNAL_SERVER_TYPE;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfig;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -58,7 +58,7 @@ public class ExternalServerHandler {
 
     @PUT
     @Path("/")
-    public Response update(ExternalServer externalServer) {
+    public Response update(ExternalServerConfig externalServer) {
         try {
             externalServerApi.update(externalServer);
             return RestUtils.getResponse(Status.OK);
@@ -69,7 +69,7 @@ public class ExternalServerHandler {
 
     @POST
     @Path("/")
-    public Response addExternalServer(ExternalServer externalServer) {
+    public Response addExternalServer(ExternalServerConfig externalServer) {
         try {
             externalServerApi.add(externalServer);
             return RestUtils.getResponse(Status.OK);

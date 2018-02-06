@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.mapdb.HTreeMap;
-import org.mycontroller.standalone.MapDbFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareData;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
+import org.mycontroller.standalone.offheap.OffHeapFactory;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -49,8 +49,8 @@ public class FirmwareUtils {
 
     public static HTreeMap<String, FirmwareData> getFirmwareMap() {
         if (FIRMWARE_OFFLINE_MAP == null) {
-            MapDbFactory.getDbStore().delete(FIRMWARE_MAP);//Remove existing map
-            FIRMWARE_OFFLINE_MAP = MapDbFactory.getDbStore().getHashMap(FIRMWARE_MAP);
+            OffHeapFactory.store().delete(FIRMWARE_MAP);//Remove existing map
+            FIRMWARE_OFFLINE_MAP = OffHeapFactory.store().getHashMap(FIRMWARE_MAP);
             FIRMWARE_OFFLINE_MAP.clear();
         }
         return FIRMWARE_OFFLINE_MAP;

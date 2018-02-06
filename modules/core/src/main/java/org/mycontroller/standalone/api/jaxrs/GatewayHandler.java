@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,7 @@ import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
-import org.mycontroller.standalone.gateway.model.Gateway;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -60,17 +60,17 @@ public class GatewayHandler extends AccessEngine {
 
     @PUT
     @Path("/")
-    public Response updateGateway(Gateway gateway) {
-        this.hasAccessGateway(gateway.getId());
-        gatewayApi.update(gateway);
+    public Response updateGateway(GatewayConfig gatewayConfig) {
+        this.hasAccessGateway(gatewayConfig.getId());
+        gatewayApi.update(gatewayConfig);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
     @RolesAllowed({ "admin" })
     @POST
     @Path("/")
-    public Response addGateway(Gateway gateway) {
-        gatewayApi.add(gateway);
+    public Response addGateway(GatewayConfig gatewayConfig) {
+        gatewayApi.add(gatewayConfig);
         return RestUtils.getResponse(Status.ACCEPTED);
     }
 
@@ -79,6 +79,13 @@ public class GatewayHandler extends AccessEngine {
     public Response getGateway(@PathParam("id") Integer gatewayId) {
         this.hasAccessGateway(gatewayId);
         return RestUtils.getResponse(Status.OK, gatewayApi.getRaw(gatewayId));
+    }
+
+    @GET
+    @Path("/statistics/{id}")
+    public Response getStatistics(@PathParam("id") Integer gatewayId) {
+        this.hasAccessGateway(gatewayId);
+        return RestUtils.getResponse(Status.OK, gatewayApi.getStatistics(gatewayId));
     }
 
     @GET

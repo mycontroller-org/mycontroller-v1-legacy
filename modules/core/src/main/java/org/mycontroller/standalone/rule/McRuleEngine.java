@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -69,31 +69,31 @@ public class McRuleEngine extends Job implements Runnable {
             //Load rules
             for (RuleDefinitionTable ruleDefinitionDb : ruleDefinitionsDb) {
                 if (ruleDefinitionDb.getEnabled()) {
-                    McRuleBase mcRuleBase = null;
+                    McRuleAbstract mcRuleAbstract = null;
                     switch (ruleDefinitionDb.getConditionType()) {
                         case THRESHOLD:
-                            mcRuleBase = new McConditionThreshold(ruleDefinitionDb);
+                            mcRuleAbstract = new McConditionThreshold(ruleDefinitionDb);
                             break;
                         case THRESHOLD_RANGE:
-                            mcRuleBase = new McConditionThresholdRange(ruleDefinitionDb);
+                            mcRuleAbstract = new McConditionThresholdRange(ruleDefinitionDb);
                             break;
                         case COMPARE:
-                            mcRuleBase = new McConditionCompare(ruleDefinitionDb);
+                            mcRuleAbstract = new McConditionCompare(ruleDefinitionDb);
                             break;
                         case STATE:
-                            mcRuleBase = new McConditionState(ruleDefinitionDb);
+                            mcRuleAbstract = new McConditionState(ruleDefinitionDb);
                             break;
                         case STRING:
-                            mcRuleBase = new McConditionString(ruleDefinitionDb);
+                            mcRuleAbstract = new McConditionString(ruleDefinitionDb);
                             break;
                         case SCRIPT:
-                            mcRuleBase = new McConditionScript(ruleDefinitionDb);
+                            mcRuleAbstract = new McConditionScript(ruleDefinitionDb);
                             break;
                         default:
                             break;
                     }
-                    if (mcRuleBase != null) {
-                        mcRulesEngine.registerRule(mcRuleBase);
+                    if (mcRuleAbstract != null) {
+                        mcRulesEngine.registerRule(mcRuleAbstract);
                     }
                 }
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,11 +22,12 @@ import java.net.URISyntaxException;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
-import org.mycontroller.standalone.metrics.engine.conf.InfluxDBConf;
+import org.mycontroller.standalone.metrics.engine.IMetricEngine;
+import org.mycontroller.standalone.metrics.engine.MetricEngineInfluxDB;
+import org.mycontroller.standalone.metrics.engine.MetricEngineMyController;
 import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
-import org.mycontroller.standalone.metrics.engine.conf.MyControllerConf;
-import org.mycontroller.standalone.metrics.engines.InfluxDBEngine;
-import org.mycontroller.standalone.metrics.engines.McMetricEngine;
+import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConfigInfluxDB;
+import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConfigMyController;
 import org.mycontroller.standalone.metrics.model.Pong;
 import org.mycontroller.standalone.utils.McUtils;
 
@@ -155,24 +156,24 @@ public class MetricsUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static IMetric metricEngine = null;
+    private static IMetricEngine metricEngine = null;
     private static MetricEngineConf engineConf = null;
 
-    public static IMetric engine() {
+    public static IMetricEngine engine() {
         return metricEngine;
     }
 
     public static void loadEngine() throws URISyntaxException {
-        engineConf = getEngineConf();
+        engineConf = getConf();
         metricEngine = getEngine(engineConf);
     }
 
-    private static IMetric getEngine(MetricEngineConf engineConf) throws URISyntaxException {
+    private static IMetricEngine getEngine(MetricEngineConf engineConf) throws URISyntaxException {
         switch (engineConf.getType()) {
             case INFLUXDB:
-                return new InfluxDBEngine((InfluxDBConf) engineConf);
+                return new MetricEngineInfluxDB((MetricEngineConfigInfluxDB) engineConf);
             case MY_CONTROLLER:
-                return new McMetricEngine();
+                return new MetricEngineMyController();
             default:
                 break;
 
@@ -188,10 +189,10 @@ public class MetricsUtils {
         return METRIC_ENGINE.valueOf(getMetricEngineDataInDB(KEY_TYPE));
     }
 
-    public static MetricEngineConf getEngineConf() {
+    public static MetricEngineConf getConf() {
         String conf = getMetricEngineDataInDB(KEY_CONF);
         if (conf == null) {
-            MyControllerConf mcConf = new MyControllerConf();
+            MetricEngineConfigMyController mcConf = new MetricEngineConfigMyController();
             mcConf.setType(METRIC_ENGINE.MY_CONTROLLER);
             try {
                 updateEngine(mcConf);
@@ -203,9 +204,9 @@ public class MetricsUtils {
         try {
             switch (getEngineType()) {
                 case INFLUXDB:
-                    return OBJECT_MAPPER.readValue(conf, InfluxDBConf.class);
+                    return OBJECT_MAPPER.readValue(conf, MetricEngineConfigInfluxDB.class);
                 case MY_CONTROLLER:
-                    return OBJECT_MAPPER.readValue(conf, MyControllerConf.class);
+                    return OBJECT_MAPPER.readValue(conf, MetricEngineConfigMyController.class);
             }
         } catch (IOException ex) {
             _logger.error("Exception,", ex);

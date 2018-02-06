@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.rule.RuleUtils;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -42,13 +42,13 @@ public class RuleApi {
         return DaoUtils.getRuleDefinitionDao().getAll(Query.get(filters));
     }
 
-    public RuleDefinition get(int id) {
+    public RuleDefinitionAbstract get(int id) {
         return RuleUtils.getRuleDefinition(getRaw(id));
     }
 
     public QueryResponse getAll(HashMap<String, Object> filters) {
         QueryResponse queryResponse = getAllRaw(filters);
-        ArrayList<RuleDefinition> gateways = new ArrayList<RuleDefinition>();
+        ArrayList<RuleDefinitionAbstract> gateways = new ArrayList<RuleDefinitionAbstract>();
         @SuppressWarnings("unchecked")
         List<RuleDefinitionTable> rows = (List<RuleDefinitionTable>) queryResponse.getData();
         for (RuleDefinitionTable row : rows) {
@@ -58,7 +58,7 @@ public class RuleApi {
         return queryResponse;
     }
 
-    public RuleDefinition get(HashMap<String, Object> filters) {
+    public RuleDefinitionAbstract get(HashMap<String, Object> filters) {
         QueryResponse response = getAll(filters);
         @SuppressWarnings("unchecked")
         List<RuleDefinitionTable> items = (List<RuleDefinitionTable>) response.getData();
@@ -68,12 +68,12 @@ public class RuleApi {
         return null;
     }
 
-    public void add(RuleDefinition ruleDefinition) {
+    public void add(RuleDefinitionAbstract ruleDefinition) {
         ruleDefinition.reset();
         RuleUtils.addRuleDefinition(ruleDefinition);
     }
 
-    public void update(RuleDefinition ruleDefinition) {
+    public void update(RuleDefinitionAbstract ruleDefinition) {
         RuleUtils.updateRuleDefinition(ruleDefinition);
     }
 

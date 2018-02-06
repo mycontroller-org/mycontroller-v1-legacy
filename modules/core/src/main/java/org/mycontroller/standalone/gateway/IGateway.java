@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,23 +16,26 @@
  */
 package org.mycontroller.standalone.gateway;
 
-import org.mycontroller.standalone.gateway.model.Gateway;
-import org.mycontroller.standalone.message.RawMessage;
+import org.mycontroller.standalone.exceptions.MessageParserException;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
+import org.mycontroller.standalone.message.IMessage;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.2
+ * @since 1.2.0
  */
 public interface IGateway {
-    public enum GATEWAY_STATUS {
-        GATEWAY_ERROR,
-        SUCCESS;
-    }
 
-    void write(RawMessage rawMessage) throws GatewayException;
+    void write(IMessage message) throws MessageParserException;
 
-    void close();
+    GatewayConfig config();
 
-    Gateway getGateway();
+    boolean isUp();
+
+    void connect();
+
+    void disconnect();
+
+    void reconnect();
 
 }

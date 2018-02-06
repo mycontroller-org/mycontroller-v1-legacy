@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.rule.RuleUtils;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -171,7 +171,7 @@ public class ResourceModel {
                         .append(", State:").append(resourcesGroup.getState().getText()).append("]");
                 break;
             case RULE_DEFINITION:
-                RuleDefinition ruleDefinition = (RuleDefinition) this.resource;
+                RuleDefinitionAbstract ruleDefinition = (RuleDefinitionAbstract) this.resource;
                 builder.append("Rule definition:[Name:").append(ruleDefinition.getName()).append("]");
                 break;
             case TIMER:
@@ -243,7 +243,7 @@ public class ResourceModel {
                 builder.append(DISPLAY_KEY_RESOURCES_GROUP).append(resourcesGroup.getName());
                 break;
             case RULE_DEFINITION:
-                RuleDefinition ruleDefinition = (RuleDefinition) this.resource;
+                RuleDefinitionAbstract ruleDefinition = (RuleDefinitionAbstract) this.resource;
                 builder.append(DISPLAY_KEY_RULE_DIFINITION).append(ruleDefinition.getName());
                 break;
             case TIMER:

@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.mycontroller</groupId>
     <artifactId>mycontroller-parent</artifactId>
-    <version>26</version>
+    <version>29</version>
   </parent>
 
   <groupId>org.mycontroller.standalone</groupId>
@@ -279,6 +279,13 @@
       <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
     </dependency>
+
+    <!-- Vertx.io event bus -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

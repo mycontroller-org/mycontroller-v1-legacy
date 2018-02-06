@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@ package org.mycontroller.standalone.api;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.mycontroller.standalone.api.jaxrs.model.McAbout;
 import org.mycontroller.standalone.api.jaxrs.model.McGuiSettings;
@@ -28,7 +27,6 @@ import org.mycontroller.standalone.api.jaxrs.utils.StatusJVM;
 import org.mycontroller.standalone.api.jaxrs.utils.StatusOS;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
-import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -86,13 +84,5 @@ public class SystemApi {
 
     public QueryResponse getResourcesLogsAll(HashMap<String, Object> filters) {
         return DaoUtils.getResourcesLogsDao().getAll(Query.get(filters));
-    }
-
-    public Map<String, Object> getMessageEngineStatistics() {
-        return MessageMonitorThread.getStatistics();
-    }
-
-    public void printMessageEngineStatistics() {
-        MessageMonitorThread.printStatistics();
     }
 }

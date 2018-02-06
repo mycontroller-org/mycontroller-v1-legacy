@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,14 +17,14 @@
 package org.mycontroller.standalone.operation;
 
 import org.mycontroller.standalone.db.tables.Timer;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
 public interface IOperationEngine {
-    void execute(RuleDefinition ruleDefinition);
+    void execute(RuleDefinitionAbstract ruleDefinition);
 
     void execute(Timer timer);
 }

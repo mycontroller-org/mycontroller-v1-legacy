@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,38 @@
  */
 package org.mycontroller.standalone.provider.philipshue;
 
+import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
+import org.mycontroller.standalone.gateway.philipshue.GatewayPhilipsHue;
+import org.mycontroller.standalone.provider.EngineAbstract;
+
 /**
- * @author Fraid(https://github.com/Fraid)
+ * @author Jeeva Kandasamy (jkandasa)
+ * @since 1.2.0
  */
-public class PhilipsHueEngine {
-    public static void updateMessage(PhilipsHueRawMessage myPhilipsHueRawMessage) {
+public class PhilipsHueEngine extends EngineAbstract {
+
+    public PhilipsHueEngine(GatewayConfig _config) {
+        super(_config);
+        _gateway = new GatewayPhilipsHue(_config.getGatewayTable(), new MessageParserPhilipsHue(), _queue);
+        _executor = new PhilipsHueExecutor(_queue, _queueSleep);
+    }
+
+    @Override
+    public boolean validate(Sensor sensor) {
+        if (sensor.getSensorId().contains(" ")) {
+            throw new RuntimeException("Sensor Id should not contain any space");
+        }
+        return true;
+    }
+
+    @Override
+    public boolean validate(Node node) {
+        if (node.getEui().contains(" ")) {
+            throw new RuntimeException("Node EUI should not contain any space");
+        }
+        return true;
     }
 
 }

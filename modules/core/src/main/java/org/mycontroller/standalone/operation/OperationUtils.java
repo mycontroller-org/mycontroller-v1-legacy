@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.operation.model.OperationSendPushbulletNote;
 import org.mycontroller.standalone.operation.model.OperationSendSMS;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 
 import lombok.AccessLevel;
@@ -101,7 +101,8 @@ public class OperationUtils {
         }
     }
 
-    public static String getSendPayloadTimerJobName(RuleDefinition ruleDefinition, OperationTable operationTable) {
+    public static String getSendPayloadTimerJobName(
+            RuleDefinitionAbstract ruleDefinition, OperationTable operationTable) {
         return getSendPayloadTimerJobName(operationTable) + RULE_OPERATION + ruleDefinition.getId();
     }
 
@@ -122,7 +123,7 @@ public class OperationUtils {
         SchedulerUtils.unloadTimerJobIfContains(timer);
     }
 
-    public static void unloadOperationTimerJobs(RuleDefinition ruleDefinition) {
+    public static void unloadOperationTimerJobs(RuleDefinitionAbstract ruleDefinition) {
         //Unload timer job
         Timer timer = new Timer();
         List<OperationTable> operationTables = DaoUtils.getOperationDao().getByRuleDefinitionId(
@@ -135,7 +136,7 @@ public class OperationUtils {
         }
     }
 
-    public static void disableRuleDefinition(RuleDefinition ruleDefinition) {
+    public static void disableRuleDefinition(RuleDefinitionAbstract ruleDefinition) {
         //unload notification timer jobs
         unloadOperationTimerJobs(ruleDefinition);
         //Disable

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,7 +66,7 @@ import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.metrics.export.CsvExportEngine;
 import org.mycontroller.standalone.metrics.model.MetricDouble;
 import org.mycontroller.standalone.model.ResourceModel;
-import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
+import org.mycontroller.standalone.provider.mysensors.MySensors;
 import org.mycontroller.standalone.scripts.McScriptException;
 import org.mycontroller.standalone.settings.MetricsGraph;
 import org.mycontroller.standalone.settings.MetricsGraph.CHART_TYPE;
@@ -399,7 +399,7 @@ public class MetricsHandler extends AccessEngine {
                     }
                 } else if (node.getGatewayTable().getNetworkType() != NETWORK_TYPE.MY_SENSORS
                         || (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
-                        && node.getEui().equals(String.valueOf(MySensorsUtils.GATEWAY_ID)))) {
+                        && node.getEui().equals(String.valueOf(MySensors.GATEWAY_ID)))) {
                     relations.add(TopologyRelation.builder()
                             .source(source)
                             .target(TOPOLOGY_PREFIX_GATEWAY + node.getGatewayTable().getId())

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +22,9 @@ package org.mycontroller.standalone.api;
  */
 
 public class MessageQueueApi {
-    private SmartSleepMessageQueueApi sleepMessageQueueApi = new SmartSleepMessageQueueApi();
+    /* private SmartSleepMessageQueueApi sleepMessageQueueApi = new SmartSleepMessageQueueApi();
 
-    public SmartSleepMessageQueueApi smartSleep() {
-        return sleepMessageQueueApi;
-    }
+     public SmartSleepMessageQueueApi smartSleep() {
+         return sleepMessageQueueApi;
+     }*/
 }

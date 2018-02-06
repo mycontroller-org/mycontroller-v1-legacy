@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,7 @@ import org.mycontroller.standalone.db.DB_QUERY;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DeleteResourceUtils;
 import org.mycontroller.standalone.db.SensorUtils;
+import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Room;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
@@ -37,8 +38,7 @@ import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McDuplicateException;
 import org.mycontroller.standalone.exceptions.McException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
-import org.mycontroller.standalone.message.McMessage;
-import org.mycontroller.standalone.message.McMessageUtils;
+import org.mycontroller.standalone.message.IMessage;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
@@ -87,7 +87,7 @@ public class SensorApi {
             throw new McDuplicateException("A sensor available with this sensor id!");
         }
         try {
-            if (McMessageUtils.validateSensorIdByProvider(sensor)) {
+            if (McObjectManager.getEngine(sensor.getNode().getGatewayTable().getId()).validate(sensor)) {
                 DaoUtils.getSensorDao().update(sensor);
                 // Update Variable Types
                 SensorUtils.updateSensorVariables(sensor);
@@ -104,9 +104,10 @@ public class SensorApi {
             throw new McDuplicateException("A sensor available with this sensor id!");
         }
         try {
+            Node node = DaoUtils.getNodeDao().getById(sensor.getNode().getId());
             //Take variable types reference
             List<String> variableTypes = sensor.getVariableTypes();
-            if (McMessageUtils.validateSensorIdByProvider(sensor)) {
+            if (McObjectManager.getEngine(node.getGatewayTable().getId()).validate(sensor)) {
                 DaoUtils.getSensorDao().create(sensor);
                 sensor = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
                 // Update Variable Types
@@ -154,17 +155,17 @@ public class SensorApi {
         return new SensorVariableJson(sensorVariable);
     }
 
-    public void sendPayload(SensorVariableJson sensorVariableJson) throws McInvalidException, McBadRequestException {
+    public String sendPayload(SensorVariableJson sensorVariableJson) throws McInvalidException, McBadRequestException {
         SensorVariable sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariableJson.getId());
         if (sensorVariable != null) {
             sensorVariable.setValue(String.valueOf(sensorVariableJson.getValue()));
-            sendPayload(sensorVariable);
+            return sendPayload(sensorVariable);
         } else {
             throw new McBadRequestException("null not allowed");
         }
     }
 
-    public void sendPayload(SensorVariable sensorVariable) throws McInvalidException, McBadRequestException {
+    public String sendPayload(SensorVariable sensorVariable) throws McInvalidException, McBadRequestException {
         if (sensorVariable != null) {
             switch (sensorVariable.getMetricType()) {
                 case BINARY:
@@ -181,9 +182,8 @@ public class SensorApi {
                 default:
                     break;
             }
-
             sensorVariable.setValue(String.valueOf(sensorVariable.getValue()));
-            McObjectManager.getMcActionEngine().sendPayload(sensorVariable);
+            return McObjectManager.getMcActionEngine().sendPayload(sensorVariable);
         } else {
             throw new McBadRequestException("null not allowed");
         }
@@ -246,13 +246,12 @@ public class SensorApi {
         return getSensorVariable(getSensor(sensorName, roomId), variableType);
     }
 
-    public void sendRawMessage(McMessage mcMessage) throws McBadRequestException {
-        mcMessage.setTxMessage(true);
-        mcMessage.setScreeningDone(false);
-        if (mcMessage.validate()) {
-            McMessageUtils.sendToMessageQueue(mcMessage);
+    public void sendRawMessage(IMessage message) throws McBadRequestException {
+        message.setTxMessage(true);
+        if (message.isValid()) {
+            McObjectManager.getEngine(message.getGatewayId()).send(message);
         } else {
-            throw new McBadRequestException("Required field is missing! " + mcMessage);
+            throw new McBadRequestException("Required field is missing! " + message);
         }
     }
 

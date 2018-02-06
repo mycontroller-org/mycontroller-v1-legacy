@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.3
  */
 @Slf4j
-public class McConditionThresholdRange extends McRuleBase {
+public class McConditionThresholdRange extends McRuleAbstract {
     public RuleDefinitionThresholdRange rdThRange; //data to operate on
 
     public McConditionThresholdRange(RuleDefinitionTable ruleDefinitionTable) {

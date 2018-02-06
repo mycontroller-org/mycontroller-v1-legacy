@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,6 +36,7 @@ import javax.ws.rs.core.Response.Status;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.SensorApi;
 import org.mycontroller.standalone.api.jaxrs.model.ApiError;
+import org.mycontroller.standalone.api.jaxrs.model.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.api.jaxrs.model.SensorVariableJson;
@@ -45,11 +46,16 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.eventbus.McEventBus;
+import org.mycontroller.standalone.eventbus.MessageStatus;
+import org.mycontroller.standalone.eventbus.MessageStatusHandler;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McInvalidException;
-import org.mycontroller.standalone.message.McMessage;
+import org.mycontroller.standalone.message.IMessage;
+import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_STATUS;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
+import io.vertx.core.eventbus.MessageConsumer;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -180,7 +186,38 @@ public class SensorHandler extends AccessEngine {
         if (sensorVariable != null) {
             this.hasAccessSensor(sensorVariable.getSensor().getId());
             try {
-                sensorApi.sendPayload(sensorVariableJson);
+                String topic = sensorApi.sendPayload(sensorVariableJson);
+                MessageConsumer<MessageStatus> _consumer = null;
+                try {
+                    MessageStatusHandler _handler = new MessageStatusHandler();
+                    _consumer = McEventBus.getInstance().registerConsumer(topic, _handler);
+                    long sleep = 1000 * 3;
+                    while (sleep > 0) {
+                        if (_handler.getStatusMessage() != null) {
+                            if (_handler.getStatusMessage().getStatus() == MESSAGE_STATUS.SUCCESS) {
+                                return RestUtils.getResponse(Status.OK, new ApiMessage(_handler.toString()));
+                            }
+                        }
+                        Thread.sleep(10);
+                        sleep -= 10;
+                    }
+                    if (_handler.getStatusMessage() != null
+                            && _handler.getStatusMessage().getStatus() != MESSAGE_STATUS.SUCCESS) {
+                        return RestUtils.getResponse(Status.BAD_REQUEST,
+                                new ApiError(_handler.getStatusMessage().toString()));
+                    } else {
+                        return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(
+                                "Request timeout! No idea about the status. "
+                                        + "If it is a sleeping node data will be sent "
+                                        + "when receive a request from the node."));
+                    }
+                } catch (InterruptedException ex) {
+                    _logger.error("Exception, ", ex);
+                } finally {
+                    if (_consumer != null) {
+                        _consumer.unregister();
+                    }
+                }
                 return RestUtils.getResponse(Status.OK);
             } catch (NumberFormatException | McInvalidException | McBadRequestException ex) {
                 return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
@@ -210,9 +247,9 @@ public class SensorHandler extends AccessEngine {
     @RolesAllowed({ "Admin" })
     @POST
     @Path("/sendRawMessage")
-    public Response sendRawMessage(McMessage mcMessage) {
+    public Response sendRawMessage(IMessage message) {
         try {
-            sensorApi.sendRawMessage(mcMessage);
+            sensorApi.sendRawMessage(message);
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

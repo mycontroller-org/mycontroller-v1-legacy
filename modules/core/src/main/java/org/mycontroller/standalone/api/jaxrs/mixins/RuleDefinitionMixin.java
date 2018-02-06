@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,12 +31,12 @@ import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DATA_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.OPERATOR;
 import org.mycontroller.standalone.rule.RuleUtils.STRING_OPERATOR;
-import org.mycontroller.standalone.rule.model.Dampening;
+import org.mycontroller.standalone.rule.model.DampeningAbstract;
 import org.mycontroller.standalone.rule.model.DampeningActiveTime;
 import org.mycontroller.standalone.rule.model.DampeningConsecutive;
 import org.mycontroller.standalone.rule.model.DampeningLastNEvaluations;
 import org.mycontroller.standalone.rule.model.DampeningNone;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 import org.mycontroller.standalone.rule.model.RuleDefinitionCompare;
 import org.mycontroller.standalone.rule.model.RuleDefinitionScript;
 import org.mycontroller.standalone.rule.model.RuleDefinitionState;
@@ -81,10 +81,10 @@ class RuleDefinitionSerializer extends JsonSerializer<RuleDefinitionTable> {
     }
 }
 
-class RuleDefinitionDeserializer extends JsonDeserializer<RuleDefinition> {
+class RuleDefinitionDeserializer extends JsonDeserializer<RuleDefinitionAbstract> {
 
     @Override
-    public RuleDefinition deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+    public RuleDefinitionAbstract deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
         ObjectCodec objectCodec = jp.getCodec();
         JsonNode node = objectCodec.readTree(jp);
@@ -92,7 +92,7 @@ class RuleDefinitionDeserializer extends JsonDeserializer<RuleDefinition> {
         CONDITION_TYPE conditionType = CONDITION_TYPE.fromString(node.get("conditionType").asText());
         DAMPENING_TYPE dampeningType = DAMPENING_TYPE.fromString(node.get("dampeningType").asText());
 
-        RuleDefinition ruleDefinition = null;
+        RuleDefinitionAbstract ruleDefinition = null;
         switch (conditionType) {
             case THRESHOLD:
                 RuleDefinitionThreshold ruleDefinitionThreshold = new RuleDefinitionThreshold();
@@ -181,7 +181,7 @@ class RuleDefinitionDeserializer extends JsonDeserializer<RuleDefinition> {
         ruleDefinition.setOperationIds(operationIds);
         ruleDefinition.setDampeningType(DAMPENING_TYPE.fromString(node.get("dampeningType").asText()));
 
-        Dampening dampening = null;
+        DampeningAbstract dampening = null;
 
         JsonNode dampeningNode = node.get("dampening");
 

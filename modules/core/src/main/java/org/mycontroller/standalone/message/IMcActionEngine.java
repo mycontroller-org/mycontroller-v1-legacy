@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.gateway.model.GatewayEthernet;
 import org.mycontroller.standalone.model.ResourceModel;
 
 /**
@@ -36,9 +35,7 @@ public interface IMcActionEngine {
 
     void executeRequestPayload(ResourceModel resourceModel);
 
-    void sendAliveStatusRequest(Node node);
-
-    boolean checkEthernetGatewayAliveState(GatewayEthernet gatewayEthernet);
+    String sendAliveStatusRequest(Node node);
 
     void executeForwardPayload(ForwardPayload forwardPayload, String payload);
 
@@ -50,7 +47,7 @@ public interface IMcActionEngine {
 
     void updateNodeInformations(Integer gatewayId, List<Integer> nodeIds);
 
-    void sendPayload(SensorVariable sensorVariable);
+    String sendPayload(SensorVariable sensorVariable);
 
     void addNode(Node node);
 
@@ -60,6 +57,6 @@ public interface IMcActionEngine {
 
     void updateSensor(Sensor sensor);
 
-    void eraseConfiguration(Node node);
+    String eraseConfiguration(Node node);
 
 }
