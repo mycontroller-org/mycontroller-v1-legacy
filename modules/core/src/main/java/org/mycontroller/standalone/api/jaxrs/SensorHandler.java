@@ -195,7 +195,8 @@ public class SensorHandler extends AccessEngine {
                     while (sleep > 0) {
                         if (_handler.getStatusMessage() != null) {
                             if (_handler.getStatusMessage().getStatus() == MESSAGE_STATUS.SUCCESS) {
-                                return RestUtils.getResponse(Status.OK, new ApiMessage(_handler.toString()));
+                                return RestUtils.getResponse(Status.OK,
+                                        new ApiMessage(_handler.getStatusMessage().toString()));
                             }
                         }
                         Thread.sleep(10);

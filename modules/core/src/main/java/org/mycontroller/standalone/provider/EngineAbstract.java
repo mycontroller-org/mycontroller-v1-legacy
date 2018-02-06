@@ -206,7 +206,7 @@ public abstract class EngineAbstract implements IEngine {
                             MessageStatusHandler _handler = new MessageStatusHandler();
                             _consumer = McEventBus.getInstance().registerConsumer(message.getEventTopic(), _handler);
                             for (int retry = 1; retry <= _gateway.config().getFailedRetryCount(); retry++) {
-                                _logger.info("Retry count {} of {}", retry, _gateway.config().getFailedRetryCount());
+                                _logger.debug("Retry count {} of {}", retry, _gateway.config().getFailedRetryCount());
                                 _gateway.write(message); // send to _gateway
                                 sleep(_gateway.config().getAckWaitTime()); // wait for ack delay
                                 if (exit) {
