@@ -39,7 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ResourcesLogger implements Runnable {
 
-    private static final int MAXIMUN_PAYLOAD_SIZE = 20;
+    private static final int MAXIMUN_PAYLOAD_SIZE = 220;
+    private static final int MAXIMUN_PAYLOAD_SIZE_FIRMWARE = 20;
     private IMessage _message = null;
     private RESOURCE_TYPE rType = null;
     private LOG_DIRECTION logDirection = null;
@@ -176,11 +177,13 @@ public class ResourcesLogger implements Runnable {
         _builder.append("[").append(_message.getSubType()).append("] ");
         if (type == MESSAGE_TYPE.C_STREAM
                 && _message.getSubType().equalsIgnoreCase(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText())) {
-            if (_message.getPayload().length() > MAXIMUN_PAYLOAD_SIZE) {
-                _builder.append(_message.getPayload().substring(0, MAXIMUN_PAYLOAD_SIZE - 3)).append("...");
+            if (_message.getPayload().length() > MAXIMUN_PAYLOAD_SIZE_FIRMWARE) {
+                _builder.append(_message.getPayload().substring(0, MAXIMUN_PAYLOAD_SIZE_FIRMWARE - 3)).append("...");
             } else {
                 _builder.append(_message.getPayload());
             }
+        } else if (_message.getPayload() != null && _message.getPayload().length() > MAXIMUN_PAYLOAD_SIZE) {
+            _builder.append(_message.getPayload().substring(0, MAXIMUN_PAYLOAD_SIZE)).append("...");
         } else {
             _builder.append(_message.getPayload());
         }

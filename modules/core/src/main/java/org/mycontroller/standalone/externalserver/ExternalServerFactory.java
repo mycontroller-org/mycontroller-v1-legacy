@@ -130,7 +130,9 @@ public class ExternalServerFactory {
 
     public static IExternalServerDriver getDriver(Integer extServerId) {
         if (_DRIVERS.get(extServerId) == null) {
-            _DRIVERS.put(extServerId, getDriverByExtSerId(extServerId));
+            IExternalServerDriver _driver = getDriverByExtSerId(extServerId);
+            _driver.connect();
+            _DRIVERS.put(extServerId, _driver);
         }
         return _DRIVERS.get(extServerId);
     }

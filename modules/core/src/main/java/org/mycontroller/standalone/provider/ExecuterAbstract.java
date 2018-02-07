@@ -432,7 +432,7 @@ public abstract class ExecuterAbstract implements IExecutor {
 
     // move sleep queue messages to actual queue
     private void moveSleepQueueToNormalQueue() {
-        _logger.info("Moving sleep messages to normal queue...");
+        _logger.debug("Moving sleep messages to normal queue...{}", _message);
         ArrayList<IMessage> _messages = _queueSleep.remove(_message.getNodeEui());
         for (int index = 0; index < _messages.size(); index++) {
             // update timestamp as now and move it

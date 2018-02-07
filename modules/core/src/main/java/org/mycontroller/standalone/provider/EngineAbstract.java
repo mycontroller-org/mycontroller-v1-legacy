@@ -67,7 +67,7 @@ public abstract class EngineAbstract implements IEngine {
         // Add it in to thread pool
         McThreadPoolFactory.execute(this);
         //new Thread(this).start();
-        _logger.info("{}", _gateway.config());
+        _logger.debug("{}", _gateway.config());
     }
 
     @Override
@@ -206,7 +206,8 @@ public abstract class EngineAbstract implements IEngine {
                             MessageStatusHandler _handler = new MessageStatusHandler();
                             _consumer = McEventBus.getInstance().registerConsumer(message.getEventTopic(), _handler);
                             for (int retry = 1; retry <= _gateway.config().getFailedRetryCount(); retry++) {
-                                _logger.debug("Retry count {} of {}", retry, _gateway.config().getFailedRetryCount());
+                                _logger.debug("Retry count {} of {}, {}",
+                                        retry, _gateway.config().getFailedRetryCount(), message);
                                 _gateway.write(message); // send to _gateway
                                 sleep(_gateway.config().getAckWaitTime()); // wait for ack delay
                                 if (exit) {
@@ -224,6 +225,9 @@ public abstract class EngineAbstract implements IEngine {
                                     break;
                                 }
                                 if (retry == _gateway.config().getFailedRetryCount()) {
+                                    _logger.warn("Seems like gateway message not sent. "
+                                            + "There is no ACK received! Retried {} time(s), {}",
+                                            _gateway.config().getFailedRetryCount(), message);
                                     _statistics.incrementFailureCount();
                                     // notify it is failed, "ack not received"
                                     McEventBus.getInstance().publish(

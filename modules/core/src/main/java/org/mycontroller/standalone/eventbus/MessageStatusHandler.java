@@ -33,7 +33,7 @@ public class MessageStatusHandler implements Handler<Message<MessageStatus>> {
 
     @Override
     public void handle(Message<MessageStatus> event) {
-        this.statusMessage = event.body();
+        statusMessage = event.body();
         _logger.debug("Event received: [address:{}, body:{}]", event.address(), event.body());
     }
 
