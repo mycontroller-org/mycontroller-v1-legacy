@@ -48,7 +48,8 @@ public class MySensorsEngine extends EngineAbstract {
             case ETHERNET:
                 _gateway = new GatewayEthernet(_config.getGatewayTable(), new MessageParserEthernet(), _queue);
                 isEthernetDriver = true;
-                aliveCheckInterval = ((GatewayConfigEthernet) _config).getAliveFrequency();
+                // interval in seconds, multiple with 1000L to make it in milliseconds
+                aliveCheckInterval = ((GatewayConfigEthernet) _config).getAliveFrequency() * 1000L;
                 break;
             case MQTT:
                 _gateway = new GatewayMQTT(_config.getGatewayTable(), new MessageParserMQTT(), _queue);
