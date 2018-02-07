@@ -225,8 +225,8 @@ public abstract class EngineAbstract implements IEngine {
                                     break;
                                 }
                                 if (retry == _gateway.config().getFailedRetryCount()) {
-                                    _logger.warn("Seems like gateway message not sent. "
-                                            + "There is no ACK received! Retried {} time(s), {}",
+                                    _logger.warn("Seems like failed to sent this message. "
+                                            + "There is no ACK received! Retried {} time(s). {}",
                                             _gateway.config().getFailedRetryCount(), message);
                                     _statistics.incrementFailureCount();
                                     // notify it is failed, "ack not received"
