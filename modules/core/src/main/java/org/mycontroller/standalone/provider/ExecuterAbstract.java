@@ -432,6 +432,11 @@ public abstract class ExecuterAbstract implements IExecutor {
 
     // move sleep queue messages to actual queue
     private void moveSleepQueueToNormalQueue() {
+        Node _node = getNode();
+        // if it is not a sleeping node, no action required.
+        if (!_node.getSmartSleepEnabled()) {
+            return;
+        }
         _logger.debug("Moving sleep messages to normal queue...{}", _message);
         ArrayList<IMessage> _messages = _queueSleep.remove(_message.getNodeEui());
         for (int index = 0; index < _messages.size(); index++) {
