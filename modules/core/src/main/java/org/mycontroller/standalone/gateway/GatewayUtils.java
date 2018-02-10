@@ -178,6 +178,8 @@ public class GatewayUtils {
             if (_engine.config().getEnabled()) {
                 _engine.config().setStatus(STATE.UNAVAILABLE, "Starting...");
                 _engine.start();
+            } else {
+                _engine.config().setStatus(STATE.UNAVAILABLE, "Disabled");
             }
         } else {
             _logger.error("Engine not available for {}", gatewayTable.getNetworkType());
@@ -249,12 +251,10 @@ public class GatewayUtils {
     }
 
     public static void addGateway(GatewayTable gatewayTable) {
-        DaoUtils.getGatewayDao().create(gatewayTable);
         gatewayTable.setTimestamp(System.currentTimeMillis());
-        if (gatewayTable.getEnabled()) {
-            gatewayTable.setEnabled(true);
-            loadEngine(gatewayTable);
-        }
+        DaoUtils.getGatewayDao().create(gatewayTable);
+        GatewayTable _gwt = DaoUtils.getGatewayDao().get(GatewayTable.KEY_NAME, gatewayTable.getName());
+        loadEngine(_gwt);
     }
 
     public static void enableGateway(Integer gatewayId) {
