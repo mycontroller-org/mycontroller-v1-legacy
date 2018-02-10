@@ -59,7 +59,7 @@ public class RuleDefinitionThresholdRange extends RuleDefinitionAbstract {
     @JsonIgnore
     public RuleDefinitionTable getRuleDefinitionTable() {
         RuleDefinitionTable ruleDefinitionTable = super.getRuleDefinitionTable();
-        HashMap<String, Object> conditionProperties = new HashMap<String, Object>();
+        HashMap<String, Object> conditionProperties = ruleDefinitionTable.getConditionProperties();
         conditionProperties.put(KEY_IN_RANGE, inRange);
         conditionProperties.put(KEY_INCLUDE_OPERATOR_LOW, includeOperatorLow);
         conditionProperties.put(KEY_INCLUDE_OPERATOR_HIGH, includeOperatorHigh);

@@ -51,9 +51,12 @@ public class RuleDefinitionsReEnableJob extends Job {
             Long currentTime = System.currentTimeMillis();
             List<Integer> enableRuleIds = new ArrayList<Integer>();
             for (RuleDefinitionAbstract rule : rules) {
-                if (rule.getLastTrigger() != null && (currentTime - rule.getLastTrigger()) >= rule.getReEnableDelay()) {
-                    enableRuleIds.add(rule.getId());
-                    _logger.debug("Enable {}", rule);
+                if (!rule.getDisabledByUser()) {
+                    if (rule.getLastTrigger() != null
+                            && (currentTime - rule.getLastTrigger()) >= rule.getReEnableDelay()) {
+                        enableRuleIds.add(rule.getId());
+                        _logger.debug("Enable {}", rule);
+                    }
                 }
             }
             if (!enableRuleIds.isEmpty()) {

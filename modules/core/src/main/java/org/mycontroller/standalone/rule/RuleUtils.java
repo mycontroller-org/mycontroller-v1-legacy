@@ -263,6 +263,7 @@ public class RuleUtils {
             _logger.debug("This rule definition already in enabled state. Nothing to do.[{}]", ruleDefinition);
         }
         ruleDefinition.setEnabled(true);
+        ruleDefinition.setDisabledByUser(false);
         ruleDefinition.reset();
         DaoUtils.getRuleDefinitionDao().update(ruleDefinition.getRuleDefinitionTable());
     }
@@ -272,6 +273,7 @@ public class RuleUtils {
         OperationUtils.unloadOperationTimerJobs(ruleDefinition);
         //Disable
         ruleDefinition.setEnabled(false);
+        ruleDefinition.setDisabledByUser(true);
         DaoUtils.getRuleDefinitionDao().update(ruleDefinition.getRuleDefinitionTable());
     }
 

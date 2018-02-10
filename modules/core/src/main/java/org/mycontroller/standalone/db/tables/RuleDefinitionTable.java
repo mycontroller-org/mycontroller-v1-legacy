@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,6 +60,7 @@ public class RuleDefinitionTable {
     public static final String KEY_DAMPENING_PROPERTIES = "dampeningProperties";
     public static final String KEY_RE_ENABLE = "reEnable";
     public static final String KEY_RE_ENABLE_DELAY = "reEnableDelay";
+    public static final String KEY_RE_DISABLED_BY_USER = "disabledByUser";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;

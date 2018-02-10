@@ -57,7 +57,7 @@ public class RuleDefinitionString extends RuleDefinitionAbstract {
     @JsonIgnore
     public RuleDefinitionTable getRuleDefinitionTable() {
         RuleDefinitionTable ruleDefinitionTable = super.getRuleDefinitionTable();
-        HashMap<String, Object> conditionProperties = new HashMap<String, Object>();
+        HashMap<String, Object> conditionProperties = ruleDefinitionTable.getConditionProperties();
         conditionProperties.put(KEY_OPERATOR, operator.getText());
         conditionProperties.put(KEY_PATTERN, pattern);
         conditionProperties.put(KEY_IGNORE_CASE, ignoreCase);

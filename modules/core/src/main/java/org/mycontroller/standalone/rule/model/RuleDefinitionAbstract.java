@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.rule.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
@@ -45,6 +46,7 @@ public abstract class RuleDefinitionAbstract {
             "oops! exception occurred! possible cases: resource might not be available! Exception: ";
     private Integer id;
     private boolean enabled;
+    private Boolean disabledByUser;
     private boolean disableWhenTrigger;
     private boolean reEnable;
     private Long reEnableDelay;
@@ -107,6 +109,8 @@ public abstract class RuleDefinitionAbstract {
 
     @JsonIgnore
     public RuleDefinitionTable getRuleDefinitionTable() {
+        HashMap<String, Object> conditionProperties = new HashMap<String, Object>();
+        conditionProperties.put(RuleDefinitionTable.KEY_RE_DISABLED_BY_USER, disabledByUser);
         RuleDefinitionTable ruleDefinitionTable = org.mycontroller.standalone.db.tables.RuleDefinitionTable.builder()
                 .id(id)
                 .enabled(enabled)
@@ -122,6 +126,7 @@ public abstract class RuleDefinitionAbstract {
                 .dampeningType(dampeningType)
                 .reEnable(reEnable)
                 .reEnableDelay(reEnableDelay)
+                .conditionProperties(conditionProperties)
                 .build();
         if (dampening != null) {
             dampening.updateRuleDefinitionTable(ruleDefinitionTable);
@@ -147,6 +152,13 @@ public abstract class RuleDefinitionAbstract {
         dampeningType = ruleDefinitionTable.getDampeningType();
         reEnable = ruleDefinitionTable.getReEnable();
         reEnableDelay = ruleDefinitionTable.getReEnableDelay();
+        if (!enabled) {
+            disabledByUser = (Boolean) ruleDefinitionTable.getConditionProperties().get(
+                    RuleDefinitionTable.KEY_RE_DISABLED_BY_USER);
+        }
+        if (disabledByUser == null) {
+            disabledByUser = false;
+        }
         switch (dampeningType) {
             case CONSECUTIVE:
                 dampening = new DampeningConsecutive();

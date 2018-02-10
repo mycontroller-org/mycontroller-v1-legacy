@@ -161,6 +161,7 @@ public abstract class McRuleAbstract extends BasicRule {
                 //Update if asked to disable on trigger
                 if (ruleDefinition.isDisableWhenTrigger()) {
                     ruleDefinition.setEnabled(false);
+                    ruleDefinition.setDisabledByUser(false);
                 }
             }
         } else if (!triggerOperations) {//set trigger to false, when we receive failed condition
