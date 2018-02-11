@@ -90,6 +90,15 @@
               </div>
             </div>
 
+            <div ng-if="item.enabled && !editEnable.backupSettings">
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ 'NEXT_EXECUTION' | translate }}</label>
+                <div class="col-sm-7">
+                  <div><span>{{item.nextFire | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}</span></div>
+                </div>
+              </div>
+            </div>
+
           </form>
 
           <div class="form-actions text-right">
