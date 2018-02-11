@@ -324,7 +324,7 @@
             </ul>
           </li>
           <!-- Utils -->
-          <li ng-class="{ active: $state.current.url.indexOf('/utilities') == 0 }">
+          <li  ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.url.indexOf('/utilities') == 0 }">
             <a ui-sref="scriptsList"><i class="fa fa-cube fa-lg"></i> {{ 'UTILITIES' | translate }}</a>
             <ul class="nav navbar-nav navbar-persistent">
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('scripts') == 0 }"><a ui-sref="scriptsList"><i class="fa fa-code fa-lg"></i> {{ 'SCRIPTS' | translate }}</a></li>
