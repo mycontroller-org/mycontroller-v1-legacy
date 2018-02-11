@@ -189,6 +189,19 @@ public class GatewayUtils {
     public static synchronized void unloadEngine(Integer gatewayId) {
         if (McObjectManager.getEngine(gatewayId) != null) {
             McObjectManager.getEngine(gatewayId).stop();
+            // wait until this engine unloads completely or with timeout
+            try {
+                long maxWaitTime = 1000 * 3; // 3 seconds
+                while (maxWaitTime > 0) {
+                    Thread.sleep(10);
+                    maxWaitTime -= 10;
+                    if (!McObjectManager.getEngine(gatewayId).isRunning()) {
+                        break;
+                    }
+                }
+            } catch (Exception ex) {
+                _logger.error("Exception", ex);
+            }
             //McObjectManager.removeEngine(gatewayId);
         }
     }

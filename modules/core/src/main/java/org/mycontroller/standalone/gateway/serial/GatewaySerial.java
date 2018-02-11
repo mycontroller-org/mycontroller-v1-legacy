@@ -82,6 +82,12 @@ public class GatewaySerial extends GatewayAbstract {
 
     @Override
     public void connect() {
+        // pre-sleep added, to avoid port problem on reload and update.
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+            _logger.error("Exception", ex);
+        }
         _driver.connect();
     }
 
