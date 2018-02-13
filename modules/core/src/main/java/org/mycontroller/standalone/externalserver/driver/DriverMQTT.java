@@ -16,12 +16,15 @@
  */
 package org.mycontroller.standalone.externalserver.driver;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.config.ExternalServerConfigMqtt;
 
@@ -88,7 +91,9 @@ class ExternalMqttClient {
     public ExternalMqttClient(String url, String clientId, String username, String password,
             TRUST_HOST_TYPE trustHostType) {
         try {
-            mqttClient = new MqttClient(url, clientId);
+            MqttDefaultFilePersistence myPersistence = new MqttDefaultFilePersistence(AppProperties.getInstance()
+                    .getMqttClientPersistentStoresLocation());
+            mqttClient = new MqttClient(url, clientId + "_" + RandomStringUtils.randomAlphanumeric(5), myPersistence);
             connectOptions.setConnectionTimeout(CONNECTION_TIME_OUT);
             connectOptions.setKeepAliveInterval(KEEP_ALIVE);
             if (username != null && password.length() > 0) {

@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
@@ -234,6 +235,7 @@ public class StartApp {
         // - set to default locale
         // - Add Shutdown hook
         // - Start DB service
+        // - Cleanup services
         // - Initialize MapDB store
         // - Set to locale actual
         // - Check password reset file
@@ -252,6 +254,9 @@ public class StartApp {
 
         //Start DB migration service
         DataBaseUtils.runDatabaseMigration();
+
+        //cleanup services
+        cleanUpServices();
 
         //Load Metric engine factory
         MetricsUtils.loadEngine();
@@ -295,6 +300,20 @@ public class StartApp {
         startHTTPWebServer();
 
         return true;
+    }
+
+    private static void cleanUpServices() {
+        // clean the services
+        // - MQTT client location
+
+        try {
+            File mqttClientDir = new File(AppProperties.getInstance().getMqttClientPersistentStoresLocation());
+            if (mqttClientDir.exists()) {
+                FileUtils.cleanDirectory(mqttClientDir);
+            }
+        } catch (IOException ex) {
+            _logger.error("Exception,", ex);
+        }
     }
 
     public static synchronized void stopServices() {

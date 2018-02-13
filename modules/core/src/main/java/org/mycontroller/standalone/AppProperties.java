@@ -762,6 +762,10 @@ public class AppProperties {
         return mcPersistentStoresLocation;
     }
 
+    public String getMqttClientPersistentStoresLocation() {
+        return getMcPersistentStoresLocation() + "/mqtt_clients/";
+    }
+
     public boolean isMDNSserviceEnabled() {
         return mDNSserviceEnabled;
     }

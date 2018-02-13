@@ -69,7 +69,7 @@ public class MQTTDriver {
     public void connect() {
         try {
             MqttDefaultFilePersistence myPersistence = new MqttDefaultFilePersistence(AppProperties.getInstance()
-                    .getMcPersistentStoresLocation() + "/mqtt_clients/");
+                    .getMqttClientPersistentStoresLocation());
             _client = new MqttClient(_config.getBrokerHost(), _config.getClientId() + "_"
                     + RandomStringUtils.randomAlphanumeric(5), myPersistence);
             MqttConnectOptions _connectOptions = new MqttConnectOptions();
