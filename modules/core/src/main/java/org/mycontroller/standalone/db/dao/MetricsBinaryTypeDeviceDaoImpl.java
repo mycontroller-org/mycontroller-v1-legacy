@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,15 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -130,5 +133,33 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
     @Override
     public List<MetricsBinaryTypeDevice> getAll(List<Object> ids) {
         return null;
+    }
+
+    @Override
+    public List<MetricsBinaryTypeDevice> getAllLastN(SensorVariable sensorVariable, long lastN) {
+        try {
+            QueryBuilder<MetricsBinaryTypeDevice, Object> _qb = getDao().queryBuilder();
+            _qb.where().eq(MetricsBinaryTypeDevice.KEY_SENSOR_VARIABLE_ID, sensorVariable.getId());
+            _qb.orderBy(MetricsBinaryTypeDevice.KEY_TIMESTAMP, false);
+            _qb.limit(lastN);
+            return _qb.query();
+        } catch (SQLException ex) {
+            _logger.error("SQL Exception", ex);
+        }
+        return new ArrayList<MetricsBinaryTypeDevice>();
+    }
+
+    @Override
+    public void updateTimestamp(int sensorVariableId, long timestampOld, long timestanpNew) {
+        try {
+            UpdateBuilder<MetricsBinaryTypeDevice, Object> _ub = getDao().updateBuilder();
+            _ub.where().eq(MetricsBinaryTypeDevice.KEY_SENSOR_VARIABLE_ID, sensorVariableId).and()
+                    .eq(MetricsBinaryTypeDevice.KEY_TIMESTAMP, timestampOld);
+            _ub.updateColumnValue(MetricsBinaryTypeDevice.KEY_TIMESTAMP, timestanpNew);
+            int updateCount = _ub.update();
+            _logger.debug("Update count:{}", updateCount);
+        } catch (SQLException ex) {
+            _logger.error("SQL Exception", ex);
+        }
     }
 }

@@ -95,6 +95,20 @@ public class MetricEngineMyController implements IMetricEngine {
 
                         return;
                     case BINARY:
+                        // check duplicate, if enabled and any update timestamp. Otherwise normal insert
+                        if ((boolean) sensorVariable.getProperties().get(SensorVariable.KEY_IGNORE_DUPLICATE)
+                                && sensorVariable.getId() != null) {
+                            List<MetricsBinaryTypeDevice> metrics = DaoUtils.getMetricsBinaryTypeDeviceDao()
+                                    .getAllLastN(sensorVariable, 2);
+                            if (metrics.size() == 2
+                                    && metrics.get(0).getState() == McUtils.getBoolean(data.getPayload())
+                                    && metrics.get(0).getState() == metrics.get(1).getState()) {
+                                DaoUtils.getMetricsBinaryTypeDeviceDao().updateTimestamp(sensorVariable.getId(),
+                                        metrics.get(0).getTimestamp(), data.getTimestamp());
+                                return;
+                            }
+                        }
+                        // Do normal insert
                         DaoUtils.getMetricsBinaryTypeDeviceDao()
                                 .create(MetricsBinaryTypeDevice.builder()
                                         .sensorVariable(sensorVariable)
@@ -131,7 +145,6 @@ public class MetricEngineMyController implements IMetricEngine {
                 break;
         }
         throw new RuntimeException("Not supported operation for :" + data);
-
     }
 
     @Override

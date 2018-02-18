@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,6 +61,7 @@ public class SensorVariable {
     public static final String KEY_OFFSET = "offset";
     public static final String KEY_PRIORITY = "priority";
     public static final String KEY_PROPERTIES = "graphProperties";
+    public static final String KEY_IGNORE_DUPLICATE = "ignoreDuplicate";
 
     public static final String KEY_GP_USE_GLOBAL = "useGlobal";
     public static final String KEY_GP_TYPE = "type";
@@ -141,7 +142,13 @@ public class SensorVariable {
             properties.put(KEY_GP_MARGIN_RIGHT, 20);
             properties.put(KEY_GP_MARGIN_TOP, 5);
             properties.put(KEY_GP_MARGIN_BOTTOM, 60);
-
+        }
+        if (metricType == METRIC_TYPE.BINARY) {
+            if (properties.get(KEY_IGNORE_DUPLICATE) == null) {
+                properties.put(KEY_IGNORE_DUPLICATE, true);
+            }
+        } else {
+            properties.remove(KEY_IGNORE_DUPLICATE);
         }
         return properties;
     }
