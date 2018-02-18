@@ -145,7 +145,7 @@ public class SensorVariable {
         }
         if (metricType == METRIC_TYPE.BINARY) {
             if (properties.get(KEY_IGNORE_DUPLICATE) == null) {
-                properties.put(KEY_IGNORE_DUPLICATE, true);
+                properties.put(KEY_IGNORE_DUPLICATE, false);
             }
         } else {
             properties.remove(KEY_IGNORE_DUPLICATE);
