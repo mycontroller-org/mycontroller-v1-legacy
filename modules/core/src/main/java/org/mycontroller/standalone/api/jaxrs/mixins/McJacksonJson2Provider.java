@@ -132,8 +132,8 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(ExternalServerConfig.class, ExternalServerMixin.class);
         mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
         mapper.addMixIn(GatewayConfig.class, GatewayMixin.class);
-        mapper.addMixIn(MetricEngineConf.class, MetricEngineConfMixin.class);
         mapper.addMixIn(IMessage.class, IMessageMixin.class);
+        mapper.addMixIn(MetricEngineConf.class, MetricEngineConfMixin.class);
         mapper.addMixIn(McScript.class, McScriptMixin.class);
         mapper.addMixIn(Node.class, NodeMixin.class);
         mapper.addMixIn(Operation.class, OperationMixin.class);

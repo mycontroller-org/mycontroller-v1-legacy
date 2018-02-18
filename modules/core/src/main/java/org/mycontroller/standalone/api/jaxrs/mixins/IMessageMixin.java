@@ -16,22 +16,42 @@
  */
 package org.mycontroller.standalone.api.jaxrs.mixins;
 
-import org.mycontroller.standalone.api.jaxrs.mixins.deserializers.MessageTypeDeserializer;
-import org.mycontroller.standalone.api.jaxrs.mixins.serializers.MessageTypeSerializer;
-import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
+import java.io.IOException;
 
+import org.mycontroller.standalone.message.IMessage;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.3
+ * @since 1.2.0
  */
+@JsonDeserialize(using = IMessageDeserializer.class)
 abstract class IMessageMixin {
 
-    @JsonSerialize(using = MessageTypeSerializer.class)
-    public abstract String getType();
+}
 
-    @JsonDeserialize(using = MessageTypeDeserializer.class)
-    public abstract void setType(MESSAGE_TYPE type);
+class IMessageDeserializer extends JsonDeserializer<IMessage> {
+
+    @Override
+    public IMessage deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+            JsonProcessingException {
+        ObjectCodec objectCodec = jp.getCodec();
+        JsonNode jNode = objectCodec.readTree(jp);
+
+        return IMessage.builder()
+                .gatewayId(jNode.get("gatewayId").asInt())
+                .ack(jNode.get("ack").asInt())
+                .nodeEui(jNode.get("nodeEui").asText())
+                .sensorId(jNode.get("sensorId").asText())
+                .type(jNode.get("type").asText())
+                .subType(jNode.get("subType").asText())
+                .payload(jNode.get("payload").asText())
+                .build();
+    }
 }
