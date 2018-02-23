@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
-import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,30 +30,28 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ExecuteForwardPayload implements Runnable {
-    private List<ForwardPayload> forwardPayloads;
-    private Sensor sensor;
-    private SensorVariable sensorVariable;
+    private List<ForwardPayload> _frwPls;
+    private SensorVariable _sv;
 
-    public ExecuteForwardPayload(List<ForwardPayload> forwardPayloads, Sensor sensor, SensorVariable sensorVariable) {
-        this.forwardPayloads = forwardPayloads;
-        this.sensor = sensor;
-        this.sensorVariable = sensorVariable;
+    public ExecuteForwardPayload(List<ForwardPayload> _frwPls, SensorVariable _sv) {
+        this._frwPls = _frwPls;
+        this._sv = _sv;
     }
 
     private void execute(ForwardPayload forwardPayload) {
-        _logger.debug("Sensor:[{}], Details of ForwardPayload:[{}]", sensor, forwardPayload);
-        McObjectManager.getMcActionEngine().executeForwardPayload(forwardPayload, sensorVariable.getValue());
+        _logger.debug("Sensor:[{}], Details of ForwardPayload:[{}]", _sv.getSensor(), forwardPayload);
+        McObjectManager.getMcActionEngine().executeForwardPayload(forwardPayload, _sv.getValue());
     }
 
     @Override
     public void run() {
-        for (ForwardPayload forwardPayload : forwardPayloads) {
+        for (ForwardPayload _frwPl : _frwPls) {
             try {
-                if (!forwardPayload.getDestination().getReadOnly()) {
-                    execute(forwardPayload);
+                if (!_frwPl.getDestination().getReadOnly()) {
+                    execute(_frwPl);
                 }
             } catch (Exception ex) {
-                _logger.error("Unable to execute ForwardPayload:[{}], Sensor:[{}]", forwardPayload, sensor, ex);
+                _logger.error("Unable to execute ForwardPayload:[{}], [{}]", _frwPl, _sv, ex);
             }
         }
 

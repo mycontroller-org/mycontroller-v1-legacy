@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -112,7 +112,7 @@ public class ResourcesLogsUtils {
         return false;
     }
 
-    public static void setAlarmLog(LOG_LEVEL logLevel, RuleDefinition ruleDefinition, Boolean triggered,
+    public static void setAlarmLog(LOG_LEVEL logLevel, RuleDefinitionAbstract ruleDefinition, Boolean triggered,
             String errorMsg) {
         if (!isOnAllowedLevel(logLevel)) {
             return;

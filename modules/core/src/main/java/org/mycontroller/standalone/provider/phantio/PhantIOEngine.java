@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,22 +16,38 @@
  */
 package org.mycontroller.standalone.provider.phantio;
 
-import lombok.extern.slf4j.Slf4j;
+import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
+import org.mycontroller.standalone.gateway.phantio.GatewayPhantIO;
+import org.mycontroller.standalone.provider.EngineAbstract;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.3
+ * @since 1.2.0
  */
-@Slf4j
-public class PhantIOEngine {
-    public static void updateMessage(PhantIORawMessage pioRawMessage) {
-        switch (pioRawMessage.getMessageType()) {
-            case C_SET:
-            case C_REQ:
-                break;
-            default:
-                _logger.warn("This type message not supported by this provider.");
-                break;
-        }
+public class PhantIOEngine extends EngineAbstract {
+
+    public PhantIOEngine(GatewayConfig _config) {
+        super(_config);
+        _gateway = new GatewayPhantIO(_config.getGatewayTable(), new MessageParserPhantIO(), _queue);
+        _executor = new PhantIOExecutor(_queue, _queueSleep);
     }
+
+    @Override
+    public boolean validate(Sensor sensor) {
+        if (sensor.getSensorId().contains(" ")) {
+            throw new RuntimeException("Sensor Id should not contain any space");
+        }
+        return true;
+    }
+
+    @Override
+    public boolean validate(Node node) {
+        if (node.getEui().contains(" ")) {
+            throw new RuntimeException("Node EUI should not contain any space");
+        }
+        return true;
+    }
+
 }

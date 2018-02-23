@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -361,17 +361,18 @@ myControllerModule.factory('StatusFactory', function ($resource) {
 
 //Gateway Services
 myControllerModule.factory('GatewaysFactory', function ($resource) {
-  return $resource('/mc/rest/gateways/:gatewayId', {gatewayId: '@gatewayId'}, {
-    getAll: { method: 'GET', isArray: false },
-    get:    { method: 'GET' },
-    create: { method: 'POST'},
-    update: { method: 'PUT' },
-    delete: { method: 'POST', params: {gatewayId:'delete'} },
-    enable: { method: 'POST', params: {gatewayId:'enable'} },
-    disable: { method: 'POST', params: {gatewayId:'disable'} },
-    reload: { method: 'POST', params: {gatewayId:'reload'} },
-    discover: { method: 'POST', params: {gatewayId:'discover'} },
-    executeNodeInfoUpdate: { method: 'POST', params: {gatewayId:'executeNodeInfoUpdate'} },
+  return $resource('/mc/rest/gateways/:action/:gatewayId', {}, {
+    getAll: { method: 'GET', isArray: false, params: {action: null, gatewayId: null} },
+    get:    { method: 'GET', params: {action: null}  },
+    create: { method: 'POST', params: {action: null, gatewayId: null} },
+    update: { method: 'PUT', params: {action: null, gatewayId: null} },
+    delete: { method: 'POST', params: {action:'delete', gatewayId: null} },
+    enable: { method: 'POST', params: {action:'enable', gatewayId: null} },
+    disable: { method: 'POST', params: {action:'disable', gatewayId: null} },
+    reload: { method: 'POST', params: {action:'reload', gatewayId: null} },
+    discover: { method: 'POST', params: {action:'discover', gatewayId: null} },
+    statistics: {method: 'GET', params: {action:'statistics'} },
+    executeNodeInfoUpdate: { method: 'POST', params: {action:'executeNodeInfoUpdate', gatewayId: null} },
   })
 });
 

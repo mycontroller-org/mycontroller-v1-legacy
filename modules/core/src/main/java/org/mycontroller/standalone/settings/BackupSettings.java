@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -84,14 +84,22 @@ public class BackupSettings {
         return enabled;
     }
 
+    public Long getNextFire() {
+        if (getEnabled()) {
+            return SchedulerUtils.nextFireTime(JOB_NAME, null);
+        }
+        return null;
+    }
+
     public static BackupSettings get() {
-        return BackupSettings.builder()
+        BackupSettings _settings = BackupSettings.builder()
                 .enabled(McUtils.getBoolean(getValue(SKEY_ENABLED)))
                 .prefix(getValue(SKEY_PREFIX))
                 .interval(McUtils.getLong(getValue(SKEY_INTERVAL)))
                 .retainMax(McUtils.getInteger(getValue(SKEY_RETAIN_MAX)))
                 .backupLocation(getValue(SKEY_BACKUP_LOCATION))
                 .build();
+        return _settings;
     }
 
     public void save() {

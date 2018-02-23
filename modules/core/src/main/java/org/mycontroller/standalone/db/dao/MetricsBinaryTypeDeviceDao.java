@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.mycontroller.standalone.db.dao;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
+import org.mycontroller.standalone.db.tables.SensorVariable;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -32,4 +33,7 @@ public interface MetricsBinaryTypeDeviceDao extends BaseDao<MetricsBinaryTypeDev
 
     List<MetricsBinaryTypeDevice> getAll(MetricsBinaryTypeDevice metric);
 
+    List<MetricsBinaryTypeDevice> getAllLastN(SensorVariable sensorVariable, long lastN);
+
+    void updateTimestamp(int sensorVariableId, long timestampOld, long timestanpNew);
 }

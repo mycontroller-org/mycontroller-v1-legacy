@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,11 +32,11 @@ import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils;
-import org.mycontroller.standalone.gateway.model.Gateway;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
 import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.RuleUtils;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.utils.McUtils;
 
@@ -63,7 +63,7 @@ public class UtilsApi {
         return Arrays.asList(ids);
     }
 
-    public Gateway getGateway(GatewayTable gatewayTable) {
+    public GatewayConfig getGateway(GatewayTable gatewayTable) {
         return GatewayUtils.getGateway(gatewayTable);
     }
 
@@ -71,7 +71,7 @@ public class UtilsApi {
         return OperationUtils.getOperation(operationTable);
     }
 
-    public RuleDefinition getRuleDefinition(RuleDefinitionTable ruleDefinitionTable) {
+    public RuleDefinitionAbstract getRuleDefinition(RuleDefinitionTable ruleDefinitionTable) {
         return RuleUtils.getRuleDefinition(ruleDefinitionTable);
     }
 

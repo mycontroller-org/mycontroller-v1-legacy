@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -140,11 +140,15 @@ public class SchedulerUtils {
         }
     }
 
-    public static String getTimerJobName(Timer timer) {
-        if (timer.getId() != null) {
-            return TIMER_JOB_REF + timer.getId() + "_" + timer.getName();
+    public static String getTimerJobName(Timer _timer) {
+        return getTimerJobName(_timer.getName(), _timer.getId());
+    }
+
+    private static String getTimerJobName(String _name, Integer _id) {
+        if (_id != null) {
+            return TIMER_JOB_REF + _id + "_" + _name;
         } else {
-            return TIMER_JOB_REF + "_" + timer.getName();
+            return TIMER_JOB_REF + "_" + _name;
         }
     }
 
@@ -332,4 +336,15 @@ public class SchedulerUtils {
         reloadMySensorHearbeatJob();
         reloadExecuteDiscoverJob();
     }
+
+    public static synchronized Long nextFireTime(String _name, Integer _id) {
+        String _triggerName = getCronTriggerName(getTimerJobName(_name, _id));
+        try {
+            return SundialJobScheduler.getScheduler().getTrigger(_triggerName).getNextFireTime().getTime();
+        } catch (Exception ex) {
+            _logger.error("Error when fetching trigger[{}] next exeuction status", _triggerName, ex);
+        }
+        return null;
+    }
+
 }

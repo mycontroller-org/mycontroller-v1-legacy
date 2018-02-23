@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,9 +36,9 @@ import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
-import org.mycontroller.standalone.gateway.model.GatewayEthernet;
-import org.mycontroller.standalone.gateway.model.GatewayMQTT;
-import org.mycontroller.standalone.gateway.model.GatewaySerial;
+import org.mycontroller.standalone.gateway.config.GatewayConfigEthernet;
+import org.mycontroller.standalone.gateway.config.GatewayConfigMQTT;
+import org.mycontroller.standalone.gateway.config.GatewayConfigSerial;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
 import org.mycontroller.standalone.operation.OperationUtils.OPERATION_TYPE;
 import org.mycontroller.standalone.operation.model.OperationSendEmail;
@@ -344,24 +344,23 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
         HashMap<String, Object> properties = new HashMap<String, Object>();
         switch (GATEWAY_TYPE.valueOf(row.get(sqlClient().getColumnName(GatewayTable.KEY_TYPE)))) {
             case ETHERNET:
-                properties.put(GatewayEthernet.KEY_HOST, row.get("VARIABLE1"));
-                properties.put(GatewayEthernet.KEY_PORT, McUtils.getInteger(row.get("VARIABLE2")));
-                properties.put(GatewayEthernet.KEY_ALIVE_FREQUENCY, McUtils.getLong(row.get("VARIABLE3")));
+                properties.put(GatewayConfigEthernet.KEY_HOST, row.get("VARIABLE1"));
+                properties.put(GatewayConfigEthernet.KEY_PORT, McUtils.getInteger(row.get("VARIABLE2")));
+                properties.put(GatewayConfigEthernet.KEY_ALIVE_FREQUENCY, McUtils.getLong(row.get("VARIABLE3")));
                 break;
             case MQTT:
-                properties.put(GatewayMQTT.KEY_BROKER_HOST, row.get("VARIABLE1"));
-                properties.put(GatewayMQTT.KEY_CLIENT_ID, row.get("VARIABLE2"));
-                properties.put(GatewayMQTT.KEY_TOPICS_PUBLISH, row.get("VARIABLE3"));
-                properties.put(GatewayMQTT.KEY_TOPICS_SUBSCRIBE, row.get("VARIABLE4"));
-                properties.put(GatewayMQTT.KEY_USERNAME, row.get("VARIABLE5"));
-                properties.put(GatewayMQTT.KEY_PASSWORD, row.get("VARIABLE6"));
+                properties.put(GatewayConfigMQTT.KEY_BROKER_HOST, row.get("VARIABLE1"));
+                properties.put(GatewayConfigMQTT.KEY_CLIENT_ID, row.get("VARIABLE2"));
+                properties.put(GatewayConfigMQTT.KEY_TOPICS_PUBLISH, row.get("VARIABLE3"));
+                properties.put(GatewayConfigMQTT.KEY_TOPICS_SUBSCRIBE, row.get("VARIABLE4"));
+                properties.put(GatewayConfigMQTT.KEY_USERNAME, row.get("VARIABLE5"));
+                properties.put(GatewayConfigMQTT.KEY_PASSWORD, row.get("VARIABLE6"));
                 break;
             case SERIAL:
-                properties.put(GatewaySerial.KEY_DRIVER, row.get("VARIABLE1"));
-                properties.put(GatewaySerial.KEY_PORT_NAME, row.get("VARIABLE2"));
-                properties.put(GatewaySerial.KEY_BAUD_RATE, McUtils.getInteger(row.get("VARIABLE3")));
-                properties.put(GatewaySerial.KEY_RETRY_FREQUENCY, McUtils.getLong(row.get("VARIABLE4")));
-                properties.put(GatewaySerial.KEY_RUNNING_DRIVER, row.get("VARIABLE5"));
+                properties.put(GatewayConfigSerial.KEY_DRIVER, row.get("VARIABLE1"));
+                properties.put(GatewayConfigSerial.KEY_PORT_NAME, row.get("VARIABLE2"));
+                properties.put(GatewayConfigSerial.KEY_BAUD_RATE, McUtils.getInteger(row.get("VARIABLE3")));
+                properties.put(GatewayConfigSerial.KEY_RUNNING_DRIVER, row.get("VARIABLE5"));
                 break;
             default:
                 break;

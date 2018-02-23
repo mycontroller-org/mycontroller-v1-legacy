@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString(callSuper = true)
 @Slf4j
 @NoArgsConstructor
-public class RuleDefinitionThresholdRange extends RuleDefinition {
+public class RuleDefinitionThresholdRange extends RuleDefinitionAbstract {
     public static final String KEY_IN_RANGE = "inRange";
     public static final String KEY_INCLUDE_OPERATOR_LOW = "includeOperatorLow";
     public static final String KEY_INCLUDE_OPERATOR_HIGH = "includeOperatorHigh";
@@ -59,7 +59,7 @@ public class RuleDefinitionThresholdRange extends RuleDefinition {
     @JsonIgnore
     public RuleDefinitionTable getRuleDefinitionTable() {
         RuleDefinitionTable ruleDefinitionTable = super.getRuleDefinitionTable();
-        HashMap<String, Object> conditionProperties = new HashMap<String, Object>();
+        HashMap<String, Object> conditionProperties = ruleDefinitionTable.getConditionProperties();
         conditionProperties.put(KEY_IN_RANGE, inRange);
         conditionProperties.put(KEY_INCLUDE_OPERATOR_LOW, includeOperatorLow);
         conditionProperties.put(KEY_INCLUDE_OPERATOR_HIGH, includeOperatorHigh);

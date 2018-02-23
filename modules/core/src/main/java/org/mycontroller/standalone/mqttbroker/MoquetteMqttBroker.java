@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.mdns.McmDNSFactory;
 
 import io.moquette.server.Server;
+import io.moquette.server.config.IConfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,8 @@ public class MoquetteMqttBroker {
         }
         try {
             mqttServer = new Server();
-            mqttServer.startServer(new BrokerConfiguration());
+            IConfig config = new BrokerConfiguration();
+            mqttServer.startServer(config);
             isRunning = true;
             _logger.info("MQTT Broker started successfully. {}", AppProperties.getInstance().getMqttBrokerSettings());
             if (AppProperties.getInstance().isMDNSserviceEnabled()) {

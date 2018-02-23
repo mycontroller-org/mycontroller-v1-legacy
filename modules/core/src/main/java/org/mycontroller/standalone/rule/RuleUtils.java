@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.operation.OperationUtils;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 import org.mycontroller.standalone.rule.model.RuleDefinitionCompare;
 import org.mycontroller.standalone.rule.model.RuleDefinitionScript;
 import org.mycontroller.standalone.rule.model.RuleDefinitionState;
@@ -236,7 +236,7 @@ public class RuleUtils {
 
     //----------------review-----------------
 
-    public static RuleDefinition getRuleDefinition(RuleDefinitionTable ruleDefinitionTable) {
+    public static RuleDefinitionAbstract getRuleDefinition(RuleDefinitionTable ruleDefinitionTable) {
         if (ruleDefinitionTable == null) {
             return null;
         }
@@ -258,20 +258,22 @@ public class RuleUtils {
         }
     }
 
-    public static void enableRuleDefinition(RuleDefinition ruleDefinition) {
+    public static void enableRuleDefinition(RuleDefinitionAbstract ruleDefinition) {
         if (ruleDefinition.isEnabled()) {
             _logger.debug("This rule definition already in enabled state. Nothing to do.[{}]", ruleDefinition);
         }
         ruleDefinition.setEnabled(true);
+        ruleDefinition.setDisabledByUser(false);
         ruleDefinition.reset();
         DaoUtils.getRuleDefinitionDao().update(ruleDefinition.getRuleDefinitionTable());
     }
 
-    public static void disableRuleDefinition(RuleDefinition ruleDefinition) {
+    public static void disableRuleDefinition(RuleDefinitionAbstract ruleDefinition) {
         //unload notification timer jobs
         OperationUtils.unloadOperationTimerJobs(ruleDefinition);
         //Disable
         ruleDefinition.setEnabled(false);
+        ruleDefinition.setDisabledByUser(true);
         DaoUtils.getRuleDefinitionDao().update(ruleDefinition.getRuleDefinitionTable());
     }
 
@@ -291,7 +293,7 @@ public class RuleUtils {
         }
     }
 
-    public static void addRuleDefinition(RuleDefinition ruleDefinition) {
+    public static void addRuleDefinition(RuleDefinitionAbstract ruleDefinition) {
         ruleDefinition.setTimestamp(System.currentTimeMillis()); //Set current time
         DaoUtils.getRuleDefinitionDao().create(ruleDefinition.getRuleDefinitionTable());
         if (ruleDefinition.isEnabled()) {
@@ -305,7 +307,7 @@ public class RuleUtils {
         updateOperationRuleDefinitionMap(ruleDefinition);
     }
 
-    public static void updateRuleDefinition(RuleDefinition ruleDefinition) {
+    public static void updateRuleDefinition(RuleDefinitionAbstract ruleDefinition) {
         //Remove delay timer if any
         disableRuleDefinition(getRuleDefinition(DaoUtils.getRuleDefinitionDao().getById(ruleDefinition.getId())));
         ruleDefinition.setTimestamp(System.currentTimeMillis()); //Set current time
@@ -318,7 +320,7 @@ public class RuleUtils {
         updateOperationRuleDefinitionMap(ruleDefinition);
     }
 
-    private static void updateOperationRuleDefinitionMap(RuleDefinition ruleDefinition) {
+    private static void updateOperationRuleDefinitionMap(RuleDefinitionAbstract ruleDefinition) {
         //clear all old mapping
         DaoUtils.getOperationRuleDefinitionMapDao().deleteByRuleDefinitionId(ruleDefinition.getId());
         //Update operations
@@ -334,7 +336,7 @@ public class RuleUtils {
         }
     }
 
-    public static void deleteRuleDefinition(RuleDefinition ruleDefinition) {
+    public static void deleteRuleDefinition(RuleDefinitionAbstract ruleDefinition) {
         //unload notification timer jobs
         OperationUtils.unloadOperationTimerJobs(ruleDefinition);
 
@@ -356,10 +358,10 @@ public class RuleUtils {
     public static void executeRuleDefinitionOperation(ResourceModel resourceModel, ResourceOperation operation) {
         switch (operation.getOperationType()) {
             case ENABLE:
-                enableRuleDefinition((RuleDefinition) resourceModel.getResource());
+                enableRuleDefinition((RuleDefinitionAbstract) resourceModel.getResource());
                 break;
             case DISABLE:
-                disableRuleDefinition((RuleDefinition) resourceModel.getResource());
+                disableRuleDefinition((RuleDefinitionAbstract) resourceModel.getResource());
                 break;
             default:
                 _logger.warn("RuleDefinitionTable not support for this operation!:[{}]",

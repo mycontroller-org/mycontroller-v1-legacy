@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package org.mycontroller.standalone.message;
 
 import java.util.List;
 
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.gateway.GatewayException;
@@ -57,17 +58,21 @@ public class McNodeInfoUpdate implements Runnable {
             _logger.debug("Starting Node info update util");
             for (Node node : nodes) {
                 if (node.getGatewayTable().getEnabled()) {
-                    McMessage mcMessage = McMessage.builder()
+                    IMessage message = MessageImpl.builder()
                             .gatewayId(node.getGatewayTable().getId())
                             .nodeEui(node.getEui())
-                            .sensorId(McMessage.SENSOR_BROADCAST_ID)
-                            .type(MESSAGE_TYPE.C_INTERNAL)
+                            .sensorId(IMessage.SENSOR_BROADCAST_ID)
+                            .type(MESSAGE_TYPE.C_INTERNAL.getText())
                             .subType(MESSAGE_TYPE_INTERNAL.I_PRESENTATION.getText())
-                            .ack(McMessage.NO_ACK)
-                            .payload(McMessage.PAYLOAD_EMPTY)
+                            .ack(IMessage.NO_ACK)
+                            .payload(IMessage.PAYLOAD_EMPTY)
                             .isTxMessage(true)
                             .build();
-                    McMessageUtils.sendToMessageQueue(mcMessage);
+                    if (McObjectManager.getEngine(message.getGatewayId()) != null) {
+                        McObjectManager.getEngine(message.getGatewayId()).send(message);
+                    } else {
+                        _logger.warn("Engine not available to send {}", message);
+                    }
                 }
             }
             _logger.debug("Node info update util completed");

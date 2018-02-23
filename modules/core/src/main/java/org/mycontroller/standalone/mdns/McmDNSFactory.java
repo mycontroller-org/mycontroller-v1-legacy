@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -183,16 +183,16 @@ public class McmDNSFactory {
             mqttService = McmDNSServiceInfo.builder()
                     .type("_mc_mqtt._tcp.")
                     .name("MyController Mqtt broker service")
-                    .port(AppProperties.getInstance().getMqttBrokerSettings().getHttpPort())
+                    .port(AppProperties.getInstance().getMqttBrokerSettings().getMqttPort())
                     .weight(WEIGHT_DEFAULT)
                     .priority(PRIORITY_DEFAULT)
                     .build();
             mqttService.setProperty("feed", "device");
             loadVersionDetails(mqttService);
         }
-        mqttService.setPort(AppProperties.getInstance().getMqttBrokerSettings().getHttpPort());
+        mqttService.setPort(AppProperties.getInstance().getMqttBrokerSettings().getMqttPort());
         mqttService.setProperty("tcp",
-                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getHttpPort()));
+                String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getMqttPort()));
         mqttService.setProperty("ws",
                 String.valueOf(AppProperties.getInstance().getMqttBrokerSettings().getWebsocketPort()));
         mqttService.setProperty("allow anonymous",

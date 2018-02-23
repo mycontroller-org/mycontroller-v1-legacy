@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
@@ -66,12 +67,12 @@ import org.mycontroller.standalone.api.jaxrs.mixins.McJacksonJson2Provider;
 import org.mycontroller.standalone.auth.BasicAthenticationSecurityDomain;
 import org.mycontroller.standalone.auth.McContainerRequestFilter;
 import org.mycontroller.standalone.db.DataBaseUtils;
-import org.mycontroller.standalone.externalserver.ExternalServerUtils;
+import org.mycontroller.standalone.externalserver.ExternalServerFactory;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.mdns.McmDNSFactory;
-import org.mycontroller.standalone.message.MessageMonitorThread;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
+import org.mycontroller.standalone.offheap.OffHeapFactory;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.settings.SettingsUtils;
@@ -234,6 +235,7 @@ public class StartApp {
         // - set to default locale
         // - Add Shutdown hook
         // - Start DB service
+        // - Cleanup services
         // - Initialize MapDB store
         // - Set to locale actual
         // - Check password reset file
@@ -253,11 +255,15 @@ public class StartApp {
         //Start DB migration service
         DataBaseUtils.runDatabaseMigration();
 
+        //cleanup services
+        cleanUpServices();
+
         //Load Metric engine factory
         MetricsUtils.loadEngine();
 
         //Initialize MapDB store
-        MapDbFactory.init();
+        //MapDbFactory.init();
+        OffHeapFactory.init();
 
         //Create or update static json file used for GUI before login
         SettingsUtils.updateStaticJsonInformationFile();
@@ -274,9 +280,9 @@ public class StartApp {
 
         //Start message Monitor Thread
         //Create new thread to monitor received logs
-        MessageMonitorThread messageMonitorThread = new MessageMonitorThread();
-        Thread thread = new Thread(messageMonitorThread);
-        thread.start();
+        //MessageMonitorThread messageMonitorThread = new MessageMonitorThread();
+        //Thread thread = new Thread(messageMonitorThread);
+        //thread.start();
 
         // - Load starting values
         loadStartingValues();
@@ -285,7 +291,7 @@ public class StartApp {
         MoquetteMqttBroker.start();
 
         //Start all the gateways
-        GatewayUtils.loadAllGateways();
+        GatewayUtils.loadEngineAll();
 
         // - Start scheduler
         SchedulerUtils.startScheduler();
@@ -294,6 +300,20 @@ public class StartApp {
         startHTTPWebServer();
 
         return true;
+    }
+
+    private static void cleanUpServices() {
+        // clean the services
+        // - MQTT client location
+
+        try {
+            File mqttClientDir = new File(AppProperties.getInstance().getMqttClientPersistentStoresLocation());
+            if (mqttClientDir.exists()) {
+                FileUtils.cleanDirectory(mqttClientDir);
+            }
+        } catch (IOException ex) {
+            _logger.error("Exception,", ex);
+        }
     }
 
     public static synchronized void stopServices() {
@@ -307,13 +327,13 @@ public class StartApp {
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
         stopHTTPWebServer();
-        ExternalServerUtils.clearServers();
+        ExternalServerFactory.clearDrivers();
         SchedulerUtils.stop();
-        GatewayUtils.unloadAllGateways();
+        GatewayUtils.unloadEngineAll();
         MoquetteMqttBroker.stop();
-        MessageMonitorThread.shutdown();
         DataBaseUtils.stop();
-        MapDbFactory.close();
+        OffHeapFactory.close();
+        McThreadPoolFactory.shutdownNow();
         _logger.debug("All services stopped.");
         //Remove references
         McObjectManager.clearAllReferences();

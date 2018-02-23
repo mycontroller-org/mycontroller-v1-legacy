@@ -45,9 +45,41 @@
           </div>
 
           <div class="form-group">
-            <label class="col-sm-2 control-label">{{ 'TX_MESSAGE_PROCESSING_DELAY' | translate }}({{ 'MILLISECONDS' | translate }})</label>
+            <label class="col-sm-2 control-label">{{ 'RECONNECT_DELAY' | translate }}({{ 'SECONDS' | translate }})</label>
+            <div class="col-sm-5">
+              <input class="form-control" ng-model="gateway.reconnectDelay" placeholder="{{ 'SECONDS' | translate }}" pf-validation="cs.isNumber(input)" required />
+              <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'TRANSMIT_DELAY' | translate }}({{ 'MILLISECONDS' | translate }})</label>
             <div class="col-sm-5">
               <input class="form-control" ng-model="gateway.txDelay" placeholder="{{ 'MILLISECONDS' | translate }}" pf-validation="cs.isNumber(input)" required />
+              <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ACK_ENABLED' | translate }}</label>
+            <div class="col-sm-10">
+             <input class="bootstrap-switch" id="bootstrap-switch-state" type="checkbox" ng-model="gateway.ackEnabled" >
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="gateway.ackEnabled">
+            <label class="col-sm-2 control-label">{{ 'FAILED_RETRY_COUNT' | translate }}</label>
+            <div class="col-sm-5">
+              <input class="form-control" ng-model="gateway.failedRetryCount" placeholder="{{ 'FAILED_RETRY_COUNT' | translate }}" pf-validation="cs.isNumber(input)" required />
+              <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="gateway.ackEnabled">
+            <label class="col-sm-2 control-label">{{ 'ACK_WAIT_TIME' | translate }}({{ 'MILLISECONDS' | translate }})</label>
+            <div class="col-sm-5">
+              <input class="form-control" ng-model="gateway.ackWaitTime" placeholder="{{ 'MILLISECONDS' | translate }}" pf-validation="cs.isNumber(input)" required />
               <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
             </div>
           </div>
@@ -94,14 +126,6 @@
               <label class="col-sm-2 control-label">{{ 'BAUD_RATE' | translate }}</label>
               <div class="col-sm-10">
                 <input class="form-control" placeholder="{{ 'SERIAL_BAUD_RATE_EXAMPLE' | translate }}" ng-model="gateway.baudRate" pf-validation="cs.isNumber(input)" required />
-                <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'RETRY_FREQUENCY' | translate }}</label>
-              <div class="col-sm-10">
-                <input class="form-control" placeholder="{{ 'SERIAL_RETRY_FREQUENCY_EXAMPLE' | translate }}" ng-model="gateway.retryFrequency" pf-validation="cs.isNumber(input)" required />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
               </div>
             </div>

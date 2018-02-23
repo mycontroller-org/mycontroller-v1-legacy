@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,24 +16,51 @@
  */
 package org.mycontroller.standalone.provider.rflink;
 
+import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
+import org.mycontroller.standalone.gateway.serial.GatewaySerial;
+import org.mycontroller.standalone.provider.EngineAbstract;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.3
+ * @since 1.2.0
  */
 @Slf4j
-public class RFLinkEngine {
-    public static void updateMessage(RFLinkRawMessage pioRawMessage) {
-        switch (pioRawMessage.getMessageType()) {
-            case C_SET:
-            case C_REQ:
-            case C_INTERNAL:
+public class RFLinkEngine extends EngineAbstract {
+
+    public RFLinkEngine(GatewayConfig _config) {
+        super(_config);
+        switch (_config.getType()) {
+            case SERIAL:
+                _gateway = new GatewaySerial(_config.getGatewayTable(), new MessageParserRFLink(_config, _queue),
+                        _queue);
                 break;
             default:
-                _logger.warn("This type message not supported by this provider. "
-                        + "[" + pioRawMessage.getMessageType() + "]");
-                break;
+                _logger.warn("not implemented! {}", _config);
+                return;
+        }
+        _executor = new RFLinkExecutor(_queue, _queueSleep);
+    }
+
+    @Override
+    public boolean validate(Sensor sensor) {
+        if (!sensor.getSensorId().contains(" ")) {
+            return true;
+        } else {
+            throw new RuntimeException("Sensor Id should not contain ' '(space)");
         }
     }
+
+    @Override
+    public boolean validate(Node node) {
+        if (!node.getEui().contains(" ")) {
+            return true;
+        } else {
+            throw new RuntimeException("Node Id should not contain ' '(space)");
+        }
+    }
+
 }

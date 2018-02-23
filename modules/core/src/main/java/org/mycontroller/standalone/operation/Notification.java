@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 import lombok.Getter;
 
@@ -39,7 +39,7 @@ public class Notification {
 
     private String operationName;
 
-    public Notification(RuleDefinition ruleDefinition) {
+    public Notification(RuleDefinitionAbstract ruleDefinition) {
         ruleName = ruleDefinition.getName();
         ruleCondition = ruleDefinition.getConditionString();
         actualValue = ruleDefinition.getActualValue();

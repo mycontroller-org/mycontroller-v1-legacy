@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,13 +25,13 @@ import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
 import org.mycontroller.standalone.gateway.GatewayUtils.SERIAL_PORT_DRIVER;
-import org.mycontroller.standalone.gateway.model.Gateway;
-import org.mycontroller.standalone.gateway.model.GatewayEthernet;
-import org.mycontroller.standalone.gateway.model.GatewayMQTT;
-import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
-import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
-import org.mycontroller.standalone.gateway.model.GatewaySerial;
-import org.mycontroller.standalone.gateway.model.GatewayWunderground;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
+import org.mycontroller.standalone.gateway.config.GatewayConfigEthernet;
+import org.mycontroller.standalone.gateway.config.GatewayConfigMQTT;
+import org.mycontroller.standalone.gateway.config.GatewayConfigPhantIO;
+import org.mycontroller.standalone.gateway.config.GatewayConfigPhilipsHue;
+import org.mycontroller.standalone.gateway.config.GatewayConfigSerial;
+import org.mycontroller.standalone.gateway.config.GatewayConfigWunderground;
 import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -68,10 +68,10 @@ class GatewayTableSerializer extends JsonSerializer<GatewayTable> {
     }
 }
 
-class GatewayDeserializer extends JsonDeserializer<Gateway> {
+class GatewayDeserializer extends JsonDeserializer<GatewayConfig> {
 
     @Override
-    public Gateway deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+    public GatewayConfig deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
         ObjectCodec objectCodec = jp.getCodec();
         JsonNode node = objectCodec.readTree(jp);
@@ -82,81 +82,92 @@ class GatewayDeserializer extends JsonDeserializer<Gateway> {
 
         GATEWAY_TYPE gatewayType = GATEWAY_TYPE.fromString(node.get("type").asText());
 
-        Gateway gateway = null;
+        GatewayConfig gatewayConfig = null;
         switch (gatewayType) {
             case SERIAL:
-                GatewaySerial gatewaySerial = new GatewaySerial();
-                gatewaySerial.setDriver(SERIAL_PORT_DRIVER.fromString(node.get("driver").asText()));
-                gatewaySerial.setPortName(node.get("portName").asText());
-                gatewaySerial.setBaudRate(node.get("baudRate").asInt());
-                gatewaySerial.setRetryFrequency(node.get("retryFrequency").asLong());
-                gateway = gatewaySerial;
+                GatewayConfigSerial gatewayConfigSerial = new GatewayConfigSerial();
+                gatewayConfigSerial.setDriver(SERIAL_PORT_DRIVER.fromString(node.get("driver").asText()));
+                gatewayConfigSerial.setPortName(node.get("portName").asText());
+                gatewayConfigSerial.setBaudRate(node.get("baudRate").asInt());
+                gatewayConfig = gatewayConfigSerial;
                 break;
             case ETHERNET:
-                GatewayEthernet gatewayEthernet = new GatewayEthernet();
-                gatewayEthernet.setHost(node.get("host").asText());
-                gatewayEthernet.setPort(node.get("port").asInt());
-                gatewayEthernet.setAliveFrequency(node.get("aliveFrequency").asLong());
-                gateway = gatewayEthernet;
+                GatewayConfigEthernet gatewayConfigEthernet = new GatewayConfigEthernet();
+                gatewayConfigEthernet.setHost(node.get("host").asText());
+                gatewayConfigEthernet.setPort(node.get("port").asInt());
+                gatewayConfigEthernet.setAliveFrequency(node.get("aliveFrequency").asLong());
+                gatewayConfig = gatewayConfigEthernet;
                 break;
             case MQTT:
-                GatewayMQTT gatewayMQTT = new GatewayMQTT();
-                gatewayMQTT.setBrokerHost(node.get("brokerHost").asText());
-                gatewayMQTT.setClientId(node.get("clientId").asText());
-                gatewayMQTT.setTopicsPublish(node.get("topicsPublish").asText());
-                gatewayMQTT.setTopicsSubscribe(node.get("topicsSubscribe").asText());
-                gatewayMQTT.setUsername(node.get("username").asText());
-                gatewayMQTT.setPassword(node.get("password").asText());
-                gatewayMQTT.setQos(node.get("qos").asInt());
-                gateway = gatewayMQTT;
+                GatewayConfigMQTT gatewayConfigMQTT = new GatewayConfigMQTT();
+                gatewayConfigMQTT.setBrokerHost(node.get("brokerHost").asText());
+                gatewayConfigMQTT.setClientId(node.get("clientId").asText());
+                gatewayConfigMQTT.setTopicsPublish(node.get("topicsPublish").asText());
+                gatewayConfigMQTT.setTopicsSubscribe(node.get("topicsSubscribe").asText());
+                gatewayConfigMQTT.setUsername(node.get("username").asText());
+                gatewayConfigMQTT.setPassword(node.get("password").asText());
+                gatewayConfigMQTT.setQos(node.get("qos").asInt());
+                gatewayConfig = gatewayConfigMQTT;
                 break;
             case PHANT_IO:
-                GatewayPhantIO gatewayPhantIO = new GatewayPhantIO();
-                gatewayPhantIO.setUrl(node.get("url").asText());
-                gatewayPhantIO.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
-                gatewayPhantIO.setPublicKey(node.get("publicKey").asText());
+                GatewayConfigPhantIO gatewayConfigPhantIO = new GatewayConfigPhantIO();
+                gatewayConfigPhantIO.setUrl(node.get("url").asText());
+                gatewayConfigPhantIO.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
+                gatewayConfigPhantIO.setPublicKey(node.get("publicKey").asText());
                 if (node.get("privateKey") != null) {
-                    gatewayPhantIO.setPrivateKey(node.get("privateKey").asText());
+                    gatewayConfigPhantIO.setPrivateKey(node.get("privateKey").asText());
                 }
-                gatewayPhantIO.setPollFrequency(node.get("pollFrequency").asInt());
-                gatewayPhantIO.setRecordsLimit(node.get("recordsLimit").asLong());
-                gatewayPhantIO.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));
-                gateway = gatewayPhantIO;
+                gatewayConfigPhantIO.setPollFrequency(node.get("pollFrequency").asInt());
+                gatewayConfigPhantIO.setRecordsLimit(node.get("recordsLimit").asLong());
+                gatewayConfigPhantIO.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));
+                gatewayConfig = gatewayConfigPhantIO;
                 break;
             case PHILIPS_HUE:
-                GatewayPhilipsHue gatewayPhilipsHue = new GatewayPhilipsHue();
-                gatewayPhilipsHue.setAuthorizedUser(node.get(GatewayPhilipsHue.KEY_AUTORIZED_USER).asText());
-                gatewayPhilipsHue.setPollFrequency(node.get(GatewayPhilipsHue.KEY_POLL_FREQUENCY).asInt());
-                gatewayPhilipsHue.setUrl(node.get(GatewayPhilipsHue.KEY_URL).asText());
-                gateway = gatewayPhilipsHue;
+                GatewayConfigPhilipsHue gatewayConfigPhilipsHue = new GatewayConfigPhilipsHue();
+                gatewayConfigPhilipsHue.setAuthorizedUser(node.get(GatewayConfigPhilipsHue.KEY_AUTORIZED_USER)
+                        .asText());
+                gatewayConfigPhilipsHue.setPollFrequency(node.get(GatewayConfigPhilipsHue.KEY_POLL_FREQUENCY).asInt());
+                gatewayConfigPhilipsHue.setUrl(node.get(GatewayConfigPhilipsHue.KEY_URL).asText());
+                gatewayConfig = gatewayConfigPhilipsHue;
                 break;
             case WUNDERGROUND:
-                GatewayWunderground gatewayWunderground = new GatewayWunderground();
-                gatewayWunderground.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
-                gatewayWunderground.setApiKey(node.get("apiKey").asText());
-                gatewayWunderground.setLocation(node.get("location").asText());
-                gatewayWunderground.setMergeAllStations(
+                GatewayConfigWunderground gatewayConfigWunderground = new GatewayConfigWunderground();
+                gatewayConfigWunderground.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType")
+                        .asText()));
+                gatewayConfigWunderground.setApiKey(node.get("apiKey").asText());
+                gatewayConfigWunderground.setLocation(node.get("location").asText());
+                gatewayConfigWunderground.setMergeAllStations(
                         node.get("mergeAllStations") != null ? node.get("mergeAllStations").asBoolean() : false);
                 if (node.get("geoIp") != null) {
-                    gatewayWunderground.setGeoIp(node.get("geoIp").asText());
+                    gatewayConfigWunderground.setGeoIp(node.get("geoIp").asText());
                 }
-                gatewayWunderground.setPollFrequency(node.get("pollFrequency").asInt());
-                gatewayWunderground.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));
-                gateway = gatewayWunderground;
+                gatewayConfigWunderground.setPollFrequency(node.get("pollFrequency").asInt());
+                gatewayConfigWunderground.setLastUpdate(System.currentTimeMillis() - (McUtils.SECOND * 10));
+                gatewayConfig = gatewayConfigWunderground;
                 break;
             default:
                 break;
         }
         //Update RuleDefinition details
         if (node.get("id") != null) {
-            gateway.setId(node.get("id").asInt());
+            gatewayConfig.setId(node.get("id").asInt());
         }
-        gateway.setTxDelay(node.get("txDelay").asLong());
-        gateway.setEnabled(node.get("enabled").asBoolean());
-        gateway.setName(node.get("name").asText());
-        gateway.setType(gatewayType);
-        gateway.setNetworkType(NETWORK_TYPE.fromString(node.get("networkType").asText()));
-        return gateway;
+        if (node.get("ackEnabled") != null) {
+            gatewayConfig.setAckEnabled(node.get("ackEnabled").asBoolean());
+            if (gatewayConfig.getAckEnabled()) {
+                gatewayConfig.setFailedRetryCount(node.get("failedRetryCount").asInt());
+                gatewayConfig.setAckWaitTime(node.get("ackWaitTime").asLong());
+            }
+        } else {
+            gatewayConfig.setAckEnabled(false);
+        }
+        gatewayConfig.setTxDelay(node.get("txDelay").asLong());
+        gatewayConfig.setReconnectDelay(node.get("reconnectDelay").asInt());
+        gatewayConfig.setEnabled(node.get("enabled").asBoolean());
+        gatewayConfig.setName(node.get("name").asText());
+        gatewayConfig.setType(gatewayType);
+        gatewayConfig.setNetworkType(NETWORK_TYPE.fromString(node.get("networkType").asText()));
+        return gatewayConfig;
     }
 }
 

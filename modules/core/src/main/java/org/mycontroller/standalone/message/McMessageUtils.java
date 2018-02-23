@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,33 +19,17 @@ package org.mycontroller.standalone.message;
 import java.util.HashMap;
 
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.McObjectManager;
-import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.Node;
-import org.mycontroller.standalone.db.tables.Sensor;
-import org.mycontroller.standalone.exceptions.McBadRequestException;
-import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
-import org.mycontroller.standalone.provider.mc.McProviderBridge;
-import org.mycontroller.standalone.provider.mysensors.MySensorsProviderBridge;
-import org.mycontroller.standalone.provider.mysensors.MySensorsUtils;
-import org.mycontroller.standalone.provider.phantio.PhantIOProviderBridge;
-import org.mycontroller.standalone.provider.philipshue.PhilipsHueProviderBridge;
-import org.mycontroller.standalone.provider.rflink.RFLinkProviderBridge;
-import org.mycontroller.standalone.provider.wunderground.WUProviderBridge;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /* All the messages based on MYSENSORS.ORG, Do not add new */
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class McMessageUtils {
 
@@ -60,6 +44,17 @@ public class McMessageUtils {
 
     public static synchronized void updateNodeInfoRunningState(int gatewayId, boolean status) {
         nodeInfoUpdateRunning.put(gatewayId, status);
+    }
+
+    // Message types
+    public enum MESSAGE_STATUS {
+        SUCCESS,
+        FAILED,
+        ACK_RECEIVED,
+        NO_ACK_RECEIVED,
+        UNKNOWN_ERROR,
+        GATEWAY_NOT_AVAILABLE,
+        ADDED_TO_SLEEP_QUEUE;
     }
 
     // Message types
@@ -548,184 +543,5 @@ public class McMessageUtils {
             return AppProperties.getInstance().getControllerSettings().getUnitConfig();
         }
         return UNIT_CONFIG.METRIC.getText();
-    }
-
-    //Sensor provider bridge
-    private static IProviderBridge mySensorsBridge = new MySensorsProviderBridge();
-    private static IProviderBridge phantIOBridge = new PhantIOProviderBridge();
-    private static IProviderBridge rpiAgentBridge = new McProviderBridge();
-    private static IProviderBridge rfLinkBridge = new RFLinkProviderBridge();
-    private static IProviderBridge philipsHueProviderBridge = new PhilipsHueProviderBridge();
-    private static IProviderBridge wundergroundProviderBridge = new WUProviderBridge();
-
-    public static synchronized void sendToGateway(RawMessage rawMessage) {
-        //Send message to nodes [going out from MyController]
-        try {
-            if (McObjectManager.getGateway(rawMessage.getGatewayId()) != null) {
-                McObjectManager.getGateway(rawMessage.getGatewayId()).write(rawMessage);
-                _logger.debug("Message sent to gateway, {}", rawMessage);
-            } else {
-                _logger.error("Message sending failed, Selected gateway not available! {}, {}",
-                        rawMessage, GatewayUtils.getGateway(rawMessage.getGatewayId()));
-            }
-        } catch (Exception ex) {
-            _logger.error("Message sending failed! {}", rawMessage, ex);
-        }
-    }
-
-    public static synchronized void sendToProviderBridge(RawMessage rawMessage) {
-        switch (rawMessage.getNetworkType()) {
-            case MY_SENSORS:
-                mySensorsBridge.executeRawMessage(rawMessage);
-                break;
-            case PHANT_IO:
-                phantIOBridge.executeRawMessage(rawMessage);
-                break;
-            case MY_CONTROLLER:
-                rpiAgentBridge.executeRawMessage(rawMessage);
-                break;
-            case RF_LINK:
-                rfLinkBridge.executeRawMessage(rawMessage);
-                break;
-            case PHILIPS_HUE:
-                philipsHueProviderBridge.executeRawMessage(rawMessage);
-                break;
-            case WUNDERGROUND:
-                wundergroundProviderBridge.executeRawMessage(rawMessage);
-                break;
-            default:
-                _logger.warn("Unknown provider: {}", rawMessage.getNetworkType());
-                break;
-        }
-
-    }
-
-    public static synchronized void sendToMessageQueue(McMessage mcMessage) {
-        if (mcMessage.getNetworkType() == null) {
-            mcMessage.setNetworkType(GatewayUtils.getNetworkType(mcMessage.getGatewayId()));
-        }
-        //Do not block stream message on smartSleep
-        if (mcMessage.isTxMessage() && mcMessage.getType() != MESSAGE_TYPE.C_STREAM) {
-            Node node = DaoUtils.getNodeDao().get(mcMessage.getGatewayId(), mcMessage.getNodeEui());
-            if (node != null && node.getSmartSleepEnabled()) {
-                if (mcMessage.isTxMessage() && !mcMessage.isScreeningDone()) {
-                    sendToMcMessageEngine(mcMessage);
-                }
-                SmartSleepMessageQueue.getInstance().putMessage(mcMessage);
-                return;
-            }
-        }
-        //Get Raw Message and add it on Message queue
-        try {
-            RawMessageQueue.getInstance().putMessage(getRawMessage(mcMessage));
-        } catch (McBadRequestException | RawMessageException ex) {
-            _logger.error("Unable to process this {}", mcMessage, ex);
-        }
-    }
-
-    private static RawMessage getRawMessage(McMessage mcMessage) throws RawMessageException, McBadRequestException {
-        switch (mcMessage.getNetworkType()) {
-            case MY_SENSORS:
-                return mySensorsBridge.getRawMessage(mcMessage);
-            case PHANT_IO:
-                return phantIOBridge.getRawMessage(mcMessage);
-            case MY_CONTROLLER:
-                return rpiAgentBridge.getRawMessage(mcMessage);
-            case RF_LINK:
-                //RFLink Tx message parsing does not supported, hence process before create rawMessage
-                sendToMcMessageEngine(mcMessage);
-                return rfLinkBridge.getRawMessage(mcMessage);
-            case PHILIPS_HUE:
-                return philipsHueProviderBridge.getRawMessage(mcMessage);
-            case WUNDERGROUND:
-                return wundergroundProviderBridge.getRawMessage(mcMessage);
-            default:
-                _logger.warn("Unknown provider: {} for ", mcMessage.getNetworkType(), mcMessage);
-                throw new McBadRequestException("Unknown provider: " + mcMessage.getNetworkType());
-        }
-    }
-
-    public static synchronized void sendToProviderBridgeFinal(McMessage mcMessage) {
-        switch (mcMessage.getNetworkType()) {
-            case MY_SENSORS:
-                mySensorsBridge.executeMcMessage(mcMessage);
-                break;
-            case PHANT_IO:
-                phantIOBridge.executeMcMessage(mcMessage);
-                break;
-            case MY_CONTROLLER:
-                rpiAgentBridge.executeMcMessage(mcMessage);
-                break;
-            case RF_LINK:
-                rfLinkBridge.executeMcMessage(mcMessage);
-                break;
-            case PHILIPS_HUE:
-                philipsHueProviderBridge.executeMcMessage(mcMessage);
-                break;
-            case WUNDERGROUND:
-                wundergroundProviderBridge.executeMcMessage(mcMessage);
-            default:
-                _logger.warn("Unknown provider: {}", mcMessage.getNetworkType());
-                break;
-        }
-
-    }
-
-    public static synchronized void sendToMcMessageEngine(McMessage mcMessage) {
-        //Do not run new thread. for testing
-        //new Thread(new McMessageEngine(mcMessage)).start();
-        new McMessageEngine(mcMessage).run();
-    }
-
-    public static synchronized boolean validateNodeIdByProvider(Node node) {
-        NETWORK_TYPE networkType = GatewayUtils.getNetworkType(node.getGatewayTable().getId());
-        switch (networkType) {
-            case MY_SENSORS:
-                return mySensorsBridge.validateNodeId(node);
-            case PHANT_IO:
-                return phantIOBridge.validateNodeId(node);
-            case MY_CONTROLLER:
-                return rpiAgentBridge.validateNodeId(node);
-            case RF_LINK:
-                return rfLinkBridge.validateNodeId(node);
-            case PHILIPS_HUE:
-                return philipsHueProviderBridge.validateNodeId(node);
-            case WUNDERGROUND:
-                return wundergroundProviderBridge.validateNodeId(node);
-            default:
-                _logger.warn("Unknown provider: {}", networkType);
-                return false;
-        }
-    }
-
-    public static synchronized boolean validateSensorIdByProvider(Sensor sensor) {
-        NETWORK_TYPE networkType = GatewayUtils.getNetworkType(sensor);
-        switch (networkType) {
-            case MY_SENSORS:
-                return mySensorsBridge.validateSensorId(sensor);
-            case PHANT_IO:
-                return phantIOBridge.validateSensorId(sensor);
-            case MY_CONTROLLER:
-                return rpiAgentBridge.validateSensorId(sensor);
-            case RF_LINK:
-                return rfLinkBridge.validateSensorId(sensor);
-            case PHILIPS_HUE:
-                return philipsHueProviderBridge.validateSensorId(sensor);
-            case WUNDERGROUND:
-                return wundergroundProviderBridge.validateSensorId(sensor);
-            default:
-                _logger.warn("Unknown provider: {}", networkType);
-                return false;
-        }
-    }
-
-    public static String getGatewayNodeId(NETWORK_TYPE type) {
-        switch (type) {
-            case MY_SENSORS:
-                return String.valueOf(MySensorsUtils.GATEWAY_ID);
-            default:
-                break;
-        }
-        return McMessage.GATEWAY_NODE_ID;
     }
 }

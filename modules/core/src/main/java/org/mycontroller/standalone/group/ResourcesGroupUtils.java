@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ import java.util.List;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
+import org.mycontroller.standalone.McThreadPoolFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
@@ -95,7 +96,7 @@ public class ResourcesGroupUtils {
         DaoUtils.getResourcesGroupDao().update(resourcesGroup);
 
         //Execute Rules for this resources group
-        new Thread(new McRuleEngine(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId())).start();
+        McThreadPoolFactory.execute(new McRuleEngine(RESOURCE_TYPE.RESOURCES_GROUP, resourcesGroup.getId()));
 
         //TODO: add it in to log message
     }

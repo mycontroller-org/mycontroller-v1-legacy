@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,8 +67,8 @@ public class NodeAliveStatusJob extends Job {
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
         for (Node node : nodes) {
             //If gateway not available, do not send
-            if (McObjectManager.getGateway(node.getGatewayTable().getId()) == null
-                    || McObjectManager.getGateway(node.getGatewayTable().getId()).getGateway().getState() != STATE.UP) {
+            if (McObjectManager.getEngine(node.getGatewayTable().getId()) == null
+                    || McObjectManager.getEngine(node.getGatewayTable().getId()).config().getState() != STATE.UP) {
                 return;
             }
             //for now supports only for MySensors and MyController

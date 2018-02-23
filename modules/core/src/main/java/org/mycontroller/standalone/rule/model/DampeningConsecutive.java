@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DampeningConsecutive extends Dampening {
+public class DampeningConsecutive extends DampeningAbstract {
 
     public static final String KEY_CONSECUTIVE_MAX = "consecutiveMax";
     public static final String KEY_CONSECUTIVE_COUNT = "consecutiveCount";

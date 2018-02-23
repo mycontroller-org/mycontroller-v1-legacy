@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,6 +105,7 @@ public class DataBaseUtils {
             // Steps to migrate database
             // Create the Flyway instance
             Flyway flyway = new Flyway();
+            flyway.setTable("schema_version");
             // Point it to the database
             flyway.setDataSource(AppProperties.getInstance().getDbUrl(),
                     AppProperties.getInstance().getDbUsername(), AppProperties.getInstance().getDbPassword());

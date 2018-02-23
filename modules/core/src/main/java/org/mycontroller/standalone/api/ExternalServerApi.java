@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,8 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.exceptions.McDuplicateException;
-import org.mycontroller.standalone.exernalserver.model.ExternalServer;
-import org.mycontroller.standalone.externalserver.ExternalServerUtils;
+import org.mycontroller.standalone.externalserver.ExternalServerFactory;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfig;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
@@ -54,35 +54,35 @@ public class ExternalServerApi {
 
     public void deleteIds(List<Integer> ids) {
         for (Integer externalServerId : ids) {
-            ExternalServerUtils.delete(externalServerId);
+            ExternalServerFactory.delete(externalServerId);
         }
     }
 
     public void enableIds(List<Integer> ids) {
-        ExternalServerUtils.updateEnabled(ids, true);
+        ExternalServerFactory.updateEnabled(ids, true);
     }
 
     public void disableIds(List<Integer> ids) {
-        ExternalServerUtils.updateEnabled(ids, false);
+        ExternalServerFactory.updateEnabled(ids, false);
     }
 
-    public void update(ExternalServer externalServer) throws McDuplicateException, McBadRequestException {
+    public void update(ExternalServerConfig externalServer) throws McDuplicateException, McBadRequestException {
         HashMap<String, Object> filters = new HashMap<String, Object>();
         filters.put(ExternalServerTable.KEY_NAME, externalServer.getName());
         ExternalServerTable availabilityCheck = get(filters);
         if (availabilityCheck != null && availabilityCheck.getId() != externalServer.getId()) {
             throw new McDuplicateException("An external server available with this name.");
         }
-        ExternalServerUtils.update(externalServer);
+        ExternalServerFactory.update(externalServer);
     }
 
-    public void add(ExternalServer externalServer) throws McDuplicateException {
+    public void add(ExternalServerConfig externalServer) throws McDuplicateException {
         HashMap<String, Object> filters = new HashMap<String, Object>();
         filters.put(ExternalServerTable.KEY_NAME, externalServer.getName());
         ExternalServerTable availabilityCheck = get(filters);
         if (availabilityCheck != null) {
             throw new McDuplicateException("An external server available with this name.");
         }
-        ExternalServerUtils.add(externalServer);
+        ExternalServerFactory.add(externalServer);
     }
 }

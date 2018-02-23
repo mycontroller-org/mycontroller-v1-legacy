@@ -93,6 +93,13 @@
             </div>
           </div>
 
+          <div class="form-group" ng-if="sensorVariable.properties.ignoreDuplicate != undefined">
+            <label class="col-sm-2 control-label">{{ 'IGNORE_DUPLICATE' | translate }}</label>
+            <div class="col-sm-10 mc-form-fixer-left">
+              <input type="checkbox" ng-model="sensorVariable.properties.ignoreDuplicate">
+            </div>
+          </div>
+
           <legend><small>{{ 'GRAPH_SETTINGS' | translate }}</small></legend>
 
           <div class="form-group">

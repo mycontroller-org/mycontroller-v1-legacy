@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import org.mycontroller.standalone.api.RuleApi;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,13 +47,16 @@ public class RuleDefinitionsReEnableJob extends Job {
         _logger.debug("Response:{}", response);
         if (response.getData() != null) {
             @SuppressWarnings("unchecked")
-            List<RuleDefinition> rules = (List<RuleDefinition>) response.getData();
+            List<RuleDefinitionAbstract> rules = (List<RuleDefinitionAbstract>) response.getData();
             Long currentTime = System.currentTimeMillis();
             List<Integer> enableRuleIds = new ArrayList<Integer>();
-            for (RuleDefinition rule : rules) {
-                if (rule.getLastTrigger() != null && (currentTime - rule.getLastTrigger()) >= rule.getReEnableDelay()) {
-                    enableRuleIds.add(rule.getId());
-                    _logger.debug("Enable {}", rule);
+            for (RuleDefinitionAbstract rule : rules) {
+                if (!rule.getDisabledByUser()) {
+                    if (rule.getLastTrigger() != null
+                            && (currentTime - rule.getLastTrigger()) >= rule.getReEnableDelay()) {
+                        enableRuleIds.add(rule.getId());
+                        _logger.debug("Enable {}", rule);
+                    }
                 }
             }
             if (!enableRuleIds.isEmpty()) {

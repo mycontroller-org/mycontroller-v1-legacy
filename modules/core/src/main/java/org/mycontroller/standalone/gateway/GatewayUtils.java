@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,28 +20,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.mycontroller.standalone.AppProperties.NETWORK_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.ResourceOperation;
 import org.mycontroller.standalone.db.tables.GatewayTable;
-import org.mycontroller.standalone.db.tables.Node;
-import org.mycontroller.standalone.db.tables.Sensor;
-import org.mycontroller.standalone.gateway.ethernet.EthernetGatewayImpl;
-import org.mycontroller.standalone.gateway.model.Gateway;
-import org.mycontroller.standalone.gateway.model.GatewayEthernet;
-import org.mycontroller.standalone.gateway.model.GatewayMQTT;
-import org.mycontroller.standalone.gateway.model.GatewayPhantIO;
-import org.mycontroller.standalone.gateway.model.GatewayPhilipsHue;
-import org.mycontroller.standalone.gateway.model.GatewaySerial;
-import org.mycontroller.standalone.gateway.model.GatewayWunderground;
-import org.mycontroller.standalone.gateway.mqtt.MqttGatewayImpl;
-import org.mycontroller.standalone.gateway.phantio.PhantIOGatewayImpl;
-import org.mycontroller.standalone.gateway.philipshue.PhilipsHueGatewayImpl;
-import org.mycontroller.standalone.gateway.serialport.MYCSerialPort;
-import org.mycontroller.standalone.gateway.wunderground.WundergroundGatewayImpl;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
+import org.mycontroller.standalone.gateway.config.GatewayConfigEthernet;
+import org.mycontroller.standalone.gateway.config.GatewayConfigMQTT;
+import org.mycontroller.standalone.gateway.config.GatewayConfigPhantIO;
+import org.mycontroller.standalone.gateway.config.GatewayConfigPhilipsHue;
+import org.mycontroller.standalone.gateway.config.GatewayConfigSerial;
+import org.mycontroller.standalone.gateway.config.GatewayConfigWunderground;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.provider.IEngine;
+import org.mycontroller.standalone.provider.mycontroller.MyControllerEngine;
+import org.mycontroller.standalone.provider.mysensors.MySensorsEngine;
+import org.mycontroller.standalone.provider.phantio.PhantIOEngine;
+import org.mycontroller.standalone.provider.philipshue.PhilipsHueEngine;
+import org.mycontroller.standalone.provider.rflink.RFLinkEngine;
+import org.mycontroller.standalone.provider.wunderground.WundergroundEngine;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -132,168 +130,170 @@ public class GatewayUtils {
         }
     }
 
-    public static Gateway getGateway(Integer gatewayId) {
+    public static void loadEngineAll() {
+        List<GatewayTable> gateways = DaoUtils.getGatewayDao().getAll();
+        //Before load all gateways, make state to unavailable
+        for (GatewayTable gatewayTable : gateways) {
+            if (gatewayTable.getEnabled()) {
+                gatewayTable.setState(STATE.UNAVAILABLE);
+                gatewayTable.setStatusSince(System.currentTimeMillis());
+                gatewayTable.setStatusMessage("Yet to start this gateway!");
+                DaoUtils.getGatewayDao().update(gatewayTable);
+            }
+        }
+        //Load all the gateways
+        gateways = DaoUtils.getGatewayDao().getAll();
+        for (GatewayTable gatewayTable : gateways) {
+            loadEngine(gatewayTable);
+        }
+        GATEWAYS_READY.set(true);
+    }
+
+    public static synchronized void loadEngine(GatewayTable gatewayTable) {
+        IEngine _engine = null;
+        switch (gatewayTable.getNetworkType()) {
+            case MY_CONTROLLER:
+                _engine = new MyControllerEngine(getGateway(gatewayTable));
+                break;
+            case MY_SENSORS:
+                _engine = new MySensorsEngine(getGateway(gatewayTable));
+                break;
+            case PHANT_IO:
+                _engine = new PhantIOEngine(getGateway(gatewayTable));
+                break;
+            case PHILIPS_HUE:
+                _engine = new PhilipsHueEngine(getGateway(gatewayTable));
+                break;
+            case RF_LINK:
+                _engine = new RFLinkEngine(getGateway(gatewayTable));
+                break;
+            case WUNDERGROUND:
+                _engine = new WundergroundEngine(getGateway(gatewayTable));
+                break;
+            default:
+                break;
+        }
+        if (_engine != null) {
+            McObjectManager.addEngine(_engine);
+            if (_engine.config().getEnabled()) {
+                _engine.config().setStatus(STATE.UNAVAILABLE, "Starting...");
+                _engine.start();
+            } else {
+                _engine.config().setStatus(STATE.UNAVAILABLE, "Disabled");
+            }
+        } else {
+            _logger.error("Engine not available for {}", gatewayTable.getNetworkType());
+        }
+    }
+
+    public static synchronized void unloadEngine(Integer gatewayId) {
+        if (McObjectManager.getEngine(gatewayId) != null) {
+            McObjectManager.getEngine(gatewayId).stop();
+            // wait until this engine unloads completely or with timeout
+            try {
+                long maxWaitTime = 1000 * 3; // 3 seconds
+                while (maxWaitTime > 0) {
+                    Thread.sleep(10);
+                    maxWaitTime -= 10;
+                    if (!McObjectManager.getEngine(gatewayId).isRunning()) {
+                        break;
+                    }
+                }
+            } catch (Exception ex) {
+                _logger.error("Exception", ex);
+            }
+            //McObjectManager.removeEngine(gatewayId);
+        }
+    }
+
+    public static GatewayConfig getGateway(Integer gatewayId) {
         return getGateway(DaoUtils.getGatewayDao().getById(gatewayId));
     }
 
-    public static Gateway getGateway(GatewayTable gatewayTable) {
+    public static GatewayConfig getGateway(GatewayTable gatewayTable) {
         switch (gatewayTable.getType()) {
             case SERIAL:
-                return new GatewaySerial(gatewayTable);
+                return new GatewayConfigSerial(gatewayTable);
             case ETHERNET:
-                return new GatewayEthernet(gatewayTable);
+                return new GatewayConfigEthernet(gatewayTable);
             case MQTT:
-                return new GatewayMQTT(gatewayTable);
+                return new GatewayConfigMQTT(gatewayTable);
             case PHANT_IO:
-                return new GatewayPhantIO(gatewayTable);
+                return new GatewayConfigPhantIO(gatewayTable);
             case PHILIPS_HUE:
-                return new GatewayPhilipsHue(gatewayTable);
+                return new GatewayConfigPhilipsHue(gatewayTable);
             case WUNDERGROUND:
-                return new GatewayWunderground(gatewayTable);
+                return new GatewayConfigWunderground(gatewayTable);
             default:
                 _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());
                 return null;
         }
     }
 
-    public static NETWORK_TYPE getNetworkType(Integer gatewayId) {
-        if (McObjectManager.getGateway(gatewayId) != null) {
-            return McObjectManager.getGateway(gatewayId).getGateway().getNetworkType();
-        } else {
-            GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
-            return gatewayTable.getNetworkType();
-        }
-    }
-
-    public static NETWORK_TYPE getNetworkType(Sensor sensor) {
-        Integer gatewayId = null;
-        if (sensor.getNode().getGatewayTable() != null && sensor.getNode().getGatewayTable().getId() != null) {
-            gatewayId = sensor.getNode().getGatewayTable().getId();
-        } else if (sensor.getNode() != null) {
-            Node node = DaoUtils.getNodeDao().getById(sensor.getNode().getId());
-            if (node != null) {
-                return node.getGatewayTable().getNetworkType();
-            }
-        }
-        return getNetworkType(gatewayId);
-    }
-
-    /* review required*/
-
-    public static synchronized void loadGateway(GatewayTable gatewayTable) {
-        if (!gatewayTable.getEnabled()) {
-            return;
-        }
-        IGateway iGateway = null;
-        switch (gatewayTable.getType()) {
-            case SERIAL:
-                iGateway = new MYCSerialPort(gatewayTable);
-                break;
-            case ETHERNET:
-                iGateway = new EthernetGatewayImpl(gatewayTable);
-                break;
-            case MQTT:
-                iGateway = new MqttGatewayImpl(gatewayTable);
-                break;
-            case PHANT_IO:
-                iGateway = new PhantIOGatewayImpl(gatewayTable);
-            case PHILIPS_HUE:
-                iGateway = new PhilipsHueGatewayImpl(gatewayTable);
-                break;
-            case WUNDERGROUND:
-                iGateway = new WundergroundGatewayImpl(gatewayTable);
-                break;
-            default:
-                _logger.warn("Not implemented yet! GatewayTable:[{}]", gatewayTable.getType().getText());
-        }
-        if (iGateway == null) {
-            throw new RuntimeException("Unable to create gateway[" + gatewayTable + "]...Check your input");
-        }
-        McObjectManager.addGateway(iGateway);
-    }
-
-    public static synchronized void unloadGateway(Integer gatewayId) {
-        if (McObjectManager.getGateway(gatewayId) != null) {
-            McObjectManager.getGateway(gatewayId).close();
-            McObjectManager.removeGateway(gatewayId);
-        }
-    }
-
-    public static synchronized void loadAllGateways() {
-        List<GatewayTable> gateways = DaoUtils.getGatewayDao().getAllEnabled();
-        //Before load all gateways, make state to unavailable
-        for (GatewayTable gatewayTable : gateways) {
-            gatewayTable.setState(STATE.UNAVAILABLE);
-            gatewayTable.setStatusSince(System.currentTimeMillis());
-            gatewayTable.setStatusMessage("Yet to start this gateway!");
-            DaoUtils.getGatewayDao().update(gatewayTable);
-        }
-        //Load all the enabled gateways
-        gateways = DaoUtils.getGatewayDao().getAllEnabled();
-        for (GatewayTable gatewayTable : gateways) {
-            loadGateway(gatewayTable);
-        }
-        GATEWAYS_READY.set(true);
-    }
-
-    public static synchronized void unloadAllGateways() {
+    public static synchronized void unloadEngineAll() {
         GATEWAYS_READY.set(false);
-        HashMap<Integer, IGateway> gateways = McObjectManager.getGateways();
-        for (Integer gatewayId : gateways.keySet()) {
-            unloadGateway(gatewayId);
+        HashMap<Integer, IEngine> engines = McObjectManager.getEngines();
+        for (Integer gatewayId : engines.keySet()) {
+            unloadEngine(gatewayId);
         }
     }
 
-    public static synchronized void reloadGateways() {
-        unloadAllGateways();
-        loadAllGateways();
+    public static synchronized void reloadEngines() {
+        unloadEngineAll();
+        loadEngineAll();
     }
 
-    public static void reloadGateway(Integer gatewayId) {
-        unloadGateway(gatewayId);
+    public static void reloadEngine(Integer gatewayId) {
+        unloadEngine(gatewayId);
         GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
-        loadGateway(gatewayTable);
+        loadEngine(gatewayTable);
     }
 
-    public static void reloadGateways(List<Integer> ids) {
+    public static void reloadEngines(List<Integer> ids) {
         for (Integer id : ids) {
-            reloadGateway(id);
+            reloadEngine(id);
         }
     }
 
     public static void updateGateway(GatewayTable gatewayTable) {
-        unloadGateway(gatewayTable.getId());
+        unloadEngine(gatewayTable.getId());
         DaoUtils.getGatewayDao().update(gatewayTable);
         if (gatewayTable.getEnabled()) {
-            loadGateway(gatewayTable);
+            loadEngine(gatewayTable);
         }
     }
 
     public static void addGateway(GatewayTable gatewayTable) {
-        DaoUtils.getGatewayDao().create(gatewayTable);
         gatewayTable.setTimestamp(System.currentTimeMillis());
-        if (gatewayTable.getEnabled()) {
-            gatewayTable.setEnabled(true);
-            loadGateway(gatewayTable);
-        }
+        DaoUtils.getGatewayDao().create(gatewayTable);
+        GatewayTable _gwt = DaoUtils.getGatewayDao().get(GatewayTable.KEY_NAME, gatewayTable.getName());
+        loadEngine(_gwt);
     }
 
     public static void enableGateway(Integer gatewayId) {
-        unloadGateway(gatewayId);
         GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
+        if (gatewayTable.getEnabled() && McObjectManager.getEngine(gatewayId).isRunning()) {
+            return;
+        }
+        unloadEngine(gatewayId);
+        gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
         gatewayTable.setEnabled(true);
         DaoUtils.getGatewayDao().update(gatewayTable);
-        loadGateway(gatewayTable);
+        loadEngine(gatewayTable);
     }
 
     public static void disableGateway(Integer gatewayId) {
-        unloadGateway(gatewayId);
         GatewayTable gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
+        if (!gatewayTable.getEnabled() && !McObjectManager.getEngine(gatewayId).isRunning()) {
+            return;
+        }
         gatewayTable.setEnabled(false);
         gatewayTable.setStatusSince(System.currentTimeMillis());
         gatewayTable.setState(STATE.UNAVAILABLE);
         gatewayTable.setStatusMessage("Disabled by user");
         DaoUtils.getGatewayDao().update(gatewayTable);
+        unloadEngine(gatewayId);
+        loadEngine(DaoUtils.getGatewayDao().getById(gatewayId));
     }
 
     public static void enableGateways(List<Integer> ids) {
@@ -317,7 +317,7 @@ public class GatewayUtils {
                 disableGateway(resourceModel.getResourceId());
                 break;
             case RELOAD:
-                reloadGateway(resourceModel.getResourceId());
+                reloadEngine(resourceModel.getResourceId());
                 break;
             default:
                 _logger.warn("GatewayTable will not support for this operation!:[{}]",
@@ -327,7 +327,7 @@ public class GatewayUtils {
     }
 
     public static String[] getMqttTopics(String topic) {
-        String[] topics = topic.split(GatewayMQTT.TOPICS_SPLITER);
+        String[] topics = topic.split(GatewayConfigMQTT.TOPICS_SPLITER);
         for (int topicId = 0; topicId < topics.length; topicId++) {
             topics[topicId] += "/#";
         }

@@ -1,6 +1,6 @@
 <!--
 
-    Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,9 @@
   <logger level="WARN" name="com.j256.ormlite.table.TableUtils" />
   <logger level="WARN" name="com.xeiam.sundial" />
   <logger level="WARN" name="org.quartz" />
+  <logger level="WARN" name="io.moquette"/>
+  <logger level="ERROR" name="io.moquette.persistence.mapdb.MapDBSessionsStore"/>
+  <logger level="ERROR" name="io.moquette.spi.impl.PersistentQueueMessageSender"/>
 
   <logger level="INFO" name="org.mycontroller.standalone" />
   <logger level="INFO" name="org.mycontroller.standalone.api" />
@@ -62,19 +65,24 @@
   <logger level="INFO" name="org.mycontroller.standalone.gateway.ethernet" />
   <logger level="INFO" name="org.mycontroller.standalone.gateway.mqtt" />
   <logger level="INFO" name="org.mycontroller.standalone.gateway.phantio" />
-  <logger level="INFO" name="org.mycontroller.standalone.gateway.serialport" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway.philipshue" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway.rest" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway.serial" />
+  <logger level="INFO" name="org.mycontroller.standalone.gateway.wunderground" />
   <logger level="INFO" name="org.mycontroller.standalone.group" />
   <logger level="INFO" name="org.mycontroller.standalone.jobs" />
   <logger level="INFO" name="org.mycontroller.standalone.loggers.LoggerMySql" />
   <logger level="INFO" name="org.mycontroller.standalone.message" />
-  <logger level="INFO" name="org.mycontroller.standalone.metrics" />
-  <logger level="INFO" name="org.mycontroller.standalone.metrics.jobs" />
+  <logger level="INFO" name="org.mycontroller.standalone.metric" />
+  <logger level="INFO" name="org.mycontroller.standalone.metric.jobs" />
   <logger level="INFO" name="org.mycontroller.standalone.mqttbroker" />
   <logger level="INFO" name="org.mycontroller.standalone.provider" />
-  <logger level="INFO" name="org.mycontroller.standalone.provider.mc" />
+  <logger level="INFO" name="org.mycontroller.standalone.provider.mycontroller" />
   <logger level="INFO" name="org.mycontroller.standalone.provider.mysensors" />
   <logger level="INFO" name="org.mycontroller.standalone.provider.phantio" />
+  <logger level="INFO" name="org.mycontroller.standalone.provider.philipshue" />
   <logger level="INFO" name="org.mycontroller.standalone.provider.rflink" />
+  <logger level="INFO" name="org.mycontroller.standalone.provider.wunderground" />
   <logger level="INFO" name="org.mycontroller.standalone.restclient" />
   <logger level="INFO" name="org.mycontroller.standalone.rule" />
   <logger level="INFO" name="org.mycontroller.standalone.scheduler" />

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,14 +22,14 @@ import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.AppProperties.ALPHABETICAL_CASE;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
 import org.mycontroller.standalone.db.tables.ExternalServerTable;
-import org.mycontroller.standalone.exernalserver.model.ExternalServer;
-import org.mycontroller.standalone.exernalserver.model.ExternalServerEmoncms;
-import org.mycontroller.standalone.exernalserver.model.ExternalServerInfluxdb;
-import org.mycontroller.standalone.exernalserver.model.ExternalServerMqtt;
-import org.mycontroller.standalone.exernalserver.model.ExternalServerPhantIO;
-import org.mycontroller.standalone.exernalserver.model.ExternalServerWUnderground;
-import org.mycontroller.standalone.externalserver.ExternalServerUtils;
-import org.mycontroller.standalone.externalserver.ExternalServerUtils.EXTERNAL_SERVER_TYPE;
+import org.mycontroller.standalone.externalserver.ExternalServerFactory;
+import org.mycontroller.standalone.externalserver.ExternalServerFactory.EXTERNAL_SERVER_TYPE;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfig;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfigEmoncms;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfigInfluxDB;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfigMqtt;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfigPhantIO;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfigWUnderground;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -57,17 +57,17 @@ class ExternalServerTableSerializer extends JsonSerializer<ExternalServerTable> 
     public void serialize(ExternalServerTable externalServerTable, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonProcessingException {
         if (externalServerTable != null) {
-            RestUtils.getObjectMapper().writeValue(jgen, ExternalServerUtils.getExternalServer(externalServerTable));
+            RestUtils.getObjectMapper().writeValue(jgen, ExternalServerFactory.getConfig(externalServerTable));
         } else {
             jgen.writeNull();
         }
     }
 }
 
-class ExternalServerDeserializer extends JsonDeserializer<ExternalServer> {
+class ExternalServerDeserializer extends JsonDeserializer<ExternalServerConfig> {
 
     @Override
-    public ExternalServer deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+    public ExternalServerConfig deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
         ObjectCodec objectCodec = jp.getCodec();
         JsonNode node = objectCodec.readTree(jp);
@@ -78,10 +78,10 @@ class ExternalServerDeserializer extends JsonDeserializer<ExternalServer> {
 
         EXTERNAL_SERVER_TYPE type = EXTERNAL_SERVER_TYPE.fromString(node.get("type").asText());
 
-        ExternalServer externalServer = null;
+        ExternalServerConfig externalServer = null;
         switch (type) {
             case PHANT_IO:
-                ExternalServerPhantIO extServerPhantIO = new ExternalServerPhantIO();
+                ExternalServerConfigPhantIO extServerPhantIO = new ExternalServerConfigPhantIO();
                 extServerPhantIO.setUrl(node.get("url").asText());
                 extServerPhantIO.setPublicKey(node.get("publicKey").asText());
                 extServerPhantIO.setPrivateKey(node.get("privateKey").asText());
@@ -89,14 +89,14 @@ class ExternalServerDeserializer extends JsonDeserializer<ExternalServer> {
                 externalServer = extServerPhantIO;
                 break;
             case EMONCMS:
-                ExternalServerEmoncms extServerEmoncms = new ExternalServerEmoncms();
+                ExternalServerConfigEmoncms extServerEmoncms = new ExternalServerConfigEmoncms();
                 extServerEmoncms.setUrl(node.get("url").asText());
                 extServerEmoncms.setWriteApiKey(node.get("writeApiKey").asText());
                 extServerEmoncms.setTrustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()));
                 externalServer = extServerEmoncms;
                 break;
             case INFLUXDB:
-                ExternalServerInfluxdb extServerInfluxdb = new ExternalServerInfluxdb();
+                ExternalServerConfigInfluxDB extServerInfluxdb = new ExternalServerConfigInfluxDB();
                 extServerInfluxdb.setUrl(node.get("url").asText());
                 extServerInfluxdb.setDatabase(node.get("database").asText());
                 if (node.get("username") != null) {
@@ -110,7 +110,7 @@ class ExternalServerDeserializer extends JsonDeserializer<ExternalServer> {
                 externalServer = extServerInfluxdb;
                 break;
             case MQTT:
-                ExternalServerMqtt extServerMqttClient = new ExternalServerMqtt();
+                ExternalServerConfigMqtt extServerMqttClient = new ExternalServerConfigMqtt();
                 extServerMqttClient.setUrl(node.get("url").asText());
                 if (node.get("username") != null) {
                     extServerMqttClient.setUsername(node.get("username").asText());
@@ -120,7 +120,7 @@ class ExternalServerDeserializer extends JsonDeserializer<ExternalServer> {
                 externalServer = extServerMqttClient;
                 break;
             case WUNDERGROUND:
-                ExternalServerWUnderground extServerWUnderground = new ExternalServerWUnderground();
+                ExternalServerConfigWUnderground extServerWUnderground = new ExternalServerConfigWUnderground();
                 extServerWUnderground.setUrl(node.get("url").asText());
                 extServerWUnderground.setStationId(node.get("stationId").asText());
                 extServerWUnderground.setStationPassword(node.get("stationPassword").asText());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,12 +50,12 @@ import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.UidTag;
 import org.mycontroller.standalone.db.tables.User;
-import org.mycontroller.standalone.exernalserver.model.ExternalServer;
-import org.mycontroller.standalone.gateway.model.Gateway;
-import org.mycontroller.standalone.message.McMessage;
+import org.mycontroller.standalone.externalserver.config.ExternalServerConfig;
+import org.mycontroller.standalone.gateway.config.GatewayConfig;
+import org.mycontroller.standalone.message.IMessage;
 import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
 import org.mycontroller.standalone.operation.model.Operation;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 import org.mycontroller.standalone.scripts.McScript;
 import org.mycontroller.standalone.settings.Dashboard;
 
@@ -129,11 +129,11 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
 
         //AddMixIns
         mapper.addMixIn(Dashboard.class, DashboardMixin.class);
-        mapper.addMixIn(ExternalServer.class, ExternalServerMixin.class);
+        mapper.addMixIn(ExternalServerConfig.class, ExternalServerMixin.class);
         mapper.addMixIn(ForwardPayload.class, ForwardPayloadMixin.class);
-        mapper.addMixIn(Gateway.class, GatewayMixin.class);
+        mapper.addMixIn(GatewayConfig.class, GatewayMixin.class);
+        mapper.addMixIn(IMessage.class, IMessageMixin.class);
         mapper.addMixIn(MetricEngineConf.class, MetricEngineConfMixin.class);
-        mapper.addMixIn(McMessage.class, McMessageMixin.class);
         mapper.addMixIn(McScript.class, McScriptMixin.class);
         mapper.addMixIn(Node.class, NodeMixin.class);
         mapper.addMixIn(Operation.class, OperationMixin.class);
@@ -142,7 +142,7 @@ public class McJacksonJson2Provider extends ResteasyJackson2Provider {
         mapper.addMixIn(ResourcesGroupMap.class, ResourcesGroupMapMixin.class);
         mapper.addMixIn(ResourcesLogs.class, ResourcesLogsMixin.class);
         mapper.addMixIn(Role.class, RoleMixin.class);
-        mapper.addMixIn(RuleDefinition.class, RuleDefinitionMixin.class);
+        mapper.addMixIn(RuleDefinitionAbstract.class, RuleDefinitionMixin.class);
         mapper.addMixIn(Sensor.class, SensorMixin.class);
         mapper.addMixIn(SensorVariableJson.class, SensorVariableJsonMixin.class);
         mapper.addMixIn(ResourcePurgeConf.class, SensorVariablePurgeMixin.class);

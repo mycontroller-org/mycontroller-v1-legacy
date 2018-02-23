@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.mycontroller.standalone.loggers.LoggerMySql;
+import org.mycontroller.standalone.db.LoggerMySql;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
@@ -74,6 +74,10 @@ public class AppProperties {
     private String webSslKeystorePassword;
     private String webSslKeystoreType;
     private String webBindAddress;
+
+    private boolean mqttBrokerEnabled = false;
+    private String mqttSslKeystoreFile;
+    private String mqttSslKeystorePassword;
 
     private String mqttBrokerPersistentStore;
     private String mcPersistentStoresLocation;
@@ -476,13 +480,22 @@ public class AppProperties {
         }
         webBindAddress = getValue(properties, "mcc.web.bind.address", "0.0.0.0");
 
+        //MQTT broker settings
+        mqttBrokerEnabled = Boolean.valueOf(getValue(properties, "mcc.mqtt.broker.enabled", "true"));
+        // for now do not support for SSL
+        /*
+        if (mqttBrokerEnabled) {
+            mqttSslKeystoreFile = getValue(properties, "mcc.mqtt.broker.ssl.keystore.file", "../conf/keystore.jks");
+            mqttSslKeystorePassword = getValue(properties, "mcc.mqtt.broker.ssl.keystore.password", "mycontroller");
+        }
+        */
+
         //MyController PersistentStore
         mcPersistentStoresLocation = McUtils.getDirectoryLocation(getValue(properties,
-                "mcc.persistent.stores.location",
-                "../conf/persistent_stores/"));
+                "mcc.persistent.stores.location", "../conf/persistent_stores/"));
         createDirectoryLocation(mcPersistentStoresLocation);
         //MQTT Broker mqttBrokerPersistentStore
-        mqttBrokerPersistentStore = mcPersistentStoresLocation + "/moquette/moquette_store.mapdb";
+        mqttBrokerPersistentStore = mcPersistentStoresLocation + "moquette/moquette_store.mapdb";
         clearMessagesQueueOnStart = McUtils.getBoolean(getValue(properties,
                 "mcc.clear.message.queue.on.start", "true"));
         clearSmartSleepMsgQueueOnStart = McUtils.getBoolean(getValue(properties,
@@ -749,7 +762,24 @@ public class AppProperties {
         return mcPersistentStoresLocation;
     }
 
+    public String getMqttClientPersistentStoresLocation() {
+        return getMcPersistentStoresLocation() + "/mqtt_clients/";
+    }
+
     public boolean isMDNSserviceEnabled() {
         return mDNSserviceEnabled;
     }
+
+    public boolean isMqttBrokerEnabled() {
+        return mqttBrokerEnabled;
+    }
+
+    public String getMqttSslKeystoreFile() {
+        return mqttSslKeystoreFile;
+    }
+
+    public String getMqttSslKeystorePassword() {
+        return mqttSslKeystorePassword;
+    }
+
 }

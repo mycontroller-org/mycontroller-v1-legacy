@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -270,7 +270,7 @@ public class SettingsHandler extends AccessEngine {
     @GET
     @Path("/metricsEngine")
     public Response getMetricsEngine() {
-        return RestUtils.getResponse(Status.OK, MetricsUtils.getEngineConf());
+        return RestUtils.getResponse(Status.OK, MetricsUtils.getConf());
     }
 
     @POST

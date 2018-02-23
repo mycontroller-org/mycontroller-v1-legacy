@@ -33,8 +33,9 @@
 
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'STATUS' | translate }}</label>
-              <div class="col-sm-5">
-                <input bs-switch ng-change="editEnable.mqttBroker = true" ng-model="mqttBrokerSettings.enabled" type="checkbox"
+              <div class="col-sm-10">
+                <div ng-if="!mqttBrokerSettings.enabledOnBackend" class="text-warning" ng-bind-html="'MQTT_BROKER_DISABLED_BACKEND' | translate"></div>
+                <input ng-if="mqttBrokerSettings.enabledOnBackend" bs-switch ng-change="editEnable.mqttBroker = true" ng-model="mqttBrokerSettings.enabled" type="checkbox"
                       switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
                       switch-off-color="default" switch-on-color="primary" ng-true-value="true"
                       ng-false-value="false" switch-on-text="{{ 'ENABLED' | translate }}" switch-off-text="{{ 'DISABLED' | translate }}">
@@ -44,7 +45,8 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ 'ALLOW_ANONYMOUS' | translate }}</label>
               <div class="col-sm-5">
-                <input bs-switch ng-change="editEnable.mqttBroker = true" ng-model="mqttBrokerSettings.allowAnonymous" type="checkbox"
+                <div ng-if="!mqttBrokerSettings.enabledOnBackend">{{ mqttBrokerSettings.allowAnonymous ? 'YES' : 'NO' | translate }}</div>
+                <input ng-if="mqttBrokerSettings.enabledOnBackend" bs-switch ng-change="editEnable.mqttBroker = true" ng-model="mqttBrokerSettings.allowAnonymous" type="checkbox"
                       switch-animate="true" switch-handle-width="55px" switch-label-width="3px"
                       switch-off-color="default" switch-on-color="danger" ng-true-value="true"
                       ng-false-value="false" switch-on-text="{{ 'YES' | translate }}" switch-off-text="{{ 'NO' | translate }}">
@@ -56,16 +58,16 @@
               <div class="col-sm-5">
                 <input ng-show="editEnable.mqttBroker" class="form-control" ng-model="mqttBrokerSettings.bindAddress" pf-validation="cs.isContainsSpace(input)" required />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NO_SPACE_ALLOWED' | translate }}</span>
-                <div ng-hide="editEnable.mqttBroker">{{mqttBrokerSettings.bindAddress}}</div>
+                <div ng-hide="editEnable.mqttBroker">{{ mqttBrokerSettings.bindAddress }}</div>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label">{{ 'HTTP_PORT' | translate }}</label>
+              <label class="col-sm-2 control-label">{{ 'MQTT_PORT' | translate }}</label>
               <div class="col-sm-5">
-                <input ng-show="editEnable.mqttBroker" class="form-control" ng-model="mqttBrokerSettings.httpPort" pf-validation="cs.isNumber(input)" required />
+                <input ng-show="editEnable.mqttBroker" class="form-control" ng-model="mqttBrokerSettings.mqttPort" pf-validation="cs.isNumber(input)" required />
                 <span class="help-block">{{ 'VALIDATION_ERROR_NUMBER' | translate }}</span>
-                <div ng-hide="editEnable.mqttBroker">{{mqttBrokerSettings.httpPort}}</div>
+                <div ng-hide="editEnable.mqttBroker">{{ mqttBrokerSettings.mqttPort }}</div>
               </div>
             </div>
 
@@ -81,7 +83,7 @@
           </form>
 
           <div class="form-actions text-right">
-            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.mqttBroker" ng-click="editEnable.mqttBroker = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.mqttBroker" ng-click="editEnable.mqttBroker = true" ng-disabled="!mqttBrokerSettings.enabledOnBackend">{{ 'EDIT' | translate }}</button>
             <button type="button" class="btn btn-default" class="button" ng-show="editEnable.mqttBroker" ng-click="updateSettingsMqttBroker();editEnable.mqttBroker = false">{{ 'CANCEL' | translate }}</button>
             <button type="button" class="btn btn-primary" ng-click="saveSettings()"  ng-show="editEnable.mqttBroker" ng-disabled="saveProgress.mqttBroker || mcFormMqttBroker.$invalid">
               <div ng-show="saveProgress.mqttBroker" class="spinner spinner-xs"></div>

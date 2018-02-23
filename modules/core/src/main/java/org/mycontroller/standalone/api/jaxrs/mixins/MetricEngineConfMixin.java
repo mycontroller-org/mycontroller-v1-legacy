@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +22,9 @@ import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.MetricEngineTypeSerializer;
 import org.mycontroller.standalone.api.jaxrs.mixins.serializers.TrustHostTypeSerializer;
 import org.mycontroller.standalone.metrics.METRIC_ENGINE;
-import org.mycontroller.standalone.metrics.engine.conf.InfluxDBConf;
 import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConf;
-import org.mycontroller.standalone.metrics.engine.conf.MyControllerConf;
+import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConfigInfluxDB;
+import org.mycontroller.standalone.metrics.engine.conf.MetricEngineConfigMyController;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParser;
@@ -66,11 +66,11 @@ class MetricEngineConfDeserializer extends JsonDeserializer<MetricEngineConf> {
         MetricEngineConf conf = null;
         switch (type) {
             case MY_CONTROLLER:
-                MyControllerConf mcConf = new MyControllerConf();
+                MetricEngineConfigMyController mcConf = new MetricEngineConfigMyController();
                 conf = mcConf;
                 break;
             case INFLUXDB:
-                InfluxDBConf infulxConf = InfluxDBConf.builder()
+                MetricEngineConfigInfluxDB infulxConf = MetricEngineConfigInfluxDB.builder()
                         .url(node.get("url").asText())
                         .trustHostType(TRUST_HOST_TYPE.fromString(node.get("trustHostType").asText()))
                         .database(node.get("database").asText())

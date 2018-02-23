@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
-public class RuleDefinitionState extends RuleDefinition {
+public class RuleDefinitionState extends RuleDefinitionAbstract {
     public static final String KEY_OPERATOR = "operator";
     public static final String KEY_STATE = "state";
 
@@ -58,7 +58,7 @@ public class RuleDefinitionState extends RuleDefinition {
     @JsonIgnore
     public RuleDefinitionTable getRuleDefinitionTable() {
         RuleDefinitionTable ruleDefinitionTable = super.getRuleDefinitionTable();
-        HashMap<String, Object> conditionProperties = new HashMap<String, Object>();
+        HashMap<String, Object> conditionProperties = ruleDefinitionTable.getConditionProperties();
         conditionProperties.put(KEY_OPERATOR, operator.getText());
         conditionProperties.put(KEY_STATE, state.getText());
         ruleDefinitionTable.setConditionProperties(conditionProperties);

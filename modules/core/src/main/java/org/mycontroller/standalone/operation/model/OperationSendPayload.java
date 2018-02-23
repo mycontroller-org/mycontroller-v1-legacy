@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ import org.mycontroller.standalone.group.ResourcesGroupUtils;
 import org.mycontroller.standalone.model.ResourceModel;
 import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.rule.RuleUtils;
-import org.mycontroller.standalone.rule.model.RuleDefinition;
+import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.timer.TimerSimple;
 import org.mycontroller.standalone.timer.TimerUtils;
@@ -126,7 +126,7 @@ public class OperationSendPayload extends Operation {
     }
 
     @Override
-    public void execute(RuleDefinition ruleDefinition) {
+    public void execute(RuleDefinitionAbstract ruleDefinition) {
         sendPayload(ruleDefinition);
     }
 
@@ -135,7 +135,7 @@ public class OperationSendPayload extends Operation {
         sendPayload(null);
     }
 
-    private void sendPayload(RuleDefinition ruleDefinition) {
+    private void sendPayload(RuleDefinitionAbstract ruleDefinition) {
         if (!getEnabled()) {
             //This operation disabled, nothing to do.
             return;

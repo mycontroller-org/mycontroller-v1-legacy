@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.mycontroller</groupId>
     <artifactId>mycontroller-parent</artifactId>
-    <version>24</version>
+    <version>29</version>
   </parent>
 
   <groupId>org.mycontroller.standalone</groupId>
   <artifactId>mycontroller-standalone-parent</artifactId>
-  <version>1.1.0.Final</version>
+  <version>1.2.0.Final</version>
   <url>https://github.com/mycontroller-org</url>
   <inceptionYear>2015</inceptionYear>
   <packaging>pom</packaging>
@@ -191,6 +191,11 @@
       <artifactId>moquette-broker</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.moquette</groupId>
+      <artifactId>moquette-mapdb-storage</artifactId>
+    </dependency>
+
     <!-- Apache HttpComponents -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -274,6 +279,13 @@
       <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
     </dependency>
+
+    <!-- Vertx.io event bus -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

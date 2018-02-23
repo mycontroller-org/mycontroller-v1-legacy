@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +52,7 @@ public class UidTagMapper {
                 .build();
     }
 
-    public String getStructString(){
+    public String getStructString() {
         UidTagStruct uidTagStruct = new UidTagStruct();
         uidTagStruct.setUid(uid);
         uidTagStruct.setType(type.ordinal());

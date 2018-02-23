@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -72,7 +72,7 @@ public class GatewayTable {
     private Long timestamp;
 
     @DatabaseField(canBeNull = false, dataType = DataType.ENUM_STRING, columnName = KEY_STATE)
-    private STATE state = STATE.UNAVAILABLE;
+    private STATE state;
 
     @DatabaseField(canBeNull = true, columnName = KEY_STATUS_MESSAGE)
     private String statusMessage;
@@ -99,4 +99,10 @@ public class GatewayTable {
         return getProperty(key, null);
     }
 
+    public STATE getState() {
+        if (state == null) {
+            return STATE.UNAVAILABLE;
+        }
+        return state;
+    }
 }

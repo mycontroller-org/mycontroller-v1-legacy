@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString(callSuper = true)
 @Slf4j
 @NoArgsConstructor
-public class RuleDefinitionString extends RuleDefinition {
+public class RuleDefinitionString extends RuleDefinitionAbstract {
     public static final String KEY_OPERATOR = "operator";
     public static final String KEY_PATTERN = "pattern";
     public static final String KEY_IGNORE_CASE = "ignoreCase";
@@ -57,7 +57,7 @@ public class RuleDefinitionString extends RuleDefinition {
     @JsonIgnore
     public RuleDefinitionTable getRuleDefinitionTable() {
         RuleDefinitionTable ruleDefinitionTable = super.getRuleDefinitionTable();
-        HashMap<String, Object> conditionProperties = new HashMap<String, Object>();
+        HashMap<String, Object> conditionProperties = ruleDefinitionTable.getConditionProperties();
         conditionProperties.put(KEY_OPERATOR, operator.getText());
         conditionProperties.put(KEY_PATTERN, pattern);
         conditionProperties.put(KEY_IGNORE_CASE, ignoreCase);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.mycontroller.standalone.db;
 import java.util.List;
 
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
+import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Resource;
@@ -26,7 +27,6 @@ import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.gateway.GatewayUtils;
-import org.mycontroller.standalone.message.SmartSleepMessageQueue;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -96,8 +96,8 @@ public class DeleteResourceUtils {
 
     public static void deleteSensor(Sensor sensor) {
         //Remove smart sleep messages
-        SmartSleepMessageQueue.getInstance().removeMessages(sensor.getNode().getGatewayTable().getId(),
-                sensor.getNode().getEui(), sensor.getSensorId());
+        // TODO: SmartSleepMessageQueue.getInstance().removeMessages(sensor.getNode().getGatewayTable().getId(),
+        //       sensor.getNode().getEui(), sensor.getSensorId());
 
         //Delete timers
         //deleteTimers(RESOURCE_TYPE.SENSOR, sensor.getId());
@@ -129,7 +129,7 @@ public class DeleteResourceUtils {
 
     public static void deleteNode(Node node) {
         //Remove smart sleep messages
-        SmartSleepMessageQueue.getInstance().removeQueue(node.getGatewayTable().getId(), node.getEui());
+        // TODO: SmartSleepMessageQueue.getInstance().removeQueue(node.getGatewayTable().getId(), node.getEui());
 
         //Delete sensors
         for (Sensor sensor : DaoUtils.getSensorDao().getAllByNodeId(node.getId())) {
@@ -151,13 +151,16 @@ public class DeleteResourceUtils {
         //Delete from resources logs
         DaoUtils.getResourcesLogsDao().deleteAll(RESOURCE_TYPE.NODE, node.getId());
 
+        // clear sleep message queue
+        McObjectManager.getEngine(node.getGatewayTable().getId()).clearSleepQueue(node.getEui());
+
         DaoUtils.getNodeDao().deleteById(node.getId());
         _logger.debug("Item removed:{}", node);
     }
 
     public static void deleteGateway(Integer id) {
         //Unload gateway
-        GatewayUtils.unloadGateway(id);
+        GatewayUtils.unloadEngine(id);
 
         //Delete nodes
         for (Node node : DaoUtils.getNodeDao().getAllByGatewayId(id)) {

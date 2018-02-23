@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,7 +63,7 @@ public class ResetPassword {
                 //Delete password file
                 if (passwordFile.delete()) {
                     _logger.debug("Password reset file deleted successfully. [{}]", passwordFile.getCanonicalPath());
-                }else{
+                } else {
                     _logger.warn("Failed to delete password reset file[{}]", passwordFile.getCanonicalPath());
                 }
             } catch (IOException ex) {
@@ -82,6 +82,10 @@ public class ResetPassword {
             return;
         }
         user.setPassword(McCrypt.encrypt(password));
+        if (!user.getEnabled()) {
+            user.setEnabled(true);
+            _logger.info("User[{}] enabled.", username);
+        }
         DaoUtils.getUserDao().update(user);
         _logger.info("Password successfully update for the user[{}]", username);
     }

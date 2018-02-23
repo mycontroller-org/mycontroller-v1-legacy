@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@ package org.mycontroller.standalone;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
-import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.message.IMcActionEngine;
 import org.mycontroller.standalone.message.McActionEngine;
+import org.mycontroller.standalone.provider.IEngine;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -33,30 +33,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class McObjectManager {
 
-    private static HashMap<Integer, IGateway> gateways = new HashMap<Integer, IGateway>();
     private static ResourceBundle mcLocale;
     private static IMcActionEngine mcActionEngine = new McActionEngine();
 
-    public static synchronized IGateway getGateway(Integer gatewayId) {
-        return gateways.get(gatewayId);
+    private static HashMap<Integer, IEngine> engines = new HashMap<Integer, IEngine>();
+
+    public static IEngine getEngine(Integer gatewayId) {
+        return engines.get(gatewayId);
     }
 
-    public static synchronized void addGateway(IGateway iGateway) {
-        gateways.put(iGateway.getGateway().getId(), iGateway);
+    public static void addEngine(IEngine engine) {
+        engines.put(engine.config().getId(), engine);
     }
 
-    public static synchronized void removeGateway(Integer gatewayId) {
-        gateways.remove(gatewayId);
+    public static void removeEngine(Integer gatewayId) {
+        engines.remove(gatewayId);
     }
 
     @SuppressWarnings("unchecked")
-    public static HashMap<Integer, IGateway> getGateways() {
-        return (HashMap<Integer, IGateway>) gateways.clone();
+    public static HashMap<Integer, IEngine> getEngines() {
+        return (HashMap<Integer, IEngine>) engines.clone();
     }
 
     /* This method is used for restore operation, never call on normal time */
     public static synchronized void clearAllReferences() {
-        gateways = new HashMap<Integer, IGateway>();
+        engines = new HashMap<Integer, IEngine>();
     }
 
     public static ResourceBundle getMcLocale() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,10 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.mycontroller.standalone.MapDbFactory;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.firmware.FirmwareUtils;
+import org.mycontroller.standalone.offheap.OffHeapFactory;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -90,7 +90,7 @@ public class V1_03_03__2016_Sep_20 extends MigrationBase {
         /** Migration #2
          * Clear McPersistent location
          * */
-        MapDbFactory.clearMcPersistent();
+        OffHeapFactory.reset();
 
         _logger.info("Migration completed successfully.");
     }
