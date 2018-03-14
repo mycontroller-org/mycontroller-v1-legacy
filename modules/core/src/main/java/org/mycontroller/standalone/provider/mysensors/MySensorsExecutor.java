@@ -70,7 +70,9 @@ public class MySensorsExecutor extends ExecuterAbstract {
             FirmwareData firmwareData = FirmwareUtils.getFirmwareDataFromOfflineMap(firmwareRequest.getType(),
                     firmwareRequest.getVersion());
             if (firmwareData == null) {
-                _logger.debug("selected firmware type/version not available");
+                _logger.warn("Requested firmware is not available in MyController server. "
+                        + "FirmwareRequest[typeId:{}, versionId:{}, block:{}]",
+                        firmwareRequest.getType(), firmwareRequest.getVersion(), firmwareRequest.getBlock());
                 return;
             }
 

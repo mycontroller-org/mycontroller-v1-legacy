@@ -278,7 +278,9 @@ public class FirmwareUtils {
         FirmwareData firmwareData = getFirmwareMap().get(getFirmwareDataOfflineMapName(typeId, versionId));
         if (firmwareData == null) {
             firmwareData = DaoUtils.getFirmwareDataDao().getByTypeVersion(typeId, versionId);
-            getFirmwareMap().put(getFirmwareDataOfflineMapName(typeId, versionId), firmwareData);
+            if (firmwareData != null) {
+                getFirmwareMap().put(getFirmwareDataOfflineMapName(typeId, versionId), firmwareData);
+            }
         }
         return firmwareData;
     }
