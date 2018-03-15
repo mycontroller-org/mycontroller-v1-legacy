@@ -16,11 +16,12 @@
  */
 package org.mycontroller.standalone.externalserver.driver;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mycontroller.restclient.emoncms.EmoncmsClient;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.config.ExternalServerConfigEmoncms;
-import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.emoncms.EmoncmsClient;
-import org.mycontroller.standalone.restclient.emoncms.EmoncmsClientImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,14 +42,13 @@ public class DriverEmoncms extends DriverAbstract {
     @Override
     public synchronized void write(SensorVariable sensorVariable) {
         if (_client != null) {
-            ClientResponse<String> clientResponse = _client.send(
-                    getVariableKey(sensorVariable, _config.getKeyFormat()), sensorVariable.getValue());
-            if (!clientResponse.isSuccess()) {
-                _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,
-                        toString(), _config.getUrl());
-            } else {
-                _logger.debug("Remote server update status: {}, Remote server:{}, {}", clientResponse,
-                        toString(), _config.getUrl());
+            try {
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put(getVariableKey(sensorVariable, _config.getKeyFormat()), sensorVariable.getValue());
+                String response = _client.post("MyController", data);
+                _logger.debug("Emoncms post response: {}", response);
+            } catch (Exception ex) {
+                _logger.error("Exception, {}", sensorVariable, ex);
             }
         }
     }
@@ -56,7 +56,7 @@ public class DriverEmoncms extends DriverAbstract {
     @Override
     public void connect() {
         try {
-            _client = new EmoncmsClientImpl(_config.getUrl(), _config.getWriteApiKey(), _config.getTrustHostType());
+            _client = new EmoncmsClient(_config.getUrl(), _config.getWriteApiKey(), _config.getTrustHostType());
         } catch (Exception ex) {
             _logger.error("Exception,", ex);
         }

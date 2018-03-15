@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.mail.EmailException;
+import org.mycontroller.restclient.pushbullet.model.User;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.model.ApiError;
@@ -45,7 +46,6 @@ import org.mycontroller.standalone.metrics.model.Pong;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
-import org.mycontroller.standalone.restclient.pushbullet.model.User;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;

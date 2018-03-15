@@ -16,11 +16,7 @@
  */
 package org.mycontroller.standalone.externalserver.driver;
 
-import java.net.URISyntaxException;
-
-import org.mycontroller.restclient.core.ClientResponse;
 import org.mycontroller.restclient.influxdb.InfluxDBClient;
-import org.mycontroller.restclient.influxdb.InfluxDBClientBuilder;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.config.ExternalServerConfigInfluxDB;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
@@ -44,16 +40,17 @@ public class DriverInfluxDB extends DriverAbstract {
     @Override
     public synchronized void write(SensorVariable sensorVariable) {
         if (_client != null) {
-            ClientResponse<String> clientResponse = _client.write(
-                    getVariableKey(sensorVariable, _config.getKeyFormat()),
-                    getVariableKey(sensorVariable, _config.getTags()),
-                    sensorVariable.getTimestamp(), getValue(sensorVariable));
-            if (!clientResponse.isSuccess()) {
-                _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,
-                        toString(), _config.getUrl());
-            } else {
-                _logger.debug("Remote server update status: {}, Remote server:{}, {}", clientResponse,
-                        toString(), _config.getUrl());
+            StringBuilder data = new StringBuilder();
+            data
+                    .append(getVariableKey(sensorVariable, _config.getKeyFormat()))
+                    .append(",").append(getVariableKey(sensorVariable, _config.getTags()))
+                    .append(" value=").append(getValue(sensorVariable))
+                    .append(" ").append(sensorVariable.getTimestamp());
+            try {
+                _client.write(data.toString());
+                _logger.debug("data[{}] sent", data.toString());
+            } catch (Exception ex) {
+                _logger.error("Exception, {}", data.toString(), ex);
             }
         }
     }
@@ -69,21 +66,11 @@ public class DriverInfluxDB extends DriverAbstract {
 
     @Override
     public void connect() {
-        try {
-            if (_config.getUsername() != null && _config.getUsername().length() > 0) {
-                _client = new InfluxDBClientBuilder()
-                        .uri(_config.getUrl(), _config.getTrustHostType())
-                        .basicAuthentication(_config.getUsername(), _config.getPassword())
-                        .addProperty(InfluxDBClient.KEY_DATABASE, _config.getDatabase())
-                        .build();
-            } else {
-                _client = new InfluxDBClientBuilder()
-                        .uri(_config.getUrl(), _config.getTrustHostType())
-                        .addProperty(InfluxDBClient.KEY_DATABASE, _config.getDatabase())
-                        .build();
-            }
-        } catch (URISyntaxException ex) {
-            _logger.error("Exception,", ex);
+        if (_config.getUsername() != null && _config.getUsername().length() > 0) {
+            _client = new InfluxDBClient(_config.getUrl(), _config.getUsername(), _config.getPassword(),
+                    _config.getDatabase(), _config.getTrustHostType());
+        } else {
+            _client = new InfluxDBClient(_config.getUrl(), _config.getDatabase(), _config.getTrustHostType());
         }
     }
 

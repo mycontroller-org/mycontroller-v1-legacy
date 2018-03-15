@@ -16,11 +16,13 @@
  */
 package org.mycontroller.standalone.gateway.phantio;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.mycontroller.restclient.phantio.PhantIOClient;
+import org.mycontroller.restclient.phantio.model.PostResponse;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.exceptions.MessageParserException;
 import org.mycontroller.standalone.gateway.config.GatewayConfigPhantIO;
@@ -30,10 +32,6 @@ import org.mycontroller.standalone.offheap.IQueue;
 import org.mycontroller.standalone.provider.IMessageParser;
 import org.mycontroller.standalone.provider.phantio.MessageParserPhantIO;
 import org.mycontroller.standalone.provider.phantio.MessagePhantIO;
-import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.phantio.PhantIOClient;
-import org.mycontroller.standalone.restclient.phantio.PhantIOClientImpl;
-import org.mycontroller.standalone.restclient.phantio.model.PostResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +59,7 @@ public class PhantIODriver extends RestDriverAbstract {
     @Override
     public void connect() {
         try {
-            _client = new PhantIOClientImpl(
+            _client = new PhantIOClient(
                     this._config.getUrl(),
                     this._config.getPublicKey(),
                     this._config.getPrivateKey(),
@@ -77,10 +75,13 @@ public class PhantIODriver extends RestDriverAbstract {
         if (_config.getPrivateKey() != null && _config.getPrivateKey().length() > 0) {
             _logger.debug("Send data: {}, {}", _config, message);
             MessagePhantIO rawMessage = _parser.getGatewayData(message);
-            ClientResponse<PostResponse> _response = _client.post(rawMessage.getKey(), rawMessage.getValue());
-            if (!_response.isSuccess()) {
-                // TODO: send failure notification
-                _logger.error("Failed to send data:{}, {}, {}", message, _config, _response);
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(rawMessage.getKey(), rawMessage.getValue());
+            try {
+                PostResponse _response = _client.post(data);
+                _logger.debug("{}", _response);
+            } catch (Exception ex) {
+                _logger.error("Exception: data:[{}]", data, ex);
             }
         } else {
             _logger.warn("Private key not set for this {}", _config);
@@ -90,18 +91,18 @@ public class PhantIODriver extends RestDriverAbstract {
     @Override
     public void read() {
         try {
-            ClientResponse<List<HashMap<String, String>>> _response = _client.get(_config.getRecordsLimit());
+            List<Map<String, Object>> _response = _client.get(_config.getRecordsLimit());
             _logger.debug("Client response: {}", _response);
-            if (_response.getEntity() != null) {
-                for (HashMap<String, String> record : _response.getEntity()) {
-                    long timestamp = TIMESTAMP_FORMAT.parse(record.get("timestamp")).getTime();
+            if (_response != null) {
+                for (Map<String, Object> record : _response) {
+                    long timestamp = TIMESTAMP_FORMAT.parse((String) record.get("timestamp")).getTime();
                     if (_config.getLastUpdate() == null || _config.getLastUpdate() < timestamp) {
                         for (String key : record.keySet()) {
                             if (!key.equals("timestamp")) {
                                 _queue.add(_parser.getMessage(_config,
                                         MessagePhantIO.builder()
                                                 .key(key)
-                                                .value(record.get(key))
+                                                .value((String) record.get(key))
                                                 .timestamp(timestamp)
                                                 .build()));
                                 _config.setLastUpdate(timestamp);
@@ -111,7 +112,7 @@ public class PhantIODriver extends RestDriverAbstract {
                     }
                 }
             }
-        } catch (ParseException | MessageParserException ex) {
+        } catch (Exception ex) {
             _logger.error("Exception,", ex);
         }
     }
