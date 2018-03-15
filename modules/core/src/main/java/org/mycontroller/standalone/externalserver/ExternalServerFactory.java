@@ -31,6 +31,7 @@ import org.mycontroller.standalone.externalserver.driver.DriverEmoncms;
 import org.mycontroller.standalone.externalserver.driver.DriverInfluxDB;
 import org.mycontroller.standalone.externalserver.driver.DriverMQTT;
 import org.mycontroller.standalone.externalserver.driver.DriverPhantIO;
+import org.mycontroller.standalone.externalserver.driver.DriverWUnderground;
 import org.mycontroller.standalone.externalserver.driver.IExternalServerDriver;
 
 import lombok.AccessLevel;
@@ -117,6 +118,8 @@ public class ExternalServerFactory {
                         return new DriverInfluxDB((ExternalServerConfigInfluxDB) _config);
                     case MQTT:
                         return new DriverMQTT((ExternalServerConfigMqtt) _config);
+                    case WUNDERGROUND:
+                        return new DriverWUnderground((ExternalServerConfigWUnderground) _config);
                     default:
                         _logger.error("This type driver not implemented yet.");
                         break;
