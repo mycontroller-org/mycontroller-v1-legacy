@@ -183,7 +183,7 @@ public class WundergroundDriver extends RestDriverAbstract {
         updateRecord(timestamp, nodeEui, MESSAGE_TYPE.C_PRESENTATION.getText(),
                 MESSAGE_TYPE_PRESENTATION.S_WIND.getText(), Wunderground.S_ID_WIND, "Wind");
         updateRecord(timestamp, nodeEui, MESSAGE_TYPE.C_SET.getText(), MESSAGE_TYPE_SET_REQ.V_WIND.getText(),
-                Wunderground.S_ID_WIND, McUtils.getDoubleAsString(wind));
+                Wunderground.S_ID_WIND, McUtils.getDoubleAsString(wind.doubleValue()));
         updateRecord(timestamp, nodeEui, MESSAGE_TYPE.C_SET.getText(), MESSAGE_TYPE_SET_REQ.V_DIRECTION.getText(),
                 Wunderground.S_ID_WIND, String.valueOf(observation.getWind_degrees()));
         updateRecord(timestamp, nodeEui, MESSAGE_TYPE.C_SET.getText(), MESSAGE_TYPE_SET_REQ.V_TEXT.getText(),

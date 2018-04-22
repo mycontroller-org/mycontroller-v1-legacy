@@ -551,38 +551,42 @@ public abstract class ExecuterAbstract implements IExecutor {
             DaoUtils.getSensorVariableDao().create(sensorVariable);
             sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariable);
         } else {
-            switch (sensorVariable.getMetricType()) {
-                case COUNTER:
-                    long oldValue = sensorVariable.getValue() == null ? 0L : McUtils
-                            .getLong(sensorVariable.getValue());
-                    long newValue = McUtils.getLong(_message.getPayload());
-                    sensorVariable.setValue(String.valueOf(oldValue + newValue));
-                    break;
-                case DOUBLE:
-                    //If it is received _message, update with offset
-                    if (_message.isTxMessage()) {
-                        sensorVariable.setValue(McUtils.getDoubleAsString(McUtils.getDouble(_message.getPayload())));
-                    } else {
-                        sensorVariable.setValue(
-                                McUtils.getDoubleAsString(
-                                        McUtils.getDouble(_message.getPayload()) + sensorVariable.getOffset()));
-                    }
-                    break;
-                case BINARY:
-                    sensorVariable.setValue(_message.getPayload().equalsIgnoreCase("0") ? "0" : "1");
-                    break;
-                case GPS:
-                    try {
-                        sensorVariable.setValue(MetricsGPSTypeDevice.get(_message.getPayload(),
-                                _message.getTimestamp())
-                                .getPosition());
-                    } catch (McBadRequestException ex) {
-                        _logger.error("Exception,", ex);
-                    }
-                    break;
-                default:
-                    sensorVariable.setValue(_message.getPayload());
-                    break;
+            if (_message.getPayload() != null && _message.getPayload().length() > 0) {
+                switch (sensorVariable.getMetricType()) {
+                    case COUNTER:
+                        long oldValue = sensorVariable.getValue() == null ? 0L : McUtils
+                                .getLong(sensorVariable.getValue());
+                        long newValue = McUtils.getLong(_message.getPayload());
+                        sensorVariable.setValue(String.valueOf(oldValue + newValue));
+                        break;
+                    case DOUBLE:
+                        //If it is received _message, update with offset
+                        if (_message.isTxMessage()) {
+                            sensorVariable
+                                    .setValue(McUtils.getDoubleAsString(McUtils.getDouble(_message.getPayload())));
+                        } else {
+                            sensorVariable.setValue(McUtils.getDoubleAsString(
+                                    McUtils.getDouble(_message.getPayload()) + sensorVariable.getOffset()));
+                        }
+                        break;
+                    case BINARY:
+                        sensorVariable.setValue(_message.getPayload().equalsIgnoreCase("0") ? "0" : "1");
+                        break;
+                    case GPS:
+                        try {
+                            sensorVariable.setValue(MetricsGPSTypeDevice.get(_message.getPayload(),
+                                    _message.getTimestamp())
+                                    .getPosition());
+                        } catch (McBadRequestException ex) {
+                            _logger.error("Exception,", ex);
+                        }
+                        break;
+                    default:
+                        sensorVariable.setValue(_message.getPayload());
+                        break;
+                }
+            } else {
+                sensorVariable.setValue(_message.getPayload());
             }
             sensorVariable.setTimestamp(_message.getTimestamp());
             DaoUtils.getSensorVariableDao().update(sensorVariable);

@@ -31,7 +31,7 @@ import lombok.ToString;
  */
 
 @Builder
-@ToString(includeFieldNames = true)
+@ToString(exclude = { "sslKeystorePassword" })
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

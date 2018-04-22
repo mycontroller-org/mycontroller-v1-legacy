@@ -110,7 +110,10 @@ public class McUtils {
         return String.valueOf(truncatedDouble);
     }
 
-    public static String getDoubleAsString(double value) {
+    public static String getDoubleAsString(Double value) {
+        if (value == null) {
+            return null;
+        }
         String _value = getDoubleAsString(value, 3);
         if (_value.endsWith(".0")) {
             _value = _value.substring(0, _value.length() - 2);

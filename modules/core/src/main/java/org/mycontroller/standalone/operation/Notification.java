@@ -50,18 +50,22 @@ public class Notification {
 
     public String toString(String spaceVariable) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Rule definition: ").append(ruleName);
-        builder.append(spaceVariable).append("Condition: ").append(ruleCondition);
-        builder.append(spaceVariable).append("Present value: ").append(actualValue);
-        if (actualUnit.length() > 0) {
+        builder.append("Rule definition: ").append(getValue(ruleName));
+        builder.append(spaceVariable).append("Condition: ").append(getValue(ruleCondition));
+        builder.append(spaceVariable).append("Present value: ").append(getValue(actualValue));
+        if (actualUnit != null && actualUnit.length() > 0) {
             builder.append(" ").append(actualUnit);
         }
         if (operationName != null) {
             builder.append(spaceVariable).append("OperationTable: ").append(operationName);
         }
-        builder.append(spaceVariable).append("Triggered at: ").append(triggeredAt);
+        builder.append(spaceVariable).append("Triggered at: ").append(getValue(triggeredAt));
         builder.append(spaceVariable).append("--- www.mycontroller.org");
         return builder.toString();
+    }
+
+    private String getValue(String realValue) {
+        return realValue == null ? "" : realValue;
     }
 
     @Override

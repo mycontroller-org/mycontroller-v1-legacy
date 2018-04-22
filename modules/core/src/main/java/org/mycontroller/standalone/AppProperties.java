@@ -44,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
-@ToString(includeFieldNames = true)
+@ToString(exclude = { "dbPassword", "webSslKeystorePassword", "mqttSslKeystorePassword" })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppProperties {
     private static AppProperties _instance = new AppProperties();
@@ -522,7 +522,9 @@ public class AppProperties {
 
     private String getValue(Properties properties, String key, String defaultValue) {
         String value = properties.getProperty(key, defaultValue);
-        _logger.debug("Key:{}-->{}", key, value);
+        if (!key.contains("password")) {
+            _logger.debug("Key:{}-->{}", key, value);
+        }
         if (value != null) {
             return value.trim();
         } else {
