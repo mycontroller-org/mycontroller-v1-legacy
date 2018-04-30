@@ -305,11 +305,18 @@ public class StartApp {
     private static void cleanUpServices() {
         // clean the services
         // - MQTT client location
+        // - MQTT broker location
 
         try {
             File mqttClientDir = new File(AppProperties.getInstance().getMqttClientPersistentStoresLocation());
             if (mqttClientDir.exists()) {
                 FileUtils.cleanDirectory(mqttClientDir);
+                _logger.debug("MQTT Client persistent store cleared. [{}]", mqttClientDir.getCanonicalFile());
+            }
+            File mqttBrokerDir = new File(AppProperties.getInstance().getMqttBrokerPersistentStore()).getParentFile();
+            if (mqttBrokerDir.exists()) {
+                FileUtils.cleanDirectory(mqttBrokerDir);
+                _logger.debug("MQTT broker persistent store cleared. [{}]", mqttBrokerDir.getCanonicalFile());
             }
         } catch (IOException ex) {
             _logger.error("Exception,", ex);
