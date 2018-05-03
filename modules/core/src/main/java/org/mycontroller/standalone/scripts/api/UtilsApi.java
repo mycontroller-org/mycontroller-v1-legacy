@@ -16,12 +16,21 @@
  */
 package org.mycontroller.standalone.scripts.api;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.mail.EmailException;
 import org.mycontroller.standalone.AppProperties;
@@ -39,6 +48,8 @@ import org.mycontroller.standalone.rule.RuleUtils;
 import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.utils.McUtils;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -115,5 +126,18 @@ public class UtilsApi {
             _logger.error("Unable to send an email:[toAddress:{}, subject:{}, message:{}], Exception:{}", toAddresses,
                     subject, message, ex.toString(), ex);
         }
+    }
+
+    public String readXmlByXpath(String uri, String xpath) throws ParserConfigurationException, SAXException,
+            IOException, XPathExpressionException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document document = db.parse(uri);
+
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpathObj = xPathfactory.newXPath();
+        XPathExpression expression = xpathObj.compile(xpath);
+
+        return expression.evaluate(document);
     }
 }
