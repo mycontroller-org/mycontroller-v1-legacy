@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,7 @@ import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.TimerApi;
 import org.mycontroller.standalone.api.UidTagApi;
 import org.mycontroller.standalone.api.VariableApi;
+import org.mycontroller.standalone.api.XmlApi;
 import org.mycontroller.standalone.metrics.export.CsvExportEngine;
 
 /**
@@ -54,6 +55,7 @@ public class McScriptApi {
     private CsvExportEngine csvExportEngine = new CsvExportEngine();
     private MessageQueueApi messageQueueApi = new MessageQueueApi();
     private ForwardPayloadApi forwardPayloadApi = new ForwardPayloadApi();
+    private XmlApi xmlApi = new XmlApi();
 
     public SystemApi system() {
         return systemApi;
@@ -121,5 +123,9 @@ public class McScriptApi {
 
     public ForwardPayloadApi forwardPayload() {
         return forwardPayloadApi;
+    }
+
+    public XmlApi xml() {
+        return xmlApi;
     }
 }
