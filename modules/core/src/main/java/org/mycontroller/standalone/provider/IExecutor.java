@@ -42,4 +42,10 @@ public interface IExecutor {
     void nodeEuiRequest();
 
     String metricType();
+
+    void firmwareUpdateStart(int totalBlocks);
+
+    void firmwareUpdateFinished();
+
+    void updateFirmwareStatus(int blocksSent);
 }

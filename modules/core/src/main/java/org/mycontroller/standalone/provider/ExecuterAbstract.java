@@ -624,4 +624,38 @@ public abstract class ExecuterAbstract implements IExecutor {
     private void executeDependentTask(SensorVariable _sv) {
         McThreadPoolFactory.execute(new ExecuteMessageDependentTask(_sv));
     }
+
+    @Override
+    public void firmwareUpdateStart(int totalBlocks) {
+        Node node = getNode();
+        if (node != null) {
+            node.firmwareUpdateStart(totalBlocks);
+            updateNode(node);
+        }
+        _logger.debug("Firmware update start, totalBlocks:{}, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                totalBlocks, node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
+    }
+
+    @Override
+    public void firmwareUpdateFinished() {
+        Node node = getNode();
+        if (node != null) {
+            node.firmwareUpdateFinished();
+            updateNode(node);
+        }
+        _logger.debug("Firmware update finished, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
+    }
+
+    @Override
+    public void updateFirmwareStatus(int blocksSent) {
+        Node node = getNode();
+        if (node != null) {
+            node.updateFirmwareStatus(blocksSent);
+            updateNode(node);
+        }
+        _logger.debug("Firmware update status, blocksSent:{}, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                blocksSent, node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
+
+    }
 }

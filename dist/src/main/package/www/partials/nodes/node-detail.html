@@ -71,6 +71,14 @@
                 <dt>{{ 'LAST_SEEN' | translate }}</dt> <dd><span uib-tooltip="{{item.lastSeen | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="item.lastSeen"></span></dd>
                 <dt>{{ 'TOPOLOGY' | translate }}</dt> <dd><a class="mc-inline-editer-ab" ui-sref="dashboardTopology({ resourceType: 'Node', resourceId: item.id})"><span class="pficon pficon-topology mc-icon-lg"></span></a></dd>
 
+                <!-- Firmware status -->
+                <div ng-if="item.properties.fwBksTotal">
+                  <legend><small>{{ 'FIRMWARE_OTA_STATUS' | translate }}</small></legend>
+                  <dt>{{ 'BLOCKS_SENT' | translate }}</dt> <dd>{{item.properties.fwBksSent}} of {{item.properties.fwBksTotal}} ({{(item.properties.fwBksSent / item.properties.fwBksTotal) * 100 | number: 0}}%)</dd>
+                  <dt>{{ 'TIME_TAKEN_LAST_UPDATE' | translate }}</dt> <dd><span ng-if="item.properties.fwOpLastDuration">{{(item.properties.fwOpLastDuration / 1000) | number: 0}} {{ 'SECONDS' | translate }}</span></dd>
+                </div>
+
+                <!-- Resources -->
                 <legend><small>{{ 'RESOURCES' | translate }}</small></legend>
                 <dt><span class="fa fa-eye mc-icon-md-3"></span>Sensors</dt>
                 <dd>
@@ -83,6 +91,7 @@
                   <span ng-if="resourceCount.resourcesGroups == 0">{{resourceCount.resourcesGroups}}</span>
                 </dd>
 
+                <!-- Properties -->
                 <legend><small>{{ 'PROPERTIES' | translate }}</small></legend>
                 <span ng-repeat="(key, value) in item.properties"><dt>{{ key}}</dt> <dd>{{value}}</dd></span>
               </dl>

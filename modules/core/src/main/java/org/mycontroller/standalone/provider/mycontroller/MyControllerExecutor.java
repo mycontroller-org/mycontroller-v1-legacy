@@ -43,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MyControllerExecutor extends ExecuterAbstract {
-    private static final int FIRMWARE_PRINT_LOG = 100;
 
     public MyControllerExecutor(MessageQueueImpl _queue, MessageQueueSleepImpl _queueSleep) {
         super(_queue, _queueSleep);
@@ -84,11 +83,6 @@ public class MyControllerExecutor extends ExecuterAbstract {
             firmwareResponse.setSize(toIndex - fromIndex);
             firmwareResponse.setData(firmwareData.getData().subList(fromIndex, toIndex));
 
-            // Print firmware status in sensor logs
-            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
-                // TODO: send resource log
-            }
-
             _message.setTxMessage(true);
             _message.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText());
             _message.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array())
@@ -97,11 +91,18 @@ public class MyControllerExecutor extends ExecuterAbstract {
             addInQueue(_message);
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
-            // Print firmware status in sensor logs
-            if (firmwareRequest.getBlock() % FIRMWARE_PRINT_LOG == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
-                // TODO: send resource log
-            }
 
+            // update firmware status
+            int responseBlock = firmwareResponse.getBlock() + 1; // adding +1 as it starts from 0
+            // firmware starts
+            if (responseBlock == 1) {
+                firmwareUpdateStart(blocks);
+            } else if (responseBlock % 100 == 0) {
+                updateFirmwareStatus(responseBlock);
+            } else if (responseBlock == blocks) {
+                updateFirmwareStatus(responseBlock);
+                firmwareUpdateFinished();
+            }
         } catch (DecoderException ex) {
             _logger.error("Exception, ", ex);
         }
