@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,6 +92,38 @@ public class Firmware implements Serializable {
             properties = new HashMap<String, Object>();
         }
         return properties;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Firmware)) {
+            return false;
+        }
+        Firmware _other = (Firmware) other;
+        if (!this.type.getId().equals(_other.type.getId())) {
+            return false;
+        }
+        if (!this.version.getId().equals(_other.version.getId())) {
+            return false;
+        }
+        if (!this.getFirmwareName().equals(_other.getFirmwareName())) {
+            return false;
+        }
+        if (!this.properties.equals(_other.properties)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+        return result;
     }
 
 }

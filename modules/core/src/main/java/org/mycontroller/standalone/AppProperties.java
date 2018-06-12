@@ -54,6 +54,7 @@ public class AppProperties {
     private static final String SCRIPTS_DIRECTORY = "scripts" + File.separator;
     public static final String CONDITIONS_SCRIPTS_DIRECTORY = "conditions" + File.separator;
     public static final String OPERATIONS_SCRIPTS_DIRECTORY = "operations" + File.separator;
+    public static final String FIRMWARE_DATA_DIRECTORY = "firmwares" + File.separator;
     private static final String WEB_CONFIGURATIONS_DIR = "_configurations";
     private static final String HTML_HEADERS_FILE = "html-headers.json";
 
@@ -738,6 +739,10 @@ public class AppProperties {
 
     public String getHtmlHeadersFile() {
         return getResourcesLocation() + HTML_HEADERS_FILE;
+    }
+
+    public String getFirmwaresDataDirectory() {
+        return getResourcesLocation() + FIRMWARE_DATA_DIRECTORY;
     }
 
     public String getWebConfigurationsLocation() {
