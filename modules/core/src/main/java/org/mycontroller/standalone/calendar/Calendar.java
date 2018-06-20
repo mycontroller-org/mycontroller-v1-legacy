@@ -4,28 +4,29 @@ import java.util.Date;
 
 public class Calendar {
 
-	private HashMap<String,CalendarDay> daysMap;
+	private HashMap<long,CalendarDay> daysMap = new HashMap<long,CalendarDay>();
 
-	private List sensors;
+	private LinkedList<Sensor> sensors = new LinkedList<Sensor>();
 
 	public CalendarDay getDay(Date day) {
-		return null;
+		return daysMap.get(day.getTime());
 	}
 
 	public void createDay(Date day, CalendarDay calendarday) {
-
+		if(daysMap.get(day.getTime()) == null)
+			daysMap.put(day.getTime(),calendarday);
 	}
 
 	public void addSensor(Sensor sensor) {
-
+		sensors.add(sensor);
 	}
 
-	public void removeSensor() {
-
+	public void removeSensor(int index) {
+		sensors.remove(index);
 	}
 
 	public Sensor getSensor(int index) {
-		return null;
+		return sensors.get(index);
 	}
 
 }

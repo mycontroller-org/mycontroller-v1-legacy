@@ -6,24 +6,25 @@ public class SensorActivation {
 
 	private Date activationTime;
 
+	SensorActivation(String newSensorName, long miliseconds)
+	{
+		setSensorName(newSensorName);
+		setActivationTime(miliseconds);
+	}
+
 	public String getSensorName() {
-		return null;
+		return sensorName;
 	}
 
 	public void setSensorName(String newSensorName) {
-
+		sensorName = newSensorName;
 	}
 
 	public Date getActivationTime() {
-		return null;
+		return activationTime;
 	}
 
 	public void setActivationTime(long miliseconds) {
-
+		activationTime = new Date(miliseconds)
 	}
-
-	public void setActivationTime(int hour, int minute, int second) {
-
-	}
-
 }
