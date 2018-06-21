@@ -1,4 +1,5 @@
 import java.util.List;
+import org.mycontroller.standalone.actor.Actor;
 
 public class BaseCalendar {
 
@@ -7,6 +8,12 @@ public class BaseCalendar {
 	private static int calendarIndex;
 	private static Calendar calendar;
 	private static CalendarDay day;
+	private static Actor;
+	
+	BaseCalendar(Actor actor)
+	{
+		this.actor = actor;
+	}
 
 	public static int request(String request) {
 		String[] tokens = request.split(" ");
@@ -15,7 +22,7 @@ public class BaseCalendar {
 			case "newCalendar":
 				int index = calendars.size();
 				addCalendar(new Calendar(index));
-				Actor.
+				actor.sendMessage("" + index);
 				break;
 			case "openCalendar":
 				if(!getIndexByName(tokens[1]))
@@ -53,11 +60,11 @@ public class BaseCalendar {
 				long daytime = Long.parseInt(tokens[1]);
 				day = calendar.getDay(daytime);
 				int activationSize = day.getActivationAmount();
-				//return activationSize to frontend
+				actor.sendMessage("" + activationSize);
 				for(int i = 0; i < activationSize; i++)
 				{
 					SensorActivation activation = day.getActivation(i);
-					//return activation to frontend
+					actor.sendMessage(activation.getSensorName() + " " + activation.getActivationTime().getTime());
 				}
 				break;
 		}
