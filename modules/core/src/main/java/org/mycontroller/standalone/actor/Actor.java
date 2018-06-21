@@ -4,7 +4,7 @@ import org.mycontroller.standalone.calendar.BaseCalendar;
 public class Actor {
 	BaseCalendar baseCalendar;
 	
-	LinkedList<String> messages = new LinkedList<String>;
+	private static LinkedList<String> messages = new LinkedList<String>;
 	
 	public static void main(String[] args) {
 		Actor actor;
@@ -78,7 +78,7 @@ public class Actor {
 		}
 	}
 	
-	private String listen()
+	private static String listen()
 	{
 		while(messages.size() == 0);
 		String ret = messages.getFirst();
@@ -86,7 +86,7 @@ public class Actor {
 		return ret;
 	}
 	
-	private void sendMessage(String message)
+	public static void sendMessage(String message)
 	{
 		messages.push(message);
 	}
