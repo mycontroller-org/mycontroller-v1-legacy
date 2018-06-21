@@ -4,6 +4,8 @@ import org.mycontroller.standalone.calendar.BaseCalendar;
 public class Actor {
 	BaseCalendar baseCalendar;
 	
+	LinkedList<String> messages = new LinkedList<String>;
+	
 	public static void main(String[] args) {
 		Actor actor;
 		
@@ -74,5 +76,18 @@ public class Actor {
 			if(usrInput == "y") return true;
 			else if (usrInput == "n") return false;
 		}
+	}
+	
+	private String listen()
+	{
+		while(messages.size() == 0);
+		String ret = messages.getFirst();
+		messages.removeFirst();
+		return ret;
+	}
+	
+	private void sendMessage(String message)
+	{
+		messages.push(message);
 	}
 }
