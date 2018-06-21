@@ -1,15 +1,15 @@
+package org.mycontroller.standalone.actor;
+
 import java.util.Scanner;
 import org.mycontroller.standalone.calendar.BaseCalendar;
 
 public class Actor {
-	BaseCalendar baseCalendar;
-	
-	private static LinkedList<String> messages = new LinkedList<String>;
+	static BaseCalendar baseCalendar;
+	private static Scanner sc;
+	private static Scanner sc2;
 	
 	public static void main(String[] args) {
-		Actor actor;
-		
-		Scanner sc = new Scanner(System.in);
+		sc = new Scanner(System.in);
 		String usrInput;
 		
 		do {
@@ -17,27 +17,28 @@ public class Actor {
 			
 			switch(usrInput) {
 				case "createCalendar":
-					this.baseCalendar.request(usrInput);
+					baseCalendar.request(usrInput);
 					break;
 				case "removeCalendar":
-					if(this.areYouSure(name))
+				String name = usrInput.split(" ")[1];
+				if(areYouSure(name))
 						//name
-						this.baseCalendar.request(usrInput);
+						baseCalendar.request(usrInput);
 					break;
 				case "editCalendarName":
 					//old name and new name
-					this.baseCalendar.request(usrInput);
+					baseCalendar.request(usrInput);
 					break;
 				case "openCalendar":
 					//name
-					this.baseCalendar.request(usrInput);
+					baseCalendar.request(usrInput);
 					break;
 				case "openCalendarDay":
 					//day
-					this.baseCalendar.request(usrInput);
+					baseCalendar.request(usrInput);
 					break;
 				case "help":
-					this.showOptions();
+					showOptions();
 					break;
 			}
 		}while(usrInput != "exit");
@@ -54,7 +55,7 @@ public class Actor {
 		}
 	}
 	
-	private void showOptions() {
+	private static void showOptions() {
 		System.out.println("Options:");
 		System.out.println("createCalendar - creates new calendar");
 		System.out.println("removeCalendar [name] - removes calendar of name "
@@ -67,27 +68,14 @@ public class Actor {
 		System.out.println("exit - exit system");
 	}
 	
-	private boolean areYouSure(String name) {
-		Scanner sc = new Scanner(System.in);
+	private static boolean areYouSure(String name) {
+		sc2 = new Scanner(System.in);
 		String usrInput;
-		while(1) {
+		while(true) {
 			System.out.println("Are you sure you want to remove calendar "+name+"? y/n");
-			usrInput = sc.next();
+			usrInput = sc2.next();
 			if(usrInput == "y") return true;
 			else if (usrInput == "n") return false;
 		}
-	}
-	
-	private static String listen()
-	{
-		while(messages.size() == 0);
-		String ret = messages.getFirst();
-		messages.removeFirst();
-		return ret;
-	}
-	
-	public static void sendMessage(String message)
-	{
-		messages.push(message);
 	}
 }
