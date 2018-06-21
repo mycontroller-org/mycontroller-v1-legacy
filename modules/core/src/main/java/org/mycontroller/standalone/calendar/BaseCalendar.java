@@ -14,15 +14,26 @@ public class BaseCalendar {
 		{
 			case "newCalendar":
 				int index = calendars.size();
-				addCalendar(new Calendar());
+				addCalendar(new Calendar(index));
 				//return index to frontend
 				break;
 			case "openCalendar":
-				calendarIndex = Integer.parseInt(tokens[1]);
-				calendar = calendars.get(calendarIndex);
+				if(!getIndexByName(tokens[1]))
+					System.out.println("Calendar does not exist!");
+				else
+					calendar = calendars.get(calendarIndex);
 				break;
 			case "deleteCalendar":
-				removeCalendar(calendarIndex);
+				if(!getIndexByName(tokens[1]))
+					System.out.println("Calendar does not exist!");
+				else
+					removeCalendar(calendarIndex);
+				break;
+			case "editCalendarName":
+				if(!getIndexByName(tokens[1]))
+					System.out.println("Calendar does not exist!");
+				else
+					calendar.setName(tokens[2]);
 				break;
 			case "addSensor":
 				int index = Integer.parseInt(tokens[1]);
@@ -38,6 +49,7 @@ public class BaseCalendar {
 				day.removeActivation(index);
 				break;
 			case "openCalendarDay":
+				//arrumar
 				long daytime = Long.parseInt(tokens[1]);
 				day = calendar.getDay(daytime);
 				int activationSize = day.getActivationAmount();
@@ -50,6 +62,16 @@ public class BaseCalendar {
 				break;
 		}
 		return 0;
+	}
+	
+	private boolean getIndexByName(String name) {
+		for(int index=0;index < calendars.size();index++) {
+			if(calendars[index].getName() == tokens[1]) {
+				this.calendarIndex = index;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void addCalendar(Calendar cal) {
