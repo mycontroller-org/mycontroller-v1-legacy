@@ -437,6 +437,8 @@
     "OPERATIONS_DETAIL": "操作细节",
     "OPERATION_NAME": "操作名称",
     "OPERATION_TYPE": "操作类型",
+    "OS_COMMAND_EXECTION_CONFIRMATION_MESSAGE": "Would you like to execute the following command on MyController server base Operating System?",
+    "OS_COMMAND_EXECTION_CONFIRMATION_TITLE": "Execute Operating System command",
     "OTHERS": "Others",
     "PARENT": "父",
     "PARENT_NODE_EUI": "父节点 EUI",

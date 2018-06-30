@@ -98,7 +98,7 @@ public class MySensorsExecutor extends ExecuterAbstract {
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
 
-         // update firmware status
+            // update firmware status
             int responseBlock = firmwareResponse.getBlock() + 1; // adding +1 as it starts from 0
             // firmware starts
             if (responseBlock == 1) {

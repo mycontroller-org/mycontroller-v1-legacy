@@ -437,6 +437,8 @@
     "OPERATIONS_DETAIL": "פרטי הפעולות",
     "OPERATION_NAME": "שם הפעולה",
     "OPERATION_TYPE": "סוג הפעולה",
+    "OS_COMMAND_EXECTION_CONFIRMATION_MESSAGE": "Would you like to execute the following command on MyController server base Operating System?",
+    "OS_COMMAND_EXECTION_CONFIRMATION_TITLE": "Execute Operating System command",
     "OTHERS": "אחרים",
     "PARENT": "הורה",
     "PARENT_NODE_EUI": "הורה צומת EUI",

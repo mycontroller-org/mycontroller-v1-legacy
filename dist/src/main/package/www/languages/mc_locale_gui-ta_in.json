@@ -437,6 +437,8 @@
     "OPERATIONS_DETAIL": "செயலின் விவரம்",
     "OPERATION_NAME": "செயலின் பெயர்",
     "OPERATION_TYPE": "செயலின் வகை",
+    "OS_COMMAND_EXECTION_CONFIRMATION_MESSAGE": "Would you like to execute the following command on MyController server base Operating System?",
+    "OS_COMMAND_EXECTION_CONFIRMATION_TITLE": "Execute Operating System command",
     "OTHERS": "Others",
     "PARENT": "Parent",
     "PARENT_NODE_EUI": "Parent node EUI",

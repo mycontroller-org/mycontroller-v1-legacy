@@ -437,6 +437,8 @@
     "OPERATIONS_DETAIL": "Detalhes das operações",
     "OPERATION_NAME": "Nome da operação",
     "OPERATION_TYPE": "Tipo da operação",
+    "OS_COMMAND_EXECTION_CONFIRMATION_MESSAGE": "Would you like to execute the following command on MyController server base Operating System?",
+    "OS_COMMAND_EXECTION_CONFIRMATION_TITLE": "Execute Operating System command",
     "OTHERS": "Others",
     "PARENT": "Parent",
     "PARENT_NODE_EUI": "Parent node EUI",

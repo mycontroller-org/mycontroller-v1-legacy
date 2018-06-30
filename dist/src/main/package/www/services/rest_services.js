@@ -503,3 +503,10 @@ myControllerModule.factory('ExternalServersFactory', function ($resource) {
     update: { method: 'PUT', params: {id: null}},
   })
 });
+
+//Execute OS commands
+myControllerModule.factory('OSCommandFactory', function ($resource) {
+  return $resource('/mc/rest/oscommands/execute', {}, {
+    execute: { method: 'POST'},
+  })
+});

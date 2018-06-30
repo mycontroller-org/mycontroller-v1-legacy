@@ -38,6 +38,7 @@ import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
 import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
 import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
 import org.mycontroller.standalone.api.jaxrs.NodeHandler;
+import org.mycontroller.standalone.api.jaxrs.OSCommandExecuterHandler;
 import org.mycontroller.standalone.api.jaxrs.OperationHandler;
 import org.mycontroller.standalone.api.jaxrs.OptionsHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesDataHandler;
@@ -144,6 +145,7 @@ public class StartApp {
         resources.add(MyControllerHandler.class.getName());
         resources.add(NodeHandler.class.getName());
         resources.add(OperationHandler.class.getName());
+        resources.add(OSCommandExecuterHandler.class.getName());
         resources.add(ResourcesDataHandler.class.getName());
         resources.add(ResourcesGroupHandler.class.getName());
         resources.add(ResourcesLogsHandler.class.getName());

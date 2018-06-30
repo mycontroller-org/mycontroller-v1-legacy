@@ -23,6 +23,7 @@ import org.mycontroller.standalone.api.HttpApi;
 import org.mycontroller.standalone.api.MessageQueueApi;
 import org.mycontroller.standalone.api.MetricApi;
 import org.mycontroller.standalone.api.NodeApi;
+import org.mycontroller.standalone.api.OSCommandExecuterApi;
 import org.mycontroller.standalone.api.OperationApi;
 import org.mycontroller.standalone.api.RuleApi;
 import org.mycontroller.standalone.api.SensorApi;
@@ -56,6 +57,7 @@ public class McScriptApi {
     private MessageQueueApi messageQueueApi = new MessageQueueApi();
     private ForwardPayloadApi forwardPayloadApi = new ForwardPayloadApi();
     private XmlApi xmlApi = new XmlApi();
+    private OSCommandExecuterApi osCommandExecuterApi = new OSCommandExecuterApi();
 
     public SystemApi system() {
         return systemApi;
@@ -127,5 +129,9 @@ public class McScriptApi {
 
     public XmlApi xml() {
         return xmlApi;
+    }
+
+    public OSCommandExecuterApi osCommandExecuter() {
+        return osCommandExecuterApi;
     }
 }
