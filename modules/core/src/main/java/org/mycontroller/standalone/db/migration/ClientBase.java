@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -155,8 +155,22 @@ public class ClientBase {
             case H2DB:
             case H2DB_EMBEDDED:
                 return tableName.toUpperCase();
+            case POSTGRESQL:
+                return "\"" + tableName + "\"";
             default:
                 return tableName;
+        }
+    }
+
+    public String getSequenceName(String sequence) {
+        switch (AppProperties.getInstance().getDbType()) {
+            case H2DB:
+            case H2DB_EMBEDDED:
+                return sequence.toUpperCase();
+            case POSTGRESQL:
+                return "\"" + sequence + "\"";
+            default:
+                return sequence;
         }
     }
 
@@ -205,6 +219,10 @@ public class ClientBase {
             version = Integer.valueOf(schemaVersion.split("-")[0].replaceAll("\\.", "").trim());
         }
         return version;
+    }
+
+    public void renameSequence(String sequenceName, String newSequenceName) throws SQLException {
+        _logger.debug("Rename sequence not supported in {}", AppProperties.getInstance().getDbType().getText());
     }
 
 }
