@@ -18,9 +18,9 @@ package org.mycontroller.standalone.api;
 
 import java.util.Map;
 
-import org.mycontroller.restclient.core.McHeader;
-import org.mycontroller.restclient.core.McHttpClient;
-import org.mycontroller.restclient.core.McHttpResponse;
+import org.mycontroller.restclient.core.RestHeader;
+import org.mycontroller.restclient.core.RestHttpClient;
+import org.mycontroller.restclient.core.RestHttpResponse;
 import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 
 /**
@@ -28,7 +28,7 @@ import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
  * @since 0.0.3
  */
 
-public class HttpApi extends McHttpClient {
+public class HttpApi extends RestHttpClient {
 
     public HttpApi() {
         this(TRUST_HOST_TYPE.DEFAULT);
@@ -39,47 +39,47 @@ public class HttpApi extends McHttpClient {
     }
 
     // HTTP GET request
-    public McHttpResponse get(String url) {
+    public RestHttpResponse get(String url) {
         return doGet(url, null);
     }
 
     // HTTP GET request
-    public McHttpResponse get(String url, Map<String, Object> queryParameters) {
-        return doGet(url, queryParameters, McHeader.getDefault(), null);
+    public RestHttpResponse get(String url, Map<String, Object> queryParameters) {
+        return doGet(url, queryParameters, RestHeader.getDefault(), null);
     }
 
     // HTTP GET request
-    public McHttpResponse get(String url, Map<String, Object> queryParameters, McHeader header) {
+    public RestHttpResponse get(String url, Map<String, Object> queryParameters, RestHeader header) {
         return doGet(url, queryParameters, header, null);
     }
 
     // HTTP POST request
-    public McHttpResponse post(String url, String entity) {
-        return doPost(url, McHeader.getDefault(), entity, null);
+    public RestHttpResponse post(String url, String entity) {
+        return doPost(url, RestHeader.getDefault(), entity, null);
     }
 
     // HTTP POST request
-    public McHttpResponse post(String url, McHeader header, String entity) {
+    public RestHttpResponse post(String url, RestHeader header, String entity) {
         return doPost(url, header, entity, null);
     }
 
     // HTTP DELETE request
-    public McHttpResponse delete(String url) {
+    public RestHttpResponse delete(String url) {
         return doDelete(url, null);
     }
 
     // HTTP DELETE request
-    public McHttpResponse delete(String url, McHeader header) {
+    public RestHttpResponse delete(String url, RestHeader header) {
         return doDelete(url, header, null);
     }
 
     // HTTP PUT request
-    public McHttpResponse put(String url, String entity) {
+    public RestHttpResponse put(String url, String entity) {
         return doPut(url, null, entity, null);
     }
 
     // HTTP PUT request
-    public McHttpResponse put(String url, McHeader header, String entity) {
+    public RestHttpResponse put(String url, RestHeader header, String entity) {
         return doPut(url, header, entity, null);
     }
 }
