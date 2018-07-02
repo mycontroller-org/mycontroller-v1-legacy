@@ -25,6 +25,7 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McObjectManager;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.utils.McUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,12 @@ public class NodeAliveStatusJob extends Job {
                 if (newState != null) {
                     DaoUtils.getNodeDao().update(Node.KEY_STATE, newState, node.getId());
                     _logger.debug("Node is in not reachable state, Node:[{}]", node);
+                    // for mysensors network, node 0 is gateway. if there node 0 is down. reload the gateway.
+                    if (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
+                            && newState == STATE.DOWN) {
+                        _logger.debug("Reloading gateway...");
+                        GatewayUtils.reloadEngine(node.getGatewayTable().getId());
+                    }
                 }
             }
         }
