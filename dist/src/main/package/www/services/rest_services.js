@@ -321,6 +321,8 @@ myControllerModule.factory('SettingsFactory', function ($resource) {
     saveEmail: { method: 'POST', params: {type:'email'} },
     getPushbullet: { method: 'GET', isArray: false, params: {type:'pushbullet'} },
     savePushbullet: { method: 'POST', params: {type:'pushbullet'} },
+    getTelegramBot: { method: 'GET', isArray: false, params: {type:'telegrambot'} },
+    saveTelegramBot: { method: 'POST', params: {type:'telegrambot'} },
     getSms: { method: 'GET', isArray: false, params: {type:'sms'} },
     saveSms: { method: 'POST', params: {type:'sms'} },
     getMySensors: { method: 'GET', isArray: false, params: {type:'mySensors'} },

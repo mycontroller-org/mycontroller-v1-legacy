@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -129,7 +129,10 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
     $scope.pushbulletSettings = SettingsFactory.getPushbullet();
   };
 
-
+  //settings TelegramBot
+  $scope.updateSettingsTelegramBot = function(){
+    $scope.telegramBotSettings = SettingsFactory.getTelegramBot();
+  };
 
 
   //Pre-load
@@ -192,6 +195,21 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
         $scope.saveProgress.pushbullet = false;
       });
   };
+
+  //Save telegramBot
+  $scope.saveTelegramBot = function(){
+    $scope.saveProgress.telegramBot = true;
+    SettingsFactory.saveTelegramBot($scope.telegramBotSettings,function(response) {
+        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
+        $scope.saveProgress.telegramBot = false;
+        $scope.updateSettingsTelegramBot();
+        $scope.editEnable.telegramBot = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.telegramBot = false;
+      });
+  };
+
 
 });
 
