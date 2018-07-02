@@ -225,23 +225,15 @@ public abstract class ExecuterAbstract implements IExecutor {
                 if (_message.isTxMessage()) {
                     return;
                 }
-                //Update sleep duration
-                Long sleepDuration = McUtils.getLong(_message.getPayload());
-                node = getNode();
-                node.setState(STATE.UP);
-                node.setProperty(Node.KEY_SMART_SLEEP_DURATION, sleepDuration);
-                updateNode(node);
+                // update sleep duration
+                updateSleepNode(Node.KEY_SMART_SLEEP_DURATION);
                 break;
             case I_PRE_SLEEP_NOTIFICATION:
                 if (_message.isTxMessage()) {
                     return;
                 }
-                //Update sleep wait duration
-                Long sleepWaitDuration = McUtils.getLong(_message.getPayload());
-                node = getNode();
-                node.setState(STATE.UP);
-                node.setProperty(Node.KEY_SMART_SLEEP_WAIT_DURATION, sleepWaitDuration);
-                updateNode(node);
+                // update sleep wait duration
+                updateSleepNode(Node.KEY_SMART_SLEEP_WAIT_DURATION);
                 moveSleepQueueToNormalQueue();
                 break;
             case I_HEARTBEAT:
@@ -428,6 +420,19 @@ public abstract class ExecuterAbstract implements IExecutor {
     @Override
     public String metricType() {
         return McMessageUtils.getMetricType();
+    }
+
+    private void updateSleepNode(String propertyKey) {
+        //Update sleep duration
+        Long sleepDuration = McUtils.getLong(_message.getPayload());
+        Node node = getNode();
+        // if smart sleep not enabled do enable it.
+        if (!node.getSmartSleepEnabled()) {
+            node.setSmartSleepEnabled(true);
+        }
+        node.setState(STATE.UP);
+        node.setProperty(propertyKey, sleepDuration);
+        updateNode(node);
     }
 
     // move sleep queue messages to actual queue
