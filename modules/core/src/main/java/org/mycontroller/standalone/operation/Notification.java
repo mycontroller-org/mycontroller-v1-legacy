@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.operation.model.Operation;
 import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 
 import lombok.Getter;
@@ -39,6 +40,11 @@ public class Notification {
 
     private String operationName;
 
+    public Notification(RuleDefinitionAbstract ruleDefinition, Operation operation) {
+        this(ruleDefinition);
+        this.operationName = operation.getName();
+    }
+
     public Notification(RuleDefinitionAbstract ruleDefinition) {
         ruleName = ruleDefinition.getName();
         ruleCondition = ruleDefinition.getConditionString();
@@ -57,7 +63,7 @@ public class Notification {
             builder.append(" ").append(actualUnit);
         }
         if (operationName != null) {
-            builder.append(spaceVariable).append("OperationTable: ").append(operationName);
+            builder.append(spaceVariable).append("OperationName: ").append(operationName);
         }
         builder.append(spaceVariable).append("Triggered at: ").append(getValue(triggeredAt));
         builder.append(spaceVariable).append("--- www.mycontroller.org");

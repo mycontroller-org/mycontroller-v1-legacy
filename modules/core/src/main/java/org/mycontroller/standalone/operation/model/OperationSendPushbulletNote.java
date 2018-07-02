@@ -102,7 +102,7 @@ public class OperationSendPushbulletNote extends Operation {
             return;
         }
         try {
-            Notification notification = new Notification(ruleDefinition);
+            Notification notification = new Notification(ruleDefinition, this);
             HashMap<String, Object> bindings = new HashMap<String, Object>();
             bindings.put("notification", notification);
             if (body != null && body.trim().length() > 0) {

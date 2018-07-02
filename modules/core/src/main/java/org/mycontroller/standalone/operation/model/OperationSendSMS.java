@@ -92,7 +92,7 @@ public class OperationSendSMS extends Operation {
                     + ruleDefinition.getName());
         }
         try {
-            Notification notification = new Notification(ruleDefinition);
+            Notification notification = new Notification(ruleDefinition, this);
             HashMap<String, Object> bindings = new HashMap<String, Object>();
             bindings.put("notification", notification);
             if (customMessage != null && customMessage.trim().length() > 0) {

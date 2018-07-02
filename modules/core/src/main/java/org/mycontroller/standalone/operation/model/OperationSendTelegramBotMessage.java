@@ -105,7 +105,7 @@ public class OperationSendTelegramBotMessage extends Operation {
                             + ruleDefinition.getName());
         }
         try {
-            Notification notification = new Notification(ruleDefinition);
+            Notification notification = new Notification(ruleDefinition, this);
             HashMap<String, Object> bindings = new HashMap<String, Object>();
             bindings.put("notification", notification);
             String textRaw = null;
