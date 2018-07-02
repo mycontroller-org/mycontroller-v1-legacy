@@ -141,6 +141,7 @@ myControllerModule.controller('SettingsNotificationsController', function(alertS
   $scope.updateSettingsEmail();
   $scope.updateSettingsSms();
   $scope.updateSettingsPushbullet();
+  $scope.updateSettingsTelegramBot();
 
   //Save email
   $scope.saveEmail = function(){
