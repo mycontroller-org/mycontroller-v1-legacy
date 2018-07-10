@@ -72,6 +72,10 @@ public class NodeAliveStatusJob extends Job {
                     || McObjectManager.getEngine(node.getGatewayTable().getId()).config().getState() != STATE.UP) {
                 return;
             }
+            // for smart sleep node do not send heart beat message
+            if (node.getSmartSleepEnabled()) {
+                return;
+            }
             //for now supports only for MySensors and MyController
             if (node.getGatewayTable().getEnabled()
                     && (node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
