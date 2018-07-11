@@ -49,7 +49,8 @@ public class OffHeapFactory {
         }
         String storesLocation = AppProperties.getInstance().getMcPersistentStoresLocation() + MC_PERSISTENT_DIR;
         // delete everything on start if clear message on start
-        if (AppProperties.getInstance().getClearMessagesQueueOnStart()) {
+        if (AppProperties.getInstance().getClearMessagesQueueOnStart()
+                && AppProperties.getInstance().getClearSmartSleppMsgQueueOnStart()) {
             reset();
         }
         AppProperties.getInstance().createDirectoryLocation(storesLocation);
