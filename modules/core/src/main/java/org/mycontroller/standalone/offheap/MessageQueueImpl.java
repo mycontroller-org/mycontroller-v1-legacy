@@ -69,7 +69,12 @@ public class MessageQueueImpl implements IQueue<IMessage> {
             _logger.debug("Removed[Queue:{}, size:{}, Message:{}]", nameQueue, counter.get(), message);
             return message;
         } else {
-            _logger.warn("There is no message in the queue, returning null");
+            if (counter.get() != 0) {
+                _logger.warn("There is no message in the queue, but counter value:{}, returning null", counter.get());
+                counter.set(0);
+            } else {
+                _logger.warn("There is no message in the queue, returning null");
+            }
             return null;
         }
     }
