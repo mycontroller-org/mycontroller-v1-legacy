@@ -124,7 +124,9 @@ public class McUtils {
 
     public static String getDoubleAsString(String value) {
         try {
-            if (value != null && !value.equalsIgnoreCase("null")) {
+            if (value != null
+                    && !value.equalsIgnoreCase("null")
+                    && !value.equals("-")) {
                 return getDoubleAsString(Double.valueOf(value));
             } else {
                 return "-";
