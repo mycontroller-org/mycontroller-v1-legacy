@@ -42,12 +42,11 @@ import org.mycontroller.standalone.api.jaxrs.model.ImageFile;
 import org.mycontroller.standalone.api.jaxrs.model.LogFile;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.FileAppender;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 

@@ -29,7 +29,6 @@ import org.mycontroller.standalone.provider.mysensors.MySensors.MYS_MESSAGE_TYPE
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.ToString;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
