@@ -78,6 +78,7 @@ import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.utils.McServerFileUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -115,14 +116,13 @@ public class StartApp {
     }
 
     private static void loadStartingValues() {
-        //Update sunrise/sunset time
         try {
+            // update log file location
+            McServerFileUtils.updateApplicationLogLocation();
+            // update sunrise/sunset time
             TimerUtils.updateSunriseSunset();
             _logger.debug("Sunrise[{}], Sunset[{}] time updated", TimerUtils.getSunriseTime(),
                     TimerUtils.getSunsetTime());
-            //Disable all alram triggeres
-            //DaoUtils.getAlarmDao().disableAllTriggered();
-
         } catch (Exception ex) {
             _logger.error("Failed to update sunrise/sunset time", ex);
         }
