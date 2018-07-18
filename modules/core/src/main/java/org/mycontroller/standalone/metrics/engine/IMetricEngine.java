@@ -47,4 +47,5 @@ public interface IMetricEngine {
 
     Pong ping();
 
+    void close();
 }

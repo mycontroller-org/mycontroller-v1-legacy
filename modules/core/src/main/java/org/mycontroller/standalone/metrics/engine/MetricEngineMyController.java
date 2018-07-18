@@ -501,4 +501,9 @@ public class MetricEngineMyController implements IMetricEngine {
                 .build();
     }
 
+    @Override
+    public void close() {
+        // nothing to do
+    }
+
 }

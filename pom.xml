@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.mycontroller</groupId>
     <artifactId>mycontroller-parent</artifactId>
-    <version>37</version>
+    <version>38</version>
   </parent>
 
   <groupId>org.mycontroller.standalone</groupId>
@@ -284,6 +284,12 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
+    </dependency>
+
+    <!-- InfluxDb client -->
+    <dependency>
+      <groupId>org.influxdb</groupId>
+      <artifactId>influxdb-java</artifactId>
     </dependency>
 
   </dependencies>

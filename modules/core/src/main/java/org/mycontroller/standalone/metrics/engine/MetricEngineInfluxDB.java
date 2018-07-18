@@ -19,7 +19,12 @@ package org.mycontroller.standalone.metrics.engine;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.influxdb.BatchOptions;
+import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBFactory;
+import org.influxdb.dto.Point;
 import org.mycontroller.restclient.influxdb.InfluxDBClient;
 import org.mycontroller.restclient.influxdb.model.Pong;
 import org.mycontroller.restclient.influxdb.model.Query;
@@ -57,26 +62,48 @@ public class MetricEngineInfluxDB implements IMetricEngine {
 
     private static final String VALUE_COLUMN = "value";
 
-    private InfluxDBClient _client = null;
+    private static final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
-    public MetricEngineInfluxDB(InfluxDBClient _client) {
+    private static final int FLUSH_POINTS = 200;
+    private static final int FLUSH_DURATION = 2000;
+
+    private InfluxDBClient _clientQuery = null;
+    private InfluxDB _client = null;
+
+    public MetricEngineInfluxDB(InfluxDB _client) {
         this._client = _client;
     }
 
     public MetricEngineInfluxDB(MetricEngineConfigInfluxDB _config) throws URISyntaxException {
         if (_config.getUsername() != null) {
-            _client = new InfluxDBClient(_config.getUrl(), _config.getUsername(), _config.getPassword(),
+            _client = InfluxDBFactory.connect(_config.getUrl(), _config.getUsername(), _config.getPassword());
+            _clientQuery = new InfluxDBClient(_config.getUrl(), _config.getUsername(), _config.getPassword(),
                     _config.getDatabase(), _config.getTrustHostType());
         } else {
-            _client = new InfluxDBClient(_config.getUrl(), _config.getDatabase(), _config.getTrustHostType());
+            _clientQuery = new InfluxDBClient(_config.getUrl(), _config.getDatabase(), _config.getTrustHostType());
+            _client = InfluxDBFactory.connect(_config.getUrl());
         }
+        _client.setDatabase(_config.getDatabase());
+        _client.enableBatch(BatchOptions.DEFAULTS.actions(FLUSH_POINTS).flushDuration(FLUSH_DURATION));
+        _logger.debug("Influxdb client BatchSettings[flush, points:{}, duration:{} ms]", FLUSH_POINTS, FLUSH_DURATION);
     }
 
-    private String getTag(Integer id, String type) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(TAG_INTERNAL_ID).append("=").append(id).append(",")
-                .append(TAG_TYPE).append("=").append(type);
-        return builder.toString();
+    private Point getPoint(String measurementName, long timestamp, Object value, Integer internalId, String type) {
+        if (value instanceof Boolean) {
+            return Point.measurement(MEASUREMENT_RESOURCE_DOUBLE)
+                    .addField("value", (boolean) value)
+                    .time(timestamp, timeUnit)
+                    .tag(TAG_INTERNAL_ID, String.valueOf(internalId))
+                    .tag(TAG_TYPE, type)
+                    .build();
+        } else {
+            return Point.measurement(MEASUREMENT_RESOURCE_DOUBLE)
+                    .addField("value", (Number) value)
+                    .time(timestamp, timeUnit)
+                    .tag(TAG_INTERNAL_ID, String.valueOf(internalId))
+                    .tag(TAG_TYPE, type)
+                    .build();
+        }
     }
 
     @Override
@@ -86,9 +113,13 @@ public class MetricEngineInfluxDB implements IMetricEngine {
                 Node node = (Node) data.getResourceModel().getResource();
                 switch (data.getDataType()) {
                     case NODE_BATTERY_USAGE:    //Update battery level in to metrics table
-                        _client.write(_client.getData(MEASUREMENT_RESOURCE_DOUBLE,
-                                getTag(node.getId(), DATA_TYPE.NODE_BATTERY_USAGE.name()), "value", data.getPayload(),
-                                data.getTimestamp()));
+                        Point point = getPoint(
+                                MEASUREMENT_RESOURCE_DOUBLE,
+                                data.getTimestamp(),
+                                McUtils.getDouble(data.getPayload()),
+                                node.getId(),
+                                DATA_TYPE.NODE_BATTERY_USAGE.name());
+                        _client.write(point);
                         return;
                     default:
                         break;
@@ -99,19 +130,19 @@ public class MetricEngineInfluxDB implements IMetricEngine {
                 boolean writeSVdata = true;
                 String measurement = null;
                 String type = DATA_TYPE.SENSOR_VARIABLE.name();
-                String payload = data.getPayload();
+                Object payload = null;
                 switch (sensorVariable.getMetricType()) {
                     case DOUBLE:
                         measurement = MEASUREMENT_RESOURCE_DOUBLE;
-                        payload = McUtils.getDoubleAsString(data.getPayload());
+                        payload = McUtils.getDouble(data.getPayload());
                         break;
                     case BINARY:
                         measurement = MEASUREMENT_RESOURCE_BINARY;
-                        payload = String.valueOf(McUtils.getBoolean(data.getPayload()));
+                        payload = McUtils.getBoolean(data.getPayload());
                         break;
                     case COUNTER:
                         measurement = MEASUREMENT_RESOURCE_COUNTER;
-                        payload = String.valueOf(McUtils.getLong(data.getPayload()));
+                        payload = McUtils.getLong(data.getPayload());
                         break;
                     case NONE:
                         //For None type nothing to do.
@@ -121,9 +152,13 @@ public class MetricEngineInfluxDB implements IMetricEngine {
                         break;
                 }
                 if (writeSVdata) {
-                    _client.write(_client.getData(measurement,
-                            getTag(sensorVariable.getId(), type), "value", payload,
-                            data.getTimestamp()));
+                    Point point = getPoint(
+                            measurement,
+                            data.getTimestamp(),
+                            payload,
+                            sensorVariable.getId(),
+                            type);
+                    _client.write(point);
                     return;
                 }
             default:
@@ -145,7 +180,7 @@ public class MetricEngineInfluxDB implements IMetricEngine {
                                         criteria.getEnd(), null, true))
                                 .epoch("ms")
                                 .build();
-                        QueryResult response = _client.query(query);
+                        QueryResult response = _clientQuery.query(query);
                         if (response.getError() != null) {
                             _logger.warn("Query failed: {}, {}", criteria, response);
                             return DataPointDouble.builder().build();
@@ -189,7 +224,7 @@ public class MetricEngineInfluxDB implements IMetricEngine {
                                 .build();
                         return getList(
                                 METRIC_TYPE.DOUBLE,
-                                _client.query(query),
+                                _clientQuery.query(query),
                                 criteria);
                     default:
                         break;
@@ -204,21 +239,21 @@ public class MetricEngineInfluxDB implements IMetricEngine {
                                 DATA_TYPE.SENSOR_VARIABLE.name(),
                                 sensorVariable.getId(), criteria.getStart(), criteria.getEnd(),
                                 criteria.getBucketDuration()));
-                        return getList(METRIC_TYPE.BINARY, _client.query(query), criteria);
+                        return getList(METRIC_TYPE.BINARY, _clientQuery.query(query), criteria);
 
                     case COUNTER:
                         query.setQ(getQueryCounter(MEASUREMENT_RESOURCE_COUNTER,
                                 DATA_TYPE.SENSOR_VARIABLE.name(),
                                 sensorVariable.getId(), criteria.getStart(), criteria.getEnd(),
                                 criteria.getBucketDuration()));
-                        return getList(METRIC_TYPE.COUNTER, _client.query(query), criteria);
+                        return getList(METRIC_TYPE.COUNTER, _clientQuery.query(query), criteria);
 
                     case DOUBLE:
                         query.setQ(getQueryDouble(MEASUREMENT_RESOURCE_DOUBLE,
                                 DATA_TYPE.SENSOR_VARIABLE.name(),
                                 sensorVariable.getId(), criteria.getStart(), criteria.getEnd(),
                                 criteria.getBucketDuration(), false));
-                        return getList(METRIC_TYPE.DOUBLE, _client.query(query), criteria);
+                        return getList(METRIC_TYPE.DOUBLE, _clientQuery.query(query), criteria);
 
                     default:
                         throw new RuntimeException("Not supported metric type: " + sensorVariable.getMetricType());
@@ -498,7 +533,7 @@ public class MetricEngineInfluxDB implements IMetricEngine {
                     .q(queryString)
                     .epoch("ms")
                     .build();
-            QueryResult response = _client.queryManagement(query);
+            QueryResult response = _clientQuery.queryManagement(query);
             if (response.getResults().get(0).getError() != null) {
                 _logger.warn("Failed to execute query[{}], ", query, response);
             }
@@ -516,7 +551,7 @@ public class MetricEngineInfluxDB implements IMetricEngine {
                 .q("DROP MEASUREMENT \"" + measurement + "\"")
                 .build();
         //Purge measurements
-        QueryResult response = _client.queryManagement(query);
+        QueryResult response = _clientQuery.queryManagement(query);
         _logger.debug("{}", response);
     }
 
@@ -531,7 +566,7 @@ public class MetricEngineInfluxDB implements IMetricEngine {
     public org.mycontroller.standalone.metrics.model.Pong ping() {
         org.mycontroller.standalone.metrics.model.Pong pong = null;
         try {
-            Pong influxPong = _client.ping();
+            Pong influxPong = _clientQuery.ping();
             pong = org.mycontroller.standalone.metrics.model.Pong.builder()
                     .reachable(influxPong.isReachable())
                     .version(influxPong.getVersion())
@@ -545,5 +580,13 @@ public class MetricEngineInfluxDB implements IMetricEngine {
             _logger.debug("Error, ", ex);
         }
         return pong;
+    }
+
+    @Override
+    public void close() {
+        if (_client != null) {
+            _client.close();
+            _logger.debug("Influxdb client connection closed.");
+        }
     }
 }

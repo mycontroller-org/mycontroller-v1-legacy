@@ -335,12 +335,14 @@ public class StartApp {
         // - Stop message Monitor Thread
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
+        // - Stop metric engine
         stopHTTPWebServer();
         ExternalServerFactory.clearDrivers();
         SchedulerUtils.stop();
         GatewayUtils.unloadEngineAll();
         MoquetteMqttBroker.stop();
         DataBaseUtils.stop();
+        MetricsUtils.shutdownEngine();
         OffHeapFactory.close();
         McThreadPoolFactory.shutdownNow();
         _logger.debug("All services stopped.");
