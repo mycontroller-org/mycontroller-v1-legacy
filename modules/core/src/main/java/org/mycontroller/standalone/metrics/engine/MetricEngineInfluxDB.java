@@ -85,7 +85,8 @@ public class MetricEngineInfluxDB implements IMetricEngine {
         }
         _client.setDatabase(_config.getDatabase());
         _client.enableBatch(BatchOptions.DEFAULTS.actions(FLUSH_POINTS).flushDuration(FLUSH_DURATION));
-        _logger.debug("Influxdb client BatchSettings[flush, points:{}, duration:{} ms]", FLUSH_POINTS, FLUSH_DURATION);
+        _logger.debug("MetricEngine, Influxdb client BatchSettings[flush, points:{}, duration:{} ms]",
+                FLUSH_POINTS, FLUSH_DURATION);
     }
 
     private Point getPoint(String measurementName, long timestamp, Object value, Integer internalId, String type) {
