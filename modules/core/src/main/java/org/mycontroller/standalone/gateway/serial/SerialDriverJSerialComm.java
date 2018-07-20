@@ -112,7 +112,8 @@ class SerialDataListenerjSerialComm implements SerialPortDataListener {
     private SerialPort _serialPort;
     private GatewayConfigSerial _config = null;
     private StringBuilder rawMessage = new StringBuilder();
-    private boolean failedStatusWritten = false;
+    private int errorCounter = 0;
+    private static final int MAX_ERROR_COUNT = 3;
     private IMessageParser<byte[]> _parser;
     private IQueue<IMessage> _queue;
 
@@ -170,15 +171,17 @@ class SerialDataListenerjSerialComm implements SerialPortDataListener {
                     _logger.debug("Received MESSAGE_SPLITTER and current rawMessage length is ZERO! Nothing to do");
                 }
             }
-            failedStatusWritten = false;
+            errorCounter = 0;
         } catch (Exception ex) {
+            errorCounter++;
             if (ex.getMessage() != null) {
-                _logger.error("Exception, ", ex);
+                _logger.error("Exception, RawMessage:[{}]", rawMessage.toString(), ex);
             }
-            if (!failedStatusWritten) {
+            if (errorCounter > MAX_ERROR_COUNT) {
                 _config.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
-                failedStatusWritten = true;
-                _logger.error("Exception, ", ex);
+                errorCounter = 0;
+                _logger.error("Exception, Gateway[{}] marked as down. RawMessage:[{}]",
+                        _config.getName(), rawMessage, ex);
             }
             rawMessage.setLength(0);
             try {

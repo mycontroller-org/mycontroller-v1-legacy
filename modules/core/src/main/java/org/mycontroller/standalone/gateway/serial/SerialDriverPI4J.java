@@ -159,7 +159,7 @@ class SerialDataListenerPi4j implements SerialDataEventListener {
             _config.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
             rawMessage.setLength(0);
         } catch (Exception ex) {
-            _logger.error("Exception,", ex.getMessage());
+            _logger.error("Exception, RawMessage: [{}]", rawMessage.toString(), ex.getMessage());
             rawMessage.setLength(0);
         }
     }

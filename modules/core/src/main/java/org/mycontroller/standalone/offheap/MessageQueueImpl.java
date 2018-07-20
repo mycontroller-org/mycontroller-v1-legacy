@@ -56,9 +56,13 @@ public class MessageQueueImpl implements IQueue<IMessage> {
 
     @Override
     public synchronized void add(IMessage message) {
-        queue.add(message);
-        counter.incrementAndGet();
-        _logger.debug("Added[Queue:{}, size:{}, Message:{}]", nameQueue, counter.get(), message);
+        if (message != null) {
+            queue.add(message);
+            counter.incrementAndGet();
+            _logger.debug("Added[Queue:{}, size:{}, Message:{}]", nameQueue, counter.get(), message);
+        } else {
+            _logger.debug("Received NULL message. Queue name:{}", nameQueue);
+        }
     }
 
     @Override
