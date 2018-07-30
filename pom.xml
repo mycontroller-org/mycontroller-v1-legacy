@@ -28,7 +28,7 @@
 
   <groupId>org.mycontroller.standalone</groupId>
   <artifactId>mycontroller-standalone-parent</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>1.3.0.Final</version>
   <url>https://github.com/mycontroller-org</url>
   <inceptionYear>2015</inceptionYear>
   <packaging>pom</packaging>
