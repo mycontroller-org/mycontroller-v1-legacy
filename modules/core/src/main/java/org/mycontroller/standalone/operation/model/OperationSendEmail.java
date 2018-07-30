@@ -113,7 +113,7 @@ public class OperationSendEmail extends Operation {
                     + ruleDefinition.getName());
         }
 
-        Notification notification = new Notification(ruleDefinition);
+        Notification notification = new Notification(ruleDefinition, this);
         String emailBody = null;
         try {
             McTemplate mcTemplate = McTemplate.get(template);

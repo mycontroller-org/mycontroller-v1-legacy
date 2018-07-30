@@ -168,6 +168,12 @@ public class MetricsUtils {
         metricEngine = getEngine(engineConf);
     }
 
+    public static void shutdownEngine() {
+        if (metricEngine != null) {
+            metricEngine.close();
+        }
+    }
+
     private static IMetricEngine getEngine(MetricEngineConf engineConf) throws URISyntaxException {
         switch (engineConf.getType()) {
             case INFLUXDB:
@@ -227,6 +233,7 @@ public class MetricsUtils {
     }
 
     public static void updateEngine(MetricEngineConf conf) throws McBadRequestException {
+        shutdownEngine(); // shutdown existing engine
         String data = null;
         switch (conf.getType()) {
             case INFLUXDB:
@@ -251,11 +258,17 @@ public class MetricsUtils {
     }
 
     public static Pong ping(MetricEngineConf conf) throws McBadRequestException {
+        IMetricEngine engine = null;
         try {
-            return getEngine(conf).ping();
+            engine = getEngine(conf);
+            Pong pong = engine.ping();
+            return pong;
         } catch (URISyntaxException ex) {
             throw new McBadRequestException(ex.getMessage(), ex);
+        } finally {
+            if (engine != null) {
+                engine.close();
+            }
         }
     }
-
 }

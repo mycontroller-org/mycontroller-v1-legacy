@@ -18,9 +18,7 @@ package org.mycontroller.standalone.gateway.wunderground;
 
 import java.text.ParseException;
 
-import org.mycontroller.restclient.core.ClientResponse;
 import org.mycontroller.restclient.wunderground.WundergroundClient;
-import org.mycontroller.restclient.wunderground.WundergroundClientBuilder;
 import org.mycontroller.restclient.wunderground.model.Criteria;
 import org.mycontroller.restclient.wunderground.model.CurrentObservation;
 import org.mycontroller.restclient.wunderground.model.WUResponse;
@@ -64,10 +62,7 @@ public class WundergroundDriver extends RestDriverAbstract {
     @Override
     public void connect() {
         try {
-            _client = new WundergroundClientBuilder()
-                    .addProperty(WundergroundClient.KEY_API_KEY, _config.getApiKey())
-                    .uri(WundergroundClient.URI, _config.getTrustHostType())
-                    .build();
+            _client = new WundergroundClient(_config.getApiKey(), _config.getTrustHostType());
             _criteria = Criteria.builder()
                     .location(_config.getLocation())
                     .geoIP(_config.getGeoIp())
@@ -88,20 +83,19 @@ public class WundergroundDriver extends RestDriverAbstract {
     @Override
     public void read() {
         try {
-            ClientResponse<WUResponse> _response = _client.query(_criteria);
+            WUResponse _response = _client.query(_criteria);
             _logger.debug("Client response: {}", _response);
-            if (_response.isSuccess() && _response.getEntity() != null) {
-                if (_response.getEntity().getResponse().getError() == null) {
-                    updateRecords(_response.getEntity());
+            if (_response != null) {
+                if (_response.getResponse().getError() == null) {
+                    updateRecords(_response);
                 } else {
                     _logger.error("Failed to query, fix the issue and reload manually to reconnect. {}, {}",
-                            _response.getEntity().getResponse().getError(), _config);
-                    _config.setStatus(STATE.DOWN, _response.getEntity().getResponse().getError().toString());
+                            _response.getResponse().getError(), _config);
+                    _config.setStatus(STATE.DOWN, _response.getResponse().getError().toString());
                 }
             } else {
                 _logger.warn("Unable to execute {}, {}", _config, _response);
             }
-
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
         }
@@ -189,7 +183,7 @@ public class WundergroundDriver extends RestDriverAbstract {
         updateRecord(timestamp, nodeEui, MESSAGE_TYPE.C_PRESENTATION.getText(),
                 MESSAGE_TYPE_PRESENTATION.S_WIND.getText(), Wunderground.S_ID_WIND, "Wind");
         updateRecord(timestamp, nodeEui, MESSAGE_TYPE.C_SET.getText(), MESSAGE_TYPE_SET_REQ.V_WIND.getText(),
-                Wunderground.S_ID_WIND, McUtils.getDoubleAsString(wind));
+                Wunderground.S_ID_WIND, McUtils.getDoubleAsString(wind.doubleValue()));
         updateRecord(timestamp, nodeEui, MESSAGE_TYPE.C_SET.getText(), MESSAGE_TYPE_SET_REQ.V_DIRECTION.getText(),
                 Wunderground.S_ID_WIND, String.valueOf(observation.getWind_degrees()));
         updateRecord(timestamp, nodeEui, MESSAGE_TYPE.C_SET.getText(), MESSAGE_TYPE_SET_REQ.V_TEXT.getText(),

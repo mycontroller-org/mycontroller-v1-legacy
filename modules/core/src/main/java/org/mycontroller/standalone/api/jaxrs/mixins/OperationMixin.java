@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.operation.model.OperationSendPushbulletNote;
 import org.mycontroller.standalone.operation.model.OperationSendSMS;
+import org.mycontroller.standalone.operation.model.OperationSendTelegramBotMessage;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -138,10 +139,21 @@ class OperationDeserializer extends JsonDeserializer<Operation> {
                 }
                 operation = operationSendPushbulletNote;
                 break;
+            case SEND_TELEGRAM_BOT_MESSAGE:
+                OperationSendTelegramBotMessage operationSendTelegramBotMessage = new OperationSendTelegramBotMessage();
+                operationSendTelegramBotMessage.setChatId(node.get("chatId").asText());
+                operationSendTelegramBotMessage.setParseMode(node.get("parseMode").asText());
+                if (node.get("customMessage") != null) {
+                    operationSendTelegramBotMessage.setCustomMessage(node.get("customMessage").asText());
+                }
+                operation = operationSendTelegramBotMessage;
+                break;
             case SEND_SMS:
                 OperationSendSMS operationSendSMS = new OperationSendSMS();
                 operationSendSMS.setToPhoneNumbers(node.get("toPhoneNumbers").asText());
-                operationSendSMS.setCustomMessage(node.get("customMessage").asText());
+                if (node.get("customMessage") != null) {
+                    operationSendSMS.setCustomMessage(node.get("customMessage").asText());
+                }
                 operation = operationSendSMS;
                 break;
             default:

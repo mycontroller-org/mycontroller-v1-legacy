@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -394,10 +394,11 @@ myControllerModule.factory('CommonServices', function(TypesFactory, $filter, $co
   //Function to convert rgba format to hex color
   commonService.rgba2hex = function rgb2hex(rgb){
     rgb = rgb.replace("rgba","").replace("(","").replace(")","").split(",");
-    return "#"+parseInt(rgb[0],10).toString(16)
-      + parseInt(rgb[1],10).toString(16)
-      + parseInt(rgb[2],10).toString(16)
-      + parseInt((parseFloat(rgb[3],10)*255)).toString(16);
+    return "#"
+      + ("0" + parseInt(rgb[0],10).toString(16)).slice(-2)
+      + ("0" + parseInt(rgb[1],10).toString(16)).slice(-2)
+      + ("0" + parseInt(rgb[2],10).toString(16)).slice(-2)
+      + ("0" + parseInt((parseFloat(rgb[3],10)*255)).toString(16)).slice(-2);
   };
 
   //Function to convert hex format to RGBA color

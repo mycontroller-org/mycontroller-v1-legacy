@@ -184,6 +184,10 @@ public abstract class EngineAbstract implements IEngine {
         _statistics.setSizeQueue(_queue.size());
         if (_statistics.getSizeQueue() > 0) {
             IMessage message = _queue.take();
+            // if null message return it.
+            if (message == null) {
+                return;
+            }
             if (!_gateway.isUp()) {
                 // TODO: notify it is failed, "Gateway not ready"
                 McEventBus.getInstance().publish(

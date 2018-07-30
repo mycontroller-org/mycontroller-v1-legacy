@@ -56,9 +56,13 @@ public class MessageQueueImpl implements IQueue<IMessage> {
 
     @Override
     public synchronized void add(IMessage message) {
-        queue.add(message);
-        counter.incrementAndGet();
-        _logger.debug("Added[Queue:{}, size:{}, Message:{}]", nameQueue, counter.get(), message);
+        if (message != null) {
+            queue.add(message);
+            counter.incrementAndGet();
+            _logger.debug("Added[Queue:{}, size:{}, Message:{}]", nameQueue, counter.get(), message);
+        } else {
+            _logger.debug("Received NULL message. Queue name:{}", nameQueue);
+        }
     }
 
     @Override
@@ -69,7 +73,12 @@ public class MessageQueueImpl implements IQueue<IMessage> {
             _logger.debug("Removed[Queue:{}, size:{}, Message:{}]", nameQueue, counter.get(), message);
             return message;
         } else {
-            _logger.warn("There is no message in the queue, returning null");
+            if (counter.get() != 0) {
+                _logger.warn("There is no message in the queue, but counter value:{}, returning null", counter.get());
+                counter.set(0);
+            } else {
+                _logger.warn("There is no message in the queue, returning null");
+            }
             return null;
         }
     }

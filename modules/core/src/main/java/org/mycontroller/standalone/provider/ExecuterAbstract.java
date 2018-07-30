@@ -225,23 +225,15 @@ public abstract class ExecuterAbstract implements IExecutor {
                 if (_message.isTxMessage()) {
                     return;
                 }
-                //Update sleep duration
-                Long sleepDuration = McUtils.getLong(_message.getPayload());
-                node = getNode();
-                node.setState(STATE.UP);
-                node.setProperty(Node.KEY_SMART_SLEEP_DURATION, sleepDuration);
-                updateNode(node);
+                // update sleep duration
+                updateSleepNode(Node.KEY_SMART_SLEEP_DURATION);
                 break;
             case I_PRE_SLEEP_NOTIFICATION:
                 if (_message.isTxMessage()) {
                     return;
                 }
-                //Update sleep wait duration
-                Long sleepWaitDuration = McUtils.getLong(_message.getPayload());
-                node = getNode();
-                node.setState(STATE.UP);
-                node.setProperty(Node.KEY_SMART_SLEEP_WAIT_DURATION, sleepWaitDuration);
-                updateNode(node);
+                // update sleep wait duration
+                updateSleepNode(Node.KEY_SMART_SLEEP_WAIT_DURATION);
                 moveSleepQueueToNormalQueue();
                 break;
             case I_HEARTBEAT:
@@ -430,6 +422,19 @@ public abstract class ExecuterAbstract implements IExecutor {
         return McMessageUtils.getMetricType();
     }
 
+    private void updateSleepNode(String propertyKey) {
+        //Update sleep duration
+        Long sleepDuration = McUtils.getLong(_message.getPayload());
+        Node node = getNode();
+        // if smart sleep not enabled do enable it.
+        if (!node.getSmartSleepEnabled()) {
+            node.setSmartSleepEnabled(true);
+        }
+        node.setState(STATE.UP);
+        node.setProperty(propertyKey, sleepDuration);
+        updateNode(node);
+    }
+
     // move sleep queue messages to actual queue
     private void moveSleepQueueToNormalQueue() {
         Node _node = getNode();
@@ -551,38 +556,42 @@ public abstract class ExecuterAbstract implements IExecutor {
             DaoUtils.getSensorVariableDao().create(sensorVariable);
             sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariable);
         } else {
-            switch (sensorVariable.getMetricType()) {
-                case COUNTER:
-                    long oldValue = sensorVariable.getValue() == null ? 0L : McUtils
-                            .getLong(sensorVariable.getValue());
-                    long newValue = McUtils.getLong(_message.getPayload());
-                    sensorVariable.setValue(String.valueOf(oldValue + newValue));
-                    break;
-                case DOUBLE:
-                    //If it is received _message, update with offset
-                    if (_message.isTxMessage()) {
-                        sensorVariable.setValue(McUtils.getDoubleAsString(McUtils.getDouble(_message.getPayload())));
-                    } else {
-                        sensorVariable.setValue(
-                                McUtils.getDoubleAsString(
-                                        McUtils.getDouble(_message.getPayload()) + sensorVariable.getOffset()));
-                    }
-                    break;
-                case BINARY:
-                    sensorVariable.setValue(_message.getPayload().equalsIgnoreCase("0") ? "0" : "1");
-                    break;
-                case GPS:
-                    try {
-                        sensorVariable.setValue(MetricsGPSTypeDevice.get(_message.getPayload(),
-                                _message.getTimestamp())
-                                .getPosition());
-                    } catch (McBadRequestException ex) {
-                        _logger.error("Exception,", ex);
-                    }
-                    break;
-                default:
-                    sensorVariable.setValue(_message.getPayload());
-                    break;
+            if (_message.getPayload() != null && _message.getPayload().length() > 0) {
+                switch (sensorVariable.getMetricType()) {
+                    case COUNTER:
+                        long oldValue = sensorVariable.getValue() == null ? 0L : McUtils
+                                .getLong(sensorVariable.getValue());
+                        long newValue = McUtils.getLong(_message.getPayload());
+                        sensorVariable.setValue(String.valueOf(oldValue + newValue));
+                        break;
+                    case DOUBLE:
+                        //If it is received _message, update with offset
+                        if (_message.isTxMessage()) {
+                            sensorVariable
+                                    .setValue(McUtils.getDoubleAsString(McUtils.getDouble(_message.getPayload())));
+                        } else {
+                            sensorVariable.setValue(McUtils.getDoubleAsString(
+                                    McUtils.getDouble(_message.getPayload()) + sensorVariable.getOffset()));
+                        }
+                        break;
+                    case BINARY:
+                        sensorVariable.setValue(_message.getPayload().equalsIgnoreCase("0") ? "0" : "1");
+                        break;
+                    case GPS:
+                        try {
+                            sensorVariable.setValue(MetricsGPSTypeDevice.get(_message.getPayload(),
+                                    _message.getTimestamp())
+                                    .getPosition());
+                        } catch (McBadRequestException ex) {
+                            _logger.error("Exception,", ex);
+                        }
+                        break;
+                    default:
+                        sensorVariable.setValue(_message.getPayload());
+                        break;
+                }
+            } else {
+                sensorVariable.setValue(_message.getPayload());
             }
             sensorVariable.setTimestamp(_message.getTimestamp());
             DaoUtils.getSensorVariableDao().update(sensorVariable);
@@ -619,5 +628,39 @@ public abstract class ExecuterAbstract implements IExecutor {
 
     private void executeDependentTask(SensorVariable _sv) {
         McThreadPoolFactory.execute(new ExecuteMessageDependentTask(_sv));
+    }
+
+    @Override
+    public void firmwareUpdateStart(int totalBlocks) {
+        Node node = getNode();
+        if (node != null) {
+            node.firmwareUpdateStart(totalBlocks);
+            updateNode(node);
+        }
+        _logger.debug("Firmware update start, totalBlocks:{}, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                totalBlocks, node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
+    }
+
+    @Override
+    public void firmwareUpdateFinished() {
+        Node node = getNode();
+        if (node != null) {
+            node.firmwareUpdateFinished();
+            updateNode(node);
+        }
+        _logger.debug("Firmware update finished, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
+    }
+
+    @Override
+    public void updateFirmwareStatus(int blocksSent) {
+        Node node = getNode();
+        if (node != null) {
+            node.updateFirmwareStatus(blocksSent);
+            updateNode(node);
+        }
+        _logger.debug("Firmware update status, blocksSent:{}, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                blocksSent, node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
+
     }
 }

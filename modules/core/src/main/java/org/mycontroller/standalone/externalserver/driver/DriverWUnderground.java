@@ -18,10 +18,9 @@ package org.mycontroller.standalone.externalserver.driver;
 
 import java.util.HashMap;
 
+import org.mycontroller.restclient.wunderground.WundergroundClient;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.UNIT_CONFIG;
-import org.mycontroller.standalone.api.HttpApi;
-import org.mycontroller.standalone.api.jaxrs.model.McHttpResponse;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.config.ExternalServerConfigWUnderground;
 import org.mycontroller.standalone.units.UnitUtils.UNIT_TYPE;
@@ -36,8 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DriverWUnderground extends DriverAbstract {
     private ExternalServerConfigWUnderground _config = null;
-    private HttpApi _client = null;
-    private HashMap<String, Object> _queryParams = new HashMap<String, Object>();
+    private WundergroundClient _client = null;
+    private HashMap<String, Object> data = new HashMap<String, Object>();
 
     public DriverWUnderground(ExternalServerConfigWUnderground _config) {
         super(_config);
@@ -51,41 +50,36 @@ public class DriverWUnderground extends DriverAbstract {
             if (sensorVariable.getUnitType() == UNIT_TYPE.U_TEMPERATURE) {
                 if (AppProperties.getInstance().getControllerSettings().getUnitConfig()
                         .equals(UNIT_CONFIG.METRIC.getText())) {
-                    _queryParams.put("tempf", McUtils.getDouble(sensorVariable.getValue()) * 1.8 + 32);
+                    data.put("tempf", McUtils.getDouble(sensorVariable.getValue()) * 1.8 + 32);
                 } else {
-                    _queryParams.put("tempf", sensorVariable.getValue());
+                    data.put("tempf", sensorVariable.getValue());
                 }
             } else if (sensorVariable.getUnitType() == UNIT_TYPE.U_HUMIDITY) {
-                _queryParams.put("humidity", sensorVariable.getValue());
+                data.put("humidity", sensorVariable.getValue());
             } else {
                 _logger.warn("This type of sensor not supported! {} for {}", sensorVariable.getUnitType(), toString());
                 return;
             }
-            McHttpResponse response = _client.get(_config.getUrl(), _queryParams);
-            _logger.debug("{}", response);
-            if (response.getException() != null || response.getResponseCode() != 200) {
-                _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", response,
-                        toString(), _config.getUrl());
-            } else {
-                _logger.debug("Remote server update status: {}, Remote server:{}, {}", response,
-                        toString(), _config.getUrl());
+            try {
+                String response = _client.send(data);
+                _logger.debug("write response: {}", response);
+            } catch (Exception ex) {
+                _logger.error("Exception: data:[{}]", data, ex);
             }
         }
     }
 
     private void clearValues() {
-        _queryParams.remove("tempf");
-        _queryParams.remove("humidity");
+        data.clear();
+        data.put("action", "updateraw");
+        data.put("ID", _config.getStationId());
+        data.put("PASSWORD", _config.getStationPassword());
+        data.put("dateutc", "now");
     }
 
     @Override
     public void connect() {
-        _client = new HttpApi(_config.getTrustHostType());
-        _queryParams.clear();
-        _queryParams.put("action", "updateraw");
-        _queryParams.put("ID", _config.getStationId());
-        _queryParams.put("PASSWORD", _config.getStationPassword());
-        _queryParams.put("dateutc", "now");
+        _client = new WundergroundClient(null, _config.getTrustHostType());
     }
 
     @Override

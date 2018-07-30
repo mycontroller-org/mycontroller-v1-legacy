@@ -17,18 +17,22 @@
 package org.mycontroller.standalone.firmware;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.mapdb.HTreeMap;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Firmware;
 import org.mycontroller.standalone.db.tables.FirmwareData;
 import org.mycontroller.standalone.exceptions.McBadRequestException;
 import org.mycontroller.standalone.offheap.OffHeapFactory;
+import org.mycontroller.standalone.utils.JsonUtils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -46,6 +50,8 @@ public class FirmwareUtils {
 
     public static final String FIRMWARE_MAP = "mc_firmware_map";
     private static HTreeMap<String, FirmwareData> FIRMWARE_OFFLINE_MAP = null;
+
+    private static final String FIRMWARE_DATA_FILE_FORMAT = "%s.json";
 
     public static HTreeMap<String, FirmwareData> getFirmwareMap() {
         if (FIRMWARE_OFFLINE_MAP == null) {
@@ -184,7 +190,9 @@ public class FirmwareUtils {
 
     private static void deleteFirmware(Firmware firmware) {
         removeFirmewareOnOfflineMap(firmware);
-        DaoUtils.getFirmwareDataDao().deleteByFirmwareId(firmware.getId());
+        //DaoUtils.getFirmwareDataDao().deleteByFirmwareId(firmware.getId());
+        firmware = DaoUtils.getFirmwareDao().getById(firmware.getId());
+        deleteFirmwareDateFromDisk(firmware.getType().getId(), firmware.getVersion().getId());
         DaoUtils.getFirmwareDao().delete(firmware);
     }
 
@@ -211,7 +219,8 @@ public class FirmwareUtils {
         removeFirmewareOnOfflineMap(firmware);
         FirmwareData firmwareData = null;
         if (firmware.getId() != null) {
-            firmwareData = DaoUtils.getFirmwareDataDao().getByFirmwareId(firmware.getId());
+            //firmwareData = DaoUtils.getFirmwareDataDao().getByFirmwareId(firmware.getId());
+            firmwareData = loadFirmwareDataFromDisk(firmware.getId());
         } else {
             firmwareData = FirmwareData.builder().build();
         }
@@ -235,12 +244,16 @@ public class FirmwareUtils {
         firmware.setTimestamp(System.currentTimeMillis());
         if (firmware.getId() != null) {
             DaoUtils.getFirmwareDao().update(firmware);
-            DaoUtils.getFirmwareDataDao().update(firmwareData);
+            firmware = DaoUtils.getFirmwareDao().getById(firmware.getId());
+            firmwareData.setFirmware(firmware);
+            //DaoUtils.getFirmwareDataDao().update(firmwareData);
+            writeFirmwareDataToDisk(firmwareData);
         } else {
             DaoUtils.getFirmwareDao().create(firmware);
             firmware = DaoUtils.getFirmwareDao().get(firmware.getType().getId(), firmware.getVersion().getId());
             firmwareData.setFirmware(firmware);
-            DaoUtils.getFirmwareDataDao().create(firmwareData);
+            //DaoUtils.getFirmwareDataDao().create(firmwareData);
+            writeFirmwareDataToDisk(firmwareData);
         }
 
     }
@@ -277,9 +290,47 @@ public class FirmwareUtils {
     public static FirmwareData getFirmwareDataFromOfflineMap(Integer typeId, Integer versionId) {
         FirmwareData firmwareData = getFirmwareMap().get(getFirmwareDataOfflineMapName(typeId, versionId));
         if (firmwareData == null) {
-            firmwareData = DaoUtils.getFirmwareDataDao().getByTypeVersion(typeId, versionId);
-            getFirmwareMap().put(getFirmwareDataOfflineMapName(typeId, versionId), firmwareData);
+            //firmwareData = DaoUtils.getFirmwareDataDao().getByTypeVersion(typeId, versionId);
+            firmwareData = loadFirmwareDataFromDisk(typeId, versionId);
+            if (firmwareData != null) {
+                getFirmwareMap().put(getFirmwareDataOfflineMapName(typeId, versionId), firmwareData);
+            }
         }
         return firmwareData;
+    }
+
+    public static boolean deleteFirmwareDateFromDisk(int typeId, int versionId) {
+        File fwdFile = FileUtils.getFile(AppProperties.getInstance().getFirmwaresDataDirectory(),
+                String.format(FIRMWARE_DATA_FILE_FORMAT, typeId, versionId));
+        boolean isDeleted = fwdFile.delete();
+        _logger.debug("Firmware data deleted from disk. File:{}, isDeleted? ", fwdFile.getAbsolutePath(), isDeleted);
+        return isDeleted;
+    }
+
+    public static FirmwareData loadFirmwareDataFromDisk(int typeId, int versionId) {
+        Firmware firmware = DaoUtils.getFirmwareDao().get(typeId, versionId);
+        return loadFirmwareDataFromDisk(firmware.getId());
+    }
+
+    public static FirmwareData loadFirmwareDataFromDisk(int firmwareId) {
+        FirmwareData firmwareData = (FirmwareData) JsonUtils.loads(
+                FirmwareData.class, AppProperties.getInstance().getFirmwaresDataDirectory(),
+                String.format(FIRMWARE_DATA_FILE_FORMAT, firmwareId));
+        // update firmware information
+        Firmware firmware = DaoUtils.getFirmwareDao().getById(firmwareData.getFirmware().getId());
+        if (!firmware.equals(firmwareData.getFirmware())) {
+            firmwareData.setFirmware(firmware);
+            // update the changes in to disk
+            writeFirmwareDataToDisk(firmwareData);
+        }
+        _logger.debug("Firmware data loads from disk. {}", firmwareData.getFirmware());
+        return firmwareData;
+    }
+
+    public static void writeFirmwareDataToDisk(FirmwareData firmwareData) {
+        int firmwareId = firmwareData.getFirmware().getId();
+        JsonUtils.dumps(firmwareData, AppProperties.getInstance().getFirmwaresDataDirectory(),
+                String.format(FIRMWARE_DATA_FILE_FORMAT, firmwareId));
+        _logger.debug("Firmware data stored in to disk. {}", firmwareData.getFirmware());
     }
 }

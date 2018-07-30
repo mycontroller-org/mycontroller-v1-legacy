@@ -38,6 +38,7 @@ import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
 import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
 import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
 import org.mycontroller.standalone.api.jaxrs.NodeHandler;
+import org.mycontroller.standalone.api.jaxrs.OSCommandExecuterHandler;
 import org.mycontroller.standalone.api.jaxrs.OperationHandler;
 import org.mycontroller.standalone.api.jaxrs.OptionsHandler;
 import org.mycontroller.standalone.api.jaxrs.ResourcesDataHandler;
@@ -77,6 +78,7 @@ import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.timer.TimerUtils;
+import org.mycontroller.standalone.utils.McServerFileUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -114,14 +116,13 @@ public class StartApp {
     }
 
     private static void loadStartingValues() {
-        //Update sunrise/sunset time
         try {
+            // update log file location
+            McServerFileUtils.updateApplicationLogLocation();
+            // update sunrise/sunset time
             TimerUtils.updateSunriseSunset();
             _logger.debug("Sunrise[{}], Sunset[{}] time updated", TimerUtils.getSunriseTime(),
                     TimerUtils.getSunsetTime());
-            //Disable all alram triggeres
-            //DaoUtils.getAlarmDao().disableAllTriggered();
-
         } catch (Exception ex) {
             _logger.error("Failed to update sunrise/sunset time", ex);
         }
@@ -144,6 +145,7 @@ public class StartApp {
         resources.add(MyControllerHandler.class.getName());
         resources.add(NodeHandler.class.getName());
         resources.add(OperationHandler.class.getName());
+        resources.add(OSCommandExecuterHandler.class.getName());
         resources.add(ResourcesDataHandler.class.getName());
         resources.add(ResourcesGroupHandler.class.getName());
         resources.add(ResourcesLogsHandler.class.getName());
@@ -305,11 +307,18 @@ public class StartApp {
     private static void cleanUpServices() {
         // clean the services
         // - MQTT client location
+        // - MQTT broker location
 
         try {
             File mqttClientDir = new File(AppProperties.getInstance().getMqttClientPersistentStoresLocation());
             if (mqttClientDir.exists()) {
                 FileUtils.cleanDirectory(mqttClientDir);
+                _logger.debug("MQTT Client persistent store cleared. [{}]", mqttClientDir.getCanonicalFile());
+            }
+            File mqttBrokerDir = new File(AppProperties.getInstance().getMqttBrokerPersistentStore()).getParentFile();
+            if (mqttBrokerDir.exists()) {
+                FileUtils.cleanDirectory(mqttBrokerDir);
+                _logger.debug("MQTT broker persistent store cleared. [{}]", mqttBrokerDir.getCanonicalFile());
             }
         } catch (IOException ex) {
             _logger.error("Exception,", ex);
@@ -326,12 +335,14 @@ public class StartApp {
         // - Stop message Monitor Thread
         // - Clear Raw Message Queue (Optional)
         // - Stop DB service
+        // - Stop metric engine
         stopHTTPWebServer();
         ExternalServerFactory.clearDrivers();
         SchedulerUtils.stop();
         GatewayUtils.unloadEngineAll();
         MoquetteMqttBroker.stop();
         DataBaseUtils.stop();
+        MetricsUtils.shutdownEngine();
         OffHeapFactory.close();
         McThreadPoolFactory.shutdownNow();
         _logger.debug("All services stopped.");

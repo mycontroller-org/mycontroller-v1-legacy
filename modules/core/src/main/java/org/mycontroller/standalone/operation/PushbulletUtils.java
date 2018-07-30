@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,12 @@
  */
 package org.mycontroller.standalone.operation;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.restclient.pushbullet.PushbulletClient;
+import org.mycontroller.restclient.pushbullet.model.Push;
+import org.mycontroller.restclient.pushbullet.model.PushResponse;
+import org.mycontroller.restclient.pushbullet.model.User;
 import org.mycontroller.standalone.AppProperties;
-import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.pushbullet.PushbulletClient;
-import org.mycontroller.standalone.restclient.pushbullet.PushbulletClientImpl;
-import org.mycontroller.standalone.restclient.pushbullet.model.Push;
-import org.mycontroller.standalone.restclient.pushbullet.model.PushResponse;
-import org.mycontroller.standalone.restclient.pushbullet.model.User;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -37,12 +36,12 @@ import lombok.extern.slf4j.Slf4j;
 public class PushbulletUtils {
 
     // Create a rest clients
-    private static PushbulletClient pushbulletClient = null;
+    private static PushbulletClient client = null;
 
     public static synchronized void sendNote(String idens, String emails, String channelTags, String title,
             String body) {
         updateClient();
-        if (pushbulletClient == null) {
+        if (client == null) {
             _logger.warn("Looks like pushbullet configuration not updated. Could not send pushbullet notification!");
         }
         Push push = Push.builder().type("note").title(title).body(body).build();
@@ -58,11 +57,11 @@ public class PushbulletUtils {
             sendNote("channel_tag", channelTagsArray, push);
         } else {
             push.clearTargets();
-            ClientResponse<PushResponse> responsePushbullet = pushbulletClient.sendPush(push);
-            if (responsePushbullet.isSuccess()) {
-                _logger.debug("Note push sent successfully..., Response:{}", responsePushbullet.getEntity());
-            } else {
-                _logger.warn("Note push sending failed:{}]", responsePushbullet);
+            try {
+                PushResponse response = client.createPush(push);
+                _logger.debug("{}", response);
+            } catch (Exception ex) {
+                _logger.error("Exception: {}", push, ex);
             }
         }
     }
@@ -90,49 +89,44 @@ public class PushbulletUtils {
                     return;
 
             }
-            ClientResponse<PushResponse> responsePushbullet = pushbulletClient.sendPush(push);
-            if (responsePushbullet.isSuccess()) {
-                _logger.debug("Note push sent successfully..., Response:{}", responsePushbullet.getEntity());
-            } else {
-                _logger.warn("Note push sending failed:{}]", responsePushbullet);
+            try {
+                PushResponse response = client.createPush(push);
+                _logger.debug("{}", response);
+            } catch (Exception ex) {
+                _logger.error("Exception: {}", push, ex);
             }
         }
 
     }
 
-    public static User getCurrentUser() throws IllegalAccessException {
+    public static User getCurrentUser() {
         updateClient();
-        if (pushbulletClient == null) {
+        if (client == null) {
             _logger.warn("Looks like pushbullet configuration not updated. Could not send pushbullet notification!");
             throw new RuntimeException(
                     "Looks like pushbullet configuration not updated. Could not send pushbullet notification!");
         }
-        ClientResponse<User> responsePushbullet = pushbulletClient.getCurrentUser();
-        _logger.debug("ClientResponse:{}", responsePushbullet);
-        if (responsePushbullet.isSuccess()) {
-            return responsePushbullet.getEntity();
-        } else {
-            _logger.error("Failed to get current user. Response:{}", responsePushbullet);
-            throw new IllegalAccessException(responsePushbullet.getErrorMsg());
-        }
+        User user = client.currentUser();
+        _logger.debug("{}", user);
+        return user;
     }
 
     private static void updateClient() {
-        if (pushbulletClient == null) {
+        if (client == null) {
             try {
                 _logger.debug("PushBullet:{}", AppProperties.getInstance().getPushbulletSettings());
-                pushbulletClient = new PushbulletClientImpl(
-                        AppProperties.getInstance().getPushbulletSettings().getAccessToken(), null);
+                client = new PushbulletClient(
+                        AppProperties.getInstance().getPushbulletSettings().getAccessToken(), TRUST_HOST_TYPE.DEFAULT);
             } catch (Exception ex) {
                 _logger.error("Unable to create Pushbullet client, ", ex);
-                pushbulletClient = null;
+                client = null;
                 throw new RuntimeException("Error: " + ex.getMessage());
             }
         }
     }
 
     public static void clearClient() {
-        pushbulletClient = null;
+        client = null;
     }
 
     private static String[] getTargetDevices(String targets) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -292,6 +292,7 @@ myControllerModule.controller('OperationsControllerAddEdit', function ($scope, $
   }else{
     $scope.item.altScriptBindings='{}';
     $scope.item.altTemplateBindings='{}';
+    $scope.item.parseText = "Text";
   }
 
   //--------------pre load -----------

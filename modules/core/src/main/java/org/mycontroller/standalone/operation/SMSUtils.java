@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,13 @@
  */
 package org.mycontroller.standalone.operation;
 
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.restclient.plivo.PlivoClient;
+import org.mycontroller.restclient.plivo.model.Message;
+import org.mycontroller.restclient.plivo.model.MessageResponse;
+import org.mycontroller.restclient.twilio.TwilioClient;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.SMS_VENDOR;
-import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.plivo.PlivoClient;
-import org.mycontroller.standalone.restclient.plivo.PlivoClientImpl;
-import org.mycontroller.standalone.restclient.plivo.model.Message;
-import org.mycontroller.standalone.restclient.twilio.TwilioClient;
-import org.mycontroller.standalone.restclient.twilio.TwilioClientImpl;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -44,9 +43,10 @@ public class SMSUtils {
     private static void sendSmsPlivo(String toPhoneNumbers, String message) {
         if (plivoClient == null) {
             try {
-                plivoClient = new PlivoClientImpl(
+                plivoClient = new PlivoClient(
                         AppProperties.getInstance().getSmsSettings().getAuthSid(),
-                        AppProperties.getInstance().getSmsSettings().getAuthToken());
+                        AppProperties.getInstance().getSmsSettings().getAuthToken(),
+                        TRUST_HOST_TYPE.DEFAULT);
             } catch (Exception ex) {
                 _logger.error("Unable to create plivo client, ", ex);
             }
@@ -60,24 +60,22 @@ public class SMSUtils {
                     message.length(), message);
         }
 
-        ClientResponse<org.mycontroller.standalone.restclient.plivo.model.MessageResponse> responsePlivo = plivoClient
-                .sendMessage(messagePlivo);
-        if (responsePlivo.isSuccess()) {
-            _logger.debug("SMS sent successfully...");
-            _logger.debug("Response:{}", responsePlivo.getEntity());
-        } else {
-            _logger.warn("SMS sending failed:{}]", responsePlivo);
+        try {
+            MessageResponse responsePlivo = plivoClient.sendMessage(messagePlivo);
+            _logger.debug("Response:{}", responsePlivo);
+        } catch (Exception ex) {
+            _logger.error("Exception, {}", messagePlivo, ex);
         }
-
     }
 
     //Refer: https://github.com/twilio/twilio-java
     private static void sendSmsTwilio(String toPhoneNumbers, String message) {
         if (twilioClient == null) {
             try {
-                twilioClient = new TwilioClientImpl(
+                twilioClient = new TwilioClient(
                         AppProperties.getInstance().getSmsSettings().getAuthSid(),
-                        AppProperties.getInstance().getSmsSettings().getAuthToken());
+                        AppProperties.getInstance().getSmsSettings().getAuthToken(),
+                        TRUST_HOST_TYPE.DEFAULT);
             } catch (Exception ex) {
                 _logger.error("Unable to create twilio client, ", ex);
             }
@@ -90,24 +88,23 @@ public class SMSUtils {
             message = message.substring(0, 1600);
         }
 
-        org.mycontroller.standalone.restclient.twilio.model.Message messageTwilio =
-                org.mycontroller.standalone.restclient.twilio.model.Message.builder()
+        org.mycontroller.restclient.twilio.model.Message messageTwilio =
+                org.mycontroller.restclient.twilio.model.Message.builder()
                         .from(AppProperties.getInstance().getSmsSettings().getFromNumber())
                         .to("") //To should not be null
                         .body(message)
                         .build();
 
-        ClientResponse<org.mycontroller.standalone.restclient.twilio.model.MessageResponse> responseTwilio = null;
+        org.mycontroller.restclient.twilio.model.MessageResponse responseTwilio = null;
         for (String toPhoneNumber : toPhoneNumbers.split(",")) {
             //Add to number
             messageTwilio.setTo(toPhoneNumber);
             //Send SMS
-            responseTwilio = twilioClient.sendMessage(messageTwilio);
-            if (responseTwilio.isSuccess()) {
-                _logger.debug("SMS sent successfully...");
-                _logger.debug("Response:{}", responseTwilio.getEntity());
-            } else {
-                _logger.warn("SMS sending failed:{}]", responseTwilio);
+            try {
+                responseTwilio = twilioClient.sendMessage(messageTwilio);
+                _logger.debug("Response:{}", responseTwilio);
+            } catch (Exception ex) {
+                _logger.error("Exception, {}", messageTwilio, ex);
             }
         }
     }

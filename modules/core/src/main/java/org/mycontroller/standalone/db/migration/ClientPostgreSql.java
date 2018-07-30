@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,7 +67,7 @@ public class ClientPostgreSql extends ClientBase implements IMigrationClient {
             _logger.debug("Dropped table:{}, drop count:{}", tableName, dropCount);
             List<HashMap<String, String>> rows = getRowsByQuery(
                     "SELECT c.relname as seq FROM pg_class c WHERE c.relkind = 'S' and c.relname like '"
-                            + getTableName(tableName) + "_%_seq'");
+                            + tableName + "_%_seq'");
             //Drop sequences
             for (HashMap<String, String> row : rows) {
                 if (row.get("seq").matches(tableName + "_[a-z]*?_seq")) {
@@ -81,6 +81,23 @@ public class ClientPostgreSql extends ClientBase implements IMigrationClient {
         } else {
             _logger.warn("Selected table[{}] not found!", tableName);
         }
+    }
+
+    @Override
+    public void renameSequence(String sequenceName, String newSequenceName) throws SQLException {
+        int changeCount = DaoUtils.getUserDao().getDao().executeRaw(
+                "ALTER SEQUENCE IF EXISTS " + getSequenceName(sequenceName)
+                        + " RENAME TO " + getSequenceName(newSequenceName));
+        _logger.debug("Renamed sequence from '{}' to '{}', affected count:{}",
+                sequenceName, newSequenceName, changeCount);
+
+    }
+
+    @Override
+    public void dropSequence(String sequenceName) throws SQLException {
+        int dropCount = DaoUtils.getUserDao().getDao()
+                .executeRaw("DROP SEQUENCE IF EXISTS " + getSequenceName(sequenceName) + " CASCADE");
+        _logger.info("Dropped sequence:{}, drop count:{}", sequenceName, dropCount);
     }
 
 }

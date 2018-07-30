@@ -5,7 +5,7 @@ host = https://www.transifex.com
 source_file = src/main/package/www/languages/mc_locale_gui_source_en.json
 source_lang = en
 file_filter = src/main/package/www/languages/mc_locale_gui-<lang>.json
-lang_map = en_US:en_us, de_DE:de_de, ru_RU:ru_ru, ta_IN:ta_in, hi_IN:hi_in, pt_PT:pt_pt, es_AR:es_ar, ca_ES:ca_es, es_ES:es_es, nl_NL:nl_nl, da_DK:da_dk, pt_BR:pt_br, fr_FR:fr_fr, mk_MK:mk_mk, ro_RO:ro_ro, zh_CN:zh_cn, cs_CZ:cs_cz, hu_HU:hu_hu, it_IT:it_it, sk_SK:sk_sk, no_NO:no_no, he_IL:he_il, el_GR:el_gr, pl_PL:pl_pl
+lang_map = en_US:en_us, de_DE:de_de, ru_RU:ru_ru, ta_IN:ta_in, hi_IN:hi_in, pt_PT:pt_pt, es_AR:es_ar, ca_ES:ca_es, es_ES:es_es, nl_NL:nl_nl, da_DK:da_dk, pt_BR:pt_br, fr_FR:fr_fr, mk_MK:mk_mk, ro_RO:ro_ro, zh_CN:zh_cn, cs_CZ:cs_cz, hu_HU:hu_hu, it_IT:it_it, sk_SK:sk_sk, no_NO:no_no, he_IL:he_il, el_GR:el_gr, pl_PL:pl_pl, id_ID:id_id
 
 [multi-locale.mc_locale_java]
 source_file = src/main/resources/mc_locale/mc_locale_java-source_en.properties

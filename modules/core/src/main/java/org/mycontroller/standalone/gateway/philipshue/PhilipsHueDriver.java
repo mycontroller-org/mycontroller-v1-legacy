@@ -19,12 +19,10 @@ package org.mycontroller.standalone.gateway.philipshue;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.mycontroller.restclient.core.ClientResponse;
-import org.mycontroller.restclient.core.jaxrs.Empty;
-import org.mycontroller.restclient.philips.hue.PhilipsHueClient;
-import org.mycontroller.restclient.philips.hue.PhilipsHueClientBuilder;
-import org.mycontroller.restclient.philips.hue.model.LightState;
-import org.mycontroller.restclient.philips.hue.model.State;
+import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
+import org.mycontroller.restclient.philipshue.PhilipsHueClient;
+import org.mycontroller.restclient.philipshue.model.LightState;
+import org.mycontroller.restclient.philipshue.model.State;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Sensor;
@@ -69,8 +67,7 @@ public class PhilipsHueDriver extends RestDriverAbstract {
     @Override
     public void connect() {
         try {
-            _client = new PhilipsHueClientBuilder().uri(_config.getUrl())
-                    .addProperty(PhilipsHueClient.KEY_AUTHORIZED_USER, _config.getAuthorizedUser()).build();
+            _client = new PhilipsHueClient(_config.getUrl(), _config.getAuthorizedUser(), TRUST_HOST_TYPE.ANY);
             _config.setStatus(STATE.UP, "Connected Successfully");
         } catch (Exception ex) {
             _config.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
@@ -79,74 +76,74 @@ public class PhilipsHueDriver extends RestDriverAbstract {
 
     @Override
     public void write(IMessage message) throws MessageParserException {
-        if (_config.getAuthorizedUser() != null && _config.getAuthorizedUser().length() > 0) {
-            _logger.debug("Send data: {}, {}", _config, message);
-            MessagePhilipsHue rawMessage = _parser.getGatewayData(message);
-            MESSAGE_TYPE type = MESSAGE_TYPE.fromString(rawMessage.getType());
-            if (type == MESSAGE_TYPE.C_SET) {
-                MESSAGE_TYPE_SET_REQ subType = MESSAGE_TYPE_SET_REQ.fromString(rawMessage.getSubType());
-                try {
-                    State state = getHueUpdateState(subType, rawMessage.getSensorId(), rawMessage.getPayload());
-                    if (state != null) {
-                        ClientResponse<Empty> updateState = _client.lights().updateState(rawMessage.getSensorId(),
-                                state);
-                        if (updateState != null && !updateState.isSuccess()) {
-                            _logger.debug("Error while updating hue lights: {}, {} ", updateState, rawMessage);
-                        }
-                    } else
-                        _logger.warn(" Unable to update {} ", rawMessage);
-                } catch (Exception ex) {
-                    _logger.error("Exception, ", ex);
+        try {
+            if (_config.getAuthorizedUser() != null && _config.getAuthorizedUser().length() > 0) {
+                _logger.debug("Send data: {}, {}", _config, message);
+                MessagePhilipsHue rawMessage = _parser.getGatewayData(message);
+                MESSAGE_TYPE type = MESSAGE_TYPE.fromString(rawMessage.getType());
+                if (type == MESSAGE_TYPE.C_SET) {
+                    MESSAGE_TYPE_SET_REQ subType = MESSAGE_TYPE_SET_REQ.fromString(rawMessage.getSubType());
+                    try {
+                        State state = getHueUpdateState(subType, rawMessage.getSensorId(), rawMessage.getPayload());
+                        if (state != null) {
+                            _client.lights().updateState(rawMessage.getSensorId(), state);
+                        } else
+                            _logger.warn(" Unable to update {} ", rawMessage);
+                    } catch (Exception ex) {
+                        _logger.error("Exception, ", ex);
+                    }
+                } else if (type == MESSAGE_TYPE.C_INTERNAL) {
+                    MESSAGE_TYPE_INTERNAL subType = MESSAGE_TYPE_INTERNAL.fromString(rawMessage.getSubType());
+                    switch (subType) {
+                        case I_PRESENTATION:
+                            read();
+                            break;
+                        default:
+                            _logger.error(" Not supported internal message: {} ", subType);
+                            break;
+                    }
                 }
-            } else if (type == MESSAGE_TYPE.C_INTERNAL) {
-                MESSAGE_TYPE_INTERNAL subType = MESSAGE_TYPE_INTERNAL.fromString(rawMessage.getSubType());
-                switch (subType) {
-                    case I_PRESENTATION:
-                        read();
-                        break;
-                    default:
-                        _logger.error(" Not supported internal message: {} ", subType);
-                        break;
-                }
+            } else {
+                _logger.warn("Private key not set for this {}", _config);
             }
-        } else {
-            _logger.warn("Private key not set for this {}", _config);
+        } catch (Exception ex) {
+            _logger.error("Exception, {}", message, ex);
         }
     }
 
     private State getHueUpdateState(MESSAGE_TYPE_SET_REQ subType, String sensorId, String payload) {
         State state = null;
-        switch (subType) {
-            case V_LIGHT_LEVEL:
-                double userValue = Double.valueOf(payload).doubleValue();
-                state = State.builder().bri(toBrightness(userValue).intValue()).build();
-                break;
-            case V_STATUS:
-                state = State.builder().on("1".equalsIgnoreCase(payload)).build();
-                break;
-            case V_RGB:
-                try {
-                    ClientResponse<LightState> lightState = _client.lights().state(sensorId);
-                    if (lightState != null && lightState.isSuccess()) {
-                        float[] xy = PHUtilities.calculateXY(
-                                Color.parseColor(payload), lightState.getEntity().getModelid());
-                        state = State.builder().xy(new Float[] { xy[0], xy[1] }).build();
-                    } else if (lightState != null) {
-                        _logger.debug(
-                                "Error while getting hue lights state, subType:{}, sensorId:{}, payload:{}, {}",
-                                subType, sensorId, payload, lightState);
+        try {
+            switch (subType) {
+                case V_LIGHT_LEVEL:
+                    double userValue = Double.valueOf(payload).doubleValue();
+                    state = State.builder().bri(toBrightness(userValue).intValue()).build();
+                    break;
+                case V_STATUS:
+                    state = State.builder().on("1".equalsIgnoreCase(payload)).build();
+                    break;
+                case V_RGB:
+                    try {
+                        LightState lightState = _client.lights().state(sensorId);
+                        if (lightState != null) {
+                            float[] xy = PHUtilities.calculateXY(
+                                    Color.parseColor(payload), lightState.getModelid());
+                            state = State.builder().xy(new Float[] { xy[0], xy[1] }).build();
+                        }
+                    } catch (Exception ex) {
+                        _logger.error("Error while getting hue lights state ", ex);
                     }
-                } catch (Exception ex) {
-                    _logger.error("Error while getting hue lights state ", ex);
-                }
-                //To prevent flood to the bridge. Before any call we wait at least 100ms.
-                //http://stackoverflow.com/questions/22101640/philips-hue-command-limitation
-                //source https://developers.meethue.com/documentation/hue-system-performance
-                sleep(100);
-                break;
+                    //To prevent flood to the bridge. Before any call we wait at least 100ms.
+                    //http://stackoverflow.com/questions/22101640/philips-hue-command-limitation
+                    //source https://developers.meethue.com/documentation/hue-system-performance
+                    sleep(100);
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
+        } catch (Exception ex) {
+            _logger.error("Exception: data[subType:{}, sensorId:{}, payload:{}]", subType, sensorId, payload, ex);
         }
         return state;
     }
@@ -275,25 +272,21 @@ public class PhilipsHueDriver extends RestDriverAbstract {
         try {
             _readRunning = true;
             _logger.debug("Getting hue lights...");
-            final ClientResponse<Map<String, LightState>> _response = _client.lights().listAll();
-            if (_response.isSuccess()) {
-                Map<String, LightState> lights = _response.getEntity();
-                _logger.debug("Client response: {}", _response);
-                if (_response != null && !lights.isEmpty()) {
-                    updateRecords(lights);
-                } else {
-                    _logger.warn("Error no light found {} ", _client);
-                }
+            final Map<String, LightState> lights = _client.lights().listAll();
+            _logger.debug("{}", lights);
+            if (lights != null && !lights.isEmpty()) {
+                updateRecords(lights);
             } else {
-                _logger.debug("Error while getting hue lights: {}", _response);
-                //In case something wrong with the bridge we waiting before attempting a new call.
-                _logger.debug("On error retrying...");
-                //Wait before trying contact the bridge.
-                sleep(2000);
+                _logger.warn("Error no light found {} ", _client);
             }
+        } catch (Exception ex) {
+            _logger.error("Error while getting hue lights", ex);
+            //In case something wrong with the bridge we waiting before attempting a new call.
+            _logger.debug("On error retrying...");
+            //Wait before trying contact the bridge.
+            sleep(2000);
         } finally {
             _readRunning = false;
         }
     }
-
 }

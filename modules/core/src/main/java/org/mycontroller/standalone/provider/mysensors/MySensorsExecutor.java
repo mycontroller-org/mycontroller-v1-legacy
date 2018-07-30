@@ -70,7 +70,9 @@ public class MySensorsExecutor extends ExecuterAbstract {
             FirmwareData firmwareData = FirmwareUtils.getFirmwareDataFromOfflineMap(firmwareRequest.getType(),
                     firmwareRequest.getVersion());
             if (firmwareData == null) {
-                _logger.debug("selected firmware type/version not available");
+                _logger.warn("Requested firmware is not available in MyController server. "
+                        + "FirmwareRequest[typeId:{}, versionId:{}, block:{}]",
+                        firmwareRequest.getType(), firmwareRequest.getVersion(), firmwareRequest.getBlock());
                 return;
             }
 
@@ -87,12 +89,6 @@ public class MySensorsExecutor extends ExecuterAbstract {
                 builder.append(String.format("%02X", firmwareData.getData().get(index)));
             }
 
-            // Print firmware status in sensor logs
-            if (firmwareRequest.getBlock() % 100 == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
-                // send log data to resource log
-
-            }
-
             _message.setTxMessage(true);
             _message.setSubType(MESSAGE_TYPE_STREAM.ST_FIRMWARE_RESPONSE.getText());
             _message.setPayload(Hex.encodeHexString(firmwareResponse.getByteBuffer().array())
@@ -101,11 +97,18 @@ public class MySensorsExecutor extends ExecuterAbstract {
             addInQueue(_message);
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
-            // Print firmware status in sensor logs
-            if (firmwareRequest.getBlock() % 100 == 0 || firmwareRequest.getBlock() == (blocks - 1)) {
-                // add it in to resources Log
-            }
 
+            // update firmware status
+            int responseBlock = firmwareResponse.getBlock() + 1; // adding +1 as it starts from 0
+            // firmware starts
+            if (responseBlock == 1) {
+                firmwareUpdateStart(blocks);
+            } else if (responseBlock % 50 == 0) {
+                updateFirmwareStatus(responseBlock);
+            } else if (responseBlock == blocks) {
+                updateFirmwareStatus(responseBlock);
+                firmwareUpdateFinished();
+            }
         } catch (DecoderException ex) {
             _logger.error("Exception, ", ex);
         }

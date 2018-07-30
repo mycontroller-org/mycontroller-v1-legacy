@@ -48,6 +48,11 @@ public class OffHeapFactory {
             return;
         }
         String storesLocation = AppProperties.getInstance().getMcPersistentStoresLocation() + MC_PERSISTENT_DIR;
+        // delete everything on start if clear message on start
+        if (AppProperties.getInstance().getClearMessagesQueueOnStart()
+                && AppProperties.getInstance().getClearSmartSleppMsgQueueOnStart()) {
+            reset();
+        }
         AppProperties.getInstance().createDirectoryLocation(storesLocation);
         database = DBMaker.newFileDB(FileUtils.getFile(storesLocation + "mc.mapdb")).make();
         COMMIT_SCHEDULER.scheduleWithFixedDelay(new Runnable() {

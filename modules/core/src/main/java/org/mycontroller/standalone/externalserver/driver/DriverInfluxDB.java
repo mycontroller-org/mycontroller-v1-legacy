@@ -16,11 +16,9 @@
  */
 package org.mycontroller.standalone.externalserver.driver;
 
-import java.net.URISyntaxException;
-
-import org.mycontroller.restclient.core.ClientResponse;
-import org.mycontroller.restclient.influxdb.InfluxDBClient;
-import org.mycontroller.restclient.influxdb.InfluxDBClientBuilder;
+import org.influxdb.BatchOptions;
+import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBFactory;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.config.ExternalServerConfigInfluxDB;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
@@ -33,8 +31,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class DriverInfluxDB extends DriverAbstract {
+    private static final int FLUSH_POINTS = 200;
+    private static final int FLUSH_DURATION = 2000;
+
     private ExternalServerConfigInfluxDB _config = null;
-    private InfluxDBClient _client = null;
+    private InfluxDB _client = null;
 
     public DriverInfluxDB(ExternalServerConfigInfluxDB _config) {
         super(_config);
@@ -44,16 +45,17 @@ public class DriverInfluxDB extends DriverAbstract {
     @Override
     public synchronized void write(SensorVariable sensorVariable) {
         if (_client != null) {
-            ClientResponse<String> clientResponse = _client.write(
-                    getVariableKey(sensorVariable, _config.getKeyFormat()),
-                    getVariableKey(sensorVariable, _config.getTags()),
-                    sensorVariable.getTimestamp(), getValue(sensorVariable));
-            if (!clientResponse.isSuccess()) {
-                _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,
-                        toString(), _config.getUrl());
-            } else {
-                _logger.debug("Remote server update status: {}, Remote server:{}, {}", clientResponse,
-                        toString(), _config.getUrl());
+            StringBuilder data = new StringBuilder();
+            data
+                    .append(getVariableKey(sensorVariable, _config.getKeyFormat()))
+                    .append(",").append(getVariableKey(sensorVariable, _config.getTags()))
+                    .append(" value=").append(getValue(sensorVariable))
+                    .append(" ").append(sensorVariable.getTimestamp()).append("000000");
+            try {
+                _client.write(data.toString());
+                _logger.debug("data[{}] sent", data.toString());
+            } catch (Exception ex) {
+                _logger.error("Exception, {}", data.toString(), ex);
             }
         }
     }
@@ -69,27 +71,22 @@ public class DriverInfluxDB extends DriverAbstract {
 
     @Override
     public void connect() {
-        try {
-            if (_config.getUsername() != null && _config.getUsername().length() > 0) {
-                _client = new InfluxDBClientBuilder()
-                        .uri(_config.getUrl(), _config.getTrustHostType())
-                        .basicAuthentication(_config.getUsername(), _config.getPassword())
-                        .addProperty(InfluxDBClient.KEY_DATABASE, _config.getDatabase())
-                        .build();
-            } else {
-                _client = new InfluxDBClientBuilder()
-                        .uri(_config.getUrl(), _config.getTrustHostType())
-                        .addProperty(InfluxDBClient.KEY_DATABASE, _config.getDatabase())
-                        .build();
-            }
-        } catch (URISyntaxException ex) {
-            _logger.error("Exception,", ex);
+        if (_config.getUsername() != null && _config.getUsername().trim().length() > 0) {
+            _client = InfluxDBFactory.connect(_config.getUrl(), _config.getUsername(), _config.getPassword());
+        } else {
+            _client = InfluxDBFactory.connect(_config.getUrl());
         }
+        _client.setDatabase(_config.getDatabase());
+        _client.enableBatch(BatchOptions.DEFAULTS.actions(FLUSH_POINTS).flushDuration(FLUSH_DURATION));
+        _logger.debug("External server:{}, Influxdb client BatchSettings[flush, points:{}, duration:{} ms]",
+                _config.getName(), FLUSH_POINTS, FLUSH_DURATION);
     }
 
     @Override
     public void disconnect() {
-        _client = null;
-
+        if (_client != null) {
+            _client.close();
+            _logger.debug("Influxdb client connection closed.");
+        }
     }
 }

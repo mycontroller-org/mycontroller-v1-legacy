@@ -28,6 +28,7 @@ import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.operation.model.OperationSendPushbulletNote;
 import org.mycontroller.standalone.operation.model.OperationSendSMS;
+import org.mycontroller.standalone.operation.model.OperationSendTelegramBotMessage;
 import org.mycontroller.standalone.rule.model.RuleDefinitionAbstract;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 
@@ -50,6 +51,7 @@ public class OperationUtils {
         SEND_SMS("Send SMS"),
         SEND_EMAIL("Send email"),
         SEND_PUSHBULLET_NOTE("Send pushbullet note"),
+        SEND_TELEGRAM_BOT_MESSAGE("Send telegram bot message"),
         EXECUTE_SCRIPT("Execute script");
         public static OPERATION_TYPE get(int id) {
             for (OPERATION_TYPE operation_type : values()) {
@@ -92,6 +94,8 @@ public class OperationUtils {
                 return new OperationSendPayload(operationTable);
             case SEND_PUSHBULLET_NOTE:
                 return new OperationSendPushbulletNote(operationTable);
+            case SEND_TELEGRAM_BOT_MESSAGE:
+                return new OperationSendTelegramBotMessage(operationTable);
             case SEND_SMS:
                 return new OperationSendSMS(operationTable);
             case REQUEST_PAYLOAD:

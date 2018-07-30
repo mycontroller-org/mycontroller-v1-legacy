@@ -32,6 +32,7 @@ import org.mycontroller.standalone.settings.MyControllerSettings;
 import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SmsSettings;
+import org.mycontroller.standalone.settings.TelegramBotSettings;
 import org.mycontroller.standalone.utils.McUtils;
 
 import lombok.AccessLevel;
@@ -44,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 0.0.1
  */
 @Slf4j
-@ToString(includeFieldNames = true)
+@ToString(exclude = { "dbPassword", "webSslKeystorePassword", "mqttSslKeystorePassword" })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppProperties {
     private static AppProperties _instance = new AppProperties();
@@ -54,6 +55,7 @@ public class AppProperties {
     private static final String SCRIPTS_DIRECTORY = "scripts" + File.separator;
     public static final String CONDITIONS_SCRIPTS_DIRECTORY = "conditions" + File.separator;
     public static final String OPERATIONS_SCRIPTS_DIRECTORY = "operations" + File.separator;
+    public static final String FIRMWARE_DATA_DIRECTORY = "firmwares" + File.separator;
     private static final String WEB_CONFIGURATIONS_DIR = "_configurations";
     private static final String HTML_HEADERS_FILE = "html-headers.json";
 
@@ -91,6 +93,7 @@ public class AppProperties {
     MySensorsSettings mySensorsSettings;
     SmsSettings smsSettings;
     PushbulletSettings pushbulletSettings;
+    TelegramBotSettings telegramBotSettings;
     LocationSettings locationSettings;
     MetricsGraphSettings metricsGraphSettings;
     MetricsDataRetentionSettings metricsDataRetentionSettings;
@@ -522,7 +525,9 @@ public class AppProperties {
 
     private String getValue(Properties properties, String key, String defaultValue) {
         String value = properties.getProperty(key, defaultValue);
-        _logger.debug("Key:{}-->{}", key, value);
+        if (!key.contains("password")) {
+            _logger.debug("Key:{}-->{}", key, value);
+        }
         if (value != null) {
             return value.trim();
         } else {
@@ -544,6 +549,7 @@ public class AppProperties {
         metricsDataRetentionSettings = MetricsDataRetentionSettings.get();
         backupSettings = BackupSettings.get();
         pushbulletSettings = PushbulletSettings.get();
+        telegramBotSettings = TelegramBotSettings.get();
         mqttBrokerSettings = MqttBrokerSettings.get();
     }
 
@@ -714,6 +720,14 @@ public class AppProperties {
         this.pushbulletSettings = pushbulletSettings;
     }
 
+    public TelegramBotSettings getTelegramBotSettings() {
+        return telegramBotSettings;
+    }
+
+    public void setTelegramBotSettings(TelegramBotSettings telegramBotSettings) {
+        this.telegramBotSettings = telegramBotSettings;
+    }
+
     public String getResourcesLocation() {
         return resourcesLocation;
     }
@@ -736,6 +750,10 @@ public class AppProperties {
 
     public String getHtmlHeadersFile() {
         return getResourcesLocation() + HTML_HEADERS_FILE;
+    }
+
+    public String getFirmwaresDataDirectory() {
+        return getResourcesLocation() + FIRMWARE_DATA_DIRECTORY;
     }
 
     public String getWebConfigurationsLocation() {

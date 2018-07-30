@@ -16,12 +16,13 @@
  */
 package org.mycontroller.standalone.externalserver.driver;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mycontroller.restclient.phantio.PhantIOClient;
+import org.mycontroller.restclient.phantio.model.PostResponse;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.externalserver.config.ExternalServerConfigPhantIO;
-import org.mycontroller.standalone.restclient.ClientResponse;
-import org.mycontroller.standalone.restclient.phantio.PhantIOClient;
-import org.mycontroller.standalone.restclient.phantio.PhantIOClientImpl;
-import org.mycontroller.standalone.restclient.phantio.model.PostResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,36 +43,26 @@ public class DriverPhantIO extends DriverAbstract {
     @Override
     public synchronized void write(SensorVariable sensorVariable) {
         if (_client != null) {
-            ClientResponse<PostResponse> clientResponse = _client.post(
-                    getVariableKey(sensorVariable, _config.getKeyFormat()), sensorVariable.getValue());
-            if (!clientResponse.isSuccess()) {
-                _logger.error("Failed to send data to remote server! {}, Remote server:{}, {}", clientResponse,
-                        toString(), _config.getUrl());
-            } else {
-                _logger.debug("Remote server update status: {}, Remote server:{}, {}", clientResponse,
-                        toString(), _config.getUrl());
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(getVariableKey(sensorVariable, _config.getKeyFormat()), sensorVariable.getValue());
+            try {
+                PostResponse response = _client.post(data);
+                _logger.debug("{}", response);
+            } catch (Exception ex) {
+                _logger.error("Exception, data:[{}]", data, ex);
             }
         }
     }
 
     @Override
     public void connect() {
-        try {
-            _client = new PhantIOClientImpl(
-                    _config.getUrl(),
-                    _config.getPublicKey(),
-                    _config.getPrivateKey(),
-                    _config.getTrustHostType());
-        } catch (Exception ex) {
-            _logger.error("Exception,", ex);
-        }
-
+        _client = new PhantIOClient(_config.getUrl(), _config.getPublicKey(),
+                _config.getPrivateKey(), _config.getTrustHostType());
     }
 
     @Override
     public void disconnect() {
         // TODO Auto-generated method stub
-
     }
 
 }

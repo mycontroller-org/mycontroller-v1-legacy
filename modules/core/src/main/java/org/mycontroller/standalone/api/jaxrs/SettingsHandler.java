@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.mail.EmailException;
+import org.mycontroller.restclient.pushbullet.model.User;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
 import org.mycontroller.standalone.api.jaxrs.model.ApiError;
@@ -45,7 +46,7 @@ import org.mycontroller.standalone.metrics.model.Pong;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
-import org.mycontroller.standalone.restclient.pushbullet.model.User;
+import org.mycontroller.standalone.operation.TelegramBotUtils;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
@@ -57,6 +58,7 @@ import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
+import org.mycontroller.standalone.settings.TelegramBotSettings;
 import org.mycontroller.standalone.settings.UserNativeSettings;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.utils.McUtils;
@@ -219,6 +221,42 @@ public class SettingsHandler extends AccessEngine {
                     .imageUrl(user.getImageUrl())
                     .iden(user.getIden()).build().updateInternal();
             AppProperties.getInstance().setPushbulletSettings(PushbulletSettings.get());
+            return RestUtils.getResponse(Status.OK);
+        } catch (Exception ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));
+        }
+    }
+
+    @GET
+    @Path("/telegrambot")
+    public Response getTelegramBot() {
+        return RestUtils.getResponse(Status.OK, AppProperties.getInstance().getTelegramBotSettings());
+    }
+
+    @POST
+    @Path("/telegrambot")
+    public Response saveTelegramBot(TelegramBotSettings telegramBotSettings) {
+        try {
+            telegramBotSettings.save();
+            AppProperties.getInstance().setTelegramBotSettings(TelegramBotSettings.get());
+            //Clear everything
+            TelegramBotSettings.builder()
+                    .id(null)
+                    .firstName(null)
+                    .isBot(null)
+                    .username(null)
+                    .build().updateInternal();
+            AppProperties.getInstance().setTelegramBotSettings(TelegramBotSettings.get());
+            TelegramBotUtils.clearClient();//Clear client when updated
+
+            org.mycontroller.restclient.telegrambot.model.User user = TelegramBotUtils.getMe();
+            TelegramBotSettings.builder()
+                    .id(user.getId())
+                    .firstName(user.getFirstName())
+                    .isBot(user.isBot())
+                    .username(user.getUsername())
+                    .build().updateInternal();
+            AppProperties.getInstance().setTelegramBotSettings(TelegramBotSettings.get());
             return RestUtils.getResponse(Status.OK);
         } catch (Exception ex) {
             return RestUtils.getResponse(Status.BAD_REQUEST, new ApiError(ex.getMessage()));

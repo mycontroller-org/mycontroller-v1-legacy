@@ -124,6 +124,35 @@
             </div>
           </div>
 
+          <!-- TelegramBot Operation -->
+          <div ng-if="item.type === 'Send telegram bot message'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'CHANNEL_USERNAME' | translate }}</label>
+              <div class="col-sm-10 ">
+                <input class="form-control" placeholder="{{ 'CHANNEL_USERNAME' | translate }}" ng-model="item.chatId" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'PARSE_MODE' | translate }}</label>
+                <div class="col-sm-10">
+                  <select pf-select ng-model="item.parseMode">
+                    <option value="" ng-hide="true"></option>
+                    <option value="Text">{{ 'TEXT' | translate }}</option>
+                    <option value="HTML">{{ 'HTML' | translate }}</option>
+                    <option value="Markdown">{{ 'MARKDOWN' | translate }}</option>
+                  </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'CUSTOM_MESSAGE' | translate }}</label>
+              <div class="col-sm-10">
+                <textarea class="form-control" placeholder="{{ 'CUSTOM_MESSAGE' | translate }}" ng-model="item.customMessage" rows="4"/>
+              </div>
+            </div>
+          </div>
+
           <!-- Pushbullet Operation -->
           <div ng-if="item.type === 'Send pushbullet note'">
             <div class="form-group">

@@ -131,6 +131,7 @@ public class SensorHandler extends AccessEngine {
         return RestUtils.getResponse(Status.OK, sensorApi.get(id));
     }
 
+    @RolesAllowed({ "admin" })
     @POST
     @Path("/deleteIds")
     public Response deleteIds(List<Integer> ids) {
@@ -139,6 +140,7 @@ public class SensorHandler extends AccessEngine {
         return RestUtils.getResponse(Status.NO_CONTENT);
     }
 
+    @RolesAllowed({ "admin" })
     @PUT
     @Path("/")
     public Response update(Sensor sensor) {

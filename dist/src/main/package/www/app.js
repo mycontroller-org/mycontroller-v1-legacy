@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,19 +43,20 @@ var myControllerModule = angular.module('myController',[
   'angularMoment',
   'adf',
   'adf.structures.base',
-  'adf.widget.myc-sen-vars',
   'adf.widget.myc-a-sensor-graph',
-  'adf.widget.myc-sensors-grouped-graph',
-  'adf.widget.myc-sensors-mixed-graph',
-  'adf.widget.myc-sensors-bullet-graph',
-  'adf.widget.myc-heat-map',
-  'adf.widget.myc-custom-buttons',
-  'adf.widget.myc-dsi',
-  'adf.widget.myc-groups',
-  'adf.widget.myc-time',
-  'adf.widget.myc-sunrisetime',
-  'adf.widget.news',
   'adf.widget.myc-custom-widget',
+  'adf.widget.myc-dsi',
+  'adf.widget.myc-sensors-grouped-graph',
+  'adf.widget.myc-groups',
+  'adf.widget.myc-heat-map',
+  'adf.widget.myc-sensors-mixed-graph',
+  'adf.widget.myc-time',
+  'adf.widget.news',
+  'adf.widget.myc-os-commands',
+  'adf.widget.myc-custom-buttons',
+  'adf.widget.myc-sen-vars',
+  'adf.widget.myc-sensors-bullet-graph',
+  'adf.widget.myc-sunrisetime',
   'ngMap',
   'kubernetesUI',
 ]);

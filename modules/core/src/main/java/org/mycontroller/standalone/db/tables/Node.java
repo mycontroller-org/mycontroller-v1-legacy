@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,6 +70,12 @@ public class Node {
     public static final String KEY_SMART_SLEEP_ENABLED = "smartSleepEnabled";
     public static final String KEY_SMART_SLEEP_WAIT_DURATION = "smartSleepWaitDuration";
     public static final String KEY_SMART_SLEEP_DURATION = "smartSleepDuration";
+    // firmware keys
+    public static final String KEY_FW_OPERATION_LAST = "fwOpLast";
+    public static final String KEY_FW_OPERATION_FIRST = "fwOpFirst";
+    public static final String KEY_FW_OPERATION_LAST_DURATION = "fwOpLastDuration";
+    public static final String KEY_FW_BLOCKS_SENT = "fwBksSent";
+    public static final String KEY_FW_BLOCKS_TOTAL = "fwBksTotal";
 
     //Properties key
     public static final String KEY_ALIVE_CHECK_INTERVAL = "aliveCheckInterval";
@@ -199,5 +205,31 @@ public class Node {
                 return 0L;
             }
         }
+    }
+
+    public void firmwareUpdateFinished() {
+        Long startTime = (Long) this.getProperty(KEY_FW_OPERATION_FIRST);
+        Long endTime = (Long) this.getProperty(KEY_FW_OPERATION_LAST);
+        if (startTime != null && endTime != null) {
+            this.getProperties().put(KEY_FW_OPERATION_LAST_DURATION, endTime - startTime);
+        }
+    }
+
+    public void firmwareUpdateStart(int totalBlocks) {
+        this.getProperties().put(KEY_FW_OPERATION_FIRST, System.currentTimeMillis());
+        this.getProperties().put(KEY_FW_BLOCKS_TOTAL, totalBlocks);
+    }
+
+    public void updateFirmwareStatus(int blocksSent) {
+        this.getProperties().put(KEY_FW_OPERATION_LAST, System.currentTimeMillis());
+        this.getProperties().put(KEY_FW_BLOCKS_SENT, blocksSent);
+    }
+
+    public void clearFirmwareStatus() {
+        this.getProperties().remove(KEY_FW_OPERATION_LAST);
+        this.getProperties().remove(KEY_FW_OPERATION_FIRST);
+        this.getProperties().remove(KEY_FW_OPERATION_LAST_DURATION);
+        this.getProperties().remove(KEY_FW_BLOCKS_SENT);
+        this.getProperties().remove(KEY_FW_BLOCKS_TOTAL);
     }
 }

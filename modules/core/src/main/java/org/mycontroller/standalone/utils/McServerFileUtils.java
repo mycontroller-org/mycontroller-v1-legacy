@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ws.rs.BadRequestException;
@@ -39,7 +40,13 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.jaxrs.model.ImageFile;
 import org.mycontroller.standalone.api.jaxrs.model.LogFile;
+import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.FileAppender;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,8 +58,8 @@ import lombok.extern.slf4j.Slf4j;
 @UtilityClass
 @Slf4j
 public class McServerFileUtils {
-    private static final String LOG_FILE_LOCATION = "../logs/";
-    private static File appLogFile = FileUtils.getFile("../logs/mycontroller.log");
+    private static String LOGS_DIRECTORY_LOCATION = null;
+    private static File appLogFile = null;
     private static final StringBuilder logBuilder = new StringBuilder();
     private static final long MAX_POSITION_LIMIT = 100000;
 
@@ -62,6 +69,34 @@ public class McServerFileUtils {
     //If we allow more than this, should increase heap space of VM.
     private static final long IMAGE_DISPLAY_WIDGET_FILE_SIZE_LIMIT = McUtils.MB * 7;
     private static final long MAX_FILES_LIMIT = 500;
+
+    public static void updateApplicationLogLocation() {
+        String applicationLogFile = null;
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        for (Logger logger : context.getLoggerList()) {
+            for (Iterator<Appender<ILoggingEvent>> index = logger.iteratorForAppenders(); index.hasNext();) {
+                Object enumElement = index.next();
+                if (enumElement instanceof FileAppender) {
+                    FileAppender<?> fileAppender = (FileAppender<?>) enumElement;
+                    File clientLogFile = new File(fileAppender.getFile());
+                    try {
+                        applicationLogFile = clientLogFile.getCanonicalPath();
+                    } catch (Exception ex) {
+                        _logger.error("Unable to get log file path,", ex);
+                    }
+                    break;
+                }
+            }
+        }
+
+        if (applicationLogFile == null) {
+            applicationLogFile = "../logs/mycontroller.log";
+        }
+        // update log file details
+        appLogFile = FileUtils.getFile(applicationLogFile);
+        LOGS_DIRECTORY_LOCATION = appLogFile.getParent();
+        _logger.debug("Application log file location: {}", applicationLogFile);
+    }
 
     public static LogFile getLogUpdate(Long lastKnownPosition, Long lastNPosition) {
         if (lastNPosition != null && appLogFile.length() > lastNPosition) {
@@ -108,7 +143,7 @@ public class McServerFileUtils {
     public static String getLogsZipFile() throws IOException {
         String zipFileName = AppProperties.getInstance().getTmpLocation() + "mc-logs-"
                 + new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss").format(new Date()) + ".zip";
-        McUtils.createZipFile(LOG_FILE_LOCATION, zipFileName);
+        McUtils.createZipFile(LOGS_DIRECTORY_LOCATION, zipFileName);
         _logger.debug("zip file creation done for logs");
         return zipFileName;
     }

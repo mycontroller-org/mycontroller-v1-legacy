@@ -56,19 +56,25 @@ public class ExecuteMessageDependentTask implements Runnable {
         McThreadPoolFactory.execute(new ExternalServerExecuter(_sv));
 
         // update metric data to metric engine
-        MetricsUtils.engine().post(DataPointer.builder()
-                .payload(_sv.getValue())
-                .timestamp(_sv.getTimestamp())
-                .resourceModel(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, _sv))
-                .dataType(DATA_TYPE.SENSOR_VARIABLE)
-                .build());
+        try {
+            MetricsUtils.engine().post(DataPointer.builder()
+                    .payload(_sv.getValue())
+                    .timestamp(_sv.getTimestamp())
+                    .resourceModel(new ResourceModel(RESOURCE_TYPE.SENSOR_VARIABLE, _sv))
+                    .dataType(DATA_TYPE.SENSOR_VARIABLE)
+                    .build());
+        } catch (Exception ex) {
+            _logger.error("Exception, [timestamp:{}, sensorVariableId:{}, payload:{}]",
+                    _sv.getTimestamp(), _sv.getId(), _sv.getValue(), ex);
+        }
 
         // execute Rules for this sensor variable
         // DO NOT START NEW THREAD
         try {
             new McRuleEngine(RESOURCE_TYPE.SENSOR_VARIABLE, _sv.getId()).run();
         } catch (Exception ex) {
-            _logger.error("Exception,", ex);
+            _logger.error("Exception, [timestamp:{}, sensorVariableId:{}, payload:{}]",
+                    _sv.getTimestamp(), _sv.getId(), _sv.getValue(), ex);
         }
     }
 

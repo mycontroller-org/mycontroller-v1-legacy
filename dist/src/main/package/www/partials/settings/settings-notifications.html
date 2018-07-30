@@ -169,6 +169,64 @@
       </div>
     </div>
 
+    <!-- TelegramBot settings -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-telegram fa-lg"></i> {{ 'TELEGRAM_BOT' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcFormTelegramBotNotification">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'TOKEN' | translate }}</label>
+              <div class="col-sm-7">
+                <input ng-show="editEnable.telegramBot" class="form-control" ng-model="telegramBotSettings.token" required />
+                <span ng-hide="editEnable.telegramBot">**********</span>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'ID' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{telegramBotSettings.id}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'IS_BOT' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{telegramBotSettings.isBot}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'FIRST_NAME' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{telegramBotSettings.firstName}}</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'USERNAME' | translate }}</label>
+              <div class="col-sm-7">
+                <span>{{telegramBotSettings.username}}</span>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.telegramBot" ng-click="editEnable.telegramBot = true">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.telegramBot" ng-click="updateSettingsTelegramBot();editEnable.telegramBot = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="saveTelegramBot()"  ng-show="editEnable.telegramBot" ng-disabled="saveProgress.telegramBot || mcFormTelegramBotNotification.$invalid">
+              <div ng-show="saveProgress.telegramBot" class="spinner spinner-xs"></div>
+              {{saveProgress.telegramBot ? 'SAVING' : 'SAVE' | translate}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- SMS settings -->
     <div class="col-md-12">
       <div class="card-pf card-pf-accented">
