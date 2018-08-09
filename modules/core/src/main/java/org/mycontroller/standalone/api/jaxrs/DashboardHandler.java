@@ -85,9 +85,9 @@ public class DashboardHandler extends AccessEngine {
                 dashboards.add(DashboardSettings.getDefaultDashboard(AuthUtils.getUser(securityContext),
                         "Default dashboard"));
             }
-            if (lessInfo != null && lessInfo) {
+            if (lessInfo != null && !lessInfo) {
                 for (Dashboard dashboard : dashboards) {
-                    dashboard.setRows(null);
+                    dashboard.loadRows();
                 }
             }
             return RestUtils.getResponse(Status.OK, dashboards);
@@ -105,7 +105,7 @@ public class DashboardHandler extends AccessEngine {
 
     @DELETE
     @Path("/")
-    public Response updateDashboard(@QueryParam("dId") Integer id) {
+    public Response deleteDashboard(@QueryParam("dId") Integer id) {
         try {
             DashboardSettings.deleteDashboard(AuthUtils.getUser(securityContext), id);
             return RestUtils.getResponse(Status.OK);

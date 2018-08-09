@@ -16,6 +16,8 @@
  */
 package org.mycontroller.standalone.settings;
 
+import java.util.UUID;
+
 import org.mycontroller.standalone.db.tables.Settings;
 
 import lombok.AllArgsConstructor;
@@ -42,19 +44,35 @@ public class Dashboard {
     private String title;
     private String structure;
     private String rows;
+    private String uuid;
 
-    public static Dashboard get(Settings settings) {
+    public String getUuid() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID().toString();
+        }
+        return uuid;
+    }
+
+    public static Dashboard get(Settings settings, boolean updateRowData) {
         if (settings == null) {
             return Dashboard.builder().build();
         }
-        return Dashboard.builder()
+        Dashboard dashboard = Dashboard.builder()
                 .id(settings.getId())
                 .userId(settings.getUserId())
                 .name(settings.getSubKey())
                 .title(settings.getValue())
-                .rows(settings.getValue2())
                 .structure(settings.getValue3())
+                .uuid(settings.getValue4())
                 .build();
+        if (updateRowData) {
+            dashboard.setRows(DashboardSettings.loadFromDisk(dashboard.getUuid()));
+        }
+        return dashboard;
+    }
+
+    public void loadRows() {
+        setRows(DashboardSettings.loadFromDisk(getUuid()));
     }
 
     public void update() {
@@ -63,13 +81,15 @@ public class Dashboard {
 
     public void update(boolean forceCreate) {
         SettingsUtils.updateSettings(Settings.builder()
-                .id(id)
+                .id(getId())
                 .key(KEY_DASHBOARD)
-                .userId(userId)
-                .subKey(name)
-                .value(title)
-                .value2(rows)
-                .value3(structure)
+                .userId(getUserId())
+                .subKey(getName())
+                .value(getTitle())
+                .value3(getStructure())
+                .value4(getUuid())
                 .build(), forceCreate);
+        // store row data
+        DashboardSettings.writeToDisk(getUuid(), getRows());
     }
 }

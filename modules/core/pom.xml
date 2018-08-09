@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.mycontroller.standalone</groupId>
     <artifactId>mycontroller-standalone-parent</artifactId>
-    <version>1.3.0.Final</version>
+    <version>1.4.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
