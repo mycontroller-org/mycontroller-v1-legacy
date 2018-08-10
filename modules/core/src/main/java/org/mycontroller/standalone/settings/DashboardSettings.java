@@ -63,7 +63,11 @@ public class DashboardSettings {
     public static void deleteDashboard(User user, Integer id) throws IllegalAccessException {
         Settings settings = DaoUtils.getSettingsDao().getById(id);
         if (settings != null && settings.getUserId() == user.getId()) {
+            Dashboard dashboard = Dashboard.get(settings, false);
+            // delete from database
             DaoUtils.getSettingsDao().deleteById(id);
+            // delete from disk
+            deleteFromDisk(dashboard.getUuid());
         } else {
             throw new IllegalAccessException("you do not have access to see this resource!");
         }
