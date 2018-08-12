@@ -140,7 +140,13 @@ public class McUtils {
 
     public static Integer getInteger(String value) {
         if (value != null) {
-            return Integer.valueOf(value);
+            try {
+                return Integer.valueOf(value);
+            } catch (NumberFormatException ex) {
+                _logger.warn("Looks like supplied value[{}] is not a integer,"
+                        + " non-integers will be removed and retried...");
+                return Integer.valueOf(value.replaceAll("[^0-9]", ""));
+            }
         } else {
             return null;
         }
