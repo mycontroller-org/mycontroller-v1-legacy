@@ -287,13 +287,15 @@ public class GatewayUtils {
         if (!gatewayTable.getEnabled() && !McObjectManager.getEngine(gatewayId).isRunning()) {
             return;
         }
+        // unload, stop
+        unloadEngine(gatewayId);
+        // disable this gateway
+        gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
         gatewayTable.setEnabled(false);
         gatewayTable.setStatusSince(System.currentTimeMillis());
         gatewayTable.setState(STATE.UNAVAILABLE);
         gatewayTable.setStatusMessage("Disabled by user");
         DaoUtils.getGatewayDao().update(gatewayTable);
-        unloadEngine(gatewayId);
-        loadEngine(DaoUtils.getGatewayDao().getById(gatewayId));
     }
 
     public static void enableGateways(List<Integer> ids) {
