@@ -66,7 +66,6 @@ public abstract class EngineAbstract implements IEngine {
     public void start() {
         // Add it in to thread pool
         McThreadPoolFactory.execute(this);
-        //new Thread(this).start();
         _logger.debug("{}", _gateway.config());
     }
 
@@ -124,6 +123,7 @@ public abstract class EngineAbstract implements IEngine {
         stopped = false;
         // start the gateway
         _gateway.connect();
+        _logger.debug("Gateway started successfully. {}", _gateway.config());
 
         while (!exit) {
             try {
@@ -135,9 +135,9 @@ public abstract class EngineAbstract implements IEngine {
                 _logger.error("Exception,", ex);
             }
         }
-        stopped = true;
         _gateway.disconnect();
         _logger.debug("Terminatted... ");
+        stopped = true;
     }
 
     @Override

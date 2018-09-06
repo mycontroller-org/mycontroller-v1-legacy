@@ -26,11 +26,20 @@ import org.mycontroller.standalone.message.IMessage;
  * @since 1.2.0
  */
 public interface IEngine extends Runnable {
-    void start();
-
-    void stop();
 
     boolean isRunning();
+
+    boolean validate(Node node);
+
+    boolean validate(Sensor sensor);
+
+    EngineStatistics processingRate();
+
+    GatewayConfig config();
+
+    void auditQueue();
+
+    void clearSleepQueue(String nodeEui);
 
     void distory();
 
@@ -40,15 +49,8 @@ public interface IEngine extends Runnable {
 
     void sendSleepNode(IMessage message);
 
-    void clearSleepQueue(String nodeEui);
+    void start();
 
-    void auditQueue();
+    void stop();
 
-    boolean validate(Sensor sensor);
-
-    boolean validate(Node node);
-
-    GatewayConfig config();
-
-    EngineStatistics processingRate();
 }

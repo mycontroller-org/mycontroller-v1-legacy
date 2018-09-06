@@ -104,7 +104,8 @@ public class NodeAliveStatusJob extends Job {
                 if (newState != null) {
                     DaoUtils.getNodeDao().update(Node.KEY_STATE, newState, node.getId());
                     _logger.debug("Node is in not reachable state, Node:[{}]", node);
-                    // for mysensors network, node 0 is gateway. if there node 0 is down. reload the gateway.
+                    // for mysensors network, node 0 is gateway. if the node 0 is down. reload the gateway.
+                    // In MySensors node 0 is a gateway
                     if (node.getEui().equals("0")
                             && node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
                             && newState == STATE.DOWN) {
