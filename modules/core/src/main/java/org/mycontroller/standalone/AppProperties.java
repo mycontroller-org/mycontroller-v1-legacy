@@ -150,6 +150,7 @@ public class AppProperties {
         FR_FR("Français (FR)"),
         HE_IL("עִברִית (IL)"),
         HU_HU("Magyar (HU)"),
+        ID_ID("bahasa Indonesia (ID)"),
         IT_IT("italiano (IT)"),
         MK_MK("Македонски (MK)"),
         NL_NL("Nederlands (NL)"),
