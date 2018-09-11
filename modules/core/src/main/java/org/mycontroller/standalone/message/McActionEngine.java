@@ -142,7 +142,7 @@ public class McActionEngine implements IMcActionEngine {
                         payload = ResourceOperationUtils.getPayload(operation, sensorVariable.getValue());
                     } else {
                         _logger.warn("Unable to run special oprtaion, there is no value available "
-                                + "for this sensor variable, OperationTable:[{}], SensorVariable",
+                                + "for this sensor variable, Operation:[{}], SensorVariable",
                                 operation, sensorVariable);
                         //TODO: return exception
                         return;
@@ -155,7 +155,7 @@ public class McActionEngine implements IMcActionEngine {
                 case START:
                 default:
                     //TODO: not supported operations
-                    _logger.warn("Not supported opration! OperationTable for sensor variable:[{}]", operation
+                    _logger.warn("Not supported opration! sensor variable:[{}]", operation
                             .getOperationType()
                             .getText());
                     return;

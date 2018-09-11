@@ -339,7 +339,7 @@ public class TypesUtils {
                 break;
         }
         for (SEND_PAYLOAD_OPERATIONS operation : operations) {
-            typesIdNameMappers.add(TypesIdNameMapper.builder().id(operation.getText())
+            typesIdNameMappers.add(TypesIdNameMapper.builder().id("sp:" + operation.getText())
                     .displayName(operation.getText()).build());
         }
         return typesIdNameMappers;
