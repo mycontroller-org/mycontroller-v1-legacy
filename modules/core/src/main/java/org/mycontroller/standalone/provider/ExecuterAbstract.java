@@ -194,13 +194,15 @@ public abstract class ExecuterAbstract implements IExecutor {
                     return;
                 }
                 node = getNode();
-                //Update node name only when it is null or name length is greater than 0
-                if (node.getName() == null) {
-                    node.setName(_message.getPayload());
-                } else if (_message.getPayload() != null && _message.getPayload().trim().length() > 0) {
-                    node.setName(_message.getPayload());
+                if (!node.isNameLocked()) {
+                    //Update node name only when it is null or name length is greater than 0
+                    if (node.getName() == null) {
+                        node.setName(_message.getPayload());
+                    } else if (_message.getPayload() != null && _message.getPayload().trim().length() > 0) {
+                        node.setName(_message.getPayload());
+                    }
+                    updateNode(node);
                 }
-                updateNode(node);
                 break;
             case I_SKETCH_VERSION:
                 if (_message.isTxMessage()) {
