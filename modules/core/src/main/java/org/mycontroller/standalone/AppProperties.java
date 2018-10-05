@@ -60,6 +60,8 @@ public class AppProperties {
     private static final String WEB_CONFIGURATIONS_DIR = "_configurations";
     private static final String HTML_HEADERS_FILE = "html-headers.json";
 
+    public static final String GOOGLE_ANALYTICS_TID = "UA-127071169-1";
+
     private String tmpLocation;
     private String resourcesLocation;
     private String appDirectory;
@@ -88,6 +90,8 @@ public class AppProperties {
     private Boolean clearSmartSleepMsgQueueOnStart;
 
     private Boolean mDNSserviceEnabled = false;
+
+    private boolean googleAnalyticsEnabled = true;
 
     MyControllerSettings controllerSettings;
     EmailSettings emailSettings;
@@ -508,6 +512,9 @@ public class AppProperties {
         //mDNS service, enabled or disabled
         mDNSserviceEnabled = McUtils.getBoolean(getValue(properties,
                 "mcc.mdns.service.enable", "false"));
+
+        googleAnalyticsEnabled = McUtils.getBoolean(getValue(properties,
+                "mcc.collect.anonymous.data", "true"));
     }
 
     public void createDirectoryLocation(String directoryLocation) {
@@ -806,4 +813,7 @@ public class AppProperties {
         return mqttSslKeystorePassword;
     }
 
+    public boolean isGoogleAnalyticsEnabled() {
+        return googleAnalyticsEnabled;
+    }
 }

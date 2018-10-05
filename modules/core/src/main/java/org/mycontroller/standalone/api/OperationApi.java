@@ -74,6 +74,7 @@ public class OperationApi {
 
     public void add(Operation operation) {
         DaoUtils.getOperationDao().create(operation.getOperationTable());
+        GoogleAnalyticsApi.instance().trackOperationCreation(operation.getType().getText());
     }
 
     public void update(Operation operation) {

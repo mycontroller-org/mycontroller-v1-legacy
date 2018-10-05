@@ -149,4 +149,9 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
             return null;
         }
     }
+
+    @Override
+    public List<ResourcesGroup> getAll(List<Integer> ids) {
+        return super.getAll(ResourcesGroup.KEY_ID, ids);
+    }
 }

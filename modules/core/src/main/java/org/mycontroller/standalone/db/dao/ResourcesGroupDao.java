@@ -16,8 +16,6 @@
  */
 package org.mycontroller.standalone.db.dao;
 
-import java.util.List;
-
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
@@ -26,20 +24,9 @@ import org.mycontroller.standalone.db.tables.ResourcesGroup;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface ResourcesGroupDao {
-    void create(ResourcesGroup resourcesGroup);
-
-    void createOrUpdate(ResourcesGroup resourcesGroup);
-
-    void update(ResourcesGroup resourcesGroup);
-
-    void delete(ResourcesGroup resourcesGroup);
+public interface ResourcesGroupDao extends BaseDao<ResourcesGroup, Integer> {
 
     void delete(Integer id);
-
-    List<ResourcesGroup> getAll();
-
-    ResourcesGroup get(ResourcesGroup resourcesGroup);
 
     ResourcesGroup get(Integer id);
 

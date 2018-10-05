@@ -102,6 +102,7 @@ public class GatewayApi {
 
     public void add(GatewayConfig gatewayConfig) {
         GatewayUtils.addGateway(gatewayConfig.getGatewayTable());
+        GoogleAnalyticsApi.instance().trackGatewayCreation(gatewayConfig.getType().getText());
     }
 
     public void update(GatewayConfig gatewayConfig) {

@@ -109,6 +109,7 @@ public class SensorApi {
             List<String> variableTypes = sensor.getVariableTypes();
             if (McObjectManager.getEngine(node.getGatewayTable().getId()).validate(sensor)) {
                 DaoUtils.getSensorDao().create(sensor);
+                GoogleAnalyticsApi.instance().trackSensorCreation(sensor.getType().getText());
                 sensor = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
                 // Update Variable Types
                 sensor.setVariableTypes(variableTypes);

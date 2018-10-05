@@ -23,6 +23,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McThreadPoolFactory;
+import org.mycontroller.standalone.api.GoogleAnalyticsApi;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -486,6 +487,7 @@ public abstract class ExecuterAbstract implements IExecutor {
                     .build();
             node.setLastSeen(System.currentTimeMillis());
             DaoUtils.getNodeDao().create(node);
+            GoogleAnalyticsApi.instance().trackNodeCreation(node.getType().getText());
             node = DaoUtils.getNodeDao().get(_message.getGatewayId(), _message.getNodeEui());
         }
         _logger.debug("Node:[{}], _message:[{}]", node, _message);
@@ -509,6 +511,7 @@ public abstract class ExecuterAbstract implements IExecutor {
             sensor = Sensor.builder().sensorId(_message.getSensorId()).build();
             sensor.setNode(getNode());
             DaoUtils.getSensorDao().create(sensor);
+            GoogleAnalyticsApi.instance().trackSensorCreation(sensor.getType().getText());
             sensor = DaoUtils.getSensorDao().get(
                     _message.getGatewayId(),
                     _message.getNodeEui(),
@@ -556,6 +559,7 @@ public abstract class ExecuterAbstract implements IExecutor {
                     sensorVariable, sensor);
 
             DaoUtils.getSensorVariableDao().create(sensorVariable);
+            GoogleAnalyticsApi.instance().trackSensorVariableCreation(sensorVariable.getVariableType().getText());
             sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariable);
         } else {
             if (_message.getPayload() != null && _message.getPayload().length() > 0) {

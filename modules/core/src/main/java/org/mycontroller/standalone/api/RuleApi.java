@@ -71,6 +71,7 @@ public class RuleApi {
     public void add(RuleDefinitionAbstract ruleDefinition) {
         ruleDefinition.reset();
         RuleUtils.addRuleDefinition(ruleDefinition);
+        GoogleAnalyticsApi.instance().trackRuleCreation(ruleDefinition.getConditionType().getText());
     }
 
     public void update(RuleDefinitionAbstract ruleDefinition) {
