@@ -637,16 +637,13 @@ myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper,
       $http.defaults.headers.common['Authorization'] = 'Basic ' + mchelper.internal.currentUser.authdata; // jshint ignore:line
   }
 
-  // initialise google analytics, if enabled
+  // initialise google analytics and send browser details, if enabled
   if(mchelper.cfg.googleAnalyticsEnabled){
     $window.ga('create', mchelper.cfg.googleAnalyticsTid, 'auto');
+    $window.ga('send', 'pageview', "/");
   }
 
   $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
-    // send to Google analytics, if enabled
-    if(mchelper.cfg.googleAnalyticsEnabled){
-      $window.ga('send', 'pageview', $location.path());
-    }
     //alert(angular.toJson(toState));
     if(toState.name.indexOf('login') === 0){
         angular.element( document.querySelector( '#rootId' ) ).addClass( "login-pf" );
