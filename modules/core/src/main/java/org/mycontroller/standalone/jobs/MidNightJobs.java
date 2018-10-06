@@ -43,7 +43,8 @@ public class MidNightJobs extends Job {
         try {
             // send anonymous date to google analytical site, if enabled
             if (AppProperties.getInstance().isGoogleAnalyticsEnabled()) {
-                GoogleAnalyticsApi.instance().sendOverallStatus();
+                //GoogleAnalyticsApi.instance().sendOverallStatus();
+                GoogleAnalyticsApi.instance().trackServerAliveStatus();
             }
         } catch (Exception ex) {
             _logger.error("Exception,", ex);

@@ -166,6 +166,10 @@ public class GoogleAnalyticsApi extends RestHttpClient {
         return String.format("t=event&ec=%s&ea=%s&el=%s&ev=%s", category, action, label, value);
     }
 
+    public void trackServerAliveStatus() {
+        trackEvent("server_alive", applicationVersion, javaVersion, null);
+    }
+
     private void updateGatewaysCount(List<String> events) {
         for (GATEWAY_TYPE type : GATEWAY_TYPE.values()) {
             Long count = DaoUtils.getGatewayDao().countOf(GatewayTable.KEY_TYPE, type);
