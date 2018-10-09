@@ -487,7 +487,7 @@ public abstract class ExecuterAbstract implements IExecutor {
                     .build();
             node.setLastSeen(System.currentTimeMillis());
             DaoUtils.getNodeDao().create(node);
-            GoogleAnalyticsApi.instance().trackNodeCreation(node.getType().getText());
+            GoogleAnalyticsApi.instance().trackNodeCreation("auto");
             node = DaoUtils.getNodeDao().get(_message.getGatewayId(), _message.getNodeEui());
         }
         _logger.debug("Node:[{}], _message:[{}]", node, _message);
@@ -511,7 +511,7 @@ public abstract class ExecuterAbstract implements IExecutor {
             sensor = Sensor.builder().sensorId(_message.getSensorId()).build();
             sensor.setNode(getNode());
             DaoUtils.getSensorDao().create(sensor);
-            GoogleAnalyticsApi.instance().trackSensorCreation(sensor.getType().getText());
+            GoogleAnalyticsApi.instance().trackSensorCreation("auto");
             sensor = DaoUtils.getSensorDao().get(
                     _message.getGatewayId(),
                     _message.getNodeEui(),
