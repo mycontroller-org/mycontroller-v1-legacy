@@ -53,6 +53,8 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GatewayUtils {
 
+    public static final String RAW_MESSAGE_LOGGER = "RAW_MESSAGE_LOGGER";
+    public static final String RAW_MESSAGE_REFERENCE = "gateway_reference";
     public static final String OS_ARCH_ARM = "arm";
     public static final AtomicBoolean GATEWAYS_READY = new AtomicBoolean(false);
 
@@ -336,5 +338,9 @@ public class GatewayUtils {
             topics[topicId] += "/#";
         }
         return topics;
+    }
+
+    public static String gwLogReference(GatewayConfig _config) {
+        return String.format("%d_%s", _config.getId(), _config.getName().replaceAll("[^A-Za-z0-9]", "_"));
     }
 }

@@ -39,6 +39,9 @@ import org.mycontroller.standalone.offheap.IQueue;
 import org.mycontroller.standalone.provider.IMessageParser;
 import org.mycontroller.standalone.provider.MessageMQTT;
 import org.mycontroller.standalone.utils.McUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,6 +51,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MQTTDriver {
+
+    private static final Logger _RAW_MSG_LOGGER = LoggerFactory.getLogger(GatewayUtils.RAW_MESSAGE_LOGGER);
 
     private static final long DISCONNECT_TIME_OUT = 1000 * 1;
     private static final int CONNECTION_TIME_OUT = 1000 * 5;
@@ -60,10 +65,13 @@ public class MQTTDriver {
     private IMessageParser<MessageMQTT> _parser;
     private IQueue<IMessage> _queue;
 
+    private String gatewayReference;
+
     public MQTTDriver(GatewayConfigMQTT _config, IMessageParser<MessageMQTT> _parser, IQueue<IMessage> _queue) {
         this._config = _config;
         this._parser = _parser;
         this._queue = _queue;
+        this.gatewayReference = GatewayUtils.gwLogReference(_config);
     }
 
     public void connect() {
@@ -123,6 +131,13 @@ public class MQTTDriver {
             rawMessage.setQos(_config.getQos());
             String topicRoot = _config.getTopicsPublish().endsWith("/") ? _config.getTopicsPublish() : _config
                     .getTopicsPublish() + "/";
+
+            // add raw message to a debug file
+            if (_RAW_MSG_LOGGER.isDebugEnabled()) {
+                MDC.put(GatewayUtils.RAW_MESSAGE_REFERENCE, gatewayReference);
+                _RAW_MSG_LOGGER.debug("Tx: {}{} [{}]", topicRoot, mqttMessage.getTopic(), mqttMessage.getPayload());
+            }
+
             _client.publish(topicRoot + mqttMessage.getTopic(), rawMessage);
             _logger.debug("published on:{}{}, {}", topicRoot, mqttMessage.getTopic(), message);
         } catch (MqttException ex) {
@@ -139,6 +154,9 @@ public class MQTTDriver {
 @Slf4j
 class MqttListener implements MqttCallback {
 
+    private static final Logger _RAW_MSG_LOGGER = LoggerFactory.getLogger(GatewayUtils.RAW_MESSAGE_LOGGER);
+    public static final long RECONNECT_WAIT_TIME = McUtils.SECOND * 5;
+
     private IMqttClient _client;
     private GatewayConfigMQTT _config;
     private IMessageParser<MessageMQTT> _parser;
@@ -146,7 +164,7 @@ class MqttListener implements MqttCallback {
     private MqttConnectOptions _connectOptions;
     private boolean reconnect = true;
     private boolean reconnectRunning = false;
-    public static final long RECONNECT_WAIT_TIME = McUtils.SECOND * 5;
+    private String gatewayReference;
 
     public MqttListener(IMqttClient _client, GatewayConfigMQTT _config, MqttConnectOptions _connectOptions,
             IMessageParser<MessageMQTT> _parser, IQueue<IMessage> _queue) {
@@ -155,6 +173,7 @@ class MqttListener implements MqttCallback {
         this._connectOptions = _connectOptions;
         this._parser = _parser;
         this._queue = _queue;
+        this.gatewayReference = GatewayUtils.gwLogReference(_config);
     }
 
     @Override
@@ -183,6 +202,13 @@ class MqttListener implements MqttCallback {
             if (rawMessage.isDuplicate()) {
                 _logger.warn("Duplicate message received!! {}", rawMessage);
             }
+
+            // add raw message to a debug file
+            if (_RAW_MSG_LOGGER.isDebugEnabled()) {
+                MDC.put(GatewayUtils.RAW_MESSAGE_REFERENCE, gatewayReference);
+                _RAW_MSG_LOGGER.debug("Rx: {} [{}]", topic, new String(rawMessage.getPayload()));
+            }
+
             _logger.debug("Message Received, Topic:[{}], Payload:[{}]", topic, new String(rawMessage.getPayload()));
             IMessage message = _parser.getMessage(_config, MessageMQTT.builder()
                     .gatewayId(_config.getId())
