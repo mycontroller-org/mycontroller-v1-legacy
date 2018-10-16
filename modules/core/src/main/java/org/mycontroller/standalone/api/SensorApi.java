@@ -256,6 +256,13 @@ public class SensorApi {
         }
     }
 
+    public void deleteSensorVariable(Integer... ids) {
+        for (Integer id : ids) {
+            _logger.info("Delete Sensor Variable initiated for the id:{}", id);
+            DaoUtils.getSensorVariableDao().deleteById(id);
+        }
+    }
+
     public void purgeSensorVariable(ResourcePurgeConf purge) throws McBadRequestException {
         _logger.debug("{}", purge);
         if (purge.getId() == null) {
