@@ -56,6 +56,8 @@ public class EngineStatistics implements Cloneable {
         timeAverageCurrentMinute = 0;
         timeLastMessage = 0;
 
+        countFailure = 0;
+
         count = 0;
         countLastMinute = 0;
         countCurrentMinute = 0;
@@ -86,6 +88,13 @@ public class EngineStatistics implements Cloneable {
                 / (countCurrentMinute + 1);
         countCurrentMinute++;
         timestamp = System.currentTimeMillis();
+    }
+
+    public double getPercentageFailure() {
+        if (countFailure == 0) {
+            return 0.0;
+        }
+        return (countFailure * 100.0) / count;
     }
 
     // update last minute status

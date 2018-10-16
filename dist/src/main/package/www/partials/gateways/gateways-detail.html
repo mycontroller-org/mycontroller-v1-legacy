@@ -98,7 +98,7 @@
                 <dt>{{ 'LAST_MESSAGE' | translate }}</dt> <dd>{{statistics.timeLastMessage}}  {{ 'MILLISECONDS_SHORT' | translate }} <span ng-if="statistics.timestamp != 0">| </span><span uib-tooltip="{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="statistics.timestamp"></span></dd>
                 <dt>{{ 'LAST_MINUTE_RATE' | translate }}</dt> <dd>{{statistics.countLastMinute}}</dd>
                 <dt>{{ 'COUNT' | translate }}</dt><dd>{{statistics.count}}</dd>
-                <dt>{{ 'FAILURE_COUNT' | translate }}</dt><dd>{{statistics.countFailure}}</dd>
+                <dt>{{ 'FAILURE_COUNT' | translate }}</dt><dd>{{statistics.countFailure}} ({{statistics.percentageFailure | number: 2}}%)</dd>
                 <dt>{{ 'MESSAGES_IN_QUEUE' | translate }}</dt> <dd>{{statistics.sizeQueue}}</dd>
               </dl>
             </div>
