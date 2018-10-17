@@ -601,6 +601,7 @@
     "STATUS_SINCE": "Начиная с",
     "STEP_AFTER": "Шаг после",
     "STEP_BEFORE": "Шаг перед",
+    "STREAM_ACK_ENABLED": "Stream ack enabled",
     "SUBJECT": "Предмет",
     "SUB_TYPE": "Подтип",
     "SUNRISE": "Восход",

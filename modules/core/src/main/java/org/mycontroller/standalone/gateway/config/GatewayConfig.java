@@ -39,6 +39,7 @@ import lombok.ToString;
 public abstract class GatewayConfig {
     public static final String KEY_TX_DELAY = "txDelay";
     public static final String KEY_ACK_ENABLED = "ackEnabled";
+    public static final String KEY_STREAM_ACK_ENABLED = "streamAckEnabled";
     public static final String KEY_FAILED_RETRY_COUNT = "failedRetryCount";
     public static final String KEY_ACK_WAIT_TIME = "ackWaitTime";
     public static final String KEY_RECONNECT_DELAY = "reconnectDelay";
@@ -46,6 +47,7 @@ public abstract class GatewayConfig {
     private Integer id;
     private Boolean enabled;
     private Boolean ackEnabled;
+    private Boolean streamAckEnabled; // stream ack enabled
     private Integer failedRetryCount;
     private Long ackWaitTime;
     private String name;
@@ -75,6 +77,7 @@ public abstract class GatewayConfig {
                 .properties(new HashMap<String, Object>()).build();
         gatewayTable.getProperties().put(KEY_TX_DELAY, txDelay);
         gatewayTable.getProperties().put(KEY_ACK_ENABLED, ackEnabled);
+        gatewayTable.getProperties().put(KEY_STREAM_ACK_ENABLED, streamAckEnabled);
         gatewayTable.getProperties().put(KEY_FAILED_RETRY_COUNT, failedRetryCount);
         gatewayTable.getProperties().put(KEY_ACK_WAIT_TIME, ackWaitTime);
         gatewayTable.getProperties().put(KEY_RECONNECT_DELAY, reconnectDelay);
@@ -94,6 +97,7 @@ public abstract class GatewayConfig {
         statusSince = gatewayTable.getStatusSince();
         txDelay = (Long) gatewayTable.getProperty(KEY_TX_DELAY, 0L);
         ackEnabled = (Boolean) gatewayTable.getProperty(KEY_ACK_ENABLED, false);
+        streamAckEnabled = (Boolean) gatewayTable.getProperty(KEY_STREAM_ACK_ENABLED, false);
         failedRetryCount = (Integer) gatewayTable.getProperty(KEY_FAILED_RETRY_COUNT, 3);
         ackWaitTime = (Long) gatewayTable.getProperty(KEY_ACK_WAIT_TIME, 500L);
         reconnectDelay = (Integer) gatewayTable.getProperty(KEY_RECONNECT_DELAY, 120);

@@ -601,6 +601,7 @@
     "STATUS_SINCE": "Stato dal ",
     "STEP_AFTER": "Passo successivo",
     "STEP_BEFORE": "Passo precedente",
+    "STREAM_ACK_ENABLED": "Stream ack enabled",
     "SUBJECT": "Oggetto",
     "SUB_TYPE": "Sottotipo",
     "SUNRISE": "Alba",

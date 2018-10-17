@@ -38,6 +38,7 @@ public class EngineStatistics implements Cloneable {
     private long timeLastMessage;
 
     private long count;
+    private long txCount;
     private long countLastMinute;
     private long countCurrentMinute;
     private long countFailure;
@@ -59,6 +60,7 @@ public class EngineStatistics implements Cloneable {
         countFailure = 0;
 
         count = 0;
+        txCount = 0;
         countLastMinute = 0;
         countCurrentMinute = 0;
 
@@ -71,16 +73,20 @@ public class EngineStatistics implements Cloneable {
         countFailure++;
     }
 
-    public void update(long timeTaken) {
+    public void update(long timeTaken, boolean isTxMessage) {
         timeLastMessage = timeTaken;
         //if sample goes beyond MAXIMUM_SAMPLES, reset it to avoid big calculations.
         if (count > MAXIMUM_SAMPLES) {
             count = 1;
             timeAverage = timeLastMessage;
             countFailure = 0;
+            txCount = 0;
         } else {
             timeAverage = ((timeAverage * count) + timeLastMessage) / (count + 1);
             count++;
+            if (isTxMessage) {
+                txCount++;
+            }
         }
 
         // Update current minute status
@@ -94,7 +100,7 @@ public class EngineStatistics implements Cloneable {
         if (countFailure == 0) {
             return 0.0;
         }
-        return (countFailure * 100.0) / count;
+        return (countFailure * 100.0) / txCount;
     }
 
     // update last minute status

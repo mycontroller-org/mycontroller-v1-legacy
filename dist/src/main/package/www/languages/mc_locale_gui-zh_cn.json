@@ -601,6 +601,7 @@
     "STATUS_SINCE": "状态自",
     "STEP_AFTER": "下一步",
     "STEP_BEFORE": "上一步",
+    "STREAM_ACK_ENABLED": "Stream ack enabled",
     "SUBJECT": "主题",
     "SUB_TYPE": "子类型",
     "SUNRISE": "日出",

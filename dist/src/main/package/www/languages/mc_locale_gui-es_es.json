@@ -601,6 +601,7 @@
     "STATUS_SINCE": "Estado desde",
     "STEP_AFTER": "Paso después de",
     "STEP_BEFORE": "Paso antes de",
+    "STREAM_ACK_ENABLED": "Stream ack enabled",
     "SUBJECT": "Asunto",
     "SUB_TYPE": "Sub tipo",
     "SUNRISE": "Salida del sol",

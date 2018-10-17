@@ -42,6 +42,7 @@
                 <dt>{{ 'TRANSMIT_DELAY' | translate }}</dt><dd>{{item.txDelay}} {{ 'MILLISECONDS_SHORT' | translate }}</dd>
                 <dt>{{ 'ACK_ENABLED' | translate }}</dt> <dd>{{item.ackEnabled? 'ENABLED' : 'DISABLED' | translate }}</dd>
                 <span ng-if="item.ackEnabled">
+                <dt>{{ 'STREAM_ACK_ENABLED' | translate }}</dt> <dd>{{item.streamAckEnabled? 'ENABLED' : 'DISABLED' | translate }}</dd>
                 <dt>{{ 'FAILED_RETRY_COUNT' | translate }}</dt><dd>{{item.failedRetryCount}}</dd>
                 <dt>{{ 'ACK_WAIT_TIME' | translate }}</dt><dd>{{item.ackWaitTime}} {{ 'MILLISECONDS_SHORT' | translate }}</dd>
                 </span>

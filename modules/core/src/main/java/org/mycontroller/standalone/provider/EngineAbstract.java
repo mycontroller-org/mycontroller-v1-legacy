@@ -24,6 +24,7 @@ import org.mycontroller.standalone.exceptions.NotSupportedException;
 import org.mycontroller.standalone.gateway.IGateway;
 import org.mycontroller.standalone.gateway.config.GatewayConfig;
 import org.mycontroller.standalone.message.IMessage;
+import org.mycontroller.standalone.message.McMessageUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_STATUS;
 import org.mycontroller.standalone.offheap.MessageQueueImpl;
 import org.mycontroller.standalone.offheap.MessageQueueSleepImpl;
@@ -46,6 +47,7 @@ public abstract class EngineAbstract implements IEngine {
     private long auditStartTime = 0;
     private long gatewayAuditTime = 0;
     private EngineStatistics _statistics = new EngineStatistics();
+    private static final String STREAM_MESSAGE = McMessageUtils.MESSAGE_TYPE.C_STREAM.getText();
 
     public EngineAbstract(GatewayConfig _config) {
         if (_queue == null) {
@@ -201,8 +203,20 @@ public abstract class EngineAbstract implements IEngine {
             _logger.debug("Processing:[{}]", message);
             try {
                 if (message.isTxMessage()) {
-                    if (_gateway.config().getAckEnabled() &&
-                            !message.getNodeEui().equalsIgnoreCase(IMessage.NODE_BROADCAST_ID)) {
+
+                    boolean ackEnabled = false;
+                    if (_gateway.config().getAckEnabled()) {
+                        // check ack enabled and if it is node broadcast message we will not get ack
+                        if (message.getNodeEui().equalsIgnoreCase(IMessage.NODE_BROADCAST_ID)) {
+                            ackEnabled = false;
+                        } else if (STREAM_MESSAGE.equalsIgnoreCase(message.getType())) {
+                            ackEnabled = _gateway.config().getStreamAckEnabled();
+                        } else {
+                            ackEnabled = true;
+                        }
+                    }
+
+                    if (ackEnabled) {
                         // set acknowledgement request
                         message.setAck(IMessage.ACK_REQUEST);
                         MessageConsumer<MessageStatus> _consumer = null;
@@ -265,7 +279,7 @@ public abstract class EngineAbstract implements IEngine {
                 _logger.error("Throws exception while processing!, [{}]", message, ex);
             } finally {
                 // update last message time to processing rate table
-                _statistics.update(System.currentTimeMillis() - auditStartTime);
+                _statistics.update(System.currentTimeMillis() - auditStartTime, message.isTxMessage());
                 _logger.debug("{}", _statistics);
             }
         }
