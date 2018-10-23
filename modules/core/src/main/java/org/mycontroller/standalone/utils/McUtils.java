@@ -144,7 +144,7 @@ public class McUtils {
                 return Integer.valueOf(value);
             } catch (NumberFormatException ex) {
                 _logger.warn("Looks like supplied value[{}] is not a integer,"
-                        + " non-integers will be removed and retried...");
+                        + " non-integers will be removed and retried...", value);
                 return Integer.valueOf(value.replaceAll("[^0-9]", ""));
             }
         } else {

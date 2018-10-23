@@ -17,7 +17,7 @@
 package org.mycontroller.standalone.message;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.HashMap;
 
 import org.mycontroller.standalone.message.MessageImpl.MessageImplBuilder;
 
@@ -70,7 +70,7 @@ public interface IMessage extends Serializable {
 
     Long getTimestamp();
 
-    Map<String, Object> getProperties();
+    HashMap<String, Object> getProperties();
 
     Object getProperty(String key);
 
@@ -98,7 +98,7 @@ public interface IMessage extends Serializable {
 
     void setTimestamp(Long timestamp);
 
-    void setProperties(Map<String, Object> properties);
+    void setProperties(HashMap<String, Object> properties);
 
     void setProperty(String key, Object value);
 

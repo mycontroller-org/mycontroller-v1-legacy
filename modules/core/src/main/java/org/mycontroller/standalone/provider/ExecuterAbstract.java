@@ -69,14 +69,18 @@ public abstract class ExecuterAbstract implements IExecutor {
     }
 
     public void execute(IMessage _message) {
-        // Take a clone to log it on database
-        IMessage _clone = _message.clone();
-
+        // mark start time
         startTime = System.currentTimeMillis();
         if (_logger.isDebugEnabled()) {
             startTime = System.currentTimeMillis();
         }
-        this._message = _message;
+
+        // Take a clone to log it on database
+        IMessage _message_for_resources_log = _message.clone();
+
+        // clone the message and do process
+        this._message = _message.clone();
+
         try {
             _logger.debug("Processing {}", _message);
             switch (MESSAGE_TYPE.fromString(_message.getType())) {
@@ -127,7 +131,7 @@ public abstract class ExecuterAbstract implements IExecutor {
             _message = null;
         }
         // do log on database
-        McThreadPoolFactory.execute(new ResourcesLogger(_clone));
+        McThreadPoolFactory.execute(new ResourcesLogger(_message_for_resources_log));
     }
 
     public void executeInternal() {

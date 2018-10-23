@@ -80,7 +80,9 @@ public class EngineStatistics implements Cloneable {
             count = 1;
             timeAverage = timeLastMessage;
             countFailure = 0;
-            txCount = 0;
+            if (isTxMessage) {
+                txCount = 1;
+            }
         } else {
             timeAverage = ((timeAverage * count) + timeLastMessage) / (count + 1);
             count++;
@@ -121,6 +123,7 @@ public class EngineStatistics implements Cloneable {
                 .timeAverageLastMinute(timeAverageLastMinute)
                 .timeLastMessage(timeLastMessage)
                 .count(count)
+                .txCount(txCount)
                 .countCurrentMinute(countCurrentMinute)
                 .countLastMinute(countLastMinute)
                 .countFailure(countFailure)
