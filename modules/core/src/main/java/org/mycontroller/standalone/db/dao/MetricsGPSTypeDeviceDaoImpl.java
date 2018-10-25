@@ -44,11 +44,6 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
 
     @Override
     public void deletePrevious(MetricsGPSTypeDevice metric) {
-        deletePrevious(metric, null);
-    }
-
-    @Override
-    public void deletePrevious(MetricsGPSTypeDevice metric, String delimiter) {
         try {
             DeleteBuilder<MetricsGPSTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
             Where<MetricsGPSTypeDevice, Object> where = deleteBuilder.where();
@@ -61,6 +56,10 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
             if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
                 where.eq(MetricsGPSTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
                 whereCount++;
+            } else {
+                _logger.warn("Sensor variable id is not supplied!"
+                        + " Cannot perform purge operation without sensor variable id.");
+                return;
             }
             if (metric.getTimestamp() != null) {
                 where.le(MetricsGPSTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());

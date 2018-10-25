@@ -19,6 +19,7 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
@@ -50,7 +51,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
     }
 
     @Override
-    public void deletePrevious(MetricsDoubleTypeDevice metric, String delimiter) {
+    public void deletePrevious(MetricsDoubleTypeDevice metric, ResourcePurgeConf purgeConfig) {
         try {
             DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
             Where<MetricsDoubleTypeDevice, Object> where = deleteBuilder.where();
@@ -63,6 +64,10 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
                 where.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
                 whereCount++;
+            } else {
+                _logger.warn("Sensor variable id is not supplied!"
+                        + " Cannot perform purge operation without sensor variable id.");
+                return;
             }
             if (metric.getTimestamp() != null) {
                 where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
@@ -76,27 +81,16 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                 where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getEnd());
                 whereCount++;
             }
-            if (metric.getAvg() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_AVG, metric.getAvg());
+            if (purgeConfig != null && purgeConfig.getRealValue() != null) {
+                Double _value = McUtils.getDouble(purgeConfig.getRealValue());
+                // update average data
+                updatePurgeCondition(where, MetricsDoubleTypeDevice.KEY_AVG, _value, purgeConfig.getOperator());
                 whereCount++;
-            } else if (delimiter != null) {
-                if (delimiter.startsWith(">")) {
-                    where.gt(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
-                } else if (delimiter.startsWith("<")) {
-                    where.lt(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
-                } else if (delimiter.startsWith("=")) {
-                    where.eq(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
-                } else {
-                    where.eq(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter));
-                }
+                // update min data
+                updatePurgeCondition(where, MetricsDoubleTypeDevice.KEY_MIN, _value, purgeConfig.getOperator());
                 whereCount++;
-            }
-            if (metric.getMin() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_MIN, metric.getMin());
-                whereCount++;
-            }
-            if (metric.getMax() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_MAX, metric.getMax());
+                // update max data
+                updatePurgeCondition(where, MetricsDoubleTypeDevice.KEY_MAX, _value, purgeConfig.getOperator());
                 whereCount++;
             }
 

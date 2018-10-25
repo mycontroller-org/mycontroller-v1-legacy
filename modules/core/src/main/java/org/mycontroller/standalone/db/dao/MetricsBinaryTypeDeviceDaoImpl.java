@@ -66,6 +66,10 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
                 where.eq(MetricsBinaryTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
                 whereCount++;
+            } else {
+                _logger.warn("Sensor variable id is not supplied!"
+                        + " Cannot perform purge operation without sensor variable id.");
+                return;
             }
             if (metric.getTimestamp() != null) {
                 where.le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());

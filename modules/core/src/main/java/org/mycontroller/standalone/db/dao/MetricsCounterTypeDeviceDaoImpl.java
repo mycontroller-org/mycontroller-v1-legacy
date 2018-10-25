@@ -19,6 +19,7 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
@@ -44,6 +45,11 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
 
     @Override
     public void deletePrevious(MetricsCounterTypeDevice metric) {
+        deletePrevious(metric, null);
+    }
+
+    @Override
+    public void deletePrevious(MetricsCounterTypeDevice metric, ResourcePurgeConf purgeConfig) {
         try {
             DeleteBuilder<MetricsCounterTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
             Where<MetricsCounterTypeDevice, Object> where = deleteBuilder.where();
@@ -56,6 +62,10 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
             if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
                 where.eq(MetricsCounterTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
                 whereCount++;
+            } else {
+                _logger.warn("Sensor variable id is not supplied!"
+                        + " Cannot perform purge operation without sensor variable id.");
+                return;
             }
             if (metric.getTimestamp() != null) {
                 where.le(MetricsCounterTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
@@ -69,8 +79,9 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
                 where.le(MetricsCounterTypeDevice.KEY_TIMESTAMP, metric.getEnd());
                 whereCount++;
             }
-            if (metric.getValue() != null) {
-                where.eq(MetricsCounterTypeDevice.KEY_VALUE, metric.getValue());
+            if (purgeConfig != null && purgeConfig.getRealValue() != null) {
+                updatePurgeCondition(where, MetricsCounterTypeDevice.KEY_VALUE,
+                        Long.valueOf(purgeConfig.getRealValue()), purgeConfig.getOperator());
                 whereCount++;
             }
 

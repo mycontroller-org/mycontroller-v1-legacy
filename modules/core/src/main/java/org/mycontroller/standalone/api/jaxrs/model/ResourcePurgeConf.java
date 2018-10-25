@@ -41,25 +41,64 @@ public class ResourcePurgeConf {
     private Long start;
     private Long end;
 
+    public static enum OPERATOR {
+        EQ("="),
+        GE(">="),
+        LE("<="),
+        NE("!="),
+        GT(">"),
+        LT("<");
+
+        public static OPERATOR get(int id) {
+            for (OPERATOR operator : values()) {
+                if (operator.ordinal() == id) {
+                    return operator;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
+
+        private String value;
+
+        private OPERATOR(String value) {
+            this.value = value;
+        }
+
+        public String getText() {
+            return this.value;
+        }
+
+        public static OPERATOR fromString(String text) {
+            if (text != null) {
+                for (OPERATOR type : OPERATOR.values()) {
+                    if (text.equalsIgnoreCase(type.getText())) {
+                        return type;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
     @JsonIgnore
-    public String getOperator() {
+    public OPERATOR getOperator() {
         if (value == null) {
             return null;
         }
         if (value.startsWith("=")) {
-            return "=";
+            return OPERATOR.EQ;
         } else if (value.startsWith(">=")) {
-            return ">=";
+            return OPERATOR.GE;
         } else if (value.startsWith("<=")) {
-            return "<=";
+            return OPERATOR.LE;
         } else if (value.startsWith("!=")) {
-            return "!=";
+            return OPERATOR.NE;
         } else if (value.startsWith(">")) {
-            return ">";
+            return OPERATOR.GT;
         } else if (value.startsWith("<")) {
-            return "<";
+            return OPERATOR.LT;
         } else {
-            return "=";
+            return OPERATOR.EQ;
         }
     }
 
@@ -68,9 +107,9 @@ public class ResourcePurgeConf {
         if (value == null) {
             return null;
         }
-        String operator = getOperator();
+        OPERATOR operator = getOperator();
         if (operator != null) {
-            return value.replaceFirst(operator, "").trim();
+            return value.replaceFirst(operator.getText(), "").trim();
         }
         return value;
     }

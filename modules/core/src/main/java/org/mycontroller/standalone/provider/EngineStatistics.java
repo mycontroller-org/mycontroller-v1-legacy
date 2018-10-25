@@ -78,10 +78,12 @@ public class EngineStatistics implements Cloneable {
         //if sample goes beyond MAXIMUM_SAMPLES, reset it to avoid big calculations.
         if (count > MAXIMUM_SAMPLES) {
             count = 1;
+            txCount = 0;
             timeAverage = timeLastMessage;
             countFailure = 0;
+            // if this is Tx message increment count
             if (isTxMessage) {
-                txCount = 1;
+                txCount++;
             }
         } else {
             timeAverage = ((timeAverage * count) + timeLastMessage) / (count + 1);
