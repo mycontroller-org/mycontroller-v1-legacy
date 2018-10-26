@@ -484,9 +484,9 @@ public class MetricEngineInfluxDB implements IMetricEngine {
         builder.append("DELETE FROM \"").append(measurement).append("\" WHERE \"")
                 .append(TAG_TYPE).append("\" = '").append(type)
                 .append("' AND \"").append(TAG_INTERNAL_ID).append("\" = '").append(internalId).append("'");
-        if (purgeConf.getRealValue() != null) {
-            builder.append(" AND \"value\" ").append(purgeConf.getOperator()).append(" ")
-                    .append(purgeConf.getRealValue());
+        if (purgeConf.getValue() != null && purgeConf.getAvg() != null && purgeConf.getAvg().getValue() != null) {
+            builder.append(" AND \"value\" ").append(purgeConf.getAvg().getOperator()).append(" ")
+                    .append(purgeConf.getAvg().getValue());
         }
         if (purgeConf.getStart() != null) {
             builder.append(" AND time").append(" >= ").append(purgeConf.getStart()).append("000000");

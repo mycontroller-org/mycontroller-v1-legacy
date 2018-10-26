@@ -96,7 +96,7 @@ public class McUtils {
     }
 
     public static Double getDouble(String value, int scale) {
-        if (value != null && !value.equals("null")) {
+        if (value != null && !value.equals("null") && value.trim().length() > 0) {
             return round(Double.valueOf(value), scale);
         }
         return null;

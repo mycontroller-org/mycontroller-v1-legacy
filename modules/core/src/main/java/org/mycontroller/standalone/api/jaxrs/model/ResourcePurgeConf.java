@@ -41,6 +41,13 @@ public class ResourcePurgeConf {
     private Long start;
     private Long end;
 
+    @JsonIgnore
+    private ResourcePurgCondition min;
+    @JsonIgnore
+    private ResourcePurgCondition max;
+    @JsonIgnore
+    private ResourcePurgCondition avg;
+
     public static enum OPERATOR {
         EQ("="),
         GE(">="),
@@ -81,36 +88,58 @@ public class ResourcePurgeConf {
     }
 
     @JsonIgnore
-    public OPERATOR getOperator() {
-        if (value == null) {
-            return null;
-        }
-        if (value.startsWith("=")) {
-            return OPERATOR.EQ;
-        } else if (value.startsWith(">=")) {
-            return OPERATOR.GE;
-        } else if (value.startsWith("<=")) {
-            return OPERATOR.LE;
-        } else if (value.startsWith("!=")) {
-            return OPERATOR.NE;
-        } else if (value.startsWith(">")) {
-            return OPERATOR.GT;
-        } else if (value.startsWith("<")) {
-            return OPERATOR.LT;
-        } else {
-            return OPERATOR.EQ;
+    private void updateValues() {
+        if (value != null && value.trim().length() > 0) {
+            value = value.trim().toLowerCase();
+            if (value.contains(",")) {
+                String[] _values = value.split(",");
+                for (String _value : _values) {
+                    if (_value.contains("min")) {
+                        min = new ResourcePurgCondition(_value.replace("min", "").trim());
+                    } else if (_value.contains("max")) {
+                        max = new ResourcePurgCondition(_value.replace("max", "").trim());
+                    } else if (_value.contains("avg")) {
+                        avg = new ResourcePurgCondition(_value.replace("avg", "").trim());
+                    }
+                }
+            } else if (value.startsWith("min")) {
+                min = new ResourcePurgCondition(value.replace("min", "").trim());
+            } else if (value.startsWith("max")) {
+                max = new ResourcePurgCondition(value.replace("max", "").trim());
+            } else if (value.startsWith("avg")) {
+                avg = new ResourcePurgCondition(value.replace("avg", "").trim());
+            } else {
+                avg = new ResourcePurgCondition(value);
+            }
         }
     }
 
-    @JsonIgnore
-    public String getRealValue() {
-        if (value == null) {
-            return null;
-        }
-        OPERATOR operator = getOperator();
-        if (operator != null) {
-            return value.replaceFirst(operator.getText(), "").trim();
+    public String getValue() {
+        if (value != null && value.trim().length() == 0) {
+            value = null;
         }
         return value;
     }
+
+    public ResourcePurgCondition getMin() {
+        if (min == null) {
+            updateValues();
+        }
+        return min;
+    }
+
+    public ResourcePurgCondition getMax() {
+        if (max == null) {
+            updateValues();
+        }
+        return max;
+    }
+
+    public ResourcePurgCondition getAvg() {
+        if (avg == null) {
+            updateValues();
+        }
+        return avg;
+    }
+
 }

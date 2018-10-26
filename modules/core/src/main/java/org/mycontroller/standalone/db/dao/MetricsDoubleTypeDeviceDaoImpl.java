@@ -19,6 +19,7 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgCondition;
 import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
@@ -50,58 +51,70 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
         deletePrevious(metric, null);
     }
 
+    private void _deletePrevious(
+            MetricsDoubleTypeDevice metric,
+            ResourcePurgCondition condition,
+            String valueKey) throws SQLException {
+        DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
+        Where<MetricsDoubleTypeDevice, Object> where = deleteBuilder.where();
+        int whereCount = 0;
+
+        if (metric.getAggregationType() != null) {
+            where.eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType());
+            whereCount++;
+        }
+        if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
+            where.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
+            whereCount++;
+        } else {
+            _logger.warn("Sensor variable id is not supplied!"
+                    + " Cannot perform purge operation without sensor variable id.");
+            return;
+        }
+        if (metric.getTimestamp() != null) {
+            where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+            whereCount++;
+        }
+        if (metric.getStart() != null) {
+            where.ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getStart());
+            whereCount++;
+        }
+        if (metric.getEnd() != null) {
+            where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getEnd());
+            whereCount++;
+        }
+        if (condition != null && condition.getValue() != null) {    // purge value
+            updatePurgeCondition(where, valueKey, condition.getValueDouble(), condition.getOperator());
+            whereCount++;
+        }
+        if (whereCount > 0) {
+            where.and(whereCount);
+            deleteBuilder.setWhere(where);
+        }
+        int count = deleteBuilder.delete();
+        _logger.debug("Metric:[{}] deleted, delete count:{}, statement:{}", metric, count,
+                deleteBuilder.prepareStatementString());
+
+    }
+
     @Override
     public void deletePrevious(MetricsDoubleTypeDevice metric, ResourcePurgeConf purgeConfig) {
         try {
-            DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            Where<MetricsDoubleTypeDevice, Object> where = deleteBuilder.where();
-            int whereCount = 0;
-
-            if (metric.getAggregationType() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType());
-                whereCount++;
-            }
-            if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
-                whereCount++;
+            if (purgeConfig != null && purgeConfig.getValue() != null) {
+                if (purgeConfig.getAvg() != null && purgeConfig.getAvg().getValue() != null) {
+                    _deletePrevious(metric, purgeConfig.getAvg(), MetricsDoubleTypeDevice.KEY_AVG);
+                }
+                if (purgeConfig.getMin() != null && purgeConfig.getMin().getValue() != null) {
+                    _deletePrevious(metric, purgeConfig.getMin(), MetricsDoubleTypeDevice.KEY_MIN);
+                }
+                if (purgeConfig.getMax() != null && purgeConfig.getMax().getValue() != null) {
+                    _deletePrevious(metric, purgeConfig.getMax(), MetricsDoubleTypeDevice.KEY_MAX);
+                }
             } else {
-                _logger.warn("Sensor variable id is not supplied!"
-                        + " Cannot perform purge operation without sensor variable id.");
-                return;
+                _deletePrevious(metric, null, null);
             }
-            if (metric.getTimestamp() != null) {
-                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
-                whereCount++;
-            }
-            if (metric.getStart() != null) {
-                where.ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getStart());
-                whereCount++;
-            }
-            if (metric.getEnd() != null) {
-                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getEnd());
-                whereCount++;
-            }
-            if (purgeConfig != null && purgeConfig.getRealValue() != null) {
-                Double _value = McUtils.getDouble(purgeConfig.getRealValue());
-                // update average data
-                updatePurgeCondition(where, MetricsDoubleTypeDevice.KEY_AVG, _value, purgeConfig.getOperator());
-                whereCount++;
-                // update min data
-                updatePurgeCondition(where, MetricsDoubleTypeDevice.KEY_MIN, _value, purgeConfig.getOperator());
-                whereCount++;
-                // update max data
-                updatePurgeCondition(where, MetricsDoubleTypeDevice.KEY_MAX, _value, purgeConfig.getOperator());
-                whereCount++;
-            }
-
-            if (whereCount > 0) {
-                where.and(whereCount);
-                deleteBuilder.setWhere(where);
-            }
-            int count = deleteBuilder.delete();
-            _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
-            _logger.error("unable to delete metric:[{}]", metric, ex);
+            _logger.error("unable to delete metric:[{}], {}", metric, purgeConfig, ex);
         }
     }
 

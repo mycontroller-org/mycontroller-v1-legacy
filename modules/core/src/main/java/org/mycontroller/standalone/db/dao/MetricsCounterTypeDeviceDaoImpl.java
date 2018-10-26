@@ -79,9 +79,9 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
                 where.le(MetricsCounterTypeDevice.KEY_TIMESTAMP, metric.getEnd());
                 whereCount++;
             }
-            if (purgeConfig != null && purgeConfig.getRealValue() != null) {
+            if (purgeConfig != null && purgeConfig.getAvg() != null && purgeConfig.getAvg().getValue() != null) {
                 updatePurgeCondition(where, MetricsCounterTypeDevice.KEY_VALUE,
-                        Long.valueOf(purgeConfig.getRealValue()), purgeConfig.getOperator());
+                        purgeConfig.getAvg().getValueLong(), purgeConfig.getAvg().getOperator());
                 whereCount++;
             }
 
