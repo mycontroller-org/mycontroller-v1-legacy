@@ -16,7 +16,6 @@
  */
 package org.mycontroller.standalone.operation.model;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import org.mycontroller.standalone.db.DaoUtils;
@@ -86,13 +85,6 @@ public class OperationSendTelegramBotMessage extends Operation {
         return stringBuilder.toString();
     }
 
-    private String parseModeText() {
-        if (parseMode != null && parseMode.equalsIgnoreCase("text")) {
-            return null;
-        }
-        return parseMode;
-    }
-
     @Override
     public void execute(RuleDefinitionAbstract ruleDefinition) {
         if (!getEnabled()) {
@@ -114,8 +106,7 @@ public class OperationSendTelegramBotMessage extends Operation {
             } else {
                 textRaw = notification.toString();
             }
-            String text = new String(textRaw.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-            TelegramBotUtils.sendMessage(chatId, parseModeText(), text);
+            TelegramBotUtils.sendMessage(chatId, parseMode, textRaw);
         } catch (Exception ex) {
             _logger.error("Exception,", ex);
         }
@@ -136,8 +127,7 @@ public class OperationSendTelegramBotMessage extends Operation {
         } else {
             textRaw = "ERROR: No msg specified!";
         }
-        String text = new String(textRaw.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-        TelegramBotUtils.sendMessage(chatId, parseModeText(), text);
+        TelegramBotUtils.sendMessage(chatId, parseMode, textRaw);
     }
 
 }

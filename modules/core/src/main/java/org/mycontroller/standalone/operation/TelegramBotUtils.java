@@ -16,6 +16,7 @@
  */
 package org.mycontroller.standalone.operation;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
@@ -40,15 +41,25 @@ public class TelegramBotUtils {
     // Create a rest clients
     private static TelegramBotClient client = null;
 
+    private static String parseModeText(String parseMode) {
+        if (parseMode != null && parseMode.equalsIgnoreCase("text")) {
+            return null;
+        }
+        return parseMode;
+    }
+
     public static synchronized void sendMessage(String chatId, String parseMode, String text) {
         updateClient();
         if (client == null) {
             _logger.warn("Looks like telegram boot configuration not updated. Could not send pushbullet notification!");
         }
+
+        String _text = new String(text.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+
         Message message = Message.builder()
                 .chatId(chatId)
-                .parseMode(parseMode)
-                .text(text)
+                .parseMode(parseModeText(parseMode))
+                .text(_text)
                 .build();
         _logger.debug("TelegramBot sendMessage:{}", message);
 
