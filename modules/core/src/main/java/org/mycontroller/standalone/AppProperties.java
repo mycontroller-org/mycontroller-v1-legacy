@@ -159,11 +159,13 @@ public class AppProperties {
         MK_MK("Македонски (MK)"),
         NL_NL("Nederlands (NL)"),
         NO_NO("norsk (NO)"),
+        PL_PL("język polski (PL)"),
         PT_BR("Português (BR)"),
         RO_RO("Română (RO)"),
         RU_RU("Русский (RU)"),
         TA_IN("தமிழ் (IN)"),
-        ZH_CN("中文 (CN)");
+        ZH_CN("中文 (CN)"),
+        ZH_TW("中華民國國語 (TW)");
 
         private final String name;
 
