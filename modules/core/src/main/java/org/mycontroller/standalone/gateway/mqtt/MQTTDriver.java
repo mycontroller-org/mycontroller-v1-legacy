@@ -99,7 +99,7 @@ public class MQTTDriver {
                     + ", Reload this gateway when MQTT Broker comes UP");
             _logger.error("Unable to connect with MQTT broker _config[{}], Reason Code: {}, "
                     + "Reload _config [Id:{}, Name:{}, NetworkType:{}] service when MQTT Broker comes UP!",
-                    _client.getServerURI(), ex.getReasonCode(), _config.getName(),
+                    _config.getBrokerHost(), ex.getReasonCode(), _config.getName(),
                     _config.getNetworkType().getText(), ex);
         } catch (Exception ex) {
             _config.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
