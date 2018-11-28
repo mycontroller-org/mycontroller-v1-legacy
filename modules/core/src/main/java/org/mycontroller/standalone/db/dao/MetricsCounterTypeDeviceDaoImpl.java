@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -94,6 +95,7 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric:[{}]", metric, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -106,6 +108,7 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
             _logger.debug("Metric-sensorValueRefId:[{}] deleted, Delete count:{}", sensorValueRefId, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric-sensorValueRefId:[{}]", sensorValueRefId, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -132,8 +135,8 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -147,8 +150,8 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
                             .and().eq(MetricsCounterTypeDevice.KEY_TIMESTAMP, metric.getTimestamp()).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -168,7 +171,7 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
                     .query();
         } catch (SQLException ex) {
             _logger.error("Exception,", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -181,7 +184,7 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
                     .eq(MetricsCounterTypeDevice.KEY_AGGREGATION_TYPE, aggregationType).countOf();
         } catch (Exception ex) {
             _logger.error("Unable to execute countOf query", ex);
-            return -1;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -194,7 +197,7 @@ public class MetricsCounterTypeDeviceDaoImpl extends BaseAbstractDaoImpl<Metrics
                     .eq(MetricsCounterTypeDevice.KEY_AGGREGATION_TYPE, aggregationType).queryForFirst() != null;
         } catch (Exception ex) {
             _logger.error("Unable to execute countOf query", ex);
-            return true;
+            throw new McDatabaseException(ex);
         }
     }
 }

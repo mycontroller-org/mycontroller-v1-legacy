@@ -30,6 +30,7 @@ import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.Dao;
@@ -246,6 +247,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Created new item:[{}], Create count:{}", tdao, count);
         } catch (SQLException ex) {
             _logger.error("unable to add new item:[{}]", tdao, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -258,6 +260,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
                     status.getNumLinesChanged());
         } catch (SQLException ex) {
             _logger.error("unable to CreateOrUpdate item:[{}]", tdao, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -268,6 +271,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("item:[{}] deleted, Delete count:{}", tdao, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete item:[{}]", tdao, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -278,6 +282,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Updated item:[{}], Update count:{}", tdao, count);
         } catch (SQLException ex) {
             _logger.error("unable to update item:[{}]", tdao, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -287,6 +292,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Updated item:[{}, id:{}], Update count:{}", tdao, tid, count);
         } catch (SQLException ex) {
             _logger.error("unable to update item:[{}]", tdao, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -313,6 +319,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
         } catch (SQLException ex) {
             _logger.error("unable to update column[{}] with value[{}] where column[{}] == value[{}]", setColName,
                     setColValue, whereColName, whereColValue, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -322,7 +329,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             return this.getDao().queryForAll();
         } catch (SQLException ex) {
             _logger.error("unable to get all items", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -332,7 +339,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             return this.getDao().queryForId(id);
         } catch (SQLException ex) {
             _logger.error("unable to get item[id:{}]", id, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -342,6 +349,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Ids:[{}] deleted, Delete count:{}", ids, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete Ids:[{}]", ids, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -350,6 +358,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             this.getDao().deleteById(id);
         } catch (SQLException ex) {
             _logger.error("unable to delete item, id:[{}]", id, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -361,6 +370,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Deleted count:{}, for key:{}, value:{}", deleteCount, key, value);
         } catch (SQLException ex) {
             _logger.error("unable to delete item, key:{}, value:{}", key, value, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -372,6 +382,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Deleted count:{}, for key:{}, values:{}", deleteCount, key, values);
         } catch (SQLException ex) {
             _logger.error("unable to delete item, key:{}, values:{}", key, values, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -397,6 +408,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             _logger.debug("Deleted count:{}, for map:{}", deleteCount, map);
         } catch (SQLException ex) {
             _logger.error("unable to delete item, map:{}", map, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -408,7 +420,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             return new ArrayList<Tdao>();
         } catch (SQLException ex) {
             _logger.error("unable to get all items ids:{}", ids, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -417,7 +429,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             return this.getDao().queryBuilder().where().eq(key, value).query();
         } catch (SQLException ex) {
             _logger.error("unable to get all items key:{}, value:{}", key, value, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -426,7 +438,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             return this.getDao().queryBuilder().where().eq(key, value).queryForFirst();
         } catch (SQLException ex) {
             _logger.error("unable to get all items key:{}, value:{}", key, value, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -435,8 +447,8 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             return this.getDao().countOf();
         } catch (SQLException ex) {
             _logger.error("unable to get count,", ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -449,7 +461,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             }
         } catch (SQLException ex) {
             _logger.error("unable to get count key:{}, data:{}", key, data, ex);
-            return 0;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -473,8 +485,8 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             return queryBuilder.countOf();
         } catch (SQLException ex) {
             _logger.error("unable to get count for query, input[{}]", columnValues, ex);
+            throw new McDatabaseException(ex);
         }
-        return 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -486,6 +498,7 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
             }
         } catch (SQLException ex) {
             _logger.error("Error while processing for {}", query, ex);
+            throw new McDatabaseException(ex);
         }
 
         return new ArrayList<Tdao>();

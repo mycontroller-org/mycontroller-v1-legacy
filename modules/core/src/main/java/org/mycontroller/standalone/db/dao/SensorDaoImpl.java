@@ -29,6 +29,7 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DbException;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.Sensor;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -88,8 +89,10 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             _logger.debug("Deleted senosor:[{}], delete count:{}", sensor, deleteCount);
         } catch (SQLException ex) {
             _logger.error("unable to delete, sensor:{}", sensor, ex);
+            throw new McDatabaseException(ex);
         } catch (DbException dbEx) {
             _logger.error("unable to delete, sensor:{}", sensor, dbEx);
+            throw new McDatabaseException(dbEx);
         }
     }
 
@@ -127,6 +130,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             _logger.debug("Updated senosor:[{}]", sensor);
         } catch (DbException dbEx) {
             _logger.error("unable to update, sensor:{}", sensor, dbEx);
+            throw new McDatabaseException(dbEx);
         }
     }
 
@@ -151,7 +155,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             return this.getDao().queryForEq(Sensor.KEY_NODE_ID, nodeId);
         } catch (SQLException ex) {
             _logger.error("unable to get all list with node id:{}", nodeId, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -167,7 +171,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
                     .queryForEq("type", MESSAGE_TYPE_PRESENTATION.valueOf(typeString));
         } catch (SQLException ex) {
             _logger.error("unable to get all list with typeString: {}", typeString, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -177,7 +181,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             return this.getDao().queryForAll();
         } catch (SQLException ex) {
             _logger.error("unable to get all list", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -192,7 +196,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get all list with nodeIds:{}", nodeIds, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -206,10 +210,11 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
                             .and().eq(Sensor.KEY_SENSOR_ID, sensorId).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get", ex);
+            throw new McDatabaseException(ex);
         } catch (DbException dbEx) {
             _logger.error("unable to get, nodeId:{},sensorId:{}", nodeId, sensorId, dbEx);
+            throw new McDatabaseException(dbEx);
         }
-        return null;
     }
 
     @Override
@@ -229,7 +234,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             return this.get(sensor.getNode().getId(), sensor.getSensorId());
         } catch (DbException ex) {
             _logger.error("unable to get", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -270,8 +275,8 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             return queryBuilder.countOf();
         } catch (SQLException ex) {
             _logger.error("unable to get Sensor count:[NodeId:{}]", nodeId, ex);
+            throw new McDatabaseException(ex);
         }
-        return 0;
     }
 
     @Override
@@ -284,6 +289,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             }
         } catch (SQLException ex) {
             _logger.error("unable to get all list with sensor Ids:{}", ids, ex);
+            throw new McDatabaseException(ex);
         }
         return null;
     }
@@ -295,7 +301,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -323,7 +329,7 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
             return this.getDao().queryForEq(Sensor.KEY_ROOM_ID, roomId);
         } catch (SQLException ex) {
             _logger.error("unable to get all list with room id:{}", roomId, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -344,8 +350,8 @@ public class SensorDaoImpl extends BaseAbstractDaoImpl<Sensor, Integer> implemen
 
         } catch (SQLException ex) {
             _logger.error("unable to get, roomId:{}, sensorName:{}", roomId, sensorName, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     public List<Sensor> getAll(Query query, String filter, AllowedResources allowedResources) {

@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.SystemJob;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -43,7 +44,7 @@ public class SystemJobDaoImpl extends BaseAbstractDaoImpl<SystemJob, Integer> im
                     .eq(SystemJob.KEY_ENABLED, true).query();
         } catch (SQLException ex) {
             _logger.error("Unable to get list of enabled systemjobs", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 

@@ -23,6 +23,7 @@ import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.ForwardPayload;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -56,7 +57,7 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, I
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get all list", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -74,7 +75,7 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, I
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get all list", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -89,6 +90,7 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, I
             _logger.debug("Deleted SensorId:[{}], delete count:{}", sensorId, deleteCount);
         } catch (SQLException ex) {
             _logger.error("unable to delete SensorId:{}", sensorId, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -111,6 +113,7 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, I
             _logger.debug("Updated rows count:{}", updateCount);
         } catch (SQLException ex) {
             _logger.error("Failed to update, Ids:{}", ids, ex);
+            throw new McDatabaseException(ex);
         }
 
     }
@@ -121,8 +124,8 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, I
             return this.getDao().queryForEq(ForwardPayload.KEY_SOURCE_ID, sensorVariableId);
         } catch (SQLException ex) {
             _logger.error("unable to featch getAll for selected id, ", ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -135,8 +138,8 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, I
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to featch getAll for selected id, ", ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -146,7 +149,7 @@ public class ForwardPayloadDaoImpl extends BaseAbstractDaoImpl<ForwardPayload, I
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 

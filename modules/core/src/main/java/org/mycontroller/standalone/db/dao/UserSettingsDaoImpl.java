@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.db.tables.UserSettings;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -47,6 +48,7 @@ public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integ
 
         } catch (SQLException ex) {
             _logger.error("unable to add UserSettings:[{}]", userSettings, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -59,6 +61,7 @@ public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integ
                     status.getNumLinesChanged());
         } catch (SQLException ex) {
             _logger.error("unable to CreateOrUpdate UserSettings:[{}]", userSettings, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -70,6 +73,7 @@ public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integ
 
         } catch (SQLException ex) {
             _logger.error("unable to delete UserSettings:[{}]", userSettings, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -84,6 +88,7 @@ public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integ
             this.getDao().update(userSettings);
         } catch (SQLException ex) {
             _logger.error("unable to update UserSettings:[{}]", userSettings, ex);
+            throw new McDatabaseException(ex);
         }
 
     }
@@ -94,7 +99,7 @@ public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integ
             return this.getDao().queryBuilder().orderBy("key", true).orderBy("id", true).query();
         } catch (SQLException ex) {
             _logger.error("unable to get all list", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -106,7 +111,7 @@ public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integ
             return queryBuilder.orderBy("id", true).query();
         } catch (SQLException ex) {
             _logger.error("unable to get list:[{}]", keys, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -118,7 +123,7 @@ public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integ
             return queryBuilder.orderBy("id", true).query();
         } catch (SQLException ex) {
             _logger.error("unable to get like:[{}]", key, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
 
     }
@@ -135,7 +140,7 @@ public class UserSettingsDaoImpl extends BaseAbstractDaoImpl<UserSettings, Integ
             return queryBuilder.where().eq("key", key).queryForFirst();
         } catch (SQLException ex) {
             _logger.error("unable to get:[key:{}]", key, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 }

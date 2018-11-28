@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsGPSTypeDevice;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -82,6 +83,7 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric:[{}]", metric, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -94,6 +96,7 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
             _logger.debug("Metric-sensorValueRefId:[{}] deleted, Delete count:{}", sensorValueRefId, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric-sensorValueRefId:[{}]", sensorValueRefId, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -120,8 +123,8 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -135,8 +138,8 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
                             .and().eq(MetricsGPSTypeDevice.KEY_TIMESTAMP, metric.getTimestamp()).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -156,7 +159,7 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
                     .query();
         } catch (SQLException ex) {
             _logger.error("Exception,", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -49,6 +50,7 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
 
         } catch (SQLException ex) {
             _logger.error("unable to add ResourcesGroup:[{}]", resourcesGroup, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -61,6 +63,7 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
                     status.isUpdated(), status.getNumLinesChanged());
         } catch (SQLException ex) {
             _logger.error("unable to CreateOrUpdate ResourcesGroup:[{}]", resourcesGroup, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -77,6 +80,7 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
             _logger.debug("ResourcesGroup:[id:{}, name:{}] deleted, Delete count:{}", id, name, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete resourcesGroup:[id:{}, name:{}]", id, name, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -97,6 +101,7 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
             _logger.debug("Updated ResourcesGroup:[{}], Update count:{}", resourcesGroup, count);
         } catch (SQLException ex) {
             _logger.error("unable to update resourcesGroup:[{}]", resourcesGroup, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -106,7 +111,7 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
             return this.getDao().queryForAll();
         } catch (SQLException ex) {
             _logger.error("unable to get ResourcesGroup", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -124,7 +129,7 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
             }
         } catch (SQLException ex) {
             _logger.error("unable to get ResourcesGroup", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
         return null;
     }
@@ -135,8 +140,8 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
             return this.getDao().queryForId(id);
         } catch (SQLException ex) {
             _logger.error("unable to get ResourcesGroup", ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -146,7 +151,7 @@ public class ResourcesGroupDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup, I
             return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 

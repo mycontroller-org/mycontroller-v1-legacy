@@ -23,6 +23,7 @@ import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.OperationTable;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -65,7 +66,7 @@ public class OperationDaoImpl extends BaseAbstractDaoImpl<OperationTable, Intege
             return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -85,8 +86,8 @@ public class OperationDaoImpl extends BaseAbstractDaoImpl<OperationTable, Intege
                     .eq(OperationTable.KEY_ENABLED, true).query();
         } catch (SQLException ex) {
             _logger.error("Exception,", ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -103,8 +104,8 @@ public class OperationDaoImpl extends BaseAbstractDaoImpl<OperationTable, Intege
                     .eq(OperationTable.KEY_ENABLED, true).query();
         } catch (SQLException ex) {
             _logger.error("Exception,", ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
 }

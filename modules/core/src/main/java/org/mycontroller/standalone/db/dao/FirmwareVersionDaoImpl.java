@@ -22,6 +22,7 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.FirmwareVersion;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -51,7 +52,7 @@ public class FirmwareVersionDaoImpl extends BaseAbstractDaoImpl<FirmwareVersion,
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
