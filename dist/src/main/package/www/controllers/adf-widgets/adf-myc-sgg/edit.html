@@ -86,7 +86,7 @@
     <label>{{ 'SENSOR_VARIABLE_TYPE' | translate }}</label>
     <select id="senVarsTypes" class="form-control" pf-select data-live-search="true" ng-model="config.variableType" ng-change="mycSensorsGroupedGraphEdit.onVariableTypeChange()">
       <option value="" ng-hide="true"></option>
-      <option ng-repeat="vType in mycSensorsGroupedGraphEdit.variableTypes | orderBy: 'displayName'" value="{{vType.displayName}}"  ng-selected="config.variableType === vType.displayName">{{vType.displayName}}</option>
+      <option ng-repeat="vType in mycSensorsGroupedGraphEdit.variableTypes | orderBy: 'displayName'" value="{{vType.id}}"  ng-selected="config.variableType === vType.id">{{vType.displayName}}</option>
     </select>
   </div>
 
