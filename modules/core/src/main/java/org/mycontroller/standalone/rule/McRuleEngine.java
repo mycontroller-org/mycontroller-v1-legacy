@@ -47,8 +47,8 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 public class McRuleEngine extends Job implements Runnable {
     public static final String MC_RULES_ENGINE_NAME = "mc_rules_engine";
-    private static AtomicBoolean isRunning = new AtomicBoolean(false);
-    private static final long MAX_WAIT_TIME = 1000 * 4;//3 seconds
+    private static final AtomicBoolean IS_RUNNING = new AtomicBoolean(false);
+    private static final long MAX_WAIT_TIME = 1000 * 4;// 4 seconds
 
     private RESOURCE_TYPE resourceType;
     private Integer resourceId;
@@ -110,7 +110,7 @@ public class McRuleEngine extends Job implements Runnable {
     @Override
     public void doRun() throws JobInterruptException {
         long startTime = System.currentTimeMillis();
-        while (isRunning.get()) {
+        while (IS_RUNNING.get()) {
             try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
@@ -122,7 +122,7 @@ public class McRuleEngine extends Job implements Runnable {
                 return;
             }
         }
-        isRunning.set(true);
+        IS_RUNNING.set(true);
         try {
             //Load rules
             List<RuleDefinitionTable> ruleDefinitionsDb = new ArrayList<RuleDefinitionTable>();
@@ -162,7 +162,7 @@ public class McRuleEngine extends Job implements Runnable {
         } catch (Exception ex) {
             _logger.error("Exception on scheduled job, ", ex);
         } finally {
-            isRunning.set(false);
+            IS_RUNNING.set(false);
         }
 
     }
@@ -174,7 +174,7 @@ public class McRuleEngine extends Job implements Runnable {
             return;
         }
         long startTime = System.currentTimeMillis();
-        while (isRunning.get()) {
+        while (IS_RUNNING.get()) {
             try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
@@ -186,7 +186,7 @@ public class McRuleEngine extends Job implements Runnable {
                 return;
             }
         }
-        isRunning.set(true);
+        IS_RUNNING.set(true);
         try {
             //Load rules
             List<RuleDefinitionTable> ruleDefinitionsDb = new ArrayList<RuleDefinitionTable>();
@@ -227,7 +227,7 @@ public class McRuleEngine extends Job implements Runnable {
         } catch (Exception ex) {
             _logger.error("Exception on ondemand thread job, ", ex);
         } finally {
-            isRunning.set(false);
+            IS_RUNNING.set(false);
         }
     }
 }

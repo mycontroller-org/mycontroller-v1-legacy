@@ -29,15 +29,11 @@ import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.db.tables.Role;
 import org.mycontroller.standalone.db.tables.RoleUserMap;
 import org.mycontroller.standalone.db.tables.User;
-import org.mycontroller.standalone.jobs.MidNightJobs;
 import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
-import org.mycontroller.standalone.jobs.ResourcesLogsAggregationJob;
 import org.mycontroller.standalone.message.McMessageUtils;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.metrics.MetricsUtils.METRIC_TYPE;
-import org.mycontroller.standalone.metrics.jobs.MetricsAggregationJob;
-import org.mycontroller.standalone.rule.McRuleEngine;
 import org.mycontroller.standalone.settings.EmailSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
@@ -150,17 +146,6 @@ public class V1_01__Initial_Configuration extends MigrationBase {
                 .authSid(null)
                 .authToken(null)
                 .fromNumber(null).build().save();
-
-        // Add System Jobs
-        DataBaseUtils
-                .createSystemJob("Metrics aggregate job", "05 * * * * ? *", true, MetricsAggregationJob.class);
-        DataBaseUtils.createSystemJob("ResourcesLogs Aggregation Job", "45 * * * * ? *", true,
-                ResourcesLogsAggregationJob.class);
-        DataBaseUtils.createSystemJob("Daily once job", "30 3 0 * * ? *", true, MidNightJobs.class);
-
-        // Add a job to monitor Alarm definitions with active time dampening
-        // run this job every 30 seconds once
-        DataBaseUtils.createSystemJob("Rule definition engine", "*/5 * * * * ? *", true, McRuleEngine.class);
 
         //Add super admin role
         DaoUtils.getRoleDao().create(Role.builder()

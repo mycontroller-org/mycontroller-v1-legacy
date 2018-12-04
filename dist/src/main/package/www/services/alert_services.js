@@ -121,7 +121,9 @@ myControllerModule.factory('displayRestError', function(alertService){
       }else if(error.data != null){
         if(error.data.errorMessage != null){
           displayMessage = error.status +': '+ error.statusText+'<br>'+error.data.errorMessage;
-        }else{
+        } else if(error.data.message != null) {
+          displayMessage = error.status +': '+ error.statusText+'<br>'+error.data.message;
+        } else {
          displayMessage = error.status +': '+ error.statusText;
         }
       }else if(data != null){

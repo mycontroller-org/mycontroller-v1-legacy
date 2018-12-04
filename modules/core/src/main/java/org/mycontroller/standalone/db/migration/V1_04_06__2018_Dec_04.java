@@ -22,10 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.3
+ * @since 1.4.0
  */
 @Slf4j
-public class V1_03_01__2016_Aug_03 extends MigrationBase {
+public class V1_04_06__2018_Dec_04 extends MigrationBase {
 
     @Override
     public void migrate(Connection connection) throws Exception {
@@ -36,23 +36,18 @@ public class V1_03_01__2016_Aug_03 extends MigrationBase {
 
         /** Migration comments
          *  Description:
-         *  1. Added new column for RuleDefinitionTable, [reEnable, reEnableDelay]
+         *  1. Delete SystemsJobs table, moved all the jobs to java code,
+         *  Cron expression can be editable by user
          **/
 
-        /** Migration #1
-         * RuleDefinitation table changed
-         * steps
-         * 1. check if the column exists
-         * 2. add new column
-         * */
-        //Execute only if column not available in database
-        if (!sqlClient().hasColumn("rule_definition", "reEnable")) {
-            sqlClient().addColumn("rule_definition", "reEnable", "TINYINT DEFAULT FALSE");
-            sqlClient().addColumn("rule_definition", "reEnableDelay", "BIGINT");
-            reloadDao();
+        // execute only if running on existing db
+        int schemaVersion = sqlClient().getDatabaseSchemaVersionInt();
+        _logger.debug("Schema version:{}", schemaVersion);
+        if (schemaVersion != 0 && schemaVersion < 10406) {
+            // read all the operations
+            sqlClient().dropTable("system_jobs");
         }
-
+        reloadDao();
         _logger.info("Migration completed successfully.");
     }
-
 }
