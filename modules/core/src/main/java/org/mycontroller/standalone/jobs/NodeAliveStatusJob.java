@@ -39,19 +39,23 @@ public class NodeAliveStatusJob extends Job {
     public static final String NAME = "node_alive_status_job";
     public static final String TRIGGER_NAME = "node_alive_status_trigger";
     private static final Logger _logger = LoggerFactory.getLogger(NodeAliveStatusJob.class);
-    private static final long WAIT_TIME_TO_CHECK_ALIVE_STATUS = McUtils.SECOND * 30;
+    private static final long WAIT_TIME_TO_CHECK_ALIVE_STATUS = McUtils.SECOND * 15;
     public static final long DEFAULT_ALIVE_CHECK_INTERVAL = 30 * McUtils.MINUTE;
     private static boolean terminateAliveCheck = false;
 
+    private long currentTime = System.currentTimeMillis();
+
     @Override
     public void doRun() throws JobInterruptException {
-        _logger.debug("Executing 'node alive check' job");
+        _logger.debug("Job triggered: Node alive status");
+        currentTime = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         try {
             this.sendHeartbeat();
             long referenceTimestamp = 0;
             while (referenceTimestamp <= WAIT_TIME_TO_CHECK_ALIVE_STATUS) {
                 if (terminateAliveCheck) {
-                    _logger.debug("Termination issued for NodeAliveStatusJob.");
+                    _logger.debug("Termination issued for job Node alive status.");
                     return;
                 }
                 Thread.sleep(100);
@@ -61,20 +65,23 @@ public class NodeAliveStatusJob extends Job {
         } catch (Exception ex) {
             _logger.error("Exception, ", ex);
         }
+        _logger.debug("Job completed: Node alive status, time taken:{} ms", System.currentTimeMillis() - start);
     }
 
     private void sendHeartbeat() {
-        long currentTime = System.currentTimeMillis();
         List<Node> nodes = DaoUtils.getNodeDao().getAll();
         for (Node node : nodes) {
+            _logger.debug("Checking for the node[eui:{}, name:{}, gateway:{}], Last check happened {} ms ago",
+                    node.getEui(), node.getName(), node.getGatewayTable().getName(),
+                    currentTime - node.getLastHeartbeatTxTime());
             //If gateway not available, do not send
             if (McObjectManager.getEngine(node.getGatewayTable().getId()) == null
                     || McObjectManager.getEngine(node.getGatewayTable().getId()).config().getState() != STATE.UP) {
-                return;
+                continue;
             }
             // for smart sleep node do not send heart beat message
             if (node.getSmartSleepEnabled()) {
-                return;
+                continue;
             }
             //for now supports only for MySensors and MyController
             if (node.getGatewayTable().getEnabled()
@@ -82,8 +89,16 @@ public class NodeAliveStatusJob extends Job {
                     || node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_CONTROLLER)
                     && currentTime >= (node.getLastHeartbeatTxTime() + node.getHeartbeatInterval())) {
                 McObjectManager.getMcActionEngine().sendAliveStatusRequest(node);
-                DaoUtils.getNodeDao().update(Node.KEY_PROPERTIES,
-                        node.setProperty(Node.KEY_HEARTBEAT_LAST_TX_TIME, currentTime), node.getId());
+                _logger.debug("Heartbeat request sent for the node[eui:{}, name:{}, gateway:{}]",
+                        node.getEui(), node.getName(), node.getGatewayTable().getName());
+                // added 3 seconds offset
+                DaoUtils.getNodeDao().update(
+                        Node.KEY_PROPERTIES,
+                        node.setProperty(Node.KEY_HEARTBEAT_LAST_TX_TIME, currentTime - (3 * 1000L)),
+                        node.getId());
+            } else {
+                _logger.debug("Heartbeat request not sent for the node[eui:{}, name:{}, gateway:{}]",
+                        node.getEui(), node.getName(), node.getGatewayTable().getName());
             }
         }
     }
@@ -93,7 +108,10 @@ public class NodeAliveStatusJob extends Job {
         for (Node node : nodes) {
             STATE newState = null;
             if (node.getLastSeen() == null
-                    || node.getLastSeen() <= (System.currentTimeMillis() - node.getAliveCheckInterval())) {
+                    || node.getLastSeen() <= (currentTime - node.getAliveCheckInterval())) {
+                _logger.debug("Status not updated for the node[eui:{}, name:{}, gateway:{}], Overdue:{} ms",
+                        node.getEui(), node.getName(), node.getGatewayTable().getName(),
+                        (currentTime - node.getAliveCheckInterval()) - node.getLastSeen());
                 if (node.getGatewayTable().getEnabled()) {
                     if (node.getState() != STATE.DOWN) {
                         newState = STATE.DOWN;
@@ -103,13 +121,15 @@ public class NodeAliveStatusJob extends Job {
                 }
                 if (newState != null) {
                     DaoUtils.getNodeDao().update(Node.KEY_STATE, newState, node.getId());
-                    _logger.debug("Node is in not reachable state, Node:[{}]", node);
+                    _logger.debug("Node new state[eui:{}, name:{}, gateway:{}, state:{}]",
+                            node.getEui(), node.getName(), node.getGatewayTable().getName(), newState);
                     // for mysensors network, node 0 is gateway. if the node 0 is down. reload the gateway.
                     // In MySensors node 0 is a gateway
                     if (node.getEui().equals("0")
                             && node.getGatewayTable().getNetworkType() == NETWORK_TYPE.MY_SENSORS
                             && newState == STATE.DOWN) {
-                        _logger.debug("Reloading gateway...");
+                        _logger.info("Seems this gateway[{}] is down for a while, realoading this gateway.",
+                                node.getGatewayTable().getName());
                         GatewayUtils.reloadEngine(node.getGatewayTable().getId());
                     }
                 }
