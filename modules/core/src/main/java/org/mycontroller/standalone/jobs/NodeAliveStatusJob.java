@@ -109,9 +109,15 @@ public class NodeAliveStatusJob extends Job {
             STATE newState = null;
             if (node.getLastSeen() == null
                     || node.getLastSeen() <= (currentTime - node.getAliveCheckInterval())) {
-                _logger.debug("Status not updated for the node[eui:{}, name:{}, gateway:{}], Overdue:{} ms",
-                        node.getEui(), node.getName(), node.getGatewayTable().getName(),
-                        (currentTime - node.getAliveCheckInterval()) - node.getLastSeen());
+                if (_logger.isDebugEnabled()) {
+                    _logger.debug(
+                            "Status not updated for the node[eui:{}, name:{}, gateway:{}], Overdue:{} ms",
+                            node.getEui(),
+                            node.getName(),
+                            node.getGatewayTable().getName(),
+                            node.getLastSeen() == null ? "-" :
+                                    (currentTime - node.getAliveCheckInterval()) - node.getLastSeen());
+                }
                 if (node.getGatewayTable().getEnabled()) {
                     if (node.getState() != STATE.DOWN) {
                         newState = STATE.DOWN;
