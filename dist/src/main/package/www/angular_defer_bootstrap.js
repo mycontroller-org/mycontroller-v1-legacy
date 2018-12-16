@@ -14,30 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.api.jaxrs.model;
 
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-/**
- * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.3
- */
-
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class HtmlHeaderFiles {
-    private Long lastUpdate;
-    private List<String> scripts;
-    private List<String> links;
-    private String angularjsCustomControllers;
-    private List<String> additionalAngularjsModulesToLoad;
-}
+//set the window.name to signal AangularJS to delay bootstrapping until resumeBootstrap() is called
+//see: https://docs.angularjs.org/guide/bootstrap
+window.name = 'NG_DEFER_BOOTSTRAP! ' + window.name;

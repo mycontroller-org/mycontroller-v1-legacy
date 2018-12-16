@@ -37,6 +37,7 @@
   "ADD_UID_TAG_ENTRY": "Add UID tag entry",
   "ADD_USER": "Add user",
   "ADD_VARIABLE": "Add variable",
+  "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
   "AFTER": "After",
   "ALIAS": "Alias",
   "ALIVE_TEST_FREQUENCY": "Alive check frequency (seconds)",
