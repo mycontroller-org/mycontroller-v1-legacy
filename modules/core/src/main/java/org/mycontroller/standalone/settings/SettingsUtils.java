@@ -205,11 +205,14 @@ public class SettingsUtils {
                 "    let aModules = [\n"
             );
 
-            for (String angularModule : htmlHeaderFiles.getAdditionalAngularjsModulesToLoad()) {
-                builder.append("        '")
-                       .append(angularModule)
-                       .append("',\n")
-                ;
+            if(htmlHeaderFiles.getAdditionalAngularjsModulesToLoad() != null)
+            {
+                for (String angularModule : htmlHeaderFiles.getAdditionalAngularjsModulesToLoad()) {
+                    builder.append("        '")
+                           .append(angularModule)
+                           .append("',\n")
+                    ;
+                }
             }
             builder.append(
                 "    ];\n" +
