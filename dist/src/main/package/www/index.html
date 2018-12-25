@@ -72,8 +72,8 @@
     <!-- JS Files -->
     <!-- ********************************************************** -->
 
-    <!-- webcomponents polyfill -->
-    <script src="libs/webcomponentsjs/1.2.7/webcomponents-loader.js"></script>
+    <!-- custom module plumbing (defers angulars bootstrap process untill manually resumed (see _configurations/additional.js)) -->
+    <script src="angular_defer_bootstrap.js?mcv=${mc.gui.version}"></script>
 
     <!-- jQuery -->
     <script src="libs/jquery/dist/jquery.min.js?mcv=${mc.gui.version}"></script>
@@ -210,8 +210,12 @@
     <!-- Add directives -->
     <script src="services/directives.js?mcv=${mc.gui.version}"></script>
 
-    <!-- Add additional headers -->
-    <link rel="import" href="/_configurations/additional-headers.html">
+    <!-- load additional JS -->
+    <script src="/_configurations/additional.js?mcv=${mc.gui.version}"></script>
+
+    <!-- load additional stylesheets-->
+    <link rel="stylesheet" type="text/css" href="/_configurations/additional.css?mcv=${mc.gui.version}">
+
     <!-- Add angularJS custom controllers -->
     <script src="/_configurations/custom-controllers.js?mcv=${mc.gui.version}"></script>
 
