@@ -73,7 +73,7 @@
     <!-- ********************************************************** -->
 
     <!-- custom module plumbing (defers angulars bootstrap process untill manually resumed (see _configurations/additional.js)) -->
-    <script src="angular_defer_bootstrap.js"></script>
+    <script src="angular_defer_bootstrap.js?mcv=${mc.gui.version}"></script>
 
     <!-- jQuery -->
     <script src="libs/jquery/dist/jquery.min.js?mcv=${mc.gui.version}"></script>
@@ -211,10 +211,10 @@
     <script src="services/directives.js?mcv=${mc.gui.version}"></script>
 
     <!-- load additional JS -->
-    <script src="/_configurations/additional.js"></script>
+    <script src="/_configurations/additional.js?mcv=${mc.gui.version}"></script>
 
     <!-- load additional stylesheets-->
-    <link rel="stylesheet" type="text/css" href="/_configurations/additional.css">
+    <link rel="stylesheet" type="text/css" href="/_configurations/additional.css?mcv=${mc.gui.version}">
 
     <!-- Add angularJS custom controllers -->
     <script src="/_configurations/custom-controllers.js?mcv=${mc.gui.version}"></script>
