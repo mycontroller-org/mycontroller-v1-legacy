@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "Voeg UID label toe",
     "ADD_USER": "Gebruiker toevoegen",
     "ADD_VARIABLE": "Variable toevoegen",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "Na",
     "ALIAS": "Alias",
     "ALIVE_TEST_FREQUENCY": "Bereikbaarheid verificatie frequentie (seconden)",

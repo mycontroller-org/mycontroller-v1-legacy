@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "UID குறிச்சொல் சேர்க்க",
     "ADD_USER": "பயனரை சேர்க்க",
     "ADD_VARIABLE": "மாறி சேர்க்க",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "After",
     "ALIAS": "மறுபெயர்",
     "ALIVE_TEST_FREQUENCY": "உயிருடன் உள்ளதா சோதனை (வினாடிகளில்)",

@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "הוספת ערך של תג UID",
     "ADD_USER": "הוספת משתמש",
     "ADD_VARIABLE": "הוספת משתנה",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "אחרי",
     "ALIAS": "כינוי",
     "ALIVE_TEST_FREQUENCY": "תדירות בדיקת ALIVE (שניות)",

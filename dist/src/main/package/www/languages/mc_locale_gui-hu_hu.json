@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "UID tag hozzáadása",
     "ADD_USER": "Felhasználó hozzáadása",
     "ADD_VARIABLE": "Változó hozzáadása",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "Utána",
     "ALIAS": "Alias",
     "ALIVE_TEST_FREQUENCY": "Alive check frequency (seconds)",

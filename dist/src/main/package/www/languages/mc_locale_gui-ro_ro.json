@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "Adaugă etichetă UID",
     "ADD_USER": "Adaugă utilizator",
     "ADD_VARIABLE": "Adaugă variabilă",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "After",
     "ALIAS": "Alias",
     "ALIVE_TEST_FREQUENCY": "Frecvența verificare stare (seconds)",

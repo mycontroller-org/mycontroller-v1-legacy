@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "Tilføj punkt for UID-mærkat",
     "ADD_USER": "Tilføj bruger",
     "ADD_VARIABLE": "Tilføj variabel",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "Efter",
     "ALIAS": "Alias",
     "ALIVE_TEST_FREQUENCY": "Intervaltid for kontrol (sekunder)",

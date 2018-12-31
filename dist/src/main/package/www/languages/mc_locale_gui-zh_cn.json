@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "添加 UID 标记项",
     "ADD_USER": "添加用户",
     "ADD_VARIABLE": "添加变量",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "后",
     "ALIAS": "别名",
     "ALIVE_TEST_FREQUENCY": "在线确认检查频率 (秒)",

@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "Добавить запись UID тэга",
     "ADD_USER": "Добавить пользователя",
     "ADD_VARIABLE": "Добавить переменную",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "После",
     "ALIAS": "Псевдоним",
     "ALIVE_TEST_FREQUENCY": "Интервал проверки датчиков (секунды)",

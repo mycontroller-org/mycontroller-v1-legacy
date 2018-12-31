@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "Legg til UID tag oppføring",
     "ADD_USER": "Legg til bruker",
     "ADD_VARIABLE": "Legg til variabel",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "Etter",
     "ALIAS": "Alias",
     "ALIVE_TEST_FREQUENCY": "Online sjekk frekvens (sekunder)",

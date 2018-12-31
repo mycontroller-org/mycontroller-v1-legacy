@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "Přidat UID štítek",
     "ADD_USER": "Přidat uživatele",
     "ADD_VARIABLE": "Přidat proměnnou",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "Po",
     "ALIAS": "Alias",
     "ALIVE_TEST_FREQUENCY": "Frekvence kontroly \"alive\" (sekund)",

@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "Afegir entrada de cordó UID",
     "ADD_USER": "Afegir usuari",
     "ADD_VARIABLE": "Afegir la variable",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "Després",
     "ALIAS": "Àlies",
     "ALIVE_TEST_FREQUENCY": "Comprobació temps de vida (segons)",

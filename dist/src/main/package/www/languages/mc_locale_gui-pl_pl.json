@@ -37,6 +37,7 @@
     "ADD_UID_TAG_ENTRY": "Dodaj etykietę UID",
     "ADD_USER": "Dodaj użytkownika",
     "ADD_VARIABLE": "Dodaj zmienną",
+    "ADDITIONAL_ANGULARJS_MODULES_TO_LOAD": "Additional AngularJS modules to load",
     "AFTER": "Po",
     "ALIAS": "Alias",
     "ALIVE_TEST_FREQUENCY": "Częstotliwość sprawdzania aktywności (sekundy)",
