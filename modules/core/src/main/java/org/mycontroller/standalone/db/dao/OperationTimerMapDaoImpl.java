@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.OperationTimerMap;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -85,6 +86,7 @@ public class OperationTimerMapDaoImpl extends BaseAbstractDaoImpl<OperationTimer
             }
         } catch (SQLException ex) {
             _logger.error("Exception, ", ex);
+            throw new McDatabaseException(ex);
         }
         return roleIds;
     }

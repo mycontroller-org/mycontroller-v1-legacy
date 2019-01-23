@@ -17,11 +17,11 @@
 package org.mycontroller.standalone.db.dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -53,6 +53,7 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             _logger.debug("Metric-sensorVariableRefId:[{}] deleted, Delete count:{}", sensorVarRefId, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric-sensorVariableRefId:[{}]", sensorVarRefId, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -66,6 +67,10 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
                 where.eq(MetricsBinaryTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
                 whereCount++;
+            } else {
+                _logger.warn("Sensor variable id is not supplied!"
+                        + " Cannot perform purge operation without sensor variable id.");
+                return;
             }
             if (metric.getTimestamp() != null) {
                 where.le(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
@@ -93,6 +98,7 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric:[{}]", metric, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -112,8 +118,8 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -126,8 +132,8 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
                             .and().eq(MetricsBinaryTypeDevice.KEY_TIMESTAMP, metric.getTimestamp()).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -145,8 +151,8 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             return _qb.query();
         } catch (SQLException ex) {
             _logger.error("SQL Exception", ex);
+            throw new McDatabaseException(ex);
         }
-        return new ArrayList<MetricsBinaryTypeDevice>();
     }
 
     @Override
@@ -160,6 +166,7 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             _logger.debug("Update count:{}", updateCount);
         } catch (SQLException ex) {
             _logger.error("SQL Exception", ex);
+            throw new McDatabaseException(ex);
         }
     }
 }

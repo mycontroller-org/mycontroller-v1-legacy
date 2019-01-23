@@ -19,12 +19,16 @@ package org.mycontroller.standalone.gateway.serial;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.eventbus.McEventBus;
 import org.mycontroller.standalone.eventbus.MessageStatus;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.config.GatewayConfigSerial;
 import org.mycontroller.standalone.message.IMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_STATUS;
 import org.mycontroller.standalone.offheap.IQueue;
 import org.mycontroller.standalone.provider.IMessageParser;
 import org.mycontroller.standalone.utils.McUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
@@ -38,16 +42,20 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SerialDriverJSerialComm implements ISerialDriver {
+    private static final Logger _RAW_MSG_LOGGER = LoggerFactory.getLogger(GatewayUtils.RAW_MESSAGE_LOGGER);
+
     private GatewayConfigSerial _config;
     private SerialPort _serialPort;
     private IMessageParser<byte[]> _parser;
     private IQueue<IMessage> _queue;
+    private String gatewayReference;
 
     public SerialDriverJSerialComm(GatewayConfigSerial _config, IMessageParser<byte[]> _parser,
             IQueue<IMessage> _queue) {
         this._config = _config;
         this._parser = _parser;
         this._queue = _queue;
+        this.gatewayReference = GatewayUtils.gwLogReference(_config);
     }
 
     @Override
@@ -98,6 +106,11 @@ public class SerialDriverJSerialComm implements ISerialDriver {
     public void write(IMessage message) {
         try {
             byte[] data = _parser.getGatewayData(message);
+            // add raw message to a debug file
+            if (_RAW_MSG_LOGGER.isDebugEnabled()) {
+                MDC.put(GatewayUtils.RAW_MESSAGE_REFERENCE, gatewayReference);
+                _RAW_MSG_LOGGER.debug("Tx: {}", new String(data));
+            }
             _serialPort.writeBytes(data, data.length);
         } catch (Exception ex) {
             _config.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
@@ -109,6 +122,8 @@ public class SerialDriverJSerialComm implements ISerialDriver {
 
 @Slf4j
 class SerialDataListenerjSerialComm implements SerialPortDataListener {
+    private static final Logger _RAW_MSG_LOGGER = LoggerFactory.getLogger(GatewayUtils.RAW_MESSAGE_LOGGER);
+
     private SerialPort _serialPort;
     private GatewayConfigSerial _config = null;
     private StringBuilder rawMessage = new StringBuilder();
@@ -116,6 +131,7 @@ class SerialDataListenerjSerialComm implements SerialPortDataListener {
     private static final int MAX_ERROR_COUNT = 3;
     private IMessageParser<byte[]> _parser;
     private IQueue<IMessage> _queue;
+    private String gatewayReference;
 
     public SerialDataListenerjSerialComm(SerialPort _serialPort, GatewayConfigSerial _config,
             IMessageParser<byte[]> _parser, IQueue<IMessage> _queue) {
@@ -123,6 +139,7 @@ class SerialDataListenerjSerialComm implements SerialPortDataListener {
         this._config = _config;
         this._queue = _queue;
         this._parser = _parser;
+        this.gatewayReference = GatewayUtils.gwLogReference(_config);
     }
 
     @Override
@@ -142,6 +159,12 @@ class SerialDataListenerjSerialComm implements SerialPortDataListener {
                 if ((b == ISerialDriver.MESSAGE_SPLITTER) && rawMessage.length() > 0) {
                     String toProcess = rawMessage.toString();
                     _logger.debug("Received a rawMessage:[{}]", toProcess);
+
+                    // add raw messages to a debug file
+                    if (_RAW_MSG_LOGGER.isDebugEnabled()) {
+                        MDC.put(GatewayUtils.RAW_MESSAGE_REFERENCE, gatewayReference);
+                        _RAW_MSG_LOGGER.debug("Rx: {}", toProcess);
+                    }
 
                     //Send Message
                     IMessage message = _parser.getMessage(_config, toProcess.getBytes());

@@ -19,8 +19,11 @@ package org.mycontroller.standalone.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgCondition;
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 import org.mycontroller.standalone.utils.McUtils;
 
@@ -49,65 +52,71 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
         deletePrevious(metric, null);
     }
 
+    private void _deletePrevious(
+            MetricsDoubleTypeDevice metric,
+            ResourcePurgCondition condition,
+            String valueKey) throws SQLException {
+        DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
+        Where<MetricsDoubleTypeDevice, Object> where = deleteBuilder.where();
+        int whereCount = 0;
+
+        if (metric.getAggregationType() != null) {
+            where.eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType());
+            whereCount++;
+        }
+        if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
+            where.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
+            whereCount++;
+        } else {
+            _logger.warn("Sensor variable id is not supplied!"
+                    + " Cannot perform purge operation without sensor variable id.");
+            return;
+        }
+        if (metric.getTimestamp() != null) {
+            where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
+            whereCount++;
+        }
+        if (metric.getStart() != null) {
+            where.ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getStart());
+            whereCount++;
+        }
+        if (metric.getEnd() != null) {
+            where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getEnd());
+            whereCount++;
+        }
+        if (condition != null && condition.getValue() != null) {    // purge value
+            updatePurgeCondition(where, valueKey, condition.getValueDouble(), condition.getOperator());
+            whereCount++;
+        }
+        if (whereCount > 0) {
+            where.and(whereCount);
+            deleteBuilder.setWhere(where);
+        }
+        int count = deleteBuilder.delete();
+        _logger.debug("Metric:[{}] deleted, delete count:{}, statement:{}", metric, count,
+                deleteBuilder.prepareStatementString());
+
+    }
+
     @Override
-    public void deletePrevious(MetricsDoubleTypeDevice metric, String delimiter) {
+    public void deletePrevious(MetricsDoubleTypeDevice metric, ResourcePurgeConf purgeConfig) {
         try {
-            DeleteBuilder<MetricsDoubleTypeDevice, Object> deleteBuilder = this.getDao().deleteBuilder();
-            Where<MetricsDoubleTypeDevice, Object> where = deleteBuilder.where();
-            int whereCount = 0;
-
-            if (metric.getAggregationType() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, metric.getAggregationType());
-                whereCount++;
-            }
-            if (metric.getSensorVariable() != null && metric.getSensorVariable().getId() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID, metric.getSensorVariable().getId());
-                whereCount++;
-            }
-            if (metric.getTimestamp() != null) {
-                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp());
-                whereCount++;
-            }
-            if (metric.getStart() != null) {
-                where.ge(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getStart());
-                whereCount++;
-            }
-            if (metric.getEnd() != null) {
-                where.le(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getEnd());
-                whereCount++;
-            }
-            if (metric.getAvg() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_AVG, metric.getAvg());
-                whereCount++;
-            } else if (delimiter != null) {
-                if (delimiter.startsWith(">")) {
-                    where.gt(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
-                } else if (delimiter.startsWith("<")) {
-                    where.lt(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
-                } else if (delimiter.startsWith("=")) {
-                    where.eq(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter.substring(1)));
-                } else {
-                    where.eq(MetricsDoubleTypeDevice.KEY_AVG, McUtils.getDouble(delimiter));
+            if (purgeConfig != null && purgeConfig.getValue() != null) {
+                if (purgeConfig.getAvg() != null && purgeConfig.getAvg().getValue() != null) {
+                    _deletePrevious(metric, purgeConfig.getAvg(), MetricsDoubleTypeDevice.KEY_AVG);
                 }
-                whereCount++;
+                if (purgeConfig.getMin() != null && purgeConfig.getMin().getValue() != null) {
+                    _deletePrevious(metric, purgeConfig.getMin(), MetricsDoubleTypeDevice.KEY_MIN);
+                }
+                if (purgeConfig.getMax() != null && purgeConfig.getMax().getValue() != null) {
+                    _deletePrevious(metric, purgeConfig.getMax(), MetricsDoubleTypeDevice.KEY_MAX);
+                }
+            } else {
+                _deletePrevious(metric, null, null);
             }
-            if (metric.getMin() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_MIN, metric.getMin());
-                whereCount++;
-            }
-            if (metric.getMax() != null) {
-                where.eq(MetricsDoubleTypeDevice.KEY_MAX, metric.getMax());
-                whereCount++;
-            }
-
-            if (whereCount > 0) {
-                where.and(whereCount);
-                deleteBuilder.setWhere(where);
-            }
-            int count = deleteBuilder.delete();
-            _logger.debug("Metric:[{}] deleted, Delete count:{}", metric, count);
         } catch (SQLException ex) {
-            _logger.error("unable to delete metric:[{}]", metric, ex);
+            _logger.error("unable to delete metric:[{}], {}", metric, purgeConfig, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -120,6 +129,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             _logger.debug("Metric-sensorValueRefId:[{}] deleted, Delete count:{}", sensorValueRefId, count);
         } catch (SQLException ex) {
             _logger.error("unable to delete metric-sensorValueRefId:[{}]", sensorValueRefId, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -146,8 +156,8 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -161,8 +171,8 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                             .and().eq(MetricsDoubleTypeDevice.KEY_TIMESTAMP, metric.getTimestamp()).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get, metric:{}", metric, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -182,7 +192,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                     .query();
         } catch (SQLException ex) {
             _logger.error("Exception,", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -303,9 +313,8 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                     .build();
         } catch (SQLException ex) {
             _logger.error("Unable to execute query:{}", query, ex);
+            throw new McDatabaseException(ex);
         }
-
-        return null;
     }
 
     @Override
@@ -317,7 +326,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                     .eq(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE, aggregationType).countOf();
         } catch (Exception ex) {
             _logger.error("Unable to execute countOf query", ex);
-            return -1;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -332,7 +341,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
                     .queryForFirst() != null;
         } catch (Exception ex) {
             _logger.error("Unable to execute countOf query", ex);
-            return true;
+            throw new McDatabaseException(ex);
         }
     }
 }

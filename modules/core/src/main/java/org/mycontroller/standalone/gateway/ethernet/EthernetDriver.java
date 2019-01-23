@@ -27,11 +27,15 @@ import org.mycontroller.standalone.McThreadPoolFactory;
 import org.mycontroller.standalone.eventbus.McEventBus;
 import org.mycontroller.standalone.eventbus.MessageStatus;
 import org.mycontroller.standalone.exceptions.MessageParserException;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.config.GatewayConfigEthernet;
 import org.mycontroller.standalone.message.IMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_STATUS;
 import org.mycontroller.standalone.offheap.IQueue;
 import org.mycontroller.standalone.provider.IMessageParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,18 +45,21 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class EthernetDriver {
-
+    private static final Logger _RAW_MSG_LOGGER = LoggerFactory.getLogger(GatewayUtils.RAW_MESSAGE_LOGGER);
     public static final int SOCKET_TIMEOUT = 1000 * 7;
+
     private Socket _socket = null;
     private GatewayConfigEthernet _config = null;
     private EthernetDataListener _listener;
     private IMessageParser<byte[]> _parser;
     private IQueue<IMessage> _queue;
+    private String gatewayReference;
 
     public EthernetDriver(GatewayConfigEthernet _config, IMessageParser<byte[]> _parser, IQueue<IMessage> _queue) {
         this._config = _config;
         this._parser = _parser;
         this._queue = _queue;
+        this.gatewayReference = GatewayUtils.gwLogReference(_config);
     }
 
     public void connect() {
@@ -88,7 +95,13 @@ public class EthernetDriver {
 
     public void write(IMessage message) throws MessageParserException {
         try {
-            _socket.getOutputStream().write(_parser.getGatewayData(message));
+            byte[] data = _parser.getGatewayData(message);
+            // add raw message to a debug file
+            if (_RAW_MSG_LOGGER.isDebugEnabled()) {
+                MDC.put(GatewayUtils.RAW_MESSAGE_REFERENCE, gatewayReference);
+                _RAW_MSG_LOGGER.debug("Tx: {}", new String(data));
+            }
+            _socket.getOutputStream().write(data);
             _socket.getOutputStream().flush();
         } catch (IOException ex) {
             _logger.error("Exception,", ex);
@@ -100,12 +113,15 @@ public class EthernetDriver {
 
 @Slf4j
 class EthernetDataListener implements Runnable {
+    private static final Logger _RAW_MSG_LOGGER = LoggerFactory.getLogger(GatewayUtils.RAW_MESSAGE_LOGGER);
+
     private Socket _socket = null;
     private boolean terminate = false;
     private boolean terminated = false;
     private GatewayConfigEthernet _config = null;
     private IMessageParser<byte[]> _parser;
     private IQueue<IMessage> _queue;
+    private String gatewayReference;
 
     public EthernetDataListener(Socket _socket, GatewayConfigEthernet _config, IMessageParser<byte[]> _parser,
             IQueue<IMessage> _queue) {
@@ -113,6 +129,7 @@ class EthernetDataListener implements Runnable {
         this._config = _config;
         this._parser = _parser;
         this._queue = _queue;
+        this.gatewayReference = GatewayUtils.gwLogReference(_config);
     }
 
     @Override
@@ -128,6 +145,11 @@ class EthernetDataListener implements Runnable {
                 if (buf.ready()) {
                     String rawMessage = buf.readLine();
                     _logger.debug("Raw message: {}", rawMessage);
+                    // add raw messages to a debug file
+                    if (_RAW_MSG_LOGGER.isDebugEnabled()) {
+                        MDC.put(GatewayUtils.RAW_MESSAGE_REFERENCE, gatewayReference);
+                        _RAW_MSG_LOGGER.debug("Rx: {}", rawMessage);
+                    }
                     IMessage message = _parser.getMessage(_config, rawMessage.getBytes());
                     if (message != null) {
                         if (message.getAck() == IMessage.ACK_RESPONSE) {

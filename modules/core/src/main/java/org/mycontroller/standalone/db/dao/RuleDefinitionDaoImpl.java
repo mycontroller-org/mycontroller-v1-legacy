@@ -24,6 +24,7 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
 
 import com.j256.ormlite.stmt.UpdateBuilder;
@@ -57,7 +58,7 @@ public class RuleDefinitionDaoImpl extends BaseAbstractDaoImpl<RuleDefinitionTab
             _logger.debug("Number of rows updated:[{}]", count);
         } catch (SQLException ex) {
             _logger.error("unable to update rule triggered status", ex);
-
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -68,7 +69,7 @@ public class RuleDefinitionDaoImpl extends BaseAbstractDaoImpl<RuleDefinitionTab
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -93,8 +94,8 @@ public class RuleDefinitionDaoImpl extends BaseAbstractDaoImpl<RuleDefinitionTab
             return this.getDao().queryBuilder().where().eq(RuleDefinitionTable.KEY_NAME, name).queryForFirst();
         } catch (SQLException ex) {
             _logger.error("unable to get rule definition name:{},", name, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -107,6 +108,7 @@ public class RuleDefinitionDaoImpl extends BaseAbstractDaoImpl<RuleDefinitionTab
         } catch (SQLException ex) {
             _logger.error("unable to get rule definitions for ResourceTye:{}, ResourceId:{}", resourceType,
                     resourceId, ex);
+            throw new McDatabaseException(ex);
         }
         if (definitions == null) {
             definitions = new ArrayList<RuleDefinitionTable>();

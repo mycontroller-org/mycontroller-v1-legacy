@@ -72,6 +72,9 @@
     <!-- JS Files -->
     <!-- ********************************************************** -->
 
+    <!-- custom module plumbing (defers angulars bootstrap process untill manually resumed (see _configurations/additional.js)) -->
+    <script src="angular_defer_bootstrap.js?mcv=${mc.gui.version}"></script>
+
     <!-- jQuery -->
     <script src="libs/jquery/dist/jquery.min.js?mcv=${mc.gui.version}"></script>
 
@@ -207,10 +210,22 @@
     <!-- Add directives -->
     <script src="services/directives.js?mcv=${mc.gui.version}"></script>
 
-    <!-- Add additional headers -->
-    <link rel="import" href="/_configurations/additional-headers.html">
+    <!-- load additional JS -->
+    <script src="/_configurations/additional.js?mcv=${mc.gui.version}"></script>
+
+    <!-- load additional stylesheets-->
+    <link rel="stylesheet" type="text/css" href="/_configurations/additional.css?mcv=${mc.gui.version}">
+
     <!-- Add angularJS custom controllers -->
     <script src="/_configurations/custom-controllers.js?mcv=${mc.gui.version}"></script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    </script>
 
   </head>
 

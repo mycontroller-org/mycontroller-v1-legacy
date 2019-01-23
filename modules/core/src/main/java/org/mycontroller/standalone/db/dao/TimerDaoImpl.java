@@ -23,6 +23,7 @@ import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.db.tables.Timer;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
@@ -48,7 +49,7 @@ public class TimerDaoImpl extends BaseAbstractDaoImpl<Timer, Integer> implements
             return timers;
         } catch (SQLException ex) {
             _logger.error("unable to get all enabled timers", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -59,7 +60,7 @@ public class TimerDaoImpl extends BaseAbstractDaoImpl<Timer, Integer> implements
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -79,8 +80,8 @@ public class TimerDaoImpl extends BaseAbstractDaoImpl<Timer, Integer> implements
             return this.getDao().queryBuilder().where().eq(RuleDefinitionTable.KEY_NAME, name).queryForFirst();
         } catch (SQLException ex) {
             _logger.error("unable to get timer:{},", name, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
 }

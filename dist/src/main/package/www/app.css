@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -323,6 +323,10 @@ input.mc-color-steel-blue{
 }
 
 
+.mc-model-text-margin {
+  margin-top:5px;
+  margin-bottom:5px;
+}
 
 /* on angular-patternfly upgrade from 2.x to 3.x introduced issue on sensors-action page.
  * To overcome this issue copied style from old version.
@@ -638,7 +642,6 @@ input.mc-color-steel-blue{
   margin-top:5px;
   margin-bottom:5px;
 }
-
 
 /* ADF Table widget */
 .adf-table > tbody > tr > td{

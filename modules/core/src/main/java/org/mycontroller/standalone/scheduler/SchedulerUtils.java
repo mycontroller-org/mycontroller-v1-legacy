@@ -25,11 +25,12 @@ import java.util.Map;
 import org.knowm.sundial.SundialJobScheduler;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.jobs.ExecuteDiscoverJob;
 import org.mycontroller.standalone.jobs.NodeAliveStatusJob;
+import org.mycontroller.standalone.model.SystemJob;
 import org.mycontroller.standalone.settings.BackupSettings;
+import org.mycontroller.standalone.settings.SystemJobsSettings;
 import org.mycontroller.standalone.timer.TimerSimple;
 import org.mycontroller.standalone.timer.TimerUtils;
 import org.mycontroller.standalone.timer.TimerUtils.TIMER_TYPE;
@@ -59,10 +60,8 @@ public class SchedulerUtils {
         _logger.debug("SundialJobScheduler started.Jobs:[{}]",
                 SundialJobScheduler.getAllJobNames());
         //Load all system jobs
-        List<SystemJob> systemJobs = DaoUtils.getSystemJobDao().getAllEnabled();
-        for (SystemJob systemJob : systemJobs) {
-            addSystemJob(systemJob);
-        }
+        reloadSystemJobs();
+
         //Load Timer jobs
         List<Timer> timers = DaoUtils.getTimerDao().getAllEnabled();
         for (Timer timer : timers) {
@@ -81,6 +80,14 @@ public class SchedulerUtils {
         startNodeAliveCheckJob();
         startExecuteDiscoverJob();
 
+    }
+
+    public static synchronized void reloadSystemJobs() {
+        for (SystemJob _job : SystemJobsSettings.listAllJobs()) {
+            removeSystemJob(_job);
+            addSystemJob(_job);
+        }
+        _logger.info("System jobs reloaded.");
     }
 
     public static void stop() {

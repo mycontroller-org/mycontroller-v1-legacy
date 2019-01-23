@@ -24,6 +24,7 @@ import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.ResourcesGroup;
 import org.mycontroller.standalone.db.tables.ResourcesGroupMap;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -51,6 +52,7 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
             _logger.debug("Created ResourcesGroupMap:[{}], Create count:{}", resourcesGroupMap, count);
         } catch (SQLException ex) {
             _logger.error("unable to add ResourcesGroupMap:[{}]", resourcesGroupMap, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -64,6 +66,7 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
                     status.isUpdated(), status.getNumLinesChanged());
         } catch (SQLException ex) {
             _logger.error("unable to CreateOrUpdate ResourcesGroup:[{}]", resourcesGroupMap, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -74,6 +77,7 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
             _logger.debug("Updated ResourcesGroupMap:[{}], Create count:{}", resourcesGroupMap, count);
         } catch (SQLException ex) {
             _logger.error("unable to update ResourcesGroupMap:[{}]", resourcesGroupMap, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -121,6 +125,7 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
         } catch (SQLException ex) {
             _logger.debug("unable to deleted [id:{}, resourceGroupId:{}, resourceType:{}, resourceId:{}]",
                     id, resourcesGroupId, resourceType, resourceId, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -130,8 +135,8 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
             return this.getDao().queryForId(id);
         } catch (SQLException ex) {
             _logger.error("unable to get id:[{}]", id, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     @Override
@@ -176,7 +181,7 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
             return null;
         } catch (SQLException ex) {
             _logger.error("unable to get all list", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -187,6 +192,7 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
             _logger.debug("Deleted [ids:{}], delete count:{}", ids, deleteCount);
         } catch (SQLException ex) {
             _logger.debug("unable to deleted [ids:{}]", ids, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -200,8 +206,8 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
         } catch (SQLException ex) {
             _logger.error("unable to get items count for resource[Type:{}, Id:{}]", resourceType,
                     resourceId, ex);
+            throw new McDatabaseException(ex);
         }
-        return 0;
     }
 
     @Override
@@ -212,7 +218,7 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 }

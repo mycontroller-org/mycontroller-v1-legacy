@@ -109,6 +109,7 @@ public class SensorApi {
             List<String> variableTypes = sensor.getVariableTypes();
             if (McObjectManager.getEngine(node.getGatewayTable().getId()).validate(sensor)) {
                 DaoUtils.getSensorDao().create(sensor);
+                GoogleAnalyticsApi.instance().trackSensorCreation("manual");
                 sensor = DaoUtils.getSensorDao().get(sensor.getNode().getId(), sensor.getSensorId());
                 // Update Variable Types
                 sensor.setVariableTypes(variableTypes);
@@ -252,6 +253,13 @@ public class SensorApi {
             McObjectManager.getEngine(message.getGatewayId()).send(message);
         } else {
             throw new McBadRequestException("Required field is missing! " + message);
+        }
+    }
+
+    public void deleteSensorVariable(Integer... ids) {
+        for (Integer id : ids) {
+            _logger.info("Delete Sensor Variable initiated for the id:{}", id);
+            DaoUtils.getSensorVariableDao().deleteById(id);
         }
     }
 

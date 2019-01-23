@@ -18,6 +18,7 @@ package org.mycontroller.standalone.db.dao;
 
 import java.util.List;
 
+import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.db.tables.MetricsCounterTypeDevice;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 
@@ -28,6 +29,8 @@ import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
 public interface MetricsCounterTypeDeviceDao extends BaseDao<MetricsCounterTypeDevice, Object> {
 
     void deletePrevious(MetricsCounterTypeDevice metric);
+
+    void deletePrevious(MetricsCounterTypeDevice metric, ResourcePurgeConf purgeConfig);
 
     void deleteBySensorVariableRefId(int sensorRefId);
 

@@ -96,7 +96,7 @@ public class McUtils {
     }
 
     public static Double getDouble(String value, int scale) {
-        if (value != null && !value.equals("null")) {
+        if (value != null && !value.equals("null") && value.trim().length() > 0) {
             return round(Double.valueOf(value), scale);
         }
         return null;
@@ -140,7 +140,13 @@ public class McUtils {
 
     public static Integer getInteger(String value) {
         if (value != null) {
-            return Integer.valueOf(value);
+            try {
+                return Integer.valueOf(value);
+            } catch (NumberFormatException ex) {
+                _logger.warn("Looks like supplied value[{}] is not a integer,"
+                        + " non-integers will be removed and retried...", value);
+                return Integer.valueOf(value.replaceAll("[^0-9]", ""));
+            }
         } else {
             return null;
         }

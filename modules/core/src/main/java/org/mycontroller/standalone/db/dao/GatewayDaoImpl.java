@@ -26,6 +26,7 @@ import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
 
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -78,7 +79,7 @@ public class GatewayDaoImpl extends BaseAbstractDaoImpl<GatewayTable, Integer> i
         } catch (SQLException ex) {
             _logger.error("unable to get all gateways:[type:{}, NetworkType:{}, Enabled:{}]",
                     gatewayType != null ? gatewayType.getText() : null, networkType, enabled, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -89,7 +90,7 @@ public class GatewayDaoImpl extends BaseAbstractDaoImpl<GatewayTable, Integer> i
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 

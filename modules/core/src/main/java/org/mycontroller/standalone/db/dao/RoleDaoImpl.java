@@ -32,6 +32,7 @@ import org.mycontroller.standalone.db.tables.RoleNodeMap;
 import org.mycontroller.standalone.db.tables.RoleSensorMap;
 import org.mycontroller.standalone.db.tables.RoleUserMap;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
@@ -75,7 +76,7 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
             return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -93,6 +94,7 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
             }
         } catch (SQLException ex) {
             _logger.error("Exception, ", ex);
+            throw new McDatabaseException(ex);
         }
         return permissions;
     }
@@ -117,6 +119,7 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
 
         } catch (SQLException ex) {
             _logger.error("Exception, ", ex);
+            throw new McDatabaseException(ex);
         }
         return ids;
     }
@@ -142,6 +145,7 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
             }
         } catch (SQLException ex) {
             _logger.error("Exception, ", ex);
+            throw new McDatabaseException(ex);
         }
         return ids;
     }
@@ -167,6 +171,7 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
             }
         } catch (SQLException ex) {
             _logger.error("Exception, ", ex);
+            throw new McDatabaseException(ex);
         }
         return ids;
     }
@@ -193,6 +198,7 @@ public class RoleDaoImpl extends BaseAbstractDaoImpl<Role, Integer> implements R
             }
         } catch (SQLException ex) {
             _logger.error("Exception, ", ex);
+            throw new McDatabaseException(ex);
         }
         return topics;
     }

@@ -44,6 +44,13 @@
               <textarea  class="form-control" rows="4" style="resize:none" ng-model="additionalHeaders.scripts" ng-list="&#10;" ng-trim="false"></textarea>
             </div>
           </div>
+          <!-- Additional AngularJS modules to load -->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'ADDITIONAL_ANGULARJS_MODULES_TO_LOAD' | translate }}</label>
+            <div class="col-sm-10">
+              <textarea  class="form-control" rows="4" style="resize:none" ng-model="additionalHeaders.additionalAngularjsModulesToLoad"  ng-list="&#10;" ng-trim="false"></textarea>
+            </div>
+          </div>
 
           <!-- Angular custom controllers -->
           <div class="form-group">

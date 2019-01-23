@@ -25,14 +25,12 @@ import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.DB_TABLES;
 import org.mycontroller.standalone.db.DaoUtils;
-import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.OperationRuleDefinitionMap;
 import org.mycontroller.standalone.db.tables.OperationTable;
 import org.mycontroller.standalone.db.tables.OperationTimerMap;
 import org.mycontroller.standalone.db.tables.RuleDefinitionTable;
 import org.mycontroller.standalone.db.tables.SensorVariable;
-import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.db.tables.Timer;
 import org.mycontroller.standalone.db.tables.User;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
@@ -45,7 +43,6 @@ import org.mycontroller.standalone.operation.model.OperationSendEmail;
 import org.mycontroller.standalone.operation.model.OperationSendPayload;
 import org.mycontroller.standalone.operation.model.OperationSendPushbulletNote;
 import org.mycontroller.standalone.operation.model.OperationSendSMS;
-import org.mycontroller.standalone.rule.McRuleEngine;
 import org.mycontroller.standalone.rule.RuleUtils.CONDITION_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DAMPENING_TYPE;
 import org.mycontroller.standalone.rule.RuleUtils.DATA_TYPE;
@@ -317,24 +314,6 @@ public class V1_02_01__2016_Mar_24 extends MigrationBase {
 
             }
             sqlClient().dropTable(oldTableName);
-        }
-
-        /** Migration #6
-         * remove unwanted system jobs and add new jobs
-         * steps
-         * 1. add new job McRuleEngine
-         * 2. Remove old jobs
-         */
-        if (DaoUtils.getSystemJobDao().getAll(SystemJob.KEY_CLASS_NAME, McRuleEngine.class.getName()).size() == 0) {
-            DataBaseUtils.createSystemJob("Rule definition engine", "*/5 * * * * ? *", true, McRuleEngine.class);
-            String[] removeJobs = { "org.mycontroller.standalone.alarm.jobs.AlarmDefinitionMonitorGatewayAndNode",
-                    "org.mycontroller.standalone.alarm.jobs.AlarmDefinitionDampeningActiveTimeJob" };
-            for (String removeJob : removeJobs) {
-                List<SystemJob> systemJobs = DaoUtils.getSystemJobDao().getAll(SystemJob.KEY_CLASS_NAME, removeJob);
-                for (SystemJob systemJob : systemJobs) {
-                    DaoUtils.getSystemJobDao().delete(systemJob);
-                }
-            }
         }
 
         _logger.info("Migration completed successfully.");

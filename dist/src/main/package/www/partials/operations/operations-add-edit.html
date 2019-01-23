@@ -217,7 +217,7 @@
                 <input class="form-control" placeholder="{{ 'PAYLOAD' | translate }}" ng-model="item.payload" required />
               </div>
               <div class="col-sm-4 mc-form-fixer-left" ng-if="item.resourceType !== 'Sensor variable'">
-                <select class="form-control" pf-select  ng-options="pos.displayName as pos.displayName for pos in payloadOperations" ng-model="item.payload" required>
+                <select class="form-control" pf-select  ng-options="pos.id as pos.displayName for pos in payloadOperations" ng-model="item.payload" required>
                   <option value="" ng-hide="true"></option>
                 </select>
               </div>

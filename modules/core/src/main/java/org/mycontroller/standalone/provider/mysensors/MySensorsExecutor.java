@@ -98,15 +98,15 @@ public class MySensorsExecutor extends ExecuterAbstract {
             _logger.debug("FirmwareRespone:[Type:{},Version:{},Block:{}]",
                     firmwareResponse.getType(), firmwareResponse.getVersion(), firmwareResponse.getBlock());
 
-            // update firmware status
-            int responseBlock = firmwareResponse.getBlock() + 1; // adding +1 as it starts from 0
+            // in Dualoptiboot fetching blocks in reverse order
+            int blocksDone = blocks - firmwareResponse.getBlock();
             // firmware starts
-            if (responseBlock == 1) {
+            if (blocksDone == 0 || blocksDone == 1) {
                 firmwareUpdateStart(blocks);
-            } else if (responseBlock % 50 == 0) {
-                updateFirmwareStatus(responseBlock);
-            } else if (responseBlock == blocks) {
-                updateFirmwareStatus(responseBlock);
+            } else if (blocksDone % 25 == 0) {
+                updateFirmwareStatus(blocksDone);
+            } else if (blocksDone == blocks) {
+                updateFirmwareStatus(blocksDone);
                 firmwareUpdateFinished();
             }
         } catch (DecoderException ex) {

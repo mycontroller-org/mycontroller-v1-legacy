@@ -22,6 +22,7 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.User;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -57,6 +58,7 @@ public class UserDaoImpl extends BaseAbstractDaoImpl<User, Integer> implements U
             }
         } catch (SQLException ex) {
             _logger.error("Error,", ex);
+            throw new McDatabaseException(ex);
         }
         return null;
     }
@@ -68,7 +70,7 @@ public class UserDaoImpl extends BaseAbstractDaoImpl<User, Integer> implements U
             return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 }

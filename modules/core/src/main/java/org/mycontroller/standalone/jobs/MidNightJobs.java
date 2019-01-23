@@ -18,6 +18,8 @@ package org.mycontroller.standalone.jobs;
 
 import org.knowm.sundial.Job;
 import org.knowm.sundial.exceptions.JobInterruptException;
+import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.api.GoogleAnalyticsApi;
 import org.mycontroller.standalone.timer.TimerUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +39,22 @@ public class MidNightJobs extends Job {
         }
     }
 
+    private void sendAnonymousDataToGoogleAnalytics() {
+        try {
+            // send anonymous date to google analytical site, if enabled
+            if (AppProperties.getInstance().isGoogleAnalyticsEnabled()) {
+                //GoogleAnalyticsApi.instance().sendOverallStatus();
+                GoogleAnalyticsApi.instance().trackServerAliveStatus();
+            }
+        } catch (Exception ex) {
+            _logger.error("Exception,", ex);
+        }
+    }
+
     @Override
     public void doRun() throws JobInterruptException {
         updateSunriseSunset();
+        sendAnonymousDataToGoogleAnalytics();
     }
 
 }

@@ -34,6 +34,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mycontroller.standalone.AppProperties;
+import org.mycontroller.standalone.api.GoogleAnalyticsApi;
 import org.mycontroller.standalone.api.jaxrs.ScriptsHandler;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
@@ -56,7 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 public class McScriptFileUtils {
 
     //mc script file filter
-    private static final String[] MC_SCRIPT_SUFFIX_FILTER = { "js", "py", "rb", "groovy" };
+    public static final String[] MC_SCRIPT_SUFFIX_FILTER = { "js", "py", "rb", "groovy" };
 
     @SuppressWarnings("unchecked")
     public static QueryResponse getScriptFiles(Query query) throws IOException {
@@ -257,6 +258,7 @@ public class McScriptFileUtils {
                     + mcScript.getName() + "." + mcScript.getExtension();
         }
         FileUtils.writeStringToFile(FileUtils.getFile(fileFullPath), (String) mcScript.getData(), false);
+        GoogleAnalyticsApi.instance().trackScriptCreation(mcScript.getType().getText());
         _logger.debug("Write success! File:{}", fileFullPath);
     }
 }

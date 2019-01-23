@@ -22,6 +22,7 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.Firmware;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -53,7 +54,7 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
             return queryBuilder.queryForFirst();
         } catch (SQLException ex) {
             _logger.error("unable to fetch Firmware:[typeId:{},versionId:{}]", typeId, versionId, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -66,6 +67,7 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
             _logger.error("Deleted Firmware(s) count:[{}]", count);
         } catch (SQLException ex) {
             _logger.error("unable to delete Firmware:[typeId:{},versionId:{}]", typeId, versionId, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -95,7 +97,7 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to get selected type[isType:{},id:{}]", isType, id, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -106,7 +108,7 @@ public class FirmwareDaoImpl extends BaseAbstractDaoImpl<Firmware, Integer> impl
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 

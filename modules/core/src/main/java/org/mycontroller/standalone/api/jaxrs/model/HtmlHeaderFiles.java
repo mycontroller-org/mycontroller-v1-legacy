@@ -39,4 +39,5 @@ public class HtmlHeaderFiles {
     private List<String> scripts;
     private List<String> links;
     private String angularjsCustomControllers;
+    private List<String> additionalAngularjsModulesToLoad;
 }

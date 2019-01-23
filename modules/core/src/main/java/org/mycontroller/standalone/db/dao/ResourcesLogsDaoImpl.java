@@ -25,6 +25,7 @@ import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.ResourcesLogs;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -49,11 +50,10 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
         try {
             int count = this.getDao().create(resourcesLogs);
             _logger.debug("Added a log:[{}], Create count:{}", resourcesLogs, count);
-
         } catch (SQLException ex) {
             _logger.error("unable to add a log:[{}]", resourcesLogs, ex);
+            throw new McDatabaseException(ex);
         }
-
     }
 
     @Override
@@ -64,6 +64,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
 
         } catch (SQLException ex) {
             _logger.error("unable to delete a log:[{}]", resourcesLogs, ex);
+            throw new McDatabaseException(ex);
         }
 
     }
@@ -112,6 +113,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
             _logger.debug("Deleted Resource:[{}], deletion count:{}", resourcesLogs, deletionCount);
         } catch (SQLException ex) {
             _logger.error("unable to delete Resource:[{}]", resourcesLogs, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -127,6 +129,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
                     deleteCount);
         } catch (SQLException ex) {
             _logger.error("unable to delete Resource:[Type:{}, KEY_ID:{}]", resourceType.getText(), resourceId, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -145,6 +148,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
                     resourceType, timestamp, deleteCount);
         } catch (SQLException ex) {
             _logger.error("unable to delete Resource:[Type:{}, Timestamp:{}]", resourceType.getText(), timestamp, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -154,7 +158,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
             return this.getDao().queryForAll();
         } catch (SQLException ex) {
             _logger.error("unable to get all list", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -166,8 +170,8 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
             return queryBuilder.query();
         } catch (SQLException ex) {
             _logger.error("unable to fetch Resource:[Type:{},KEY_ID:{}]", resourceType.getText(), resourceId, ex);
+            throw new McDatabaseException(ex);
         }
-        return null;
     }
 
     private void updateWhereQuery(Where<ResourcesLogs, Integer> whereQuery, RESOURCE_TYPE resourceType,
@@ -216,7 +220,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -228,6 +232,7 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
 
         } catch (SQLException ex) {
             _logger.error("unable to delete logs:[{}]", ids, ex);
+            throw new McDatabaseException(ex);
         }
 
     }

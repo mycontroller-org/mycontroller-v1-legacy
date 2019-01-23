@@ -29,6 +29,7 @@ import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.DbException;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 
@@ -57,6 +58,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             super.create(sensorVariable);
         } catch (DbException dbEx) {
             _logger.error("unable to createOrUpdate, sensorValue:{}", sensorVariable, dbEx);
+            throw new McDatabaseException(dbEx);
         }
     }
 
@@ -67,6 +69,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             super.createOrUpdate(sensorVariable);
         } catch (DbException dbEx) {
             _logger.error("unable to createOrUpdate, sensorValue:{}", sensorVariable, dbEx);
+            throw new McDatabaseException(dbEx);
         }
     }
 
@@ -115,8 +118,10 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             _logger.debug("Updated senosorValue:[{}], update count:{}", sensorVariable, updateCount);
         } catch (SQLException ex) {
             _logger.error("unable to get", ex);
+            throw new McDatabaseException(ex);
         } catch (DbException dbEx) {
             _logger.error("unable to update, sensorValue:{}", sensorVariable, dbEx);
+            throw new McDatabaseException(dbEx);
         }
     }
 
@@ -129,7 +134,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             return this.getDao().queryForEq(SensorVariable.KEY_SENSOR_DB_ID, sensorRefId);
         } catch (SQLException ex) {
             _logger.error("unable to get all list with sensorRefId:{}", sensorRefId, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -143,7 +148,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
                     .where().in(SensorVariable.KEY_SENSOR_DB_ID, sensorRefIds).query();
         } catch (SQLException ex) {
             _logger.error("unable to get all list with sensorRefIds:{}", sensorRefIds, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -156,7 +161,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             return this.getDao().queryForEq(SensorVariable.KEY_VARIABLE_TYPE, variableType);
         } catch (SQLException ex) {
             _logger.error("unable to get all list with variableType: {}", variableType, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -173,7 +178,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
         } catch (SQLException ex) {
             _logger.error("unable to get all list with sensorRefId:{}, MetricType:{}", sensorRefId,
                     MetricsUtils.METRIC_TYPE.DOUBLE, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -187,10 +192,11 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
                             .and().eq(SensorVariable.KEY_VARIABLE_TYPE, messageVariableType).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get", ex);
+            throw new McDatabaseException(ex);
         } catch (DbException dbEx) {
             _logger.error("unable to get, nodeId:{},sensorId:{}", sensorRefId, messageVariableType, dbEx);
+            throw new McDatabaseException(dbEx);
         }
-        return null;
     }
 
     @Override
@@ -203,7 +209,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             }
         } catch (SQLException ex) {
             _logger.error("unable to get", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -213,7 +219,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             return this.getDao().queryForId(id);
         } catch (SQLException ex) {
             _logger.error("unable to get", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -261,7 +267,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             return new ArrayList<SensorVariable>();
         } catch (SQLException ex) {
             _logger.error("unable to get all items ids:{}", ids, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -299,7 +305,7 @@ public class SensorVariableDaoImpl extends BaseAbstractDaoImpl<SensorVariable, I
             return super.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("Error while processing for {}", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 

@@ -29,6 +29,7 @@ import org.mycontroller.standalone.email.EmailUtils;
 import org.mycontroller.standalone.operation.OperationUtils;
 import org.mycontroller.standalone.operation.PushbulletUtils;
 import org.mycontroller.standalone.operation.SMSUtils;
+import org.mycontroller.standalone.operation.TelegramBotUtils;
 import org.mycontroller.standalone.operation.model.Operation;
 
 /**
@@ -74,6 +75,7 @@ public class OperationApi {
 
     public void add(Operation operation) {
         DaoUtils.getOperationDao().create(operation.getOperationTable());
+        GoogleAnalyticsApi.instance().trackOperationCreation(operation.getType().getText());
     }
 
     public void update(Operation operation) {
@@ -115,4 +117,11 @@ public class OperationApi {
         PushbulletUtils.sendNote(idens, emails, channelTags, title, body);
     }
 
+    public void sendTelegramMessage(String chatId, String text) {
+        sendTelegramMessage(chatId, "text", text);
+    }
+
+    public void sendTelegramMessage(String chatId, String parseMode, String text) {
+        TelegramBotUtils.sendMessage(chatId, parseMode, text);
+    }
 }

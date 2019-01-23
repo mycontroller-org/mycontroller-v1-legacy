@@ -18,9 +18,6 @@ package org.mycontroller.standalone.db.migration;
 
 import java.sql.Connection;
 
-import org.mycontroller.standalone.db.DataBaseUtils;
-import org.mycontroller.standalone.jobs.RuleDefinitionsReEnableJob;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,7 +37,6 @@ public class V1_03_01__2016_Aug_03 extends MigrationBase {
         /** Migration comments
          *  Description:
          *  1. Added new column for RuleDefinitionTable, [reEnable, reEnableDelay]
-         *  2. Add new job to re enable rules
          **/
 
         /** Migration #1
@@ -55,13 +51,6 @@ public class V1_03_01__2016_Aug_03 extends MigrationBase {
             sqlClient().addColumn("rule_definition", "reEnableDelay", "BIGINT");
             reloadDao();
         }
-
-        /** Migration #2
-         * Add a job to check one minute once.
-         */
-        //Executes every 10th and 40th second (30 seconds once)
-        DataBaseUtils.createSystemJob("Rule definition re-enable job", "10,40 * * * * ? *", true,
-                RuleDefinitionsReEnableJob.class);
 
         _logger.info("Migration completed successfully.");
     }

@@ -53,6 +53,8 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GatewayUtils {
 
+    public static final String RAW_MESSAGE_LOGGER = "RAW_MESSAGE_LOGGER";
+    public static final String RAW_MESSAGE_REFERENCE = "gateway_reference";
     public static final String OS_ARCH_ARM = "arm";
     public static final AtomicBoolean GATEWAYS_READY = new AtomicBoolean(false);
 
@@ -189,9 +191,9 @@ public class GatewayUtils {
     public static synchronized void unloadEngine(Integer gatewayId) {
         if (McObjectManager.getEngine(gatewayId) != null) {
             McObjectManager.getEngine(gatewayId).stop();
-            // wait until this engine unloads completely or with timeout
+            // wait until this engine unloads completely or until timeout
             try {
-                long maxWaitTime = 1000 * 3; // 3 seconds
+                long maxWaitTime = 1000 * 10; // 10 seconds
                 while (maxWaitTime > 0) {
                     Thread.sleep(10);
                     maxWaitTime -= 10;
@@ -199,10 +201,12 @@ public class GatewayUtils {
                         break;
                     }
                 }
+                if (McObjectManager.getEngine(gatewayId).isRunning()) {
+                    McObjectManager.getEngine(gatewayId).distory();
+                }
             } catch (Exception ex) {
                 _logger.error("Exception", ex);
             }
-            //McObjectManager.removeEngine(gatewayId);
         }
     }
 
@@ -287,13 +291,15 @@ public class GatewayUtils {
         if (!gatewayTable.getEnabled() && !McObjectManager.getEngine(gatewayId).isRunning()) {
             return;
         }
+        // unload, stop
+        unloadEngine(gatewayId);
+        // disable this gateway
+        gatewayTable = DaoUtils.getGatewayDao().getById(gatewayId);
         gatewayTable.setEnabled(false);
         gatewayTable.setStatusSince(System.currentTimeMillis());
         gatewayTable.setState(STATE.UNAVAILABLE);
         gatewayTable.setStatusMessage("Disabled by user");
         DaoUtils.getGatewayDao().update(gatewayTable);
-        unloadEngine(gatewayId);
-        loadEngine(DaoUtils.getGatewayDao().getById(gatewayId));
     }
 
     public static void enableGateways(List<Integer> ids) {
@@ -332,5 +338,9 @@ public class GatewayUtils {
             topics[topicId] += "/#";
         }
         return topics;
+    }
+
+    public static String gwLogReference(GatewayConfig _config) {
+        return String.format("%d_%s", _config.getId(), _config.getName().replaceAll("[^A-Za-z0-9]", "_"));
     }
 }

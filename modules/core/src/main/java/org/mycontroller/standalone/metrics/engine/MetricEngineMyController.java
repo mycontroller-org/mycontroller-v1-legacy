@@ -439,15 +439,16 @@ public class MetricEngineMyController implements IMetricEngine {
                         metricCounter.setStart(purgeConf.getStart());
                         metricCounter.setEnd(purgeConf.getEnd());
                         metricCounter.setValue(McUtils.getLong(purgeConf.getValue()));
-                        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter);
+                        metricCounter.setAggregationType(null);
+                        DaoUtils.getMetricsCounterTypeDeviceDao().deletePrevious(metricCounter, purgeConf);
                         break;
                     case DOUBLE:
                         MetricsDoubleTypeDevice metricDouble = new MetricsDoubleTypeDevice();
                         metricDouble.setSensorVariable(sVar);
                         metricDouble.setStart(purgeConf.getStart());
                         metricDouble.setEnd(purgeConf.getEnd());
-                        //metricDouble.setAvg(McUtils.getDouble(purge.getValue()));
-                        DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble, purgeConf.getValue());
+                        metricDouble.setAggregationType(null);
+                        DaoUtils.getMetricsDoubleTypeDeviceDao().deletePrevious(metricDouble, purgeConf);
                         break;
                     default:
                         //Nothing to do

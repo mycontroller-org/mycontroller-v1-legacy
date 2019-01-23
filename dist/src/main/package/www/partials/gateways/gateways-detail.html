@@ -42,6 +42,7 @@
                 <dt>{{ 'TRANSMIT_DELAY' | translate }}</dt><dd>{{item.txDelay}} {{ 'MILLISECONDS_SHORT' | translate }}</dd>
                 <dt>{{ 'ACK_ENABLED' | translate }}</dt> <dd>{{item.ackEnabled? 'ENABLED' : 'DISABLED' | translate }}</dd>
                 <span ng-if="item.ackEnabled">
+                <dt>{{ 'STREAM_ACK_ENABLED' | translate }}</dt> <dd>{{item.streamAckEnabled? 'ENABLED' : 'DISABLED' | translate }}</dd>
                 <dt>{{ 'FAILED_RETRY_COUNT' | translate }}</dt><dd>{{item.failedRetryCount}}</dd>
                 <dt>{{ 'ACK_WAIT_TIME' | translate }}</dt><dd>{{item.ackWaitTime}} {{ 'MILLISECONDS_SHORT' | translate }}</dd>
                 </span>
@@ -97,8 +98,8 @@
                 <dt>{{ 'LAST_MINUTE_AVERAGE' | translate }}</dt> <dd>{{statistics.timeAverageLastMinute | number: 2}}  {{ 'MILLISECONDS_SHORT' | translate }}</dd>
                 <dt>{{ 'LAST_MESSAGE' | translate }}</dt> <dd>{{statistics.timeLastMessage}}  {{ 'MILLISECONDS_SHORT' | translate }} <span ng-if="statistics.timestamp != 0">| </span><span uib-tooltip="{{item.statusSince | date:mchelper.cfg.dateFormat:mchelper.cfg.timezone}}" tooltip-placement="right" am-time-ago="statistics.timestamp"></span></dd>
                 <dt>{{ 'LAST_MINUTE_RATE' | translate }}</dt> <dd>{{statistics.countLastMinute}}</dd>
-                <dt>{{ 'COUNT' | translate }}</dt><dd>{{statistics.count}}</dd>
-                <dt>{{ 'FAILURE_COUNT' | translate }}</dt><dd>{{statistics.countFailure}}</dd>
+                <dt>{{ 'COUNT' | translate }} ({{ 'TOTAL' | translate }} | Tx)</dt><dd>{{statistics.count}} | {{statistics.txCount}}</dd>
+                <dt>{{ 'FAILURE_COUNT' | translate }}</dt><dd>{{statistics.countFailure}} | {{statistics.percentageFailure | number: 2}}%</dd>
                 <dt>{{ 'MESSAGES_IN_QUEUE' | translate }}</dt> <dd>{{statistics.sizeQueue}}</dd>
               </dl>
             </div>

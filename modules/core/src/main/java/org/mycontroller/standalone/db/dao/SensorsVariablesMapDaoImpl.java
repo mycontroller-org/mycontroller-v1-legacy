@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.mycontroller.standalone.db.DbException;
 import org.mycontroller.standalone.db.tables.SensorsVariablesMap;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 
@@ -48,6 +49,7 @@ public class SensorsVariablesMapDaoImpl extends BaseAbstractDaoImpl<SensorsVaria
             _logger.debug("Created SensorsVariablesMap:[{}], Create count:{}", sensorsVariablesMap, count);
         } catch (SQLException ex) {
             _logger.error("unable to add SensorsVariablesMap:[{}]", sensorsVariablesMap, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -63,6 +65,7 @@ public class SensorsVariablesMapDaoImpl extends BaseAbstractDaoImpl<SensorsVaria
             _logger.debug("Deleted sensorsVariablesType:[{}], delete count:{}", sensorsVariablesMap, deleteCount);
         } catch (SQLException ex) {
             _logger.error("unable to delete, sensorsVariablesMap:{}", sensorsVariablesMap, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -75,6 +78,7 @@ public class SensorsVariablesMapDaoImpl extends BaseAbstractDaoImpl<SensorsVaria
             _logger.debug("Deleted sensorType:[{}], delete count:{}", sensorType, deleteCount);
         } catch (SQLException ex) {
             _logger.error("unable to delete, sensorType:{}", sensorType, ex);
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -87,7 +91,7 @@ public class SensorsVariablesMapDaoImpl extends BaseAbstractDaoImpl<SensorsVaria
             return this.getDao().queryForEq(SensorsVariablesMap.KEY_SENSOR_TYPE, sensorType);
         } catch (SQLException ex) {
             _logger.error("unable to get all list wit sensorType:{}", sensorType, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -97,7 +101,7 @@ public class SensorsVariablesMapDaoImpl extends BaseAbstractDaoImpl<SensorsVaria
             return this.getDao().queryForAll();
         } catch (SQLException ex) {
             _logger.error("unable to get all list", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -111,10 +115,11 @@ public class SensorsVariablesMapDaoImpl extends BaseAbstractDaoImpl<SensorsVaria
                             .and().eq(SensorsVariablesMap.KEY_VARIABLE_TYPE, variableType).prepare());
         } catch (SQLException ex) {
             _logger.error("unable to get", ex);
+            throw new McDatabaseException(ex);
         } catch (DbException dbEx) {
             _logger.error("unable to get, sensorType:{},variableType:{}", sensorType, variableType, dbEx);
+            throw new McDatabaseException(dbEx);
         }
-        return null;
     }
 
     @Override
@@ -127,7 +132,7 @@ public class SensorsVariablesMapDaoImpl extends BaseAbstractDaoImpl<SensorsVaria
             }
         } catch (SQLException ex) {
             _logger.error("unable to get", ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 

@@ -23,6 +23,7 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.RESOURCE_TYPE;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.McThreadPoolFactory;
+import org.mycontroller.standalone.api.GoogleAnalyticsApi;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.NodeUtils.NODE_REGISTRATION_STATE;
 import org.mycontroller.standalone.db.tables.GatewayTable;
@@ -68,14 +69,18 @@ public abstract class ExecuterAbstract implements IExecutor {
     }
 
     public void execute(IMessage _message) {
-        // Take a clone to log it on database
-        IMessage _clone = _message.clone();
-
+        // mark start time
         startTime = System.currentTimeMillis();
         if (_logger.isDebugEnabled()) {
             startTime = System.currentTimeMillis();
         }
-        this._message = _message;
+
+        // Take a clone to log it on database
+        IMessage _message_for_resources_log = _message.clone();
+
+        // clone the message and do process
+        this._message = _message.clone();
+
         try {
             _logger.debug("Processing {}", _message);
             switch (MESSAGE_TYPE.fromString(_message.getType())) {
@@ -126,7 +131,7 @@ public abstract class ExecuterAbstract implements IExecutor {
             _message = null;
         }
         // do log on database
-        McThreadPoolFactory.execute(new ResourcesLogger(_clone));
+        McThreadPoolFactory.execute(new ResourcesLogger(_message_for_resources_log));
     }
 
     public void executeInternal() {
@@ -194,13 +199,15 @@ public abstract class ExecuterAbstract implements IExecutor {
                     return;
                 }
                 node = getNode();
-                //Update node name only when it is null or name length is greater than 0
-                if (node.getName() == null) {
-                    node.setName(_message.getPayload());
-                } else if (_message.getPayload() != null && _message.getPayload().trim().length() > 0) {
-                    node.setName(_message.getPayload());
+                if (!node.isNameLocked()) {
+                    //Update node name only when it is null or name length is greater than 0
+                    if (node.getName() == null) {
+                        node.setName(_message.getPayload());
+                    } else if (_message.getPayload() != null && _message.getPayload().trim().length() > 0) {
+                        node.setName(_message.getPayload());
+                    }
+                    updateNode(node);
                 }
-                updateNode(node);
                 break;
             case I_SKETCH_VERSION:
                 if (_message.isTxMessage()) {
@@ -484,6 +491,7 @@ public abstract class ExecuterAbstract implements IExecutor {
                     .build();
             node.setLastSeen(System.currentTimeMillis());
             DaoUtils.getNodeDao().create(node);
+            GoogleAnalyticsApi.instance().trackNodeCreation("auto");
             node = DaoUtils.getNodeDao().get(_message.getGatewayId(), _message.getNodeEui());
         }
         _logger.debug("Node:[{}], _message:[{}]", node, _message);
@@ -507,6 +515,7 @@ public abstract class ExecuterAbstract implements IExecutor {
             sensor = Sensor.builder().sensorId(_message.getSensorId()).build();
             sensor.setNode(getNode());
             DaoUtils.getSensorDao().create(sensor);
+            GoogleAnalyticsApi.instance().trackSensorCreation("auto");
             sensor = DaoUtils.getSensorDao().get(
                     _message.getGatewayId(),
                     _message.getNodeEui(),
@@ -554,6 +563,7 @@ public abstract class ExecuterAbstract implements IExecutor {
                     sensorVariable, sensor);
 
             DaoUtils.getSensorVariableDao().create(sensorVariable);
+            GoogleAnalyticsApi.instance().trackSensorVariableCreation(sensorVariable.getVariableType().getText());
             sensorVariable = DaoUtils.getSensorVariableDao().get(sensorVariable);
         } else {
             if (_message.getPayload() != null && _message.getPayload().length() > 0) {
@@ -636,9 +646,9 @@ public abstract class ExecuterAbstract implements IExecutor {
         if (node != null) {
             node.firmwareUpdateStart(totalBlocks);
             updateNode(node);
+            _logger.debug("Firmware update start, totalBlocks:{}, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                    totalBlocks, node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
         }
-        _logger.debug("Firmware update start, totalBlocks:{}, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
-                totalBlocks, node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
     }
 
     @Override
@@ -647,9 +657,9 @@ public abstract class ExecuterAbstract implements IExecutor {
         if (node != null) {
             node.firmwareUpdateFinished();
             updateNode(node);
+            _logger.debug("Firmware update finished, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                    node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
         }
-        _logger.debug("Firmware update finished, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
-                node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
     }
 
     @Override
@@ -658,9 +668,8 @@ public abstract class ExecuterAbstract implements IExecutor {
         if (node != null) {
             node.updateFirmwareStatus(blocksSent);
             updateNode(node);
+            _logger.debug("Firmware update status, blocksSent:{}, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
+                    blocksSent, node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
         }
-        _logger.debug("Firmware update status, blocksSent:{}, Node:[id:{}, name:{}, eui:{}, firmware:{}]",
-                blocksSent, node.getId(), node.getName(), node.getEui(), node.getFirmware().getFirmwareName());
-
     }
 }

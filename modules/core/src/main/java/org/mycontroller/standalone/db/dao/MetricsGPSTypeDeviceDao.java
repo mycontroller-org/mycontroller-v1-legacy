@@ -29,8 +29,6 @@ public interface MetricsGPSTypeDeviceDao extends BaseDao<MetricsGPSTypeDevice, O
 
     void deletePrevious(MetricsGPSTypeDevice metric);
 
-    void deletePrevious(MetricsGPSTypeDevice metric, String delimiter);
-
     void deleteBySensorVariableRefId(int sensorRefId);
 
     List<MetricsGPSTypeDevice> getAll(MetricsGPSTypeDevice metric);

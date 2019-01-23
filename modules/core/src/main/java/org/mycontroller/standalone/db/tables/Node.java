@@ -80,6 +80,7 @@ public class Node {
     //Properties key
     public static final String KEY_ALIVE_CHECK_INTERVAL = "aliveCheckInterval";
     public static final String KEY_HEARTBEAT_LAST_TX_TIME = "hbTx";
+    public static final String KEY_NAME_LOCKED = "nameLocked";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName = KEY_ID)
     private Integer id;
@@ -205,6 +206,15 @@ public class Node {
                 return 0L;
             }
         }
+    }
+
+    @JsonIgnore
+    public boolean isNameLocked() {
+        Boolean nameLocked = (Boolean) this.getProperty(KEY_NAME_LOCKED);
+        if (nameLocked == null) {
+            return false;
+        }
+        return nameLocked;
     }
 
     public void firmwareUpdateFinished() {

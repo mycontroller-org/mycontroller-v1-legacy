@@ -620,7 +620,7 @@ myControllerModule.controller('McNavBarCtrl', function($scope, $location, $trans
     };
 });
 
-myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper, $translate, editableOptions, CommonServices) {
+myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper, $translate, editableOptions, CommonServices, $window) {
   //Load mchelper from cookies
   CommonServices.loadMchelper();
 
@@ -633,9 +633,14 @@ myControllerModule.run(function ($rootScope, $state, $location, $http, mchelper,
     $translate.use(mchelper.cfg.languageId);
   }
 
-
   if (mchelper.internal.currentUser) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + mchelper.internal.currentUser.authdata; // jshint ignore:line
+  }
+
+  // initialise google analytics and send browser details, if enabled
+  if(mchelper.cfg.googleAnalyticsEnabled){
+    $window.ga('create', mchelper.cfg.googleAnalyticsTid, 'auto');
+    $window.ga('send', 'pageview', "/");
   }
 
   $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {

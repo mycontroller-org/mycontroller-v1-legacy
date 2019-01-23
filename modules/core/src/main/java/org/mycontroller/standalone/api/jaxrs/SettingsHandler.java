@@ -18,6 +18,8 @@ package org.mycontroller.standalone.api.jaxrs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.text.ParseException;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -58,6 +60,7 @@ import org.mycontroller.standalone.settings.MySensorsSettings;
 import org.mycontroller.standalone.settings.PushbulletSettings;
 import org.mycontroller.standalone.settings.SettingsUtils;
 import org.mycontroller.standalone.settings.SmsSettings;
+import org.mycontroller.standalone.settings.SystemJobsSettings;
 import org.mycontroller.standalone.settings.TelegramBotSettings;
 import org.mycontroller.standalone.settings.UserNativeSettings;
 import org.mycontroller.standalone.timer.TimerUtils;
@@ -358,4 +361,24 @@ public class SettingsHandler extends AccessEngine {
         SettingsUtils.saveHtmlIncludeFiles(htmlHeaderFiles);
         return RestUtils.getResponse(Status.OK);
     }
+
+    @GET
+    @Path("/systemJobs")
+    public Response getSystemJobs() {
+        return RestUtils.getResponse(Status.OK, SystemJobsSettings.get());
+    }
+
+    @POST
+    @Path("/systemJobs")
+    public Response saveSystemJobs(SystemJobsSettings systemJobsSettings) {
+        try {
+            systemJobsSettings.save();
+            // reload system jobs
+            SchedulerUtils.reloadSystemJobs();
+            return RestUtils.getResponse(Status.OK);
+        } catch (ParseException ex) {
+            return RestUtils.getResponse(Status.BAD_REQUEST, ApiMessage.builder().message(ex.getMessage()).build());
+        }
+    }
+
 }

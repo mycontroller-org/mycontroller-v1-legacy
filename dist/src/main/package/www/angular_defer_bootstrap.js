@@ -14,17 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.db.dao;
 
-import java.util.List;
-
-import org.mycontroller.standalone.db.tables.SystemJob;
-
-/**
- * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
- */
-public interface SystemJobDao extends BaseDao<SystemJob, Integer> {
-
-    List<SystemJob> getAllEnabled();
-}
+//set the window.name to signal AangularJS to delay bootstrapping until resumeBootstrap() is called
+//see: https://docs.angularjs.org/guide/bootstrap
+window.name = 'NG_DEFER_BOOTSTRAP! ' + window.name;

@@ -32,6 +32,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class TopologyItem {
     private Integer id;
+    private String localId;
     private String name;
     private String kind;
     private RESOURCE_TYPE type;

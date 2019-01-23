@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mycontroller.standalone.api.GoogleAnalyticsApi;
 import org.mycontroller.standalone.db.tables.Sensor;
 import org.mycontroller.standalone.db.tables.SensorVariable;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
@@ -240,6 +241,7 @@ public class SensorUtils {
                         SensorVariable.builder().sensor(sensor)
                                 .variableType(MESSAGE_TYPE_SET_REQ.fromString(newVariable)).build()
                                 .updateUnitAndMetricType());
+                GoogleAnalyticsApi.instance().trackSensorVariableCreation(newVariable);
             }
         }
         //Remove left items

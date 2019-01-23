@@ -16,36 +16,45 @@
  */
 package org.mycontroller.standalone.settings;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.Settings;
 import org.mycontroller.standalone.db.tables.User;
+import org.mycontroller.standalone.utils.JsonUtils;
 import org.mycontroller.standalone.utils.McUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class DashboardSettings {
+    private static final String DASHBOARD_CONFIG_FILE_FORMAT = "%s.json";
+
     public static List<Dashboard> getDashboards(User user) {
         List<Settings> settingsList = SettingsUtils.getSettingsList(user.getId(), Dashboard.KEY_DASHBOARD);
         List<Dashboard> dashboards = new ArrayList<Dashboard>();
         for (Settings settings : settingsList) {
-            dashboards.add(Dashboard.get(settings));
+            dashboards.add(Dashboard.get(settings, false));
         }
         return dashboards;
     }
 
     public static Dashboard getDashboard(User user, String title) {
-        return Dashboard.get(SettingsUtils.getSettings(user.getId(), Dashboard.KEY_DASHBOARD, title));
+        return Dashboard.get(SettingsUtils.getSettings(user.getId(), Dashboard.KEY_DASHBOARD, title), true);
     }
 
     public static Dashboard getDashboard(User user, Integer id) throws IllegalAccessException {
         Settings settings = DaoUtils.getSettingsDao().getById(id);
         if (settings != null && settings.getUserId() == user.getId()) {
-            return Dashboard.get(settings);
+            return Dashboard.get(settings, true);
         } else {
             throw new IllegalAccessException("you do not have access to see this resource!");
         }
@@ -54,7 +63,11 @@ public class DashboardSettings {
     public static void deleteDashboard(User user, Integer id) throws IllegalAccessException {
         Settings settings = DaoUtils.getSettingsDao().getById(id);
         if (settings != null && settings.getUserId() == user.getId()) {
+            Dashboard dashboard = Dashboard.get(settings, false);
+            // delete from database
             DaoUtils.getSettingsDao().deleteById(id);
+            // delete from disk
+            deleteFromDisk(dashboard.getUuid());
         } else {
             throw new IllegalAccessException("you do not have access to see this resource!");
         }
@@ -85,6 +98,29 @@ public class DashboardSettings {
                 .build();
         dashboard.update(true);
         return getDashboard(user, name);
+    }
 
+    public static boolean deleteFromDisk(String uuid) {
+        File dashboardFile = FileUtils.getFile(
+                AppProperties.getInstance().getDashboardConfigDirectory(),
+                String.format(DASHBOARD_CONFIG_FILE_FORMAT, uuid));
+        boolean isDeleted = dashboardFile.delete();
+        _logger.debug("Dashboard config deleted from disk. File:{}, isDeleted? ",
+                dashboardFile.getAbsolutePath(), isDeleted);
+        return isDeleted;
+    }
+
+    public static String loadFromDisk(String uuid) {
+        String rowData = (String) JsonUtils.loads(
+                String.class, AppProperties.getInstance().getDashboardConfigDirectory(),
+                String.format(DASHBOARD_CONFIG_FILE_FORMAT, uuid));
+        _logger.debug("Dashboard row config loads from disk. {}", uuid);
+        return rowData;
+    }
+
+    public static void writeToDisk(String uuid, String rowData) {
+        JsonUtils.dumps(rowData, AppProperties.getInstance().getDashboardConfigDirectory(),
+                String.format(DASHBOARD_CONFIG_FILE_FORMAT, uuid));
+        _logger.debug("Dashboard row config data stored in to disk. {}", uuid);
     }
 }

@@ -155,6 +155,7 @@ class GatewayDeserializer extends JsonDeserializer<GatewayConfig> {
         if (node.get("ackEnabled") != null) {
             gatewayConfig.setAckEnabled(node.get("ackEnabled").asBoolean());
             if (gatewayConfig.getAckEnabled()) {
+                gatewayConfig.setStreamAckEnabled(node.get("streamAckEnabled").asBoolean());
                 gatewayConfig.setFailedRetryCount(node.get("failedRetryCount").asInt());
                 gatewayConfig.setAckWaitTime(node.get("ackWaitTime").asLong());
             }

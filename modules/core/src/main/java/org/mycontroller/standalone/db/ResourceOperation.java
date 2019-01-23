@@ -19,27 +19,34 @@ package org.mycontroller.standalone.db;
 import org.mycontroller.standalone.db.ResourceOperationUtils.SEND_PAYLOAD_OPERATIONS;
 import org.mycontroller.standalone.utils.McUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
+@Slf4j
 public class ResourceOperation {
 
     private SEND_PAYLOAD_OPERATIONS operationType;
     private Double value;
     private String payload;
 
-    public ResourceOperation(String payload) {
-        this.payload = payload;
-        this.operationType = ResourceOperationUtils.SEND_PAYLOAD_OPERATIONS.fromString(payload.toLowerCase().trim());
-        if (this.operationType == null) {
-            this.operationType =
-                    ResourceOperationUtils.SEND_PAYLOAD_OPERATIONS.fromString(payload.substring(0, 1).toLowerCase());
-            if (this.operationType != null) {
-                this.value = McUtils.getDouble(payload.substring(1));
-                this.payload = McUtils.getDoubleAsString(this.value);
+    public ResourceOperation(String payloadOrg) {
+        if (payloadOrg.toLowerCase().startsWith("sp:")) {
+            payload = payloadOrg.substring(3);
+            this.operationType = SEND_PAYLOAD_OPERATIONS.fromString(payload.toLowerCase().trim());
+            if (this.operationType == null) {
+                this.operationType = SEND_PAYLOAD_OPERATIONS.fromString(payload.substring(0, 1).toLowerCase());
+                if (this.operationType != null) {
+                    this.value = McUtils.getDouble(payload.substring(1));
+                    this.payload = McUtils.getDoubleAsString(this.value);
+                }
             }
+        } else {
+            payload = payloadOrg;
         }
+        _logger.debug("Received payload:{}, Operation:[{}]", payloadOrg, this.toString());
     }
 
     public Double getValue() {
@@ -53,7 +60,7 @@ public class ResourceOperation {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("OperationTable:").append(this.operationType.getText());
+        builder.append("OperationType:").append(getOperationType() != null ? getOperationType().getText() : null);
         builder.append(", Value:").append(this.value);
         builder.append(", Payload:").append(this.payload);
         return builder.toString();

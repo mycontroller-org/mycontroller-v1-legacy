@@ -96,6 +96,7 @@ public class NodeApi {
         node.setGatewayTable(gatewayTable);
         if (McObjectManager.getEngine(node.getGatewayTable().getId()).validate(node)) {
             DaoUtils.getNodeDao().create(node);
+            GoogleAnalyticsApi.instance().trackNodeCreation("manual");
         }
     }
 

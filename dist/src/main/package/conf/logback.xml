@@ -23,7 +23,7 @@
     <encoder>
       <!-- <pattern>%date %level [%thread] [%logger:%line] %msg%n</pattern> -->
       <!-- Replace CR(\r) with string \r and LF(\n) with string \n-->
-      <pattern>%date %level [%thread] [%logger:%line] %replace(%replace(%msg){'\r', '\\r'}){'\n', '\\n'}%n</pattern>
+      <pattern>%date %level [%thread] [%logger:%line] %replace(%msg){'\r', '\\r'}%n</pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
       <FileNamePattern>../logs/mycontroller_%i.log.zip</FileNamePattern>
@@ -39,6 +39,29 @@
     <encoder>
       <pattern>%date %level [%thread] [%logger:%line] %msg%n</pattern>
     </encoder>
+  </appender>
+
+  <appender name="GATEWAY_RAW_MESSAGE_APPENDER" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <key>gateway_reference</key>
+      <defaultValue>0_default</defaultValue>
+    </discriminator>
+    <sift>
+      <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>../logs/raw_message_gw_${gateway_reference}.log</file>
+        <encoder>
+          <pattern>%date %replace(%replace(%msg){'\r', '\\r'}){'\n', '\\n'}%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+          <FileNamePattern>../logs/raw_message_gw_${gateway_reference}%i.log.zip</FileNamePattern>
+          <MinIndex>1</MinIndex>
+          <MaxIndex>5</MaxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+          <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+      </appender>
+    </sift>
   </appender>
 
   <logger level="INFO" name="com.j256.ormlite" />
@@ -94,4 +117,9 @@
   <root level="WARN">
     <appender-ref ref="FILE" />
   </root>
+
+  <logger name="RAW_MESSAGE_LOGGER" level="INFO" additivity="false">
+    <appender-ref ref="GATEWAY_RAW_MESSAGE_APPENDER" />
+  </logger>
+
 </configuration>

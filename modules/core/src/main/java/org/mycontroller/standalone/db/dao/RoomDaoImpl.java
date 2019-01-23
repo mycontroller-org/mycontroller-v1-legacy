@@ -23,6 +23,7 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.model.QueryResponse;
 import org.mycontroller.standalone.db.tables.Room;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -53,7 +54,7 @@ public class RoomDaoImpl extends BaseAbstractDaoImpl<Room, Integer> implements R
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -75,7 +76,7 @@ public class RoomDaoImpl extends BaseAbstractDaoImpl<Room, Integer> implements R
                 return this.getDao().queryBuilder().where().isNull(Room.KEY_PARENT_ID).query();
             } catch (SQLException ex) {
                 _logger.error("unable to get parent", ex);
-                return null;
+                throw new McDatabaseException(ex);
             }
         } else {
             return super.getAll(Room.KEY_PARENT_ID, parentId);
@@ -116,6 +117,7 @@ public class RoomDaoImpl extends BaseAbstractDaoImpl<Room, Integer> implements R
             }
         } catch (SQLException ex) {
             _logger.error("unable to get room", ex);
+            throw new McDatabaseException(ex);
         }
         return null;
     }

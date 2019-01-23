@@ -42,36 +42,104 @@ public class ResourcePurgeConf {
     private Long end;
 
     @JsonIgnore
-    public String getOperator() {
-        if (value == null) {
-            return null;
+    private ResourcePurgCondition min;
+    @JsonIgnore
+    private ResourcePurgCondition max;
+    @JsonIgnore
+    private ResourcePurgCondition avg;
+
+    public static enum OPERATOR {
+        EQ("="),
+        GE(">="),
+        LE("<="),
+        NE("!="),
+        GT(">"),
+        LT("<");
+
+        public static OPERATOR get(int id) {
+            for (OPERATOR operator : values()) {
+                if (operator.ordinal() == id) {
+                    return operator;
+                }
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
         }
-        if (value.startsWith("=")) {
-            return "=";
-        } else if (value.startsWith(">=")) {
-            return ">=";
-        } else if (value.startsWith("<=")) {
-            return "<=";
-        } else if (value.startsWith("!=")) {
-            return "!=";
-        } else if (value.startsWith(">")) {
-            return ">";
-        } else if (value.startsWith("<")) {
-            return "<";
-        } else {
-            return "=";
+
+        private String value;
+
+        private OPERATOR(String value) {
+            this.value = value;
+        }
+
+        public String getText() {
+            return this.value;
+        }
+
+        public static OPERATOR fromString(String text) {
+            if (text != null) {
+                for (OPERATOR type : OPERATOR.values()) {
+                    if (text.equalsIgnoreCase(type.getText())) {
+                        return type;
+                    }
+                }
+            }
+            return null;
         }
     }
 
     @JsonIgnore
-    public String getRealValue() {
-        if (value == null) {
-            return null;
+    private void updateValues() {
+        if (value != null && value.trim().length() > 0) {
+            value = value.trim().toLowerCase();
+            if (value.contains(",")) {
+                String[] _values = value.split(",");
+                for (String _value : _values) {
+                    if (_value.contains("min")) {
+                        min = new ResourcePurgCondition(_value.replace("min", "").trim());
+                    } else if (_value.contains("max")) {
+                        max = new ResourcePurgCondition(_value.replace("max", "").trim());
+                    } else if (_value.contains("avg")) {
+                        avg = new ResourcePurgCondition(_value.replace("avg", "").trim());
+                    }
+                }
+            } else if (value.startsWith("min")) {
+                min = new ResourcePurgCondition(value.replace("min", "").trim());
+            } else if (value.startsWith("max")) {
+                max = new ResourcePurgCondition(value.replace("max", "").trim());
+            } else if (value.startsWith("avg")) {
+                avg = new ResourcePurgCondition(value.replace("avg", "").trim());
+            } else {
+                avg = new ResourcePurgCondition(value);
+            }
         }
-        String operator = getOperator();
-        if (operator != null) {
-            return value.replaceFirst(operator, "").trim();
+    }
+
+    public String getValue() {
+        if (value != null && value.trim().length() == 0) {
+            value = null;
         }
         return value;
     }
+
+    public ResourcePurgCondition getMin() {
+        if (min == null) {
+            updateValues();
+        }
+        return min;
+    }
+
+    public ResourcePurgCondition getMax() {
+        if (max == null) {
+            updateValues();
+        }
+        return max;
+    }
+
+    public ResourcePurgCondition getAvg() {
+        if (avg == null) {
+            updateValues();
+        }
+        return avg;
+    }
+
 }

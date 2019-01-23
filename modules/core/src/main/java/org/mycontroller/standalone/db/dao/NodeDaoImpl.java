@@ -28,6 +28,7 @@ import org.mycontroller.standalone.auth.AuthUtils;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.db.tables.Node;
+import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -58,13 +59,19 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
 
     @Override
     public Node get(Integer gatewayId, String nodeEui) {
+        QueryBuilder<Node, Integer> queryBuilder = null;
         try {
-            QueryBuilder<Node, Integer> queryBuilder = this.getDao().queryBuilder();
+            queryBuilder = this.getDao().queryBuilder();
             queryBuilder.where().eq(Node.KEY_GATEWAY_ID, gatewayId).and().eq(Node.KEY_EUI, nodeEui);
             return queryBuilder.queryForFirst();
         } catch (SQLException ex) {
-            _logger.error("unable to get Node", ex);
-            return null;
+            _logger.error("unable to get Node. gatewayId:{}, nodeEui:{}", gatewayId, nodeEui, ex);
+            try {
+                _logger.error("PrepareStatement:[{}]", queryBuilder.prepareStatementString());
+            } catch (SQLException qEx) {
+                _logger.error("Exception on prepareStatement,", qEx);
+            }
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -80,7 +87,7 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
             return this.getQueryResponse(query);
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
     }
 
@@ -96,7 +103,7 @@ public class NodeDaoImpl extends BaseAbstractDaoImpl<Node, Integer> implements N
             }
         } catch (SQLException ex) {
             _logger.error("unable to run query:[{}]", query, ex);
-            return null;
+            throw new McDatabaseException(ex);
         }
         return ids;
     }

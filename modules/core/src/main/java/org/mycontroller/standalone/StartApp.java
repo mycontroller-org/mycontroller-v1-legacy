@@ -28,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.mycontroller.standalone.AppProperties.MC_LANGUAGE;
+import org.mycontroller.standalone.api.GoogleAnalyticsApi;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.BackupHandler;
 import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
@@ -97,6 +98,24 @@ public class StartApp {
 
     public static void main(String[] args) {
         try {
+            _logger.info(
+                    "\n\n"
+                            + "****************************************** Data Processing Agreement *****************"
+                            + "**************************\n"
+                            + "By using this software you agree that the following non-PII (non personally"
+                            + " identifiable information data       \n"
+                            + "will be collected, processed and used by MyController.org for the purpose of"
+                            + " improving quality of this software.\n"
+                            + "----------------------------------------------------------------------------"
+                            + "------------------------------------\n"
+                            + "If you do not like to share anonymous data(non-PII), disable it in "
+                            + "'mycontroller/conf/mycontroller.properties'  \n"
+                            + "by setting 'mcc.collect.anonymous.data=false' and **restart** this server and **logout"
+                            + " and login** in the UI.   \n"
+                            + "                                          ------ Thank you! ------                     "
+                            + "                         \n"
+                            + "***************************************************************************************"
+                            + "*************************\n\n");
             startMycontroller();
         } catch (Exception ex) {
             _logger.error("Unable to start application, refer error log,", ex);
@@ -112,7 +131,9 @@ public class StartApp {
         _logger.debug("Operating System detail:[os:{},arch:{},version:{}]",
                 AppProperties.getOsName(), AppProperties.getOsArch(), AppProperties.getOsVersion());
         startServices();
-        _logger.info("MyController.org server started in [{}] ms", System.currentTimeMillis() - start);
+        long duration = System.currentTimeMillis() - start;
+        GoogleAnalyticsApi.instance().trackStartTime(duration);
+        _logger.info("MyController.org server started in [{}] ms", duration);
     }
 
     private static void loadStartingValues() {

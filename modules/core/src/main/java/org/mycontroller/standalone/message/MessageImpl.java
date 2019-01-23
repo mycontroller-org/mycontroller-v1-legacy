@@ -17,7 +17,6 @@
 package org.mycontroller.standalone.message;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import lombok.Builder;
 import lombok.Data;
@@ -43,7 +42,7 @@ class MessageImpl implements IMessage, Cloneable {
     private String payload;
     private Boolean isTxMessage;
     private Long timestamp;
-    private Map<String, Object> properties;
+    private HashMap<String, Object> properties;
 
     @Override
     public Long getTimestamp() {
@@ -138,6 +137,7 @@ class MessageImpl implements IMessage, Cloneable {
         return topic.toString();
     }
 
+    @SuppressWarnings("unchecked")
     public MessageImpl clone() {
         return MessageImpl.builder()
                 .ack(ack)
@@ -149,6 +149,7 @@ class MessageImpl implements IMessage, Cloneable {
                 .subType(subType)
                 .timestamp(timestamp)
                 .type(type)
+                .properties(properties != null ? (HashMap<String, Object>) properties.clone() : null)
                 .build();
     }
 

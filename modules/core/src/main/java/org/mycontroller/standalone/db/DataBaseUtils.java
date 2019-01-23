@@ -30,7 +30,6 @@ import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.DB_TYPE;
 import org.mycontroller.standalone.api.SystemApi;
 import org.mycontroller.standalone.api.jaxrs.model.McAbout;
-import org.mycontroller.standalone.db.tables.SystemJob;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_PRESENTATION;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
 import org.mycontroller.standalone.settings.MyControllerSettings;
@@ -217,12 +216,6 @@ public class DataBaseUtils {
     public static void createSensorsVariablesMap(MESSAGE_TYPE_PRESENTATION sensorType,
             MESSAGE_TYPE_SET_REQ variableType) {
         DaoUtils.getSensorsVariablesMapDao().create(sensorType, variableType);
-    }
-
-    public static void createSystemJob(String name, String cronExpression, boolean isEnabled, Class<?> clazz) {
-        DaoUtils.getSystemJobDao().create(
-                SystemJob.builder().name(name).cron(cronExpression).enabled(isEnabled).className(clazz.getName())
-                        .build());
     }
 
     public static synchronized boolean backupDatabase(String databaseBackup) {

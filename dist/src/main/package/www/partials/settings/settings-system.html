@@ -295,6 +295,67 @@
       </div>
     </div>
 
+    <!-- System Jobs settings -->
+    <div class="col-md-12">
+      <div class="card-pf card-pf-accented">
+        <div class="card-pf-heading"><h2 class="card-pf-title"><i class="fa fa-star-o fa-lg"></i> {{ 'SYSTEM_JOBS' | translate }}</h2></div>
+        <div class="card-pf-body">
+          <form class="form-horizontal" name="mcForm">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'METRICS_AGGREGATION_JOB' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.systemJobs" class="form-control" ng-model="systemJobs.metricsAggregation" required />
+                <div ng-hide="editEnable.systemJobs">{{systemJobs.metricsAggregation}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RESOURCES_LOGS_AGGREGATION_JOB' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.systemJobs" class="form-control" ng-model="systemJobs.resourcesLogsAggregation" required />
+                <div ng-hide="editEnable.systemJobs">{{systemJobs.resourcesLogsAggregation}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'DAILY_ONCE_JOB' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.systemJobs" class="form-control" ng-model="systemJobs.dailyOnce" required />
+                <div ng-hide="editEnable.systemJobs">{{systemJobs.dailyOnce}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RULE_DEFINITION_ENGINE_JOB' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.systemJobs" class="form-control" ng-model="systemJobs.ruleDefinitionEngine" required />
+                <div ng-hide="editEnable.systemJobs">{{systemJobs.ruleDefinitionEngine}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{ 'RULE_DEFINITION_RE_ENABLE_JOB' | translate }}</label>
+              <div class="col-sm-5">
+                <input ng-show="editEnable.systemJobs" class="form-control" ng-model="systemJobs.ruleDefinitionReEnable" required />
+                <div ng-hide="editEnable.systemJobs">{{systemJobs.ruleDefinitionReEnable}}</div>
+              </div>
+            </div>
+
+          </form>
+
+          <div class="form-actions text-right">
+            <button type="button" class="btn btn-default" class="button" ng-hide="editEnable.systemJobs"  ng-click="systemJobsWarning()">{{ 'EDIT' | translate }}</button>
+            <button type="button" class="btn btn-default" class="button" ng-show="editEnable.systemJobs" ng-click="updateSettingsSystemJobs();editEnable.systemJobs = false">{{ 'CANCEL' | translate }}</button>
+            <button type="button" class="btn btn-primary" ng-click="saveSystemJobsLocal()" ng-show="editEnable.systemJobs" ng-disabled="saveProgress.systemJobs || mcForm.$invalid">
+              <div ng-show="saveProgress.systemJobs" class="spinner spinner-xs"></div>
+              {{saveProgress.systemJobs ? 'SAVING' : 'SAVE' | translate}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div> <!-- Main Message -->
 
 </div> <!-- Container -->

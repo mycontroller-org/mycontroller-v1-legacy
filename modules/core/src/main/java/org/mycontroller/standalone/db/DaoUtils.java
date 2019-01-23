@@ -84,8 +84,6 @@ import org.mycontroller.standalone.db.dao.SensorsVariablesMapDao;
 import org.mycontroller.standalone.db.dao.SensorsVariablesMapDaoImpl;
 import org.mycontroller.standalone.db.dao.SettingsDao;
 import org.mycontroller.standalone.db.dao.SettingsDaoImpl;
-import org.mycontroller.standalone.db.dao.SystemJobDao;
-import org.mycontroller.standalone.db.dao.SystemJobDaoImpl;
 import org.mycontroller.standalone.db.dao.TimerDao;
 import org.mycontroller.standalone.db.dao.TimerDaoImpl;
 import org.mycontroller.standalone.db.dao.UidTagDao;
@@ -142,7 +140,6 @@ public class DaoUtils {
     private static SensorsVariablesMapDao sensorsVariablesMapDao = null;
     private static SensorVariableDao sensorVariableDao = null;
     private static SettingsDao settingsDao = null;
-    private static SystemJobDao systemJobDao = null;
     private static TimerDao timerDao = null;
     private static UidTagDao uidTagDao = null;
     private static UserDao userDao = null;
@@ -187,7 +184,6 @@ public class DaoUtils {
             sensorsVariablesMapDao = new SensorsVariablesMapDaoImpl(DataBaseUtils.getConnectionSource());
             sensorVariableDao = new SensorVariableDaoImpl(DataBaseUtils.getConnectionSource());
             settingsDao = new SettingsDaoImpl(DataBaseUtils.getConnectionSource());
-            systemJobDao = new SystemJobDaoImpl(DataBaseUtils.getConnectionSource());
             timerDao = new TimerDaoImpl(DataBaseUtils.getConnectionSource());
             uidTagDao = new UidTagDaoImpl(DataBaseUtils.getConnectionSource());
             userDao = new UserDaoImpl(DataBaseUtils.getConnectionSource());
@@ -217,10 +213,6 @@ public class DaoUtils {
 
     public static MetricsGPSTypeDeviceDao getMetricsGPSTypeDeviceDao() {
         return metricsGPSTypeDeviceDao;
-    }
-
-    public static SystemJobDao getSystemJobDao() {
-        return systemJobDao;
     }
 
     public static UserDao getUserDao() {

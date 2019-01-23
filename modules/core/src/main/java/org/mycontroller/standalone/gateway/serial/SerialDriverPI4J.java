@@ -21,11 +21,15 @@ import java.io.IOException;
 import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.eventbus.McEventBus;
 import org.mycontroller.standalone.eventbus.MessageStatus;
+import org.mycontroller.standalone.gateway.GatewayUtils;
 import org.mycontroller.standalone.gateway.config.GatewayConfigSerial;
 import org.mycontroller.standalone.message.IMessage;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_STATUS;
 import org.mycontroller.standalone.offheap.IQueue;
 import org.mycontroller.standalone.provider.IMessageParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataEvent;
@@ -40,16 +44,20 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SerialDriverPI4J implements ISerialDriver {
+    private static final Logger _RAW_MSG_LOGGER = LoggerFactory.getLogger(GatewayUtils.RAW_MESSAGE_LOGGER);
+
     private GatewayConfigSerial _config;
     private SerialDataListenerPi4j _listener;
     private Serial _serial;
     private IMessageParser<byte[]> _parser;
     private IQueue<IMessage> _queue;
+    private String gatewayReference;
 
     public SerialDriverPI4J(GatewayConfigSerial _config, IMessageParser<byte[]> _parser, IQueue<IMessage> _queue) {
         this._config = _config;
         this._parser = _parser;
         this._queue = _queue;
+        this.gatewayReference = GatewayUtils.gwLogReference(_config);
     }
 
     @Override
@@ -91,7 +99,13 @@ public class SerialDriverPI4J implements ISerialDriver {
     @Override
     public void write(IMessage message) {
         try {
-            _serial.write(_parser.getGatewayData(message));
+            byte[] data = _parser.getGatewayData(message);
+            // add raw message to a debug file
+            if (_RAW_MSG_LOGGER.isDebugEnabled()) {
+                MDC.put(GatewayUtils.RAW_MESSAGE_REFERENCE, gatewayReference);
+                _RAW_MSG_LOGGER.debug("Tx: {}", new String(data));
+            }
+            _serial.write(data);
             _config.setStatus(STATE.DOWN, "Stopped.");
         } catch (Exception ex) {
             _config.setStatus(STATE.DOWN, "ERROR: " + ex.getMessage());
@@ -103,10 +117,13 @@ public class SerialDriverPI4J implements ISerialDriver {
 
 @Slf4j
 class SerialDataListenerPi4j implements SerialDataEventListener {
+    private static final Logger _RAW_MSG_LOGGER = LoggerFactory.getLogger(GatewayUtils.RAW_MESSAGE_LOGGER);
+
     StringBuilder rawMessage = new StringBuilder();
     private GatewayConfigSerial _config;
     private IMessageParser<byte[]> _parser;
     private IQueue<IMessage> _queue;
+    private String gatewayReference;
 
     public SerialDataListenerPi4j(
             GatewayConfigSerial _config,
@@ -115,6 +132,7 @@ class SerialDataListenerPi4j implements SerialDataEventListener {
         this._config = _config;
         this._parser = _parser;
         this._queue = _queue;
+        this.gatewayReference = GatewayUtils.gwLogReference(_config);
     }
 
     @Override
@@ -125,6 +143,12 @@ class SerialDataListenerPi4j implements SerialDataEventListener {
                 if ((b == ISerialDriver.MESSAGE_SPLITTER) && rawMessage.length() > 0) {
                     String toProcess = rawMessage.toString();
                     _logger.debug("Received a message:[{}]", toProcess);
+
+                    // add raw messages to a debug file
+                    if (_RAW_MSG_LOGGER.isDebugEnabled()) {
+                        MDC.put(GatewayUtils.RAW_MESSAGE_REFERENCE, gatewayReference);
+                        _RAW_MSG_LOGGER.debug("Rx: {}", toProcess);
+                    }
 
                     //Send Message
                     IMessage message = _parser.getMessage(_config, toProcess.getBytes());

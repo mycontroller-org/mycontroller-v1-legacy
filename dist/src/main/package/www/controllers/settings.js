@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 myControllerModule.controller('SettingsSystemController', function(alertService, $scope, $filter, SettingsFactory,
-  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore, CommonServices, NavigatorGeolocation) {
+  StatusFactory, TypesFactory, displayRestError, mchelper, $translate, $cookieStore, CommonServices, NavigatorGeolocation, $uibModal) {
 
   //config, language, user, etc.,
   $scope.mchelper = mchelper;
@@ -101,7 +101,58 @@ myControllerModule.controller('SettingsSystemController', function(alertService,
       });
   };
 
+
+  //settings system jobs
+  $scope.updateSettingsSystemJobs = function(){
+    SettingsFactory.getSystemJobs(function(response) {
+      $scope.systemJobs = response;
+    });
+  };
+
+  //Pre-load
+  $scope.systemJobs = {};
+  $scope.updateSettingsSystemJobs();
+
+  //Save settings
+  $scope.saveSystemJobsLocal = function(){
+    $scope.saveProgress.systemJob = true;
+    SettingsFactory.saveSystemJobs($scope.systemJobs,function(response) {
+        alertService.success($filter('translate')('UPDATED_SUCCESSFULLY'));
+        $scope.saveProgress.systemJobs = false;
+        $scope.updateSettingsSystemJobs();
+        $scope.editEnable.systemJobs = false;
+      },function(error){
+        displayRestError.display(error);
+        $scope.saveProgress.systemJobs = false;
+      });
+  };
+
+  //edit confirmation
+  $scope.systemJobsWarning = function (size) {
+    var addModalInstance = $uibModal.open({
+    templateUrl: 'partials/common-html/edit-confirmation-modal.html',
+    controller: 'SystemJobsChangeController',
+    size: size,
+    resolve: {}
+    });
+    addModalInstance.result.then(function () {
+      $scope.editEnable.systemJobs = true;
+    }),
+    function () {
+      //console.log('Modal dismissed at: ' + new Date());
+    }
+  };
+
 });
+
+// System jobs change warning
+myControllerModule.controller('SystemJobsChangeController', function ($scope, $uibModalInstance, $filter) {
+  $scope.header = $filter('translate')('SYSTEM_JOBS_EDIT_CONFIRMATION_TITLE');
+  $scope.message = $filter('translate')('SYSTEM_JOBS_EDIT_CONFIRMATION_MSG');
+  $scope.continute = function() {$uibModalInstance.close(); };
+  $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); }
+});
+
 
 myControllerModule.controller('SettingsNotificationsController', function(alertService, $scope, $filter, SettingsFactory, displayRestError, mchelper, CommonServices) {
 
@@ -432,11 +483,6 @@ myControllerModule.controller('SettingsMqttBrokerController', function(alertServ
   $scope.updateSettingsMqttBroker = function(){
     SettingsFactory.getMqttBroker(function(response){
       $scope.mqttBrokerSettings = response;
-      if(response.defaultFirmware){
-        FirmwaresFactory.getFirmware({"refId": response.defaultFirmware},function(response){
-          $scope.defaultFirmware = response.firmwareName;
-        });
-      }
     });
   };
 

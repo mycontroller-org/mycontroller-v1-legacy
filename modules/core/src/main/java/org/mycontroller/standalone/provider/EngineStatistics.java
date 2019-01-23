@@ -38,6 +38,7 @@ public class EngineStatistics implements Cloneable {
     private long timeLastMessage;
 
     private long count;
+    private long txCount;
     private long countLastMinute;
     private long countCurrentMinute;
     private long countFailure;
@@ -56,7 +57,10 @@ public class EngineStatistics implements Cloneable {
         timeAverageCurrentMinute = 0;
         timeLastMessage = 0;
 
+        countFailure = 0;
+
         count = 0;
+        txCount = 0;
         countLastMinute = 0;
         countCurrentMinute = 0;
 
@@ -69,16 +73,24 @@ public class EngineStatistics implements Cloneable {
         countFailure++;
     }
 
-    public void update(long timeTaken) {
+    public void update(long timeTaken, boolean isTxMessage) {
         timeLastMessage = timeTaken;
         //if sample goes beyond MAXIMUM_SAMPLES, reset it to avoid big calculations.
         if (count > MAXIMUM_SAMPLES) {
             count = 1;
+            txCount = 0;
             timeAverage = timeLastMessage;
             countFailure = 0;
+            // if this is Tx message increment count
+            if (isTxMessage) {
+                txCount++;
+            }
         } else {
             timeAverage = ((timeAverage * count) + timeLastMessage) / (count + 1);
             count++;
+            if (isTxMessage) {
+                txCount++;
+            }
         }
 
         // Update current minute status
@@ -86,6 +98,13 @@ public class EngineStatistics implements Cloneable {
                 / (countCurrentMinute + 1);
         countCurrentMinute++;
         timestamp = System.currentTimeMillis();
+    }
+
+    public double getPercentageFailure() {
+        if (countFailure == 0) {
+            return 0.0;
+        }
+        return (countFailure * 100.0) / txCount;
     }
 
     // update last minute status
@@ -106,6 +125,7 @@ public class EngineStatistics implements Cloneable {
                 .timeAverageLastMinute(timeAverageLastMinute)
                 .timeLastMessage(timeLastMessage)
                 .count(count)
+                .txCount(txCount)
                 .countCurrentMinute(countCurrentMinute)
                 .countLastMinute(countLastMinute)
                 .countFailure(countFailure)
