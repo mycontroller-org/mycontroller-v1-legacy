@@ -483,7 +483,7 @@
     "PURGE_EXISTING_DATA": "Bestaande data opschonen",
     "PURGE_RESOURCES_LOGS": "Bron logboek opschonen",
     "PURGE_SENSOR_VARIABLE": "Sensor variable opschonen",
-    "PURGE_VALUE_RANGE_EXAMPLE": "Voorbeeld: >72.9, =100 of <10",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: min>=45.6,max>=78.2,avg>=56.3 or min>=45.6 or >=56.3(purge only avg)",
     "PURGE_WARNING": "LET OP: Als u geen parameter selecteerd, zal alles verwijderd worden",
     "PURGING": "Bezig met opschonen",
     "PUSHBULLET": "Pushbullet",

@@ -483,7 +483,7 @@
     "PURGE_EXISTING_DATA": "Очистить существующие данные",
     "PURGE_RESOURCES_LOGS": "Очистить логи ресурсов",
     "PURGE_SENSOR_VARIABLE": "Очистить переменные датчика",
-    "PURGE_VALUE_RANGE_EXAMPLE": "Пример:> 72,9 =100 или <10",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: min>=45.6,max>=78.2,avg>=56.3 or min>=45.6 or >=56.3(purge only avg)",
     "PURGE_WARNING": "ВНИМАНИЕ: Если вы не выбрать ни один параметр, этот процесс удалит все!",
     "PURGING": "Очистка",
     "PUSHBULLET": "Pushbullet",

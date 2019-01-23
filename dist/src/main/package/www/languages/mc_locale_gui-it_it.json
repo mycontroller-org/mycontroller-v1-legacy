@@ -483,7 +483,7 @@
     "PURGE_EXISTING_DATA": "Elimina definitivamente i dati esistenti",
     "PURGE_RESOURCES_LOGS": "Elimina definitivamente logs risorse",
     "PURGE_SENSOR_VARIABLE": "Elimina definitivamente variabile sensore",
-    "PURGE_VALUE_RANGE_EXAMPLE": "Esempio: >72.9, =100 o <10",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: min>=45.6,max>=78.2,avg>=56.3 or min>=45.6 or >=56.3(purge only avg)",
     "PURGE_WARNING": "ATTENZIONE: Se non selezioni un parametro, questo processo cancellerà tutto.",
     "PURGING": "Eliminazione definitiva in corso",
     "PUSHBULLET": "Pushbullet",

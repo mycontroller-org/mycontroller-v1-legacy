@@ -483,7 +483,7 @@
     "PURGE_EXISTING_DATA": "טיהור נתונים קיימים",
     "PURGE_RESOURCES_LOGS": "טיהור לוג משאבים",
     "PURGE_SENSOR_VARIABLE": "טיהור משתנה חיישן",
-    "PURGE_VALUE_RANGE_EXAMPLE": "לדוגמא: >72.9, =100 או <10",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: min>=45.6,max>=78.2,avg>=56.3 or min>=45.6 or >=56.3(purge only avg)",
     "PURGE_WARNING": "אזהרה: אם לא בחרת פרמטר, תהליך זה ימחוק הכל!",
     "PURGING": "מטהר",
     "PUSHBULLET": "Pushbullet",

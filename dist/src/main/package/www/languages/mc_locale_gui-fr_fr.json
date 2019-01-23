@@ -483,7 +483,7 @@
     "PURGE_EXISTING_DATA": "Effacer les données existantes",
     "PURGE_RESOURCES_LOGS": "Purger logs des ressources",
     "PURGE_SENSOR_VARIABLE": "Purger variable capteur",
-    "PURGE_VALUE_RANGE_EXAMPLE": "Exemple: >72.9, =100 ou <10",
+    "PURGE_VALUE_RANGE_EXAMPLE": "Example: min>=45.6,max>=78.2,avg>=56.3 or min>=45.6 or >=56.3(purge only avg)",
     "PURGE_WARNING": "AVERTISSEMENT : Si vous ne sélectionnez aucun paramètre, cette procédure va tout supprimer !",
     "PURGING": "Nettoyage",
     "PUSHBULLET": "Pushbullet",
