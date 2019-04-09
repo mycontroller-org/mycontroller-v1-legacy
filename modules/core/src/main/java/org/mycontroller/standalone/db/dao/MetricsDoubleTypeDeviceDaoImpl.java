@@ -344,7 +344,7 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             throw new McDatabaseException(ex);
         }
     }
-    
+
     @Override
     public int purgeAll() {
         try {

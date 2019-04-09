@@ -162,7 +162,7 @@ public class MetricsGPSTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsGPST
             throw new McDatabaseException(ex);
         }
     }
-    
+
     @Override
     public int purgeAll() {
         try {

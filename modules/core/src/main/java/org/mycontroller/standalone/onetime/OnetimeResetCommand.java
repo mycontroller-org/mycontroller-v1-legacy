@@ -16,9 +16,8 @@
  */
 package org.mycontroller.standalone.onetime;
 
-import lombok.ToString;
-
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
