@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,5 +39,7 @@ public interface MetricsBatteryUsageDao extends BaseDao<MetricsBatteryUsage, Obj
     long countOf(AGGREGATION_TYPE aggregationType, long start, long end);
 
     boolean isRecordFound(AGGREGATION_TYPE aggregationType, long start, long end);
+
+    int purgeAll();
 
 }

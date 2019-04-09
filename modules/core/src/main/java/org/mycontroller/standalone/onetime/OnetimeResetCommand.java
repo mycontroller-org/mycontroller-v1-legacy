@@ -14,28 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone.db.dao;
+package org.mycontroller.standalone.onetime;
 
-import java.util.List;
+import lombok.ToString;
 
-import org.mycontroller.standalone.db.tables.MetricsBinaryTypeDevice;
-import org.mycontroller.standalone.db.tables.SensorVariable;
+import lombok.Getter;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
- * @since 0.0.1
+ * @since 1.5.0
  */
-public interface MetricsBinaryTypeDeviceDao extends BaseDao<MetricsBinaryTypeDevice, Object> {
 
-    void deleteBySensorVariableRefId(int sensorVarRefId);
+@Getter
+@ToString
+public class OnetimeResetCommand {
+    private String command;
+    private String data;
 
-    void deletePrevious(MetricsBinaryTypeDevice metric);
+    public OnetimeResetCommand(String rawData) {
+        String[] raw = rawData.split(":", 2);
+        command = raw[0].trim().toLowerCase();
+        if (raw.length > 1) {
+            data = raw[1].trim();
+        }
+    }
 
-    List<MetricsBinaryTypeDevice> getAll(MetricsBinaryTypeDevice metric);
+    public boolean isValid() {
+        if (data != null && data.length() > 0) {
+            return true;
+        }
+        return false;
+    }
 
-    List<MetricsBinaryTypeDevice> getAllLastN(SensorVariable sensorVariable, long lastN);
-
-    void updateTimestamp(int sensorVariableId, long timestampOld, long timestanpNew);
-
-    int purgeAll();
 }

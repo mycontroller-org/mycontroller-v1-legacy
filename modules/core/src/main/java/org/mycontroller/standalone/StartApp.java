@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -75,6 +75,8 @@ import org.mycontroller.standalone.mdns.McmDNSFactory;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.offheap.OffHeapFactory;
+import org.mycontroller.standalone.onetime.ExecuteOneTime;
+import org.mycontroller.standalone.onetime.ResetPassword;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.settings.SettingsUtils;
@@ -299,6 +301,7 @@ public class StartApp {
         McScriptEngineUtils.listAvailableEngines();
 
         //Check password reset file
+        new ExecuteOneTime().executeOnetimeReset();
         ResetPassword.executeResetPassword();
 
         //Start message Monitor Thread
