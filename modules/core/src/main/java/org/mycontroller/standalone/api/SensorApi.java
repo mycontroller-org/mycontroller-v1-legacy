@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -250,7 +250,13 @@ public class SensorApi {
     public void sendRawMessage(IMessage message) throws McBadRequestException {
         message.setTxMessage(true);
         if (message.isValid()) {
-            McObjectManager.getEngine(message.getGatewayId()).send(message);
+            // check does it a sleeping node or normal node
+            Node node = DaoUtils.getNodeDao().get(message.getGatewayId(), message.getNodeEui());
+            if (node != null && node.getSmartSleepEnabled()) {
+                McObjectManager.getEngine(message.getGatewayId()).sendSleepNode(message);
+            } else {
+                McObjectManager.getEngine(message.getGatewayId()).send(message);
+            }
         } else {
             throw new McBadRequestException("Required field is missing! " + message);
         }
