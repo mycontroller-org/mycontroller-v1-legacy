@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -148,6 +148,7 @@ public class AppProperties {
         CS_CZ("čeština (CZ)"),
         DA_DK("Dansk (DK)"),
         DE_DE("Deutsch (DE)"),
+        EL_GR("ελληνικά (GR)"),
         EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
