@@ -536,7 +536,12 @@ public class AppProperties {
     }
 
     private String getValue(Properties properties, String key, String defaultValue) {
-        String value = properties.getProperty(key, defaultValue);
+        // first check it on system environment. "mcc.db.type" becomes "MCC_DB_TYPE"
+        String envKey = key.replaceAll("\\.", "_").toUpperCase();
+        String value = System.getenv().get(envKey);
+        if (value == null) {
+            value = properties.getProperty(key, defaultValue);
+        }
         if (!key.contains("password")) {
             _logger.debug("Key:{}-->{}", key, value);
         }
