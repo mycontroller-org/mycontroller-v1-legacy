@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE_SET_REQ;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.2
  */
-public interface SensorsVariablesMapDao {
+public interface SensorsVariablesMapDao extends BaseDao<SensorsVariablesMap, Integer> {
     void create(SensorsVariablesMap sensorsVariablesMap);
 
     void create(MESSAGE_TYPE_PRESENTATION sensorType, MESSAGE_TYPE_SET_REQ variableType);

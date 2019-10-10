@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,10 @@ public interface BaseDao<Tdao, Tid> {
 
     void createOrUpdate(Tdao tdao);
 
+    int createBulk(List<Tdao> items);
+
+    int deleteAll();
+
     void delete(Tdao tdao);
 
     void deleteById(Tid id);
@@ -50,6 +54,8 @@ public interface BaseDao<Tdao, Tid> {
     void updateBulk(String setColName, Object setColValue, String whereColName, Object whereColValue);
 
     List<Tdao> getAll();
+
+    List<Tdao> getAll(String orderBy, long startRow, long limit);
 
     Tdao get(Tdao tdao);
 

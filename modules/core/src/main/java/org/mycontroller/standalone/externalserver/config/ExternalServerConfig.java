@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,7 +54,11 @@ public abstract class ExternalServerConfig {
         name = externalServerTable.getName();
         type = externalServerTable.getType();
         keyFormat = externalServerTable.getKeyFormat();
-        keyCase = (ALPHABETICAL_CASE) externalServerTable.getProperties().get(KEY_ALPHABETICAL_CASE);
+        if (externalServerTable.getProperties().get(KEY_ALPHABETICAL_CASE) != null) {
+            keyCase = Enum.valueOf(ALPHABETICAL_CASE.class,
+                    String.valueOf(externalServerTable.getProperties().get(KEY_ALPHABETICAL_CASE)));
+        }
+
     }
 
     @JsonIgnore

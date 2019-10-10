@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -235,5 +235,17 @@ public class ResourcesLogsDaoImpl extends BaseAbstractDaoImpl<ResourcesLogs, Int
             throw new McDatabaseException(ex);
         }
 
+    }
+
+    @Override
+    public ResourcesLogs get(ResourcesLogs tdao) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<ResourcesLogs> getAll(List<Integer> ids) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

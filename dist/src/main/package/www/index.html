@@ -152,7 +152,7 @@
     <script src="libs/adf-widget-news/dist/adf-widget-news.min.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/adf-widgets/adf-myc-asg/adf-myc-a-sensor-graph.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/adf-widgets/adf-myc-cb/adf-myc-custom-buttons.js?mcv=${mc.gui.version}"></script>
-        <script src="controllers/adf-widgets/adf-myc-os/adf-myc-os-commands.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/adf-widgets/adf-myc-os/adf-myc-os-commands.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/adf-widgets/adf-myc-cw/adf-myc-custom-widget.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/adf-widgets/adf-myc-dsi/adf-myc-display-static-image.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/adf-widgets/adf-myc-groups/adf-myc-groups.js?mcv=${mc.gui.version}"></script>
@@ -173,6 +173,7 @@
     <script src="app.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/additional-headers.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/backup.js?mcv=${mc.gui.version}"></script>
+    <script src="controllers/export.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/dashboard.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/external-servers.js?mcv=${mc.gui.version}"></script>
     <script src="controllers/firmwares.js?mcv=${mc.gui.version}"></script>
@@ -367,6 +368,7 @@
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsUsers') == 0 }"><a ui-sref="settingsUsersList"><i class="fa fa-users fa-lg"></i> {{ 'USERS' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsRoles') == 0 }"><a ui-sref="settingsRolesList"><i class="pficon pficon-registry fa-lg mc-margin-right"></i>{{ 'ROLES' | translate }}</a></li>
               <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsBackup') == 0 }"><a ui-sref="settingsBackupList"><i class="fa fa fa-database fa-lg"></i> {{ 'BACKUP' | translate }}</a></li>
+              <li ng-show="mchelper.user.permission === 'Super admin'" ng-class="{ active: $state.current.name.indexOf('settingsExport') == 0 }"><a ui-sref="settingsExportList"><i class="fa fa fa-upload fa-lg"></i> {{ 'EXPORT' | translate }}</a></li>
             </ul>
           </li>
         </ul>

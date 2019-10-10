@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,9 +50,11 @@ public class DampeningActiveTime extends DampeningAbstract {
     @Override
     public void updateDampening(RuleDefinitionTable ruleDefinitionTable) {
         super.setType(ruleDefinitionTable.getDampeningType());
-        this.activeTime = (Long) ruleDefinitionTable.getDampeningProperties().get(KEY_ACTIVE_TIME);
+        this.activeTime = Long.valueOf(String.valueOf(ruleDefinitionTable.getDampeningProperties()
+                .get(KEY_ACTIVE_TIME)));
         this.activeFrom = ruleDefinitionTable.getDampeningProperties().get(KEY_ACTIVE_FROM) == null ?
-                ACTIVE_FROM_RESET_VALUE : (long) ruleDefinitionTable.getDampeningProperties().get(KEY_ACTIVE_FROM);
+                ACTIVE_FROM_RESET_VALUE :
+                Long.valueOf(String.valueOf(ruleDefinitionTable.getDampeningProperties().get(KEY_ACTIVE_FROM)));
     }
 
     @Override

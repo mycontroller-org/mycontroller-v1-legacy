@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -434,6 +434,19 @@ myControllerModule.factory('BackupRestoreFactory', function ($resource) {
 
   })
 });
+
+//Export and import services
+myControllerModule.factory('ExportImportFactory', function ($resource) {
+  return $resource('/mc/rest/export/:type', {}, {
+    getAll:  { method: 'GET', isArray: false, params: {type: 'files'}},
+    exportNow:  { method: 'PUT', params: {type: 'exportNow'}},
+    importNow:  { method: 'POST', params: {type: 'import'}},
+    deleteIds:  { method: 'POST', params: {type: 'delete'}},
+    getSettings:  { method: 'GET', params: {type: 'settings'}},
+    updateSettings:  { method: 'PUT', params: {type: 'settings'}},
+  })
+});
+
 
 //Rooms Services
 myControllerModule.factory('RoomsFactory', function ($resource) {

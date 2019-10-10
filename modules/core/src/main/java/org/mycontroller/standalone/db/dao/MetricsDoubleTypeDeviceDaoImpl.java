@@ -22,6 +22,7 @@ import java.util.List;
 import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgCondition;
 import org.mycontroller.standalone.api.jaxrs.model.ResourcePurgeConf;
 import org.mycontroller.standalone.db.DB_TABLES;
+import org.mycontroller.standalone.db.migration.ClientBase;
 import org.mycontroller.standalone.db.tables.MetricsDoubleTypeDevice;
 import org.mycontroller.standalone.exceptions.McDatabaseException;
 import org.mycontroller.standalone.metrics.MetricsUtils.AGGREGATION_TYPE;
@@ -200,14 +201,17 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
     public MetricsDoubleTypeDevice getMinMaxAvg(MetricsDoubleTypeDevice metric) {
         StringBuilder query = new StringBuilder();
         StringBuilder queryTimestamp = new StringBuilder();
+
+        ClientBase client = new ClientBase();
+
         //timestamp from / to
         if (metric.getStart() != null) {
-            queryTimestamp.append(" AND ").append(MetricsDoubleTypeDevice.KEY_TIMESTAMP).append(" > ")
-                    .append(metric.getStart());
+            queryTimestamp.append(" AND ").append(client.getColumnName(MetricsDoubleTypeDevice.KEY_TIMESTAMP))
+                    .append(" > ").append(metric.getStart());
         }
         if (metric.getEnd() != null) {
-            queryTimestamp.append(" AND ").append(MetricsDoubleTypeDevice.KEY_TIMESTAMP).append(" <= ")
-                    .append(metric.getEnd());
+            queryTimestamp.append(" AND ").append(client.getColumnName(MetricsDoubleTypeDevice.KEY_TIMESTAMP))
+                    .append(" <= ").append(metric.getEnd());
         }
         try {
             //Query sample
@@ -217,19 +221,20 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
 
             //Query to get minumum
             query.append("SELECT MIN(MINREF) AS MIN FROM (SELECT MIN(MIN) AS MINREF FROM ")
-                    .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(client.getTableName(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)).append(" WHERE ")
+                    .append(client.getColumnName(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID)).append("=")
                     .append(metric.getSensorVariable().getId());
             if (queryTimestamp.length() > 0) {
                 query.append(queryTimestamp);
             }
             query.append(" UNION ")
-                    .append("SELECT MIN(AVG) AS MINREF FROM ").append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
+                    .append("SELECT MIN(AVG) AS MINREF FROM ")
+                    .append(client.getTableName(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE))
                     .append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(client.getColumnName(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID)).append("=")
                     .append(metric.getSensorVariable().getId())
-                    .append(" AND ").append(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE).append("=")
-                    .append(AGGREGATION_TYPE.RAW.ordinal());
+                    .append(" AND ").append(client.getColumnName(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE))
+                    .append("=").append(AGGREGATION_TYPE.RAW.ordinal());
 
             if (queryTimestamp.length() > 0) {
                 query.append(queryTimestamp);
@@ -253,19 +258,20 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
 
             //Query to get maximum
             query.append("SELECT MAX(MAXREF) AS MAX FROM (SELECT MAX(MAX) AS MAXREF FROM ")
-                    .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(client.getTableName(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)).append(" WHERE ")
+                    .append(client.getColumnName(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID)).append("=")
                     .append(metric.getSensorVariable().getId());
             if (queryTimestamp.length() > 0) {
                 query.append(queryTimestamp);
             }
             query.append(" UNION ")
-                    .append("SELECT MAX(AVG) AS MAXREF FROM ").append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)
+                    .append("SELECT MAX(AVG) AS MAXREF FROM ")
+                    .append(client.getTableName(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE))
                     .append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+                    .append(client.getColumnName(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID)).append("=")
                     .append(metric.getSensorVariable().getId())
-                    .append(" AND ").append(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE).append("=")
-                    .append(AGGREGATION_TYPE.RAW.ordinal());
+                    .append(" AND ").append(client.getColumnName(MetricsDoubleTypeDevice.KEY_AGGREGATION_TYPE))
+                    .append("=").append(AGGREGATION_TYPE.RAW.ordinal());
             //timestamp from / to
             if (queryTimestamp.length() > 0) {
                 query.append(queryTimestamp);
@@ -288,11 +294,12 @@ public class MetricsDoubleTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsD
             //WHERE sensorVariableId=7 AND timestamp > fromTime AND timestamp <= toTime) AS MASTER_TABLE
 
             //Query to get average
-            query.append("SELECT ROUND(SUM(").append(MetricsDoubleTypeDevice.KEY_AVG).append(" * ")
-                    .append(MetricsDoubleTypeDevice.KEY_SAMPLES).append(") / SUM(")
-                    .append(MetricsDoubleTypeDevice.KEY_SAMPLES).append("), 2) AS AVG FROM ")
-                    .append(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE).append(" WHERE ")
-                    .append(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID).append("=")
+            query.append("SELECT SUM(")
+                    .append(client.getColumnName(MetricsDoubleTypeDevice.KEY_AVG)).append(" * ")
+                    .append(client.getColumnName(MetricsDoubleTypeDevice.KEY_SAMPLES)).append(") / SUM(")
+                    .append(client.getColumnName(MetricsDoubleTypeDevice.KEY_SAMPLES)).append(") AS AVG FROM ")
+                    .append(client.getTableName(DB_TABLES.METRICS_DOUBLE_TYPE_DEVICE)).append(" WHERE ")
+                    .append(client.getColumnName(MetricsDoubleTypeDevice.KEY_SENSOR_VARIABLE_ID)).append("=")
                     .append(metric.getSensorVariable().getId());
             //timestamp from / to
             if (queryTimestamp.length() > 0) {

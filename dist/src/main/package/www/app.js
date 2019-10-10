@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -564,6 +564,20 @@ myControllerModule.config(function($stateProvider, $urlRouterProvider) {
       url:"/settings/backup/settings",
       templateUrl: "partials/backup/automatic-backup-settings.html?mcv=${mc.gui.version}",
       controller: "BackupControllerAutoSettings",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsExportList', {
+      url:"/settings/export/list",
+      templateUrl: "partials/export/export-list.html?mcv=${mc.gui.version}",
+      controller: "ExportControllerList",
+       data: {
+        requireLogin: true
+      }
+    }).state('settingsExportAuto', {
+      url:"/settings/export/settings",
+      templateUrl: "partials/export/automatic-export-settings.html?mcv=${mc.gui.version}",
+      controller: "ExportControllerAutoSettings",
        data: {
         requireLogin: true
       }

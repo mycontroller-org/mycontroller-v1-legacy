@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.db.LoggerMySql;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
+import org.mycontroller.standalone.settings.ExportSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
@@ -103,6 +104,7 @@ public class AppProperties {
     MetricsGraphSettings metricsGraphSettings;
     MetricsDataRetentionSettings metricsDataRetentionSettings;
     BackupSettings backupSettings;
+    ExportSettings exportSettings;
     MqttBrokerSettings mqttBrokerSettings;
 
     public enum DB_TYPE {
@@ -565,6 +567,7 @@ public class AppProperties {
         metricsGraphSettings = MetricsGraphSettings.get();
         metricsDataRetentionSettings = MetricsDataRetentionSettings.get();
         backupSettings = BackupSettings.get();
+        exportSettings = ExportSettings.get();
         pushbulletSettings = PushbulletSettings.get();
         telegramBotSettings = TelegramBotSettings.get();
         mqttBrokerSettings = MqttBrokerSettings.get();
@@ -719,6 +722,14 @@ public class AppProperties {
 
     public void setBackupSettings(BackupSettings backupSettings) {
         this.backupSettings = backupSettings;
+    }
+
+    public ExportSettings getExportSettings() {
+        return exportSettings;
+    }
+
+    public void setExportSettings(ExportSettings exportSettings) {
+        this.exportSettings = exportSettings;
     }
 
     public MetricsDataRetentionSettings getMetricsDataRetentionSettings() {

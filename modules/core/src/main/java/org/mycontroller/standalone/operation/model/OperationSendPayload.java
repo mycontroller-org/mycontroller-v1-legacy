@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,7 +81,7 @@ public class OperationSendPayload extends Operation {
         resourceType = RESOURCE_TYPE.fromString((String) operationTable.getProperties().get(KEY_RESOURCE_TYPE));
         resourceId = (Integer) operationTable.getProperties().get(KEY_RESOURCE_ID);
         payload = (String) operationTable.getProperties().get(KEY_PAYLOAD);
-        delayTime = (Long) operationTable.getProperties().get(KEY_DELAY_TIME);
+        delayTime = Long.valueOf(String.valueOf(operationTable.getProperties().get(KEY_DELAY_TIME)));
         if (delayTime == null) {
             delayTime = 0L;
         }

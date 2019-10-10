@@ -36,6 +36,7 @@ import org.mycontroller.standalone.api.jaxrs.ExternalServerHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
 import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
 import org.mycontroller.standalone.api.jaxrs.GatewayHandler;
+import org.mycontroller.standalone.api.jaxrs.ExportHandler;
 import org.mycontroller.standalone.api.jaxrs.MetricsHandler;
 import org.mycontroller.standalone.api.jaxrs.MyControllerHandler;
 import org.mycontroller.standalone.api.jaxrs.NodeHandler;
@@ -164,6 +165,7 @@ public class StartApp {
         resources.add(FirmwareHandler.class.getName());
         resources.add(ForwardPayloadHandler.class.getName());
         resources.add(GatewayHandler.class.getName());
+        resources.add(ExportHandler.class.getName());
         resources.add(MetricsHandler.class.getName());
         resources.add(MyControllerHandler.class.getName());
         resources.add(NodeHandler.class.getName());
@@ -350,6 +352,10 @@ public class StartApp {
     }
 
     public static synchronized void stopServices() {
+        stopServices(true);
+    }
+
+    public static synchronized void stopServices(boolean stopAll) {
         //Stop order..
         // - stop web server
         // - clear external servers
@@ -365,11 +371,15 @@ public class StartApp {
         SchedulerUtils.stop();
         GatewayUtils.unloadEngineAll();
         MoquetteMqttBroker.stop();
-        DataBaseUtils.stop();
         MetricsUtils.shutdownEngine();
         OffHeapFactory.close();
-        McThreadPoolFactory.shutdownNow();
-        _logger.debug("All services stopped.");
+        if (stopAll) {
+            DataBaseUtils.stop();
+            McThreadPoolFactory.shutdownNow();
+            _logger.debug("Stopped minimal services.");
+        } else {
+            _logger.debug("All services stopped.");
+        }
         //Remove references
         McObjectManager.clearAllReferences();
     }
