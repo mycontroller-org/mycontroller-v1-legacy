@@ -93,7 +93,8 @@ public class Restore implements Runnable {
 
             if (executeDbBackup) {
                 //Validate required files
-                if (!FileUtils.getFile(extractedLocation + File.separator + Commons.BACKUP_DATABASE_FILENAME).exists()) {
+                if (!FileUtils.getFile(
+                        extractedLocation + File.separator + Commons.BACKUP_DATABASE_FILENAME).exists()) {
                     _logger.error("Unable to continue restore opration! selected file not found! File:{}",
                             extractedLocation + File.separator + Commons.BACKUP_DATABASE_FILENAME);
                     loadDefaultProperties();

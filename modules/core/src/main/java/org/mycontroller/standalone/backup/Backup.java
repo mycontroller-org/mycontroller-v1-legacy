@@ -65,7 +65,8 @@ public class Backup {
             }
 
             if (includeDdBackup) {
-                String databaseBackup = AppProperties.getInstance().getTmpLocation() + Commons.BACKUP_DATABASE_FILENAME;
+                String databaseBackup = AppProperties.getInstance().getTmpLocation()
+                        + Commons.BACKUP_DATABASE_FILENAME;
 
                 if (DataBaseUtils.backupDatabase(databaseBackup)) {
                     //Copy database file

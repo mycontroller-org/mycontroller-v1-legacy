@@ -18,8 +18,8 @@ package org.mycontroller.standalone.backup;
 
 import org.mycontroller.standalone.db.dao.BaseDao;
 
-import lombok.Getter;
 import lombok.Builder;
+import lombok.Getter;
 
 /**
  * @author Jeeva Kandasamy (jkandasa)
