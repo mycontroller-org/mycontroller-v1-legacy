@@ -17,6 +17,7 @@
 package org.mycontroller.standalone.gateway.config;
 
 import org.mycontroller.standalone.db.tables.GatewayTable;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -64,7 +65,7 @@ public class GatewayConfigEthernet extends GatewayConfig {
         super.updateGateway(gatewayTable);
         host = (String) gatewayTable.getProperties().get(KEY_HOST);
         port = (Integer) gatewayTable.getProperties().get(KEY_PORT);
-        aliveFrequency = (Long) gatewayTable.getProperties().get(KEY_ALIVE_FREQUENCY);
+        aliveFrequency = McUtils.getLong(gatewayTable.getProperties().get(KEY_ALIVE_FREQUENCY));
     }
 
     @Override

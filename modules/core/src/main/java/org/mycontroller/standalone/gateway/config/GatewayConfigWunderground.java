@@ -19,6 +19,7 @@ package org.mycontroller.standalone.gateway.config;
 import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -93,8 +94,8 @@ public class GatewayConfigWunderground extends GatewayConfig {
             geoIp = null;
         }
         pollFrequency = (Integer) gatewayTable.getProperty(KEY_POLL_FREQUENCY, 120);
-        lastUpdate = (Long) gatewayTable.getProperty(KEY_LAST_UPDATE);
-        lastObservationTime = (Long) gatewayTable.getProperty(KEY_LAST_OBSERVATION_TIME);
+        lastUpdate = McUtils.getLong(gatewayTable.getProperty(KEY_LAST_UPDATE));
+        lastObservationTime = McUtils.getLong(gatewayTable.getProperty(KEY_LAST_OBSERVATION_TIME));
     }
 
     @Override

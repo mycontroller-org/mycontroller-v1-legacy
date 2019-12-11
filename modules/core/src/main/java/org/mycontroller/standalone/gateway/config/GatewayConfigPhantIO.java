@@ -19,6 +19,7 @@ package org.mycontroller.standalone.gateway.config;
 import org.mycontroller.restclient.core.TRUST_HOST_TYPE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -83,8 +84,8 @@ public class GatewayConfigPhantIO extends GatewayConfig {
         publicKey = (String) gatewayTable.getProperty(KEY_PUBLIC_KEY);
         privateKey = (String) gatewayTable.getProperty(KEY_PRIVATE_KEY);
         pollFrequency = (Integer) gatewayTable.getProperty(KEY_POLL_FREQUENCY, 120);
-        recordsLimit = (Long) gatewayTable.getProperty(KEY_RECORDS_LIMIT, 10L);
-        lastUpdate = (Long) gatewayTable.getProperty(KEY_LAST_UPDATE);
+        recordsLimit = McUtils.getLong(gatewayTable.getProperty(KEY_RECORDS_LIMIT, 10L));
+        lastUpdate = McUtils.getLong(gatewayTable.getProperty(KEY_LAST_UPDATE));
     }
 
     @Override

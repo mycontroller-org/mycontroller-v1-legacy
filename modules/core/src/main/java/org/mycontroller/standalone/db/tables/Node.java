@@ -201,7 +201,7 @@ public class Node {
             return 0L;
         } else {
             try {
-                return (Long) getProperty(KEY_HEARTBEAT_LAST_TX_TIME);
+                return McUtils.getLong(getProperty(KEY_HEARTBEAT_LAST_TX_TIME));
             } catch (Exception ex) {
                 return 0L;
             }
@@ -218,8 +218,8 @@ public class Node {
     }
 
     public void firmwareUpdateFinished() {
-        Long startTime = (Long) this.getProperty(KEY_FW_OPERATION_FIRST);
-        Long endTime = (Long) this.getProperty(KEY_FW_OPERATION_LAST);
+        Long startTime = McUtils.getLong(this.getProperty(KEY_FW_OPERATION_FIRST));
+        Long endTime = McUtils.getLong(this.getProperty(KEY_FW_OPERATION_LAST));
         if (startTime != null && endTime != null) {
             this.getProperties().put(KEY_FW_OPERATION_LAST_DURATION, endTime - startTime);
         }
