@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -168,5 +168,15 @@ public class MetricsBinaryTypeDeviceDaoImpl extends BaseAbstractDaoImpl<MetricsB
             _logger.error("SQL Exception", ex);
             throw new McDatabaseException(ex);
         }
+    }
+
+    @Override
+    public int purgeAll() {
+        try {
+            return getDao().deleteBuilder().delete();
+        } catch (SQLException ex) {
+            _logger.error("Exception,", ex);
+        }
+        return -1;
     }
 }

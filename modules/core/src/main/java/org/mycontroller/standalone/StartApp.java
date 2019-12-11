@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +32,7 @@ import org.mycontroller.standalone.api.GoogleAnalyticsApi;
 import org.mycontroller.standalone.api.jaxrs.AuthenticationHandler;
 import org.mycontroller.standalone.api.jaxrs.BackupHandler;
 import org.mycontroller.standalone.api.jaxrs.DashboardHandler;
+import org.mycontroller.standalone.api.jaxrs.ExportHandler;
 import org.mycontroller.standalone.api.jaxrs.ExternalServerHandler;
 import org.mycontroller.standalone.api.jaxrs.FirmwareHandler;
 import org.mycontroller.standalone.api.jaxrs.ForwardPayloadHandler;
@@ -75,6 +76,8 @@ import org.mycontroller.standalone.mdns.McmDNSFactory;
 import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.offheap.OffHeapFactory;
+import org.mycontroller.standalone.onetime.ExecuteOneTime;
+import org.mycontroller.standalone.onetime.ResetPassword;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
 import org.mycontroller.standalone.settings.SettingsUtils;
@@ -162,6 +165,7 @@ public class StartApp {
         resources.add(FirmwareHandler.class.getName());
         resources.add(ForwardPayloadHandler.class.getName());
         resources.add(GatewayHandler.class.getName());
+        resources.add(ExportHandler.class.getName());
         resources.add(MetricsHandler.class.getName());
         resources.add(MyControllerHandler.class.getName());
         resources.add(NodeHandler.class.getName());
@@ -299,6 +303,7 @@ public class StartApp {
         McScriptEngineUtils.listAvailableEngines();
 
         //Check password reset file
+        new ExecuteOneTime().executeOnetimeReset();
         ResetPassword.executeResetPassword();
 
         //Start message Monitor Thread
@@ -347,6 +352,10 @@ public class StartApp {
     }
 
     public static synchronized void stopServices() {
+        stopServices(true);
+    }
+
+    public static synchronized void stopServices(boolean stopAll) {
         //Stop order..
         // - stop web server
         // - clear external servers
@@ -362,11 +371,15 @@ public class StartApp {
         SchedulerUtils.stop();
         GatewayUtils.unloadEngineAll();
         MoquetteMqttBroker.stop();
-        DataBaseUtils.stop();
         MetricsUtils.shutdownEngine();
         OffHeapFactory.close();
-        McThreadPoolFactory.shutdownNow();
-        _logger.debug("All services stopped.");
+        if (stopAll) {
+            DataBaseUtils.stop();
+            McThreadPoolFactory.shutdownNow();
+            _logger.debug("Stopped minimal services.");
+        } else {
+            _logger.debug("All services stopped.");
+        }
         //Remove references
         McObjectManager.clearAllReferences();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mycontroller.standalone;
+package org.mycontroller.standalone.onetime;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.auth.McCrypt;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.User;
@@ -33,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ResetPassword {
-    public static final String[] PASSWORD_FILES = { "conf/password", "conf/password.txt" };
+    public static final String[] PASSWORD_FILES = { "conf/password", "conf/password.txt", "conf/password" };
     public static final String SPLITTER = ",";
 
     public static void executeResetPassword() {

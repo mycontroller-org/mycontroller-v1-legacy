@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ import org.mycontroller.standalone.db.tables.ResourcesGroupMap;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface ResourcesGroupMapDao {
+public interface ResourcesGroupMapDao extends BaseDao<ResourcesGroupMap, Integer> {
     void create(ResourcesGroupMap resourcesGroupMap);
 
     void createOrUpdate(ResourcesGroupMap resourcesGroupMap);

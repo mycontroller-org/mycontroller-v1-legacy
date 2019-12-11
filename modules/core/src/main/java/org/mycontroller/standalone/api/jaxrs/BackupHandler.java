@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,7 @@ import org.mycontroller.standalone.api.jaxrs.model.ApiError;
 import org.mycontroller.standalone.api.jaxrs.model.ApiMessage;
 import org.mycontroller.standalone.api.jaxrs.model.Query;
 import org.mycontroller.standalone.api.jaxrs.utils.RestUtils;
+import org.mycontroller.standalone.backup.McFileUtils;
 import org.mycontroller.standalone.settings.BackupSettings;
 
 import lombok.extern.slf4j.Slf4j;
@@ -59,17 +60,17 @@ public class BackupHandler {
 
     @GET
     @Path("/backupFiles")
-    public Response getBackupList(@QueryParam(BackupApi.KEY_NAME) List<String> name,
+    public Response getBackupList(@QueryParam(McFileUtils.KEY_NAME) List<String> name,
             @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) Long page,
             @QueryParam(Query.ORDER_BY) String orderBy,
             @QueryParam(Query.ORDER) String order) {
 
         HashMap<String, Object> filters = new HashMap<String, Object>();
-        filters.put(BackupApi.KEY_NAME, name);
+        filters.put(McFileUtils.KEY_NAME, name);
 
         if (orderBy == null) {
-            orderBy = BackupApi.KEY_NAME;
+            orderBy = McFileUtils.KEY_NAME;
         }
         //Query primary filters
         filters.put(Query.ORDER, order);

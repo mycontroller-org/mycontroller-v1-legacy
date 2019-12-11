@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@ package org.mycontroller.standalone.api.jaxrs.model;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -96,11 +98,14 @@ public class Query {
     }
 
     public static Query get(Map<String, Object> filters) {
-        Query query = Query.builder()
+        Query query = Query
+                .builder()
                 .order(filters.get(ORDER) != null ? (String) filters.get(ORDER) : ORDER_ASC)
                 .orderBy(filters.get(ORDER_BY) != null ? (String) filters.get(ORDER_BY) : KEY_ID)
                 .filters(filters)
-                .pageLimit(filters.get(PAGE_LIMIT) != null ? (Long) filters.get(PAGE_LIMIT) : MAX_ITEMS_PER_PAGE)
+                .pageLimit(
+                        filters.get(PAGE_LIMIT) != null ? McUtils.getLong(filters.get(PAGE_LIMIT))
+                                : MAX_ITEMS_PER_PAGE)
                 .page(filters.get(PAGE) != null ? (long) filters.get(PAGE) : 1L)
                 .isAndQuery(true)
                 .idColumn(KEY_ID)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -220,5 +220,17 @@ public class ResourcesGroupMapDaoImpl extends BaseAbstractDaoImpl<ResourcesGroup
             _logger.error("unable to run query:[{}]", query, ex);
             throw new McDatabaseException(ex);
         }
+    }
+
+    @Override
+    public ResourcesGroupMap get(ResourcesGroupMap tdao) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<ResourcesGroupMap> getAll(List<Integer> ids) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

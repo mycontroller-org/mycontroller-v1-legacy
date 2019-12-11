@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.db.LoggerMySql;
 import org.mycontroller.standalone.settings.BackupSettings;
 import org.mycontroller.standalone.settings.EmailSettings;
+import org.mycontroller.standalone.settings.ExportSettings;
 import org.mycontroller.standalone.settings.LocationSettings;
 import org.mycontroller.standalone.settings.MetricsDataRetentionSettings;
 import org.mycontroller.standalone.settings.MetricsGraphSettings;
@@ -103,6 +104,7 @@ public class AppProperties {
     MetricsGraphSettings metricsGraphSettings;
     MetricsDataRetentionSettings metricsDataRetentionSettings;
     BackupSettings backupSettings;
+    ExportSettings exportSettings;
     MqttBrokerSettings mqttBrokerSettings;
 
     public enum DB_TYPE {
@@ -148,6 +150,7 @@ public class AppProperties {
         CS_CZ("čeština (CZ)"),
         DA_DK("Dansk (DK)"),
         DE_DE("Deutsch (DE)"),
+        EL_GR("ελληνικά (GR)"),
         EN_US("English (US)"),
         ES_AR("Español (AR)"),
         ES_ES("Español (ES)"),
@@ -535,7 +538,12 @@ public class AppProperties {
     }
 
     private String getValue(Properties properties, String key, String defaultValue) {
-        String value = properties.getProperty(key, defaultValue);
+        // first check it on system environment. "mcc.db.type" becomes "MCC_DB_TYPE"
+        String envKey = key.replaceAll("\\.", "_").toUpperCase();
+        String value = System.getenv().get(envKey);
+        if (value == null) {
+            value = properties.getProperty(key, defaultValue);
+        }
         if (!key.contains("password")) {
             _logger.debug("Key:{}-->{}", key, value);
         }
@@ -559,6 +567,7 @@ public class AppProperties {
         metricsGraphSettings = MetricsGraphSettings.get();
         metricsDataRetentionSettings = MetricsDataRetentionSettings.get();
         backupSettings = BackupSettings.get();
+        exportSettings = ExportSettings.get();
         pushbulletSettings = PushbulletSettings.get();
         telegramBotSettings = TelegramBotSettings.get();
         mqttBrokerSettings = MqttBrokerSettings.get();
@@ -713,6 +722,14 @@ public class AppProperties {
 
     public void setBackupSettings(BackupSettings backupSettings) {
         this.backupSettings = backupSettings;
+    }
+
+    public ExportSettings getExportSettings() {
+        return exportSettings;
+    }
+
+    public void setExportSettings(ExportSettings exportSettings) {
+        this.exportSettings = exportSettings;
     }
 
     public MetricsDataRetentionSettings getMetricsDataRetentionSettings() {

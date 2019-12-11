@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -201,7 +201,7 @@ public class Node {
             return 0L;
         } else {
             try {
-                return (Long) getProperty(KEY_HEARTBEAT_LAST_TX_TIME);
+                return McUtils.getLong(getProperty(KEY_HEARTBEAT_LAST_TX_TIME));
             } catch (Exception ex) {
                 return 0L;
             }
@@ -218,8 +218,8 @@ public class Node {
     }
 
     public void firmwareUpdateFinished() {
-        Long startTime = (Long) this.getProperty(KEY_FW_OPERATION_FIRST);
-        Long endTime = (Long) this.getProperty(KEY_FW_OPERATION_LAST);
+        Long startTime = McUtils.getLong(this.getProperty(KEY_FW_OPERATION_FIRST));
+        Long endTime = McUtils.getLong(this.getProperty(KEY_FW_OPERATION_LAST));
         if (startTime != null && endTime != null) {
             this.getProperties().put(KEY_FW_OPERATION_LAST_DURATION, endTime - startTime);
         }

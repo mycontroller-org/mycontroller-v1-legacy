@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ import org.mycontroller.standalone.db.tables.ResourcesLogs;
  * @author Jeeva Kandasamy (jkandasa)
  * @since 0.0.1
  */
-public interface ResourcesLogsDao {
+public interface ResourcesLogsDao extends BaseDao<ResourcesLogs, Integer> {
     void add(ResourcesLogs resourcesLogs);
 
     void delete(ResourcesLogs resourcesLogs);

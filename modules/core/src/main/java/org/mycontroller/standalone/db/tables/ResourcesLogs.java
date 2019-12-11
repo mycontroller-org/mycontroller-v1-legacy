@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_DIRECTION;
 import org.mycontroller.standalone.db.ResourcesLogsUtils.LOG_LEVEL;
 import org.mycontroller.standalone.message.McMessageUtils.MESSAGE_TYPE;
 import org.mycontroller.standalone.model.ResourceModel;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -98,7 +99,7 @@ public class ResourcesLogs {
                 .messageType(MESSAGE_TYPE.fromString((String) filters.get(KEY_MESSAGE_TYPE)))
                 .logDirection(LOG_DIRECTION.fromString((String) filters.get(KEY_LOG_DIRECTION)))
                 .message((String) filters.get(KEY_MESSAGE))
-                .timestamp((Long) filters.get(KEY_TIMESTAMP))
+                .timestamp(McUtils.getLong(filters.get(KEY_TIMESTAMP)))
                 .build();
     }
 

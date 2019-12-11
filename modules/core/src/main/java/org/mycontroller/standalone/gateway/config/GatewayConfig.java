@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import org.mycontroller.standalone.AppProperties.STATE;
 import org.mycontroller.standalone.db.DaoUtils;
 import org.mycontroller.standalone.db.tables.GatewayTable;
 import org.mycontroller.standalone.gateway.GatewayUtils.GATEWAY_TYPE;
+import org.mycontroller.standalone.utils.McUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -95,11 +96,11 @@ public abstract class GatewayConfig {
         state = gatewayTable.getState();
         statusMessage = gatewayTable.getStatusMessage();
         statusSince = gatewayTable.getStatusSince();
-        txDelay = (Long) gatewayTable.getProperty(KEY_TX_DELAY, 0L);
+        txDelay = McUtils.getLong(gatewayTable.getProperty(KEY_TX_DELAY, 0L));
         ackEnabled = (Boolean) gatewayTable.getProperty(KEY_ACK_ENABLED, false);
         streamAckEnabled = (Boolean) gatewayTable.getProperty(KEY_STREAM_ACK_ENABLED, false);
         failedRetryCount = (Integer) gatewayTable.getProperty(KEY_FAILED_RETRY_COUNT, 3);
-        ackWaitTime = (Long) gatewayTable.getProperty(KEY_ACK_WAIT_TIME, 500L);
+        ackWaitTime = McUtils.getLong(gatewayTable.getProperty(KEY_ACK_WAIT_TIME, 500L));
         reconnectDelay = (Integer) gatewayTable.getProperty(KEY_RECONNECT_DELAY, 120);
     }
 

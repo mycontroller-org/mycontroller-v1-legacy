@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,7 @@
 package org.mycontroller.standalone.backup;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.ws.rs.BadRequestException;
 
@@ -31,7 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.AppProperties.DB_TYPE;
 import org.mycontroller.standalone.StartApp;
-import org.mycontroller.standalone.api.jaxrs.model.BackupFile;
+import org.mycontroller.standalone.api.jaxrs.model.McFile;
 import org.mycontroller.standalone.db.DataBaseUtils;
 import org.mycontroller.standalone.utils.McUtils;
 
@@ -43,9 +37,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class Restore implements Runnable {
-    private BackupFile backupFile;
+    private McFile backupFile;
 
-    public Restore(BackupFile backupFile) {
+    public Restore(McFile backupFile) {
         this.backupFile = backupFile;
     }
 
@@ -53,18 +47,17 @@ public class Restore implements Runnable {
         StartApp.loadInitialProperties(System.getProperty("mc.conf.file"));
     }
 
-    public static void restore(BackupFile backupFile) throws IOException {
-        if (BRCommons.isBackupRestoreRunning()) {
+    public static void restore(McFile backupFile) throws IOException {
+        if (Commons.IS_BACKUP_RESTORE_RUNNING.get()) {
             throw new BadRequestException("A backup or restore is running");
         }
 
-        if (!backupFile.getName().contains(BRCommons.FILE_NAME_IDENTITY)) {
-            throw new BadRequestException("backup file name should contain '" + BRCommons.FILE_NAME_IDENTITY
-                    + "'. Your input:"
-                    + backupFile.getName());
+        if (!backupFile.getName().contains(Commons.BACKUP_FILE_NAME_IDENTITY)) {
+            throw new BadRequestException("backup file name should contain '" + Commons.BACKUP_FILE_NAME_IDENTITY
+                    + "'. Your input:" + backupFile.getName());
         }
 
-        BRCommons.setBackupRestoreRunning(true);
+        Commons.IS_BACKUP_RESTORE_RUNNING.set(true);
 
         _logger.info("About to restore a backup, {}", backupFile);
 
@@ -74,22 +67,20 @@ public class Restore implements Runnable {
             //Extract zip file
             _logger.debug("Zip file:{}", backupFile.getCanonicalPath());
 
-            extractZipFile(backupFile.getCanonicalPath(), extractedLocation);
+            McFileUtils.extractZipFile(backupFile.getCanonicalPath(), extractedLocation);
             _logger.debug("All the files extracted to '{}'", extractedLocation);
-
             //Validate required files
-            if (!FileUtils.getFile(extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME).exists()) {
+            if (!FileUtils.getFile(extractedLocation + File.separator + Commons.APP_PROPERTIES_FILENAME).exists()) {
                 _logger.error("Unable to continue restore opration! selected file not found! File:{}",
-                        extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME);
+                        extractedLocation + File.separator + Commons.APP_PROPERTIES_FILENAME);
                 return;
             }
 
             //Load initial properties
-            if (!StartApp
-                    .loadInitialProperties(extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME)) {
+            if (!StartApp.loadInitialProperties(extractedLocation + File.separator + Commons.APP_PROPERTIES_FILENAME)) {
                 loadDefaultProperties();
                 _logger.error("Failed to load properties file from '{}'", extractedLocation + File.separator
-                        + BRCommons.APP_PROPERTIES_FILENAME);
+                        + Commons.APP_PROPERTIES_FILENAME);
                 return;
             }
             boolean executeDbBackup = false;
@@ -102,24 +93,25 @@ public class Restore implements Runnable {
 
             if (executeDbBackup) {
                 //Validate required files
-                if (!FileUtils.getFile(extractedLocation + File.separator + BRCommons.DATABASE_FILENAME).exists()) {
+                if (!FileUtils.getFile(
+                        extractedLocation + File.separator + Commons.BACKUP_DATABASE_FILENAME).exists()) {
                     _logger.error("Unable to continue restore opration! selected file not found! File:{}",
-                            extractedLocation + File.separator + BRCommons.DATABASE_FILENAME);
+                            extractedLocation + File.separator + Commons.BACKUP_DATABASE_FILENAME);
                     loadDefaultProperties();
                     return;
                 }
             }
 
             //Stop all services
-            StartApp.stopServices();
+            StartApp.stopServices(false);
 
             //Restore properties file
             //Remove old properties file
-            FileUtils
-                    .deleteQuietly(FileUtils.getFile(BRCommons.APP_CONF_LOCATION + BRCommons.APP_PROPERTIES_FILENAME));
+            FileUtils.deleteQuietly(FileUtils.getFile(Commons.APP_CONF_LOCATION + Commons.APP_PROPERTIES_FILENAME));
+
             FileUtils.copyFile(
-                    FileUtils.getFile(extractedLocation + File.separator + BRCommons.APP_PROPERTIES_FILENAME),
-                    FileUtils.getFile(BRCommons.APP_CONF_LOCATION + BRCommons.APP_PROPERTIES_FILENAME));
+                    FileUtils.getFile(extractedLocation + File.separator + Commons.APP_PROPERTIES_FILENAME),
+                    FileUtils.getFile(Commons.APP_CONF_LOCATION + Commons.APP_PROPERTIES_FILENAME));
 
             if (AppProperties.getInstance().isWebHttpsEnabled()) {
                 //Remove old files
@@ -131,20 +123,13 @@ public class Restore implements Runnable {
                         FileUtils.getFile(AppProperties.getInstance().getWebSslKeystoreFile()));
             }
 
-            //Restore resources directory
-            //Remove old files
-            FileUtils.deleteQuietly(FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()));
-            //restore resources directory, if exists
-            File resourcesDir = FileUtils.getFile(extractedLocation + File.separator + BRCommons.RESOURCES_LOCATION);
-            if (resourcesDir.exists()) {
-                FileUtils.copyDirectory(
-                        resourcesDir, FileUtils.getFile(AppProperties.getInstance().getResourcesLocation()), true);
-            }
+            McFileUtils.restoreResourceFiles(extractedLocation);
             if (executeDbBackup) {
                 //restore database
-                if (!DataBaseUtils.restoreDatabase(extractedLocation + File.separator + BRCommons.DATABASE_FILENAME)) {
+                if (!DataBaseUtils.restoreDatabase(extractedLocation + File.separator
+                        + Commons.BACKUP_DATABASE_FILENAME)) {
                     _logger.error("Database restore failed:{}", extractedLocation + File.separator
-                            + BRCommons.DATABASE_FILENAME);
+                            + Commons.BACKUP_DATABASE_FILENAME);
                     return;
                 }
             } else {
@@ -155,47 +140,10 @@ public class Restore implements Runnable {
             //clean tmp file
             FileUtils.deleteQuietly(FileUtils.getFile(extractedLocation));
             _logger.debug("Tmp location[{}] clean success", extractedLocation);
-            BRCommons.setBackupRestoreRunning(false);
+            Commons.IS_BACKUP_RESTORE_RUNNING.set(false);
         }
         //Stop application
         System.exit(0);
-    }
-
-    private static void extractZipFile(String zipFileName, String destination)
-            throws FileNotFoundException, IOException {
-        ZipFile zipFile = new ZipFile(zipFileName);
-        Enumeration<?> enu = zipFile.entries();
-        //create destination if not exists
-        FileUtils.forceMkdir(FileUtils.getFile(destination));
-        while (enu.hasMoreElements()) {
-            ZipEntry zipEntry = (ZipEntry) enu.nextElement();
-            String name = zipEntry.getName();
-            long size = zipEntry.getSize();
-            long compressedSize = zipEntry.getCompressedSize();
-            _logger.debug("name:{} | size:{} | compressed size:{}", name, size, compressedSize);
-            File file = FileUtils.getFile(destination + File.separator + name);
-            //Create destination if it's not available
-            if (name.endsWith(File.separator)) {
-                file.mkdirs();
-                continue;
-            }
-
-            File parent = file.getParentFile();
-            if (parent != null) {
-                parent.mkdirs();
-            }
-
-            InputStream is = zipFile.getInputStream(zipEntry);
-            FileOutputStream fos = new FileOutputStream(file);
-            byte[] bytes = new byte[1024];
-            int length;
-            while ((length = is.read(bytes)) >= 0) {
-                fos.write(bytes, 0, length);
-            }
-            is.close();
-            fos.close();
-        }
-        zipFile.close();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -176,7 +176,11 @@ public class SensorVariable {
 
     public MetricsGraph getMetricsGraph() {
         if (getProperties().get(KEY_GP_USE_GLOBAL) == null || (boolean) getProperties().get(KEY_GP_USE_GLOBAL)) {
-            return AppProperties.getInstance().getMetricsGraphSettings().getMetric(variableType.getText());
+            if (variableType != null) {
+                return AppProperties.getInstance().getMetricsGraphSettings().getMetric(variableType.getText());
+            } else {
+                return MetricsGraph.get(properties);
+            }
         } else {
             return MetricsGraph.get(properties);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -529,6 +529,42 @@ public abstract class BaseAbstractDaoImpl<Tdao, Tid> {
                 where.eq(key, value);
                 break;
         }
+    }
+
+    public int deleteAll() {
+        DeleteBuilder<Tdao, Tid> deleteBuilder = this.getDao().deleteBuilder();
+        int count = 0;
+        try {
+            count = deleteBuilder.delete();
+            _logger.debug("Deleted, {} records", count);
+        } catch (SQLException ex) {
+            _logger.error("Exception,", ex);
+        }
+        return count;
+    }
+
+    public int createBulk(List<Tdao> items) {
+        Integer count = 0;
+        try {
+            count = this.getDao().create(items);
+            _logger.debug("Create count:{}", count);
+        } catch (SQLException ex) {
+            _logger.error("Exception", ex);
+        }
+        return count;
+    }
+
+    public List<Tdao> getAll(String orderBy, long startRow, long limit) {
+        QueryBuilder<Tdao, Tid> queryBuilder = this.getDao().queryBuilder();
+        try {
+            if (orderBy != null) {
+                queryBuilder.orderBy(orderBy, true);
+            }
+            return queryBuilder.offset(startRow).limit(limit).query();
+        } catch (SQLException ex) {
+            _logger.error("Exception,", ex);
+        }
+        return new ArrayList<Tdao>();
     }
 
 }
