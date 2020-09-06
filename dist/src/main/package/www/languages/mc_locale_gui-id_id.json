@@ -157,6 +157,7 @@
     "DOUBLE": "Double",
     "DOWN": "Down",
     "DRIVER": "Driver",
+    "DROP_DOWN_ITEM_LIMIT": "Dropdown item limit",
     "EDIT": "Edit",
     "EDIT_DASHBOARD": "Edit dashboard",
     "EMAIL": "Email",

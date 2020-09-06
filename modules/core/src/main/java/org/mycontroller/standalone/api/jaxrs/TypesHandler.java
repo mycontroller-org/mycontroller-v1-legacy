@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2020 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -109,8 +109,11 @@ public class TypesHandler extends AccessEngine {
     @Path("/resources")
     public Response getResources(@QueryParam("resourceType") String resourceType,
             @QueryParam("filter") String filter,
-            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
+        if (pageLimit == null) {
+            pageLimit = RestUtils.defaultDropDownItemLimit();
+        }
         return RestUtils.getResponse(Status.OK,
                 TypesUtils.getResources(AuthUtils.getUser(securityContext), resourceType, filter, page, pageLimit));
     }
@@ -118,8 +121,11 @@ public class TypesHandler extends AccessEngine {
     @GET
     @Path("/gateways")
     public Response getGateways(@QueryParam("filter") String filter,
-            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
+        if (pageLimit == null) {
+            pageLimit = RestUtils.defaultDropDownItemLimit();
+        }
         return RestUtils.getResponse(Status.OK,
                 TypesUtils.getGateways(AuthUtils.getUser(securityContext), filter, page, pageLimit));
     }
@@ -127,8 +133,11 @@ public class TypesHandler extends AccessEngine {
     @GET
     @Path("/nodes")
     public Response getNodes(@QueryParam("gatewayId") Integer gatewayId, @QueryParam("filter") String filter,
-            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
+        if (pageLimit == null) {
+            pageLimit = RestUtils.defaultDropDownItemLimit();
+        }
         return RestUtils.getResponse(Status.OK,
                 TypesUtils.getNodes(AuthUtils.getUser(securityContext), gatewayId, filter, page, pageLimit));
     }
@@ -152,8 +161,11 @@ public class TypesHandler extends AccessEngine {
             @QueryParam("roomId") Integer roomId,
             @QueryParam("enableNoRoomFilter") Boolean enableNoRoomFilter,
             @QueryParam("filter") String filter,
-            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
+        if (pageLimit == null) {
+            pageLimit = RestUtils.defaultDropDownItemLimit();
+        }
         return RestUtils.getResponse(Status.OK,
                 TypesUtils.getSensors(getUser(), nodeId, roomId, enableNoRoomFilter, filter, page, pageLimit));
     }
@@ -166,8 +178,11 @@ public class TypesHandler extends AccessEngine {
             @QueryParam("variableType") List<String> variableTypes,
             @QueryParam("metricType") List<String> metricTypes,
             @QueryParam("filter") String filter,
-            @QueryParam(Query.PAGE_LIMIT) @DefaultValue(RestUtils.DROP_DOWN_ITEM_LIMIT) Long pageLimit,
+            @QueryParam(Query.PAGE_LIMIT) Long pageLimit,
             @QueryParam(Query.PAGE) @DefaultValue("1") Long page) {
+        if (pageLimit == null) {
+            pageLimit = RestUtils.defaultDropDownItemLimit();
+        }
         try {
             return RestUtils.getResponse(Status.OK,
                     TypesUtils.getSensorVariables(AuthUtils.getUser(securityContext), sensorId, sensorVariableId,

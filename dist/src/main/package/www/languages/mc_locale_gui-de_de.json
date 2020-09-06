@@ -157,6 +157,7 @@
     "DOUBLE": "Double",
     "DOWN": "inaktiv",
     "DRIVER": "Treiber",
+    "DROP_DOWN_ITEM_LIMIT": "Dropdown item limit",
     "EDIT": "Bearbeiten",
     "EDIT_DASHBOARD": "Dashboard bearbeiten",
     "EMAIL": "E-Mail",

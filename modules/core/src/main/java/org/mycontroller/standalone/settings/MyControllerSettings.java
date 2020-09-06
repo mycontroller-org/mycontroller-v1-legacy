@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2020 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +54,7 @@ public class MyControllerSettings {
     public static final String SKEY_AUTO_NODE_REGISTRATION = "autoNodeRegistration";
     public static final String SKEY_EXECUTE_DISCOVER_INTERVAL = "executeDiscoverInterval";
     public static final String SKEY_RESOURCES_LOGS_RETENTION_DURATION = "resourcesLogsRetentionDuration";
+    public static final String SKEY_DROP_DOWN_ITEM_LIMIT = "dropDownItemLimit";
 
     private String language;
     private String timeFormat;
@@ -71,6 +72,7 @@ public class MyControllerSettings {
     private Integer tableRowsLimit;
     private Boolean autoNodeRegistration;
     private Long resourcesLogsRetentionDuration;
+    private Long dropDownItemLimit;
 
     public static MyControllerSettings get() {
         return MyControllerSettings
@@ -93,6 +95,7 @@ public class MyControllerSettings {
                 .resourcesLogsRetentionDuration(
                         McUtils.getLong(getValue(SKEY_RESOURCES_LOGS_RETENTION_DURATION,
                                 String.valueOf(ResourcesLogsAggregationJob.DEFAULT_RETENTION_DURATION))))
+                .dropDownItemLimit(McUtils.getLong(getValue(SKEY_DROP_DOWN_ITEM_LIMIT, "100")))
                 .build();
     }
 
@@ -143,6 +146,9 @@ public class MyControllerSettings {
                 updateValue(SKEY_RESOURCES_LOGS_RETENTION_DURATION,
                         ResourcesLogsAggregationJob.DEFAULT_RETENTION_DURATION);
             }
+        }
+        if (dropDownItemLimit != null) {
+            updateValue(SKEY_DROP_DOWN_ITEM_LIMIT, dropDownItemLimit);
         }
     }
 

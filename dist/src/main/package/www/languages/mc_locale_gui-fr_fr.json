@@ -157,6 +157,7 @@
     "DOUBLE": "Double",
     "DOWN": "Inactif",
     "DRIVER": "Pilote",
+    "DROP_DOWN_ITEM_LIMIT": "Dropdown item limit",
     "EDIT": "Modifier",
     "EDIT_DASHBOARD": "Modifier tableau de bord",
     "EMAIL": "Email",

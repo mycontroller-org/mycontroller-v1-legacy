@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2020 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.util.Base64;
+import org.mycontroller.standalone.AppProperties;
 import org.mycontroller.standalone.api.jaxrs.mixins.NodeMixinForScript;
 import org.mycontroller.standalone.db.tables.Node;
 import org.mycontroller.standalone.db.tables.User;
@@ -41,13 +42,17 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 public class RestUtils {
 
-    public static final String DROP_DOWN_ITEM_LIMIT = "100";
+    // public static final String DROP_DOWN_ITEM_LIMIT = "100";
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
     private static final String AUTHENTICATION_SCHEME = "Basic";
     private static ObjectMapper OBJECT_MAPPER = null;
 
     private RestUtils() {
 
+    }
+
+    public static Long defaultDropDownItemLimit() {
+        return AppProperties.getInstance().getControllerSettings().getDropDownItemLimit();
     }
 
     public static ObjectMapper getObjectMapper() {
