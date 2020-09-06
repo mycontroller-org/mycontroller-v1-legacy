@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2018 Jeeva Kandasamy (jkandasa@gmail.com)
+# Copyright 2015-2020 Jeeva Kandasamy (jkandasa@gmail.com)
 # and other contributors as indicated by the @author tags.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,8 +28,6 @@ cd ${ACTUAL_LOCATION}
 HEAP_MIN=-Xms32m
 HEAP_MAX=-Xmx256m
 
-JAVA_VERSION="1.7"
-
 #configuration file location
 CONF_PROPERTIES_FILE=../conf/mycontroller.properties
 CONF_LOG_FILE=../conf/logback.xml
@@ -43,19 +41,13 @@ else
 fi
 
 if [[ "$_java" ]]; then
-    version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-    echo "java version: $version"
-    if [[ "$version" > "$JAVA_VERSION" ]]; then
-        MC_PID=`ps -ef | grep "org.mycontroller.standalone.StartApp" | grep -v grep | awk '{ print $2 }'`
-        if [ ! -z "$MC_PID" ]
-        then
-          echo "Mycontroller.org server is already running on pid[${MC_PID}]"
-        else
-          $_java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -cp "../lib/*" org.mycontroller.standalone.StartApp >> ../logs/mycontroller.log 2>&1 &
-          echo 'Start issued for Mycontroller'
-        fi
+    MC_PID=`ps -ef | grep "org.mycontroller.standalone.StartApp" | grep -v grep | awk '{ print $2 }'`
+    if [ ! -z "$MC_PID" ]
+    then
+      echo "Mycontroller.org server is already running on pid[${MC_PID}]"
     else
-      echo "Mycontroller.org server required java version $JAVA_VERSION or later"
+      $_java ${HEAP_MIN} ${HEAP_MAX} -Dlogback.configurationFile=${CONF_LOG_FILE} -Dmc.conf.file=${CONF_PROPERTIES_FILE} -cp "../lib/*" org.mycontroller.standalone.StartApp >> ../logs/mycontroller.log 2>&1 &
+      echo 'Start issued for Mycontroller'
     fi
 fi
 
