@@ -4,8 +4,7 @@ image::extra/images/logo-mycontroller.org_full.png[MyController.org, link="http:
 ---
 
 ifdef::env-github[]
-image:https://badges.gitter.im/Join%20Chat.svg[link="https://gitter.im/mycontroller-org/mycontroller?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]{nbsp}
-image:https://www.paypalobjects.com/en_US/CH/i/btn/btn_donateCC_LG.gif[link="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHWAXCBVHTC64"]
+image:https://badges.gitter.im/Join%20Chat.svg[link="https://gitter.im/mycontroller-org/mycontroller?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
 endif::[]
 
 [link=https://travis-ci.org/mycontroller-org/mycontroller]
