@@ -164,7 +164,7 @@ class EthernetDataListener implements Runnable {
                     }
                 }
                 Thread.sleep(100);
-            } catch (IOException | InterruptedException | MessageParserException ex) {
+            } catch (Exception ex) {
                 _logger.error("Exception, ", ex);
             }
         }
