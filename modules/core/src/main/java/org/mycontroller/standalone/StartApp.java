@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2019 Jeeva Kandasamy (jkandasa@gmail.com)
+ * Copyright 2015-2021 Jeeva Kandasamy (jkandasa@gmail.com)
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,6 +77,7 @@ import org.mycontroller.standalone.metrics.MetricsUtils;
 import org.mycontroller.standalone.mqttbroker.MoquetteMqttBroker;
 import org.mycontroller.standalone.offheap.OffHeapFactory;
 import org.mycontroller.standalone.onetime.ExecuteOneTime;
+import org.mycontroller.standalone.onetime.RemoveCorruptedResources;
 import org.mycontroller.standalone.onetime.ResetPassword;
 import org.mycontroller.standalone.scheduler.SchedulerUtils;
 import org.mycontroller.standalone.scripts.McScriptEngineUtils;
@@ -305,6 +306,9 @@ public class StartApp {
         //Check password reset file
         new ExecuteOneTime().executeOnetimeReset();
         ResetPassword.executeResetPassword();
+
+        // on start-up, remove corrupted resources from database
+        new RemoveCorruptedResources().execute();
 
         //Start message Monitor Thread
         //Create new thread to monitor received logs
