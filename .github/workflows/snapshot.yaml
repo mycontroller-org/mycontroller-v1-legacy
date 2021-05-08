@@ -28,6 +28,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install transifex-client
+      run: |
+        python -m pip install --upgrade pip
+        pip install transifex-client
+
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0 # to avoid license year issue
@@ -39,8 +49,24 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
+    - name: sync transifex
+      run: scripts/sync_transifex.sh
+
+    - name: commit transifex changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Sync transifex changes
+        branch: development
+        commit_options: '--no-verify --signoff'
+        file_pattern: dist/src/main/package/www/languages/*.json dist/src/main/resources/*.properties
+        commit_user_name: Jeeva Kandasamy
+        commit_user_email: jkandasa@gmail.com
+        commit_author: Jeeva Kandasamy <jkandasa@gmail.com>
+
     - name: do package
       run: ./scripts/build.sh
+      env:
+          TX_TOKEN: ${{ secrets.TRANSIFEX_MC_V1_TOKEN }}
 
     - name: Upload to Google Drive
       uses: satackey/action-google-drive@v1

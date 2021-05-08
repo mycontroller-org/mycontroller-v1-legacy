@@ -16,8 +16,17 @@
 # limitations under the License.
 #
 
-# build images
-docker run --rm --name mycontroller-v1-builder \
-  --volume $PWD:/source \
-  --workdir /source \
-  quay.io/mycontroller-org/maven:mycontroller-v1-builder ./scripts/maven.sh
+# update transifex init file
+cat << EOF > ~/.transifexrc
+[https://www.transifex.com]
+api_hostname = https://api.transifex.com
+hostname = https://www.transifex.com
+username = api
+EOF
+
+# update transifex data
+cd dist
+tx push -s
+tx pull -a
+./locale_fix.sh
+cd -
