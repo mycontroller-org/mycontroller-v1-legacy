@@ -18,7 +18,7 @@
 
 
 # build images
-podman run --name jdk \
+docker run --rm --name mycontroller-v1-builder \
   --volume $PWD:/source \
   --workdir /source \
   quay.io/mycontroller-org/maven:mycontroller-v1-builder ./scripts/maven.sh

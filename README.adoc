@@ -130,3 +130,23 @@ Executable scripts are located in `mycontroller/bin/`
 ```
 java -Xms8m -Xmx256m -Dlogback.configurationFile=../conf/logback.xml -Dmc.conf.file=../conf/mycontroller.properties -cp "../lib/*" org.mycontroller.standalone.StartApp
 ```
+
+=== Build locally
+To build locally use a docker maven. it contains all the dependent jar
+
+Run the following command to build locally.
+```bash
+git clone https://github.com/mycontroller-org/mycontroller-v1-legacy.git
+cd mycontroller-v1-legacy
+docker run --rm --name mycontroller-v1-builder \
+  --volume $PWD:/source \
+  --workdir /source \
+  quay.io/mycontroller-org/maven:mycontroller-v1-builder ./scripts/maven.sh
+```
+==== Generated bundle
+executable bundles will be available at `dist/target`
+```bash
+$ ls -alh dist/target/*.{tar.gz,zip}
+-rw-r--r--. 1 jkandasa jkandasa 36M May  8 22:58 dist/target/mycontroller-dist-standalone-1.6.0-SNAPSHOT-bundle.tar.gz
+-rw-r--r--. 1 jkandasa jkandasa 36M May  8 22:58 dist/target/mycontroller-dist-standalone-1.6.0-SNAPSHOT-bundle.zip
+```
