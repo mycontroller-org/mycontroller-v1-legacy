@@ -51,6 +51,8 @@ jobs:
 
     - name: sync transifex
       run: scripts/sync_transifex.sh
+      env:
+          TX_TOKEN: ${{ secrets.TRANSIFEX_MC_V1_TOKEN }}
 
     - name: commit transifex changes
       uses: stefanzweifel/git-auto-commit-action@v4
@@ -65,8 +67,6 @@ jobs:
 
     - name: do package
       run: ./scripts/build.sh
-      env:
-          TX_TOKEN: ${{ secrets.TRANSIFEX_MC_V1_TOKEN }}
 
     - name: Upload to Google Drive
       uses: satackey/action-google-drive@v1
