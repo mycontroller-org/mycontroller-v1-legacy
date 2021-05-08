@@ -34,6 +34,8 @@ mvn install:install-file \
   -Dpackaging=jar
 
 # check licenses
-mvn clean
-mvn verify
-mvn package -Dmaven.test.skip=true
+mvn --batch-mode clean package -Dmaven.test.skip=true
+
+# copy builds to builds directory
+mkdir builds
+cp ./dist/target/mycontroller-dist-standalone*-bundle.{tar.gz,zip} ./builds

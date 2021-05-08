@@ -16,7 +16,7 @@
 #
 
 
-name: Publish snapshot release
+name: Builds and publish packages to google drive
 
 on:
   push:
@@ -24,13 +24,13 @@ on:
 
 jobs:
   setup:
-    name: Build package
+    name: Build and publish packages to google drive
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 0
+        fetch-depth: 0 # to avoid license year issue
     - uses: docker/setup-buildx-action@v1
 
     - name: Login in to docker registry
@@ -48,5 +48,5 @@ jobs:
         skicka-tokencache-json: ${{ secrets.GOOGLE_SKICKA_TOKENCACHE_JSON }}
         google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
         google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-        upload-from: ./dist/target/mycontroller-dist-standalone*-bundle.{tar.gz,zip}
+        upload-from: ./builds
         upload-to: ${{ secrets.GOOGLE_DRIVE_MC1_SNAPSHOT_PATH }}
