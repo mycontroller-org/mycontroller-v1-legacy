@@ -46,5 +46,7 @@ jobs:
       uses: satackey/action-google-drive@v1
       with:
         skicka-tokencache-json: ${{ secrets.GOOGLE_SKICKA_TOKENCACHE_JSON }}
+        google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+        google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         upload-from: ./dist/target/mycontroller-dist-standalone*-bundle.{tar.gz,zip}
         upload-to: ${{ secrets.GOOGLE_DRIVE_MC1_SNAPSHOT_PATH }}
