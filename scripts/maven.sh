@@ -20,14 +20,14 @@
 # These jar files were removed from the remote location
 # compiled it from the source and included on the mentioned path
 mvn install:install-file \
-  -Dfile=./jars/moquette-broker-0.10.jar \
+  -Dfile=./jars/moquette-broker-0.10-shaded.jar \
   -DgroupId=io.moquette \
   -DartifactId=moquette-broker \
   -Dversion=0.10 \
   -Dpackaging=jar
 
 mvn install:install-file \
-  -Dfile=./jars/moquette-mapdb-storage-0.10.jar \
+  -Dfile=./jars/moquette-mapdb-storage-0.10-shaded.jar \
   -DgroupId=io.moquette \
   -DartifactId=moquette-mapdb-storage \
   -Dversion=0.10 \
