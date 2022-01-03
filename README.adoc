@@ -14,7 +14,6 @@ Development: image:https://travis-ci.org/mycontroller-org/mycontroller.svg?branc
 
 ====== Project website: http://www.mycontroller.org
 ====== Forum: http://forum.mycontroller.org
-====== Want to try now? http://demo.mycontroller.org[Demo server] Authentication: demo/demo
 
 == About
 
