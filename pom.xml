@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2015-2021 Jeeva Kandasamy (jkandasa@gmail.com)
+    Copyright 2015-2022 Jeeva Kandasamy (jkandasa@gmail.com)
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.mycontroller</groupId>
     <artifactId>mycontroller-parent</artifactId>
-    <version>43</version>
+    <version>44</version>
   </parent>
 
   <groupId>org.mycontroller.standalone</groupId>
