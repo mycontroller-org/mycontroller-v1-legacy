@@ -57,7 +57,7 @@ public class TelegramBotSettings {
         }
         return TelegramBotSettings.builder()
                 .token(token)
-                .id(McUtils.getInteger(getValue(SKEY_ID)))
+                .id(McUtils.getLong(getValue(SKEY_ID)))
                 .isBot(McUtils.getBoolean(getValue(SKEY_IS_BOT)))
                 .firstName(getValue(SKEY_FIRST_NAME))
                 .username(getValue(SKEY_USERNAME)).build();
